@@ -1,0 +1,56 @@
+import React, {useState} from 'react';
+import Upcoming from "@/components/Events/views/Organizer/Upcoming";
+import PastEvent from "@/components/Events/views/Organizer/PastEvent";
+import Draft from "@/components/Events/views/Organizer/Draft";
+import PaymentSettingsModal from "@/components/Events/Modals/PaymentSettingsModal";
+
+type OrganizerSectionInterface = {
+    activatePaymentModal: () => void,
+    togglePaymentModel: boolean
+}
+
+const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaymentModal, togglePaymentModel}) => {
+    const [orOption, setOrOption] = useState("upcoming")
+
+    const renderView = () => {
+        switch (orOption) {
+            case "upcoming":
+                return <Upcoming />
+            case "past":
+                return <PastEvent />
+            case "draft":
+                return <Draft />
+            default:
+                return <Upcoming />
+        }
+    }
+
+    const switchOption = (option: string) => {
+        setOrOption(option)
+    }
+    return (
+        <>
+            <div className="bg-white flex justify-between pl-[60px] border-b-[1px] items-center pt-[20px] pb-0">
+                <div className="flex">
+                    <div className={`flex flex-col items-center w-[160px] pb-2 ${orOption === 'upcoming' && "border-b-step-color border-b-2"}`}>
+                        <p className="font-sans font-semi-normal text-black-light text-[14px] leading-[21px] cursor-pointer" onClick={() =>switchOption("upcoming")}>Upcoming</p>
+                    </div>
+                    <div className={`flex flex-col items-center w-[160px] pb-2 ${orOption === 'past' && "border-b-step-color border-b-2"}`}>
+                        <p className="font-sans font-semi-normal text-text-grey text-[14px] leading-[21px] cursor-pointer" onClick={() =>switchOption("past")}>Past events</p>
+                    </div>
+                    <div className={`flex flex-col items-center w-[160px] pb-2 ${orOption === 'draft' && "border-b-step-color border-b-2"}`}>
+                        <p className="font-sans font-semi-normal text-text-grey text-[14px] leading-[21px] cursor-pointer" onClick={() =>switchOption("draft")}>Draft</p>
+                    </div>
+                </div>
+            </div>
+
+            <section className="min-h-screen mt-4 flex flex-col items-center">
+                {/*<EmptyEvent />*/}
+                {renderView()}
+                <PaymentSettingsModal toggle={activatePaymentModal} option={togglePaymentModel} />
+            </section>
+        </>
+    );
+}
+
+export default OrganizerSectionView;
