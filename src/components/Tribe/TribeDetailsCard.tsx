@@ -7,8 +7,14 @@ import {Button} from "@/components/ui/button";
 import EditIcon from "@/image/icons/edit.svg";
 import avatar_image from "@/image/avatar_3.png";
 import DeleteIcon from "@/image/icons/delete.svg";
+import {TribeInterface} from "@/interfaces/TribeInterface";
+import {formatLongDate} from "@/lib/dateTimeFormatter";
 
-function TribeDetailsCard() {
+type TribeDetailsInterface = {
+    toggle: () => void,
+    tribe: TribeInterface
+}
+const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
     return (
         <div className="flex flex-col gap-2 p-4 py-4 bg-white w-[496px] h-fit">
             <div>
@@ -18,19 +24,23 @@ function TribeDetailsCard() {
                 <Image src={tribe_image} alt="tribe"/>
             </div>
             <div className="flex flex-col items-center">
-                <p className="font-sans font-semibold text-[16px] leading-[24px]">Start-ups</p>
-                <i className="font-sans font-semi-normal text-[14px] leading-[16.8px] text-text-grey mt-1">Business</i>
+                <p className="font-sans font-semibold text-[16px] leading-[24px]">
+                    {tribe.tribe_name}
+                </p>
+                <i className="font-sans font-semi-normal text-[14px] leading-[16.8px] text-text-grey mt-1">
+                    {tribe.category}
+                </i>
                 <div className="flex gap-1 justify-center items-center mt-1">
-                    <p className="font-sans font-normal text-[12px] text-text-grey">3 members</p>
-                    <DotIcon/>
-                    <p className="font-sans font-normal text-[12px] text-text-grey">1 thread</p>
+                    <p className="font-sans font-normal text-[12px] text-text-grey">{tribe.members} members</p>
+                    <DotIcon className="w-[3px] h-[3px]"/>
+                    <p className="font-sans font-normal text-[12px] text-text-grey">{tribe.threads} threads</p>
                 </div>
                 <div className="flex flex-col items-center w-[311px]">
                     <p className="text-center font-sans font-normal text-light-black text-[14px] leading-[21px] my-4">
-                        Share your start-up experiences to teach others on what to do.
+                        {tribe.description}
                     </p>
                     <p className="font-sans font-normal text-[12px] text-text-grey my-2">Created by <span
-                        className="font-semibold">You</span> on 23 Mar, 2024</p>
+                        className="font-semibold">{tribe.created_by}</span> on {formatLongDate(tribe.created_at)}</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
@@ -41,7 +51,7 @@ function TribeDetailsCard() {
             </div>
             <div className="flex justify-center my-2">
                 <Button
-                    className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]">
+                    className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]" onClick={toggle}>
                     <div className="flex gap-1 justify-center">
                         <EditIcon/>
                         <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Create thread</p>

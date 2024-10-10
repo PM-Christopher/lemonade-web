@@ -23,30 +23,49 @@ import apple_logo from "@/image/apple.png"
 import google_logo from "@/image/google.png"
 import facebook_logo from "@/image/facebook.png"
 
+import {checkError} from "@/lib/checkError";
+import {useFormik} from "formik";
+import * as yup from "yup";
+import {FormikButton} from "@/components/global/FormikButton";
+import {authFailure, authStart, authSuccess, loadStop} from "@/features/authentication/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import {axiosInstance} from "@/lib/axiosInstane";
+import {useCookies} from "react-cookie";
+import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {login} from "@/features/authentication/authApi";
+
+
 
 export default function LoginPage() {
     const router  = useRouter()
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-        username:"",
-    })
+    const dispatch = useAppDispatch();
+    const [cookie, setCookie] = useCookies(["token", "newToken"]);
+
 
     const [loading, setLoading] = useState(false)
 
-    const onSignup = async () => {
-        try {
-            setLoading(true)
-            await axios.post("/api/users/signup", user)
-            toast.success("Signup successfull")
-            toast("Please check your inbox and click on verification link.", {duration: 10000})
-            router.push("/login")
-        } catch (error: any) {
-            toast.error(error.message)
-        }finally{
-            setLoading(false)
-        }
-    }
+    const loginSchema = yup.object({
+        email: yup
+            .string()
+            .email("Please enter a valid email")
+            .required("Email is required"),
+        password: yup
+            .string()
+            .min(8)
+            .required("Password is required"),
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+        },
+        validationSchema: loginSchema,
+        onSubmit: async (values) => {
+            await login({...values}, dispatch, router, setCookie)
+        },
+    })
 
 
     return (
@@ -73,50 +92,59 @@ export default function LoginPage() {
                         <Image src={image_url} alt="signup image" width={511.06} height={519.77}/>
                     </div>
                 </div>
-                <Card className="p-10 w-[480px]">
-                    <CardContent className="grid gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email" className="font-label">Email address</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="e.g. Janedoe@example.com"
-                                className="h-12 rounded-xl bg-light_grey form-font border-0"
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="password" className="font-label">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                className="h-12 rounded-xl bg-light_grey form-font border-0"
-                            />
-                        </div>
-                    </CardContent>
-                    <CardContent className="flex flex-col space-y-2">
-                        <Button className="auth-button" onClick={onSignup}>
-                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Login"}
-                        </Button>
-                    </CardContent>
-                    <CardContent className="flex justify-center items-center gap-2">
-                        <div className="w-20 h-[2px] bg-border-grey"/>
-                        <div className="font-sans text-grey-light">
-                            Or continue with
-                        </div>
-                        <div className="w-20 h-[2px] bg-border-grey"/>
-                    </CardContent>
-                    <CardContent className="flex justify-center items-center gap-2 mt-4">
-                        <div className="app-icon-border flex justify-center items-center">
-                            <Image src={apple_logo} alt="logo" width={24} height={24}/>
-                        </div>
-                        <div className="app-icon-border flex justify-center items-center">
-                            <Image src={google_logo} alt="logo" width={24} height={24}/>
-                        </div>
-                        <div className="app-icon-border flex justify-center items-center">
-                            <Image src={facebook_logo} alt="logo" width={24} height={24}/>
-                        </div>
-                    </CardContent>
-                </Card>
+                <form onSubmit={formik.handleSubmit}>
+                    <Card className="p-10 w-[480px]">
+                        <CardContent className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="email" className="font-label">Email address</Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="e.g. Janedoe@example.com"
+                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="password" className="font-label">Password</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                    value={formik.values.password}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </div>
+                        </CardContent>
+                        <CardContent className="flex flex-col space-y-2">
+                            <FormikButton loading={formik.isSubmitting} title="Login" error={formik.isValid} />
+                            {/*<Button className="auth-button">*/}
+                            {/*    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Login"}*/}
+                            {/*</Button>*/}
+                        </CardContent>
+                        <CardContent className="flex justify-center items-center gap-2">
+                            <div className="w-20 h-[2px] bg-border-grey"/>
+                            <div className="font-sans text-grey-light">
+                                Or continue with
+                            </div>
+                            <div className="w-20 h-[2px] bg-border-grey"/>
+                        </CardContent>
+                        <CardContent className="flex justify-center items-center gap-2 mt-4">
+                            <div className="app-icon-border flex justify-center items-center">
+                                <Image src={apple_logo} alt="logo" width={24} height={24}/>
+                            </div>
+                            <div className="app-icon-border flex justify-center items-center">
+                                <Image src={google_logo} alt="logo" width={24} height={24}/>
+                            </div>
+                            <div className="app-icon-border flex justify-center items-center">
+                                <Image src={facebook_logo} alt="logo" width={24} height={24}/>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </form>
             </div>
         </section>
     )

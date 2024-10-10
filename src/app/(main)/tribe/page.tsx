@@ -15,45 +15,74 @@ import {Textarea} from "@/components/ui/textarea";
 import DollarBillIcon from "@/image/icons/dollar-bill.svg"
 import PadlockIcon from "@/image/icons/padlock.svg"
 import CloseIcon from "@/image/icons/close.svg";
-import CheckedIcon from "@/image/icons/CheckedIcon.svg";
+import {useSelector} from "react-redux";
+import {useRequest} from "@/hooks/useRequest";
+import {TribeInterface} from "@/interfaces/TribeInterface";
+import {Spinner} from "evergreen-ui";
 
 
 export default function TribePage() {
     const router  = useRouter()
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-        username:"",
-    })
+    const {authToken} = useSelector((state: any) => state.auth)
+    const [tribeType, setTribeType] = useState("tln")
+
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const { data, loading } = useRequest(`/tribes?type=${tribeType}`, "GET", {}, true, getHeader())
+
     const [modalFlag, setModalFlag] = useState(false)
 
     const activateModal = () => {
         setModalFlag(!modalFlag)
     }
 
+    const changeTribeType = (type: string) => {
+        setTribeType(type)
+    }
+
+    console.log({data, loading})
+
     return (
         <div className="bg-light_grey pb-10">
             <TopNav/>
             <div className="bg-white flex justify-between p-2 px-10 border-t-[1px] border-b-[1px] items-center">
                 <div className="flex gap-10">
-                    <div className="flex flex-col justify-center">
-                        <p className="font-sans font-semi-normal text-black-light text-[14px] leading-[21px]">TLN
+                    <div className="flex flex-col justify-center items-center cursor-pointer">
+                        <p className={`"font-sans font-semi-normal ${tribeType === "tln" ? "text-black-light" : "text-text-grey"} text-[14px] leading-[21px]"`} onClick={() => changeTribeType("tln")}>TLN
                             Tribes</p>
-                        <div className="border h-[0.5px] border-step-color w-20"></div>
+                        {
+                            tribeType === "tln" && (
+                                <div className="border h-[0.5px] border-step-color w-20"></div>
+                            )
+                        }
                     </div>
-                    <div className="flex justify-center">
-                        <p className="font-sans font-semi-normal text-text-grey text-[14px] leading-[21px]">Discover</p>
-                        {/*<div className="border h-[0.5px] absolute w-20 bottom-[364px]"></div>*/}
+                    <div className="flex flex-col justify-center items-center cursor-pointer">
+                        <p className={`"font-sans font-semi-normal ${tribeType === "discover" ? "text-black-light" : "text-text-grey"} text-[14px] leading-[21px]"`} onClick={() => changeTribeType("discover")}>Discover</p>
+                        {
+                            tribeType === "discover" && (
+                                <div className="border h-[0.5px] border-step-color w-20"></div>
+                            )
+                        }
                     </div>
-                    <div className="flex justify-center">
-                        <p className="font-sans font-semi-normal text-text-grey text-[14px] leading-[21px]">My
+                    <div className="flex flex-col justify-center items-center cursor-pointer">
+                        <p className={`"font-sans font-semi-normal ${tribeType === "mine" ? "text-black-light" : "text-text-grey"} text-[14px] leading-[21px]"`} onClick={() => changeTribeType("mine")}>My
                             Tribes</p>
-                        {/*<div className="border h-[0.5px] absolute w-20 bottom-[364px]"></div>*/}
+                        {
+                            tribeType === "mine" && (
+                                <div className="border h-[0.5px] border-step-color w-20"></div>
+                            )
+                        }
                     </div>
                 </div>
                 <div>
                     <Button
-                        className="auth-button py-[20px] rounded-[12px] border-step-color shadow-custom-top shadow-custom-bottom"
+                        className="auth-button py-[20px] rounded-[12px] border-step-color shadow-custom-bottom"
                         onClick={activateModal}
                     >
                         <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">+ Create Tribe</p>
@@ -63,11 +92,24 @@ export default function TribePage() {
             <div className="min-h-screen">
                 <div className="flex justify-around">
                     <section id="tribes" className="p-10 py-4 w-[704px] h-[1000px] shadow-div-shadow-2">
-                        <TribeCardList/>
-                        <TribeCardList/>
-                        <TribeCardList/>
-                        <TribeCardList/>
-                        <TribeCardList/>
+
+                        {
+                            loading ? (
+                                    <div className="flex justify-center items-center">
+                                        <Spinner/>
+                                    </div>
+                                ) : data?.tribes.length > 0 ? (
+                                data?.tribes.map((tribe: TribeInterface, index: number) => (
+                                    <Link href={`/tribe/${tribe.id}`}>
+                                        <TribeCardList tribe={tribe} key={index}/>
+                                    </Link>
+                                ))
+                            ) : (
+                                <div className="flex justify-center items-center">
+                                    <p className="font-semibold text-[24px] text-text-grey">No tribes found</p>
+                                </div>
+                            )
+                        }
                     </section>
                     <section id="search-tribes" className="p-10 py-4 w-[480px] h-[325px] bg-white rounded-[12px]">
                         <div className="bg-white">

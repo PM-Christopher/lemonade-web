@@ -1,0 +1,28 @@
+{
+  "guestList": [
+    {
+      "name": "Christine Joseph",
+      "ticket_type": "Free"
+    },
+    {
+      "name": "Christine Joseph",
+      "ticket_type": "Regular"
+    },
+    {
+      "name": "Christine Joseph",
+      "ticket_type": "Gold"
+    },
+    {
+      "name": "Christine Joseph",
+      "ticket_type": "Free"
+    },
+    {
+      "name": "Christine Joseph",
+      "ticket_type": "Gold"
+    },
+    {
+      "name": "Christine Joseph",
+      "ticket_type": "Free"
+    }
+  ]
+}

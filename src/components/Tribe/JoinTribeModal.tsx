@@ -3,13 +3,18 @@ import CloseIcon from "@/image/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import CheckedIcon from "@/image/icons/CheckedIcon.svg";
 
-function JoinTribeModal() {
+type JoinTribeInterface = {
+    toggle: () => void,
+    isOpen: boolean
+}
+
+const JoinTribeModal: React.FC<JoinTribeInterface> = ({toggle, isOpen}) => {
     return (
-        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 hidden`}>
+        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                        <div className="cursor-pointer">
+                        <div className="cursor-pointer" onClick={toggle}>
                             <CloseIcon/>
                         </div>
                         <p className="font-sans font-semibold text-[18px] leading-[27px]">Unlock Exclusive

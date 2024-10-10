@@ -1,0 +1,126 @@
+import { axiosInstance } from "@/lib/axiosInstane";
+import {
+    authFailure,
+    authStart,
+    authSuccess,
+    loadStop,
+} from "./authSlice";
+import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+
+export const signup = async (
+    values: any,
+    dispatch: any,
+    router: any,
+    setCookie: any
+) => {
+    dispatch(authStart());
+    console.log("start");
+    try {
+        const { data } = await axiosInstance.post("/auth/register", { ...values });
+        console.log(data)
+        if (data.status || data.success) {
+            dispatch(setIsRouting(true));
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Successful",
+                    type: "success",
+                })
+            );
+
+            setCookie("newToken", data.data.token, {
+                path: "/",
+                maxAge: 3600 * 6, // Expires after 6hrs
+                sameSite: false,
+            });
+
+            router.push("/verify-email");
+        } else {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: data.message || "error",
+                    type: "error",
+                })
+            );
+        }
+    } catch (error: any) {
+        console.log({error})
+        dispatch(
+            updateToastifyReducer({
+                show: true,
+                message: error.response.data.message || "error",
+                type: "error",
+            })
+        );
+        dispatch(authFailure());
+    }  finally {
+        dispatch(loadStop());
+    }
+}
+
+export const login = async (
+    values: any,
+    dispatch: any,
+    router: any,
+    setCookie: any
+) => {
+    dispatch(authStart());
+    console.log("start");
+    try {
+        const { data } = await axiosInstance.post("/auth/login", { ...values });
+        console.log(data)
+        if (data.status || data.success) {
+            dispatch(setIsRouting(true));
+            dispatch(setIsRouting(true));
+            if (data.data.user.status == 0) {
+                setCookie("newToken", data.data.token, {
+                    path: "/",
+                    maxAge: 3600 * 6, // Expires after 6hrs
+                    sameSite: false,
+                    // domain: env === 'development' ? '' : ''
+                });
+                router.push("/profile-setup");
+            } else {
+                setCookie("token", data.data.token, {
+                    path: "/",
+                    maxAge: 3600 * 6, // Expires after 6hrs
+                    sameSite: false,
+                });
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "successful",
+                        type: "success",
+                    })
+                );
+                await dispatch(authSuccess(data.data));
+                setTimeout(() => {
+                    router.push("/");
+                }, 500);
+            }
+        } else {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: data.message || "error",
+                    type: "error",
+                })
+            );
+        }
+    } catch (error: any) {
+        console.log({error})
+        dispatch(
+            updateToastifyReducer({
+                show: true,
+                message: error.response.data.message || "error",
+                type: "error",
+            })
+        );
+        dispatch(authFailure());
+    }  finally {
+        dispatch(loadStop());
+    }
+}
+

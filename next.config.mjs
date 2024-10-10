@@ -16,7 +16,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['images.unsplash.com']
+    domains: ['images.unsplash.com', 'dev-lemonade-bucket.lon1.digitaloceanspaces.com']
   }
 };
 

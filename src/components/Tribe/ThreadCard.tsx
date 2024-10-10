@@ -23,7 +23,7 @@ function ThreadCard() {
                         <Image src={ver_image} alt="verifed"/>
                     </div>
                     <div>
-                        <DotIcon/>
+                        <DotIcon className="w-[3px] h-[3px]"/>
                     </div>
                     <div>
                         <p className="font-sans font-normal text-[12px] leading-[14.4px]">2s</p>

@@ -5,13 +5,18 @@ import ImageIcon from "@/image/icons/image.svg";
 import VideoIcon from "@/image/icons/video-camera.svg";
 import PollIcon from "@/image/icons/votes.svg";
 
-function CreateThreadModal() {
+type CreateThreadInterface = {
+    toggle: () => void,
+    isOpen: boolean
+}
+
+const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen}) => {
     return (
-        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 hidden`}>
+        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="flex flex-col bg-white rounded-[12px]">
                 <div className="shadow-lg w-[800px] p-6 h-[300px]">
                     <div className="flex justify-between items-center">
-                        <div className="cursor-pointer">
+                        <div className="cursor-pointer" onClick={toggle}>
                             <CloseIcon/>
                         </div>
                         <div>

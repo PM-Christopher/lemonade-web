@@ -1,30 +1,53 @@
-import React from 'react';
+"use client"
+import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import {Button} from "@/components/ui/button";
-import ImageIcon from "@/image/icons/image.svg"
-import VideoIcon from "@/image/icons/video-camera.svg";
-import PollIcon from "@/image/icons/votes.svg";
 import ChevronLeft from "@/image/icons/chevron-left.svg";
 import SearchIcon from "@/image/icons/search.svg";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import ThreadCard from "@/components/Tribe/ThreadCard";
 import TribeDetailsCard from "@/components/Tribe/TribeDetailsCard";
-import CloseIcon from "@/image/icons/close.svg"
 import CreateThreadModal from "@/components/Tribe/CreateThreadModal";
-import CheckedIcon from "@/image/icons/CheckedIcon.svg";
 import JoinTribeModal from "@/components/Tribe/JoinTribeModal";
+import {useSelector} from "react-redux";
+import {useRequest} from "@/hooks/useRequest";
 
-function SingleTribePage() {
+const SingleTribePage = ({params}: {params: {id: number}}) => {
+    const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false)
+    const [joinTribeModalOpen, setJoinTribeModalOpen] = useState(false)
+
+    const {authToken} = useSelector((state: any) => state.auth)
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const { data, loading } = useRequest(`/tribes/${params.id}`, "GET", {}, true, getHeader())
+
+    console.log({data})
+
+    const activateCreateThreadModal = () => {
+        setCreateThreadModalOpen(!createThreadModalOpen)
+    }
+
+    const activateJoinTribeModal = () => {
+        setJoinTribeModalOpen(!joinTribeModalOpen)
+    }
+
     return (
         <div className="bg-light_grey pb-10">
             <TopNav/>
             <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
                     <div>
                         <ChevronLeft />
                     </div>
                     <div>
-                        <p className="font-sans font-semibold text-[16px] leading-[24px]">Start-Ups</p>
+                        <p className="font-sans font-semibold text-[16px] leading-[24px]">
+                            {data?.tribe?.tribe_name}
+                        </p>
                     </div>
                 </div>
                 <div className="flex gap-2">
@@ -63,10 +86,10 @@ function SingleTribePage() {
                         <ThreadCard/>
                         <ThreadCard/>
                     </div>
-                    <TribeDetailsCard/>
+                    <TribeDetailsCard toggle={activateCreateThreadModal} tribe={data?.tribe} />
                 </div>
-                <CreateThreadModal/>
-                <JoinTribeModal />
+                <CreateThreadModal toggle={activateCreateThreadModal} isOpen={createThreadModalOpen}/>
+                <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen} />
             </div>
         </div>
     );

@@ -1,0 +1,79 @@
+import React from 'react';
+import CloseIcon from "@/image/icons/close.svg";
+import {Button} from "@/components/ui/button";
+import {Label} from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+
+type RequestServiceInterface = {
+    isOpen: boolean,
+    toggleMenu: () => void
+}
+
+const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleMenu}) => {
+    return (
+        <div
+            className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
+            <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <div className="cursor-pointer" onClick={toggleMenu}>
+                            <CloseIcon/>
+                        </div>
+                        <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Request a service</p>
+                    </div>
+                    <div>
+                        <Button
+                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom">
+                            <p className="font-sans font-semi-normal text-[12px]">Send quote</p>
+                        </Button>
+                    </div>
+                </div>
+                <div className="mt-10">
+                    <div className="grid gap-2 mt-[24px]">
+                        <Label htmlFor="fullname"
+                               className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">I want to
+                            book you for</Label>
+                        <Input
+                            id="fullname"
+                            type="text"
+                            placeholder=""
+                            className="h-12 rounded-xl bg-light_grey form-font border-0"
+                        />
+                    </div>
+                    <div className="grid gap-2 mt-[24px]">
+                        <Label htmlFor="fullname"
+                               className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Required services</Label>
+                        <div className="mt-2">
+                            <div className="flex gap-2">
+                                <div className="rounded-[12px] p-[12px] px-[16px] bg-light_grey">
+                                    <p className="font-normal text-[14px] text-text-grey">UI designs</p>
+                                </div>
+                                <div className="rounded-[12px] p-[12px] px-[16px] bg-light_grey">
+                                    <p className="font-normal text-[14px] text-text-grey">Mock up designs</p>
+                                </div>
+                                <div className="rounded-[12px] p-[12px] px-[16px] bg-light_grey">
+                                    <p className="font-normal text-[14px] text-text-grey">Graphic design</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="grid gap-2 mt-[24px]">
+                        <div className="flex justify-between">
+                            <Label htmlFor="fullname"
+                                   className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Additional information</Label>
+                            <p className="font-normal text-[12px] text-text-grey">200 characters</p>
+                        </div>
+                        <textarea
+                            id="fullname"
+                            placeholder=""
+                            className="h-[128px] p-3 rounded-xl bg-light_grey font-normal text-[14px] border-0 resize-none"
+                            readOnly={true}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default RequestServiceModal;

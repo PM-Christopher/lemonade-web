@@ -1,41 +1,104 @@
 'use client'
-import Link from "next/link"
 import React, {useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
-import axios from "axios"
-import toast from "react-hot-toast"
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import verify_url from "@/image/verification.png"
 import logo_url from "@/image/logo.png"
-import apple_logo from "@/image/apple.png";
+import OtpInput from 'react-otp-input';
+import {checkError} from "@/lib/checkError";
+import {useFormik} from "formik";
+import * as yup from "yup";
+import {FormikButton} from "@/components/global/FormikButton";
+import {authFailure, authStart, authSuccess, loadStop} from "@/features/authentication/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import {axiosInstance} from "@/lib/axiosInstane";
+import {useCookies} from "react-cookie";
+import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 
 export default function VerifyPage() {
     const router  = useRouter()
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-        username:"",
+    const dispatch = useAppDispatch();
+    const [cookie, setCookie, removeCookie] = useCookies([
+        "token",
+        "newToken",
+    ]);
+
+    const getHeader = () => {
+        const token = cookie.newToken;
+        console.log({token})
+        return {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    };
+
+    //form validation
+    const verifySchema = yup.object({
+        code: yup
+            .string()
+            .length(4)
+            .required("Code is required"),
+    });
+
+    const [verifyError, setVerifyError] = useState(false);
+
+    const formik = useFormik({
+        initialValues: {
+            code: "",
+        },
+        validationSchema: verifySchema,
+        onSubmit: async (values) => {
+            console.log({values})
+            await verifyOtp(values);
+        },
     })
 
-    const [loading, setLoading] = useState(false)
+    // console.log({formik})
 
-    const onSignup = async () => {
-        router.push('/profile-setup')
+    const [otp, setOtp] = useState(formik.values.code);
+
+    const verifyOtp = async (values: any) => {
+        dispatch(authStart())
+        try {
+            const { data } = await axiosInstance.post("/otp/verify", { ...values }, getHeader());
+            if (data.success || data.status) {
+                dispatch(setIsRouting(true));
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Email verified",
+                        type: "success",
+                    })
+                );
+                formik.resetForm();
+                router.push("/profile-setup");
+                return false
+            }
+            // return false
+        } catch (err: any) {
+            console.log({err})
+            dispatch(authFailure());
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: err?.response?.data?.message || "error",
+                    type: "error",
+                })
+            );
+            return true;
+        } finally {
+            dispatch(loadStop())
+        }
     }
-
 
     return (
         <section className="bg-gradient-light-green">
@@ -59,26 +122,39 @@ export default function VerifyPage() {
                         <Image src={verify_url} alt="signup image" width={320} height={257.55}/>
                     </div>
                 </div>
-                <Card className="p-10 w-[480px]">
-                    <CardContent className="flex justify-center">
-                        <div className="flex gap-2">
-                            <div className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                            <div className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                            <div className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                            <div className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                        </div>
-                    </CardContent>
-                    <CardContent className="flex justify-center mt-[10px] mb-[10px]">
-                        <div>
-                            <p className="font-sans font-semi-normal text-light-green text-[16px]">Resend code in 60 secs</p>
-                        </div>
-                    </CardContent>
-                    <CardContent className="flex flex-col space-y-2">
-                        <Button className="auth-button" onClick={onSignup}>
-                            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Verify"}
-                        </Button>
-                    </CardContent>
-                </Card>
+                <form onSubmit={formik.handleSubmit}>
+                    <Card className="p-10 w-[480px] border-none shadow-none">
+                        <CardContent className="grid grid-cols-1">
+                            <div className="flex flex-col items-center justify-center">
+                                <OtpInput
+                                    value={formik.values.code}
+                                    onChange={(e) => {
+                                        setOtp(e)
+                                        formik.setFieldValue('code', e)
+                                    }}
+                                    numInputs={4}
+                                    renderSeparator={<span> </span>}
+                                    renderInput={(props) => <input {...props} />}
+                                    containerStyle="gap-2"
+                                    inputStyle={{width: "48px", height: "48px", background: "#F9FAFA", borderRadius: "12px"}}
+                                />
+                                {checkError("code", formik) ? (
+                                    <p className="text-[#FF8D8D] text-[12px] mt-[8px]">
+                                        {formik.errors.code}
+                                    </p>
+                                ) : null}
+                            </div>
+                        </CardContent>
+                        <CardContent className="flex justify-center mt-[10px] mb-[10px]">
+                            <div>
+                                <p className="font-sans font-semi-normal text-light-green text-[16px]">Resend code in 60 secs</p>
+                            </div>
+                        </CardContent>
+                        <CardContent className="flex flex-col space-y-2">
+                            <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid} />
+                        </CardContent>
+                    </Card>
+                </form>
             </div>
         </section>
     )

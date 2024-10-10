@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
 import CloseIcon from "@/image/icons/close.svg";
-import ChevronRightIcon from "@/image/icons/ChevronRight.svg";
-import upcoming_event from "@/image/event_images/upcoming_event.png"
-import Image from "next/image";
-import CalendarIcon from "@/image/icons/calendar.svg"
-import LocationIcon from "@/image/icons/Location.svg"
-import {DotFilledIcon} from "@radix-ui/react-icons";
 import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
 
 type SideMenuInterface = {

@@ -5,8 +5,13 @@ import tribe_image from "@/image/forum_image.png";
 import heart_icon from "@/image/icons/heart.png";
 import chat_icon from "@/image/icons/chat.png";
 import arrow_left from "@/image/icons/arrow-left.png";
+import {TribeInterface} from "@/interfaces/TribeInterface";
 
-function TribeCard() {
+type TribeIF = {
+    tribe: TribeInterface
+}
+
+const TribeCard: React.FC<TribeIF> = ({tribe}) => {
     return (
         <div className="w-full flex flex-col bg-light-yellow p-4 px-4 rounded-2xl shadow-lg">
             <div>
@@ -14,10 +19,12 @@ function TribeCard() {
             </div>
             <div className="mt-2 flex justify-between">
                 <div>
-                    <p className="text-text-grey text-[12px] font-semibold font-sans">Structural
-                        masters</p>
-                    <p className="text-[12px] font-semibold font-sans text-ellipsis">Why are architectural structures
-                        not ...</p>
+                    <p className="text-text-grey text-[12px] font-semibold font-sans">
+                        {tribe?.tribe_name}
+                    </p>
+                    <p className="text-[12px] font-semibold font-sans text-ellipsis max-w-[329.33px] truncate">
+                        {tribe?.description}
+                    </p>
                 </div>
                 <div>
                     <Image src={tribe_image} alt="" width={48}/>

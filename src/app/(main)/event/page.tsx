@@ -1,19 +1,12 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import SearchIcon from "@/image/icons/search.svg";
-import FilterIcon from "@/image/icons/FIlter.svg"
-import TicketIcon from "@/image/icons/Tickets.svg"
-import trending_event from "@/image/event_images/trending_event_1.png"
-import Image from "next/image";
-import Carousel from "@/components/global/ImageSlider";
-import EventCard from "@/components/Events/EventCard";
-import CloseIcon from "@/image/icons/close.svg"
 import SideMenu from "@/components/Events/SideMenu";
 import EventsSectionView from "@/components/Events/views/Events";
 import OrganizerSectionView from "@/components/Events/views/Organizer";
 import EventSubMenu from "@/components/Events/Menu/EventSubMenu";
 import OrganizerSubMenu from "@/components/Events/Menu/OrganizerSubMenu";
+import AgentSectionView from "@/components/Events/views/Agent";
 
 const EventPage: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -38,6 +31,8 @@ const EventPage: React.FC = () => {
                 return <EventsSectionView />
             case "organizer":
                 return <OrganizerSectionView activatePaymentModal={activatePaymentModal} togglePaymentModel={togglePaymentModel} />
+            case "agent":
+                return <AgentSectionView />
         }
     }
 
