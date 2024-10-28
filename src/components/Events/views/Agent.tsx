@@ -4,17 +4,33 @@ import ChevronRight from "@/image/icons/ChevronRight.svg"
 import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
 import PromotionsSubMenu from "@/components/Events/views/Agent/Promotions";
 import FindEventSubMenu from "@/components/Events/views/Agent/FindEvent";
+import {useSelector} from "react-redux";
+import {useRequest} from "@/hooks/useRequest";
+import {useRouter} from "next/navigation";
 
 function AgentSectionView({}) {
+    const router = useRouter()
     const [view, setView] = useState("promotions")
+    const {authToken} = useSelector((state: any) => state.auth)
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const { data, loading } = useRequest(`/events/affiliate`, "GET", {}, true, getHeader())
+
+
     const renderView = () => {
         switch (view) {
             case "promotions":
-                return <PromotionsSubMenu />
+                return <PromotionsSubMenu events={data?.events} loading={loading} />
             case "find_event":
                 return <FindEventSubMenu />
             default:
-                return <PromotionsSubMenu />
+                return <PromotionsSubMenu events={data?.events} loading={loading} />
         }
     }
     return (
@@ -29,7 +45,7 @@ function AgentSectionView({}) {
                             <p className="font-sans font-normal text-text-grey text-[14px]">Total Tickets Sold</p>
                             <p className="font-sans font-semibold text-[18px] tracking-custom leading-[27px]">1,222,000</p>
                             <div className="border-t-mid-grey border-t-[1px] my-[16px]"></div>
-                            <div className="flex gap-2 items-center cursor-pointer">
+                            <div className="flex gap-2 items-center cursor-pointer" onClick={() => router.push("/settings/wallet")}>
                                 <p className="font-sans font-semi-normal text-[16px] text-light-green tracking-custom leading-[27px]">Go
                                     to Wallet</p>
                                 <ChevronRight />

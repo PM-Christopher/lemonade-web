@@ -10,10 +10,13 @@ import CreateThreadModal from "@/components/Tribe/CreateThreadModal";
 import JoinTribeModal from "@/components/Tribe/JoinTribeModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
+import {TribeThreadInterface} from "@/interfaces/TribeInterface";
+import {useRouter} from "next/navigation";
 
 const SingleTribePage = ({params}: {params: {id: number}}) => {
     const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false)
     const [joinTribeModalOpen, setJoinTribeModalOpen] = useState(false)
+    const router = useRouter()
 
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
@@ -25,8 +28,6 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     }
 
     const { data, loading } = useRequest(`/tribes/${params.id}`, "GET", {}, true, getHeader())
-
-    console.log({data})
 
     const activateCreateThreadModal = () => {
         setCreateThreadModalOpen(!createThreadModalOpen)
@@ -40,7 +41,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         <div className="bg-light_grey pb-10">
             <TopNav/>
             <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center cursor-pointer" onClick={() => router.push("/tribe")}>
                     <div>
                         <ChevronLeft />
                     </div>
@@ -83,12 +84,15 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
             <div>
                 <div className="flex gap-2 p-10 py-4">
                     <div className="flex flex-col gap-2 w-[768px]">
-                        <ThreadCard/>
-                        <ThreadCard/>
+                        {
+                            data?.threads.map((thread: TribeThreadInterface, index: number) => (
+                                <ThreadCard tribe_id={data?.tribe?.id} thread={thread}/>
+                            ))
+                        }
                     </div>
                     <TribeDetailsCard toggle={activateCreateThreadModal} tribe={data?.tribe} />
                 </div>
-                <CreateThreadModal toggle={activateCreateThreadModal} isOpen={createThreadModalOpen}/>
+                <CreateThreadModal tribe_id={data?.tribe?.id} toggle={activateCreateThreadModal} isOpen={createThreadModalOpen}/>
                 <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen} />
             </div>
         </div>

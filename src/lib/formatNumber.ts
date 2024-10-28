@@ -1,7 +1,13 @@
 export const formatNumber = (number: number, places: number) => {
-    return parseFloat(String(number)).toFixed(places)
+    if(number) {
+        return parseFloat(String(number)).toFixed(places)
+    }
+    return null
 }
 
 export const formatNumberWithCommas = (number: number) => {
-    return number.toLocaleString('en-US');
+    if(number) {
+        return number.toLocaleString('en-US');
+    }
+    return null
 };

@@ -6,51 +6,77 @@ import ClockIcon from "@/image/icons/clock.svg";
 import LocationIcon from "@/image/icons/location-large.svg";
 import ChevronRight from "@/image/icons/ChevronRight.svg";
 import OrganizerEventCard from "@/components/Events/OrganizerEventCard";
+import Link from "next/link";
+import {EventInterface} from "@/interfaces/EventInterface";
+import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
 
-const Upcoming: React.FC = () => {
+const Upcoming = ({events, loading}: {events: EventInterface[], loading: boolean}) => {
+    console.log({events})
     return (
         <>
-            <div className="flex bg-white p-2 gap-[24px] rounded-[16px] pr-[80px]">
-                <Image src={poster} alt="poster"/>
-                <div className="flex flex-col mt-[24px]">
-                    <p className="font-sans font-semibold text-[24px] leading-[33.6px]">Unlocking business
-                        potentials</p>
-                    <div className="flex items-center gap-2 mt-[16px]">
-                        <CalendarIcon/>
-                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-text-grey">Mon,
-                            23
-                            Mar</p>
-                        <p>-</p>
-                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-text-grey">Mon,
-                            23
-                            Mar</p>
-                    </div>
-                    <div className="flex items-center gap-2 mt-[16px]">
-                        <ClockIcon/>
-                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-text-grey">04:00PM</p>
-                        <p>-</p>
-                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-text-grey">11:00PM</p>
-                    </div>
-                    <div className="flex items-center gap-2 mt-[16px]">
-                        <LocationIcon/>
-                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-text-grey">Lekki
-                            phase 1</p>
-                    </div>
-                    <div className="flex items-center gap-2 mt-[40px]">
-                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-light-green">View
-                            Details</p>
-                        <ChevronRight className="text-light-green"/>
-                    </div>
-                </div>
-            </div>
-            <div className="grid grid-cols-3 mt-[10px] w-[780px] p-[16px] gap-[16px] bg-white rounded-[12px]">
-                <OrganizerEventCard draft={false} />
-                <OrganizerEventCard draft={false} />
-                <OrganizerEventCard draft={false} />
-                <OrganizerEventCard draft={false} />
-                <OrganizerEventCard draft={false} />
-                <OrganizerEventCard draft={false} />
-            </div>
+            {
+                !loading && (
+                    <>
+                        {
+                            events.length > 0 && (
+                                <div className="flex bg-white p-2 gap-[24px] rounded-[16px] pr-[80px] w-[780px]">
+                                    <Image src={events[0]?.event_image} alt="poster" width={320} height={343}/>
+                                    <div className="flex flex-col mt-[24px]">
+                                        <p className="font-sans font-semibold text-[24px] leading-[33.6px]">
+                                            {events[0]?.event_name}
+                                        </p>
+                                        <div className="flex items-center gap-2 mt-[16px]">
+                                            <CalendarIcon/>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-text-grey">
+                                                {formatLongDate(events[0]?.start_date, 'mid')}
+                                            </p>
+                                            <p>-</p>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-text-grey">
+                                                {formatLongDate(events[0]?.end_date, 'mid')}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-[16px]">
+                                            <ClockIcon/>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-text-grey">
+                                                {formatLongTime(events[0]?.start_date)}
+                                            </p>
+                                            <p>-</p>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-text-grey">
+                                                {formatLongTime(events[0]?.end_date)}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-[16px]">
+                                            <LocationIcon/>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-text-grey">
+                                                {events[0]?.location}
+                                            </p>
+                                        </div>
+                                        <Link href={"/event/5/details"} className="w-fit">
+                                            <div className="flex items-center gap-2 mt-[40px] w-fit">
+                                                <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-light-green">View
+                                                    Details</p>
+                                                <ChevronRight className="text-light-green"/>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        <div
+                            className="grid grid-cols-3 mt-[10px] w-[780px] p-[16px] gap-[16px] bg-white rounded-[12px]">
+                            {
+                                events.length > 0 ? (
+                                    events.map((event, index) => (
+                                        <OrganizerEventCard event={event} draft={false}/>
+                                    ))
+                                ) : (
+                                    <p>No events upcoming</p>
+                                )
+                            }
+                        </div>
+                    </>
+                )
+            }
         </>
     );
 }

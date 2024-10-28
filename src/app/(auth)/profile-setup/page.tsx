@@ -17,7 +17,7 @@ import {useCookies} from "react-cookie";
 
 
 
-export default function SignupPage() {
+export default function ProfileStepsPage() {
     const router  = useRouter()
     const [loading, setLoading] = useState(false)
     const [step, setStep] = useState(1);

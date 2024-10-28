@@ -6,11 +6,16 @@ import ListingSection from "@/components/Business/Sections/ListingSection";
 import BusinessSubMenu from "@/components/Business/Menu/BusinessSubMenu";
 import SideMenu from "@/components/Business/SideMenu";
 import ServiceDetailsModal from "@/components/Business/Modals/ServiceDetailsModal";
+import {useSelector} from "react-redux";
+import {useRequest} from "@/hooks/useRequest";
+import {useSearchParams} from "next/navigation";
 
 const BusinessPage = () => {
     const [menuOption, setMenuOption] = useState("business");
-    const [isOpen, setIsOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
     const [isServiceOpen, setItServiceOpen] = useState(false)
+
+    const {job} = useSelector((state: any) => state.business)
 
     const switchOption = (option: string) => {
         setMenuOption(option)
@@ -46,6 +51,8 @@ const BusinessPage = () => {
         }
     }
 
+
+
     return (
         <section className="bg-light_grey pb-10">
             <TopNav/>
@@ -66,7 +73,7 @@ const BusinessPage = () => {
                 {renderSubMenu()}
             </div>
             {renderView()}
-            <ServiceDetailsModal isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu} />
+            <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu} />
         </section>
     );
 }

@@ -3,6 +3,8 @@ import Upcoming from "@/components/Events/views/Organizer/Upcoming";
 import PastEvent from "@/components/Events/views/Organizer/PastEvent";
 import Draft from "@/components/Events/views/Organizer/Draft";
 import PaymentSettingsModal from "@/components/Events/Modals/PaymentSettingsModal";
+import {useSelector} from "react-redux";
+import {useRequest} from "@/hooks/useRequest";
 
 type OrganizerSectionInterface = {
     activatePaymentModal: () => void,
@@ -11,23 +13,35 @@ type OrganizerSectionInterface = {
 
 const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaymentModal, togglePaymentModel}) => {
     const [orOption, setOrOption] = useState("upcoming")
+    const {authToken} = useSelector((state: any) => state.auth)
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const { data, loading } = useRequest(`/events`, "GET", {}, true, getHeader())
 
     const renderView = () => {
         switch (orOption) {
             case "upcoming":
-                return <Upcoming />
+                return <Upcoming events={data?.upcoming} loading={loading} />
             case "past":
-                return <PastEvent />
+                return <PastEvent events={data?.past} loading={loading} />
             case "draft":
-                return <Draft />
+                return <Draft events={data?.drafts} loading={loading} />
             default:
-                return <Upcoming />
+                return <Upcoming events={data?.upcoming} loading={loading} />
         }
     }
 
     const switchOption = (option: string) => {
         setOrOption(option)
     }
+
+    console.log({data})
     return (
         <>
             <div className="bg-white flex justify-between pl-[60px] border-b-[1px] items-center pt-[20px] pb-0">

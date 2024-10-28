@@ -4,6 +4,7 @@ import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {ChevronRight} from "lucide-react";
+import {useRouter} from "next/navigation";
 
 type ReferralHistoryInterface = {
     toggle: () => void,
@@ -11,6 +12,7 @@ type ReferralHistoryInterface = {
 }
 
 const ReferralHistory: React.FC<ReferralHistoryInterface> = ({isOpen, toggle}) => {
+    const router = useRouter()
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
@@ -37,7 +39,7 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({isOpen, toggle}) =
                             <p className="font-normal text-[14px] text-text-grey">Total subscribed referrals</p>
                             <p className="font-semibold text-[18px] tracking-custom">300</p>
                         </div>
-                        <div className="flex p-[12px] px-[16px] gap-[8px] items-center">
+                        <div className="flex p-[12px] px-[16px] gap-[8px] items-center cursor-pointer" onClick={() => router.push("/settings/wallet")}>
                             <p className="font-semi-normal text-[16px] text-light-green">Go to wallet</p>
                             <ChevronRight />
                         </div>

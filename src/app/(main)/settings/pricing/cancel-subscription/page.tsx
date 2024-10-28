@@ -8,7 +8,7 @@ import CancelSection from "@/components/Settings/Sections/CancelSection";
 import ReasonSection from "@/components/Settings/Sections/ReasonSection";
 
 const CancelSubscriptionPage = () => {
-    const [section, setSection] = useState("reason")
+    const [section, setSection] = useState("cancel")
 
     const renderSection  = () => {
         switch (section) {

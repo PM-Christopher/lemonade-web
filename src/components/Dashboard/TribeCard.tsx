@@ -6,14 +6,16 @@ import heart_icon from "@/image/icons/heart.png";
 import chat_icon from "@/image/icons/chat.png";
 import arrow_left from "@/image/icons/arrow-left.png";
 import {TribeInterface} from "@/interfaces/TribeInterface";
+import {useRouter} from "next/navigation";
 
 type TribeIF = {
     tribe: TribeInterface
 }
 
 const TribeCard: React.FC<TribeIF> = ({tribe}) => {
+    const router = useRouter()
     return (
-        <div className="w-full flex flex-col bg-light-yellow p-4 px-4 rounded-2xl shadow-lg">
+        <div className="flex flex-col bg-light-yellow p-[16px] px-[16px] rounded-2xl w-[422px] shadow-none">
             <div>
                 <Image src={forum_icon} alt="forum_icon" width={48}/>
             </div>
@@ -34,7 +36,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                 <div className="flex gap-2">
                     <div className="flex justify-between items-center gap-1">
                         <div>
-                            <Image src={heart_icon} alt="like" width={16}/>
+                            <Image src={heart_icon} alt="like" width={16} height={16} className="w-[16px] h-[16px]" />
                         </div>
                         <div>
                             <p className="font-sans text-[14px] font-semi-normal text-light-black">120</p>
@@ -49,7 +51,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between items-center gap-1">
+                <div className="flex justify-between items-center gap-1 cursor-pointer" onClick={() => router.push(`tribe/${tribe?.id}`)}>
                     <div>
                         <p className="font-sans text-[14px] font-semi-normal text-light-green">View</p>
                     </div>

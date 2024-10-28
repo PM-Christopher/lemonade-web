@@ -72,7 +72,7 @@ const AgentDetailsPage = () => {
                             <div className="mt-[40px]">
                                 <Button
                                     className={"bg-gradient-green w-[231px] h-[56px] py-3.5 px-6 gap-2 rounded-[12px] border-b-2 border-transparent shadow-custom-top shadow-custom-bottom"}>
-                                    <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">
+                                    <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]" onClick={toggleModal}>
                                         Generate affiliate link
                                     </p>
                                 </Button>

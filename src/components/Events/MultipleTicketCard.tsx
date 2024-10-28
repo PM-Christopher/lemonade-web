@@ -1,8 +1,14 @@
+"use client"
 import React from 'react';
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
+import { TicketDetails } from "@/interfaces/EventInterface";
 
-const MultipleTicketCard: React.FC = () => {
+interface MultipleTicketProps {
+    ticket: TicketDetails
+}
+
+const MultipleTicketCard: React.FC<MultipleTicketProps> = ({ticket}) => {
     return (
         <div className="mt-[24px] bg-grey-20 p-[16px] rounded-[12px] gap-[16px]">
             <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-black-light">Ticket

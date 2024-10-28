@@ -1,22 +1,45 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
 import RequestIcon from "@/image/icons/RequestIcon.svg";
 import SettingsIcon from "@/image/icons/gear.svg"
 import SearchIcon from "@/image/icons/search.svg";
-import ImageIcon from "@/image/icons/ImageIcon.svg"
 import ChatListCard from "@/components/Jobs/ChatListCard";
-import {Input} from "@/components/ui/input";
-import avatar from "@/image/avatar_3.png";
-import Image from "next/image";
-import DotIcon from "@/image/icons/Dot.svg";
-import MoreIcon from "@/image/icons/MoreIcon.svg"
 import UserInfoModal from "@/components/Connect/Modal/UserInfoModal";
 import SettingsModal from "@/components/Connect/Modal/SettingsModal";
+import Link from "next/link";
+import {useRequest} from "@/hooks/useRequest";
+import {useSelector} from "react-redux";
+import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
+import {getChat} from "@/features/connect/connect.slice";
+import OpenedChat from "@/components/Connect/OpenedChat";
+import EmptyChat from "@/components/Connect/EmptyChat";
+import Pusher from "pusher-js";
+import {usePusher} from "@/hooks/usePusher";
+import {useAppDispatch} from "@/redux/hook";
 
 const ConnectPage = () => {
+    const dispatch = useAppDispatch()
     const [isOpen,setIsOpen] = useState(false)
     const [isSettingsOpen,setIsSettingsOpen] = useState(false)
+    const [selectedChatId, setSelectedChatId] = useState(0)
+    const [messages, setMessages] = useState<MessageInterface[]>([])
+
+    const {authToken, user} = useSelector((state: any) => state.auth)
+
+    const {messages: messagesData, chat: chatData, loading} = useSelector((state: any) => state.chat)
+
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const { data } = useRequest("/messages", "GET", {}, true, getHeader())
+
+    const { data: connection_info, loading: connect_loading } = useRequest("/connect", "GET", {}, true, getHeader())
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
@@ -26,6 +49,12 @@ const ConnectPage = () => {
         setIsSettingsOpen(!isSettingsOpen)
     }
 
+    const toggleSelectedChat: (receiver_id: number, chat_id: number) => void = (receiver_id: number, chat_id: number) => {
+        setSelectedChatId(chat_id);
+        dispatch(getChat({receiver_id, token: authToken}))
+    };
+
+    usePusher("chat-channel", "message-sent");
     return (
         <section className="bg-light_grey pb-10">
             <TopNav/>
@@ -34,12 +63,14 @@ const ConnectPage = () => {
                     <p className="font-semibold text-[14px]">Connect</p>
                 </div>
                 <div className="flex gap-2 items-center">
-                    <div
-                        className="border-[1px] p-[8px] px-[14px] gap-2 flex items-center border-light-grey-50 rounded-[12px] cursor-pointer"
-                    >
-                        <RequestIcon/>
-                        <p className="font-sans font-semi-normal text-[16px] text-black-light">Requests</p>
-                    </div>
+                    <Link href={"/connect/requests"}>
+                        <div
+                            className="border-[1px] p-[8px] px-[14px] gap-2 flex items-center border-light-grey-50 rounded-[12px] cursor-pointer"
+                        >
+                            <RequestIcon/>
+                            <p className="font-sans font-semi-normal text-[16px] text-black-light">Requests</p>
+                        </div>
+                    </Link>
                     <div
                         className="border-[1px] p-[8px] px-[14px] gap-2 flex items-center border-light-grey-50 rounded-[12px] cursor-pointer"
                         onClick={toggleSettingsModal}
@@ -73,53 +104,26 @@ const ConnectPage = () => {
                             </div>
                         </div>
                         <div className="overflow-y-auto max-h-screen hide-scrollbar">
-                            <ChatListCard active={true}/>
-                            <ChatListCard active={false}/>
-                            <ChatListCard active={false}/>
-                            <ChatListCard active={false}/>
+                            {
+                                data?.chats?.map((chat: ChatInterface, index: number) => (
+                                    <ChatListCard user_id={user?.id} chat={chat} active={true} toggleChat={toggleSelectedChat} key={index}/>
+                                ))
+                            }
                         </div>
                     </div>
-                    <div
-                        className="w-[560px] h-[648px] border-t-[1px] border-b-[1px] border-r-[1px] bg-white flex flex-col rounded-tr-[16px] rounded-br-[16px] relative">
-
-                        <div
-                            className="absolute top-0 left-0 w-full bg-grey-20 text-white p-[8px] rounded-tr-[16px]">
-                            <div className="px-[16px] flex justify-between items-center">
-                                <div className="flex gap-2 items-center">
-                                    <Image src={avatar} alt="avatar" width={24}/>
-                                    <p className="font-semibold text-[14px] text-black-light">Dan-maxy</p>
-                                    <DotIcon className="w-[4px]"/>
-                                    <p className="text-text-grey text-[14px] font-semibold">L1</p>
-                                </div>
-                                <MoreIcon className="cursor-pointer" onClick={toggleModal} />
-                            </div>
-                        </div>
-
-                        <div
-                            className="flex-grow flex flex-col-reverse overflow-y-auto justify-start items-center bg-white rounded-tr-[16px] rounded-br-[16px] p-[16px] mb-16">
-                            <div
-                                className="flex flex-col w-full gap-[12px] overflow-y-auto max-h-screen hide-scrollbar"> {/* Set a max height for scrolling */}
-                                <div className="bg-light-green-10 text-right p-[8px] max-w-[303px] ml-auto rounded-[12px]">
-                                    <p className="font-normal text-[14px]">This is my message for the day</p>
-                                    <p className="text-[12px] text-right text-text-grey">1m ago</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            className="absolute bottom-0 left-0 w-full bg-light_grey text-white p-[16px] px-[13px] rounded-br-[16px]">
-                            <div className="flex gap-[8px] items-center">
-                                <Input
-                                    className="w-full rounded-full border-[1px] border-grey-80 shadow-none h-[40px] focus:outline-none focus:ring-0"
-                                    placeholder="Reply..."/>
-                                <ImageIcon className="w-[19.5px] cursor-pointer"/>
-                            </div>
-                        </div>
-                    </div>
+                    {
+                        messagesData.length > 0 ? (
+                            selectedChatId === chatData.id && (
+                                <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal} chat={chatData} />
+                            )
+                        ) : (
+                            <EmptyChat />
+                        )
+                    }
                 </div>
             </section>
-            <UserInfoModal toggle={toggleModal} isOpen={isOpen} />
-            <SettingsModal toggle={toggleSettingsModal} isOpen={isSettingsOpen} />
+            <UserInfoModal userInfo={chatData} toggle={toggleModal} isOpen={isOpen} />
+            <SettingsModal user_connect={connection_info} toggle={toggleSettingsModal} isOpen={isSettingsOpen} />
         </section>
     );
 }

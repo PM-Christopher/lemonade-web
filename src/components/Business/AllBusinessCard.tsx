@@ -1,9 +1,17 @@
+"use client"
 import React from 'react';
 import business_logo from "@/image/business_images/business_logo_1.png";
 import Image from "next/image";
 import medal from "@/image/icons/medal.png";
+import {BusinessInterface} from "@/interfaces/BusinessInterface";
+import {formatCountry} from "@/lib/formatCountry";
+import {formatNumberWithCommas} from "@/lib/formatNumber";
 
-const AllBusinessCard = ({}) => {
+type BusinessCardIF  = {
+    business: BusinessInterface
+}
+
+const AllBusinessCard: React.FC<BusinessCardIF> = ({business}) => {
     return (
         <div className="border-[2px] border-mid-grey rounded-[12px] shadow-lg">
             <div className="flex flex-col">
@@ -20,13 +28,15 @@ const AllBusinessCard = ({}) => {
                                 <Image src={medal} alt="medal" width={16}/>
                             </div>
                             <div>
-                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">4.5</p>
+                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">
+                                    {business.rating}
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div className="flex flex-col mt-[8px]">
-                        <p className="font-semi-normal text-[14px]">Product designer</p>
-                        <p className="font-normal text-[12px] text-text-grey">Lagos, NG</p>
+                        <p className="font-semi-normal text-[14px]">{business.name}</p>
+                        <p className="font-normal text-[12px] text-text-grey">{business.city}, {formatCountry(business.country)}</p>
                     </div>
                 </div>
                 <div className="bg-mid-grey p-[12px] px-[16px] rounded-bl-[12px] rounded-br-[12px]">
@@ -34,13 +44,27 @@ const AllBusinessCard = ({}) => {
                         <div className="flex justify-between mt-[8px] items-center">
                             <div className="flex gap-2">
                                 <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
-                                    <p className="font-semi-normal text-[14px] text-text-grey">UI designs</p>
+                                    <p className="font-semi-normal text-[14px] text-text-grey">
+                                        {business.services[0]}
+                                    </p>
                                 </div>
-                                <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
-                                    <p className="font-semi-normal text-[14px] text-text-grey">+3</p>
-                                </div>
+                                {
+                                    business.services.length > 1 && (
+                                        <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
+                                            <p className="font-semi-normal text-[14px] text-text-grey">
+                                                +{business.services.length}
+                                            </p>
+                                        </div>
+                                    )
+                                }
                             </div>
-                            <p className="font-semibold text-[14px]">N2,000/hr</p>
+                            {
+                                business.service_rate ? (
+                                    <p className="font-semibold text-[14px]">N {formatNumberWithCommas(business.service_rate)}/hr</p>
+                                ) : (
+                                    <></>
+                                )
+                            }
                         </div>
                     </div>
                 </div>

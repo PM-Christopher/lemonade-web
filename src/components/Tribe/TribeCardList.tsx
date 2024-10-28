@@ -26,18 +26,22 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-1 border-2 px-[16px] p-[4px] rounded-[12px]">
-                    <div>
-                        <p className="font-sans font-semi-normal text-[14px] text-light-green">Join</p>
-                    </div>
-                    {
-                        tribe.monetized === 1 && (
+                {
+                    !tribe.has_joined && (
+                        <div className="flex items-center gap-1 border-2 px-[16px] p-[4px] rounded-[12px]">
                             <div>
-                                <MoneyIcon/>
+                                <p className="font-sans font-semi-normal text-[14px] text-light-green">Join</p>
                             </div>
-                        )
-                    }
-                </div>
+                            {
+                                tribe.monetized === 1 && (
+                                    <div>
+                                        <MoneyIcon/>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    )
+                }
             </div>
             <div className="flex justify-between p-4 bg-mid-grey rounded-b-[16px] py-6">
                 <div>
@@ -47,7 +51,7 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
                 </div>
                 <div>
                     <p className="font-sans font-semi-normal text-[12px] leading-[14.4px] text-black-light">
-                        {tribe.members} Members</p>
+                    {tribe.members} Members</p>
                 </div>
                 <div>
                     <p className="font-sans font-semi-normal text-[12px] leading-[14.4px] text-black-light">

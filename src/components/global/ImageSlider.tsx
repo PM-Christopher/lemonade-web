@@ -3,14 +3,16 @@ import Image, {StaticImageData} from "next/image";
 import {CalendarIcon} from "lucide-react";
 import Calendar from "@/image/icons/calendar_icon.png"
 import DotIcon from "@/image/icons/Dot.svg"
+import {EventInterface} from "@/interfaces/EventInterface";
+import {formatDate, formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
 
 interface ImageSlider {
-    images: StaticImageData[],
     showArrows: boolean,
-    showDots: boolean
+    showDots: boolean,
+    events: EventInterface[]
 }
 
-const Carousel: React.FC<ImageSlider> = ({images, showArrows = false, showDots = true}: ImageSlider) => {
+const Carousel: React.FC<ImageSlider> = ({showArrows = false, showDots = true, events}: ImageSlider) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Auto-slide functionality
@@ -24,12 +26,12 @@ const Carousel: React.FC<ImageSlider> = ({images, showArrows = false, showDots =
 
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
+        const newIndex = isFirstSlide ? events.length - 1 : currentIndex - 1;
         setCurrentIndex(newIndex);
     };
 
     const nextSlide = () => {
-        const isLastSlide = currentIndex === images.length - 1;
+        const isLastSlide = currentIndex === events.length - 1;
         const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
@@ -38,10 +40,9 @@ const Carousel: React.FC<ImageSlider> = ({images, showArrows = false, showDots =
         setCurrentIndex(slideIndex);
     };
 
-
     return (
         <div className="relative w-full h-[488px] overflow-hidden rounded-[12px] shadow-lg">
-            {images.map((image, index) => (
+            {events?.map((image, index) => (
                 <div
                     key={index}
                     className={`inset-0 w-full transition-opacity duration-1000 ease-in-out ${
@@ -52,7 +53,7 @@ const Carousel: React.FC<ImageSlider> = ({images, showArrows = false, showDots =
                 >
                     <Image
                         key={index}
-                        src={image}
+                        src={image?.event_image}
                         alt={`Slide ${index}`}
                         fill={true}
                     />
@@ -105,13 +106,18 @@ const Carousel: React.FC<ImageSlider> = ({images, showArrows = false, showDots =
                         <div
                             className="flex justify-between items-center">
                             <div className="flex flex-col">
-                                <p className="text-white font-semibold font-sans text-[32px] leading-[44.8px]">Halloween
-                                    party</p>
+                                <p className="text-white font-semibold font-sans text-[32px] leading-[44.8px]">
+                                    {events[currentIndex]?.event_name}
+                                </p>
                                 <div className="flex gap-2 items-center">
                                     <CalendarIcon className="text-white w-[14px]" />
-                                    <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">Mon, 23 Mar</p>
-                                    <DotIcon className=""/>
-                                    <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">4PM - 5PM</p>
+                                    <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">
+                                        {formatLongDate(events[currentIndex]?.start_date, "mid")}
+                                    </p>
+                                    <DotIcon className="w-[4px] h-[4px]"/>
+                                    <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">
+                                        {formatTime(events[currentIndex]?.start_date)} - {formatTime(events[currentIndex]?.end_date)}
+                                    </p>
                                 </div>
                             </div>
                             <div>
@@ -122,7 +128,7 @@ const Carousel: React.FC<ImageSlider> = ({images, showArrows = false, showDots =
                             </div>
                         </div>
                         <div className="flex justify-center mt-2">
-                            {images.map((_, index) => (
+                            {events?.map((_, index) => (
                                 <div
                                     key={index}
                                     onClick={() => goToSlide(index)}

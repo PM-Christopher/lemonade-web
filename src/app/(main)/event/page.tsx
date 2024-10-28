@@ -13,6 +13,7 @@ const EventPage: React.FC = () => {
     const [menuOption, setMenuOption] = useState("events");
     const [togglePaymentModel, setTogglePaymentModel] = useState(false)
 
+
     const activatePaymentModal = () => {
         setTogglePaymentModel(!togglePaymentModel)
     }

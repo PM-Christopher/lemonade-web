@@ -22,11 +22,15 @@ export const useRequest = (
             let response;
             if (method === "GET") {
                 response = await axiosInstance(url, header);
-                if (response.data.status) {
-                    setData(response.data.data);
-                } else {
-                    console.log(data, "error else hook");
-                }
+                    if(url === "/get-all-banks"){
+                        if (response.status) {
+                            setData(response.data.banks)
+                        }
+                    } else {
+                        if (response.data.status) {
+                            setData(response.data.data);
+                        }
+                    }
             }
         } catch (err: any) {
             setError(true);

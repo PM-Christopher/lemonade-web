@@ -123,4 +123,14 @@
     -ms-overflow-style: none;  /* Hide scrollbar for Internet Explorer and Edge */
     scrollbar-width: none;      /* Hide scrollbar for Firefox */
   }
+
+  /* Add this to your global CSS file or a specific CSS module */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }

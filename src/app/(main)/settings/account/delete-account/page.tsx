@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
 import ChevronLeft from "@/image/icons/chevron-left.svg";
@@ -8,13 +9,15 @@ import BankIcon from "@/image/icons/BankIcon.svg"
 import SuppprtIcon from "@/image/icons/SupportIcon.svg";
 import ChevronRight from "@/image/icons/ChevronRight.svg";
 import {Button} from "@/components/ui/button";
+import {useRouter} from "next/navigation";
 
 const DeleteAccountPage = () => {
+    const router = useRouter()
     return (
         <section className="bg-light_grey pb-10">
             <TopNav/>
             <div className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
-                <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
+                <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer" onClick={() => router.back()}>
                     <ChevronLeft/>
                     <p className="font-sans font-semibold text-[16px] tracking-custom">Delete account</p>
                 </div>
@@ -59,7 +62,7 @@ const DeleteAccountPage = () => {
                         <ChevronRight/>
                     </div>
                     <div className="flex justify-between gap-[16px] mt-[24px]">
-                        <Button className="bg-red-1 h-[48px] shadow-none border-[1px] border-red-2 rounded-[12px] w-full">
+                        <Button className="bg-red-1 h-[48px] shadow-none border-[1px] border-red-2 rounded-[12px] w-full" onClick={() => router.push("/settings/account/confirm-delete")}>
                             <p className="font-semi-normal text-[16px]">Delete account</p>
                         </Button>
                         <Button className="bg-transparent shadow-none h-[48px] border-none w-full">

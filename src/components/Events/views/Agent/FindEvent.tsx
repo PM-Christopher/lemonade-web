@@ -4,6 +4,7 @@ import AgentImage from "@/image/event_images/agent_image.png"
 import Image from "next/image";
 import TicketIcon from "@/image/icons/TicketGreyIcon.svg"
 import AgentEventCard from "@/components/Events/AgentEventCard";
+import Link from "next/link";
 
 function FindEventSubMenu({}) {
     return (
@@ -22,7 +23,9 @@ function FindEventSubMenu({}) {
                 </div>
             </div>
             <div className="grid grid-cols-3 mt-[24px]">
-                <AgentEventCard />
+                <Link href={"/event/5/agent-details"}>
+                    <AgentEventCard />
+                </Link>
                 <AgentEventCard />
                 <AgentEventCard />
                 <AgentEventCard />

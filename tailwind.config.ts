@@ -136,6 +136,9 @@ const config: Config = {
 			  "red-3": "#FFEBEB",
 			  "light-green-60": "#EBF5EF",
 			  "light-green-70": "#009D44",
+			  "purple-1": "#F9F5FF",
+			  "blue-accent-1": "#5D00D4",
+			  "red-accent-1": "#FFEBEB"
 
 		  },
 		  height: {

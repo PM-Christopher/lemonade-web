@@ -13,8 +13,6 @@ import {formatName} from "@/lib/helper";
 const TopNav = () => {
     const {user} = useSelector((state: any) => state.auth)
 
-    console.log({user})
-
     return (
         <nav className="flex flex-wrap items-center justify-between p-2 px-10 bg-white">
             <div>
@@ -23,7 +21,7 @@ const TopNav = () => {
             <div className="flex justify-center items-center gap-8">
                 {
                     navLinks.map((link, idx) => (
-                        <Link href={link.path}>
+                        <Link href={link.path} key={idx}>
                             <div className={`flex flex-col gap-2 items-center ${activeLink(link.path, true) ? "bg-light-green-10 p-[8px] rounded-[8px] text-light-green" : "text-text-grey"}  `}>
                                 <Image src={link.icon} alt="home" width={12.8}/>
                                 <p className={`text-[12px] leading-[14.4px] ${activeLink(link.path, true) ? "font-semibold" : "font-normal"}`}>{link.name}</p>
@@ -38,11 +36,13 @@ const TopNav = () => {
                 </div>
                 <div>
                     <p className="font-sans text-[18px] leading-[27px] font-normal">
-                        Hello, <span className="font-semibold">{formatName(user?.fullname)[0]}</span>
+                        Hello, <span className="font-semibold">{user?.fullname ? formatName(user.fullname)?.[0] : ''}</span>
                     </p>
                 </div>
                 <div>
-                    <Image src={user?.profile_image} alt="avatar 2" width={40} height={40} className="rounded-full border-[2px] border-[#3B4152] w-[40px] h-[40px]" />
+                    <Link href={"/settings"}>
+                        <Image src={user?.profile_image} alt="avatar 2" width={40} height={40} className="rounded-full border-[2px] border-[#3B4152] w-[40px] h-[40px]" />
+                    </Link>
                 </div>
             </div>
         </nav>

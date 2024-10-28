@@ -1,77 +1,180 @@
-import React from 'react';
+"use client"
+import React, {useState} from 'react';
 import CloseIcon from "@/image/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
+import {formatStringUCFirst} from "@/lib/helper";
+import * as yup from "yup";
+import {useFormik} from "formik";
+import CalendarIcon from "@/image/icons/calendar.svg";
+import {FormikButton} from "@/components/global/FormikButton";
+import {useAppDispatch} from "@/redux/hook";
+import {requestService} from "@/features/business/business.slice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type RequestServiceInterface = {
     isOpen: boolean,
-    toggleMenu: () => void
+    toggleMenu: () => void,
+    services: [],
+    id: number,
+    token: string
 }
 
-const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleMenu}) => {
+type FormValues = {
+    services: string[],
+    amount: number,
+    additional_information: string,
+}
+
+const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleMenu, services, id, token}) => {
+    const dispatch = useAppDispatch()
+
+    const handleServicesClick = (item: string) => {
+        const currentServices = formik?.values?.services;
+        if (Array.isArray(currentServices)) {
+            const updatedServices = currentServices.includes(item)
+                ? currentServices.filter((i) => i !== item)
+                : [...currentServices, item];
+
+            formik.setFieldValue('services', updatedServices);
+        } else {
+            console.error('services is not an array:', currentServices);
+        }
+    };
+
+    const requestServiceSchema = yup.object({
+        services: yup
+            .array()
+            .of(yup.string()) // Ensure it's an array of strings
+            .min(1, "At least one service is required") // Add min length validation to prevent empty arrays
+            .required("Services are required"), // Required field
+        amount: yup
+            .number()
+            .min(1)
+            .required("Amount is required"),
+        additional_information: yup
+            .string()
+            .nullable()
+    });
+
+    const formik = useFormik<FormValues>({
+        initialValues: {
+            services: [],
+            amount: 0,
+            additional_information: ""
+        },
+        validationSchema: requestServiceSchema,
+        onSubmit: async (values) => {
+            dispatch(requestService({token, id, data: values})).then((res) => {
+                if (res.payload.status) {
+                    toggleMenu()
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Quote sent",
+                            type: "success",
+                        })
+                    );
+                } else {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Something went wrong",
+                            type: "error",
+                        })
+                    );
+                }
+            })
+        },
+    })
+
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <div className="cursor-pointer" onClick={toggleMenu}>
-                            <CloseIcon/>
+            <form onSubmit={formik.handleSubmit}>
+                <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            <div className="cursor-pointer" onClick={toggleMenu}>
+                                <CloseIcon/>
+                            </div>
+                            <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Request a
+                                service</p>
                         </div>
-                        <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Request a service</p>
+                        <div>
+                            {/*<Button*/}
+                            {/*    className="">*/}
+                            {/*    <p className="font-sans font-semi-normal text-[12px]">Send quote</p>*/}
+                            {/*</Button>*/}
+                            <FormikButton title="Send quote" error={formik.isValid} loading={formik.isSubmitting} />
+                        </div>
                     </div>
-                    <div>
-                        <Button
-                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom">
-                            <p className="font-sans font-semi-normal text-[12px]">Send quote</p>
-                        </Button>
-                    </div>
-                </div>
-                <div className="mt-10">
-                    <div className="grid gap-2 mt-[24px]">
-                        <Label htmlFor="fullname"
-                               className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">I want to
-                            book you for</Label>
-                        <Input
-                            id="fullname"
-                            type="text"
-                            placeholder=""
-                            className="h-12 rounded-xl bg-light_grey form-font border-0"
-                        />
-                    </div>
-                    <div className="grid gap-2 mt-[24px]">
-                        <Label htmlFor="fullname"
-                               className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Required services</Label>
-                        <div className="mt-2">
-                            <div className="flex gap-2">
-                                <div className="rounded-[12px] p-[12px] px-[16px] bg-light_grey">
-                                    <p className="font-normal text-[14px] text-text-grey">UI designs</p>
+                    <div className="mt-10">
+                        <div className="grid gap-2 mt-[24px]">
+                            <Label htmlFor="amount"
+                                   className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">I want
+                                to
+                                book you for</Label>
+                            <div
+                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full h-[48px]">
+                                <div>
+                                    <p className="font-semi-normal text-[14px]">₦</p>
                                 </div>
-                                <div className="rounded-[12px] p-[12px] px-[16px] bg-light_grey">
-                                    <p className="font-normal text-[14px] text-text-grey">Mock up designs</p>
-                                </div>
-                                <div className="rounded-[12px] p-[12px] px-[16px] bg-light_grey">
-                                    <p className="font-normal text-[14px] text-text-grey">Graphic design</p>
+                                <div className="w-full">
+                                    <input
+                                        id="amount"
+                                        type="number"
+                                        className="text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                        value={formik.values.amount}
+                                        onChange={(e) => {
+                                            formik.setFieldValue("amount", e.target.value)
+                                        }}
+                                        min={1}
+                                    />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="grid gap-2 mt-[24px]">
-                        <div className="flex justify-between">
+                        <div className="grid gap-2 mt-[24px]">
                             <Label htmlFor="fullname"
-                                   className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Additional information</Label>
-                            <p className="font-normal text-[12px] text-text-grey">200 characters</p>
+                                   className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Required
+                                services</Label>
+                            <div className="mt-2">
+                                <div className="flex gap-2">
+                                    {
+                                        services?.map((service, index) => (
+                                            <div className={`rounded-[12px] p-[12px] px-[16px] cursor-pointer ${
+                                                Array.isArray(formik.values.services) && formik.values.services.includes(service) ? 'bg-gradient-green-2 shadow-event-custom' : 'bg-light_grey'
+                                            }`} key={index} onClick={() => handleServicesClick(service)}>
+                                                <p className="font-normal text-[14px] text-text-grey">
+                                                    {formatStringUCFirst(service)}
+                                                </p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <textarea
-                            id="fullname"
-                            placeholder=""
-                            className="h-[128px] p-3 rounded-xl bg-light_grey font-normal text-[14px] border-0 resize-none"
-                            readOnly={true}
-                        />
+                        <div className="grid gap-2 mt-[24px]">
+                            <div className="flex justify-between">
+                                <Label htmlFor="additional-information"
+                                       className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Additional
+                                    information</Label>
+                                <p className="font-normal text-[12px] text-text-grey">200 characters</p>
+                            </div>
+                            <textarea
+                                id="additional-information"
+                                placeholder=""
+                                className="h-[128px] rounded-xl bg-light_grey font-normal text-[14px] border-0 resize-none p-4"
+                                readOnly={false}
+                                value={formik.values.additional_information}
+                                onChange={formik.handleChange}
+                                name="additional_information"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }

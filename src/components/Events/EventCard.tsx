@@ -4,24 +4,35 @@ import event_1 from "@/image/event_images/event_image_lg.png";
 import CalendarIcon from "@/image/icons/calendar.svg";
 import DotIcon from "@/image/icons/Dot.svg";
 import LocationIcon from "@/image/icons/Location.svg";
+import {EventInterface} from "@/interfaces/EventInterface";
+import {formatDate, formatLongTime} from "@/lib/dateTimeFormatter";
 
-const EventCard: React.FC = () => {
+type EventCardIF = {
+    event: EventInterface
+}
+const EventCard: React.FC<EventCardIF> = ({event}) => {
     return (
         <div className="bg-white flex flex-col w-[316px] rounded-[12px] mb-[16px]">
-            <Image src={event_1} alt="event_1" width={316}/>
+            <Image src={event?.event_image} alt="event_1" width={316} height={316}/>
             <div className="p-2">
-                <p className="my-2 font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Halloween
-                    party</p>
+                <p className="my-2 font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
+                    {event.event_name}
+                </p>
                 <div className="flex items-center gap-1 my-2">
                     <CalendarIcon/>
-                    <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">23
-                        Mar</p>
-                    <DotIcon/>
-                    <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">4:30PM</p>
+                    <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                        {formatDate(event?.start_date)}
+                    </p>
+                    <DotIcon className="w-[3px] h-[3px]"/>
+                    <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                        {formatLongTime(event?.start_date)}
+                    </p>
                 </div>
                 <div className="flex items-center gap-1 my-2">
                     <LocationIcon/>
-                    <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Lekki phase 1</p>
+                    <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                        {event?.location}
+                    </p>
                 </div>
             </div>
         </div>

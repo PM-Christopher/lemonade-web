@@ -4,19 +4,29 @@ import storage from "redux-persist/lib/storage";
 
 // reducers
 import authReducer from "@/features/authentication/authSlice";
+import chatReducer from "@/features/connect/connect.slice"
+import tribeReducer from "@/features/tribes/tribe.slice"
+import eventReducer from "@/features/events/event.slice"
 import tempReducer from "./tempSlice";
 import toastifyReducer from "./toastifySlice"
+import generalReducer from "./general.slice"
+import businessReducer from "@/features/business/business.slice"
 
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["auth"], // Only persist the 'auth' slice
+    whitelist: ["auth", "event"], // Only persist the 'auth' slice
 };
 
 const reducers = combineReducers({
     auth: authReducer,
     temp: tempReducer,
     toast: toastifyReducer,
+    chat: chatReducer,
+    tribe: tribeReducer,
+    event: eventReducer,
+    general: generalReducer,
+    business: businessReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

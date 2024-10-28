@@ -1,14 +1,29 @@
+"use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
 import ChevronLeft from "@/image/icons/chevron-left.svg";
 import MasterCardIcon from "@/image/icons/MasterCardIcon.svg"
+import {useRequest} from "@/hooks/useRequest";
+import {useSelector} from "react-redux";
+import {useRouter} from "next/navigation";
 
 const BillingHistoryPage = () => {
+    const router = useRouter()
+    const { authToken } = useSelector((state: any) => state.auth)
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const { data, loading } = useRequest(`profile/subscription/billing-history`, "GET", {}, true, getHeader())
     return (
         <section className="bg-light_grey pb-10">
             <TopNav/>
             <div className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
-                <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
+                <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer" onClick={() => router.push("/settings")}>
                     <ChevronLeft/>
                     <p className="font-sans font-semibold text-[16px] tracking-custom">Account settings</p>
                 </div>
@@ -18,10 +33,10 @@ const BillingHistoryPage = () => {
                     <div
                         className="w-[640px] rounded-[12px] p-[32px] px-[24px] flex justify-between gap-4 bg-green-tint border-b-[5px] border-b-step-color">
                         <div className="flex flex-col gap-[9px]">
-                            <p className="text-mid-green font-semibold text-[16px]">PREMIUM</p>
-                            <p className="font-bold text-[24px] text-black-light">N23,000/Yr</p>
+                            <p className="text-mid-green font-semibold text-[16px]">{data?.plan.title}</p>
+                            <p className="font-bold text-[24px] text-black-light">N{data?.plan.plan_price}</p>
                             <div className="p-[8px] rounded-[8px] bg-light-green-50">
-                                <p className="font-semi-normal text-[14px] ">Renews May 05, 2025</p>
+                                <p className="font-semi-normal text-[14px] ">Renews {data?.plan?.next_billing_date}</p>
                             </div>
                         </div>
                         <p className="font-semi-normal text-[16px] text-red-1">Cancel renewal</p>
@@ -41,24 +56,16 @@ const BillingHistoryPage = () => {
 
                     <div className="w-[640px] mt-[40px]">
                         <p className="text-[14px] font-semibold text-black-light">Payment history</p>
-                        <div
-                            className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px] mt-[16px]">
-                            <p className="font-semibold text-[16px]">Lemonade-Premium</p>
-                            <p className="font-normal text-[16px] text-center text-light-black">04 Apr, 2024</p>
-                            <p className="font-normal text-[16px] text-light-black text-right">N23,000</p>
-                        </div>
-                        <div
-                            className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px]">
-                            <p className="font-semibold text-[16px]">Lemonade-Premium</p>
-                            <p className="font-normal text-[16px] text-center text-light-black">04 Apr, 2024</p>
-                            <p className="font-normal text-[16px] text-light-black text-right">N23,000</p>
-                        </div>
-                        <div
-                            className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px]">
-                            <p className="font-semibold text-[16px]">Lemonade-Premium</p>
-                            <p className="font-normal text-[16px] text-center text-light-black">04 Apr, 2024</p>
-                            <p className="font-normal text-[16px] text-light-black text-right">N23,000</p>
-                        </div>
+                        {
+                            data?.histories?.map((history: any, index: number) => (
+                                <div
+                                    className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px] mt-[16px]">
+                                    <p className="font-semibold text-[16px]">Lemonade-{history.title}</p>
+                                    <p className="font-normal text-[16px] text-center text-light-black">{history?.created_at}</p>
+                                    <p className="font-normal text-[16px] text-light-black text-right">N{history?.amount}</p>
+                                </div>
+                            ))
+                        }
                     </div>
                 </div>
             </section>

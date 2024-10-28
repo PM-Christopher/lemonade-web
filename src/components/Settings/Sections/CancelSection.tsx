@@ -1,8 +1,12 @@
 import React from 'react';
 import CheckedIcon from "@/image/icons/CheckedFilledIcon.svg";
 import {Button} from "@/components/ui/button";
+import {useSelector} from "react-redux";
+import CheckIcon from "@/image/icons/CheckGreenIcon.svg";
+import PadlockIcon from "@/image/icons/PadlockFilledIcon.svg";
 
 const CancelSection = ({}) => {
+    const { plan } = useSelector((state: any) => state.auth)
     return (
         <div className="w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
             <div>
@@ -13,35 +17,77 @@ const CancelSection = ({}) => {
             <div className="bg-mid-grey p-[24px] rounded-[12px] flex flex-col gap-[16px]">
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Verification badge</p>
-                    <CheckedIcon/>
+                    {
+                        plan?.ver_badge ? (
+                            <CheckIcon />
+                        ) : (
+                            <PadlockIcon/>
+                        )
+                    }
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Tribe creation</p>
-                    <CheckedIcon/>
+                    {
+                        plan?.forum_creation ? (
+                            <CheckIcon />
+                        ) : (
+                            <PadlockIcon/>
+                        )
+                    }
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Lemon ID</p>
-                    <CheckedIcon/>
+                    {
+                        plan?.lemon_id ? (
+                            <CheckIcon />
+                        ) : (
+                            <PadlockIcon/>
+                        )
+                    }
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Event creation</p>
-                    <p className="font-semi-normal text-[14px] text-text-grey">Unlimited</p>
+                    {
+                        plan?.event_creation === 0 ? (
+                            <p className="font-semi-normal text-[14px] text-text-grey">Unlimited</p>
+                        ) : (
+                            <p className="font-semi-normal text-[14px] text-text-grey">{plan?.event_creation} monthly</p>
+                        )
+                    }
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Ticket sales commission</p>
-                    <p className="font-semi-normal text-[14px] text-text-grey">None</p>
+                    {
+                        plan?.sales_commission === 0 ? (
+                            <p className="font-semi-normal text-[14px] text-text-grey">None</p>
+                        ) : (
+                            <p className="font-semi-normal text-[14px] text-text-grey">{plan?.sales_commission}%</p>
+                        )
+                    }
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Service commission</p>
-                    <p className="font-semi-normal text-[14px] text-text-grey">None</p>
+                    {
+                        plan?.service_commission === 0 ? (
+                            <p className="font-semi-normal text-[14px] text-text-grey">None</p>
+                        ) : (
+                            <p className="font-semi-normal text-[14px] text-text-grey">{plan?.service_commission}%</p>
+                        )
+                    }
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Connection range</p>
-                    <p className="font-semi-normal text-[14px] text-text-grey">Unlimited</p>
+                    <p className="font-semi-normal text-[14px] text-text-grey">{plan.connection_range}</p>
                 </div>
                 <div className="flex justify-between items-center">
                     <p className="font-semi-normal text-[14px] text-black-light">Offline benefits</p>
-                    <CheckedIcon/>
+                    {
+                        plan?.offline_benefits ? (
+                            <CheckIcon />
+                        ) : (
+                            <PadlockIcon/>
+                        )
+                    }
                 </div>
             </div>
             <div className="flex justify-between gap-[16px] mt-[24px]">

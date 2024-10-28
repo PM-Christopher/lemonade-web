@@ -5,29 +5,39 @@ import CalendarIcon from "@/image/icons/calendar.svg";
 import {DotFilledIcon} from "@radix-ui/react-icons";
 import LocationIcon from "@/image/icons/Location.svg";
 import ChevronRightIcon from "@/image/icons/ChevronRight.svg";
+import {EventInterface} from "@/interfaces/EventInterface";
+import {formatDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
 
-const SideMenuEventCard = () => {
+const SideMenuEventCard = ({ event, toggle, ticket_id }: { event: EventInterface, toggle: (id: number) => void, ticket_id: number }) => {
     return (
-        <div className="p-4 flex justify-between">
+        <div className="p-4 flex justify-between cursor-pointer" onClick={() => toggle(ticket_id)}>
             <div className="flex gap-2">
                 <div>
-                    <Image src={upcoming_event} alt="upcoming_event"/>
+                    <Image src={event.event_image} alt="upcoming_event" width={84} height={84}/>
                 </div>
                 <div className="flex flex-col">
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom text-black-light">Unlocking
-                        business poten...</p>
+                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom text-black-light">
+                        {event.event_name}
+                    </p>
                     <div className="flex mt-[8px] items-center gap-[4px]">
                         <CalendarIcon/>
-                        <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">23 Mar</p>
+                        <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">
+                            {formatDate(event.start_date)}
+                        </p>
                         <DotFilledIcon className="text-text-grey w-[10px]"/>
-                        <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">04:30PM</p>
+                        <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">
+                            {formatLongTime(event.start_date)}
+                        </p>
                         <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">-</p>
-                        <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">05:30PM</p>
+                        <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">
+                            {formatLongTime(event.end_date)}
+                        </p>
                     </div>
                     <div className="flex mt-[8px] items-center">
                         <LocationIcon/>
-                        <p className="font-sans font-semi-normal text-[12px] leading-[14.4px] text-text-grey">Lekki
-                            phase 1</p>
+                        <p className="font-sans font-semi-normal text-[12px] leading-[14.4px] text-text-grey">
+                            {event.location}
+                        </p>
                     </div>
                 </div>
             </div>

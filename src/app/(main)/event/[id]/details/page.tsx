@@ -15,6 +15,7 @@ import ChevronRightIcon from "@/image/icons/ChevronRight.svg"
 import AffiliateUsersIcon from "@/image/icons/affiliate_users.svg"
 import PaymentSuccessfulModal from "@/components/Events/Modals/PaymentSuccessfulModal";
 import PromotionDetailsModal from "@/components/Events/Modals/PromotionDetailsModal";
+import Link from "next/link";
 
 const EventDetailsPage = () => {
     const [isOpen, setIsOpen]  = useState(false)
@@ -63,45 +64,55 @@ const EventDetailsPage = () => {
                                 </div>
                             </div>
                             <div className="flex justify-center items-center mt-[24px] gap-8">
-                                <div className="flex flex-col items-center gap-[8px]">
-                                    <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
-                                        <MicIcon/>
+                                <Link href={"/event/5/promote-event"}>
+                                    <div className="flex flex-col items-center gap-[8px]">
+                                        <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
+                                            <MicIcon/>
+                                        </div>
+                                        <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Promote</p>
                                     </div>
-                                    <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Promote</p>
-                                </div>
-                                <div className="flex flex-col items-center gap-[8px]">
-                                    <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
-                                        <QrIcon/>
+                                </Link>
+                                <Link href={"/"}>
+                                    <div className="flex flex-col items-center gap-[8px]">
+                                        <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
+                                            <QrIcon/>
+                                        </div>
+                                        <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Check
+                                            in</p>
                                     </div>
-                                    <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Check
-                                        in</p>
-                                </div>
-                                <div className="flex flex-col items-center gap-[8px]">
-                                    <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
-                                        <EditIcon/>
+                                </Link>
+                                <Link href={"/"}>
+                                    <div className="flex flex-col items-center gap-[8px]">
+                                        <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
+                                            <EditIcon/>
+                                        </div>
+                                        <div>
+                                            <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Edit
+                                                event</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Edit
-                                            event</p>
+                                </Link>
+                                <Link href={"/"}>
+                                    <div className="flex flex-col items-center gap-[8px]">
+                                        <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
+                                            <TicketIcon/>
+                                        </div>
+                                        <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Add
+                                            ticket</p>
                                     </div>
-                                </div>
-                                <div className="flex flex-col items-center gap-[8px]">
-                                    <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
-                                        <TicketIcon/>
-                                    </div>
-                                    <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Add
-                                        ticket</p>
-                                </div>
+                                </Link>
                             </div>
-                            <div
-                                className="flex justify-between items-center p-[12px] px-[16px] border-[2px] rounded-[12px] border-mid-grey mt-[24px]">
-                                <div className="flex items-center gap-2">
-                                    <AffiliateUsersIcon/>
-                                    <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom">Guest
-                                        list</p>
+                            <Link href={"/event/5/guest-list"}>
+                                <div
+                                    className="flex justify-between items-center p-[12px] px-[16px] border-[2px] rounded-[12px] border-mid-grey mt-[24px]">
+                                    <div className="flex items-center gap-2">
+                                        <AffiliateUsersIcon/>
+                                        <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom">Guest
+                                            list</p>
+                                    </div>
+                                    <ChevronRightIcon/>
                                 </div>
-                                <ChevronRightIcon/>
-                            </div>
+                            </Link>
                             <div
                                 className="flex flex-col p-[16px] border-[2px] rounded-[12px] border-mid-grey mt-[24px]">
                                 <div className="flex flex-col">

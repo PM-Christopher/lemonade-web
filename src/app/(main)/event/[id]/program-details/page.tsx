@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
 import ChevronLeft from "@/image/icons/chevron-left.svg";

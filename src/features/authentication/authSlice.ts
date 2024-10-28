@@ -1,4 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {axiosInstance} from "@/lib/axiosInstane";
+import {buyTicket} from "@/features/events/event.slice";
 
 interface authState {
     user: {} | null;
@@ -8,6 +10,10 @@ interface authState {
     admin: any;
     adminToken: string | null;
     isLoggedIn: boolean;
+    subscription: {} | null,
+    subscription_id: number | null,
+    plan: {} | null,
+    appSettings: {} | null
 }
 
 const initialState: authState = {
@@ -18,7 +24,82 @@ const initialState: authState = {
     error: false,
     authToken: null,
     isLoggedIn: false,
+    subscription: null,
+    subscription_id: null,
+    plan: null,
+    appSettings: null
 };
+
+const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, token, url }: { data: any, token: string, url: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.patch(`${url}`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const changePassword = createAsyncThunk("auth/changePassword", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.patch(`/profile/settings/change-password`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/profile/settings/delete-account`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+    try {
+        const response = await axiosInstance.patch(`/profile/notification-settings/update-all-notification`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const authSlice = createSlice({
     name: "auth",
@@ -34,6 +115,7 @@ const authSlice = createSlice({
             state.user = action.payload.user;
             state.authToken = action.payload.token;
             state.isLoggedIn = true;
+            state.subscription = action.payload.subscription
         },
         loadStop: (state) => {
             state.loading = false;
@@ -72,7 +154,57 @@ const authSlice = createSlice({
         updateUser: (state, action) => {
             state.user = { ...state.user, ...action.payload };
         },
+        setSubscriptionId: (state, action) => {
+            state.subscription_id = action.payload.id;
+            state.plan = action.payload.plan
+        },
     },
+    extraReducers: (builder) => {
+        builder.addCase(updateUserData.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(updateUserData.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.user = payload.data.user
+        });
+        builder.addCase(updateUserData.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(changePassword.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(changePassword.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(changePassword.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(deleteAccount.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(deleteAccount.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.user = null
+            state.authToken = null
+            state.isLoggedIn = false
+        });
+        builder.addCase(deleteAccount.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(updateAppSettings.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(updateAppSettings.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.appSettings = payload.data.appSettings
+        });
+        builder.addCase(updateAppSettings.rejected, (state) => {
+            state.loading = false;
+        });
+    }
 });
 
 export const {
@@ -87,6 +219,9 @@ export const {
     adminUser,
     updateProfileImage,
     updateUser,
+    setSubscriptionId
 } = authSlice.actions;
+
+export { updateUserData, changePassword, deleteAccount, updateAppSettings }
 
 export default authSlice.reducer;

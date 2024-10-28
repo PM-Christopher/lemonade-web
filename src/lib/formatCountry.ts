@@ -1,5 +1,8 @@
 import {getCode} from "country-list"
 
 export const formatCountry = (country: string) => {
-    return getCode(country)
+    if(country) {
+        return getCode(country)
+    }
+    return null
 }

@@ -1,13 +1,52 @@
+"use client"
 import React, {useState} from 'react';
 import CloseIcon from "@/image/icons/close.svg";
 import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
+import {useSelector} from "react-redux";
+import {useRequest} from "@/hooks/useRequest";
+import {EventInterface, MyTicketInterface} from "@/interfaces/EventInterface";
+import MyEventModal from "@/components/Events/Modals/MyEventModal";
 
 type SideMenuInterface = {
     toggleMenu: () => void,
     isOpen: boolean
 }
 
+// type MyEventProps = {
+//     event_name:
+// }
+
 const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
+    const [option, setOption] = useState("upcoming")
+    const [myEventSelected, setMyEventSelected] = useState(null)
+    const [myEvent, setMyEvent] = useState(false)
+    const [ticket, setTicket] = useState({})
+    const [ticketId, setTicketId] = useState<number|null>()
+
+    const toggleOption = (option:string) => {
+        setOption(option)
+    }
+
+    const toggleEventID= (id: number) => {
+        setMyEvent(!myEvent)
+        setTicketId(id)
+    }
+
+    const toggleMyEvent = () => {
+        setMyEvent(!myEvent)
+    }
+
+    const {authToken} = useSelector((state: any) => state.auth)
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+    const {data: ticketData, loading: ticketLoading} = useRequest(`/events/attendees/my-ticket/${ticketId}`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`/events/attendees/my-tickets`, "GET", {}, true, getHeader())
+
     return (
         <>
             <div
@@ -25,17 +64,39 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                         </div>
                     </div>
                     <div className="flex justify-between mt-[10px] border-b-[1px] border-b-light-grey-50">
-                        <div className="h-10 w-[276.5px] py-[8px] px-[16px] border-b-step-color border-b-2">
-                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">Upcoming events</p>
+                        <div className={`h-10 w-[276.5px] py-[8px] px-[16px] ${option === 'upcoming' && 'border-b-step-color border-b-2'}`}>
+                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom cursor-pointer" onClick={() => toggleOption("upcoming")}>
+                                Upcoming events
+                            </p>
                         </div>
-                        <div className="h-10 w-[276.5px] py-[8px] px-[16px]">
-                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">Past events</p>
+                        <div className={`h-10 w-[276.5px] py-[8px] px-[16px] ${option === 'past' && 'border-b-step-color border-b-2'}`}>
+                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom cursor-pointer" onClick={() => toggleOption("past")}>Past events</p>
                         </div>
                     </div>
-                    <SideMenuEventCard />
-                    <SideMenuEventCard />
-                    <SideMenuEventCard />
-                    <SideMenuEventCard />
+
+                    {
+                        option === "upcoming" ? (
+                            data?.upcoming.length > 0 ? (
+                                data?.upcoming.map((event: MyTicketInterface, index: number) => (
+                                    <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID}/>
+                                ))
+                            ) : (
+                                <div className="mt-[10px]">
+                                    <p className="font-semiBold">No event listed</p>
+                                </div>
+                            )
+                        ) : (
+                            data?.past.length > 0 ? (
+                                data?.past.map((event: MyTicketInterface, index: number) => (
+                                    <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID} />
+                                ))
+                            ) : (
+                                <div className="mt-[10px]">
+                                    <p className="font-semiBold">No event listed</p>
+                                </div>
+                            )
+                        )
+                    }
                 </div>
             </div>
             {
@@ -48,6 +109,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                     ></div>
                 )
             }
+            <MyEventModal ticket={ticketData} loading={ticketLoading} toggle={toggleMyEvent} isOpen={myEvent} />
         </>
     );
 }

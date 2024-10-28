@@ -14,7 +14,7 @@ import {EventInterface} from "@/interfaces/EventInterface";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 
 
-export default function SignupPage() {
+export default function DashboardPage() {
     const router  = useRouter()
 
     const {authToken} = useSelector((state: any) => state.auth)
@@ -31,25 +31,27 @@ export default function SignupPage() {
     const { data: eventsData } = useRequest("/events", "GET", {}, true, getHeader())
     const { data: businessData } = useRequest("/business", "GET", {}, true, getHeader())
 
+    console.log({eventsData})
+
     return (
         <div className="bg-light_grey pb-10">
             <TopNav />
             <div className="min-h-screen">
                 <section id="forums" className="bg-white p-4 rounded-lg m-4 mx-10">
                     <p className="font-sans font-semibold leading-[27px]">Tribe activities</p>
-                    <div className="grid grid-cols-3 gap-2 mt-3">
-                        {
-                            data?.tribes.map((tribe: TribeInterface, idx: number) => (
-                                <TribeCard tribe={tribe} key={idx} />
-                            ))
-                        }
+                    <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
+                        {data?.tribes.map((tribe: TribeInterface, idx: number) => (
+                            <div className="w-[422px]" key={idx}> {/* Set width for uniformity */}
+                                <TribeCard tribe={tribe}/>
+                            </div>
+                        ))}
                     </div>
                 </section>
                 <section id="events" className="bg-white p-4 rounded-lg m-4 mx-10">
                     <p className="font-sans font-semibold leading-[27px]">Trending events</p>
                     <div className="grid grid-cols-6 gap-2 mt-3">
                         {
-                            eventsData?.events.map((event: EventInterface, idx: number) => (
+                            eventsData?.upcoming.map((event: EventInterface, idx: number) => (
                                 <EventCard event={event} key={idx}  />
                             ))
                         }

@@ -1,18 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import Image, {StaticImageData} from "next/image";
-import {CalendarIcon} from "lucide-react";
-import DotIcon from "@/image/icons/Dot.svg";
 import BusinessCard from "@/components/Dashboard/BusinessCard";
+import {BusinessInterface} from "@/interfaces/BusinessInterface";
 
 interface ImageSlider {
-    images: StaticImageData[],
+    businesses: BusinessInterface[],
     showArrows: boolean,
     showDots: boolean
 }
 
-const BusinessCarousel: React.FC<ImageSlider> = ({images, showArrows, showDots}) => {
+const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDots}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-
     // Auto-slide functionality
     useEffect(() => {
         const slideInterval = setInterval(() => {
@@ -24,12 +21,12 @@ const BusinessCarousel: React.FC<ImageSlider> = ({images, showArrows, showDots})
 
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
+        const newIndex = isFirstSlide ? businesses.length - 1 : currentIndex - 1;
         setCurrentIndex(newIndex);
     };
 
     const nextSlide = () => {
-        const isLastSlide = currentIndex === images.length - 1;
+        const isLastSlide = currentIndex === businesses.length - 1;
         const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
@@ -41,10 +38,11 @@ const BusinessCarousel: React.FC<ImageSlider> = ({images, showArrows, showDots})
     return (
         <div className="relative w-full overflow-hidden rounded-[12px]">
             <div className="grid grid-cols-4 gap-2 mt-3">
-                <BusinessCard/>
-                <BusinessCard/>
-                <BusinessCard/>
-                <BusinessCard/>
+                {
+                    businesses.map((business: BusinessInterface, index: number) => (
+                        <BusinessCard business={business} key={index}/>
+                    ))
+                }
             </div>
         </div>
     );

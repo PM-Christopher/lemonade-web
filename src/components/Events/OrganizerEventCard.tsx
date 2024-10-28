@@ -1,19 +1,62 @@
-import React from 'react';
+"use client"
+import React, {useEffect, useRef, useState} from 'react';
 import Image from "next/image";
-import event_1 from "@/image/event_images/event_image_lg.png";
 import CalendarIcon from "@/image/icons/calendar.svg";
 import DotIcon from "@/image/icons/divider.svg";
 import More from "@/image/icons/MoreIcon.svg";
+import {EventInterface} from "@/interfaces/EventInterface";
+import {formatLongDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
+import PencilIcon from "@/image/icons/PencilIcon.svg"
+import TrashIcon from "@/image/icons/TrashIcon.svg"
+import {useRouter} from "next/navigation";
 
 type OrganizerEventInterface = {
     draft: boolean
+    event: EventInterface
 }
-const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft}) => {
+
+interface ModalPosition {
+    top: number;
+    left: number;
+}
+
+const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft, event}) => {
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
+    const moreIconRef = useRef<HTMLDivElement | null>(null);
+    const router = useRouter()
+
+    const handleMoreIconClick = (e: React.MouseEvent) => {
+        if (moreIconRef.current) {
+            const rect = moreIconRef.current.getBoundingClientRect();
+            const position: ModalPosition = {
+                top: rect.bottom + window.scrollY,
+                left: rect.right + window.scrollX - 150, // Adjust modal position relative to the button
+            };
+            setModalPosition(position);
+        }
+        setModalVisible(!isModalVisible); // Toggle modal visibility
+    };
+
+    // Close the modal if clicked outside
+    // useEffect(() => {
+    //     const handleClickOutside = (e: MouseEvent) => {
+    //         if (
+    //             moreIconRef.current &&
+    //             !moreIconRef.current.contains(e.target as Node)
+    //         ) {
+    //             setModalVisible(false);
+    //         }
+    //     };
+    //     document.addEventListener("mousedown", handleClickOutside);
+    //     return () => document.removeEventListener("mousedown", handleClickOutside);
+    // }, []);
+
     return (
         <div className="bg-white rounded-[12px] mb-[16px] border-[1px] border-grey-20 p-[4px]">
             <div className="flex flex-col">
                 <div className="relative">
-                    <Image src={event_1} alt="event_1" className="rounded-[8px]"/>
+                    <Image src={event?.event_image} alt="event_1" className="rounded-[8px] h-[230px]" width={230} height={230}/>
                     {
                         draft && (
                             <div
@@ -25,19 +68,42 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft}) => {
                 </div>
                 <div className="flex justify-between mt-2 px-2">
                     <div className="">
-                        <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Halloween
-                            party</p>
+                        <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom max-w-[150px] truncate">
+                            {event?.event_name}
+                        </p>
                         <div className="flex items-center gap-1 my-2">
                             <CalendarIcon/>
-                            <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Mon, 23
-                                Mar</p>
+                            <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                                {formatLongDate(event?.start_date, 'mid')}
+                            </p>
                             <DotIcon className="w-[3px]"/>
-                            <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">4PM</p>
+                            <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                                {formatTime(event?.start_date)}
+                            </p>
                         </div>
                     </div>
-                    <div>
-                        <More/>
+                    <div ref={moreIconRef}>
+                        <More className="cursor-pointer" onClick={handleMoreIconClick} />
                     </div>
+                    {isModalVisible && modalPosition && (
+                        <div
+                            className="absolute bg-white shadow-lg p-4 z-10 rounded-[12px] flex flex-col"
+                            style={{
+                                top: modalPosition.top,
+                                left: modalPosition.left,
+                                minWidth: "150px",
+                            }}
+                        >
+                            <div className="p-[12px] px-[16px] flex gap-[8px] items-center w-[170px] cursor-pointer" onClick={() => router.push(`/event/${event.id}/edit-event`)}>
+                                <PencilIcon className="w-[16.25px] h-[16.25px]" />
+                                <p className="font-normal text-[16px] text-black-light">Edit event</p>
+                            </div>
+                            <div className="p-[12px] px-[16px] flex gap-[8px] items-center w-[170px] cursor-pointer">
+                                <TrashIcon className="w-[16.25px] h-[16.25px]" />
+                                <p className="text-red-1 font-normal text-[16px]">Delete event</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

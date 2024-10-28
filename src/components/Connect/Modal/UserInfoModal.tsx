@@ -8,13 +8,15 @@ import InstagramIcon from "@/image/icons/instagram-color.svg"
 import LinkedInIcon from "@/image/icons/linkedin-color.svg"
 import TwitterIcon from "@/image/icons/twitter-color.svg"
 import WebIcon from "@/image/icons/WebIcon.svg"
+import {formatString} from "@/lib/helper";
 
 type UserInfoInterface = {
     toggle: () => void,
-    isOpen: boolean
+    isOpen: boolean,
+    userInfo: any
 }
 
-const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen}) => {
+const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, userInfo}) => {
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
@@ -29,10 +31,10 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen}) => {
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex flex-col items-center justify-center">
-                        <Image src={Avatar} alt="check in" width={64}/>
-                        <p className="font-semibold text-[18px] mt-[16px]">Daniel232</p>
-                        <p className="font-semi-normal text-[14px] text-light-black">Lemon 23 (L23)</p>
-                        <p className="font-normal text-[12px] text-text-grey">Software engineer</p>
+                        <Image src={userInfo?.receiver?.avatar} alt="check in" width={64} height={64} className="w-[64px] h-[64px]"/>
+                        <p className="font-semibold text-[18px] mt-[16px]">{userInfo?.receiver?.username}</p>
+                        <p className="font-semi-normal text-[14px] text-light-black">Lemon {userInfo?.receiver?.lemon_id} (L{userInfo?.receiver?.lemon_id})</p>
+                        <p className="font-normal text-[12px] text-text-grey">{formatString(userInfo?.receiver?.industry)}</p>
                         <div className="mt-[16px] flex gap-2 items-center">
                             <LocationIcon/>
                             <p className="font-semi-normal text-mid-green text-[12px]">3kms away</p>
@@ -42,17 +44,22 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen}) => {
                             </div>
                         </div>
                         <p className="max-w-[416px] font-normal text-[14px] text-light-black text-center mt-[16px]">
-                            I am a STEM professional with over 20 years as a practicing advance mathematics engineer.
-                            Looking to connect with others
+                            {userInfo?.receiver?.bio}
                         </p>
                         <div className="mt-[16px]">
                             <p className="text-[14px] font-semibold text-center">Social links</p>
                             <div className="flex gap-[16px] mt-[12px]">
-                                <FacebookIcon className="w-[24px]" />
-                                <InstagramIcon className="w-[24px]" />
-                                <LinkedInIcon className="w-[24px]" />
-                                <TwitterIcon className="w-[24px]" />
-                                <WebIcon className="w-[24px]" />
+                                {
+                                    userInfo?.receiver?.socials.map((link: any) => (
+                                        <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
+                                            {link.name === 'facebook' && <FacebookIcon className="w-[24px]" />}
+                                            {link.name === 'instagram' && <InstagramIcon className="w-[24px]" />}
+                                            {link.name === 'linkedin' && <LinkedInIcon className="w-[24px]" />}
+                                            {link.name === 'twitter' && <TwitterIcon className="w-[24px]" />}
+                                            {link.name === 'website' && <WebIcon className="w-[24px]" />}
+                                        </a>
+                                    ))
+                                }
                             </div>
                         </div>
                     </div>

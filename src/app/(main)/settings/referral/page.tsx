@@ -10,9 +10,13 @@ import ReferralIcon from "@/image/icons/ReferralGreenIcon.svg"
 import LongLine from "@/image/icons/LongLine.svg"
 import ChevronRight from "@/image/icons/ChevronRight.svg"
 import ReferralHistory from "@/components/Settings/Modal/ReferralHistory";
+import {useRouter} from "next/navigation";
+import {useSelector} from "react-redux";
 
 function ReferralSettingsPage({}) {
-    const [isOpen, setIsOpen] = useState(true)
+    const router = useRouter()
+    const {user} = useSelector((state: any) => state.auth)
+    const [isOpen, setIsOpen] = useState(false)
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
@@ -21,7 +25,7 @@ function ReferralSettingsPage({}) {
         <section className="bg-light_grey pb-10">
             <TopNav/>
             <div className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
-                <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
+                <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer" onClick={() => router.push("/settings")}>
                     <ChevronLeft/>
                     <p className="font-sans font-semibold text-[16px] tracking-custom">Account settings</p>
                 </div>
@@ -36,7 +40,9 @@ function ReferralSettingsPage({}) {
                             <div className="flex justify-between items-center gap-[2px]">
                                 <div
                                     className="rounded-tl-[12px] rounded-bl-[12px] px-[12px] p-[10.5px] bg-light-tint-4 w-full">
-                                    <p className="font-bold text-[18px] text-mid-green">CHRI321</p>
+                                    <p className="font-bold text-[18px] text-mid-green">
+                                        {user.username.toUpperCase()}
+                                    </p>
                                 </div>
                                 <div
                                     className="rounded-tr-[12px] rounded-br-[12px] px-[12px] bg-light-tint-4 w-fit items-center flex h-[48px]">
@@ -47,7 +53,7 @@ function ReferralSettingsPage({}) {
                             <div className="flex justify-between items-center gap-[2px]">
                                 <div
                                     className="rounded-tl-[12px] rounded-bl-[12px] px-[12px] h-[48px] bg-light-tint-4 w-full items-center flex">
-                                    <p className="font-semi-normal text-[14px] text-mid-green">https://app.lemonade.com/ref=?chris321</p>
+                                    <p className="font-semi-normal text-[14px] text-mid-green">https://app.lemonade.com/ref=?{user.username}</p>
                                 </div>
                                 <div
                                     className="rounded-tr-[12px] rounded-br-[12px] px-[12px] bg-light-tint-4 w-fit items-center flex h-[48px]">
@@ -83,7 +89,7 @@ function ReferralSettingsPage({}) {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex justify-between items-center mt-[24px]">
+                        <div className="flex justify-between items-center mt-[24px] cursor-pointer" onClick={toggleModal}>
                             <p className="font-semi-normal text-[16px]">Referral activity</p>
                             <ChevronRight />
                         </div>
