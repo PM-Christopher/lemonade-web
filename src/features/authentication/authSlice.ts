@@ -101,6 +101,23 @@ const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ da
     }
 });
 
+const logout = createAsyncThunk("auth/logout", async ({ token }: { token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+    try {
+        const response = await axiosInstance.post(`/profile/logout`, {}, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -204,6 +221,21 @@ const authSlice = createSlice({
         builder.addCase(updateAppSettings.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(logout.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(logout.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.error = false;
+            state.user = null;
+            state.authToken = null;
+            state.isLoggedIn = false;
+            state.subscription = null
+        });
+        builder.addCase(logout.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
@@ -222,6 +254,6 @@ export const {
     setSubscriptionId
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout }
 
 export default authSlice.reducer;

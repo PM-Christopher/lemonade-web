@@ -9,6 +9,7 @@ import ServiceDetailsModal from "@/components/Business/Modals/ServiceDetailsModa
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {useSearchParams} from "next/navigation";
+import MainLayout from "@/components/layouts/MainLayout";
 
 const BusinessPage = () => {
     const [menuOption, setMenuOption] = useState("business");
@@ -54,27 +55,29 @@ const BusinessPage = () => {
 
 
     return (
-        <section className="bg-light_grey pb-10">
-            <TopNav/>
-            <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} detailsToggle={toggleServiceDetailsMenu} />
-            <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
-                <div className={"flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"}>
-                    <div
-                        className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "business" && "bg-white rounded-[10px]"}`}
-                        onClick={() => switchOption("business")}>
-                        <p className={`font-sans leading-[24px] ${menuOption === 'business' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Business</p>
+        <MainLayout>
+            <section className="bg-light_grey pb-10">
+                <TopNav/>
+                <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} detailsToggle={toggleServiceDetailsMenu}/>
+                <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
+                    <div className={"flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"}>
+                        <div
+                            className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "business" && "bg-white rounded-[10px]"}`}
+                            onClick={() => switchOption("business")}>
+                            <p className={`font-sans leading-[24px] ${menuOption === 'business' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Business</p>
+                        </div>
+                        <div
+                            className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "listings" && "bg-white rounded-[10px]"}`}
+                            onClick={() => switchOption("listings")}>
+                            <p className={`font-sans leading-[24px] ${menuOption === 'listings' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Listings</p>
+                        </div>
                     </div>
-                    <div
-                        className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "listings" && "bg-white rounded-[10px]"}`}
-                        onClick={() => switchOption("listings")}>
-                        <p className={`font-sans leading-[24px] ${menuOption === 'listings' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Listings</p>
-                    </div>
+                    {renderSubMenu()}
                 </div>
-                {renderSubMenu()}
-            </div>
-            {renderView()}
-            <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu} />
-        </section>
+                {renderView()}
+                <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu}/>
+            </section>
+        </MainLayout>
     );
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from "next/image";
 import event_1 from "@/image/event_images/event_1.png";
-import CalendarIcon from "@/image/icons/Calendar.svg";
+import CalendarIcon from "@/image/icons/CalendarIcon.svg";
 import DotIcon from "@/image/icons/Dot.svg";
 import {EventInterface} from "@/interfaces/EventInterface";
 import {formatDate, formatTime} from "@/lib/dateTimeFormatter";

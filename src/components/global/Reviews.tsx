@@ -15,7 +15,7 @@ interface Review {
     user: User;
     title: string;
     description: string;
-    rating: string;
+    rating: number;
     created_at: string
 }
 

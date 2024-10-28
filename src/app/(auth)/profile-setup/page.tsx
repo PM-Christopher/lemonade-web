@@ -14,6 +14,7 @@ import SkillStep from "@/components/form-steps/skills-step";
 import SocialStep from "@/components/form-steps/social-step";
 import {useRequest} from "@/hooks/useRequest";
 import {useCookies} from "react-cookie";
+import AuthLayout from "@/components/layouts/AuthLayout";
 
 
 
@@ -76,30 +77,34 @@ export default function ProfileStepsPage() {
 
 
     return (
-        <section className="bg-gradient-light-green">
-            <div className="flex flex-wrap items-center justify-between p-2 px-10">
-                <div>
-                    <Image src={logo_url} alt="logo" width={127} height={56}/>
-                </div>
-                <div>
-                    <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
-                </div>
-            </div>
-            <div className="min-h-screen flex flex-wrap items-start mt-20 justify-center gap-16">
-                <div className="flex flex-col">
+        <AuthLayout>
+            <section className="bg-gradient-light-green">
+                <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <p className="text-[18px] font-semibold leading-[48px] font-sans">Welcome,</p>
-                        <p className="text-[40px] font-bold leading-[48px] font-ruso text-mid-green">Thomas Adeniyi</p>
-                        <p className="text-[18px] font-normal leading-[27px] font-sans mt-[12px]">
-                            Set up your account to optimize your experience <br /> on the Lemonade network. Don’t worry this will <br /> take less than a minute.
-                        </p>
+                        <Image src={logo_url} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
-                        <Image src={profile_ver_url} alt="signup image" width={320}/>
+                        <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
                     </div>
                 </div>
-                {renderStep()}
-            </div>
-        </section>
+                <div className="min-h-screen flex flex-wrap items-start mt-20 justify-center gap-16">
+                    <div className="flex flex-col">
+                        <div>
+                            <p className="text-[18px] font-semibold leading-[48px] font-sans">Welcome,</p>
+                            <p className="text-[40px] font-bold leading-[48px] font-ruso text-mid-green">Thomas
+                                Adeniyi</p>
+                            <p className="text-[18px] font-normal leading-[27px] font-sans mt-[12px]">
+                                Set up your account to optimize your experience <br/> on the Lemonade network. Don’t
+                                worry this will <br/> take less than a minute.
+                            </p>
+                        </div>
+                        <div>
+                            <Image src={profile_ver_url} alt="signup image" width={320}/>
+                        </div>
+                    </div>
+                    {renderStep()}
+                </div>
+            </section>
+        </AuthLayout>
     )
 }
