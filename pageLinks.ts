@@ -1,8 +1,8 @@
-import home_icon from "@/image/icons/home_icon.png"
-import tribe_icon from "@/image/icons/chat_icon.png"
+import home_icon from "@/image/icons/HomeIcon.png"
+import tribe_icon from "@/image/icons/ChatIcon.png"
 import event_icon from "@/image/icons/calendar_icon.png"
-import business_icon from "@/image/icons/case_icon.png"
-import connect_icon from "@/image/icons/world_icon.png"
+import business_icon from "@/image/icons/CaseIcon.png"
+import connect_icon from "@/image/icons/WorldIcon.png"
 
 export const navLinks = [
     {
