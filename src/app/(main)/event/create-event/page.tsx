@@ -5,11 +5,10 @@ import ChevronLeft from "@/image/icons/chevron-left.svg";
 import {SingleFileUploader} from "@/components/global/FileUploader";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import dynamic from 'next/dynamic';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import LocationIcon from "@/image/icons/location-large.svg"
 import WebIcon from "@/image/icons/World.svg"
-import CalendarIcon from "@/image/icons/calendar.svg";
+import CalendarIcon from "@/image/icons/CalendarIcon.svg";
 import ClockIcon from "@/image/icons/clock.svg";
 import AffiliateUsersIcon from "@/image/icons/affiliate_users.svg";
 import AttachmentIcon from "@/image/icons/attachments.svg";
@@ -17,10 +16,8 @@ import InstagramIcon from "@/image/icons/instagram-color.svg"
 import FacebookIcon from "@/image/icons/facebook-color.svg"
 import LinkedInIcon from "@/image/icons/linkedin-color.svg"
 import TwitterIcon from "@/image/icons/twitter-color.svg"
-import {Button} from "@/components/ui/button";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {signup} from "@/features/authentication/authApi";
 import Switch from "react-switch";
 import {FormikButton} from "@/components/global/FormikButton";
 import {timezones} from "../../../../../pageLinks";
