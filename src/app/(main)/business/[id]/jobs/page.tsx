@@ -1,8 +1,8 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import JobsCard from "@/components/Business/JobsCard";
+import JobsCard from "@/components/business/JobsCard";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";

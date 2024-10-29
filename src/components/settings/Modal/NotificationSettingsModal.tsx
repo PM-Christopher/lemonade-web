@@ -43,7 +43,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({tog
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: "App Settings Updated",
+                        message: "App settings Updated",
                         type: "success",
                     })
                 );

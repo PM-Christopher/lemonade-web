@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {SingleFileUploader} from "@/components/global/FileUploader";
 import {Label} from "@/components/ui/label";
@@ -84,10 +84,10 @@ const AddBusinessPage = () => {
     const createBusinessSchema = yup.object({
         image: yup
             .string()
-            .required("Business image is required"),
+            .required("business image is required"),
         name: yup
             .string()
-            .required("Business name is required"),
+            .required("business name is required"),
         categories: yup
             .array()
             .of(yup.string())
@@ -149,7 +149,7 @@ const AddBusinessPage = () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: "Business uploaded",
+                        message: "business uploaded",
                         type: "success",
                     })
                 );

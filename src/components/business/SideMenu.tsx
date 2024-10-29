@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
-import JobsCard from "@/components/Business/JobsCard";
+import JobsCard from "@/components/business/JobsCard";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import {useRequest} from "@/hooks/useRequest";

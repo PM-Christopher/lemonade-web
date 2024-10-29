@@ -1,6 +1,6 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import UploadCamIcon from "@/images/icons/UploadCameraIcon.svg"
@@ -10,7 +10,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg"
 import TwitterIcon from "@/images/icons/twitter-color.svg"
 import WebIcon from "@/images/icons/webIcon.svg"
 import PencilIcon from "@/images/icons/pencilIcon.svg"
-import UpdateModal from "@/components/Settings/Modal/UpdateModal";
+import UpdateModal from "@/components/settings/Modal/UpdateModal";
 import {useSelector} from "react-redux";
 import {formatString, splitLemonId} from "@/lib/helper";
 import {useRouter} from "next/navigation";

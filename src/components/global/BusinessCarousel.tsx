@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import BusinessCard from "@/components/Dashboard/BusinessCard";
+import BusinessCard from "@/components/dashboard/BusinessCard";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 
 interface ImageSlider {

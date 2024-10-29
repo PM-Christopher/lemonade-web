@@ -1,9 +1,9 @@
 'use client'
 import React, {useEffect, useState} from "react"
-import TopNav from "@/components/Navigation/TopNav";
-import TribeCard from "@/components/Dashboard/TribeCard";
-import EventCard from "@/components/Dashboard/EventCard";
-import BusinessCard from "@/components/Dashboard/BusinessCard";
+import TopNav from "@/components/navigation/TopNav";
+import TribeCard from "@/components/dashboard/TribeCard";
+import EventCard from "@/components/dashboard/EventCard";
+import BusinessCard from "@/components/dashboard/BusinessCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {TribeInterface} from "@/interfaces/TribeInterface";

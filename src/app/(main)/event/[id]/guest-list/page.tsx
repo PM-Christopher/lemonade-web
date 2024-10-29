@@ -1,14 +1,14 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import UploadIcon from "@/images/icons/uploadIcon.svg";
 import ScanIcon from "@/images/icons/scanIcon.svg";
 import pageData from "../../../../../../pageData.json"
-import GuestDetailsModal from "@/components/Events/Modals/GuestDetailsModal";
-import CheckedInModal from "@/components/Events/Modals/CheckedInModal";
+import GuestDetailsModal from "@/components/events/Modals/GuestDetailsModal";
+import CheckedInModal from "@/components/events/Modals/CheckedInModal";
 import MainLayout from "@/components/layouts/MainLayout";
 
 function GuestListPage() {

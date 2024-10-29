@@ -8,7 +8,7 @@ import {useFormik} from "formik";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {SingleFileUploader} from "@/components/global/FileUploader";
 import {Label} from "@/components/ui/label";
@@ -85,10 +85,10 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
     const editBusinessSchema = yup.object({
         image: yup
             .string()
-            .required("Business image is required"),
+            .required("business image is required"),
         name: yup
             .string()
-            .required("Business name is required"),
+            .required("business name is required"),
         categories: yup
             .array()
             .of(yup.string())
@@ -150,7 +150,7 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: "Business updated",
+                        message: "business updated",
                         type: "success",
                     })
                 );

@@ -1,12 +1,12 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PadlockIcon from "@/images/icons/padlockIcon.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import TrashIcon from "@/images/icons/trashIcon.svg";
 import LogoutIcon from "@/images/icons/logoutIcon.svg";
-import UpdatePasswordModal from "@/components/Settings/Modal/UpdatePasswordModal";
+import UpdatePasswordModal from "@/components/settings/Modal/UpdatePasswordModal";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";

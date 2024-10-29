@@ -1,6 +1,6 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CopyIcon from "@/images/icons/copyGreenIcon.svg"
@@ -8,7 +8,7 @@ import ShareIcon from "@/images/icons/shareGreenIcon.svg"
 import ReferralIcon from "@/images/icons/referralGreenIcon.svg"
 import LongLine from "@/images/icons/longLine.svg"
 import ChevronRight from "@/images/icons/chevronRight.svg"
-import ReferralHistory from "@/components/Settings/Modal/ReferralHistory";
+import ReferralHistory from "@/components/settings/Modal/ReferralHistory";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";

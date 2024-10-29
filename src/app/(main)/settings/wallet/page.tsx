@@ -1,13 +1,13 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {ChevronRight} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import ReferralSideMenu from "@/components/Settings/ReferralSideMenu";
-import AffiliateSideMenu from "@/components/Settings/AffiliateSideMenu";
-import BankAccountModal from "@/components/Settings/Modal/BankAccountModal";
-import PayoutModal from "@/components/Settings/Modal/PayoutModal";
+import ReferralSideMenu from "@/components/settings/ReferralSideMenu";
+import AffiliateSideMenu from "@/components/settings/AffiliateSideMenu";
+import BankAccountModal from "@/components/settings/Modal/BankAccountModal";
+import PayoutModal from "@/components/settings/Modal/PayoutModal";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";

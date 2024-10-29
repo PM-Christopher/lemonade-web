@@ -1,6 +1,6 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
@@ -12,7 +12,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import AttachmentIcon from "@/images/icons/attachments.svg";
 import {Button} from "@/components/ui/button";
-import AffiliateLinkModal from "@/components/Events/Modals/AffiliateLinkModal";
+import AffiliateLinkModal from "@/components/events/Modals/AffiliateLinkModal";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const AgentDetailsPage = () => {

@@ -1,13 +1,13 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import ThreadCard from "@/components/Tribe/ThreadCard";
-import TribeDetailsCard from "@/components/Tribe/TribeDetailsCard";
-import CreateThreadModal from "@/components/Tribe/CreateThreadModal";
-import JoinTribeModal from "@/components/Tribe/JoinTribeModal";
+import ThreadCard from "@/components/tribe/ThreadCard";
+import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
+import CreateThreadModal from "@/components/tribe/CreateThreadModal";
+import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {TribeThreadInterface} from "@/interfaces/TribeInterface";

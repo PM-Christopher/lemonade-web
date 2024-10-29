@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import Upcoming from "@/components/Events/views/Organizer/Upcoming";
-import PastEvent from "@/components/Events/views/Organizer/PastEvent";
-import Draft from "@/components/Events/views/Organizer/Draft";
-import PaymentSettingsModal from "@/components/Events/Modals/PaymentSettingsModal";
+import Upcoming from "@/components/events/views/Organizer/Upcoming";
+import PastEvent from "@/components/events/views/Organizer/PastEvent";
+import Draft from "@/components/events/views/Organizer/Draft";
+import PaymentSettingsModal from "@/components/events/Modals/PaymentSettingsModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 

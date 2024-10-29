@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import Carousel from "@/components/global/ImageSlider";
-import EventCard from "@/components/Events/EventCard";
+import EventCard from "@/components/events/EventCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {EventInterface} from "@/interfaces/EventInterface";

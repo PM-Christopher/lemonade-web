@@ -1,9 +1,9 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
-import NotificationSettingsModal from "@/components/Settings/Modal/NotificationSettingsModal";
+import NotificationSettingsModal from "@/components/settings/Modal/NotificationSettingsModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {useRouter} from "next/navigation";
@@ -29,8 +29,8 @@ const NotificationSettingsPage = () => {
         switch (notificationType) {
             case "new_thread":
                 return {
-                    title: "New thread in Tribe",
-                    description: "Notify me when there is a new thread in any Tribe I have joined."
+                    title: "New thread in tribe",
+                    description: "Notify me when there is a new thread in any tribe I have joined."
                 }
             case "thread_engagements":
                 return {
@@ -64,7 +64,7 @@ const NotificationSettingsPage = () => {
                 }
             case "connect_request":
                 return {
-                    title: "Connect request",
+                    title: "connect request",
                     description: "Notify me when I get new connect requests"
                 }
             case "new_message":

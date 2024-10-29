@@ -1,11 +1,11 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import MultipleTicketCard from "@/components/Events/MultipleTicketCard";
+import MultipleTicketCard from "@/components/events/MultipleTicketCard";
 import {useRouter} from "next/navigation";
 import Switch from "react-switch";
 import {useSelector} from "react-redux";

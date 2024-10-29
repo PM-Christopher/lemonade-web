@@ -4,7 +4,7 @@ import ChevronRight from "@/images/icons/chevronRight.svg";
 import {formatCountry} from "@/lib/formatCountry";
 import {formatStringUCFirst} from "@/lib/helper";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
-import ServiceDetailsModal from "@/components/Business/Modals/ServiceDetailsModal";
+import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
 import {getJob} from "@/features/business/business.slice";

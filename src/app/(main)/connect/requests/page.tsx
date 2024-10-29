@@ -1,11 +1,11 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
-import RequestCard from "@/components/Connect/RequestCard";
-import InviteModal from "@/components/Connect/Modal/InviteModal";
-import ConnectModal from "@/components/Connect/Modal/ConnectModal";
+import RequestCard from "@/components/connect/RequestCard";
+import InviteModal from "@/components/connect/Modal/InviteModal";
+import ConnectModal from "@/components/connect/Modal/ConnectModal";
 import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";

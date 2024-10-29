@@ -1,6 +1,6 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";

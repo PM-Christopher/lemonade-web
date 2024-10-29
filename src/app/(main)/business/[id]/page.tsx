@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import business_logo from "@/images/business/jobLogo.png";
 import Image from "next/image";
@@ -17,8 +17,8 @@ import RocketIconGrey from "@/images/icons/rocketIconGrey.svg"
 
 import RatingsBar from "@/components/global/RatingsBar";
 import Reviews from "@/components/global/Reviews";
-import ReviewModal from "@/components/Business/Modals/ReviewModal";
-import RequestServiceModal from "@/components/Business/Modals/RequestServiceModal";
+import ReviewModal from "@/components/business/Modals/ReviewModal";
+import RequestServiceModal from "@/components/business/Modals/RequestServiceModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
@@ -26,8 +26,8 @@ import {formatDecimal, formatStringUCFirst} from "@/lib/helper";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
 import {axiosInstance} from "@/lib/axiosInstane";
-import VerifyBoost from "@/components/Business/Modals/VerifyBoost";
-import BoostDetailsModal from "@/components/Business/Modals/BoostDetailsModal";
+import VerifyBoost from "@/components/business/Modals/VerifyBoost";
+import BoostDetailsModal from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
 
 

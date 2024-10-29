@@ -1,19 +1,19 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import RequestIcon from "@/images/icons/requestIcon.svg";
 import SettingsIcon from "@/images/icons/gear.svg"
 import SearchIcon from "@/images/icons/search.svg";
 import ChatListCard from "@/components/Jobs/ChatListCard";
-import UserInfoModal from "@/components/Connect/Modal/UserInfoModal";
-import SettingsModal from "@/components/Connect/Modal/SettingsModal";
+import UserInfoModal from "@/components/connect/Modal/UserInfoModal";
+import SettingsModal from "@/components/connect/Modal/SettingsModal";
 import Link from "next/link";
 import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
 import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
 import {getChat} from "@/features/connect/connect.slice";
-import OpenedChat from "@/components/Connect/OpenedChat";
-import EmptyChat from "@/components/Connect/EmptyChat";
+import OpenedChat from "@/components/connect/OpenedChat";
+import EmptyChat from "@/components/connect/EmptyChat";
 import Pusher from "pusher-js";
 import {usePusher} from "@/hooks/usePusher";
 import {useAppDispatch} from "@/redux/hook";

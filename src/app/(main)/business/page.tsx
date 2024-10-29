@@ -1,11 +1,11 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
-import BusinessSection from "@/components/Business/Sections/BusinessSection";
-import ListingSection from "@/components/Business/Sections/ListingSection";
-import BusinessSubMenu from "@/components/Business/Menu/BusinessSubMenu";
-import SideMenu from "@/components/Business/SideMenu";
-import ServiceDetailsModal from "@/components/Business/Modals/ServiceDetailsModal";
+import TopNav from "@/components/navigation/TopNav";
+import BusinessSection from "@/components/business/Sections/BusinessSection";
+import ListingSection from "@/components/business/Sections/ListingSection";
+import BusinessSubMenu from "@/components/business/Menu/BusinessSubMenu";
+import SideMenu from "@/components/business/SideMenu";
+import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
 import {useSelector} from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 

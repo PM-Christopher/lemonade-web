@@ -1,8 +1,8 @@
 "use client"
 import React from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import PricingCard from "@/components/Settings/PricingCard";
+import PricingCard from "@/components/settings/PricingCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import MainLayout from "@/components/layouts/MainLayout";

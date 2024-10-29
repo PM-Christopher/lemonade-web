@@ -1,7 +1,7 @@
 "use client"
 import React, {useEffect, useState} from 'react';
 import BusinessCarousel from "@/components/global/BusinessCarousel";
-import AllBusinessCard from "@/components/Business/AllBusinessCard";
+import AllBusinessCard from "@/components/business/AllBusinessCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {Spinner} from "evergreen-ui";
@@ -9,7 +9,7 @@ import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import Link from "next/link";
 import {useSearchParams} from "next/navigation";
 import {axiosInstance} from "@/lib/axiosInstane";
-import PaymentConfirmModal from "@/components/Business/Modals/PaymentConfirmModal";
+import PaymentConfirmModal from "@/components/business/Modals/PaymentConfirmModal";
 import {useAppDispatch} from "@/redux/hook";
 import {addJob} from "@/features/business/business.slice";
 

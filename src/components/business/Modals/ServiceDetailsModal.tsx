@@ -11,11 +11,11 @@ import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
-import ConfirmPaymentModal from "@/components/Business/Modals/ConfirmPaymentModal";
+import ConfirmPaymentModal from "@/components/business/Modals/ConfirmPaymentModal";
 import CheckGIcon from "@/images/icons/checkGreenIcon.svg"
 import CheckPIcon from "@/images/icons/checkPurpleIcon.svg"
 import CloseRedIcon from "@/images/icons/closeRedIcon.svg"
-import PayNowModal from "@/components/Business/Modals/PayNowModal";
+import PayNowModal from "@/components/business/Modals/PayNowModal";
 import {addJob} from "@/features/business/business.slice";
 
 type ServiceDetailsInterface = {

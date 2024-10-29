@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchIcon from "@/images/icons/search.svg";
-import AgentEventCard from "@/components/Events/AgentEventCard";
+import AgentEventCard from "@/components/events/AgentEventCard";
 import Link from "next/link";
 
 function FindEventSubMenu({}) {

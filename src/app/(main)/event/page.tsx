@@ -1,12 +1,12 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
-import SideMenu from "@/components/Events/SideMenu";
-import EventsSectionView from "@/components/Events/views/Events";
-import OrganizerSectionView from "@/components/Events/views/Organizer";
-import EventSubMenu from "@/components/Events/Menu/EventSubMenu";
-import OrganizerSubMenu from "@/components/Events/Menu/OrganizerSubMenu";
-import AgentSectionView from "@/components/Events/views/Agent";
+import TopNav from "@/components/navigation/TopNav";
+import SideMenu from "@/components/events/SideMenu";
+import EventsSectionView from "@/components/events/views/Events";
+import OrganizerSectionView from "@/components/events/views/Organizer";
+import EventSubMenu from "@/components/events/Menu/EventSubMenu";
+import OrganizerSubMenu from "@/components/events/Menu/OrganizerSubMenu";
+import AgentSectionView from "@/components/events/views/Agent";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const EventPage: React.FC = () => {

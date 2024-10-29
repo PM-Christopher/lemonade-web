@@ -1,12 +1,12 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {PlusIcon} from "lucide-react";
-import BankAccountModal from "@/components/Events/Modals/BankAccountModal";
+import BankAccountModal from "@/components/events/Modals/BankAccountModal";
 import CloseIcon from "@/images/icons/close.svg"
 import * as yup from "yup";
 import {useFormik, FieldArray} from "formik";

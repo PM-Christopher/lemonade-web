@@ -1,6 +1,6 @@
 "use client"
 import React, {useState} from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
@@ -12,8 +12,8 @@ import EditIcon from "@/images/icons/editIconBlack.svg"
 import TicketIcon from "@/images/icons/ticket.svg"
 import ChevronRightIcon from "@/images/icons/chevronRight.svg"
 import AffiliateUsersIcon from "@/images/icons/affiliate_users.svg"
-import PaymentSuccessfulModal from "@/components/Events/Modals/PaymentSuccessfulModal";
-import PromotionDetailsModal from "@/components/Events/Modals/PromotionDetailsModal";
+import PaymentSuccessfulModal from "@/components/events/Modals/PaymentSuccessfulModal";
+import PromotionDetailsModal from "@/components/events/Modals/PromotionDetailsModal";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
 

@@ -2,12 +2,12 @@
 import Link from "next/link"
 import React, {useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import {Button} from "@/components/ui/button";
 import Image from "next/image";
 import SearchIcon from "@/images/icons/search.svg"
 import {Input} from "@/components/ui/input";
-import TribeCardList from "@/components/Tribe/TribeCardList";
+import TribeCardList from "@/components/tribe/TribeCardList";
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Textarea} from "@/components/ui/textarea";

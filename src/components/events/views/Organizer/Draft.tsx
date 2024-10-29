@@ -1,5 +1,5 @@
 import React from 'react';
-import OrganizerEventCard from "@/components/Events/OrganizerEventCard";
+import OrganizerEventCard from "@/components/events/OrganizerEventCard";
 import {EventInterface} from "@/interfaces/EventInterface";
 
 const Draft = ({events, loading}: {events: EventInterface[], loading: boolean}) => {

@@ -1,8 +1,8 @@
 "use client"
 import React, {useState} from 'react';
 import ChevronRight from "@/images/icons/chevronRight.svg"
-import PromotionsSubMenu from "@/components/Events/views/Agent/Promotions";
-import FindEventSubMenu from "@/components/Events/views/Agent/FindEvent";
+import PromotionsSubMenu from "@/components/events/views/Agent/Promotions";
+import FindEventSubMenu from "@/components/events/views/Agent/FindEvent";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {useRouter} from "next/navigation";

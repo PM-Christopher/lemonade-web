@@ -1,11 +1,11 @@
 "use client"
 import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
-import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
+import SideMenuEventCard from "@/components/events/SideMenuEventCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import { MyTicketInterface } from "@/interfaces/EventInterface";
-import MyEventModal from "@/components/Events/Modals/MyEventModal";
+import MyEventModal from "@/components/events/Modals/MyEventModal";
 
 type SideMenuInterface = {
     toggleMenu: () => void,

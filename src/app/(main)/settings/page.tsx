@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import TopNav from "@/components/Navigation/TopNav";
+import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import FacebookIcon from "@/images/icons/facebook-color.svg"
