@@ -1,8 +1,5 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import {Button} from "@/components/ui/button";
-import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
+import CloseIcon from "@/images/icons/close.svg";
 import {ChevronRight} from "lucide-react";
 import {useRouter} from "next/navigation";
 

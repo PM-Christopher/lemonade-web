@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {useSelector} from "react-redux";
 import {Button} from "@/components/ui/button";

@@ -1,7 +1,6 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import JobVerified from "@/image/JobVerified.png";
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {useRouter} from "next/navigation";
@@ -26,7 +25,7 @@ const PaymentConfirmModal = ({isOpen, job, toggleMenu}: {isOpen: boolean, toggle
                 </div>
                 <div className="mt-10 flex flex-col">
                     <div className="flex flex-col items-center">
-                        <Image src={JobVerified} alt="promote"/>
+                        <Image src={"/images/jobVerified.png"} alt="promote" width={160} height={160}/>
                     </div>
                     <div className="px-[10px]">
                         <div className="mt-[24px] flex flex-col items-center">

@@ -5,16 +5,15 @@ import { useRouter } from "next/navigation"
 import TopNav from "@/components/Navigation/TopNav";
 import {Button} from "@/components/ui/button";
 import Image from "next/image";
-import SearchIcon from "@/image/icons/search.svg"
+import SearchIcon from "@/images/icons/search.svg"
 import {Input} from "@/components/ui/input";
 import TribeCardList from "@/components/Tribe/TribeCardList";
-import upload_icon from "@/image/upload.png"
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Textarea} from "@/components/ui/textarea";
-import DollarBillIcon from "@/image/icons/dollar-bill.svg"
-import PadlockIcon from "@/image/icons/padlock.svg"
-import CloseIcon from "@/image/icons/close.svg";
+import DollarBillIcon from "@/images/icons/dollar-bill.svg"
+import PadlockIcon from "@/images/icons/padlock.svg"
+import CloseIcon from "@/images/icons/close.svg";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {TribeInterface} from "@/interfaces/TribeInterface";
@@ -150,7 +149,7 @@ export default function TribePage() {
                             </div>
                         </div>
                         <div className="flex justify-center mt-[24px]">
-                            <Image src={upload_icon} alt="upload"/>
+                            <Image src={"/images/upload.png"} alt="upload" width={89} height={83}/>
                         </div>
                         <div>
                             <div className="grid gap-2">

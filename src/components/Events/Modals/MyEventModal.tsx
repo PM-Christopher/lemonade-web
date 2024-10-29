@@ -1,8 +1,6 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import QRCode from "@/image/QRCode.png"
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import {EventTicketInterface} from "@/interfaces/EventInterface";
 import {formatDate, formatTime} from "@/lib/dateTimeFormatter";
 
 const MyEventModal = ({toggle, isOpen, ticket, loading}: {toggle: () => void, isOpen: boolean, ticket: any, loading: boolean}) => {
@@ -55,7 +53,7 @@ const MyEventModal = ({toggle, isOpen, ticket, loading}: {toggle: () => void, is
                                 </div>
                             </div>
                             <div className="flex justify-center items-center">
-                                <Image src={QRCode} alt="qr_code" width={240} height={240} />
+                                <Image src={"/images/qrCode.png"} alt="qr_code" width={240} height={240} />
                             </div>
                         </div>
                     </div>

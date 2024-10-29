@@ -1,9 +1,7 @@
 import React from 'react';
 import Image from "next/image";
-import business_banner from "@/image/business_images/business_1.png"
-import business_logo from "@/image/business_images/business_logo_1.png"
-import DotIcon from "@/image/icons/Dot.svg";
-import medal from "@/image/icons/medal.png"
+import DotIcon from "@/images/icons/dot.svg";
+import medal from "@/images/icons/medal.png"
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import {formatNumber, formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatCountry} from "@/lib/formatCountry";
@@ -17,15 +15,19 @@ const BusinessCard: React.FC<BusinessIF> = ({business}) => {
         <div className="max-w-md rounded-lg bg-white">
             <div className="relative">
                 <Image
-                    src={business_banner}
+                    src={"/images/business_images/business_1.png"}
                     alt="Main Image"
                     className="rounded-lg"
+                    width={319}
+                    height={105}
                 />
                 <div className="absolute bottom-[-35px] right-[240px] w-16 h-16">
                     <Image
-                        src={business_logo}
+                        src={"/images/business_images/business_logo_1.png"}
                         alt="Overlay Image"
                         className="border border-step-color rounded-xl"
+                        height={56}
+                        width={56}
                     />
                 </div>
             </div>

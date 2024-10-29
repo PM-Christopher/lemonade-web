@@ -1,11 +1,11 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
-import ClockIcon from "@/image/icons/clock.svg";
-import CalendarIcon from "@/image/icons/calendar.svg"
-import FeaturedImage from "@/image/Featured.png"
+import ClockIcon from "@/images/icons/clock.svg";
+import CalendarIcon from "@/images/icons/calendar.svg"
+import FeaturedImage from "@/images/featured.png"
 import Image from "next/image";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
@@ -124,7 +124,7 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                                                 <div
                                                     className={`p-[16px] bg-light-tint w-fit flex flex-col items-center justify-center rounded-[12px] cursor-pointer ${pkgIndex === index && "border-[2px] border-step-color"}`}
                                                     key={index} onClick={() => handleSelectPackage(index)}>
-                                                    <Image src={FeaturedImage} alt="featured"/>
+                                                    <Image src={"/images/featured.png"} alt="featured" width={74} height={74}/>
                                                     <p className="font-semi-normal text-[12px] text-mid-green">Featured</p>
                                                     <p className="font-bold text-[16px]">
                                                         ₦{pkg.title}

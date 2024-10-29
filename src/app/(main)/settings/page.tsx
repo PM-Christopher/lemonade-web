@@ -1,26 +1,25 @@
 "use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import Lemon from "@/image/Lemon.png";
-import Avatar from "@/image/avatar_3.png";
-import FacebookIcon from "@/image/icons/facebook-color.svg"
-import InstagramIcon from "@/image/icons/instagram-color.svg"
-import LinkedInIcon from "@/image/icons/linkedin-color.svg"
-import TwitterIcon from "@/image/icons/twitter-color.svg"
-import WebIcon from "@/image/icons/WebIcon.svg"
-import ChevronRight from "@/image/icons/ChevronRight.svg"
+import Avatar from "@/images/avatar_3.png";
+import FacebookIcon from "@/images/icons/facebook-color.svg"
+import InstagramIcon from "@/images/icons/instagram-color.svg"
+import LinkedInIcon from "@/images/icons/linkedin-color.svg"
+import TwitterIcon from "@/images/icons/twitter-color.svg"
+import WebIcon from "@/images/icons/WebIcon.svg"
+import ChevronRight from "@/images/icons/ChevronRight.svg"
 
-import ProfileIcon from "@/image/icons/ProfileIcon.svg"
-import GearIcon from "@/image/icons/SettingsGearIcon.svg"
-import PricingIcon from "@/image/icons/PricingIcon.svg"
-import BillingIcon from "@/image/icons/BillingIcon.svg"
-import BellIcon from "@/image/icons/BellIcon.svg"
-import WalletIcon from "@/image/icons/WalletIcon.svg"
-import ReferralIcon from "@/image/icons/ReferralIcon.svg"
-import SupportIcon from "@/image/icons/SupportIcon.svg"
-import PaperIcon from "@/image/icons/PaperIcon.svg"
+import ProfileIcon from "@/images/icons/ProfileIcon.svg"
+import GearIcon from "@/images/icons/SettingsGearIcon.svg"
+import PricingIcon from "@/images/icons/PricingIcon.svg"
+import BillingIcon from "@/images/icons/BillingIcon.svg"
+import BellIcon from "@/images/icons/BellIcon.svg"
+import WalletIcon from "@/images/icons/WalletIcon.svg"
+import ReferralIcon from "@/images/icons/ReferralIcon.svg"
+import SupportIcon from "@/images/icons/SupportIcon.svg"
+import PaperIcon from "@/images/icons/PaperIcon.svg"
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {formatString, splitLemonId} from "@/lib/helper";
@@ -29,6 +28,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 function SettingsPage() {
     const router = useRouter()
     const {user} = useSelector((state: any) => state.auth)
+
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
@@ -45,15 +45,15 @@ function SettingsPage() {
                         <div
                             className="w-[640px] rounded-[12px] p-[16px] flex justify-between items-center bg-step-color">
                             <div className="flex items-center gap-[8px]">
-                                <Image src={Avatar} alt="check in" width={56} height={56}
-                                       className="w-[56px] h-[56px]"/>
+                                <Image src={user?.profile_image} alt="check in" width={56} height={56}
+                                       className="w-[56px] h-[56px] rounded-[24px] border-[1px] border-grey-90"/>
                                 <div className="flex flex-col">
                                     <p className="font-semibold text-[18px] text-black-light">{user?.fullname}</p>
                                     <p className="font-semi-normal text-[14px] text-light-black">{user?.username}</p>
                                 </div>
                             </div>
                             <div className="relative flex items-center justify-center">
-                                <Image src={Lemon} alt="lemon"/>
+                                <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
                                 <p className="absolute bottom-3.5 text-black text-[12px] font-semibold text-center w-full">
                                     L{splitLemonId(user?.lemon_id)}
                                 </p>

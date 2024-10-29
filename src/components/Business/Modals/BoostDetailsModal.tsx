@@ -1,8 +1,5 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import Image from "next/image";
-import PromoteEvent from "@/image/PromoteEventIcon.png";
-import {Button} from "@/components/ui/button";
+import CloseIcon from "@/images/icons/close.svg";
 
 const BoostDetailsModal = ({ boost, isOpen, toggleMenu }: {boost: any, isOpen: boolean, toggleMenu: () => void}) => {
     return (

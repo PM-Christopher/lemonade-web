@@ -1,7 +1,5 @@
 import React, {useState} from "react"
 import Image from "next/image"
-import logo_url from "@/image/logo.png"
-import bell_icon from "@/image/icons/Icons.png"
 import Link from "next/link";
 import {navLinks} from "../../../pageLinks";
 import {activeLink} from "@/lib/activeLink";
@@ -14,23 +12,23 @@ const TopNav = () => {
     return (
         <nav className="flex flex-wrap items-center justify-between p-2 px-10 bg-white">
             <div>
-                <Image src={logo_url} alt="logo" width={127} height={56}/>
+                <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
             </div>
             <div className="flex justify-center items-center gap-8">
-                {/*{*/}
-                {/*    navLinks.map((link, idx) => (*/}
-                {/*        <Link href={link.path} key={idx}>*/}
-                {/*            <div className={`flex flex-col gap-2 items-center ${activeLink(link.path, true) ? "bg-light-green-10 p-[8px] rounded-[8px] text-light-green" : "text-text-grey"}  `}>*/}
-                {/*                <Image src={link.icon} alt="home" width={12.8}/>*/}
-                {/*                <p className={`text-[12px] leading-[14.4px] ${activeLink(link.path, true) ? "font-semibold" : "font-normal"}`}>{link.name}</p>*/}
-                {/*            </div>*/}
-                {/*        </Link>*/}
-                {/*    ))*/}
-                {/*}*/}
+                {
+                    navLinks.map((link, idx) => (
+                        <Link href={link.path} key={idx}>
+                            <div className={`flex flex-col gap-2 items-center ${activeLink(link.path, true) ? "bg-light-green-10 p-[8px] rounded-[8px] text-light-green" : "text-text-grey"}  `}>
+                                <Image src={link.icon} alt="home" width={12.8}/>
+                                <p className={`text-[12px] leading-[14.4px] ${activeLink(link.path, true) ? "font-semibold" : "font-normal"}`}>{link.name}</p>
+                            </div>
+                        </Link>
+                    ))
+                }
             </div>
             <div className="flex items-center gap-2">
                 <div>
-                    <Image src={bell_icon} alt="notification" width={28} />
+                    <Image src={"/images/bellIcon.png"} alt="notification" width={28} height={28} />
                 </div>
                 <div>
                     <p className="font-sans text-[18px] leading-[27px] font-normal">

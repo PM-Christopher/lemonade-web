@@ -1,22 +1,16 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import ChatIcon from "@/image/icons/ChatIcon.svg";
-import CalendarIcon from "@/image/icons/CalendarIcon.svg";
-import BagIcon from "@/image/icons/CaseIcon.svg";
-import BankIcon from "@/image/icons/BankIcon.svg";
-import SuppprtIcon from "@/image/icons/SupportIcon.svg";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
-import EyeIcon from "@/image/icons/EyeIcon.svg";
+import EyeIcon from "@/images/icons/eyeIcon.svg";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {changePassword, deleteAccount} from "@/features/authentication/authSlice";
+import { deleteAccount } from "@/features/authentication/authSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
 import MainLayout from "@/components/layouts/MainLayout";

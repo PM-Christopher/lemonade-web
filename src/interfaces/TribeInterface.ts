@@ -7,7 +7,7 @@ interface UserInterface {
 
 export interface TribeInterface {
     id: number
-    image?: string
+    image: string
     tribe_name: string
     monetized: number
     category: string

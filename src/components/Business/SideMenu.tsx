@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import JobsCard from "@/components/Business/JobsCard";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";

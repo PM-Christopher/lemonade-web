@@ -1,7 +1,7 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
-import CheckedIcon from "@/image/icons/CheckedIcon.svg";
+import CheckedIcon from "@/images/icons/checkedIcon.svg";
 
 type JoinTribeInterface = {
     toggle: () => void,

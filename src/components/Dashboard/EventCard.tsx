@@ -1,8 +1,7 @@
 import React from 'react';
 import Image from "next/image";
-import event_1 from "@/image/event_images/event_1.png";
-import CalendarIcon from "@/image/icons/CalendarIcon.svg";
-import DotIcon from "@/image/icons/Dot.svg";
+import CalendarIcon from "@/images/icons/calendarIcon.svg";
+import DotIcon from "@/images/icons/dot.svg";
 import {EventInterface} from "@/interfaces/EventInterface";
 import {formatDate, formatTime} from "@/lib/dateTimeFormatter";
 
@@ -14,7 +13,7 @@ const EventCard: React.FC<EventIF> = ({event}) => {
     return (
         <div className="flex flex-col">
             <div>
-                <Image src={event_1} alt="event_1" width={200}/>
+                <Image src={"/images/event_images/event_1.png"} alt="event_1" width={200}/>
             </div>
             <div className="my-2">
                 <p className="font-sans font-semi-normal text-[16px] leading-[24px]">{event.event_name}</p>

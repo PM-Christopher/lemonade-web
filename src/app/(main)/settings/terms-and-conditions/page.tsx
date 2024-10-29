@@ -1,19 +1,22 @@
 "use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import MainLayout from "@/components/layouts/MainLayout";
+import {useRouter} from "next/navigation";
 
 const TermsAndConditionsPage = ({}) => {
+    const router = useRouter()
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
-                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
+                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
+                         onClick={() => router.back()}>
                         <ChevronLeft/>
-                        <p className="font-sans font-semibold text-[16px] tracking-custom">Terms and Conditions</p>
+                        <p className="font-sans font-semibold text-[16px] tracking-custom">Terms & Conditions</p>
                     </div>
                 </div>
                 <section className="min-h-screen mt-4 flex flex-col items-center">

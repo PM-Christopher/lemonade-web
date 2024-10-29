@@ -1,8 +1,8 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
+import ChevronRight from "@/images/icons/chevronRight.svg";
 import NotificationSettingsModal from "@/components/Settings/Modal/NotificationSettingsModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";

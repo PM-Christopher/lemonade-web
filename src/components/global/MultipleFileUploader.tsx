@@ -98,7 +98,7 @@ const MultipleFileUploader = ({ setField, images, title, type, length="single" }
                                    <div {...getRootProps()}>
                                        <input {...getInputProps()} />
                                        <div className="flex flex-col items-center w-[133.5px]">
-                                           <Image src={upload_image} alt="upload" width={48} height={48}/>
+                                           <Image src={"/images/upload_image.png"} alt="upload" width={48} height={48}/>
                                            <p className="mt-[12px] font-semi-normal font-sans text-[14px] leading-[21px] tracking-custom text-center">
                                                {title}
                                            </p>

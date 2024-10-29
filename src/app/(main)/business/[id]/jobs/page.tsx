@@ -1,10 +1,8 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import JobsCard from "@/components/Business/JobsCard";
-import ServiceDetailsModal from "@/components/Business/Modals/ServiceDetailsModal";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
@@ -14,8 +12,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 const JobsPage = ({params}: {params: {id: number}}) => {
     const router = useRouter()
     const [jobType, setJobType] = useState("in-progress")
-    const [jobs, setJobs] = useState([])
-
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
         return {
@@ -46,7 +42,7 @@ const JobsPage = ({params}: {params: {id: number}}) => {
                 <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
-                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
+                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer" onClick={() => router.back()}>
                         <ChevronLeft/>
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Jobs</p>
                     </div>

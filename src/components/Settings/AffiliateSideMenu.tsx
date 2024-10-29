@@ -1,5 +1,5 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
 
 type AffiliateSideMenuInterface = {

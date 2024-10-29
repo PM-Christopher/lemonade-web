@@ -1,13 +1,11 @@
 import React from 'react';
-import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
 import Link from "next/link";
 import {EventInterface} from "@/interfaces/EventInterface";
-import Image from "next/image";
-import CalendarIcon from "@/image/icons/calendar.svg";
+import CalendarIcon from "@/images/icons/calendar.svg";
 import {formatDate, formatLongTime} from "@/lib/dateTimeFormatter";
 import {DotFilledIcon} from "@radix-ui/react-icons";
-import LocationIcon from "@/image/icons/Location.svg";
-import ChevronRightIcon from "@/image/icons/ChevronRight.svg";
+import LocationIcon from "@/images/icons/location.svg";
+import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 
 const  PromotionsSubMenu = ({events, loading}: {events: EventInterface[], loading: boolean}) => {
     return (

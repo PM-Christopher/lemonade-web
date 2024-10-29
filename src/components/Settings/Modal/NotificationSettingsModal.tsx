@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Switch from "react-switch";
 import {useAppDispatch} from "@/redux/hook";
 import {updateAppSettings} from "@/features/authentication/authSlice";

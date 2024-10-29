@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import Image from "next/image";
-import business_logo from "@/image/business/JobLogo.png";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import ChevronRight from "@/images/icons/chevronRight.svg";
 import {formatCountry} from "@/lib/formatCountry";
 import {formatStringUCFirst} from "@/lib/helper";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
@@ -92,7 +91,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                     ) : (
                         <div className="flex justify-center items-center mt-[150px]">
                             <div className="flex flex-col items-center">
-                                <Image src={JobEmpty} alt="empty_jobs" />
+                                <Image src={"/images/jobEmpty.png"} alt="empty_jobs" width={160} height={141} />
                                 <p>No jobs yet</p>
                             </div>
                         </div>

@@ -1,9 +1,7 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import Lemon from "@/image/Lemon.png";
-import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {useAppDispatch} from "@/redux/hook";
@@ -11,10 +9,6 @@ import * as yup from "yup";
 import {useFormik} from "formik";
 import {checkError} from "@/lib/checkError";
 import CountryList from "country-list-with-dial-code-and-flag";
-import facebook_image from "@/image/facebook.png";
-import linkedin_image from "@/image/linkedin.png";
-import twitter_image from "@/image/twitter.png";
-import instagram_image from "@/image/instagram.png";
 import {FormikButton} from "@/components/global/FormikButton";
 import {updateUserData} from "@/features/authentication/authSlice";
 import {useSelector} from "react-redux";
@@ -484,7 +478,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                                         <div
                                             className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                                             <div className="">
-                                                <Image src={facebook_image} alt="" width={19.2}/>
+                                                <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2}/>
                                             </div>
                                             <Input
                                                 name="facebook"
@@ -499,7 +493,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                                         <div
                                             className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                                             <div className="">
-                                                <Image src={linkedin_image} alt="" width={19.2}/>
+                                                <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2}/>
                                             </div>
                                             <Input
                                                 name="linkedin"
@@ -514,7 +508,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                                         <div
                                             className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                                             <div className="">
-                                                <Image src={twitter_image} alt="" width={19.2}/>
+                                                <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2}/>
                                             </div>
                                             <Input
                                                 name="twitter"
@@ -529,7 +523,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                                         <div
                                             className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                                             <div className="">
-                                                <Image src={instagram_image} alt="" width={19.2}/>
+                                                <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2}/>
                                             </div>
                                             <Input
                                                 name="instagram"

@@ -1,14 +1,11 @@
 "use client"
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import {Button} from "@/components/ui/button";
-import ImageIcon from "@/image/icons/image.svg";
-import VideoIcon from "@/image/icons/video-camera.svg";
-import PollIcon from "@/image/icons/votes.svg";
-import {TribeInterface} from "@/interfaces/TribeInterface";
+import CloseIcon from "@/images/icons/close.svg";
+import ImageIcon from "@/images/icons/image.svg";
+import VideoIcon from "@/images/icons/video-camera.svg";
+import PollIcon from "@/images/icons/votes.svg";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {login} from "@/features/authentication/authApi";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useSelector} from "react-redux";
 import {createThread} from "@/features/tribes/tribe.slice";

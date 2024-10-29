@@ -2,16 +2,10 @@
 import React from 'react';
 import Carousel from "@/components/global/ImageSlider";
 import EventCard from "@/components/Events/EventCard";
-import trending_event from "@/image/event_images/trending_event_1.png";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {EventInterface} from "@/interfaces/EventInterface";
 import Link from "next/link";
-
-const slideImages = [
-    trending_event,
-    trending_event,
-];
 
 const EventsSectionView: React.FC = () => {
     const {authToken} = useSelector((state: any) => state.auth)

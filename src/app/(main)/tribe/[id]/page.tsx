@@ -1,8 +1,8 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import SearchIcon from "@/image/icons/search.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
+import SearchIcon from "@/images/icons/search.svg";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import ThreadCard from "@/components/Tribe/ThreadCard";
 import TribeDetailsCard from "@/components/Tribe/TribeDetailsCard";

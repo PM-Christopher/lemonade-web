@@ -1,5 +1,5 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import RatingGreyIcon from "@/image/icons/RatingGreyIcon.png";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
@@ -35,11 +35,11 @@ const ReviewModal: React.FC<ReviewInterface> = ({isOpen, toggleMenu}) => {
                         <Label htmlFor="fullname"
                                className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Business rating</Label>
                         <div className="flex gap-2">
-                            <Image src={RatingGreyIcon} alt="rating" />
-                            <Image src={RatingGreyIcon} alt="rating" />
-                            <Image src={RatingGreyIcon} alt="rating" />
-                            <Image src={RatingGreyIcon} alt="rating" />
-                            <Image src={RatingGreyIcon} alt="rating" />
+                            <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                            <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                            <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                            <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                            <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
                         </div>
                     </div>
                     <div className="grid gap-2 mt-[24px]">

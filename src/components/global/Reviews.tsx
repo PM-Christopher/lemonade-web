@@ -1,8 +1,7 @@
 import React from 'react';
 import Image from "next/image";
-import Avatar from "@/image/ProfileAvatars.png";
-import DotIcon from "@/image/icons/Dot.svg";
-import RatingIcon from "@/image/icons/RatingIcon.svg";
+import DotIcon from "@/images/icons/dot.svg";
+import RatingIcon from "@/images/icons/ratingIcon.svg";
 import {formatDecimal} from "@/lib/helper";
 
 interface User {

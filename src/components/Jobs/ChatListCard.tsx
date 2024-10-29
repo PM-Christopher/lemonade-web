@@ -1,7 +1,5 @@
 import React from 'react';
-import Image from "next/image";
-import avatar from "@/image/avatar_3.png";
-import DotIcon from "@/image/icons/Dot.svg";
+import DotIcon from "@/images/icons/dot.svg";
 import {ChatInterface} from "@/interfaces/ChatInterface";
 
 type ChatListInterface = {

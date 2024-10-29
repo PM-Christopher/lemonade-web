@@ -1,11 +1,7 @@
 "use client"
 import React, {useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import Lemon from "@/image/Lemon.png";
-import LocationIcon from "@/image/icons/LocationPinGreenIcon.svg";
-import {Label} from "@/components/ui/label";
-import {Button} from "@/components/ui/button";
 import Switch from "react-switch";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {useSelector} from "react-redux";
@@ -69,7 +65,7 @@ const SettingsModal: React.FC<SettingsInterface>= ({toggle, isOpen, user_connect
                     <div className="flex flex-col">
                         <div className="pt-[12px] pb-[12px] rounded-[12px] bg-light-green-10 w-full flex flex-col items-center justify-center">
                             <div className="relative">
-                                <Image src={Lemon} alt="lemon"/>
+                                <Image src={"/images/lemon.png"} alt="lemon" width={33} height={41}/>
                                 <p className="absolute bottom-3.5 left-2 text-black text-[12px] font-semibold text-center">
                                     {user_connect?.user?.lemon_id_short}
                                 </p>

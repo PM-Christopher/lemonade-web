@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import Lemon from "@/image/Lemon.png";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import ChevronRight from "@/images/icons/chevronRight.svg";
 
 type RequestInterface = {
     toggle: () => void,
@@ -19,7 +18,7 @@ const RequestCard: React.FC<RequestInterface> = ({toggle, invite, toggleInviteIn
             }}>
                 <div className="flex gap-2">
                     <div className="relative">
-                        <Image src={Lemon} alt="lemon"/>
+                        <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
                         <p className="absolute bottom-3.5 left-2.5 text-black text-[12px] font-semibold text-center">
                             {invite?.invitee.lemon_id_short}
                         </p>

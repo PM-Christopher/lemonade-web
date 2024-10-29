@@ -9,17 +9,17 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {SingleFileUploader} from "@/components/global/FileUploader";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {MultiSelect} from "@/components/ui/multi-select";
 import CountryList from "country-list-with-dial-code-and-flag";
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
-import MessageIcon from "@/image/icons/MessageIcon.svg";
-import PhoneIcon from "@/image/icons/PhoneIcon.svg";
-import WebIcon from "@/image/icons/WebIcon.svg";
+import MessageIcon from "@/images/icons/messageIcon.svg";
+import PhoneIcon from "@/images/icons/phoneIcon.svg";
+import WebIcon from "@/images/icons/webIcon.svg";
 import {FormikButton} from "@/components/global/FormikButton";
 import MainLayout from "@/components/layouts/MainLayout";
 
@@ -203,8 +203,8 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
                 <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
-                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
-                        <ChevronLeft className="cursor-pointer" onClick={() => router.back()}/>
+                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer" onClick={() => router.back()}>
+                        <ChevronLeft />
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Edit business</p>
                     </div>
                 </div>

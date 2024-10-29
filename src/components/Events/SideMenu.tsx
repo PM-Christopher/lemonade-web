@@ -1,10 +1,10 @@
 "use client"
 import React, {useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
-import {EventInterface, MyTicketInterface} from "@/interfaces/EventInterface";
+import { MyTicketInterface } from "@/interfaces/EventInterface";
 import MyEventModal from "@/components/Events/Modals/MyEventModal";
 
 type SideMenuInterface = {

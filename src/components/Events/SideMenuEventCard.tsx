@@ -1,10 +1,9 @@
 import React from 'react';
 import Image from "next/image";
-import upcoming_event from "@/image/event_images/upcoming_event.png";
-import CalendarIcon from "@/image/icons/calendar.svg";
+import CalendarIcon from "@/images/icons/calendar.svg";
 import {DotFilledIcon} from "@radix-ui/react-icons";
-import LocationIcon from "@/image/icons/Location.svg";
-import ChevronRightIcon from "@/image/icons/ChevronRight.svg";
+import LocationIcon from "@/images/icons/location.svg";
+import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import {EventInterface} from "@/interfaces/EventInterface";
 import {formatDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
 

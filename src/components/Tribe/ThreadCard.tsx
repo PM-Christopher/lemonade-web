@@ -1,12 +1,11 @@
 import React from 'react';
 import Image from "next/image";
-import ver_image from "@/image/verified.png";
-import DotIcon from "@/image/icons/Dot.svg";
-import MoreIcon from "@/image/icons/MoreIcon.svg";
-import heart_image from "@/image/icons/heart.png";
-import chat_image from "@/image/icons/chat.png";
-import HeartIcon from "@/image/icons/HeartIcon.svg"
-import HeartFilledIcon from "@/image/icons/HeartFilledIcon.svg"
+import ver_image from "@/images/verified.png";
+import DotIcon from "@/images/icons/Dot.svg";
+import MoreIcon from "@/images/icons/MoreIcon.svg";
+import chat_image from "@/images/icons/chat.png";
+import HeartIcon from "@/images/icons/HeartIcon.svg"
+import HeartFilledIcon from "@/images/icons/HeartFilledIcon.svg"
 
 import {TribeThreadInterface} from "@/interfaces/TribeInterface";
 import {useAppDispatch} from "@/redux/hook";
@@ -31,13 +30,13 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id}) => {
             <div className="flex justify-between items-center">
                 <div className="flex gap-2 items-center">
                     <div>
-                        <Image src={thread?.user?.avatar} alt="" width={48} height={48} objectFit="fill" />
+                        <Image src={thread?.user?.avatar} alt="" width={48} height={48} objectFit="fill" className="w-[48px] h-[48px] rounded-[16px]" />
                     </div>
                     <div>
                         <p className="font-semi-normal font-sans text-[14px] leading-[14.4px]">{thread?.user?.username}</p>
                     </div>
                     <div>
-                        <Image src={ver_image} alt="verifed"/>
+                        <Image src={"/images/verified.png"} alt="verifed" width={13} height={13} />
                     </div>
                     <div>
                         <DotIcon className="w-[3px] h-[3px]"/>
@@ -50,7 +49,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id}) => {
                     <MoreIcon/>
                 </div>
             </div>
-            <div>
+            <div className="mt-[4px]">
                 <p className="font-sans font-semibold text-[14px] leading-[21px]">
                     {thread?.topic}
                 </p>

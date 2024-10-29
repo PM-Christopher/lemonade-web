@@ -1,9 +1,8 @@
 import React from 'react';
-import CheckedIcon from "@/image/icons/CheckedFilledIcon.svg";
 import {Button} from "@/components/ui/button";
 import {useSelector} from "react-redux";
-import CheckIcon from "@/image/icons/CheckGreenIcon.svg";
-import PadlockIcon from "@/image/icons/PadlockFilledIcon.svg";
+import CheckIcon from "@/images/icons/checkGreenIcon.svg";
+import PadlockIcon from "@/images/icons/padlockFilledIcon.svg";
 
 const CancelSection = ({}) => {
     const { plan } = useSelector((state: any) => state.auth)

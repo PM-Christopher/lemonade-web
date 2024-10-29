@@ -1,8 +1,8 @@
 "use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import MasterCardIcon from "@/image/icons/MasterCardIcon.svg"
+import ChevronLeft from "@/images/icons/chevron-left.svg";
+import MasterCardIcon from "@/images/icons/masterCardIcon.svg"
 import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
@@ -63,7 +63,7 @@ const BillingHistoryPage = () => {
                             {
                                 data?.histories?.map((history: any, index: number) => (
                                     <div
-                                        className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px] mt-[16px]">
+                                        className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px] mt-[16px]" key={index}>
                                         <p className="font-semibold text-[16px]">Lemonade-{history.title}</p>
                                         <p className="font-normal text-[16px] text-center text-light-black">{history?.created_at}</p>
                                         <p className="font-normal text-[16px] text-light-black text-right">N{history?.amount}</p>

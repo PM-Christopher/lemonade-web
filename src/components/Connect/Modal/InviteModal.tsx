@@ -1,8 +1,7 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import LocationIcon from "@/image/icons/LocationPinGreenIcon.svg";
-import Lemon from "@/image/Lemon.png";
+import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import {Button} from "@/components/ui/button";
 import {formatStringUCFirst} from "@/lib/helper";
 import {useAppDispatch} from "@/redux/hook";
@@ -59,7 +58,7 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite}) => {
                 <div className="mt-[24px]">
                     <div className="flex flex-col items-center justify-center">
                         <div className="relative">
-                            <Image src={Lemon} alt="lemon"/>
+                            <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
                             <p className="absolute bottom-3.5 left-2 text-black text-[12px] font-semibold text-center">
                                 {invite?.invitee?.lemon_id_short}
                             </p>

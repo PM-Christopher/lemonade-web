@@ -1,21 +1,19 @@
 "use client"
 import React, {useEffect, useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import business_logo from "@/image/business/JobLogo.png";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
+import business_logo from "@/images/business/jobLogo.png";
 import Image from "next/image";
-import medal from "@/image/icons/medal.png";
 import {Button} from "@/components/ui/button";
-import PhoneIcon from "@/image/icons/PhoneIcon.svg";
-import MessageIcon from "@/image/icons/MessageIcon.svg";
-import WebIcon from "@/image/icons/WebIcon.svg";
-import PencilIcon from "@/image/icons/EditIcon.svg"
-import RocketIcon from "@/image/icons/RocketIcon.svg"
-import CaseIcon from "@/image/icons/CaseIcon.svg"
-import TrashIcon from "@/image/icons/TrashIcon.svg"
-import NoReviews from "@/image/NoReviews.png"
-import RocketIconGreen from "@/image/icons/RocketIconGreen.svg"
-import RocketIconGrey from "@/image/icons/RocketIconGrey.svg"
+import PhoneIcon from "@/images/icons/phoneIcon.svg";
+import MessageIcon from "@/images/icons/messageIcon.svg";
+import WebIcon from "@/images/icons/webIcon.svg";
+import PencilIcon from "@/images/icons/editIcon.svg"
+import RocketIcon from "@/images/icons/rocketIcon.svg"
+import CaseIcon from "@/images/icons/caseIcon.svg"
+import TrashIcon from "@/images/icons/trashIcon.svg"
+import RocketIconGreen from "@/images/icons/rocketIconGreen.svg"
+import RocketIconGrey from "@/images/icons/rocketIconGrey.svg"
 
 import RatingsBar from "@/components/global/RatingsBar";
 import Reviews from "@/components/global/Reviews";
@@ -125,8 +123,8 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                          style={{backgroundImage: `url('/images/business-bg.png')`}}>
                         <div className="flex flex-col">
                             <div className="flex justify-center">
-                                <Image src={business_logo} alt="logo"
-                                       className="rounded-[16px] border-[1px] border-step-color flex justify-center"/>
+                                <Image src={"/images/business/jobLogo.png"} alt="logo"
+                                       className="rounded-[16px] border-[1px] border-step-color flex justify-center" width={64} height={64}/>
                             </div>
                             <div className="flex justify-center flex-col mt-[8px]">
                                 <p className="text-center font-semibold text-[16px]">{data?.business?.name}</p>
@@ -143,7 +141,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                 <div
                                     className="flex items-center gap-1 bg-mid-grey p-2 rounded-xl justify-center w-fit">
                                     <div>
-                                        <Image src={medal} alt="medal" width={16}/>
+                                        <Image src={"/images/medal.png"} alt="medal" width={16} height={16}/>
                                     </div>
                                     <div>
                                         <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">
@@ -309,7 +307,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                 <div className="flex justify-between">
                                     <div className="flex flex-col p-[12px] px-[20px] rounded-[12px] bg-light_grey">
                                         <div className="flex justify-center">
-                                            <Image src={medal} alt="medal" width={20.57}/>
+                                            <Image src={"/images/medal.png"} alt="medal" width={20.57} height={20.57}/>
                                         </div>
                                         <div>
                                             <p className="text-center text-[20px] font-bold">
@@ -336,7 +334,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                         </>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center">
-                                            <Image src={NoReviews} alt="no-reviews"/>
+                                            <Image src={'/images/noReviews.png'} alt="no-reviews" width={114} height={98}/>
                                             <p className="font-semi-normal text-[14px] text-text-grey">No reviews
                                                 yet</p>
                                         </div>

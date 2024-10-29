@@ -1,9 +1,9 @@
 "use client"
 import React, {useEffect, useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import RequestIcon from "@/image/icons/RequestIcon.svg";
-import SettingsIcon from "@/image/icons/gear.svg"
-import SearchIcon from "@/image/icons/search.svg";
+import RequestIcon from "@/images/icons/requestIcon.svg";
+import SettingsIcon from "@/images/icons/gear.svg"
+import SearchIcon from "@/images/icons/search.svg";
 import ChatListCard from "@/components/Jobs/ChatListCard";
 import UserInfoModal from "@/components/Connect/Modal/UserInfoModal";
 import SettingsModal from "@/components/Connect/Modal/SettingsModal";

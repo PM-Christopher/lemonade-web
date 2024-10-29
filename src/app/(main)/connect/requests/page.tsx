@@ -1,8 +1,8 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import SearchIcon from "@/image/icons/search.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
+import SearchIcon from "@/images/icons/search.svg";
 import RequestCard from "@/components/Connect/RequestCard";
 import InviteModal from "@/components/Connect/Modal/InviteModal";
 import ConnectModal from "@/components/Connect/Modal/ConnectModal";

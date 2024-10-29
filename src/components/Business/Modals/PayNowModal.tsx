@@ -1,12 +1,11 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
-import {useAppDispatch} from "@/redux/hook";
 
 const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: () => void, job: any}) => {
     const {authToken} = useSelector((state: any) => state.auth)

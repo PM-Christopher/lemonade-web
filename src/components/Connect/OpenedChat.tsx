@@ -1,16 +1,15 @@
 "use client"
 import React, {useEffect, useRef, useState} from 'react';
 import Image from "next/image";
-import avatar from "@/image/avatar_3.png";
-import DotIcon from "@/image/icons/Dot.svg";
-import MoreIcon from "@/image/icons/MoreIcon.svg";
-import ImageIcon from "@/image/icons/ImageIcon.svg";
+import DotIcon from "@/images/icons/dot.svg";
+import MoreIcon from "@/images/icons/moreIcon.svg";
+import ImageIcon from "@/images/icons/imageIcon.svg";
 import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
-import SendIcon from "@/image/icons/SendIcon.svg";
+import SendIcon from "@/images/icons/sendIcon.svg";
 import {useAppDispatch} from "@/redux/hook";
 import {sendChat} from "@/features/connect/connect.slice";
-import {useCookies} from "react-cookie";
 import {useSelector} from "react-redux";
+import {splitLemonId} from "@/lib/helper";
 
 type OpenChatProps = {
     toggleModal: () => void,
@@ -47,17 +46,17 @@ const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_
                 className="absolute top-0 left-0 w-full bg-grey-20 text-white p-[8px] rounded-tr-[16px]">
                 <div className="px-[16px] flex justify-between items-center">
                     <div className="flex gap-2 items-center">
-                        <Image src={avatar} alt="avatar" width={24}/>
-                        <p className="font-semibold text-[14px] text-black-light">Dan-maxy</p>
+                        <Image src={chat.receiver.avatar} alt="avatar" width={24} height={24} className="w-[24px] h-[24px] rounded-[8px] border-[1px] border-grey-90"/>
+                        <p className="font-semibold text-[14px] text-black-light">{chat.receiver.username}</p>
                         <DotIcon className="w-[4px]"/>
-                        <p className="text-text-grey text-[14px] font-semibold">L1</p>
+                        <p className="text-text-grey text-[14px] font-semibold">L{chat.receiver.lemon_id}</p>
                     </div>
                     <MoreIcon className="cursor-pointer" onClick={toggleModal}/>
                 </div>
             </div>
 
             <div
-                className="flex-grow flex flex-col-reverse overflow-y-auto justify-start items-center bg-white rounded-tr-[16px] rounded-br-[16px] p-[16px] mb-16">
+                className="flex-grow flex flex-col-reverse overflow-y-auto justify-start items-center bg-white rounded-tr-[16px] rounded-br-[16px] p-[16px] mt-8 mb-16">
                 <div
                     className="flex flex-col w-full gap-[12px] overflow-y-auto max-h-screen hide-scrollbar">
                     {

@@ -1,11 +1,8 @@
 'use client'
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
-import {Label} from "@/components/ui/label";
 import Image from "next/image";
-import RatingGreyIcon from "@/image/icons/RatingGreyIcon.png";
-import {Input} from "@/components/ui/input";
 import PromoteEvent from "@/image/PromoteEventIcon.png"
 import {useRouter} from "next/navigation";
 
@@ -29,7 +26,7 @@ const VerifyBoost = ({isOpen, toggleMenu, boost}: {isOpen: boolean, toggleMenu: 
                 </div>
                 <div className="mt-10 flex flex-col">
                     <div className="flex flex-col items-center">
-                        <Image src={PromoteEvent} alt="promote"/>
+                        <Image src={"/images/promoteEventIcon.png"} alt="promote" width={160} height={160} />
                     </div>
                     <div className="px-[10px]">
                         <div className="mt-[24px] flex flex-col items-center">

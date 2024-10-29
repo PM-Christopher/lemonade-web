@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
-import GearIcon from "@/image/icons/gear.svg";
-import PlusIcon from "@/image/icons/Plus.svg";
+import GearIcon from "@/images/icons/gear.svg";
+import PlusIcon from "@/images/icons/plus.svg";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/navigation";
 

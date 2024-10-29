@@ -1,7 +1,6 @@
 "use client"
 import React, {useState} from 'react';
-import ChevronRight from "@/image/icons/ChevronRight.svg"
-import SideMenuEventCard from "@/components/Events/SideMenuEventCard";
+import ChevronRight from "@/images/icons/chevronRight.svg"
 import PromotionsSubMenu from "@/components/Events/views/Agent/Promotions";
 import FindEventSubMenu from "@/components/Events/views/Agent/FindEvent";
 import {useSelector} from "react-redux";

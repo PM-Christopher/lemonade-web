@@ -1,6 +1,5 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import PayoutImage from "@/image/Payout.png"
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
 
@@ -24,7 +23,7 @@ const PayoutModal:React.FC<PayoutInterface> = ({isOpen, toggle}) => {
                 <div className="mt-10">
                     <div className="flex flex-col items-center">
                         <div>
-                            <Image src={PayoutImage} alt="payout" />
+                            <Image src={"/images/Payout.png"} alt="payout" width={311} height={160}/>
                         </div>
                         <div className="mt-[24px]">
                             <p className="font-semibold text-[20px] text-center">Payout requested</p>

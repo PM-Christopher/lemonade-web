@@ -1,6 +1,5 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import trending_event from "@/image/event_images/trending_event_1.png";
 import BusinessCarousel from "@/components/global/BusinessCarousel";
 import AllBusinessCard from "@/components/Business/AllBusinessCard";
 import {useSelector} from "react-redux";
@@ -14,10 +13,6 @@ import PaymentConfirmModal from "@/components/Business/Modals/PaymentConfirmModa
 import {useAppDispatch} from "@/redux/hook";
 import {addJob} from "@/features/business/business.slice";
 
-const slideImages = [
-    trending_event,
-    trending_event,
-];
 const BusinessSection = () => {
     const dispatch = useAppDispatch()
     const searchParams = useSearchParams()

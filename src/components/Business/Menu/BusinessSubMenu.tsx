@@ -1,7 +1,7 @@
 import React from 'react';
-import SearchIcon from "@/image/icons/search.svg";
-import FilterIcon from "@/image/icons/FIlter.svg";
-import TicketIcon from "@/image/icons/Tickets.svg";
+import SearchIcon from "@/images/icons/search.svg";
+import FilterIcon from "@/images/icons/fIlter.svg";
+import TicketIcon from "@/images/icons/tickets.svg";
 
 type BusinessSubMenuInterface = {
     toggle: () => void

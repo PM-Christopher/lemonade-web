@@ -1,16 +1,15 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import Avatar from "@/image/avatar_4.png"
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import UploadCamIcon from "@/image/icons/UploadCameraIcon.svg"
-import FacebookIcon from "@/image/icons/facebook-color.svg"
-import InstagramIcon from "@/image/icons/instagram-color.svg"
-import LinkedInIcon from "@/image/icons/linkedin-color.svg"
-import TwitterIcon from "@/image/icons/twitter-color.svg"
-import WebIcon from "@/image/icons/WebIcon.svg"
-import PencilIcon from "@/image/icons/PencilIcon.svg"
+import UploadCamIcon from "@/images/icons/UploadCameraIcon.svg"
+import FacebookIcon from "@/images/icons/facebook-color.svg"
+import InstagramIcon from "@/images/icons/instagram-color.svg"
+import LinkedInIcon from "@/images/icons/linkedin-color.svg"
+import TwitterIcon from "@/images/icons/twitter-color.svg"
+import WebIcon from "@/images/icons/webIcon.svg"
+import PencilIcon from "@/images/icons/pencilIcon.svg"
 import UpdateModal from "@/components/Settings/Modal/UpdateModal";
 import {useSelector} from "react-redux";
 import {formatString, splitLemonId} from "@/lib/helper";
@@ -43,7 +42,7 @@ const ProfileSettingsPage = ({}) => {
                 <section className="min-h-screen mt-[61.5px] flex flex-col items-center">
                     <div className="flex flex-col items-center">
                         <div className="relative">
-                            <Image src={user?.profile_image ?? Avatar} alt="avatar" width={84} height={84}
+                            <Image src={user?.profile_image ?? "/images/avatar_4.png"} alt="avatar" width={84} height={84}
                                    className="rounded-[24px] border-[1px] border-grey-90 w-[84px] h-[84px]"/>
                             <UploadCamIcon className="absolute bottom-0 right-[-14px] w-8 h-8"/>
                         </div>

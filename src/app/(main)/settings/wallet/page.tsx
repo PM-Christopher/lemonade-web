@@ -1,7 +1,7 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {ChevronRight} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import ReferralSideMenu from "@/components/Settings/ReferralSideMenu";

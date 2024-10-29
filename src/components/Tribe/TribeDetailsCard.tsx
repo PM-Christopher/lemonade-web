@@ -1,12 +1,10 @@
 import React from 'react';
 import Image from "next/image";
-import tribe_image from "@/image/tribe_1.png";
-import DotIcon from "@/image/icons/Dot.svg";
-import ShareIcon from "@/image/icons/share.svg";
+import DotIcon from "@/images/icons/dot.svg";
+import ShareIcon from "@/images/icons/share.svg";
 import {Button} from "@/components/ui/button";
-import EditIcon from "@/image/icons/edit.svg";
-import avatar_image from "@/image/avatar_3.png";
-import DeleteIcon from "@/image/icons/delete.svg";
+import EditIcon from "@/images/icons/edit.svg";
+import DeleteIcon from "@/images/icons/delete.svg";
 import {TribeInterface, TribeMemberInterface} from "@/interfaces/TribeInterface";
 import {formatLongDate} from "@/lib/dateTimeFormatter";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
@@ -32,7 +30,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
                 <p className="font-sans font-semibold text-[16px] leading-[24px]">Tribe details</p>
             </div>
             <div className="flex justify-center mt-10">
-                <Image src={tribe_image} alt="tribe"/>
+                <Image src={tribe?.image} alt="tribe" width={96} height={96}/>
             </div>
             <div className="flex flex-col items-center">
                 <p className="font-sans font-semibold text-[16px] leading-[24px]">
@@ -105,7 +103,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
                                 <div className="flex justify-between items-center py-1">
                                     <div className="flex gap-2 items-center">
                                     <div>
-                                            <Image src={avatar_image} alt="avatar" width={20}/>
+                                            <Image src={member?.user?.avatar} alt="avatar" width={20} height={20} className="w-[20px] h-[20px] rounded-[6px]"/>
                                         </div>
                                         <div>
                                             <p className="font-sans font-semi-normal text-[14px] text-black-light leading-[21px]">{member?.user?.username}</p>

@@ -1,17 +1,15 @@
 import React from 'react';
 import Image from "next/image";
-import poster from "@/image/event_images/vertical_image2.png";
-import CalendarIcon from "@/image/icons/calendar-large.svg";
-import ClockIcon from "@/image/icons/clock.svg";
-import LocationIcon from "@/image/icons/location-large.svg";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import CalendarIcon from "@/images/icons/calendar-large.svg";
+import ClockIcon from "@/images/icons/clock.svg";
+import LocationIcon from "@/images/icons/location-large.svg";
+import ChevronRight from "@/images/icons/chevronRight.svg";
 import OrganizerEventCard from "@/components/Events/OrganizerEventCard";
 import Link from "next/link";
 import {EventInterface} from "@/interfaces/EventInterface";
 import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
 
 const Upcoming = ({events, loading}: {events: EventInterface[], loading: boolean}) => {
-    console.log({events})
     return (
         <>
             {

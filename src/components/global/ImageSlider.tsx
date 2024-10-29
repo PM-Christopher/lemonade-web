@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import Image, {StaticImageData} from "next/image";
+import Image from "next/image";
 import {CalendarIcon} from "lucide-react";
-import Calendar from "@/image/icons/calendar_icon.png"
-import DotIcon from "@/image/icons/Dot.svg"
+import DotIcon from "@/images/icons/dot.svg"
 import {EventInterface} from "@/interfaces/EventInterface";
-import {formatDate, formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
+import {formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
 
 interface ImageSlider {
     showArrows: boolean,

@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import business_logo from "@/image/business/JobLogo.png";
-import medal from "@/image/icons/medal.png";
-import ClockIconOrange from "@/image/icons/ClockIconOrange.svg"
+import medal from "@/images/icons/medal.png";
+import ClockIconOrange from "@/images/icons/clockIconOrange.svg"
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatStringUCFirst} from "@/lib/helper";
@@ -13,10 +12,9 @@ import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
 import ConfirmPaymentModal from "@/components/Business/Modals/ConfirmPaymentModal";
-import CheckGIcon from "@/image/icons/CheckGreenIcon.svg"
-import CheckPIcon from "@/image/icons/CheckPurpleIcon.svg"
-import ClockGreyIcon from "@/image/icons/ClockGreyIcon.svg"
-import CloseRedIcon from "@/image/icons/CloseRedIcon.svg"
+import CheckGIcon from "@/images/icons/checkGreenIcon.svg"
+import CheckPIcon from "@/images/icons/checkPurpleIcon.svg"
+import CloseRedIcon from "@/images/icons/closeRedIcon.svg"
 import PayNowModal from "@/components/Business/Modals/PayNowModal";
 import {addJob} from "@/features/business/business.slice";
 
@@ -193,7 +191,7 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                                  style={{backgroundImage: `url('/images/business-bg.png')`}}>
                                 <div className="flex flex-col">
                                     <div className="flex justify-center">
-                                        <Image src={business_logo} alt="logo"
+                                        <Image src={"/image/business/jobLogo.png"} alt="logo" width={64} height={64}
                                                className="rounded-[16px] border-[1px] border-step-color flex justify-center"/>
                                     </div>
                                     <div className="flex justify-center flex-col mt-[8px]">

@@ -41,7 +41,6 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
         setOrOption(option)
     }
 
-    console.log({data})
     return (
         <>
             <div className="bg-white flex justify-between pl-[60px] border-b-[1px] items-center pt-[20px] pb-0">

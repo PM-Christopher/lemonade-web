@@ -1,10 +1,5 @@
 import React from 'react';
 import Image from "next/image";
-import forum_icon from "@/image/forum_icon.png";
-import tribe_image from "@/image/forum_image.png";
-import heart_icon from "@/image/icons/heart.png";
-import chat_icon from "@/image/icons/chat.png";
-import arrow_left from "@/image/icons/arrow-left.png";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {useRouter} from "next/navigation";
 
@@ -17,7 +12,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
     return (
         <div className="flex flex-col bg-light-yellow p-[16px] px-[16px] rounded-2xl w-[422px] shadow-none">
             <div>
-                <Image src={forum_icon} alt="forum_icon" width={48}/>
+                <Image src={"/images/forum_icon.png"} alt="forum_icon" width={48} height={48}/>
             </div>
             <div className="mt-2 flex justify-between">
                 <div>
@@ -29,14 +24,14 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                     </p>
                 </div>
                 <div>
-                    <Image src={tribe_image} alt="" width={48}/>
+                    <Image src={"/images/forum_image.png"} alt="" width={48} height={48}/>
                 </div>
             </div>
             <div className="mt-2 flex justify-between">
                 <div className="flex gap-2">
                     <div className="flex justify-between items-center gap-1">
                         <div>
-                            <Image src={heart_icon} alt="like" width={16} height={16} className="w-[16px] h-[16px]" />
+                            <Image src={"/images/heart.png"} alt="like" width={16} height={16} className="w-[16px] h-[16px]" />
                         </div>
                         <div>
                             <p className="font-sans text-[14px] font-semi-normal text-light-black">120</p>
@@ -44,7 +39,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                     </div>
                     <div className="flex justify-between items-center gap-1">
                         <div>
-                            <Image src={chat_icon} alt="comment" width={16}/>
+                            <Image src={"/images/chat.png"} alt="comment" width={16} height={16}/>
                         </div>
                         <div>
                             <p className="font-sans text-[14px] font-semi-normal text-light-black">15</p>
@@ -56,7 +51,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                         <p className="font-sans text-[14px] font-semi-normal text-light-green">View</p>
                     </div>
                     <div>
-                        <Image src={arrow_left} alt="arrow left" width={12.5}/>
+                        <Image src={"/images/arrow-left.png"} alt="arrow left" width={12.5} height={12.5}/>
                     </div>
                 </div>
             </div>

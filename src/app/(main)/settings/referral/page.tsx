@@ -1,14 +1,13 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import GiftImage from "@/image/GiftImage.png"
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import CopyIcon from "@/image/icons/CopyGreenIcon.svg"
-import ShareIcon from "@/image/icons/ShareGreenIcon.svg"
-import ReferralIcon from "@/image/icons/ReferralGreenIcon.svg"
-import LongLine from "@/image/icons/LongLine.svg"
-import ChevronRight from "@/image/icons/ChevronRight.svg"
+import CopyIcon from "@/images/icons/copyGreenIcon.svg"
+import ShareIcon from "@/images/icons/shareGreenIcon.svg"
+import ReferralIcon from "@/images/icons/referralGreenIcon.svg"
+import LongLine from "@/images/icons/longLine.svg"
+import ChevronRight from "@/images/icons/chevronRight.svg"
 import ReferralHistory from "@/components/Settings/Modal/ReferralHistory";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
@@ -31,14 +30,14 @@ function ReferralSettingsPage({}) {
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.push("/settings")}>
                         <ChevronLeft/>
-                        <p className="font-sans font-semibold text-[16px] tracking-custom">Account settings</p>
+                        <p className="font-sans font-semibold text-[16px] tracking-custom">Referrals</p>
                     </div>
                 </div>
                 <section className="min-h-screen mt-4 flex flex-col items-center">
                     <div className="flex flex-col items-center gap-[16px]">
                         <div className="bg-light-green-10 rounded-[12px]">
                             <div className="w-[560px] p-[24px] flex justify-center items-center">
-                                <Image src={GiftImage} alt="gift_image"/>
+                                <Image src={"/images/giftImage.png"} alt="gift_image" width={160} height={171}/>
                             </div>
                             <div className="w-[560px] p-[24px] flex flex-col gap-[8px]">
                                 <div className="flex justify-between items-center gap-[2px]">

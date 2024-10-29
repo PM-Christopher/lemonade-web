@@ -1,8 +1,7 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import Lemon from "@/image/Lemon.png";
-import LocationIcon from "@/image/icons/LocationPinGreenIcon.svg";
+import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 
@@ -27,7 +26,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen}) => {
                 <div className="mt-[24px]">
                     <div className="flex flex-col items-center justify-center">
                         <div className="relative">
-                            <Image src={Lemon} alt="lemon"/>
+                            <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
                             <p className="absolute bottom-3.5 left-2 text-black text-[12px] font-semibold text-center">
                                 L12
                             </p>

@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import tribe_image from "@/image/tribe_image.png";
-import MoneyIcon from "@/image/icons/money.svg";
+import MoneyIcon from "@/images/icons/money.svg";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {formatLongDate} from "@/lib/dateTimeFormatter";
 
@@ -15,7 +14,7 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
             <div className="flex items-center justify-between bg-white p-4 rounded-[16px]">
                 <div className="flex gap-2 items-center">
                     <div>
-                        <Image src={tribe_image} alt="tribe image"/>
+                        <Image src={"/images/tribe_image.png"} alt="tribe image" width={40} height={40}/>
                     </div>
                     <div className="flex flex-col">
                         <div>

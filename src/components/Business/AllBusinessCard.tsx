@@ -1,8 +1,7 @@
 "use client"
 import React from 'react';
-import business_logo from "@/image/business_images/business_logo_1.png";
 import Image from "next/image";
-import medal from "@/image/icons/medal.png";
+import medal from "@/images/icons/medal.png";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import {formatCountry} from "@/lib/formatCountry";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
@@ -18,10 +17,11 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({business}) => {
                 <div className="p-[16px]">
                     <div className="flex justify-between">
                         <Image
-                            src={business_logo}
+                            src={"/images/business_images/business_logo_1.png"}
                             alt="Overlay Image"
                             className="border border-step-color rounded-xl"
                             width={40}
+                            height={40}
                         />
                         <div className="flex items-center gap-1 bg-mid-grey p-2 rounded-xl">
                             <div>

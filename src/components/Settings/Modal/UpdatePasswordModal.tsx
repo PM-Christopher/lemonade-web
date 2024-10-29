@@ -1,17 +1,13 @@
 "use client"
 import React, {useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import Image from "next/image";
-import Lemon from "@/image/Lemon.png";
+import CloseIcon from "@/images/icons/close.svg";
 import {Label} from "@/components/ui/label";
-import {Input} from "@/components/ui/input";
-import SearchIcon from "@/image/icons/search.svg";
-import EyeIcon from "@/image/icons/EyeIcon.svg"
+import EyeIcon from "@/images/icons/eyeIcon.svg"
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {changePassword, updateUserData} from "@/features/authentication/authSlice";
+import { changePassword } from "@/features/authentication/authSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
 

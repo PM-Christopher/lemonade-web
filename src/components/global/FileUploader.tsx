@@ -1,7 +1,6 @@
 "use client"
 import React, {useCallback, useEffect, useState} from 'react'
 import Dropzone from 'react-dropzone'
-import upload_image from "@/image/icons/upload_image.png"
 import Image from "next/image";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -83,7 +82,7 @@ export const SingleFileUploader = ({ setField, image, title, type, length="singl
                                 <div {...getRootProps()}>
                                     <input {...getInputProps()} />
                                     <div className="flex flex-col items-center w-[175.05px]">
-                                        <Image src={upload_image} alt="upload"/>
+                                        <Image src={"/images/upload_image.png"} alt="upload" width={207} height={200}/>
                                         <p className="mt-[12px] font-semi-normal font-sans text-[14px] leading-[21px] tracking-custom">
                                             {title}
                                         </p>

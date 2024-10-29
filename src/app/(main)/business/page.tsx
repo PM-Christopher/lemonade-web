@@ -7,8 +7,6 @@ import BusinessSubMenu from "@/components/Business/Menu/BusinessSubMenu";
 import SideMenu from "@/components/Business/SideMenu";
 import ServiceDetailsModal from "@/components/Business/Modals/ServiceDetailsModal";
 import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
-import {useSearchParams} from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const BusinessPage = () => {

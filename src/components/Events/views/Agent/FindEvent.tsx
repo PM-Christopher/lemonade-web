@@ -1,8 +1,5 @@
 import React from 'react';
-import SearchIcon from "@/image/icons/search.svg";
-import AgentImage from "@/image/event_images/agent_image.png"
-import Image from "next/image";
-import TicketIcon from "@/image/icons/TicketGreyIcon.svg"
+import SearchIcon from "@/images/icons/search.svg";
 import AgentEventCard from "@/components/Events/AgentEventCard";
 import Link from "next/link";
 

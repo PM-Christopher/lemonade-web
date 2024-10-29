@@ -1,13 +1,12 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import Avatar from "@/image/avatar_3.png";
-import LocationIcon from "@/image/icons/LocationPinGreenIcon.svg"
-import FacebookIcon from "@/image/icons/facebook-color.svg"
-import InstagramIcon from "@/image/icons/instagram-color.svg"
-import LinkedInIcon from "@/image/icons/linkedin-color.svg"
-import TwitterIcon from "@/image/icons/twitter-color.svg"
-import WebIcon from "@/image/icons/WebIcon.svg"
+import LocationIcon from "@/images/icons/locationPinGreenIcon.svg"
+import FacebookIcon from "@/images/icons/facebook-color.svg"
+import InstagramIcon from "@/images/icons/instagram-color.svg"
+import LinkedInIcon from "@/images/icons/linkedin-color.svg"
+import TwitterIcon from "@/images/icons/twitter-color.svg"
+import WebIcon from "@/images/icons/webIcon.svg"
 import {formatString} from "@/lib/helper";
 
 type UserInfoInterface = {
@@ -31,7 +30,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, userInfo}) 
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex flex-col items-center justify-center">
-                        <Image src={userInfo?.receiver?.avatar} alt="check in" width={64} height={64} className="w-[64px] h-[64px]"/>
+                        <Image src={userInfo?.receiver?.avatar} alt="check in" width={64} height={64} className="w-[64px] h-[64px] rounded-[24px] border-[1px] border-grey-90"/>
                         <p className="font-semibold text-[18px] mt-[16px]">{userInfo?.receiver?.username}</p>
                         <p className="font-semi-normal text-[14px] text-light-black">Lemon {userInfo?.receiver?.lemon_id} (L{userInfo?.receiver?.lemon_id})</p>
                         <p className="font-normal text-[12px] text-text-grey">{formatString(userInfo?.receiver?.industry)}</p>

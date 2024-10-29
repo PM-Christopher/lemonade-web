@@ -1,13 +1,13 @@
 "use client"
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import Image from "next/image";
-import CalendarIcon from "@/image/icons/calendar.svg";
-import DotIcon from "@/image/icons/divider.svg";
-import More from "@/image/icons/MoreIcon.svg";
+import CalendarIcon from "@/images/icons/calendar.svg";
+import DotIcon from "@/images/icons/divider.svg";
+import More from "@/images/icons/moreIcon.svg";
 import {EventInterface} from "@/interfaces/EventInterface";
-import {formatLongDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
-import PencilIcon from "@/image/icons/PencilIcon.svg"
-import TrashIcon from "@/image/icons/TrashIcon.svg"
+import {formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
+import PencilIcon from "@/images/icons/pencilIcon.svg"
+import TrashIcon from "@/images/icons/trashIcon.svg"
 import {useRouter} from "next/navigation";
 
 type OrganizerEventInterface = {
