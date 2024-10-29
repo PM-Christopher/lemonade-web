@@ -2,7 +2,7 @@ import { axiosInstance } from "@/lib/axiosInstane";
 import {
     authFailure,
     authStart,
-    authSuccess,
+    authSuccess, authUser,
     loadStop,
 } from "./authSlice";
 import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
@@ -34,7 +34,7 @@ export const signup = async (
                 maxAge: 3600 * 6, // Expires after 6hrs
                 sameSite: false,
             });
-
+            await dispatch(authUser(data.data));
             router.push("/verify-email");
         } else {
             dispatch(

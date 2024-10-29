@@ -11,13 +11,14 @@ import {authSuccess, resetAuth} from "@/features/authentication/authSlice";
 import {axiosInstance} from "@/lib/axiosInstane";
 
 const MainLayout = ({children}: {children: React.ReactNode}) => {
-    const { admin, authToken: token } = useAppSelector((state) => state.auth);
+    const { admin } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const [cookies, setCookie, removeCookie] = useCookies([
         "token",
         "adminAuthToken",
     ]);
+    const token = cookies.token;
 
 
     useEffect(() => {

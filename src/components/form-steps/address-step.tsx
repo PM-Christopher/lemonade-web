@@ -16,6 +16,7 @@ import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
 import {authFailure, authStart, authSuccess, loadStop} from "@/features/authentication/authSlice";
 import {useCookies} from "react-cookie";
+import CountryList from "country-list-with-dial-code-and-flag";
 
 interface AddressInterface {
     loading: Boolean,
@@ -153,19 +154,17 @@ const AddressStep: React.FC<AddressInterface> = ({loading, next_step, prev_step}
 
                     <div className="grid gap-2 my-2">
                         <Label htmlFor="email" className="font-label">Country</Label>
-                        <Select
-                            onValueChange={(value) => formik.setFieldValue('country', value)} // Update value with Formik
-                            value={formik.values.country}
-                        >
-                            <SelectTrigger className="bg-light_grey border-0 h-12">
-                                <SelectValue placeholder="Select country"/>
-                            </SelectTrigger>
-                            <SelectContent className="form-font">
-                                <SelectItem value="Nigeria">Nigeria</SelectItem>
-                                <SelectItem value="United States of America">United States of America</SelectItem>
-                                <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <select id="country" className="h-12 rounded-xl bg-light_grey form-font border-0 px-2"
+                                value={formik.values.country} onChange={(e) => {
+                            formik.setFieldValue("country", e.target.value)
+                        }}>
+                            <option value="">Select country</option>
+                            {
+                                CountryList.getAll().map((country, index) => (
+                                    <option value={country.name} key={index}>{country.name}</option>
+                                ))
+                            }
+                        </select>
                         {checkError("country", formik) ? (
                             <p className="text-[#FF8D8D] text-[12px]">
                                 {formik.errors.country}

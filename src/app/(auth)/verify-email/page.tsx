@@ -18,6 +18,7 @@ import {useCookies} from "react-cookie";
 import { setIsRouting } from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import {useSelector} from "react-redux";
 
 
 export default function VerifyPage() {
@@ -27,6 +28,9 @@ export default function VerifyPage() {
         "token",
         "newToken",
     ]);
+    const { user } = useSelector((state: any) => state.auth)
+
+    console.log({user})
 
     const getHeader = () => {
         const token = cookie.newToken;
@@ -110,7 +114,7 @@ export default function VerifyPage() {
                         <div>
                             <p className="text-[40px] font-bold leading-[48px] font-ruso">Verify email address</p>
                             <p className="text-[18px] font-normal leading-[27px] font-sans">
-                                Enter the 4-digit code sent to tadeniyi@gmail.com <br/> to verify your account
+                                Enter the 4-digit code sent to {user?.email} <br/> to verify your account
                             </p>
                         </div>
                         <div className="mt-[24px]">

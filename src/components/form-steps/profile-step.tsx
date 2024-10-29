@@ -231,9 +231,10 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                                 <SelectValue placeholder="Select"/>
                             </SelectTrigger>
                             <SelectContent className="form-font">
-                                <SelectItem value="light">Light</SelectItem>
-                                <SelectItem value="dark">Dark</SelectItem>
-                                <SelectItem value="system">System</SelectItem>
+                                <SelectItem value="Software Development">Software Development</SelectItem>
+                                <SelectItem value="Engineering">Engineering</SelectItem>
+                                <SelectItem value="Health Care">Health Care</SelectItem>
+                                <SelectItem value="Construction">Construction</SelectItem>
                             </SelectContent>
                         </Select>
                         {formik.errors.industry ? (

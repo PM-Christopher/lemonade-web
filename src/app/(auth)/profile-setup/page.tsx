@@ -9,6 +9,7 @@ import SocialStep from "@/components/form-steps/social-step";
 import {useRequest} from "@/hooks/useRequest";
 import {useCookies} from "react-cookie";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import {useSelector} from "react-redux";
 
 
 
@@ -17,6 +18,7 @@ export default function ProfileStepsPage() {
     const [loading, setLoading] = useState(false)
     const [step, setStep] = useState(1);
     const [cookies, setCookie] = useCookies(["newToken"]);
+    const { user } = useSelector((state: any) => state.auth)
 
     const getHeader = () => {
         const token = cookies.newToken;
@@ -85,8 +87,9 @@ export default function ProfileStepsPage() {
                     <div className="flex flex-col">
                         <div>
                             <p className="text-[18px] font-semibold leading-[48px] font-sans">Welcome,</p>
-                            <p className="text-[40px] font-bold leading-[48px] font-ruso text-mid-green">Thomas
-                                Adeniyi</p>
+                            <p className="text-[40px] font-bold leading-[48px] font-ruso text-mid-green">
+                                {user?.fullname}
+                            </p>
                             <p className="text-[18px] font-normal leading-[27px] font-sans mt-[12px]">
                                 Set up your account to optimize your experience <br/> on the Lemonade network. Don’t
                                 worry this will <br/> take less than a minute.

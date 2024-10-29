@@ -76,7 +76,7 @@ export default function SignupPage() {
                         </Link>
                     </div>
                 </div>
-                <div className="min-h-screen flex flex-wrap items-start mt-52 justify-center gap-16">
+                <div className="min-h-screen flex flex-wrap items-start justify-center gap-16">
                     <div className="flex flex-col">
                         <div>
                             <p className="text-[40px] font-bold leading-[48px] font-ruso">Create account</p>
