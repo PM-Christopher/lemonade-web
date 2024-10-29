@@ -1,6 +1,5 @@
 'use client'
-import Link from "next/link"
-import React, {useEffect, useState} from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import axios from "axios"
 import toast from "react-hot-toast"
@@ -13,7 +12,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
-import forgot_password_url from "@/image/forgot_password.png"
 import AuthLayout from "@/components/layouts/AuthLayout";
 
 
@@ -62,7 +60,7 @@ export default function ForgotPasswordPage() {
                             </p>
                         </div>
                         <div>
-                            <Image src={forgot_password_url} alt="signup image" width={511.06} height={519.77}/>
+                            <Image src={"/images/forgot_password.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
                     <Card className="p-10 w-[480px]">

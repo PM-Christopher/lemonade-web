@@ -1,11 +1,10 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import UserIcon from "@/image/icons/Users.svg";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import UserIcon from "@/images/icons/users.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
 import MultipleTicketCard from "@/components/Events/MultipleTicketCard";
 import {useRouter} from "next/navigation";
 import Switch from "react-switch";

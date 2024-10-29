@@ -1,21 +1,20 @@
 "use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg"
-import event_det_image from "@/image/event_images/event_details.png"
+import ChevronLeft from "@/images/icons/chevron-left.svg"
 import Image from "next/image";
-import CalendarIcon from "@/image/icons/calendar-large.svg";
-import ClockIcon from "@/image/icons/clock.svg";
-import LocationIcon from "@/image/icons/location-large.svg";
-import AttachmentIcon from "@/image/icons/attachments.svg"
-import FacebookIcon from "@/image/icons/facebook-color.svg"
-import InstagramIcon from "@/image/icons/instagram-color.svg"
-import LinkedInIcon from "@/image/icons/linkedin-color.svg"
-import TwitterIcon from "@/image/icons/twitter-color.svg"
+import CalendarIcon from "@/images/icons/calendar-large.svg";
+import ClockIcon from "@/images/icons/clock.svg";
+import LocationIcon from "@/images/icons/location-large.svg";
+import AttachmentIcon from "@/images/icons/attachments.svg"
+import FacebookIcon from "@/images/icons/facebook-color.svg"
+import InstagramIcon from "@/images/icons/instagram-color.svg"
+import LinkedInIcon from "@/images/icons/linkedin-color.svg"
+import TwitterIcon from "@/images/icons/twitter-color.svg"
 import {Button} from "@/components/ui/button";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
-import {formatDate, formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
+import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
 

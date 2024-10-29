@@ -1,21 +1,21 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {SingleFileUploader} from "@/components/global/FileUploader";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import LocationIcon from "@/image/icons/location-large.svg"
-import WebIcon from "@/image/icons/World.svg"
-import CalendarIcon from "@/image/icons/CalendarIcon.svg";
-import ClockIcon from "@/image/icons/clock.svg";
-import AffiliateUsersIcon from "@/image/icons/affiliate_users.svg";
-import AttachmentIcon from "@/image/icons/attachments.svg";
-import InstagramIcon from "@/image/icons/instagram-color.svg"
-import FacebookIcon from "@/image/icons/facebook-color.svg"
-import LinkedInIcon from "@/image/icons/linkedin-color.svg"
-import TwitterIcon from "@/image/icons/twitter-color.svg"
+import LocationIcon from "@/images/icons/location-large.svg"
+import WebIcon from "@/images/icons/world.svg"
+import CalendarIcon from "@/images/icons/calendarIcon.svg";
+import ClockIcon from "@/images/icons/clock.svg";
+import AffiliateUsersIcon from "@/images/icons/affiliate_users.svg";
+import AttachmentIcon from "@/images/icons/attachments.svg";
+import InstagramIcon from "@/images/icons/instagram-color.svg"
+import FacebookIcon from "@/images/icons/facebook-color.svg"
+import LinkedInIcon from "@/images/icons/linkedin-color.svg"
+import TwitterIcon from "@/images/icons/twitter-color.svg"
 import * as yup from "yup";
 import {useFormik} from "formik";
 import Switch from "react-switch";

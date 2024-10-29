@@ -1,6 +1,6 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import ChevronRightFilled from "@/image/icons/ChevronRightFilled.svg";
+import CloseIcon from "@/images/icons/close.svg";
+import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
 
 type PDInterface = {
     toggle: () => void,

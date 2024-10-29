@@ -1,10 +1,10 @@
 "use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import ChevronRightFilled from "@/image/icons/ChevronRightFilled.svg"
+import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg"
 import MainLayout from "@/components/layouts/MainLayout";
 
 function PromoteEventPage() {

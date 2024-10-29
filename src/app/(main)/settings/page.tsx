@@ -3,23 +3,22 @@ import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import Avatar from "@/images/avatar_3.png";
 import FacebookIcon from "@/images/icons/facebook-color.svg"
 import InstagramIcon from "@/images/icons/instagram-color.svg"
 import LinkedInIcon from "@/images/icons/linkedin-color.svg"
 import TwitterIcon from "@/images/icons/twitter-color.svg"
-import WebIcon from "@/images/icons/WebIcon.svg"
-import ChevronRight from "@/images/icons/ChevronRight.svg"
+import WebIcon from "@/images/icons/webIcon.svg"
+import ChevronRight from "@/images/icons/chevronRight.svg"
 
-import ProfileIcon from "@/images/icons/ProfileIcon.svg"
-import GearIcon from "@/images/icons/SettingsGearIcon.svg"
-import PricingIcon from "@/images/icons/PricingIcon.svg"
-import BillingIcon from "@/images/icons/BillingIcon.svg"
-import BellIcon from "@/images/icons/BellIcon.svg"
-import WalletIcon from "@/images/icons/WalletIcon.svg"
-import ReferralIcon from "@/images/icons/ReferralIcon.svg"
-import SupportIcon from "@/images/icons/SupportIcon.svg"
-import PaperIcon from "@/images/icons/PaperIcon.svg"
+import ProfileIcon from "@/images/icons/profileIcon.svg"
+import GearIcon from "@/images/icons/settingsGearIcon.svg"
+import PricingIcon from "@/images/icons/pricingIcon.svg"
+import BillingIcon from "@/images/icons/billingIcon.svg"
+import BellIcon from "@/images/icons/bellIcon.svg"
+import WalletIcon from "@/images/icons/walletIcon.svg"
+import ReferralIcon from "@/images/icons/referralIcon.svg"
+import SupportIcon from "@/images/icons/supportIcon.svg"
+import PaperIcon from "@/images/icons/paperIcon.svg"
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {formatString, splitLemonId} from "@/lib/helper";

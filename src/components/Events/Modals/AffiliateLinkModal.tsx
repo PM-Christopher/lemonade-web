@@ -1,9 +1,8 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import AffiliateImage from "@/image/AffliliateLink.png"
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import StrikeLine from "@/image/icons/StrikeLine.svg"
-import CopyIcon from "@/image/icons/CopyIcon.svg"
+import StrikeLine from "@/images/icons/strikeLine.svg"
+import CopyIcon from "@/images/icons/copyIcon.svg"
 
 type AffiliateLinkInterface = {
     isOpen: boolean,
@@ -23,7 +22,7 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle}) 
                 </div>
                 <div className="mt-10">
                     <div className="flex justify-center">
-                        <Image src={AffiliateImage} alt="affiliate-link" />
+                        <Image src={"/images/affliliateLink.png"} alt="affiliate-link" />
                     </div>
                     <div className="flex flex-col mt-[24px]">
                         <p className="font-semibold text-[20px] text-center">Linked generated!</p>

@@ -1,17 +1,16 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import event_det_image from "@/image/event_images/event_details.png";
-import CalendarIcon from "@/image/icons/calendar-large.svg";
-import ClockIcon from "@/image/icons/clock.svg";
-import LocationIcon from "@/image/icons/location-large.svg";
-import FacebookIcon from "@/image/icons/facebook-color.svg";
-import InstagramIcon from "@/image/icons/instagram-color.svg";
-import LinkedInIcon from "@/image/icons/linkedin-color.svg";
-import TwitterIcon from "@/image/icons/twitter-color.svg";
-import AttachmentIcon from "@/image/icons/attachments.svg";
+import CalendarIcon from "@/images/icons/calendar-large.svg";
+import ClockIcon from "@/images/icons/clock.svg";
+import LocationIcon from "@/images/icons/location-large.svg";
+import FacebookIcon from "@/images/icons/facebook-color.svg";
+import InstagramIcon from "@/images/icons/instagram-color.svg";
+import LinkedInIcon from "@/images/icons/linkedin-color.svg";
+import TwitterIcon from "@/images/icons/twitter-color.svg";
+import AttachmentIcon from "@/images/icons/attachments.svg";
 import {Button} from "@/components/ui/button";
 import AffiliateLinkModal from "@/components/Events/Modals/AffiliateLinkModal";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -36,7 +35,7 @@ const AgentDetailsPage = () => {
                 <section className="min-h-screen mt-4 flex flex-col items-center">
                     <div className="flex justify-center">
                         <div className="flex w-[1312px] bg-white rounded-[16px] items-center gap-[48px] p-[4px]">
-                            <Image src={event_det_image} alt="event details"/>
+                            <Image src={"/images/event_images/event_details.png"} alt="event details" width={64} height={64}/>
                             <div>
                                 <p className="mb-[24px] font-sans font-semibold text-[32px] leading-[44.8px]">Unlocking
                                     business

@@ -1,8 +1,6 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import CheckInImage from "@/image/CheckIn.png"
-import {Button} from "@/components/ui/button";
 
 type CheckedInInterface = {
     toggle: () => void,
@@ -22,7 +20,7 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({toggle, isOpen}) => {
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex justify-center">
-                        <Image src={CheckInImage} alt="check in"/>
+                        <Image src={"/images/checkIn.png"} alt="check in" width={311} height={160}/>
                     </div>
                 </div>
                 <div className="mt-[24px]">

@@ -1,15 +1,13 @@
 "use client"
 import React from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import event_details_image from "@/image/event_images/details_image.png";
-import CalendarIcon from "@/image/icons/calendar-large.svg";
-import DotIcon from "@/image/icons/Dot.svg";
-import LocationIcon from "@/image/icons/location-large.svg";
-import StrikeLine from "@/image/icons/StrikeLine.svg";
-import CopyIcon from "@/image/icons/CopyIcon.svg";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
+import CalendarIcon from "@/images/icons/calendar-large.svg";
+import DotIcon from "@/images/icons/dot.svg";
+import LocationIcon from "@/images/icons/location-large.svg";
+import StrikeLine from "@/images/icons/strikeLine.svg";
+import CopyIcon from "@/images/icons/copyIcon.svg";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const ProgramDetailsPage = () => {
@@ -28,7 +26,7 @@ const ProgramDetailsPage = () => {
                     <div className="flex justify-between gap-[40px]">
                         <div className="w-[640px] p-[24px] rounded-[12px] gap-[24px] bg-white">
                             <div className="bg-green-tint p-[8px] px-[16px] rounded-[8px] flex gap-3 items-center">
-                                <Image src={event_details_image} alt="details"/>
+                                <Image src={"/images/event_images/details_image.png"} alt="details" width={120} height={120}/>
                                 <div className="flex flex-col">
                                     <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Halloween
                                         party</p>

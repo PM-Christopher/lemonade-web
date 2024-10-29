@@ -1,18 +1,17 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import event_details_image from "@/image/event_images/details_image.png"
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import CalendarIcon from "@/image/icons/calendar-large.svg";
-import LocationIcon from "@/image/icons/location-large.svg";
-import DotIcon from "@/image/icons/Dot.svg"
-import MicIcon from "@/image/icons/microphone.svg"
-import QrIcon from "@/image/icons/qr_code.svg"
-import EditIcon from "@/image/icons/EditIconBlack.svg"
-import TicketIcon from "@/image/icons/ticket.svg"
-import ChevronRightIcon from "@/image/icons/ChevronRight.svg"
-import AffiliateUsersIcon from "@/image/icons/affiliate_users.svg"
+import CalendarIcon from "@/images/icons/calendar-large.svg";
+import LocationIcon from "@/images/icons/location-large.svg";
+import DotIcon from "@/images/icons/dot.svg"
+import MicIcon from "@/images/icons/microphone.svg"
+import QrIcon from "@/images/icons/qr_code.svg"
+import EditIcon from "@/images/icons/editIconBlack.svg"
+import TicketIcon from "@/images/icons/ticket.svg"
+import ChevronRightIcon from "@/images/icons/chevronRight.svg"
+import AffiliateUsersIcon from "@/images/icons/affiliate_users.svg"
 import PaymentSuccessfulModal from "@/components/Events/Modals/PaymentSuccessfulModal";
 import PromotionDetailsModal from "@/components/Events/Modals/PromotionDetailsModal";
 import Link from "next/link";
@@ -45,7 +44,7 @@ const EventDetailsPage = () => {
                         <div>
                             <div className="w-[640px] p-[24px] rounded-[12px] bg-white flex flex-col">
                                 <div className="bg-green-tint p-[8px] px-[16px] rounded-[8px] flex gap-3 items-center">
-                                    <Image src={event_details_image} alt="details"/>
+                                    <Image src={"/images/event_images/details_image.png"} alt="details" width={120} height={120}/>
                                     <div className="flex flex-col">
                                         <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Halloween
                                             party</p>

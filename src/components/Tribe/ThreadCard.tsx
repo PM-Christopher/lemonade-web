@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from "next/image";
 import ver_image from "@/images/verified.png";
-import DotIcon from "@/images/icons/Dot.svg";
-import MoreIcon from "@/images/icons/MoreIcon.svg";
+import DotIcon from "@/images/icons/dot.svg";
+import MoreIcon from "@/images/icons/moreIcon.svg";
 import chat_image from "@/images/icons/chat.png";
-import HeartIcon from "@/images/icons/HeartIcon.svg"
-import HeartFilledIcon from "@/images/icons/HeartFilledIcon.svg"
+import HeartIcon from "@/images/icons/heartIcon.svg"
+import HeartFilledIcon from "@/images/icons/heartFilledIcon.svg"
 
 import {TribeThreadInterface} from "@/interfaces/TribeInterface";
 import {useAppDispatch} from "@/redux/hook";

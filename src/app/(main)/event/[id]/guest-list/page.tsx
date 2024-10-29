@@ -1,11 +1,11 @@
 "use client"
 import React, {useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
-import ChevronRight from "@/image/icons/ChevronRight.svg";
-import SearchIcon from "@/image/icons/search.svg";
-import UploadIcon from "@/image/icons/UploadIcon.svg";
-import ScanIcon from "@/image/icons/ScanIcon.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
+import ChevronRight from "@/images/icons/chevronRight.svg";
+import SearchIcon from "@/images/icons/search.svg";
+import UploadIcon from "@/images/icons/uploadIcon.svg";
+import ScanIcon from "@/images/icons/scanIcon.svg";
 import pageData from "../../../../../../pageData.json"
 import GuestDetailsModal from "@/components/Events/Modals/GuestDetailsModal";
 import CheckedInModal from "@/components/Events/Modals/CheckedInModal";

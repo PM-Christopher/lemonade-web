@@ -1,8 +1,8 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
-import CalendarIcon from "@/image/icons/calendar-large.svg";
-import DotIcon from "@/image/icons/Dot.svg";
-import ClockOrange from "@/image/icons/clock-orange.svg";
+import CloseIcon from "@/images/icons/close.svg";
+import CalendarIcon from "@/images/icons/calendar-large.svg";
+import DotIcon from "@/images/icons/dot.svg";
+import ClockOrange from "@/images/icons/clock-orange.svg";
 
 type GuestDetailsInterface = {
     toggleMenu: () => void,

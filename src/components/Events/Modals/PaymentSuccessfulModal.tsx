@@ -1,7 +1,7 @@
 import React from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import PromotionImage from "@/image/PromoteEventIcon.png";
+import PromotionImage from "@/images/promoteEventIcon.png";
 
 type PSInterface = {
     toggle: () => void,
@@ -21,7 +21,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({toggle, isOpen}) => {
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex justify-center">
-                        <Image src={PromotionImage} alt="promotion_payment"/>
+                        <Image src={"/images/promoteEventIcon.png"} alt="promotion_payment" width={160} height={160}/>
                     </div>
                 </div>
                 <div className="mt-[24px]">

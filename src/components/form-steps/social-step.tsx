@@ -3,15 +3,14 @@ import React, {useEffect, useState} from "react"
 import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import Image from "next/image";
 import facebook_image from "@/image/facebook.png"
-import linkedin_image from "@/image/linkedin.png"
-import twitter_image from "@/image/twitter.png"
-import instagram_image from "@/image/instagram.png"
+import linkedin_image from "@/images/linkedin.png"
+import twitter_image from "@/images/twitter.png"
+import instagram_image from "@/images/instagram.png"
 import {Input} from "@/components/ui/input";
 
 import {axiosInstance} from "@/lib/axiosInstane";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
@@ -146,7 +145,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
                 <CardContent className="grid gap-4 mt-[30px]">
                     <div className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                         <div className="">
-                            <Image src={facebook_image} alt="" width={19.2}/>
+                            <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2}/>
                         </div>
                         <Input
                             name="facebook"
@@ -160,7 +159,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
                     </div>
                     <div className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                         <div className="">
-                            <Image src={linkedin_image} alt="" width={19.2}/>
+                            <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2}/>
                         </div>
                         <Input
                             name="linkedin"
@@ -174,7 +173,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
                     </div>
                     <div className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                         <div className="">
-                            <Image src={twitter_image} alt="" width={19.2}/>
+                            <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2}/>
                         </div>
                         <Input
                             name="twitter"
@@ -188,7 +187,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
                     </div>
                     <div className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
                         <div className="">
-                            <Image src={instagram_image} alt="" width={19.2}/>
+                            <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2}/>
                         </div>
                         <Input
                             name="instagram"

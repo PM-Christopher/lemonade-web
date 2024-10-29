@@ -1,22 +1,19 @@
 'use client'
-import React, {useEffect, useRef, useState} from "react"
+import React, {useRef, useState} from "react"
 import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
 import {Textarea} from "@/components/ui/textarea";
-import {Loader2} from "lucide-react";
 import avatar_url from "@/image/avatar_1.png"
 import Image from "next/image";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {axiosInstance} from "@/lib/axiosInstane";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch } from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import {authFailure, authStart, authSuccess, loadStop} from "@/features/authentication/authSlice";
+import {authFailure, authStart, loadStop} from "@/features/authentication/authSlice";
 import {useCookies} from "react-cookie";
 
 
@@ -178,7 +175,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                             avatar ? (
                                 <div style={{background: `url("${avatar}")`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat"}} onClick={handleImageClick} className="w-[80px] h-[80px] cursor-pointer rounded-[24px] border-[1px] border-[#3B4152]"></div>
                             ) : (
-                                <Image src={avatar_url} alt="avatar" width={80}  onClick={handleImageClick} className="cursor-pointer" />
+                                <Image src={"/images/avatar_1.png"} alt="avatar" width={80} height={80} onClick={handleImageClick} className="cursor-pointer" />
                             )
                         }
                         {/* Hidden file input */}

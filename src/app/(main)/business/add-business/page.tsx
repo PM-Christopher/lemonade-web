@@ -1,16 +1,14 @@
 "use client"
 import React, {useEffect, useState} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {SingleFileUploader} from "@/components/global/FileUploader";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import FacebookIcon from "@/image/icons/facebook-color.svg";
-import MessageIcon from "@/image/icons/MessageIcon.svg"
-import PhoneIcon from "@/image/icons/PhoneIcon.svg"
-import WebIcon from "@/image/icons/WebIcon.svg"
-import CloseIcon from "@/image/icons/close.svg"
-import {Button} from "@/components/ui/button";
+import MessageIcon from "@/images/icons/messageIcon.svg"
+import PhoneIcon from "@/images/icons/phoneIcon.svg"
+import WebIcon from "@/images/icons/webIcon.svg"
+import CloseIcon from "@/images/icons/close.svg"
 import {useRouter} from "next/navigation";
 import * as yup from "yup";
 import {useFormik} from "formik";

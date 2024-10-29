@@ -1,13 +1,11 @@
 "use client"
 import React, {useState, useEffect} from 'react';
 import TopNav from "@/components/Navigation/TopNav";
-import ChevronLeft from "@/image/icons/chevron-left.svg";
+import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
-import vertical_image from "@/image/event_images/vertical_poster.png"
-import CalendarIcon from "@/image/icons/calendar.svg";
-import ClockIcon from "@/image/icons/clock.svg";
+import CalendarIcon from "@/images/icons/calendar.svg";
+import ClockIcon from "@/images/icons/clock.svg";
 import {Button} from "@/components/ui/button";
-import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";

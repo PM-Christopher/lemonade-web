@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import CloseIcon from "@/image/icons/close.svg";
+import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
