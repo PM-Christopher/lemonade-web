@@ -1,8 +1,6 @@
 'use client'
-import Link from "next/link"
-import React, {useEffect, useState} from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import axios from "axios"
 import toast from "react-hot-toast"
 import {
     Card,
@@ -13,9 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
-import logo_url from "@/image/logo.png"
-import reset_password_url from "@/image/reset_password.png"
 import AuthLayout from "@/components/layouts/AuthLayout";
+import {axiosInstance} from "@/lib/axiosInstane";
 
 
 export default function ResetPasswordPage() {
@@ -31,7 +28,7 @@ export default function ResetPasswordPage() {
     const onSignup = async () => {
         try {
             setLoading(true)
-            await axios.post("/api/users/signup", user)
+            await axiosInstance.post("/api/users/signup", user)
             toast.success("Signup successfull")
             toast("Please check your inbox and click on verification link.", {duration: 10000})
             router.push("/login")
@@ -48,7 +45,7 @@ export default function ResetPasswordPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={logo_url} alt="logo" width={127} height={56}/>
+                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
                         <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
@@ -64,7 +61,7 @@ export default function ResetPasswordPage() {
                             </p>
                         </div>
                         <div>
-                            <Image src={reset_password_url} alt="signup image" width={511.06} height={519.77}/>
+                            <Image src={"/images/reset_password.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
                     <Card className="p-10 w-[480px]">

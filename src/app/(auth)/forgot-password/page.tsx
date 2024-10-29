@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
-import logo_url from "@/image/logo.png"
 import forgot_password_url from "@/image/forgot_password.png"
 import AuthLayout from "@/components/layouts/AuthLayout";
 
@@ -48,7 +47,7 @@ export default function ForgotPasswordPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={logo_url} alt="logo" width={127} height={56}/>
+                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
                         <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>

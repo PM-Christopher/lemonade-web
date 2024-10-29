@@ -1,9 +1,9 @@
 'use client'
 import Link from "next/link"
-import React, {useEffect, useState} from "react"
+import React from "react"
 import {useCookies} from "react-cookie";
 import { useRouter } from "next/navigation"
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch } from "@/redux/hook";
 import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
@@ -13,16 +13,9 @@ import {
     CardContent,
     CardFooter,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2 } from "lucide-react"
 import Image from "next/image"
-import image_url from "@/image/signup_image.png"
-import logo_url from "@/image/logo.png"
-import apple_logo from "@/image/apple.png"
-import google_logo from "@/image/google.png"
-import facebook_logo from "@/image/facebook.png"
 import {FormikButton} from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
 
@@ -75,7 +68,7 @@ export default function SignupPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={logo_url} alt="logo" width={127} height={56}/>
+                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
                         <Link href="/login">
@@ -91,7 +84,7 @@ export default function SignupPage() {
                                 pool of talents.</p>
                         </div>
                         <div>
-                            <Image src={image_url} alt="signup image" width={511.06} height={519.77}/>
+                            <Image src={"/images/signup_image.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
@@ -164,13 +157,13 @@ export default function SignupPage() {
                             </CardContent>
                             <CardContent className="flex justify-center items-center gap-2 mt-4">
                                 <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={apple_logo} alt="logo" width={24} height={24}/>
+                                    <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
                                 </div>
                                 <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={google_logo} alt="logo" width={24} height={24}/>
+                                    <Image src={"/images/google.png"} alt="logo" width={24} height={24}/>
                                 </div>
                                 <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={facebook_logo} alt="logo" width={24} height={24}/>
+                                    <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col justify-center mt-4">

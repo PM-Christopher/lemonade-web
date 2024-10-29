@@ -1,25 +1,21 @@
 'use client'
-import React, {useEffect, useState} from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import {
     Card,
     CardContent,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
 import Image from "next/image"
-import verify_url from "@/image/verification.png"
-import logo_url from "@/image/logo.png"
 import OtpInput from 'react-otp-input';
 import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import {authFailure, authStart, authSuccess, loadStop} from "@/features/authentication/authSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import {authFailure, authStart, loadStop} from "@/features/authentication/authSlice";
+import { useAppDispatch } from "@/redux/hook";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {useCookies} from "react-cookie";
-import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
+import { setIsRouting } from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 
@@ -50,7 +46,6 @@ export default function VerifyPage() {
             .required("Code is required"),
     });
 
-    const [verifyError, setVerifyError] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -62,8 +57,6 @@ export default function VerifyPage() {
             await verifyOtp(values);
         },
     })
-
-    // console.log({formik})
 
     const [otp, setOtp] = useState(formik.values.code);
 
@@ -106,7 +99,7 @@ export default function VerifyPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={logo_url} alt="logo" width={127} height={56}/>
+                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
                         <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
@@ -121,7 +114,7 @@ export default function VerifyPage() {
                             </p>
                         </div>
                         <div className="mt-[24px]">
-                            <Image src={verify_url} alt="signup image" width={320} height={257.55}/>
+                            <Image src={"/images/verification.png"} alt="signup image" width={320} height={257.55}/>
                         </div>
                     </div>
                     <form onSubmit={formik.handleSubmit}>

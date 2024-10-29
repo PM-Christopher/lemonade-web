@@ -1,13 +1,7 @@
 'use client'
-import Link from "next/link"
 import React, {useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
-import axios from "axios"
-import toast from "react-hot-toast"
 import Image from "next/image"
-import image_url from "@/image/signup_image.png"
-import logo_url from "@/image/logo.png"
-import profile_ver_url from "@/image/profile_verification.png"
 import ProfileStep from "@/components/form-steps/profile-step";
 import AddressStep from "@/components/form-steps/address-step";
 import SkillStep from "@/components/form-steps/skills-step";
@@ -81,7 +75,7 @@ export default function ProfileStepsPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={logo_url} alt="logo" width={127} height={56}/>
+                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
                         <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
@@ -99,7 +93,7 @@ export default function ProfileStepsPage() {
                             </p>
                         </div>
                         <div>
-                            <Image src={profile_ver_url} alt="signup image" width={320}/>
+                            <Image src={'/images/profile_verification.png'} alt="signup image" width={320} height={361}/>
                         </div>
                     </div>
                     {renderStep()}

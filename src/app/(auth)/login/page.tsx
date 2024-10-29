@@ -1,38 +1,20 @@
 'use client'
 import Link from "next/link"
-import React, {useEffect, useState} from "react"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import axios from "axios"
-import toast from "react-hot-toast"
 import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2 } from "lucide-react"
 import Image from "next/image"
-import image_url from "@/image/signup_image.png"
-import logo_url from "@/image/logo.png"
-import apple_logo from "@/image/apple.png"
-import google_logo from "@/image/google.png"
-import facebook_logo from "@/image/facebook.png"
 
-import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import {authFailure, authStart, authSuccess, loadStop} from "@/features/authentication/authSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import {axiosInstance} from "@/lib/axiosInstane";
+import { useAppDispatch } from "@/redux/hook";
 import {useCookies} from "react-cookie";
-import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {login} from "@/features/authentication/authApi";
 import AuthLayout from "@/components/layouts/AuthLayout";
 
@@ -74,7 +56,7 @@ export default function LoginPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={logo_url} alt="logo" width={127} height={56}/>
+                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
                     <div>
                         <Link href="/signup">
@@ -91,7 +73,7 @@ export default function LoginPage() {
                             </p>
                         </div>
                         <div>
-                            <Image src={image_url} alt="signup image" width={511.06} height={519.77}/>
+                            <Image src={"/images/signup_image.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
@@ -136,13 +118,13 @@ export default function LoginPage() {
                             </CardContent>
                             <CardContent className="flex justify-center items-center gap-2 mt-4">
                                 <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={apple_logo} alt="logo" width={24} height={24}/>
+                                    <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
                                 </div>
                                 <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={google_logo} alt="logo" width={24} height={24}/>
+                                    <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
                                 </div>
                                 <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={facebook_logo} alt="logo" width={24} height={24}/>
+                                    <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>
                                 </div>
                             </CardContent>
                         </Card>
