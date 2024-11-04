@@ -252,7 +252,6 @@ const EditEventPage = ( { params }: {params: {id: number}} ) => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
@@ -260,7 +259,7 @@ const EditEventPage = ( { params }: {params: {id: number}} ) => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Add event</p>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4 flex flex-col items-center">
+                <section className="mt-4 flex flex-col items-center">
                     <form onSubmit={formik.handleSubmit}>
                         <div className="bg-white mt-10 w-[640px] p-[48px] rounded-[12px] flex flex-col">
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px]">EVENT

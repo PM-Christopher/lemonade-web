@@ -57,7 +57,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
                 </div>
             </div>
 
-            <section className="min-h-screen mt-4 flex flex-col items-center">
+            <section className="mt-4 flex flex-col items-center">
                 {/*<EmptyEvent />*/}
                 {renderView()}
                 <PaymentSettingsModal toggle={activatePaymentModal} option={togglePaymentModel} />

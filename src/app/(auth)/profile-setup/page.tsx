@@ -74,29 +74,31 @@ export default function ProfileStepsPage() {
 
     return (
         <AuthLayout>
-            <section className="bg-gradient-light-green">
+            <section className="bg-white tablet:bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
                         <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
                     </div>
-                    <div>
-                        <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
-                    </div>
                 </div>
-                <div className="min-h-screen flex flex-wrap items-start mt-20 justify-center gap-16">
-                    <div className="flex flex-col">
-                        <div>
-                            <p className="text-[18px] font-semibold leading-[48px] font-sans">Welcome,</p>
-                            <p className="text-[40px] font-bold leading-[48px] font-ruso text-mid-green">
+                <div className="flex flex-col mt-[16px] items-center tablet:items-start justify-center gap-[4px] tablet:gap-16 px-[16px] tablet:px-4 tablet:flex-row">
+                    <div className="flex flex-col items-start w-full tablet:w-[438px] px-[16px]">
+                        <div className="flex flex-col">
+                            <p className="text-[24px] tablet:text-[18px] font-semibold leading-[48px] font-sans text-left w-[295px] ">Welcome,</p>
+                            <p className="text-[24px] tablet:text-[32px] font-bold leading-[48px] font-ruso text-mid-green text-left w-[343px] tablet:w-[438px]">
                                 {user?.fullname}
                             </p>
-                            <p className="text-[18px] font-normal leading-[27px] font-sans mt-[12px]">
-                                Set up your account to optimize your experience <br/> on the Lemonade network. Don’t
-                                worry this will <br/> take less than a minute.
-                            </p>
+                            {/* Removed the outer div that had hidden class */}
+                            <div className="hidden tablet:flex mt-[12px]">
+                                <p className="text-[18px] font-normal leading-[27px] font-sans w-0 tablet:w-[438px]">
+                                    Set up your account to optimize your experience <br/>
+                                    on the Lemonade network. Don’t worry this will <br/>
+                                    take less than a minute.
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <Image src={'/images/profile_verification.png'} alt="signup image" width={320} height={361}/>
+                        <div className="hidden tablet:flex mt-[24px]">
+                            <Image src={'/images/profile_verification.png'} alt="signup image" width={320}
+                                   height={361}/>
                         </div>
                     </div>
                     {renderStep()}

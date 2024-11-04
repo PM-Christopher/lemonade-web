@@ -27,7 +27,6 @@ function GuestListPage() {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
@@ -35,7 +34,7 @@ function GuestListPage() {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Guest list</p>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4 flex flex-col items-center gap-4">
+                <section className="mt-4 flex flex-col items-center gap-4">
                     <div className="w-[800px] bg-white rounded-[12px] p-[24px]">
                         <div className="flex gap-3">
                             <div

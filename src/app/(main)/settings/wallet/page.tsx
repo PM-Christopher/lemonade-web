@@ -52,7 +52,6 @@ function WalletSettingsPage({}) {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <ReferralSideMenu toggleMenu={toggleRefMenu} isOpen={isRefOpen}/>
                 <AffiliateSideMenu isOpen={isAfOpen} toggleMenu={toggleAfMenu}/>
                 <div
@@ -64,7 +63,7 @@ function WalletSettingsPage({}) {
                     </div>
                 </div>
 
-                <section className="min-h-screen mt-4 flex justify-center gap-[20px]">
+                <section className="mt-4 flex justify-center gap-[20px]">
                     <div className="flex flex-col w-[580px]">
                         <div className="rounded-[12px] p-[16px] flex flex-col bg-white">
                             <div className="flex flex-col p-[16px] border-b-[1px] border-b-mid-grey">

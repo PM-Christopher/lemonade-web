@@ -126,7 +126,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <Card className="p-[15px] w-[480px]">
+            <Card className="w-full tablet:w-[480px] rounded-[16px] shadow-none border-none">
                 <CardHeader className="grid gap-4">
                     <div className="flex gap-2">
                         <div className="w-[15px] h-[2px] bg-step-color"/>
@@ -204,7 +204,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
                     <div className="mb-6 mt-2">
                         <p className="text-light-green text-center font-sans font-semi-normal text-[16px]">Skip</p>
                     </div>
-                    <FormikButton loading={formik.isSubmitting} title="Done" error={formik.isValid}/>
+                    <FormikButton loading={formik.isSubmitting} title="Done" error={formik.isValid} classes="w-full h-[48px] rounded-[12px]"/>
                 </CardContent>
             </Card>
         </form>

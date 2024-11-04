@@ -32,7 +32,6 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
                         <Link href="/event">
@@ -41,7 +40,7 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Event details</p>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4 flex flex-col items-center">
+                <section className="mt-4 flex flex-col items-center">
                     <div className="flex justify-center">
                         <div className="flex items-center gap-[48px] min-w-[1000px] bg-white rounded-[16px] p-[4px]">
                             <Image src={data?.event?.event_image} alt="event details" width={496} height={531.91}/>

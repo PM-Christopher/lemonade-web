@@ -59,7 +59,6 @@ const ConnectPage = () => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div>
@@ -83,7 +82,7 @@ const ConnectPage = () => {
                         </div>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4 flex flex-col items-center">
+                <section className="mt-4 flex flex-col items-center">
                     <div className="flex">
                         <div
                             className="w-[375px] h-[648px] border-[1px] bg-white flex flex-col rounded-tl-[16px] rounded-bl-[16px]">

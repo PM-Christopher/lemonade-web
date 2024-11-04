@@ -33,7 +33,7 @@ function AgentSectionView({}) {
         }
     }
     return (
-        <section className="min-h-screen mt-4 flex flex-col items-center">
+        <section className="mt-4 flex flex-col items-center">
             <div className="flex gap-[24px]">
                 <div>
                     <div className="w-[550px] p-[16px] bg-white rounded-[12px]">

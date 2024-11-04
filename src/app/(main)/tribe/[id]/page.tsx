@@ -41,7 +41,6 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     return (
         <MainLayout>
             <div className="bg-light_grey pb-10">
-                <TopNav/>
                 <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 items-center cursor-pointer" onClick={() => router.push("/tribe")}>
                         <div>

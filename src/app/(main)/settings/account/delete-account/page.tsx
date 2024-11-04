@@ -17,7 +17,6 @@ const DeleteAccountPage = () => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
@@ -26,7 +25,7 @@ const DeleteAccountPage = () => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Delete account</p>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4 flex flex-col items-center">
+                <section className="mt-4 flex flex-col items-center">
                     <div className="w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
                         <p className="max-w-[592px] font-normal text-[14px] text-light-black">
                             Deleting your account permanently removes your data from our system. You will have a <span

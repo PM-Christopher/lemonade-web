@@ -65,7 +65,7 @@ export default function SignupPage() {
 
     return (
         <AuthLayout>
-            <section className="bg-gradient-light-green">
+            <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
                         <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
@@ -76,22 +76,24 @@ export default function SignupPage() {
                         </Link>
                     </div>
                 </div>
-                <div className="min-h-screen flex flex-wrap items-start justify-center gap-16">
-                    <div className="flex flex-col">
-                        <div>
+                <div className="flex flex-col mt-24 items-center tablet:items-start justify-center gap-16 tablet:px-4 tablet:flex-row">
+                    <div className="flex flex-col phone:mb-[16px]">
+                        <div className="text-center phone:text-left">
                             <p className="text-[40px] font-bold leading-[48px] font-ruso">Create account</p>
                             <p className="text-[18px] font-normal leading-[27px] font-sans">Join the network of diverse
                                 pool of talents.</p>
                         </div>
-                        <div>
+                        <div className="hidden tablet:flex">
                             <Image src={"/images/signup_image.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
-                        <Card className="p-10 w-[480px]">
-                            <CardContent className="grid gap-4">
+                        <Card className="p-[24px] w-full tablet:w-[480px] rounded-[16px] shadow-none border-none">
+                            <CardContent className="grid gap-[24px] tablet:gap-[40px]">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="username" className="font-label">Full name</Label>
+                                    <Label htmlFor="username"
+                                           className="font-sans text-text-grey font-normal text-[14px]">Full
+                                        name</Label>
                                     <Input
                                         id="fullname"
                                         type="text"
@@ -108,7 +110,8 @@ export default function SignupPage() {
                                     ) : null}
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email" className="font-label">Email address</Label>
+                                    <Label htmlFor="email" className="font-sans text-text-grey font-normal text-[14px]">Email
+                                        address</Label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -126,7 +129,8 @@ export default function SignupPage() {
 
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password" className="font-label">Password</Label>
+                                    <Label htmlFor="password"
+                                           className="font-sans text-text-grey font-normal text-[14px]">Password</Label>
                                     <Input
                                         id="password"
                                         type="password"
@@ -143,33 +147,29 @@ export default function SignupPage() {
                                     ) : null}
 
                                 </div>
-                            </CardContent>
-                            <CardContent className="flex flex-col space-y-2">
                                 <FormikButton loading={formik.isSubmitting} title="Create account"
-                                              error={formik.isValid}/>
-                            </CardContent>
-                            <CardContent className="flex justify-center items-center gap-2">
-                                <div className="w-20 h-[2px] bg-border-grey"/>
-                                <div className="font-sans text-grey-light">
-                                    Or continue with
+                                              error={formik.isValid} classes="w-full h-[48px] rounded-[12px]"/>
+                                <div className="flex justify-around items-center">
+                                    <div className="w-[60px] h-[2px] bg-border-grey"/>
+                                    <p className="text-grey-light font-normal text-[14px] text-center">Or continue
+                                        with</p>
+                                    <div className="w-[60px] h-[2px] bg-border-grey"/>
                                 </div>
-                                <div className="w-20 h-[2px] bg-border-grey"/>
-                            </CardContent>
-                            <CardContent className="flex justify-center items-center gap-2 mt-4">
-                                <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
-                                </div>
-                                <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={"/images/google.png"} alt="logo" width={24} height={24}/>
-                                </div>
-                                <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>
+                                <div className="flex justify-center items-center gap-[24px] mt-4">
+                                    <div className="app-icon-border flex justify-center items-center">
+                                        <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
+                                    </div>
+                                    <div className="app-icon-border flex justify-center items-center">
+                                        <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
+                                    </div>
+                                    <div className="app-icon-border flex justify-center items-center">
+                                        <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>
+                                    </div>
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col justify-center mt-4">
-                                <p className="font-sans text-[14px] font-normal">By continuing you agree with Lemonade
-                                    network’s</p>
-                                <p className="font-sans text-[14px] font-normal">Terms of Use and Privacy Policies</p>
+                                <p className="text-[14px] font-normal w-[295px] tablet:w-[384px] text-center">By continuing you agree with Lemonade
+                                    network’s <span className="text-mid-green underline cursor-pointer">Terms of Use</span> and <span className="text-mid-green underline cursor-pointer">Privacy Policies</span> </p>
                             </CardFooter>
                         </Card>
                     </form>

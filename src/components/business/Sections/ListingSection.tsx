@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 const ListingSection = () => {
     const router =  useRouter()
     return (
-        <section className="min-h-screen mt-4 flex flex-col items-center">
+        <section className="mt-4 flex flex-col items-center">
             <div className="flex justify-center items-center h-screen">
                 <div className="flex flex-col items-center">
                     <Image src={"/images/business_empty.png"} alt="business" width={160} height={148} />

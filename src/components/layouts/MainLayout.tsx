@@ -9,8 +9,12 @@ import {useAppDispatch, useAppSelector} from "@/redux/hook";
 import {redirect, useRouter} from "next/navigation";
 import {authSuccess, resetAuth} from "@/features/authentication/authSlice";
 import {axiosInstance} from "@/lib/axiosInstane";
+import TopNav from "@/components/navigation/TopNav";
+import {useMediaQuery} from "react-responsive";
+import BottomNav from "@/components/navigation/BottomNav";
 
 const MainLayout = ({children}: {children: React.ReactNode}) => {
+    const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
     const { admin } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const router = useRouter();
@@ -54,8 +58,14 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
     };
 
     return (
-        <div>
+        <div className="bg-light_grey pb-10 min-h-screen h-full overflow-hidden w-full">
+            <TopNav/>
             {children}
+            {
+                isMobile && (
+                    <BottomNav />
+                )
+            }
         </div>
     );
 }

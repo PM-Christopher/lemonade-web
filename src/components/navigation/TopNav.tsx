@@ -5,16 +5,20 @@ import {navLinks} from "../../../pageLinks";
 import {activeLink} from "@/lib/activeLink";
 import {useSelector} from "react-redux";
 import {formatName} from "@/lib/helper";
+import {useMediaQuery} from "react-responsive";
 
 const TopNav = () => {
     const {user} = useSelector((state: any) => state.auth)
+    const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
 
     return (
         <nav className="flex flex-wrap items-center justify-between p-2 px-10 bg-white">
             <div>
-                <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
+                {
+                    isMobile ? (<Image src={"/images/logo.png"} alt="logo" width={73} height={32}/>) : (<Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>)
+                }
             </div>
-            <div className="flex justify-center items-center gap-8">
+            <div className="hidden tablet:flex justify-center items-center gap-8">
                 {
                     navLinks.map((link, idx) => (
                         <Link href={link.path} key={idx}>
@@ -30,7 +34,7 @@ const TopNav = () => {
                 <div>
                     <Image src={"/images/bellIcon.png"} alt="notification" width={28} height={28} />
                 </div>
-                <div>
+                <div className="hidden tablet:block">
                     <p className="font-sans text-[18px] leading-[27px] font-normal">
                         Hello, <span className="font-semibold">{user?.fullname ? formatName(user.fullname)?.[0] : ''}</span>
                     </p>

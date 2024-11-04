@@ -55,7 +55,6 @@ const BusinessPage = () => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} detailsToggle={toggleServiceDetailsMenu}/>
                 <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
                     <div className={"flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"}>

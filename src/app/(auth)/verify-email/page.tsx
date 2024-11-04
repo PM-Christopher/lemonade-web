@@ -100,7 +100,7 @@ export default function VerifyPage() {
 
     return (
         <AuthLayout>
-            <section className="bg-gradient-light-green">
+            <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
                         <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
@@ -109,21 +109,21 @@ export default function VerifyPage() {
                         <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
                     </div>
                 </div>
-                <div className="min-h-screen flex flex-wrap items-start mt-52 justify-center gap-16">
-                    <div className="flex flex-col">
-                        <div>
-                            <p className="text-[40px] font-bold leading-[48px] font-ruso">Verify email address</p>
-                            <p className="text-[18px] font-normal leading-[27px] font-sans">
-                                Enter the 4-digit code sent to {user?.email} <br/> to verify your account
+                <div className="flex flex-col mt-24 items-center tablet:items-start justify-center gap-16 tablet:px-4 tablet:flex-row">
+                    <div className="flex flex-col phone:mb-[16px]">
+                        <div className="text-center phone:text-left">
+                            <p className="text-[24px] tablet:text-[40px] font-bold leading-[48px] font-ruso">Verify email address</p>
+                            <p className="text-[14px] tablet:text-[18px] font-normal leading-[27px] w-[327px] tablet:w-[421px]">
+                                Enter the 4-digit code sent to {user?.email} to verify your account
                             </p>
                         </div>
-                        <div className="mt-[24px]">
+                        <div className="hidden tablet:flex mt-[24px]">
                             <Image src={"/images/verification.png"} alt="signup image" width={320} height={257.55}/>
                         </div>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
-                        <Card className="p-10 w-[480px] border-none shadow-none">
-                            <CardContent className="grid grid-cols-1">
+                        <Card className="p-[24px] w-full tablet:w-[480px] rounded-[16px] shadow-none border-none">
+                            <CardContent className="grid gap-[24px] tablet:gap-[40px]">
                                 <div className="flex flex-col items-center justify-center">
                                     <OtpInput
                                         value={formik.values.code}
@@ -148,15 +148,11 @@ export default function VerifyPage() {
                                         </p>
                                     ) : null}
                                 </div>
-                            </CardContent>
-                            <CardContent className="flex justify-center mt-[10px] mb-[10px]">
-                                <div>
+                                <div className="flex justify-center mt-[10px] mb-[10px]">
                                     <p className="font-sans font-semi-normal text-light-green text-[16px]">Resend code
                                         in 60 secs</p>
                                 </div>
-                            </CardContent>
-                            <CardContent className="flex flex-col space-y-2">
-                                <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid}/>
+                                <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid} classes="w-full h-[48px] rounded-[12px]" />
                             </CardContent>
                         </Card>
                     </form>

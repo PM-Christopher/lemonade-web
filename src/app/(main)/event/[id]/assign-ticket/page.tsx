@@ -79,7 +79,6 @@ const  AssignTicketPage = ({params}: {params: {id: number}}) => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
@@ -87,7 +86,7 @@ const  AssignTicketPage = ({params}: {params: {id: number}}) => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Assign ticket</p>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4">
+                <section className="mt-4">
                     <form onSubmit={formik.handleSubmit}>
                         <div className="flex justify-center mt-[16px]">
                             <section className="bg-white w-[640px] p-[48px] rounded-[12px] gap-[24px]">

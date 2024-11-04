@@ -57,7 +57,7 @@ const BusinessSection = () => {
 
     const { data, loading } = useRequest("/business", "GET", {}, true, getHeader())
     return (
-        <section className="min-h-screen mt-4 flex flex-col items-center">
+        <section className="mt-4 flex flex-col items-center">
             <div className="p-[16px] w-[1312px] rounded-[12px] gap-[12px] bg-light-green-50">
                 <p className="font-semibold text-[18px]">Featured</p>
                 {

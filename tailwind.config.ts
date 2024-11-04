@@ -11,16 +11,11 @@ const config: Config = {
   ],
   theme: {
 	  screens: {
-		  phone: "576px",
-		  tablet: "768px",
-		  // => @media (min-width: 640px) { ... }
-		  //large: "992px",
-
-		  laptop: "1024px",
-		  // => @media (min-width: 1024px) { ... }
-
-		  desktop: "1280px",
-		  // => @media (min-width: 1280px) { ... }
+		  phone: "640px",       // Small phones and larger
+		  tablet: "768px",      // Tablets and larger
+		  laptop: "1024px",     // Laptops and larger
+		  desktop: "1280px",    // Desktops and larger
+		  wide: "1536px"        // Large desktops and ultra-wide screens
 	  },
 	  extend: {
 		  fontFamily: {
@@ -144,7 +139,7 @@ const config: Config = {
 
 		  },
 		  height: {
-			  "desk-content": "calc(100vh-250px)",
+			  "desk-content": "calc(100vh-100px)",
 			  "mobile-content": "calc(100vh-50px)",
 		  },
 	  }

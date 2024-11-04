@@ -53,7 +53,7 @@ export default function LoginPage() {
 
     return (
         <AuthLayout>
-            <section className="bg-gradient-light-green">
+            <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
                         <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
@@ -64,23 +64,24 @@ export default function LoginPage() {
                         </Link>
                     </div>
                 </div>
-                <div className="min-h-screen flex flex-wrap items-start mt-10 justify-center gap-16">
-                    <div className="flex flex-col">
-                        <div>
+                <div className="flex flex-col mt-24 items-center tablet:items-start justify-center gap-16 tablet:px-4 tablet:flex-row">
+                    <div className="flex flex-col phone:mb-[16px]">
+                        <div className="text-center phone:text-left">
                             <p className="text-[40px] font-bold leading-[48px] font-ruso">Login</p>
                             <p className="text-[18px] font-normal leading-[27px] font-sans mt-2">
                                 Let's get you back into your account
                             </p>
                         </div>
-                        <div>
+                        {/* Show image only on desktop and laptop screens */}
+                        <div className="hidden tablet:flex">
                             <Image src={"/images/signup_image.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
                     <form onSubmit={formik.handleSubmit}>
-                        <Card className="p-10 w-[480px]">
-                            <CardContent className="grid gap-4">
+                        <Card className="p-[24px] w-full tablet:w-[480px] rounded-[16px] shadow-none border-none">
+                            <CardContent className="grid gap-[24px] tablet:gap-[40px]">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email" className="font-label">Email address</Label>
+                                    <Label htmlFor="email" className="font-sans text-text-grey font-normal text-[14px]">Email address</Label>
                                     <Input
                                         id="email"
                                         type="email"
@@ -92,7 +93,7 @@ export default function LoginPage() {
                                     />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password" className="font-label">Password</Label>
+                                    <Label htmlFor="password" className="font-sans text-text-grey font-normal text-[14px]">Password</Label>
                                     <Input
                                         id="password"
                                         type="password"
@@ -102,34 +103,30 @@ export default function LoginPage() {
                                         onBlur={formik.handleBlur}
                                     />
                                 </div>
-                            </CardContent>
-                            <CardContent className="flex flex-col space-y-2">
-                                <FormikButton loading={formik.isSubmitting} title="Login" error={formik.isValid}/>
-                                {/*<Button className="auth-button">*/}
-                                {/*    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Login"}*/}
-                                {/*</Button>*/}
-                            </CardContent>
-                            <CardContent className="flex justify-center items-center gap-2">
-                                <div className="w-20 h-[2px] bg-border-grey"/>
-                                <div className="font-sans text-grey-light">
-                                    Or continue with
+                                <FormikButton loading={formik.isSubmitting} title="Login" error={formik.isValid} classes="w-full h-[48px] rounded-[12px]"/>
+                                <div className="flex justify-around items-center">
+                                    <div className="w-[60px] h-[2px] bg-border-grey"/>
+                                    <p className="text-grey-light font-normal text-[14px] text-center">Or continue
+                                        with</p>
+                                    <div className="w-[60px] h-[2px] bg-border-grey"/>
                                 </div>
-                                <div className="w-20 h-[2px] bg-border-grey"/>
-                            </CardContent>
-                            <CardContent className="flex justify-center items-center gap-2 mt-4">
-                                <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
-                                </div>
-                                <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
-                                </div>
-                                <div className="app-icon-border flex justify-center items-center">
-                                    <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>
+                                <div className="flex justify-center items-center gap-[24px] mt-4">
+                                    <div className="app-icon-border flex justify-center items-center">
+                                        <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
+                                    </div>
+                                    <div className="app-icon-border flex justify-center items-center">
+                                        <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
+                                    </div>
+                                    <div className="app-icon-border flex justify-center items-center">
+                                        <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
                     </form>
                 </div>
+
+
             </section>
         </AuthLayout>
     )

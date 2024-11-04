@@ -14,7 +14,6 @@ const ProgramDetailsPage = () => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
                         <ChevronLeft/>
@@ -22,7 +21,7 @@ const ProgramDetailsPage = () => {
                     </div>
                 </div>
 
-                <section className="min-h-screen mt-4 flex flex-col items-center">
+                <section className="mt-4 flex flex-col items-center">
                     <div className="flex justify-between gap-[40px]">
                         <div className="w-[640px] p-[24px] rounded-[12px] gap-[24px] bg-white">
                             <div className="bg-green-tint p-[8px] px-[16px] rounded-[8px] flex gap-3 items-center">

@@ -10,9 +10,12 @@ import {TribeInterface} from "@/interfaces/TribeInterface";
 import {EventInterface} from "@/interfaces/EventInterface";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import MainLayout from "@/components/layouts/MainLayout";
+import BottomNav from "@/components/navigation/BottomNav";
+import {useMediaQuery} from "react-responsive";
 
 
 export default function DashboardPage() {
+    const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
         return {
@@ -28,14 +31,12 @@ export default function DashboardPage() {
 
     return (
         <MainLayout>
-            <div className="bg-light_grey pb-10">
-                <TopNav/>
-                <div className="min-h-screen">
+            <div className="w-full">
                     <section id="forums" className="bg-white p-4 rounded-lg m-4 mx-10">
                         <p className="font-sans font-semibold leading-[27px]">Tribe activities</p>
                         <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
                             {data?.tribes.map((tribe: TribeInterface, idx: number) => (
-                                <div className="w-[422px]" key={idx}> {/* Set width for uniformity */}
+                                <div className="w-[422px]" key={idx}>
                                     <TribeCard tribe={tribe}/>
                                 </div>
                             ))}
@@ -53,16 +54,17 @@ export default function DashboardPage() {
                     </section>
                     <section id="business" className="bg-white p-4 pb-7 rounded-lg my-10 mx-10">
                         <p className="font-sans font-semibold leading-[27px]">Featured businesses</p>
-                        <div className="grid grid-cols-4 gap-2 mt-3">
+                        <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
                             {
                                 businessData?.businesses.map((business: BusinessInterface, idx: number) => (
-                                    <BusinessCard key={idx} business={business}/>
+                                    <div className="w-[343px] tablet:w-[422px]" key={idx}>
+                                        <BusinessCard key={idx} business={business}/>
+                                    </div>
                                 ))
                             }
                         </div>
                     </section>
                 </div>
-            </div>
         </MainLayout>
     )
 }

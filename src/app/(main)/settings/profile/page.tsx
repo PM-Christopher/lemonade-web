@@ -29,7 +29,6 @@ const ProfileSettingsPage = ({}) => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
@@ -39,7 +38,7 @@ const ProfileSettingsPage = ({}) => {
                     </div>
                 </div>
 
-                <section className="min-h-screen mt-[61.5px] flex flex-col items-center">
+                <section className="mt-[61.5px] flex flex-col items-center">
                     <div className="flex flex-col items-center">
                         <div className="relative">
                             <Image src={user?.profile_image ?? "/images/avatar_4.png"} alt="avatar" width={84} height={84}

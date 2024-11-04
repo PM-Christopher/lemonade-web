@@ -43,7 +43,6 @@ const ConnectRequestPage = () => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
@@ -67,7 +66,7 @@ const ConnectRequestPage = () => {
                         </div>
                     </div>
                 </div>
-                <section className="min-h-screen mt-4 flex flex-col items-center">
+                <section className="mt-4 flex flex-col items-center">
                     <div
                         className="w-[640px] rounded-[12px] p-[24px] bg-white border-[1px] border-grey-20 max-h-[659px]">
                         <div className="overflow-y-auto max-h-screen hide-scrollbar">

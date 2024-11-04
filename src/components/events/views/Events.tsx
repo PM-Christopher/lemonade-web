@@ -20,7 +20,7 @@ const EventsSectionView: React.FC = () => {
     const { data, loading } = useRequest(`/events/attendees`, "GET", {}, true, getHeader())
 
     return (
-        <section className="min-h-screen mt-4 flex flex-col items-center">
+        <section className="mt-4 flex flex-col items-center">
             <div className="bg-light-green-50 p-[24px] w-[1008px] rounded-[12px] flex justify-center">
                 {
                     !loading && (
