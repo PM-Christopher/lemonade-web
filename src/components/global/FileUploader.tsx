@@ -10,6 +10,14 @@ export const SingleFileUploader = ({ setField, image, title, type, length="singl
     const dispatch = useAppDispatch()
     const [elementImage, setElementImage] = useState("")
 
+    const handleRemoveImage = async () => {
+        if (type === "event") {
+            await setField.setFieldValue("event_image", "")
+        } else if (type === "business") {
+            await setField.setFieldValue("image", "")
+        }
+    }
+
     useEffect(() => {
         if(image) {
             setElementImage(image)
@@ -82,11 +90,11 @@ export const SingleFileUploader = ({ setField, image, title, type, length="singl
                                 <div {...getRootProps()}>
                                     <input {...getInputProps()} />
                                     <div className="flex flex-col items-center w-[175.05px]">
-                                        <Image src={"/images/upload_image.png"} alt="upload" width={207} height={200}/>
-                                        <p className="mt-[12px] font-semi-normal font-sans text-[14px] leading-[21px] tracking-custom">
+                                        <Image src={"/images/upload_image.png"} alt="upload" width={56} height={56}/>
+                                        <p className="mt-[12px] text-center w-[155px] font-semi-normal font-sans text-[14px] leading-[21px] tracking-custom">
                                             {title}
                                         </p>
-                                        <p className="mt-[4px] font-sans font-normal text-[12px] leading-[14.4px] text-grey-40 items-center">Files
+                                        <p className="mt-[4px] font-sans font-normal text-[12px] leading-[14.4px] text-grey-40 items-center w-[175px] text-center">Files
                                             must be PNG, JPG, or JPEG format, under 2MB.</p>
                                     </div>
                                 </div>
@@ -105,7 +113,10 @@ export const SingleFileUploader = ({ setField, image, title, type, length="singl
 
                         <div
                             className="absolute top-0 right-0 m-2 w-6 h-6 bg-white rounded-full flex items-center justify-center cursor-pointer shadow z-10" // Ensure X is above image
-                            onClick={() => setElementImage("")}>
+                            onClick={() => {
+                                setElementImage("")
+                                handleRemoveImage()
+                            }}>
                             <span className="text-red-500 text-xl font-bold">X</span>
                         </div>
                     </div>

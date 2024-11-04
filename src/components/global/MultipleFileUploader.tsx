@@ -119,7 +119,7 @@ const MultipleFileUploader = ({ setField, images, title, type, length="single" }
                                        alt="event_image"
                                        width={165.5}
                                        height={165.5}
-                                       className="rounded-[12px] w-[165.5px] h-[165.5px]"
+                                       className="rounded-[12px] w-full h-full"
                                    />
 
                                    <div

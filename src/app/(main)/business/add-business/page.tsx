@@ -22,6 +22,7 @@ import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
+import {checkError} from "@/lib/checkError";
 
 
 interface businessCategories {
@@ -84,10 +85,10 @@ const AddBusinessPage = () => {
     const createBusinessSchema = yup.object({
         image: yup
             .string()
-            .required("business image is required"),
+            .required("Business image is required"),
         name: yup
             .string()
-            .required("business name is required"),
+            .required("Business name is required"),
         categories: yup
             .array()
             .of(yup.string())
@@ -194,6 +195,11 @@ const AddBusinessPage = () => {
                                 DETAILS</p>
                             <SingleFileUploader length="single" type="business" setField={formik} image=""
                                                 title="Upload business image"/>
+                            {formik.errors.image ? (
+                                <p className="text-[#FF8D8D] text-[12px]">
+                                    {formik.errors.image}
+                                </p>
+                            ) : null}
                             <div className="grid gap-2 mt-[24px]">
                                 <Label htmlFor="business_name"
                                        className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Business
@@ -209,11 +215,16 @@ const AddBusinessPage = () => {
                                         formik.setFieldValue("name", e.target.value)
                                     }}
                                 />
+                                {formik.errors.name ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.name}
+                                    </p>
+                                ) : null}
                             </div>
                             <div className="grid gap-2 mt-[24px]">
                                 <Label htmlFor="fullname"
                                        className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Business
-                                    category</Label>
+                                    categories</Label>
                                 <MultiSelect
                                     options={frameworksList}
                                     onValueChange={(values) => {
@@ -223,6 +234,11 @@ const AddBusinessPage = () => {
                                     placeholder="Select Category"
                                     className="h-12 rounded-xl bg-light_grey form-font border-0 shadow-none"
                                 />
+                                {formik.errors.categories ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.categories}
+                                    </p>
+                                ) : null}
                             </div>
                             <div className="grid gap-2 mt-[24px]">
                                 <Label htmlFor="fullname"
@@ -235,6 +251,11 @@ const AddBusinessPage = () => {
                                         formik.setFieldValue("description", e.target.value)
                                     }}
                                 ></textarea>
+                                {formik.errors.description ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.description}
+                                    </p>
+                                ) : null}
                             </div>
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px] mt-[48px]">BUSINESS
                                 ADDRESS</p>
@@ -251,6 +272,11 @@ const AddBusinessPage = () => {
                                         formik.setFieldValue("city", e.target.value)
                                     }}
                                 />
+                                {formik.errors.city ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.city}
+                                    </p>
+                                ) : null}
                             </div>
                             <div className="grid gap-2 mt-[24px]">
                                 <Label htmlFor="country"
@@ -266,6 +292,11 @@ const AddBusinessPage = () => {
                                         ))
                                     }
                                 </select>
+                                {formik.errors.country ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.country}
+                                    </p>
+                                ) : null}
                             </div>
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px] mt-[48px]">SERVICE
                                 DETAILS</p>
@@ -281,6 +312,12 @@ const AddBusinessPage = () => {
                                     onChange={(e) => setInputValue(e.target.value)}
                                     onKeyDown={addService}
                                 />
+                                {formik.errors.services ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.services}
+                                    </p>
+                                ) : null}
+                                <p className="text-text-grey my-[5px] text-[12px]">Click <i>enter</i> to add service</p>
                                 <div className="mt-[8px] flex flex-wrap gap-[4px]">
                                     {formik.values.services.map((service, index) => (
                                         <div
@@ -314,60 +351,82 @@ const AddBusinessPage = () => {
                                                   title="Upload multiple images"/>
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px] mt-[48px]">CONTACT
                                 DETAILS</p>
-                            <div
-                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
-                                <div>
-                                    <MessageIcon/>
+                            <div className="grid grid-cols-1">
+                                <div
+                                    className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
+                                    <div>
+                                        <MessageIcon/>
+                                    </div>
+                                    <div className="w-full">
+                                        <input
+                                            id="search"
+                                            type="text"
+                                            className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            placeholder="Email address"
+                                            value={formik.values.email}
+                                            onChange={(e) => {
+                                                formik.setFieldValue("email", e.target.value)
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-full">
-                                    <input
-                                        id="search"
-                                        type="text"
-                                        className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                                        placeholder="Email address"
-                                        value={formik.values.email}
-                                        onChange={(e) => {
-                                            formik.setFieldValue("email", e.target.value)
-                                        }}
-                                    />
-                                </div>
+                                {formik.errors.email ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.email}
+                                    </p>
+                                ) : null}
                             </div>
-                            <div
-                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
-                                <div>
-                                    <PhoneIcon/>
+                            <div className="grid grid-cols-1">
+                                <div
+                                    className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
+                                    <div>
+                                        <PhoneIcon/>
+                                    </div>
+                                    <div className="w-full">
+                                        <input
+                                            id="search"
+                                            type="text"
+                                            className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            placeholder="Phone number"
+                                            value={formik.values.phone_number}
+                                            onChange={(e) => {
+                                                formik.setFieldValue("phone_number", e.target.value)
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-full">
-                                    <input
-                                        id="search"
-                                        type="text"
-                                        className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                                        placeholder="Phone number"
-                                        value={formik.values.phone_number}
-                                        onChange={(e) => {
-                                            formik.setFieldValue("phone_number", e.target.value)
-                                        }}
-                                    />
-                                </div>
+                                {formik.errors.phone_number ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.phone_number}
+                                    </p>
+                                ) : null}
                             </div>
-                            <div
-                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
-                                <div>
-                                    <WebIcon/>
+                            <div className="grid grid-cols-1">
+                                <div
+                                    className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
+                                    <div>
+                                        <WebIcon/>
+                                    </div>
+                                    <div className="w-full">
+                                        <input
+                                            id="search"
+                                            type="text"
+                                            className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            placeholder="Website URL"
+                                            value={formik.values.website_url}
+                                            onChange={(e) => {
+                                                formik.setFieldValue("website_url", e.target.value)
+                                            }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-full">
-                                    <input
-                                        id="search"
-                                        type="text"
-                                        className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
-                                        placeholder="Website URL"
-                                        value={formik.values.website_url}
-                                        onChange={(e) => {
-                                            formik.setFieldValue("website_url", e.target.value)
-                                        }}
-                                    />
-                                </div>
+                                {formik.errors.website_url ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                    {formik.errors.website_url}
+                                    </p>
+                                ) : null}
                             </div>
+
                             <FormikButton title="List business" error={formik.isValid} loading={formik.isSubmitting}
                                           classes="mt-[32px] h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"/>
                         </div>
