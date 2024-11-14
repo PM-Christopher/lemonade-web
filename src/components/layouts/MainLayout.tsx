@@ -14,7 +14,7 @@ import {useMediaQuery} from "react-responsive";
 import BottomNav from "@/components/navigation/BottomNav";
 
 const MainLayout = ({children}: {children: React.ReactNode}) => {
-    const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
+    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const { admin } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const router = useRouter();

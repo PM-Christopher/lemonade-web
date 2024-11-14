@@ -5,7 +5,7 @@ const BoostDetailsModal = ({ boost, isOpen, toggleMenu }: {boost: any, isOpen: b
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[480px]">
+            <div className="bg-white rounded-lg shadow-lg w-[343px] laptop:w-[480px]">
                 <div className="flex justify-between items-center p-[4px] px-[16px] mt-[16px]">
                     <p className="font-semiBold text-[16px]">Boosting details</p>
                     <div className="flex items-center gap-2">

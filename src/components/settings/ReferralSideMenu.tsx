@@ -14,7 +14,7 @@ const ReferralSideMenu: React.FC<ReferralSideMenuInterface> = ({isOpen, toggleMe
                     isOpen ? 'translate-x-0' : 'translate-x-full'
                 }`}
             >
-                <div className="w-[585px] h-full bg-white pt-[24px]">
+                <div className="w-screen laptop:w-[585px] h-full bg-white pt-[24px]">
                     <div className="flex justify-between items-center px-[24px]">
                         <div>
                             <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">Referral History</p>

@@ -16,27 +16,29 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({business}) => {
             <div className="flex flex-col">
                 <div className="p-[16px]">
                     <div className="flex justify-between">
-                        <Image
-                            src={"/images/business_images/business_logo_1.png"}
-                            alt="Overlay Image"
-                            className="border border-step-color rounded-xl"
-                            width={40}
-                            height={40}
-                        />
-                        <div className="flex items-center gap-1 bg-mid-grey p-2 rounded-xl">
+                        <div className="flex flex-row laptop:flex-col items-center justify-center laptop:items-start gap-[8px] laptop:gap-[10px]">
+                            <Image
+                                src={"/images/business_images/business_logo_1.png"}
+                                alt="Overlay Image"
+                                className="border border-step-color rounded-xl"
+                                width={40}
+                                height={40}
+                            />
+                            <div className="flex flex-col">
+                                <p className="font-semi-normal text-[14px]">{business.name}</p>
+                                <p className="font-normal text-[12px] text-text-grey">{business.city}, {formatCountry(business.country)}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1 bg-mid-grey p-2 rounded-xl h-fit">
                             <div>
                                 <Image src={medal} alt="medal" width={16}/>
                             </div>
                             <div>
-                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">
+                            <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">
                                     {business.rating}
                                 </p>
                             </div>
                         </div>
-                    </div>
-                    <div className="flex flex-col mt-[8px]">
-                        <p className="font-semi-normal text-[14px]">{business.name}</p>
-                        <p className="font-normal text-[12px] text-text-grey">{business.city}, {formatCountry(business.country)}</p>
                     </div>
                 </div>
                 <div className="bg-mid-grey p-[12px] px-[16px] rounded-bl-[12px] rounded-br-[12px]">

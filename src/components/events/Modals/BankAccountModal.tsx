@@ -111,7 +111,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({toggle, option}) => {
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${option ? "flex" : "hidden"}`}>
             <form onSubmit={formik.handleSubmit}>
-                <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
+                <div className="bg-white rounded-lg shadow-lg w-full laptop:w-[640px] p-6 h-screen laptop:h-full">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                             <div className="cursor-pointer" onClick={toggle}>

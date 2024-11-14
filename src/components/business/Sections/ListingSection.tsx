@@ -7,8 +7,8 @@ import {useRouter} from "next/navigation";
 const ListingSection = () => {
     const router =  useRouter()
     return (
-        <section className="mt-4 flex flex-col items-center">
-            <div className="flex justify-center items-center h-screen">
+        <section className="flex flex-col items-center">
+            <div className="flex justify-center items-center min-h-screen">
                 <div className="flex flex-col items-center">
                     <Image src={"/images/business_empty.png"} alt="business" width={160} height={148} />
                     <p className="font-semibold text-[20px] mt-[24px]">List business</p>

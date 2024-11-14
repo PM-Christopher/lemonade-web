@@ -7,7 +7,7 @@ import PadlockIcon from "@/images/icons/padlockFilledIcon.svg";
 const CancelSection = ({}) => {
     const { plan } = useSelector((state: any) => state.auth)
     return (
-        <div className="w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
+        <div className="w-full laptop:w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
             <div>
                 <p className="font-semibold text-[20px]">We are sorry to see you go</p>
                 <p className="font-normal text-[14px] text-light-black">You will lose the following plan
@@ -89,7 +89,7 @@ const CancelSection = ({}) => {
                     }
                 </div>
             </div>
-            <div className="flex justify-between gap-[16px] mt-[24px]">
+            <div className="flex flex-col laptop:flex-row justify-between gap-[16px] mt-[24px]">
                 <Button
                     className="bg-gradient-green shadow-custom-bottom h-[48px] rounded-[12px] w-full">
                     <p className="font-semi-normal text-[16px]">Continue to downgrade</p>

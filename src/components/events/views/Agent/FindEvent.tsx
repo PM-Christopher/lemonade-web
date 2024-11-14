@@ -19,7 +19,7 @@ function FindEventSubMenu({}) {
                     />
                 </div>
             </div>
-            <div className="grid grid-cols-3 mt-[24px]">
+            <div className="grid grid-cols-2 laptop:grid-cols-3 mt-[24px]">
                 <Link href={"/event/5/agent-details"}>
                     <AgentEventCard />
                 </Link>

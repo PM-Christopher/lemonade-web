@@ -6,8 +6,10 @@ import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {EventInterface} from "@/interfaces/EventInterface";
 import Link from "next/link";
+import {useMediaQuery} from "react-responsive";
 
 const EventsSectionView: React.FC = () => {
+    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
         return {
@@ -21,24 +23,38 @@ const EventsSectionView: React.FC = () => {
 
     return (
         <section className="mt-4 flex flex-col items-center">
-            <div className="bg-light-green-50 p-[24px] w-[1008px] rounded-[12px] flex justify-center">
+            <div className="bg-none laptop:bg-light-green-50 p-[24px] w-full laptop:w-[1008px] rounded-[12px] flex justify-center">
                 {
                     !loading && (
                         <Carousel events={data?.trending} showDots={true} showArrows={false}/>
                     )
                 }
             </div>
-            <div className="w-[1008px] rounded-[12px] mt-[48px]">
+            <div className="w-full laptop:w-[1008px] p-[24px] rounded-[12px] mt-[48px]">
                 <p className="font-sans font-semibold text-[20px] leading-[28px] mb-[16px]">This week</p>
-                <div className="grid grid-cols-3 gap-2">
-                    {
-                        data?.this_week.map((event: EventInterface, index: number) => (
-                            <Link href={`/event/${event?.id}`}>
-                                <EventCard event={event} key={index}/>
-                            </Link>
-                        ))
-                    }
-                </div>
+                {
+                    isMobile ? (
+                        <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
+                            {
+                                data?.this_week.map((event: EventInterface, index: number) => (
+                                    <Link href={`/event/${event?.id}`}>
+                                        <EventCard event={event} key={index}/>
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-3 gap-2">
+                            {
+                                data?.this_week.map((event: EventInterface, index: number) => (
+                                    <Link href={`/event/${event?.id}`}>
+                                        <EventCard event={event} key={index}/>
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    )
+                }
             </div>
         </section>
     );

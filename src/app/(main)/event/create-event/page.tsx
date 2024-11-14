@@ -179,7 +179,7 @@ const CreateEventPage = () => {
 
     return (
         <MainLayout>
-            <section className="bg-light_grey pb-10">
+            <section className="bg-white laptop:bg-light_grey pb-10">
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
@@ -187,9 +187,9 @@ const CreateEventPage = () => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Add event</p>
                     </div>
                 </div>
-                <section className="mt-4 flex flex-col items-center">
+                <section className="mt-0 laptop:mt-4 flex flex-col laptop:items-center">
                     <form onSubmit={formik.handleSubmit}>
-                        <div className="bg-white mt-10 w-[640px] p-[48px] rounded-[12px] flex flex-col">
+                        <div className="bg-white mt-10 w-full laptop:w-[640px] p-[48px] rounded-[12px] flex flex-col">
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px]">EVENT
                                 DETAILS</p>
                             <SingleFileUploader length="single" type="event" title="Upload event image"
@@ -338,7 +338,7 @@ const CreateEventPage = () => {
                                     time
                                     zone</Label>
                                 <select id="event-time-zone"
-                                        className="h-12 rounded-xl bg-light_grey form-font border-0 px-2"
+                                        className="w-full h-12 rounded-xl bg-light_grey form-font border-0 px-2"
                                         value={formik.values.time_zone} onChange={(e) => {
                                     formik.setFieldValue("time_zone", e.target.value)
                                 }}>
@@ -352,7 +352,6 @@ const CreateEventPage = () => {
                                     }
                                 </select>
                             </div>
-
                             <div className="grid gap-2 mt-[24px]">
                                 <Label htmlFor="fullname"
                                        className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Start
@@ -478,7 +477,6 @@ const CreateEventPage = () => {
                             }
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px] mt-[48px]">SOCIAL
                                 DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span></p>
-
                             <div
                                 className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">
                                 <div>
@@ -564,10 +562,6 @@ const CreateEventPage = () => {
                                     />
                                 </div>
                             </div>
-                            {/*<Button*/}
-                            {/*    className="mt-[24px] bg-gradient-green h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom">*/}
-                            {/*    <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Continue</p>*/}
-                            {/*</Button>*/}
                             <FormikButton loading={formik.isSubmitting} error={formik.isValid} title="Continue"
                                           classes="mt-[24px] h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"/>
                         </div>

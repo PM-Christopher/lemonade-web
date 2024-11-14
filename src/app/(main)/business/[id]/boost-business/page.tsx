@@ -104,7 +104,7 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
 
     return (
         <MainLayout>
-            <section className="bg-light_grey pb-10">
+            <section className="bg-white laptop:bg-light_grey pb-10">
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
@@ -114,9 +114,10 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                 </div>
                 <section className="mt-4 flex flex-col items-center">
                     <form onSubmit={formik.handleSubmit}>
-                        <div className="flex justify-between gap-10">
+                        <div className="flex flex-col laptop:flex-row laptop:justify-between gap-10 gap-y-[154px]">
                             <div className="flex flex-col">
-                                <div className="w-[640px] p-[24px] px-[48px] bg-white rounded-[12px]">
+                                <div className="w-screen laptop:w-[640px] p-[24px] px-[48px] bg-none laptop:bg-white rounded-[12px]">
+                                    <p className="text-text-grey text-[14px] font-normal mb-[10px]">Select Package</p>
                                     <div className="flex flex-wrap items-center gap-2">
                                         {
                                             data?.packages?.map((pkg: any, index: number) => (
@@ -208,13 +209,12 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                                             </>
                                         ) : (
                                             <>
-                                                <p className="mt-[24px]">Select Package</p>
                                             </>
                                         )
                                     }
                                 </div>
                             </div>
-                            <div className="flex flex-col">
+                            <div className="hidden laptop:flex flex-col">
                                 <div className="w-[480px] p-[24px] px-[48px] bg-white rounded-[12px]">
                                     <p className="font-sans font-semibold text-[20px] leading-[28px]">Summary</p>
                                     <div className="flex justify-between mt-[16px]">
@@ -252,14 +252,23 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                                                 ₦ {formatNumberWithCommas(selectedPackage.price)}
                                             </p>
                                         </div>
-                                        {/*<button*/}
-                                        {/*    className="bg-gradient-green px-[48px] p-[14px] h-[48px] flex items-center rounded-[12px] border-step-color shadow-custom-bottom">*/}
-                                        {/*    <p className="font-sans font-semi-normal text-[16px] text-white">Pay now</p>*/}
-                                        {/*</button>*/}
                                         <FormikButton title="Pay now" error={formik.isValid}
                                                       loading={formik.isSubmitting}
                                                       classes="px-[48px] p-[14px] h-[48px] flex items-center rounded-[12px] border-step-color shadow-custom-bottom"/>
                                     </div>
+                                </div>
+                            </div>
+                            <div className="border-t-[1px]">
+                                <div
+                                    className="mt-[24px] flex justify-around gap-[16px] items-center pt-[16px] pl-[16px] pr-[16px]">
+                                    <div className="">
+                                        <p className="font-sans font-bold text-mid-green">
+                                            ₦ {formatNumberWithCommas(selectedPackage.price)}
+                                        </p>
+                                    </div>
+                                    <FormikButton title="Pay now" error={formik.isValid}
+                                                  loading={formik.isSubmitting}
+                                                  classes="px-[48px] p-[14px] h-[48px] flex items-center rounded-[12px] border-step-color shadow-custom-bottom"/>
                                 </div>
                             </div>
                         </div>

@@ -7,7 +7,7 @@ const PastEvent = ({events, loading}: {events: EventInterface[], loading: boolea
         <>
             {
                 !loading && (
-                    <div className="grid grid-cols-3 mt-[10px] w-[780px] p-[16px] gap-[16px] bg-white rounded-[12px]">
+                    <div className="grid grid-cols-2 laptop:grid-cols-3 mt-[10px] w-full laptop:w-[780px] p-[16px] gap-[16px] bg-white rounded-[12px]">
                         {
                             events.length > 0 ? (
                                 events.map((event, index) => (

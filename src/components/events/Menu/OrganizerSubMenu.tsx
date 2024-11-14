@@ -12,7 +12,7 @@ type OrganizerSubMenuInterface = {
 const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({toggle}) => {
     const router = useRouter()
     return (
-        <div className="flex gap-4 items-center">
+        <div className="hidden laptop:flex gap-4 items-center">
             <div className="border-[1px] p-[8px] px-[14px] gap-2 flex items-center border-light-grey-50 rounded-[12px] cursor-pointer h-[36px]" onClick={toggle}>
                 <GearIcon/>
                 <p className="font-sans font-semi-normal text-[16px] text-black-light">Payment setting</p>

@@ -55,7 +55,7 @@ function WalletSettingsPage({}) {
                 <ReferralSideMenu toggleMenu={toggleRefMenu} isOpen={isRefOpen}/>
                 <AffiliateSideMenu isOpen={isAfOpen} toggleMenu={toggleAfMenu}/>
                 <div
-                    className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+                    className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.push("/settings")}>
                         <ChevronLeft/>
@@ -63,8 +63,8 @@ function WalletSettingsPage({}) {
                     </div>
                 </div>
 
-                <section className="mt-4 flex justify-center gap-[20px]">
-                    <div className="flex flex-col w-[580px]">
+                <section className="mt-4 flex flex-col laptop:flex-row justify-center gap-[20px] px-[10px] laptop:px-0">
+                    <div className="flex flex-col w-full laptop:w-[580px]">
                         <div className="rounded-[12px] p-[16px] flex flex-col bg-white">
                             <div className="flex flex-col p-[16px] border-b-[1px] border-b-mid-grey">
                                 <p className="font-normal text-[14px] text-text-grey">Total Amount Earned</p>
@@ -100,7 +100,7 @@ function WalletSettingsPage({}) {
                         }
                     </div>
                     <div>
-                        <div className="min-w-[684px] rounded-[12px] flex flex-col bg-white">
+                        <div className="w-full laptop:min-w-[684px] rounded-[12px] flex flex-col bg-white">
                             <div className="border-b-[1px] p-[16px]">
                                 <p className="font-semibold text-[16px]">Payout history</p>
                             </div>

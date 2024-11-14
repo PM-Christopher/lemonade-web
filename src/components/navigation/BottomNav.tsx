@@ -6,7 +6,7 @@ import {activeLink} from "@/lib/activeLink";
 
 const BottomNav = () => {
     return (
-        <nav className="flex flex-wrap items-center justify-between p-2 px-10 bg-white fixed bottom-0 left-0 w-full">
+        <nav className="flex flex-wrap items-center justify-center p-2 px-10 bg-white fixed bottom-0 left-0 w-full">
             <div className="flex justify-between items-center gap-8">
                 {
                     navLinks.map((link, idx) => (

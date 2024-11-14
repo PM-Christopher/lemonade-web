@@ -105,11 +105,11 @@ const Carousel: React.FC<ImageSlider> = ({showArrows = false, showDots = true, e
                         <div
                             className="flex justify-between items-center">
                             <div className="flex flex-col">
-                                <p className="text-white font-semibold font-sans text-[32px] leading-[44.8px]">
+                                <p className="text-white font-semibold font-sans text-[20px] laptop:text-[32px] leading-[44.8px]">
                                     {events[currentIndex]?.event_name}
                                 </p>
-                                <div className="flex gap-2 items-center">
-                                    <CalendarIcon className="text-white w-[14px]" />
+                                <div className="flex gap-[4px] items-center">
+                                    <CalendarIcon className="text-white w-[12px] laptop:w-[14px] h-[12px] laptop:h-[14px]" />
                                     <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">
                                         {formatLongDate(events[currentIndex]?.start_date, "mid")}
                                     </p>
@@ -126,7 +126,7 @@ const Carousel: React.FC<ImageSlider> = ({showArrows = false, showDots = true, e
                                 </div>
                             </div>
                         </div>
-                        <div className="flex justify-center mt-2">
+                        <div className="justify-center mt-2 hidden laptop:flex">
                             {events?.map((_, index) => (
                                 <div
                                     key={index}

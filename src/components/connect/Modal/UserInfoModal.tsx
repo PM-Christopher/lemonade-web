@@ -19,7 +19,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, userInfo}) 
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
+            <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] h-screen laptop:h-full p-6">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggle}>

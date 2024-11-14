@@ -30,7 +30,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft, event}) =
         if (moreIconRef.current) {
             const rect = moreIconRef.current.getBoundingClientRect();
             const position: ModalPosition = {
-                top: rect.bottom + window.scrollY,
+                top: rect.bottom + window.scrollY - 40,
                 left: rect.right + window.scrollX - 150, // Adjust modal position relative to the button
             };
             setModalPosition(position);
@@ -56,7 +56,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft, event}) =
         <div className="bg-white rounded-[12px] mb-[16px] border-[1px] border-grey-20 p-[4px]">
             <div className="flex flex-col">
                 <div className="relative">
-                    <Image src={event?.event_image} alt="event_1" className="rounded-[8px] h-[230px]" width={230} height={230}/>
+                    <Image src={event?.event_image} alt="event_1" className="rounded-[8px] w-full laptop:w-[230px] h-[150px] laptop:h-[230px]" width={230} height={230}/>
                     {
                         draft && (
                             <div
@@ -68,16 +68,16 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft, event}) =
                 </div>
                 <div className="flex justify-between mt-2 px-2">
                     <div className="">
-                        <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom max-w-[150px] truncate">
+                        <p className="font-sans font-semibold text-[14px] laptop:text-[18px] leading-[27px] tracking-custom max-w-[150px] truncate">
                             {event?.event_name}
                         </p>
                         <div className="flex items-center gap-1 my-2">
-                            <CalendarIcon/>
-                            <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                            <CalendarIcon className="w-[12px] h-[12px]"/>
+                            <p className="font-sans font-normal text-[12px] laptop:text-[14px] leading-[16.8px] text-text-grey">
                                 {formatLongDate(event?.start_date, 'mid')}
                             </p>
                             <DotIcon className="w-[3px]"/>
-                            <p className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                            <p className="font-sans font-normal text-[12px] laptop:text-[14px] leading-[16.8px] text-text-grey">
                                 {formatTime(event?.start_date)}
                             </p>
                         </div>

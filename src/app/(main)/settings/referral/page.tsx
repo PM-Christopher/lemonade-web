@@ -25,7 +25,7 @@ function ReferralSettingsPage({}) {
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <div
-                    className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+                    className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.push("/settings")}>
                         <ChevronLeft/>
@@ -33,12 +33,12 @@ function ReferralSettingsPage({}) {
                     </div>
                 </div>
                 <section className="mt-4 flex flex-col items-center">
-                    <div className="flex flex-col items-center gap-[16px]">
+                    <div className="flex flex-col items-center gap-0 laptop:gap-[16px]">
                         <div className="bg-light-green-10 rounded-[12px]">
-                            <div className="w-[560px] p-[24px] flex justify-center items-center">
+                            <div className="w-full laptop:w-[560px] p-[24px] flex justify-center items-center">
                                 <Image src={"/images/giftImage.png"} alt="gift_image" width={160} height={171}/>
                             </div>
-                            <div className="w-[560px] p-[24px] flex flex-col gap-[8px]">
+                            <div className="w-screen laptop:w-[560px] p-[24px] flex flex-col gap-[8px]">
                                 <div className="flex justify-between items-center gap-[2px]">
                                     <div
                                         className="rounded-tl-[12px] rounded-bl-[12px] px-[12px] p-[10.5px] bg-light-tint-4 w-full">
@@ -64,7 +64,7 @@ function ReferralSettingsPage({}) {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-[560px] p-[24px] flex flex-col gap-[8px] mt-[24px] bg-white rounded-[12px]">
+                        <div className="w-screen laptop:w-[560px] p-[24px] flex flex-col gap-[8px] mt-0 laptop:mt-[24px] bg-white rounded-[12px]">
                             <p className="font-semibold text-[16px]">Refer friends and earn</p>
                             <div className="flex flex-col mt-[24px]">
                                 <div className="flex gap-[16px]">

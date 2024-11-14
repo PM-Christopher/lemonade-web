@@ -8,6 +8,8 @@ import EventSubMenu from "@/components/events/Menu/EventSubMenu";
 import OrganizerSubMenu from "@/components/events/Menu/OrganizerSubMenu";
 import AgentSectionView from "@/components/events/views/Agent";
 import MainLayout from "@/components/layouts/MainLayout";
+import TicketIcon from "@/images/icons/tickets.svg";
+import SettingsIcon from "@/images/icons/settingsIcon.svg"
 
 const EventPage: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -51,23 +53,40 @@ const EventPage: React.FC = () => {
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <SideMenu toggleMenu={toggleMenu} isOpen={isOpen}/>
-                <div className="bg-white flex justify-between p-5 px-10 border-t-[1px] border-b-[1px] items-center">
-                    <div className={"flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"}>
-                        <div
-                            className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "events" && "bg-white rounded-[10px]"}`}
-                            onClick={() => switchOption("events")}>
-                            <p className={`font-sans leading-[24px] ${menuOption === 'events' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Events</p>
+                <div className="bg-white flex justify-between py-5 border-t-[1px] border-b-[1px] laptop:items-center flex-col laptop:flex-row gap-2">
+                    <div className="flex justify-between items-center px-[16px]">
+                        <div className={"flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"}>
+                            <div
+                                className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "events" && "bg-white rounded-[10px]"}`}
+                                onClick={() => switchOption("events")}>
+                                <p className={`font-sans leading-[24px] ${menuOption === 'events' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Events</p>
+                            </div>
+                            <div
+                                className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "organizer" && "bg-white rounded-[10px]"}`}
+                                onClick={() => switchOption("organizer")}>
+                                <p className={`font-sans leading-[24px] ${menuOption === 'organizer' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Organizer</p>
+                            </div>
+                            <div
+                                className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "agent" && "bg-white rounded-[10px]"}`}
+                                onClick={() => switchOption("agent")}>
+                                <p className={`font-sans leading-[24px] ${menuOption === 'agent' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Agent</p>
+                            </div>
                         </div>
-                        <div
-                            className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "organizer" && "bg-white rounded-[10px]"}`}
-                            onClick={() => switchOption("organizer")}>
-                            <p className={`font-sans leading-[24px] ${menuOption === 'organizer' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Organizer</p>
-                        </div>
-                        <div
-                            className={`px-[8px] p-[4px] cursor-pointer ${menuOption === "agent" && "bg-white rounded-[10px]"}`}
-                            onClick={() => switchOption("agent")}>
-                            <p className={`font-sans leading-[24px] ${menuOption === 'agent' ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>Agent</p>
-                        </div>
+                        {
+                            menuOption === "events" ? (
+                                <div
+                                    className="cursor-pointer flex laptop:hidden"
+                                    onClick={toggleMenu}>
+                                    <TicketIcon className="w-[23px] h-[16px]"/>
+                                </div>
+                            ) : menuOption === "organizer" && (
+                                <div
+                                    className="cursor-pointer flex laptop:hidden"
+                                    onClick={toggleMenu}>
+                                    <SettingsIcon className="w-[23px] h-[21px]"/>
+                                </div>
+                            )
+                        }
                     </div>
                     {renderSubMenu()}
                 </div>

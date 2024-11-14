@@ -26,7 +26,7 @@ const DeleteAccountPage = () => {
                     </div>
                 </div>
                 <section className="mt-4 flex flex-col items-center">
-                    <div className="w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
+                    <div className="w-full laptop:w-[640px] rounded-[12px] p-[24px] flex flex-col bg-none laptop:bg-white gap-4">
                         <p className="max-w-[592px] font-normal text-[14px] text-light-black">
                             Deleting your account permanently removes your data from our system. You will have a <span
                             className="font-semibold">30-day</span> grace period to change your mind. If you log in to

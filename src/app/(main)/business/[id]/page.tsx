@@ -29,7 +29,7 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
-
+import {useRouter} from "next/navigation";
 
 const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -42,6 +42,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const [isVerifyBoost, setIsVerifyBoost] = useState(false)
     const [boost, setBoost] = useState<any>(null)
     const [boostDetails, setBoostDetails] = useState(false)
+    const router = useRouter()
 
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
@@ -110,16 +111,15 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
-                <TopNav/>
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
-                        <ChevronLeft/>
+                        <ChevronLeft className="cursor-pointer" onClick={() => router.back()}/>
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Business details</p>
                     </div>
                 </div>
                 <section className="min-h-screen mt-4 flex flex-col items-center gap-4">
-                    <div className="w-[640px] relative bg-white rounded-[12px] p-[16px] bg-cover bg-center bg-no-repeat"
+                    <div className="w-full laptop:w-[640px] relative bg-white rounded-[12px] p-[16px] bg-cover bg-center bg-no-repeat"
                          style={{backgroundImage: `url('/images/business-bg.png')`}}>
                         <div className="flex flex-col">
                             <div className="flex justify-center">
@@ -255,7 +255,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                         )
                     }
 
-                    <div className="w-[640px] rounded-tl-[24px] rounded-tr-[24px] bg-purple-tint-1">
+                    <div className="w-full laptop:w-[640px] rounded-tl-[24px] rounded-tr-[24px] bg-purple-tint-1">
                         <div className="pt-[16px] pr-[16px] pl-[16px] pb-[8px]">
                             <p className="font-semi-normal text-[14px]">Lemonade protects in-app transactions only. Use
                                 caution outside the app</p>
@@ -297,7 +297,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                     {
                                         data?.business?.gallery?.map((item: string, index: string) => (
                                             <Image src={item} alt="image_1"
-                                                   className="w-[170.5px] h-[170.5px] rounded-[4px]" width={170.5}
+                                                   className="w-full h-full rounded-[4px]" width={170.5}
                                                    height={170.5} key={index}/>
                                         ))
                                     }

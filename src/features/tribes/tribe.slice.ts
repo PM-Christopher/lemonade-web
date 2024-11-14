@@ -9,7 +9,7 @@ interface tribeState {
     threads: TribeThreadInterface[],
     tribes: TribeInterface[],
     tribe: TribeThreadInterface | null,
-    thread: TribeThreadInterface | null
+    thread: TribeThreadInterface | null,
 }
 
 interface JoinTribeParams {
@@ -95,10 +95,40 @@ const likeThread = createAsyncThunk("tribe/likeThread", async ({id, tribe_id, to
     }
 });
 
+const submitVote = createAsyncThunk("tribe/submitVote", async ({tribe_id, thread_id, poll_id, data, token}: {tribe_id: number, thread_id: number, poll_id: number, data: any, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/threads/${tribe_id}/${thread_id}/${poll_id}/poll-action`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
 const tribeSlice = createSlice({
     name: "tribe",
     initialState,
-    reducers: {},
+    reducers: {
+        setTribeUser: (state, { payload }) => {
+            state.loading = false;
+            state.error = false;
+            state.user = payload
+        },
+        removeTribeUser: (state) => {
+            state.loading = false;
+            state.error = false;
+            state.user = null
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(joinTribe.pending, (state) => {
             state.loading = true;
@@ -131,9 +161,19 @@ const tribeSlice = createSlice({
         builder.addCase(likeThread.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(submitVote.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(submitVote.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(submitVote.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
-export const {  } = tribeSlice.actions
-export { joinTribe, createThread , likeThread}
+export const { setTribeUser, removeTribeUser } = tribeSlice.actions
+export { joinTribe, createThread , likeThread, submitVote}
 export default tribeSlice.reducer;

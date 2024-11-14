@@ -3,6 +3,7 @@ import Image from "next/image";
 import MoneyIcon from "@/images/icons/money.svg";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {formatLongDate} from "@/lib/dateTimeFormatter";
+import ChatsIcon from "@/images/icons/chatsIcon.svg"
 
 type TribeCardIF = {
     tribe: TribeInterface
@@ -26,8 +27,8 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
                     </div>
                 </div>
                 {
-                    !tribe.has_joined && (
-                        <div className="flex items-center gap-1 border-2 px-[16px] p-[4px] rounded-[12px]">
+                    tribe.has_joined || !tribe.owner && (
+                        <div className="flex items-center gap-1 border-[1px] px-[16px] p-[4px] rounded-[12px]">
                             <div>
                                 <p className="font-sans font-semi-normal text-[14px] text-light-green">Join</p>
                             </div>
@@ -41,6 +42,7 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
                         </div>
                     )
                 }
+
             </div>
             <div className="flex justify-between p-4 bg-mid-grey rounded-b-[16px] py-6">
                 <div>
@@ -50,9 +52,10 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
                 </div>
                 <div>
                     <p className="font-sans font-semi-normal text-[12px] leading-[14.4px] text-black-light">
-                    {tribe.members} Members</p>
+                        {tribe.members} Members</p>
                 </div>
-                <div>
+                <div className="flex gap-2 items-center">
+                    <ChatsIcon />
                     <p className="font-sans font-semi-normal text-[12px] leading-[14.4px] text-black-light">
                         {tribe.threads} threads
                     </p>

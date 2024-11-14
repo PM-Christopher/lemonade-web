@@ -14,9 +14,10 @@ import {joinTribe} from "@/features/tribes/tribe.slice";
 
 type TribeDetailsInterface = {
     toggle: () => void,
-    tribe: TribeInterface
+    tribe: TribeInterface,
+    share: (tribe: TribeInterface) => void
 }
-const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
+const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share}) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
 
@@ -30,7 +31,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
                 <p className="font-sans font-semibold text-[16px] leading-[24px]">Tribe details</p>
             </div>
             <div className="flex justify-center mt-10">
-                <Image src={tribe?.image} alt="tribe" width={96} height={96}/>
+                <Image src={tribe?.image} alt="tribe" width={96} height={96} className="rounded-[24px] h-[96px]"/>
             </div>
             <div className="flex flex-col items-center">
                 <p className="font-sans font-semibold text-[16px] leading-[24px]">
@@ -51,7 +52,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
                     <p className="font-sans font-normal text-[12px] text-text-grey my-2">Created by <span
                         className="font-semibold">{tribe?.created_by}</span> on {formatLongDate(tribe?.created_at)}</p>
                 </div>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center cursor-pointer" onClick={() => share(tribe)}>
                     <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
                         <ShareIcon/>
                     </div>
@@ -60,7 +61,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe}) => {
             </div>
             <div className="flex justify-center my-2">
                 {
-                    tribe?.has_joined ? (
+                    tribe?.has_joined || tribe?.owner ? (
                         <Button
                             className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]" onClick={toggle}>
                             <div className="flex gap-1 justify-center items-center">

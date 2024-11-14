@@ -33,10 +33,10 @@ function AgentSectionView({}) {
         }
     }
     return (
-        <section className="mt-4 flex flex-col items-center">
-            <div className="flex gap-[24px]">
-                <div>
-                    <div className="w-[550px] p-[16px] bg-white rounded-[12px]">
+        <section className="mt-4 flex flex-col laptop:items-center">
+            <div className="flex flex-col laptop:flex-row gap-[24px]">
+                <div className="w-full laptop:w-[550px] p-[16px] bg-white rounded-[12px] h-full">
+                    <div className="">
                         <div className="flex flex-col">
                             <p className="font-sans font-normal text-text-grey text-[14px]">All time commission</p>
                             <p className="font-sans font-semibold text-[18px] tracking-custom leading-[27px]">3000</p>
@@ -52,13 +52,13 @@ function AgentSectionView({}) {
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className="w-screen laptop:w-full">
                     <div className="p-[16px] bg-white rounded-[12px]">
                         <div className="flex justify-between mt-[10px] border-b-[1px] border-b-mid-grey mb-[10px]">
-                            <div className={`h-10 w-[276.5px] py-[8px] px-[16px] cursor-pointer ${view === "promotions" && "border-b-step-color border-b-2"}`} onClick={() => setView("promotions")}>
+                            <div className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] cursor-pointer ${view === "promotions" && "border-b-step-color border-b-2"}`} onClick={() => setView("promotions")}>
                                 <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">Promotions</p>
                             </div>
-                            <div className={`h-10 w-[276.5px] py-[8px] px-[16px] cursor-pointer ${view === "find_event" && "border-b-step-color border-b-2"}`} onClick={() => setView("find_event")}>
+                            <div className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] cursor-pointer ${view === "find_event" && "border-b-step-color border-b-2"}`} onClick={() => setView("find_event")}>
                                 <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">Find events</p>
                             </div>
                         </div>

@@ -5,7 +5,7 @@ import {Label} from "@/components/ui/label";
 
 const ReasonSection = ({}) => {
     return (
-        <div className="w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
+        <div className="w-full laptop:w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
             <div>
                 <p className="font-semibold text-[20px]">Why are you leaving?</p>
                 <p className="font-normal text-[14px] text-light-black">Tell us why you canceled your plan and we'll do out best to fix it</p>

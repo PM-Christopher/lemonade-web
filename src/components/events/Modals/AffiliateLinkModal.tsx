@@ -12,7 +12,7 @@ type AffiliateLinkInterface = {
 const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle}) => {
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
+            <div className="bg-white rounded-lg shadow-lg w-full laptop:w-[480px] p-6 h-screen laptop:h-full">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggle}>
@@ -20,9 +20,9 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle}) 
                         </div>
                     </div>
                 </div>
-                <div className="mt-10">
+                <div className="mt-0 laptop:mt-10 flex flex-col justify-center h-full">
                     <div className="flex justify-center">
-                        <Image src={"/images/affliliateLink.png"} alt="affiliate-link" />
+                        <Image src={"/images/affliliateLink.png"} alt="affiliate-link" width={200} height={200} />
                     </div>
                     <div className="flex flex-col mt-[24px]">
                         <p className="font-semibold text-[20px] text-center">Linked generated!</p>

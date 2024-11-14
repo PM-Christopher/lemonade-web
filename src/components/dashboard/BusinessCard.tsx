@@ -12,16 +12,16 @@ type BusinessIF = {
 
 const BusinessCard: React.FC<BusinessIF> = ({business}) => {
     return (
-        <div className="w-[343px] tablet:w-[422px] rounded-lg bg-white">
+        <div className="w-[343px] tablet:w-[422px] rounded-lg bg-white p-[4px]">
             <div className="relative">
                 <Image
                     src={"/images/business_images/business_1.png"}
                     alt="Main Image"
-                    className="rounded-lg"
+                    className="rounded-lg w-full"
                     width={319}
                     height={105}
                 />
-                <div className="absolute bottom-[-35px] right-[240px] w-16 h-16">
+                <div className="absolute bottom-[-35px] right-[260px] w-16 h-16">
                     <Image
                         src={"/images/business_images/business_logo_1.png"}
                         alt="Overlay Image"

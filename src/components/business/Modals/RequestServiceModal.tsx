@@ -90,7 +90,8 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <form onSubmit={formik.handleSubmit}>
-                <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
+                <div
+                    className="bg-white rounded-0 laptop:rounded-lg shadow-lg w-full laptop:w-[640px] h-screen laptop:h-full p-6">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                             <div className="cursor-pointer" onClick={toggleMenu}>
@@ -99,75 +100,77 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
                             <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Request a
                                 service</p>
                         </div>
-                        <div>
-                            {/*<Button*/}
-                            {/*    className="">*/}
-                            {/*    <p className="font-sans font-semi-normal text-[12px]">Send quote</p>*/}
-                            {/*</Button>*/}
-                            <FormikButton title="Send quote" error={formik.isValid} loading={formik.isSubmitting} />
+                        <div className="hidden laptop:block">
+                            <FormikButton title="Send quote" error={formik.isValid} loading={formik.isSubmitting}/>
                         </div>
                     </div>
-                    <div className="mt-10">
-                        <div className="grid gap-2 mt-[24px]">
-                            <Label htmlFor="amount"
-                                   className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">I want
-                                to
-                                book you for</Label>
-                            <div
-                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full h-[48px]">
-                                <div>
-                                    <p className="font-semi-normal text-[14px]">₦</p>
+                    <div className="flex flex-col gap-y-[250px]">
+                        <div className="mt-10">
+                            <div className="grid gap-2 mt-[24px]">
+                                <Label htmlFor="amount"
+                                       className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">I
+                                    want
+                                    to
+                                    book you for</Label>
+                                <div
+                                    className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full h-[48px]">
+                                    <div>
+                                        <p className="font-semi-normal text-[14px]">₦</p>
+                                    </div>
+                                    <div className="w-full">
+                                        <input
+                                            id="amount"
+                                            type="number"
+                                            className="text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            value={formik.values.amount}
+                                            onChange={(e) => {
+                                                formik.setFieldValue("amount", e.target.value)
+                                            }}
+                                            min={1}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="w-full">
-                                    <input
-                                        id="amount"
-                                        type="number"
-                                        className="text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
-                                        value={formik.values.amount}
-                                        onChange={(e) => {
-                                            formik.setFieldValue("amount", e.target.value)
-                                        }}
-                                        min={1}
-                                    />
+                            </div>
+                            <div className="grid gap-2 mt-[24px]">
+                                <Label htmlFor="fullname"
+                                       className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Required
+                                    services</Label>
+                                <div className="mt-2">
+                                    <div className="flex flex-wrap gap-2">
+                                        {
+                                            services?.map((service, index) => (
+                                                <div className={`w-fit rounded-[12px] p-[12px] px-[16px] cursor-pointer ${
+                                                    Array.isArray(formik.values.services) && formik.values.services.includes(service) ? 'bg-gradient-green-2 shadow-event-custom' : 'bg-light_grey'
+                                                }`} key={index} onClick={() => handleServicesClick(service)}>
+                                                    <p className="font-normal text-[14px] text-text-grey">
+                                                        {formatStringUCFirst(service)}
+                                                    </p>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
                                 </div>
+                            </div>
+                            <div className="grid gap-2 mt-[24px]">
+                                <div className="flex justify-between">
+                                    <Label htmlFor="additional-information"
+                                           className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Additional
+                                        information</Label>
+                                    <p className="font-normal text-[12px] text-text-grey">200 characters</p>
+                                </div>
+                                <textarea
+                                    id="additional-information"
+                                    placeholder=""
+                                    className="h-[128px] rounded-xl bg-light_grey font-normal text-[14px] border-0 resize-none p-4"
+                                    readOnly={false}
+                                    value={formik.values.additional_information}
+                                    onChange={formik.handleChange}
+                                    name="additional_information"
+                                />
                             </div>
                         </div>
-                        <div className="grid gap-2 mt-[24px]">
-                            <Label htmlFor="fullname"
-                                   className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Required
-                                services</Label>
-                            <div className="mt-2">
-                                <div className="flex gap-2">
-                                    {
-                                        services?.map((service, index) => (
-                                            <div className={`rounded-[12px] p-[12px] px-[16px] cursor-pointer ${
-                                                Array.isArray(formik.values.services) && formik.values.services.includes(service) ? 'bg-gradient-green-2 shadow-event-custom' : 'bg-light_grey'
-                                            }`} key={index} onClick={() => handleServicesClick(service)}>
-                                                <p className="font-normal text-[14px] text-text-grey">
-                                                    {formatStringUCFirst(service)}
-                                                </p>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid gap-2 mt-[24px]">
-                            <div className="flex justify-between">
-                                <Label htmlFor="additional-information"
-                                       className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Additional
-                                    information</Label>
-                                <p className="font-normal text-[12px] text-text-grey">200 characters</p>
-                            </div>
-                            <textarea
-                                id="additional-information"
-                                placeholder=""
-                                className="h-[128px] rounded-xl bg-light_grey font-normal text-[14px] border-0 resize-none p-4"
-                                readOnly={false}
-                                value={formik.values.additional_information}
-                                onChange={formik.handleChange}
-                                name="additional_information"
-                            />
+                        <div className="laptop:hidden">
+                            <FormikButton title="Send quote" error={formik.isValid} loading={formik.isSubmitting} classes="w-full rounded-[12px] h-[48px] px-[48px] py-[16px]"/>
                         </div>
                     </div>
                 </div>

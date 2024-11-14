@@ -11,7 +11,7 @@ const TermsAndConditionsPage = ({}) => {
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <div
-                    className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+                    className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.back()}>
                         <ChevronLeft/>
@@ -19,7 +19,7 @@ const TermsAndConditionsPage = ({}) => {
                     </div>
                 </div>
                 <section className="mt-4 flex flex-col items-center">
-                    <div className="w-[640px] rounded-[12px] p-[16px] flex flex-col gap-4">
+                    <div className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex flex-col gap-4">
                         <p className="font-semibold text-[20px]">Introduction</p>
                         <p className="font-normal text-[14px] tracking-custom leading-[21px]">
                             Lorem ipsum dolor sit amet consectetur. Scelerisque porta quis ornare odio facilisis nisi

@@ -32,7 +32,7 @@ function SettingsPage() {
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <div
-                    className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+                    className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
                         <ChevronLeft/>
                         <p className="font-sans font-semibold text-[16px] tracking-custom">User Details</p>
@@ -41,7 +41,7 @@ function SettingsPage() {
                 <section className="mt-4 flex flex-col items-center">
                     <div className="flex flex-col items-center">
                         <div
-                            className="w-[640px] rounded-[12px] p-[16px] flex justify-between items-center bg-step-color">
+                            className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex justify-between items-center bg-step-color">
                             <div className="flex items-center gap-[8px]">
                                 <Image src={user?.profile_image} alt="check in" width={56} height={56}
                                        className="w-[56px] h-[56px] rounded-[24px] border-[1px] border-grey-90"/>
@@ -57,7 +57,7 @@ function SettingsPage() {
                                 </p>
                             </div>
                         </div>
-                        <div className="w-[632px] p-[16px] rounded-br-[16px] rounded-bl-[16px] bg-white">
+                        <div className="w-full laptop:w-[632px] p-[16px] rounded-br-[16px] rounded-bl-[16px] bg-white">
                             <p className="font-semi-normal text-[12px] text-text-grey">Industry</p>
                             <p className="font-normal text-[14px] text-black-light">{formatString(user?.industry)}</p>
                             <p className="text-[12px] font-semi-normal text-text-grey mt-[8x]">Bio</p>
@@ -87,7 +87,7 @@ function SettingsPage() {
                             }
                         </div>
 
-                        <div className="mt-[24px] w-[640px] p-[16px] bg-white rounded-[12px]">
+                        <div className="mt-[24px] w-full laptop:w-[640px] p-[16px] bg-white rounded-[12px]">
                             <p className="font-bold text-[12px] text-black-light">ACCOUNT</p>
                             <div className="">
                                 <div className="flex justify-between items-center my-[20.5px]">
@@ -133,7 +133,7 @@ function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="mt-[24px] w-[640px] p-[16px] bg-white rounded-[12px]">
+                        <div className="mt-[24px] w-full laptop:w-[640px] p-[16px] bg-white rounded-[12px]">
                             <p className="font-bold text-[12px] text-black-light">EARN</p>
                             <div className="">
                                 <div className="flex justify-between items-center my-[20.5px]">
@@ -155,7 +155,7 @@ function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="mt-[24px] w-[640px] p-[16px] bg-white rounded-[12px]">
+                        <div className="mt-[24px] w-full laptop:w-[640px] p-[16px] bg-white rounded-[12px]">
                             <p className="font-bold text-[12px] text-black-light">MORE</p>
                             <div className="">
                                 <div className="flex justify-between items-center my-[20.5px]">

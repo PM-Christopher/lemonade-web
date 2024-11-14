@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -19,6 +19,8 @@ import MainLayout from "@/components/layouts/MainLayout";
 
 const  AssignTicketPage = ({params}: {params: {id: number}}) => {
     const [checked, setChecked] = useState(false)
+    const [timeLeft, setTimeLeft] = useState(10 * 60); // 10 minutes in seconds
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const handleChange = () => {
         setChecked(!checked)
@@ -66,7 +68,7 @@ const  AssignTicketPage = ({params}: {params: {id: number}}) => {
                     quantity: ticket.quantity
                 })
             })
-            const redirect_url= "https://webhook.site/5daf1136-dd39-481e-bb1f-69f9cbd6ecf5"
+            const redirect_url= "http://localhost:3000/event"
             const formValues = {tickets: allTickets, redirect_url, ...values}
             console.log({formValues})
             dispatch(buyTicket({event_id: params.id, data: formValues, token: authToken})).then((res: any) => {
@@ -75,7 +77,28 @@ const  AssignTicketPage = ({params}: {params: {id: number}}) => {
         },
     })
 
-    const router = useRouter()
+    useEffect(() => {
+        // Start the countdown
+        const intervalId = setInterval(() => {
+            setTimeLeft(prevTime => {
+                if (prevTime <= 1) {
+                    clearInterval(intervalId); // Stop the timer when it reaches 0
+                    router.push(`/event/${params.id}/buy-ticket`); // Redirect to the previous page
+                }
+                return prevTime - 1;
+            });
+        }, 1000);
+
+        // Cleanup the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [router]);
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
+
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
@@ -94,7 +117,7 @@ const  AssignTicketPage = ({params}: {params: {id: number}}) => {
                                     <p className="font-sans font-normal text-[14px] leading-[21px]">Your tickets has
                                         been
                                         reserved for <span
-                                            className="text-light-tint-2 font-semiBold">09:45</span> mins.
+                                            className="text-light-tint-2 font-semiBold">{formatTime(timeLeft)}</span> mins.
                                         Complete your purchase to secure your spot.</p>
                                 </div>
                                 <div className="grid gap-2 mt-[24px]">

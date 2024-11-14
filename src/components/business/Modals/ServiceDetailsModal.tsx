@@ -5,7 +5,7 @@ import medal from "@/images/icons/medal.png";
 import ClockIconOrange from "@/images/icons/clockIconOrange.svg"
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
-import {formatStringUCFirst} from "@/lib/helper";
+import {formatDecimal, formatStringUCFirst} from "@/lib/helper";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
@@ -17,6 +17,7 @@ import CheckPIcon from "@/images/icons/checkPurpleIcon.svg"
 import CloseRedIcon from "@/images/icons/closeRedIcon.svg"
 import PayNowModal from "@/components/business/Modals/PayNowModal";
 import {addJob} from "@/features/business/business.slice";
+import {formatCountry} from "@/lib/formatCountry";
 
 type ServiceDetailsInterface = {
     isOpen: boolean,
@@ -83,84 +84,75 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                 type: "error",
             }))
         }
-        console.log({data})
     }
 
     const requestStatus = () => {
         switch (job?.status) {
             case "PENDING":
                 return (
-                    <>
+                    <div>
                         <p className="font-normal text-[14px] text-text-grey">Service status</p>
                         <div
                             className="p-[2px] px-[8px] rounded-[12px] bg-warning w-fit flex items-center gap-2 mt-[8px]">
                             <ClockIconOrange />
                             <p className="font-semi-normal text-[14px] text-warning-bold">Awaiting</p>
                         </div>
-                    </>
+                    </div>
                 )
             case "ACCEPTED":
                 return (
-                    <>
+                    <div>
                         <p className="font-normal text-[14px] text-text-grey">Service status</p>
                         <div
                             className="p-[2px] px-[8px] rounded-[12px] bg-purple-1 w-fit flex items-center gap-2 mt-[8px]">
                             <CheckPIcon />
                             <p className="font-semi-normal text-[14px] text-blue-accent-1">Accepted</p>
                         </div>
-                    </>
+                    </div>
                 )
             case "REJECTED":
                 return (
-                    <>
+                    <div>
                         <p className="font-normal text-[14px] text-text-grey">Service status</p>
                         <div
                             className="p-[2px] px-[8px] rounded-[12px] bg-red-accent-1 w-fit flex items-center gap-2 mt-[8px]">
                             <CloseRedIcon/>
                             <p className="font-semi-normal text-[14px] text-red-1">Rejected</p>
                         </div>
-                    </>
+                    </div>
                 )
             case "IN_PROGRESS":
                 return (
-                    <>
+                    <div>
                         <p className="font-normal text-[14px] text-text-grey">Service status</p>
                         <div
                             className="p-[2px] px-[8px] rounded-[12px] bg-warning w-fit flex items-center gap-2 mt-[8px]">
                             <ClockIconOrange/>
                             <p className="font-semi-normal text-[14px] text-warning-bold">In progress</p>
                         </div>
-                    </>
+                    </div>
                 )
             case "COMPLETED":
                 return (
-                    <>
+                    <div>
                         <p className="font-normal text-[14px] text-text-grey">Service status</p>
                         <div
                             className="p-[2px] px-[8px] rounded-[12px] bg-light-green-60 w-fit flex items-center gap-2 mt-[8px]">
                             <CheckGIcon/>
                             <p className="font-semi-normal text-[14px] text-light-green-70">Completed</p>
                         </div>
-                    </>
+                    </div>
                 )
             default:
-                return (
-                    <>
-                        <p className="font-normal text-[14px] text-text-grey">Service status</p>
-                        <div
-                            className="p-[2px] px-[8px] rounded-[12px] bg-warning w-fit flex items-center gap-2 mt-[8px]">
-                            <ClockIconOrange className="border-[1.5px] border-text-grey"/>
-                            <p className="font-semi-normal text-[14px] text-warning-bold">Awaiting</p>
-                        </div>
-                    </>
-                )
+                break
         }
     }
 
+    console.log({job})
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
+            <div className="bg-white rounded-lg shadow-lg w-full laptop:w-[640px] h-full laptop:h-screen p-6">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggleMenu}>
@@ -172,7 +164,7 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                 <div className="mt-10 p-4">
                     {
                         job?.status === "PENDING" ? (
-                            <div className="rounded-[12px] w-[544px] p-[16px] bg-cover bg-center bg-no-repeat"
+                            <div className="rounded-[12px] w-full  laptop:w-[544px] p-[16px] bg-cover bg-center bg-no-repeat"
                                  style={{backgroundImage: `url('/images/business-bg.png')`}}>
                                 <div className="flex flex-col">
                                     <div className="flex justify-center">
@@ -191,23 +183,32 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                                  style={{backgroundImage: `url('/images/business-bg.png')`}}>
                                 <div className="flex flex-col">
                                     <div className="flex justify-center">
-                                        <Image src={"/image/business/jobLogo.png"} alt="logo" width={64} height={64}
+                                        <Image src={job?.image} alt="logo" width={64} height={64}
                                                className="rounded-[16px] border-[1px] border-step-color flex justify-center"/>
                                     </div>
                                     <div className="flex justify-center flex-col mt-[8px]">
-                                        <p className="text-center font-semibold text-[16px]">Global technology</p>
-                                        <p className="text-center font-semi-normal text-[14px] text-text-grey">Lagos,
-                                            Nigeria</p>
-                                        <p className="text-center mt-[4px] text-[16px] font-semibold">N2,000/hr</p>
+                                        <p className="text-center font-semibold text-[16px]">{job?.name}</p>
+                                        <p className="text-center font-semi-normal text-[14px] text-text-grey">
+                                            {job?.city},{formatCountry(job?.country)}
+                                        </p>
+                                        {
+                                            job?.service_rate > 0 && (
+                                                <p className="text-center mt-[4px] text-[16px] font-semibold">
+                                                    N{formatNumberWithCommas(job?.service_rate)}/hr
+                                                </p>
+                                            )
+                                        }
                                     </div>
                                     <div className="flex justify-center mt-[8px]">
-                                        <div
+                                    <div
                                             className="flex items-center gap-1 bg-mid-grey p-2 rounded-xl justify-center w-fit">
                                             <div>
                                                 <Image src={medal} alt="medal" width={16}/>
                                             </div>
                                             <div>
-                                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">4.5</p>
+                                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">
+                                                    {formatDecimal(job?.rating, 1)}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -217,11 +218,11 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                     }
                     <div className="flex flex-col mt-[24px]">
                         {
-                            job?.payment_requested && (
+                            job?.payment_requested ? (
                                 <div className="w-full p-[8px] px-[16px] h-[40px] bg-purple-1 rounded-[8px] my-[24px]">
                                     <p className="font-semi-normal text-[14px] text-center">Payment requested. Awaiting confirmation</p>
                                 </div>
-                            )
+                            ) : (<></>)
                         }
 
                         {
@@ -262,7 +263,7 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                         {
                             !job?.isOwner && (
                                 job?.status === "ACCEPTED" && (
-                                    <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-[544px]">
+                                    <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-full laptop:w-[544px]">
                                         <Button
                                             className="bg-gradient-green p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-custom-bottom w-full"
                                             onClick={togglePayNow}
@@ -277,7 +278,7 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                         {
                             !job?.isOwner && (
                                 job?.status === "IN_PROGRESS" && (
-                                    <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-[544px]">
+                                    <div className="mt-[40px] flex flex-col laptop:flex-row justify-center gap-3 mb-[10px] w-full laptop:w-[544px]">
                                         <Button
                                             className="bg-gradient-green p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-custom-bottom w-full"
                                             onClick={() => markCompleted()}
@@ -325,8 +326,8 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                                         </div>
                                     </>
                                 ) : (
-                                    job?.payment_requested ? (
-                                        <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-[544px]">
+                                    job?.payment_made ? (
+                                        <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-full laptop:w-[544px]">
                                             <Button
                                                 className="bg-white border-[1px] border-light-grey-50 p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-none w-full"
                                             >
@@ -334,7 +335,7 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
                                             </Button>
                                         </div>
                                     ) : (
-                                        <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-[544px]">
+                                        <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-full laptop:w-[544px]">
                                             <Button
                                                 className="bg-gradient-green p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-custom-bottom w-full"
                                                 onClick={toggleConfirmPayment}

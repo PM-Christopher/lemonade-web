@@ -114,6 +114,7 @@ const config: Config = {
 			  "light-grey-70": "#E9EAEC",
 			  "light-green-10": "#F5FAEB",
 			  "light-green-50": "#DEFF99",
+			  "light-green-90": "#BFDF37",
 			  "light-green-tint": "#BFDD80",
 			  "green-tint": "#F2FFD6",
 			  "light-white": "#FCFCFC",

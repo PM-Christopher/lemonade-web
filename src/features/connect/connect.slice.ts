@@ -94,6 +94,42 @@ const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({token,
     }
 });
 
+const findUser = createAsyncThunk("connect/findUser", async ({token, search}: {token: string, search: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/connect/find-user?search=${search}`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: {token: string, data: any}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/connect/send-invite`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const connectSlice = createSlice({
     name: "connect",
     initialState,
@@ -111,6 +147,10 @@ const connectSlice = createSlice({
             }
             state.messages = [...state.messages, format_message];
         },
+        removeChat: (state) => {
+            state.chat = null
+            state.messages = []
+        }
     },
     extraReducers: (builder) => { {
         builder.addCase(getChat.pending, (state) => {
@@ -144,10 +184,31 @@ const connectSlice = createSlice({
         builder.addCase(inviteResponse.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(findUser.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(findUser.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.user = payload.data
+        });
+        builder.addCase(findUser.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(sendInvite.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(sendInvite.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(sendInvite.rejected, (state) => {
+            state.loading = false;
+        });
     }
     }
 });
 
-export const { addToMessages } = connectSlice.actions
-export { getChat, sendChat, inviteResponse }
+export const { addToMessages, removeChat } = connectSlice.actions
+export { getChat, sendChat, inviteResponse, findUser, sendInvite }
 export default connectSlice.reducer;

@@ -24,7 +24,7 @@ const BillingHistoryPage = () => {
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <div
-                    className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+                    className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.push("/settings")}>
                         <ChevronLeft/>
@@ -34,7 +34,7 @@ const BillingHistoryPage = () => {
                 <section className=" mt-4 flex flex-col items-center">
                     <div className="flex flex-col items-center">
                         <div
-                            className="w-[640px] rounded-[12px] p-[32px] px-[24px] flex justify-between gap-4 bg-green-tint border-b-[5px] border-b-step-color">
+                            className="w-full laptop:w-[640px] rounded-[12px] p-[32px] px-[24px] flex justify-between gap-4 bg-green-tint border-b-[5px] border-b-step-color">
                             <div className="flex flex-col gap-[9px]">
                                 <p className="text-mid-green font-semibold text-[16px]">{data?.plan.title}</p>
                                 <p className="font-bold text-[24px] text-black-light">N{data?.plan.plan_price}</p>
@@ -45,7 +45,7 @@ const BillingHistoryPage = () => {
                             <p className="font-semi-normal text-[16px] text-red-1">Cancel renewal</p>
                         </div>
 
-                        <div className="w-[640px] mt-[40px]">
+                        <div className="w-full laptop:w-[640px] mt-[40px]">
                             <p className="text-[14px] font-semibold text-black-light">Payment info</p>
                             <div
                                 className="flex gap-[12px] mt-[16px] items-center bg-light-green-10 w-fit pt-[4px] pr-[8px] pb-[4px] pl-[4px] rounded-[8px]">
@@ -57,12 +57,12 @@ const BillingHistoryPage = () => {
                             </div>
                         </div>
 
-                        <div className="w-[640px] mt-[40px]">
+                        <div className="w-full laptop:w-[640px] mt-[40px]">
                             <p className="text-[14px] font-semibold text-black-light">Payment history</p>
                             {
                                 data?.histories?.map((history: any, index: number) => (
                                     <div
-                                        className="flex justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px] mt-[16px]" key={index}>
+                                        className="flex flex-col laptop:flex-row items-start laptop:justify-between p-[16px] px-[12px] border-t-[1px] border-b-[1px] mt-[16px]" key={index}>
                                         <p className="font-semibold text-[16px]">Lemonade-{history.title}</p>
                                         <p className="font-normal text-[16px] text-center text-light-black">{history?.created_at}</p>
                                         <p className="font-normal text-[16px] text-light-black text-right">N{history?.amount}</p>

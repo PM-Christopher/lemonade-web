@@ -199,7 +199,7 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
 
     return (
         <MainLayout>
-            <section className="bg-light_grey pb-10">
+            <section className="bg-white laptop:bg-light_grey pb-10">
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer" onClick={() => router.back()}>
@@ -207,9 +207,9 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Edit business</p>
                     </div>
                 </div>
-                <section className="mt-4 flex flex-col items-center">
+                <section className="mt-0 laptop:mt-4 flex flex-col items-center">
                     <form onSubmit={formik.handleSubmit}>
-                        <div className="bg-white mt-10 w-[640px] p-[48px] rounded-[12px] flex flex-col">
+                        <div className="bg-white mt-0 laptop:mt-10 w-full laptop:w-[640px] p-[48px] rounded-[12px] flex flex-col">
                             <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px]">BUSINESS
                                 DETAILS</p>
                             <SingleFileUploader length="single" type="business" setField={formik}

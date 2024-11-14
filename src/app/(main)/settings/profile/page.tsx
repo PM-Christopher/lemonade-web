@@ -30,7 +30,7 @@ const ProfileSettingsPage = ({}) => {
         <MainLayout>
             <section className="bg-light_grey pb-10">
                 <div
-                    className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+                    className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.back()}>
                         <ChevronLeft/>
@@ -45,7 +45,7 @@ const ProfileSettingsPage = ({}) => {
                                    className="rounded-[24px] border-[1px] border-grey-90 w-[84px] h-[84px]"/>
                             <UploadCamIcon className="absolute bottom-0 right-[-14px] w-8 h-8"/>
                         </div>
-                        <div className="w-[640px] rounded-[12px] mt-[45.5px] p-[16px] flex flex-col bg-white gap-[8px]">
+                        <div className="w-[343px] laptop:w-[640px] rounded-[12px] mt-[45.5px] p-[16px] flex flex-col bg-white gap-[8px]">
                             <div className="flex justify-between">
                                 <p className="font-normal text-[14px]  text-text-grey">Full name</p>
                                 <p className="font-semi-normal text-[14px]  text-black-light">{user?.fullname}</p>

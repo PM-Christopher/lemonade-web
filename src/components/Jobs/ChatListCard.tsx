@@ -20,7 +20,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
                     style={{background: `url(${userType.avatar})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat"}}
                 ></div>
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full border-b-[1px] py-[12px] border-b-grey-20">
                 <div className="flex items-center gap-[4px]">
                     <p className="font-semibold text-[14px] text-black-light">{userType.username}</p>
                     <DotIcon className="w-[4px]"/>

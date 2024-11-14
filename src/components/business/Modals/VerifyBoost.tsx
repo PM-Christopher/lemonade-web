@@ -16,7 +16,7 @@ const VerifyBoost = ({isOpen, toggleMenu, boost}: {isOpen: boolean, toggleMenu: 
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
+            <div className="bg-white rounded-lg shadow-lg w-screen laptop:w-[480px] p-6 h-full laptop:h-screen">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggleMenu}>

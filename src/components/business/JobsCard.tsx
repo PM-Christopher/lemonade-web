@@ -26,8 +26,9 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
         setIsOpen(!isOpen)
     }
 
-    const fetchJob = (id: number) => {
-        dispatch(getJob({id, token: authToken, type})).then((res) => {
+    const fetchJob = (id: number, job: any) => {
+        const businessType = job?.isOwner ? "listing" : "business"
+        dispatch(getJob({id, token: authToken, type: businessType})).then((res) => {
             if (res.payload.status) {
                 setFetchedJob(res.payload.data.job)
                 if (type === "listing") {
@@ -48,7 +49,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                     jobs?.map((job: any, index: any) => (
                         <div key={index}>
                             <div className="flex flex-col cursor-pointer" onClick={() => {
-                                fetchJob(job?.id)
+                                fetchJob(job?.id, job)
                             }}>
                                 <div className="flex justify-between">
                                     <div className="flex gap-[8px]">
@@ -60,7 +61,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                                         </div>
                                     </div>
                                     <ChevronRight onClick={() => {
-                                        fetchJob(job?.id)
+                                        fetchJob(job?.id, job)
                                     }} className="cursor-pointer"/>
                                 </div>
                                 <div className="flex justify-between mt-[12px] items-center">

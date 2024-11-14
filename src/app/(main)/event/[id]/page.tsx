@@ -41,11 +41,11 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
                     </div>
                 </div>
                 <section className="mt-4 flex flex-col items-center">
-                    <div className="flex justify-center">
-                        <div className="flex items-center gap-[48px] min-w-[1000px] bg-white rounded-[16px] p-[4px]">
-                            <Image src={data?.event?.event_image} alt="event details" width={496} height={531.91}/>
-                            <div>
-                                <p className="mb-[24px] font-sans font-semibold text-[32px] leading-[44.8px]">
+                    <div className="flex justify-center w-full laptop:min-w-[1000px]">
+                        <div className="flex flex-col laptop:flex-row items-start laptop:items-center gap-[48px] w-full laptop:min-w-[1000px] bg-none laptop:bg-white rounded-[16px] p-[4px]">
+                            <Image src={data?.event?.event_image} alt="event details" width={496} height={531.91} className="w-full laptop:w-[496px]"/>
+                            <div className="px-[20px]">
+                                <p className="mb-[24px] font-sans font-semibold text-[18px] laptop:text-[32px] leading-[44.8px]">
                                     {data?.event?.event_name}
                                 </p>
                                 <div className="flex items-center gap-2 my-2">
@@ -74,16 +74,16 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
                                         {data?.event?.location}
                                     </p>
                                 </div>
-                                <p className="mt-[40px] font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Contact
+                                <p className="mt-[40px] font-sans font-semibold text-[18px] leading-[27px] tracking-custom hidden laptop:flex">Contact
                                     Us</p>
-                                <div className="flex items-center gap-[16px] mt-[16px]">
+                                <div className="hidden laptop:flex items-center gap-[16px] mt-[16px]">
                                     <FacebookIcon/>
                                     <InstagramIcon/>
                                     <LinkedInIcon/>
                                     <TwitterIcon/>
                                     <AttachmentIcon/>
                                 </div>
-                                <div className="mt-[40px]">
+                                <div className="mt-[40px] hidden laptop:flex">
                                     <Link href={`/event/${data?.event?.id}/buy-ticket`}>
                                         <Button
                                             className={"bg-gradient-green w-[231px] h-[56px] py-3.5 px-6 gap-2 rounded-[12px] border-b-2 border-transparent shadow-custom-top shadow-custom-bottom"}>
@@ -97,12 +97,34 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
                             </div>
                         </div>
                     </div>
-                    <div className="min-w-[1000px] mt-[40px]">
+                    <div className="w-full laptop:min-w-[1000px] mt-[40px] px-[20px]">
                         <p className="font-sans font-semibold text-[24px] leading-[33.6px]">About Event</p>
-                        <div className="w-[720px] mt-[16px]">
+                        <div className="w-full laptop:w-[720px] mt-[16px]">
                             <p className="font-sans font-normal text-[16px] leading-[24px] text-light-black mt-2">
                                 {data?.event?.event_description}
                             </p>
+                        </div>
+                        <div className="block laptop:hidden">
+                            <p className="mt-[40px] font-sans font-semibold text-[18px] leading-[27px] tracking-custom">Contact
+                                Us</p>
+                            <div className="flex items-center gap-[16px] mt-[16px]">
+                                <FacebookIcon/>
+                                <InstagramIcon/>
+                                <LinkedInIcon/>
+                                <TwitterIcon/>
+                                <AttachmentIcon/>
+                            </div>
+                            <div className="mt-[40px]">
+                                <Link href={`/event/${data?.event?.id}/buy-ticket`}>
+                                    <Button
+                                        className={"bg-gradient-green w-[231px] h-[56px] py-3.5 px-6 gap-2 rounded-[12px] border-b-2 border-transparent shadow-custom-top shadow-custom-bottom"}>
+                                        <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Buy
+                                            ticket
+                                            from
+                                            ₦2,000</p>
+                                    </Button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </section>

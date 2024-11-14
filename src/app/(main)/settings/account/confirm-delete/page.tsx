@@ -75,7 +75,7 @@ const ConfirmDeletePage = () => {
                 </div>
                 <section className="mt-4 flex flex-col items-center">
                     <form onSubmit={formik.handleSubmit}>
-                        <div className="w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
+                        <div className="w-full laptop:w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
                             <p className="text-[16px] font-semi-normal text-black-light">
                                 Enter your password to delete your account
                             </p>

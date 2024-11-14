@@ -44,7 +44,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, detailsToggl
                     isOpen ? 'translate-x-0' : 'translate-x-full'
                 }`}
             >
-                <div className="w-[585px] h-full bg-white p-[48px] px-[20px]">
+                <div className="w-screen laptop:w-[585px] h-full bg-white p-[48px] px-[20px]">
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">Jobs</p>

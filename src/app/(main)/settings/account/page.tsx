@@ -59,8 +59,8 @@ const AccountSettingsPage = () => {
                         <p className="font-sans font-semibold text-[16px] tracking-custom">Account settings</p>
                     </div>
                 </div>
-                <section className="mt-4 flex flex-col items-center">
-                    <div className="w-[640px] rounded-[12px] p-[16px] flex flex-col bg-white gap-4">
+                <section className="mt-4 flex flex-col px-5 items-center">
+                    <div className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex flex-col bg-white gap-4">
                         <div className="flex justify-between items-center">
                             <div className="flex gap-[8px] items-center">
                                 <PadlockIcon/>

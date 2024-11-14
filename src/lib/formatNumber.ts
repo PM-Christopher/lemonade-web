@@ -2,7 +2,7 @@ export const formatNumber = (number: number, places: number) => {
     if(number) {
         return parseFloat(String(number)).toFixed(places)
     }
-    return null
+    return 0
 }
 
 export const formatNumberWithCommas = (number: number) => {

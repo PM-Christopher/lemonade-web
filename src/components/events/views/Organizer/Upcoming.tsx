@@ -8,6 +8,10 @@ import OrganizerEventCard from "@/components/events/OrganizerEventCard";
 import Link from "next/link";
 import {EventInterface} from "@/interfaces/EventInterface";
 import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
+import EditIcon from "@/images/icons/edit.svg";
+import {useMediaQuery} from "react-responsive";
+import {PlusIcon} from "lucide-react";
+import {useRouter} from "next/navigation";
 
 const Upcoming = ({events, loading}: {events: EventInterface[], loading: boolean}) => {
     return (
@@ -17,9 +21,9 @@ const Upcoming = ({events, loading}: {events: EventInterface[], loading: boolean
                     <>
                         {
                             events.length > 0 && (
-                                <div className="flex bg-white p-2 gap-[24px] rounded-[16px] pr-[80px] w-[780px]">
-                                    <Image src={events[0]?.event_image} alt="poster" width={320} height={343}/>
-                                    <div className="flex flex-col mt-[24px]">
+                                <div className="flex flex-col laptop:flex-row bg-white gap-[24px] rounded-[16px] pr-0 laptop:pr-[80px] w-full laptop:w-[780px]">
+                                    <Image src={events[0]?.event_image} alt="poster" width={320} height={343} className="w-full"/>
+                                    <div className="flex flex-col mt-[12px] laptop:mt-[24px] px-[10px] pb-[10px]">
                                         <p className="font-sans font-semibold text-[24px] leading-[33.6px]">
                                             {events[0]?.event_name}
                                         </p>
@@ -61,7 +65,7 @@ const Upcoming = ({events, loading}: {events: EventInterface[], loading: boolean
                             )
                         }
                         <div
-                            className="grid grid-cols-3 mt-[10px] w-[780px] p-[16px] gap-[16px] bg-white rounded-[12px]">
+                            className="grid grid-cols-2 laptop:grid-cols-3 mt-[10px] w-full laptop:w-[780px] p-[16px] gap-[16px] bg-white rounded-[12px]">
                             {
                                 events.length > 0 ? (
                                     events.map((event, index) => (

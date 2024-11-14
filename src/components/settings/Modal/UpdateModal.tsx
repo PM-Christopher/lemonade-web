@@ -285,7 +285,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <form onSubmit={formik.handleSubmit}>
-                <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
+                <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] h-screen laptop:h-full p-6">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                             <div className="cursor-pointer" onClick={toggle}>
@@ -293,253 +293,260 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                             </div>
                             <p className="font-semibold text-[16px]">Change {profileTypeHeader()}</p>
                         </div>
-                        <FormikButton title="Save changes" error={formik.isValid} loading={formik.isSubmitting} classes="max-w-[135px] p-2 max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom" />
+                        <div className="hidden laptop:block">
+                            <FormikButton title="Save changes" error={formik.isValid} loading={formik.isSubmitting} classes="max-w-[135px] p-2 max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom" />
+                        </div>
+
                     </div>
                     <div className="mt-[24px]">
-                        <div className="flex flex-col">
-                            {
-                                type === "username" && (
-                                    <div className="grid gap-1 mt-[24px]">
-                                        <Label htmlFor="username"
-                                               className="font-normal text-[14px] leading-[16.8px] text-text-grey">Username</Label>
-                                        <Input
-                                            id="username"
-                                            type="text"
-                                            placeholder=""
-                                            className="h-[48px] rounded-[12px] bg-light_grey border-[1.5px] border-step-color"
-                                            value={formik.values.username}
-                                            onChange={formik.handleChange}
-                                        />
-                                    </div>
-                                )
-                            }
-
-                            {
-                                type === "bio" && (
-                                    <div className="grid gap-1 mt-[24px]">
-                                        <Label htmlFor="bio"
-                                               className="font-normal text-[14px] leading-[16.8px] text-text-grey">Bio</Label>
-                                        <Input
-                                            id="bio"
-                                            type="text"
-                                            placeholder=""
-                                            className="h-[48px] rounded-[12px] bg-light_grey border-[1.5px] border-step-color"
-                                            value={formik.values.bio}
-                                            onChange={formik.handleChange}
-                                        />
-                                    </div>
-                                )
-                            }
-
-                            {
-                                type === "industry" && (
-                                    <div className="grid gap-1 mt-[24px]">
-                                        <Label htmlFor="industry"
-                                               className="font-normal text-[14px] leading-[16.8px] text-text-grey">Profession</Label>
-                                        <Input
-                                            id="industry"
-                                            type="text"
-                                            placeholder=""
-                                            className="h-[48px] rounded-[12px] bg-light_grey border-[1.5px] border-step-color"
-                                            value={formik.values.industry}
-                                            onChange={formik.handleChange}
-                                        />
-                                    </div>
-                                )
-                            }
-
-                            {
-                                type === "addresses" && (
-                                    <>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="address" className="font-label">Address</Label>
+                        <div className="flex flex-col gap-y-[300px]">
+                            <div className="flex flex-col">
+                                {
+                                    type === "username" && (
+                                        <div className="grid gap-1 mt-[24px]">
+                                            <Label htmlFor="username"
+                                                   className="font-normal text-[14px] leading-[16.8px] text-text-grey">Username</Label>
                                             <Input
-                                                id="address"
+                                                id="username"
                                                 type="text"
-                                                className="h-12 rounded-xl bg-light_grey form-font border-0"
-                                                value={formik.values.address}
-                                                onBlur={formik.handleBlur}
+                                                placeholder=""
+                                                className="h-[48px] rounded-[12px] bg-light_grey border-[1.5px] border-step-color"
+                                                value={formik.values.username}
                                                 onChange={formik.handleChange}
                                             />
-                                            {checkError("address", formik) ? (
-                                                <p className="text-[#FF8D8D] text-[12px]">
-                                                    {formik.errors.address}
-                                                </p>
-                                            ) : null}
                                         </div>
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="city" className="font-label">City</Label>
+                                    )
+                                }
+
+                                {
+                                    type === "bio" && (
+                                        <div className="grid gap-1 mt-[24px]">
+                                            <Label htmlFor="bio"
+                                                   className="font-normal text-[14px] leading-[16.8px] text-text-grey">Bio</Label>
                                             <Input
-                                                id="city"
+                                                id="bio"
                                                 type="text"
-                                                className="h-12 rounded-xl bg-light_grey form-font border-0"
-                                                value={formik.values.city}
-                                                onBlur={formik.handleBlur}
+                                                placeholder=""
+                                                className="h-[48px] rounded-[12px] bg-light_grey border-[1.5px] border-step-color"
+                                                value={formik.values.bio}
                                                 onChange={formik.handleChange}
                                             />
-                                            {checkError("city", formik) ? (
+                                        </div>
+                                    )
+                                }
+
+                                {
+                                    type === "industry" && (
+                                        <div className="grid gap-1 mt-[24px]">
+                                            <Label htmlFor="industry"
+                                                   className="font-normal text-[14px] leading-[16.8px] text-text-grey">Profession</Label>
+                                            <Input
+                                                id="industry"
+                                                type="text"
+                                                placeholder=""
+                                                className="h-[48px] rounded-[12px] bg-light_grey border-[1.5px] border-step-color"
+                                                value={formik.values.industry}
+                                                onChange={formik.handleChange}
+                                            />
+                                        </div>
+                                    )
+                                }
+
+                                {
+                                    type === "addresses" && (
+                                        <>
+                                            <div className="grid gap-4">
+                                                <Label htmlFor="address" className="font-label">Address</Label>
+                                                <Input
+                                                    id="address"
+                                                    type="text"
+                                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                                    value={formik.values.address}
+                                                    onBlur={formik.handleBlur}
+                                                    onChange={formik.handleChange}
+                                                />
+                                                {checkError("address", formik) ? (
+                                                    <p className="text-[#FF8D8D] text-[12px]">
+                                                        {formik.errors.address}
+                                                    </p>
+                                                ) : null}
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="city" className="font-label">City</Label>
+                                                <Input
+                                                    id="city"
+                                                    type="text"
+                                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                                    value={formik.values.city}
+                                                    onBlur={formik.handleBlur}
+                                                    onChange={formik.handleChange}
+                                                />
+                                                {checkError("city", formik) ? (
+                                                    <p className="text-[#FF8D8D] text-[12px]">
+                                                        {formik.errors.city}
+                                                    </p>
+                                                ) : null}
+                                            </div>
+
+                                            <div className="grid gap-2 my-2">
+                                                <Label htmlFor="email" className="font-label">Country</Label>
+                                                <select id="country"
+                                                        className="h-12 rounded-xl bg-light_grey form-font border-0 px-2"
+                                                        value={formik.values.country}
+                                                        onChange={(e) => {
+                                                            formik.setFieldValue("country", e.target.value)
+                                                        }}>
+                                                    <option value="">Select country</option>
+                                                    {
+                                                        CountryList.getAll().map((country, index) => (
+                                                            <option value={country.name} key={index}>{country.name}</option>
+                                                        ))
+                                                    }
+                                                </select>
+                                                {checkError("country", formik) ? (
+                                                    <p className="text-[#FF8D8D] text-[12px]">
+                                                        {formik.errors.country}
+                                                    </p>
+                                                ) : null}
+                                            </div>
+                                            <div className="grid gap-2 my-2">
+                                                <Label htmlFor="state" className="font-label">State/Region</Label>
+                                                <Input
+                                                    id="state"
+                                                    type="text"
+                                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                                    value={formik.values.state}
+                                                    onBlur={formik.handleBlur}
+                                                    onChange={formik.handleChange}
+                                                />
+                                                {checkError("state", formik) ? (
+                                                    <p className="text-[#FF8D8D] text-[12px]">
+                                                        {formik.errors.state}
+                                                    </p>
+                                                ) : null}
+                                            </div>
+                                        </>
+                                    )
+                                }
+
+                                {
+                                    type === "skills-interest" && (
+                                        <div className="grid gap-1 mt-[24px]">
+                                            <div>
+                                                <p className="font-semibold text-[18px] font-sans">Skills</p>
+                                            </div>
+                                            <div className="grid grid-cols-[repeat(3,auto)] gap-3">
+                                                {skills.map((item, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className={`text-[14px] font-normal inline-block p-2 py-[12px] rounded-lg whitespace-nowrap cursor-pointer text-center text-text-grey ${
+                                                            Array.isArray(formik.values.skills) && formik.values.skills.includes(item) ? 'bg-gradient-green text-white' : 'bg-light_grey'
+                                                        }`}
+                                                        onClick={() => handleSkillsClick(item)}
+                                                    >
+                                                        {item}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {checkError("skills", formik) ? (
                                                 <p className="text-[#FF8D8D] text-[12px]">
-                                                    {formik.errors.city}
+                                                    {formik.errors.skills}
                                                 </p>
                                             ) : null}
-                                        </div>
-
-                                        <div className="grid gap-2 my-2">
-                                            <Label htmlFor="email" className="font-label">Country</Label>
-                                            <select id="country"
-                                                    className="h-12 rounded-xl bg-light_grey form-font border-0 px-2"
-                                                    value={formik.values.country}
-                                                    onChange={(e) => {
-                                                        formik.setFieldValue("country", e.target.value)
-                                                    }}>
-                                                <option value="">Select country</option>
+                                            <div className="mt-2">
+                                                <p className="font-semibold text-[18px] font-sans">Interests</p>
+                                            </div>
+                                            <div className="grid grid-cols-[repeat(4,auto)] gap-3">
                                                 {
-                                                    CountryList.getAll().map((country, index) => (
-                                                        <option value={country.name} key={index}>{country.name}</option>
+                                                    interests.map((item, idx) => (
+                                                        <div
+                                                            className={`text-[14px] font-normal inline-block p-2 py-[12px] rounded-lg whitespace-nowrap cursor-pointer text-center text-text-grey ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? 'bg-gradient-green text-white' : 'bg-light_grey'}`}
+                                                            key={idx}
+                                                            onClick={() => handleInterestClick(item)}
+                                                        >{item}</div>
                                                     ))
                                                 }
-                                            </select>
-                                            {checkError("country", formik) ? (
+                                            </div>
+                                            {checkError("interests", formik) ? (
                                                 <p className="text-[#FF8D8D] text-[12px]">
-                                                    {formik.errors.country}
+                                                    {formik.errors.interests}
                                                 </p>
                                             ) : null}
                                         </div>
-                                        <div className="grid gap-2 my-2">
-                                            <Label htmlFor="state" className="font-label">State/Region</Label>
-                                            <Input
-                                                id="state"
-                                                type="text"
-                                                className="h-12 rounded-xl bg-light_grey form-font border-0"
-                                                value={formik.values.state}
-                                                onBlur={formik.handleBlur}
-                                                onChange={formik.handleChange}
-                                            />
-                                            {checkError("state", formik) ? (
-                                                <p className="text-[#FF8D8D] text-[12px]">
-                                                    {formik.errors.state}
-                                                </p>
-                                            ) : null}
-                                        </div>
-                                    </>
-                                )
-                            }
+                                    )
+                                }
 
-                            {
-                                type === "skills-interest" && (
-                                    <div className="grid gap-1 mt-[24px]">
-                                        <div>
-                                            <p className="font-semibold text-[18px] font-sans">Skills</p>
-                                        </div>
-                                        <div className="grid grid-cols-[repeat(3,auto)] gap-3">
-                                            {skills.map((item, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className={`text-[14px] font-normal inline-block p-2 py-[12px] rounded-lg whitespace-nowrap cursor-pointer text-center text-text-grey ${
-                                                        Array.isArray(formik.values.skills) && formik.values.skills.includes(item) ? 'bg-gradient-green text-white' : 'bg-light_grey'
-                                                    }`}
-                                                    onClick={() => handleSkillsClick(item)}
-                                                >
-                                                    {item}
+                                {
+                                    type === "socials" && (
+                                        <div className="grid gap-1 mt-[24px]">
+                                            <div
+                                                className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
+                                                <div className="">
+                                                    <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2}/>
                                                 </div>
-                                            ))}
-                                        </div>
-                                        {checkError("skills", formik) ? (
-                                            <p className="text-[#FF8D8D] text-[12px]">
-                                                {formik.errors.skills}
-                                            </p>
-                                        ) : null}
-                                        <div className="mt-2">
-                                            <p className="font-semibold text-[18px] font-sans">Interests</p>
-                                        </div>
-                                        <div className="grid grid-cols-[repeat(4,auto)] gap-3">
-                                            {
-                                                interests.map((item, idx) => (
-                                                    <div
-                                                        className={`text-[14px] font-normal inline-block p-2 py-[12px] rounded-lg whitespace-nowrap cursor-pointer text-center text-text-grey ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? 'bg-gradient-green text-white' : 'bg-light_grey'}`}
-                                                        key={idx}
-                                                        onClick={() => handleInterestClick(item)}
-                                                    >{item}</div>
-                                                ))
-                                            }
-                                        </div>
-                                        {checkError("interests", formik) ? (
-                                            <p className="text-[#FF8D8D] text-[12px]">
-                                                {formik.errors.interests}
-                                            </p>
-                                        ) : null}
-                                    </div>
-                                )
-                            }
-
-                            {
-                                type === "socials" && (
-                                    <div className="grid gap-1 mt-[24px]">
-                                        <div
-                                            className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
-                                            <div className="">
-                                                <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2}/>
+                                                <Input
+                                                    name="facebook"
+                                                    id="facebook"
+                                                    type="text"
+                                                    className="form-font border-0 shadow-none"
+                                                    placeholder="Username"
+                                                    value={socials.facebook || getSocialUrl("facebook")}
+                                                    onChange={handleChange}
+                                                />
                                             </div>
-                                            <Input
-                                                name="facebook"
-                                                id="facebook"
-                                                type="text"
-                                                className="form-font border-0 shadow-none"
-                                                placeholder="Username"
-                                                value={socials.facebook || getSocialUrl("facebook")}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                        <div
-                                            className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
-                                            <div className="">
-                                                <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2}/>
+                                            <div
+                                                className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
+                                                <div className="">
+                                                    <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2}/>
+                                                </div>
+                                                <Input
+                                                    name="linkedin"
+                                                    id="linkedin"
+                                                    type="text"
+                                                    className="form-font border-0 shadow-none"
+                                                    placeholder="Username"
+                                                    value={socials.linkedin || getSocialUrl("linkedin")}
+                                                    onChange={handleChange}
+                                                />
                                             </div>
-                                            <Input
-                                                name="linkedin"
-                                                id="linkedin"
-                                                type="text"
-                                                className="form-font border-0 shadow-none"
-                                                placeholder="Username"
-                                                value={socials.linkedin || getSocialUrl("linkedin")}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                        <div
-                                            className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
-                                            <div className="">
-                                                <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2}/>
+                                            <div
+                                                className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
+                                                <div className="">
+                                                    <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2}/>
+                                                </div>
+                                                <Input
+                                                    name="twitter"
+                                                    id="twitter"
+                                                    type="text"
+                                                    className="form-font border-0 shadow-none"
+                                                    placeholder="Username"
+                                                    value={socials.twitter || getSocialUrl("twitter")}
+                                                    onChange={handleChange}
+                                                />
                                             </div>
-                                            <Input
-                                                name="twitter"
-                                                id="twitter"
-                                                type="text"
-                                                className="form-font border-0 shadow-none"
-                                                placeholder="Username"
-                                                value={socials.twitter || getSocialUrl("twitter")}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                        <div
-                                            className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
-                                            <div className="">
-                                                <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2}/>
+                                            <div
+                                                className="flex bg-light_grey p-2 px-[20px] border-0 items-center gap-2 rounded-xl h-[56px]">
+                                                <div className="">
+                                                    <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2}/>
+                                                </div>
+                                                <Input
+                                                    name="instagram"
+                                                    id="instagram"
+                                                    type="text"
+                                                    className="form-font border-0 shadow-none"
+                                                    placeholder="Username"
+                                                    value={socials.instagram || getSocialUrl("instagram")}
+                                                    onChange={handleChange}
+                                                />
                                             </div>
-                                            <Input
-                                                name="instagram"
-                                                id="instagram"
-                                                type="text"
-                                                className="form-font border-0 shadow-none"
-                                                placeholder="Username"
-                                                value={socials.instagram || getSocialUrl("instagram")}
-                                                onChange={handleChange}
-                                            />
                                         </div>
-                                    </div>
-                                )
-                            }
-
-
+                                    )
+                                }
+                            </div>
+                            <div className="flex laptop:hidden">
+                                <FormikButton title="Save changes" error={formik.isValid} loading={formik.isSubmitting}
+                                              classes="w-full laptop:max-w-[135px] p-2 h-[48px] laptop:max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"/>
+                            </div>
                         </div>
                     </div>
                 </div>
