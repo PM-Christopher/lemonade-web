@@ -25,7 +25,6 @@ import {formatString, splitLemonId} from "@/lib/helper";
 import MainLayout from "@/components/layouts/MainLayout";
 
 function SettingsPage() {
-    // router
     const router = useRouter()
     const {user} = useSelector((state: any) => state.auth)
 
