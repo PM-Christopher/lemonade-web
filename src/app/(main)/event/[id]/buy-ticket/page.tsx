@@ -172,7 +172,7 @@ const Page = ({params}: {params: {id: number}}) => {
                                     ))
                                 }
                             </div>
-                            <div className="flex items-center justify-center gap-[16px]">
+                            <div className="flex laptop:hidden items-center justify-center gap-[16px]">
                                 <div className="flex gap-[16px] items-center w-[147px]">
                                     <p className="text-[20px] font-bold text-mid-green">
                                         {
