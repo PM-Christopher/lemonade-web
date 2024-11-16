@@ -68,7 +68,7 @@ const  AssignTicketPage = ({params}: {params: {id: number}}) => {
                     quantity: ticket.quantity
                 })
             })
-            const redirect_url= "http://localhost:3000/event"
+            const redirect_url= `${process.env.NEXT_PUBLIC_BASE_URL}/event`
             const formValues = {tickets: allTickets, redirect_url, ...values}
             console.log({formValues})
             dispatch(buyTicket({event_id: params.id, data: formValues, token: authToken})).then((res: any) => {

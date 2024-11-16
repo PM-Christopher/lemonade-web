@@ -20,7 +20,7 @@ const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: ()
 
     const handlePayNow = async () => {
         const { data } = await axiosInstance.post(`business/jobs/${job?.id}/pay`, {
-            callback_url: "http://localhost:3000/business"
+            callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/business`
         }, getHeader())
         console.log({data})
         if (data.status) {

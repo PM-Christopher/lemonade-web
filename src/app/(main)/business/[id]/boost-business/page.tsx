@@ -65,7 +65,7 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
         },
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
-            const formData = {...values, callback_url: `http://localhost:3000/business/${params.id}`}
+            const formData = {...values, callback_url: `${process.env.NEXT_PUBLIC_BASE_URL}/business/${params.id}`}
             const {data} = await axiosInstance.post(`listing/boost-business/${params.id}`, formData, getHeader())
             if(data.status) {
                 dispatch(
