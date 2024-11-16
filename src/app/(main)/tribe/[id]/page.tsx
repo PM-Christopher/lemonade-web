@@ -1,5 +1,5 @@
 "use client"
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
@@ -18,6 +18,8 @@ import {useMediaQuery} from "react-responsive";
 import ShareTribeModal from "@/components/tribe/ShareTribeModal";
 import shareTribeModal from "@/components/tribe/ShareTribeModal";
 import UserInfoModal from "@/components/tribe/UserInfoModal";
+import {useAppDispatch} from "@/redux/hook";
+import {filterThreads, getThreads} from "@/features/tribes/tribe.slice";
 
 interface ModalPosition {
     top: number;
@@ -33,8 +35,9 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
     const modalRef = useRef<HTMLDivElement | null>(null);
     const moreIconRef = useRef<HTMLDivElement | null>(null);
+    const dispatch = useAppDispatch()
 
-    const { user } = useSelector((state:any) => state.tribe)
+    const { user, threads, loading: dataLoading } = useSelector((state:any) => state.tribe)
 
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const router = useRouter()
@@ -49,7 +52,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     }
 
     const { data, loading } = useRequest(`/tribes/${params.id}`, "GET", {}, true, getHeader())
-    const { data: dataThreads, loading: threadLoading } = useRequest(`/tribes/${params.id}/threads/all`, "GET", {}, true, getHeader())
+    // const { data: dataThreads, loading: threadLoading } = useRequest(`/tribes/${params.id}/threads/all`, "GET", {}, true, getHeader())
 
     const activateCreateThreadModal = () => {
         setCreateThreadModalOpen(!createThreadModalOpen)
@@ -79,6 +82,13 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         setModalVisible(!isModalVisible); // Toggle modal visibility
     };
 
+    const sortThreads = (value: any) => {
+        dispatch(filterThreads({id: params.id, token: authToken, data: {filter: value}}))
+    }
+
+    useEffect(() => {
+        dispatch(getThreads({id: params.id, token: authToken}))
+    }, [dispatch])
 
     return (
         <MainLayout>
@@ -110,17 +120,17 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                                 />
                             </div>
                         </div>
-                        <Select>
+                        <Select onValueChange={sortThreads}>
                             <SelectTrigger className="bg-mid-grey rounded-xl border-0 w-[180px] px-[16px] h-[40px]">
                                 <SelectValue
                                     placeholder={
                                         <span
-                                            className="font-sans font-semibold text-[12px] leading-[14.4px] text-text-grey">POPULAR</span>
+                                            className="font-sans font-semibold text-[12px] leading-[14.4px] text-text-grey">Select Option</span>
                                     }
                                 />
                             </SelectTrigger>
                             <SelectContent className="form-font">
-                                <SelectItem value="popularity">Popularity</SelectItem>
+                                <SelectItem value="popular">Popularity</SelectItem>
                                 <SelectItem value="newest">Newest</SelectItem>
                                 <SelectItem value="oldest">Oldest</SelectItem>
                             </SelectContent>
@@ -131,19 +141,25 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                     <div className="flex gap-2 p-10 py-4">
                         <div className="flex flex-col gap-2 w-[768px] bg-white overflow-y-auto max-h-screen hide-scrollbar">
                             {
-                                dataThreads?.threads.map((thread: Thread, index: number) => (
-                                    <ThreadCard
-                                        tribe_id={data?.tribe?.id}
-                                        thread={thread}
-                                        toggle={activateUserInfoModal}
-                                        key={index}
-                                        onMoreIconClick={handleMoreIconClick}
-                                        isModalVisible={isModalVisible}
-                                        modalPosition={modalPosition}
-                                        modalRef={modalRef}
-                                        moreIconRef={moreIconRef}
-                                    />
-                                ))
+                                dataLoading ? (
+                                    <p>
+                                        Loading...
+                                    </p>
+                                ) : (
+                                    threads.map((thread: Thread, index: number) => (
+                                        <ThreadCard
+                                            tribe_id={data?.tribe?.id}
+                                            thread={thread}
+                                            toggle={activateUserInfoModal}
+                                            key={index}
+                                            onMoreIconClick={handleMoreIconClick}
+                                            isModalVisible={isModalVisible}
+                                            modalPosition={modalPosition}
+                                            modalRef={modalRef}
+                                            moreIconRef={moreIconRef}
+                                        />
+                                    ))
+                                )
                             }
                         </div>
                         <div className="hidden tablet:block">

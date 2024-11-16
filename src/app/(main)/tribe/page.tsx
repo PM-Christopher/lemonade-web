@@ -205,7 +205,6 @@ export default function TribePage() {
         }
     };
 
-    console.log({tribes: data?.tribes})
     return (
         <MainLayout>
             <div className="bg-white flex flex-col tablet:flex-row justify-between gap-[10px] p-2 px-10 border-t-[1px] border-b-[1px] items-center">

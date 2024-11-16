@@ -113,6 +113,42 @@ const submitVote = createAsyncThunk("tribe/submitVote", async ({tribe_id, thread
     }
 });
 
+const getThreads = createAsyncThunk("tribe/getThreads", async ({id, token}: {id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/tribes/${id}/threads/all`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const filterThreads = createAsyncThunk("tribe/filterThreads", async ({id, token, data}: {id: number, token: string, data: any}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/tribes/${id}/threads/sort-thread`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const tribeSlice = createSlice({
     name: "tribe",
@@ -171,9 +207,32 @@ const tribeSlice = createSlice({
         builder.addCase(submitVote.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(getThreads.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getThreads.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.threads = payload?.data?.threads
+        });
+        builder.addCase(getThreads.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(filterThreads.pending, (state) => {
+            state.loading = true;
+            state.threads = [];
+        });
+        builder.addCase(filterThreads.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.threads = payload?.data?.threads
+        });
+        builder.addCase(filterThreads.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { setTribeUser, removeTribeUser } = tribeSlice.actions
-export { joinTribe, createThread , likeThread, submitVote}
+export { joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads}
 export default tribeSlice.reducer;

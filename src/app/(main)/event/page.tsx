@@ -10,11 +10,13 @@ import AgentSectionView from "@/components/events/views/Agent";
 import MainLayout from "@/components/layouts/MainLayout";
 import TicketIcon from "@/images/icons/tickets.svg";
 import SettingsIcon from "@/images/icons/settingsIcon.svg"
+import FilterEventModal from "@/components/events/Modals/FilterEventModal";
 
 const EventPage: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [menuOption, setMenuOption] = useState("events");
     const [togglePaymentModel, setTogglePaymentModel] = useState(false)
+    const [toggleFilterEvent, setToggleFilterEvent] = useState(false)
 
 
     const activatePaymentModal = () => {
@@ -28,6 +30,10 @@ const EventPage: React.FC = () => {
     const switchOption = (option: string) => {
         setMenuOption(option)
     }
+
+    const activateFilterEvent = () => {
+        setToggleFilterEvent(!toggleFilterEvent);
+    };
 
     const renderView = () => {
         switch (menuOption) {
@@ -94,6 +100,7 @@ const EventPage: React.FC = () => {
                 {renderView()}
 
             </section>
+            <FilterEventModal toggle={activateFilterEvent} isOpen={toggleFilterEvent} />
         </MainLayout>
     );
 }

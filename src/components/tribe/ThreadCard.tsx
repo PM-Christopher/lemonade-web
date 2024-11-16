@@ -81,8 +81,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, onMore
         })
     }
 
-    console.log({isModalVisible, modalPosition})
-
     return (
         <div className="p-4 py-4 w-full h-full grid gap-[50px]">
             <div>
