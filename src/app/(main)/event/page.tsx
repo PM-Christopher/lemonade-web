@@ -8,7 +8,7 @@ import EventSubMenu from "@/components/events/Menu/EventSubMenu";
 import OrganizerSubMenu from "@/components/events/Menu/OrganizerSubMenu";
 import AgentSectionView from "@/components/events/views/Agent";
 import MainLayout from "@/components/layouts/MainLayout";
-import TicketIcon from "@/images/icons/tickets.svg";
+import TicketIcon from "@/images/icons/ticket.svg";
 import SettingsIcon from "@/images/icons/settingsIcon.svg"
 import FilterEventModal from "@/components/events/Modals/FilterEventModal";
 
