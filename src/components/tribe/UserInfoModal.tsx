@@ -8,14 +8,16 @@ import TwitterIcon from "@/images/icons/twitter-color.svg"
 import WebIcon from "@/images/icons/webIcon.svg"
 import ChatIcon from "@/images/icons/chatIcon.svg"
 import {formatString} from "@/lib/helper";
+import {TribeInterface} from "@/interfaces/TribeInterface";
 
 type UserInfoInterface = {
     toggle: () => void,
     isOpen: boolean,
-    user: any
+    user: any,
+    tribe:  TribeInterface
 }
 
-const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user}) => {
+const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe}) => {
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
@@ -30,35 +32,45 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user}) => {
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex flex-col items-center justify-center">
-                        <Image src={user?.avatar} alt="check in" width={64} height={64}
+                        <Image src={user?.profile_image} alt="check in" width={64} height={64}
                                className="w-[64px] h-[64px] rounded-[24px] border-[1px] border-grey-90"/>
                         <p className="font-semibold text-[18px] mt-[16px]">{user?.username}</p>
                         <p className="font-normal text-[12px] text-text-grey">{formatString(user?.industry)}</p>
                         <p className="max-w-[416px] font-normal text-[14px] text-light-black text-center mt-[16px]">
                             {user?.bio}
                         </p>
-                        <div className="mt-[16px]">
-                            <p className="text-[14px] font-semibold text-center">Social links</p>
-                            <div className="flex gap-[16px] mt-[12px]">
-                                {
-                                    user?.socials.map((link: any) => (
-                                        <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
-                                            {link.name === 'facebook' && <FacebookIcon className="w-[24px]"/>}
-                                            {link.name === 'instagram' && <InstagramIcon className="w-[24px]"/>}
-                                            {link.name === 'linkedin' && <LinkedInIcon className="w-[24px]"/>}
-                                            {link.name === 'twitter' && <TwitterIcon className="w-[24px]"/>}
-                                            {link.name === 'website' && <WebIcon className="w-[24px]"/>}
-                                        </a>
-                                    ))
-                                }
-                            </div>
-                        </div>
-                        <div className="mt-[16px]">
-                            <div className="w-[343px] h-[48px] p-[14px] px-[48px] flex items-center cursor-pointer border-[1px] border-light-grey-50 justify-center gap-[8px] rounded-[12px]">
-                                <ChatIcon />
-                                <p className="font-semi-normal text-[16px] text-black-light">Open chat</p>
-                            </div>
-                        </div>
+                        {
+                            user?.socials.length > 0 && (
+                                <div className="mt-[16px]">
+                                    <p className="text-[14px] font-semibold text-center">Social links</p>
+                                    <div className="flex gap-[16px] mt-[12px]">
+                                        {
+                                            user?.socials.map((link: any) => (
+                                                <a href={link.value} target="_blank" rel="noopener noreferrer"
+                                                   key={link.name}>
+                                                    {link.name === 'facebook' && <FacebookIcon className="w-[24px]"/>}
+                                                    {link.name === 'instagram' && <InstagramIcon className="w-[24px]"/>}
+                                                    {link.name === 'linkedin' && <LinkedInIcon className="w-[24px]"/>}
+                                                    {link.name === 'twitter' && <TwitterIcon className="w-[24px]"/>}
+                                                    {link.name === 'website' && <WebIcon className="w-[24px]"/>}
+                                                </a>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+                            )
+                        }
+                        {
+                            !tribe?.owner && (
+                                <div className="mt-[16px]">
+                                    <div
+                                        className="w-[343px] h-[48px] p-[14px] px-[48px] flex items-center cursor-pointer border-[1px] border-light-grey-50 justify-center gap-[8px] rounded-[12px]">
+                                        <ChatIcon/>
+                                        <p className="font-semi-normal text-[16px] text-black-light">Open chat</p>
+                                    </div>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </div>

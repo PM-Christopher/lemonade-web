@@ -2,6 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {TribeInterface, TribeThreadInterface} from "@/interfaces/TribeInterface";
 
+interface IPinned {
+    topic: string,
+    image: string,
+}
+
 interface tribeState {
     user: {} | null;
     loading: boolean;
@@ -10,6 +15,7 @@ interface tribeState {
     tribes: TribeInterface[],
     tribe: TribeThreadInterface | null,
     thread: TribeThreadInterface | null,
+    pinnedThreads: IPinned[]
 }
 
 interface JoinTribeParams {
@@ -38,7 +44,8 @@ const initialState: tribeState = {
     threads: [],
     tribes: [],
     tribe: null,
-    thread: null
+    thread: null,
+    pinnedThreads: []
 };
 
 const joinTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tribe/joinTribe", async ({id, token}: JoinTribeParams, { rejectWithValue }) => {
@@ -149,6 +156,96 @@ const filterThreads = createAsyncThunk("tribe/filterThreads", async ({id, token,
     }
 });
 
+const viewProfile = createAsyncThunk("tribe/viewProfile", async ({id, token}: {id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/threads/view-profile/${id}`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const pinThread = createAsyncThunk("tribe/pinThread", async ({id, token}: {id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/threads/${id}/pin-thread`, {}, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getPinThreads = createAsyncThunk("tribe/getPinThreads", async ({id, token}: {id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/threads/${id}/pinned`, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const reportThread = createAsyncThunk("tribe/reportThread", async ({id, token, data}: {id: number|null, token: string, data: any}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/threads/${id}/report-thread`, data, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const deleteThread = createAsyncThunk("tribe/deleteThread", async ({id, token}: {id: number|null, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.delete(`/threads/${id}/delete-thread`, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const tribeSlice = createSlice({
     name: "tribe",
@@ -219,6 +316,17 @@ const tribeSlice = createSlice({
             state.loading = false;
         });
 
+        builder.addCase(getPinThreads.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getPinThreads.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.pinnedThreads = payload?.data?.threads
+        });
+        builder.addCase(getPinThreads.rejected, (state) => {
+            state.loading = false;
+        });
+
         builder.addCase(filterThreads.pending, (state) => {
             state.loading = true;
             state.threads = [];
@@ -230,9 +338,56 @@ const tribeSlice = createSlice({
         builder.addCase(filterThreads.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(viewProfile.pending, (state) => {
+            state.loading = true;
+            state.user = null;
+        });
+        builder.addCase(viewProfile.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.user = payload?.data?.user
+        });
+        builder.addCase(viewProfile.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(pinThread.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(pinThread.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.pinnedThreads = [
+                ...state.pinnedThreads,
+                { topic: payload?.data?.message?.topic, image: payload?.data?.message?.media[0] }
+            ];
+        });
+        builder.addCase(pinThread.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(reportThread.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(reportThread.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(reportThread.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(deleteThread.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(deleteThread.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.threads = state.threads.filter(thread => thread.id !== payload?.data?.thread_id)
+        });
+        builder.addCase(deleteThread.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { setTribeUser, removeTribeUser } = tribeSlice.actions
-export { joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads}
+export { joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread }
 export default tribeSlice.reducer;

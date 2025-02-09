@@ -24,7 +24,6 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
     ]);
     const token = cookies.token;
 
-
     useEffect(() => {
         dispatch(setIsRouting(false));
     }, []);

@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
+import PinnedIcon from "@/images/icons/pinnedIcon.svg"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
@@ -19,25 +20,26 @@ import ShareTribeModal from "@/components/tribe/ShareTribeModal";
 import shareTribeModal from "@/components/tribe/ShareTribeModal";
 import UserInfoModal from "@/components/tribe/UserInfoModal";
 import {useAppDispatch} from "@/redux/hook";
-import {filterThreads, getThreads} from "@/features/tribes/tribe.slice";
+import {filterThreads, getPinThreads, getThreads, pinThread, viewProfile} from "@/features/tribes/tribe.slice";
+import ReportThreadModal from "@/components/tribe/ReportThreadModal";
+import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 
-interface ModalPosition {
-    top: number;
-    left: number;
-}
 
 const SingleTribePage = ({params}: {params: {id: number}}) => {
     const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false)
     const [joinTribeModalOpen, setJoinTribeModalOpen] = useState(false)
     const [shareTribeModalOpen, setShareTribeModalOpen] = useState(false)
     const [userInfoModal, setUserInfoModal] = useState(false)
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
+    const [reportThreadModal, setReportThreadModal] = useState(false)
+    const [deleteThreadModal, setDeleteThreadModal] = useState(false)
+
+    const [userId, setUserId] = useState<number|null>(null);
+    const [threadId, setThreadId] = useState<number|null>(null);
     const modalRef = useRef<HTMLDivElement | null>(null);
     const moreIconRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useAppDispatch()
 
-    const { user, threads, loading: dataLoading } = useSelector((state:any) => state.tribe)
+    const { user, threads, loading: dataLoading, pinnedThreads } = useSelector((state:any) => state.tribe)
 
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const router = useRouter()
@@ -58,6 +60,16 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         setCreateThreadModalOpen(!createThreadModalOpen)
     }
 
+    const switchUserId = (id: number) => {
+        setUserId(id)
+        dispatch(viewProfile({ id: id, token: authToken }))
+        activateUserInfoModal()
+    }
+
+    const setPinThread = (id: number) => {
+        dispatch(pinThread({ id, token: authToken }))
+    }
+
     const activateJoinTribeModal = () => {
         setJoinTribeModalOpen(!joinTribeModalOpen)
     }
@@ -70,24 +82,32 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         setUserInfoModal(!userInfoModal)
     }
 
-    const handleMoreIconClick = () => {
-        if (moreIconRef.current) {
-            const rect = moreIconRef.current.getBoundingClientRect();
-            const position: ModalPosition = {
-                top: rect.top + window.scrollY,
-                left: rect.right + window.scrollX - 150, // Adjust modal position relative to the button
-            };
-            setModalPosition(position);
-        }
-        setModalVisible(!isModalVisible); // Toggle modal visibility
-    };
+    const activateReportThreadModal = () => {
+        setReportThreadModal(!reportThreadModal)
+    }
 
     const sortThreads = (value: any) => {
         dispatch(filterThreads({id: params.id, token: authToken, data: {filter: value}}))
     }
 
+    const toggleThreadId = (id: number) => {
+        setThreadId(id)
+        activateReportThreadModal()
+    }
+
+    const toggleDeleteThreadModal = (id: number) => {
+        setThreadId(id)
+        activateDeleteThreadModal()
+    }
+
+    const activateDeleteThreadModal = () => {
+        setDeleteThreadModal(!deleteThreadModal)
+    }
+
     useEffect(() => {
         dispatch(getThreads({id: params.id, token: authToken}))
+
+        dispatch(getPinThreads({id: params.id, token: authToken}))
     }, [dispatch])
 
     return (
@@ -138,43 +158,65 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                     </div>
                 </div>
                 <div>
-                    <div className="flex gap-2 p-10 py-4">
-                        <div className="flex flex-col gap-2 w-[768px] bg-white overflow-y-auto max-h-screen hide-scrollbar">
-                            {
-                                dataLoading ? (
-                                    <p>
-                                        Loading...
-                                    </p>
-                                ) : (
-                                    threads.map((thread: Thread, index: number) => (
-                                        <ThreadCard
-                                            tribe_id={data?.tribe?.id}
-                                            thread={thread}
-                                            toggle={activateUserInfoModal}
-                                            key={index}
-                                            onMoreIconClick={handleMoreIconClick}
-                                            isModalVisible={isModalVisible}
-                                            modalPosition={modalPosition}
-                                            modalRef={modalRef}
-                                            moreIconRef={moreIconRef}
-                                        />
-                                    ))
-                                )
-                            }
+                    <div className="flex justify-around mt-4">
+                        <div className="flex flex-col px-10">
+                            <div className="w-[769px] flex justify-between bg-grey-20">
+                                {
+                                    pinnedThreads?.length > 0 && (
+                                        pinnedThreads?.map((pinned: {topic: string, image: string}) => (
+                                            <div className="px-[16px] py-[12px] flex gap-[12px] items-center">
+                                                <p className="truncate font-semiBold text-[14px]">
+                                                    {pinned?.topic}
+                                                </p>
+                                                <PinnedIcon className="w-[10px]"/>
+                                            </div>
+                                        ))
+                                    )
+                                }
+                            </div>
+                            <div className="flex gap-2">
+                                <div
+                                    className="flex flex-col gap-2 w-[768px] bg-white overflow-y-auto max-h-screen hide-scrollbar">
+                                    {
+                                        dataLoading ? (
+                                            <p>
+                                                Loading...
+                                            </p>
+                                        ) : (
+                                            threads.map((thread: Thread, index: number) => (
+                                                <ThreadCard
+                                                    tribe_id={data?.tribe?.id}
+                                                    thread={thread}
+                                                    toggle={activateUserInfoModal}
+                                                    key={index}
+                                                    switchUserId={switchUserId}
+                                                    pinThread={setPinThread}
+                                                    toggleThreadId={toggleThreadId}
+                                                    toggleDeleteThread={toggleDeleteThreadModal}
+                                                />
+                                            ))
+                                        )
+                                    }
+                                </div>
+                            </div>
                         </div>
                         <div className="hidden tablet:block">
-                            <TribeDetailsCard share={activateShareTribeModal} toggle={activateCreateThreadModal} tribe={data?.tribe}/>
+                            <TribeDetailsCard share={activateShareTribeModal} toggle={activateCreateThreadModal}
+                                              tribe={data?.tribe}/>
                         </div>
                     </div>
                     <CreateThreadModal tribe_id={data?.tribe?.id} toggle={activateCreateThreadModal}
                                        isOpen={createThreadModalOpen}/>
                     <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen}/>
-                    <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={data?.tribe} />
+                    <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={data?.tribe}/>
                     {
                         user && (
-                            <UserInfoModal toggle={activateUserInfoModal} isOpen={userInfoModal} user={user} />
+                            <UserInfoModal toggle={activateUserInfoModal} isOpen={userInfoModal} user={user}
+                                           tribe={data?.tribe}/>
                         )
                     }
+                    <ReportThreadModal toggle={activateReportThreadModal} isOpen={reportThreadModal} threadId={threadId} />
+                    <DeleteThreadModal toggle={activateDeleteThreadModal} isOpen={deleteThreadModal} threadId={threadId} setThreadId={setThreadId} />
                 </div>
             </div>
             {

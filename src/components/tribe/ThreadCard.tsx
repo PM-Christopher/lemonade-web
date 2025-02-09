@@ -28,20 +28,35 @@ interface ThreadCardProps {
     thread: Thread,
     tribe_id: number,
     toggle: () => void,
-    onMoreIconClick: () => void;
-    isModalVisible: boolean;
-    modalPosition: ModalPosition | null;
-    modalRef: any;
-    moreIconRef: any
+    switchUserId: any,
+    pinThread: any,
+    toggleThreadId: (id: number) => void,
+    toggleDeleteThread: (id: number) => void,
 }
 
 
 
-const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, onMoreIconClick, isModalVisible, modalPosition, modalRef, moreIconRef}) => {
+const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switchUserId, pinThread, toggleThreadId, toggleDeleteThread}) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
     const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
     const charLimit = 200; // Set your desired character limit
+
+    const moreIconRef = useRef<HTMLDivElement | null>(null);
+    const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const handleMoreIconClick = () => {
+        if (moreIconRef.current) {
+            const rect = moreIconRef.current.getBoundingClientRect();
+            const position: ModalPosition = {
+                top: rect.top + window.scrollY + 25,
+                left: rect.right + window.scrollX - 150, // Adjust modal position relative to the button
+            };
+            setModalPosition(position);
+        }
+        setModalVisible(!isModalVisible); // Toggle modal visibility
+    };
 
     const handleToggle = () => {
         setIsExpanded(!isExpanded); // Toggle the expanded state
@@ -108,7 +123,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, onMore
                         </div>
                     </div>
                     <div className="cursor-pointer" ref={moreIconRef}>
-                        <MoreIcon className="cursor-pointer" onClick={onMoreIconClick} />
+                        <MoreIcon className="cursor-pointer" onClick={handleMoreIconClick} />
                     </div>
                 </div>
                 <div className="mt-[4px]">
@@ -207,19 +222,19 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, onMore
                         minWidth: "150px",
                     }}
                 >
-                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" >
+                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => switchUserId(thread?.created_by?.user?.id)}>
                         <UserIcon className="w-[16.25px] h-[16.25px]"/>
                         <p className="font-normal text-[16px] text-black-light">View profile</p>
                     </div>
-                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer">
+                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => pinThread(thread?.id)}>
                         <PinIcon className="w-[16.25px] h-[16.25px]"/>
                         <p className="font-normal text-[16px] text-black-light">Pin Thread</p>
                     </div>
-                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer">
+                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => toggleThreadId(thread?.id)}>
                         <FlagIcon className="w-[16.25px] h-[16.25px]"/>
                         <p className="font-normal text-[16px] text-black-light">Report Thread</p>
                     </div>
-                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer">
+                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => toggleDeleteThread(thread?.id)}>
                         <TrashRedIcon className="w-[16.25px] h-[16.25px]"/>
                         <p className="text-red-1 font-normal text-[16px]">Delete thread</p>
                     </div>
