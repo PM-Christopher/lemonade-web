@@ -9,7 +9,8 @@ interface tribeState {
     tickets: TicketDetails[];
     total: number,
     event: null,
-    newTickets: []
+    newTickets: [],
+    searchResults: [],
 }
 
 const initialState: tribeState = {
@@ -18,7 +19,8 @@ const initialState: tribeState = {
     tickets: [],
     total: 0,
     event: null,
-    newTickets: []
+    newTickets: [],
+    searchResults: [],
 };
 
 const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, token, data}: {event_id: number, token: string, data: any}, { rejectWithValue }) => {
@@ -75,6 +77,24 @@ const editEvent = createAsyncThunk("event/editEvent", async ({ data, token, id }
     }
 });
 
+const searchEvent = createAsyncThunk("event/searchEvent", async ({ data}: { data: any }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    };
+
+    try {
+        const response = await axiosInstance.post(`/events/search-events`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
 const eventSlice = createSlice({
     name: "event",
     initialState,
@@ -124,9 +144,21 @@ const eventSlice = createSlice({
         builder.addCase(editEvent.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(searchEvent.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(searchEvent.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            console.log({events: payload?.data?.events});
+            state.searchResults = payload?.data?.events;
+        });
+        builder.addCase(searchEvent.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState } = eventSlice.actions
-export { buyTicket, createEvent, editEvent }
+export { buyTicket, createEvent, editEvent, searchEvent }
 export default eventSlice.reducer;

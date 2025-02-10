@@ -29,6 +29,7 @@ import InfoIcon from "@/images/icons/infoIcon.svg"
 import {FormikButton} from "@/components/global/FormikButton";
 import {authFailure, loadStop} from "@/features/authentication/authSlice";
 import {useMediaQuery} from "react-responsive";
+import {searchTribe} from "@/features/tribes/tribe.slice";
 
 
 export default function TribePage() {
@@ -36,10 +37,14 @@ export default function TribePage() {
     const dispatch = useAppDispatch()
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const {authToken} = useSelector((state: any) => state.auth)
+    const { searchResults } = useSelector((state: any) => state.tribe);
+
     const [tribeType, setTribeType] = useState("tln")
     const [image, setImage] = useState(null)
     const [monetizedCheck, setMonetizedChecked] = useState(false)
     const [privateCheck, setPrivateCheck] = useState(false)
+    const [search, setSearch] = useState('');
+
     const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
 
     const getHeader = () => {
@@ -49,6 +54,14 @@ export default function TribePage() {
             },
         };
     }
+
+    // onChange handler that updates local state and dispatches an action
+    const handleTribeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearch(value);
+        dispatch(searchTribe({ data: { search: value } }));
+    };
+
 
     const handleChange = (type: string) => {
         if (type === "monetized") {
@@ -296,7 +309,7 @@ export default function TribePage() {
                             }
                         </section>
                         <section id="search-tribes" className="p-10 py-4 w-[480px] h-[325px] bg-white rounded-[12px] hidden tablet:block">
-                            <div className="bg-white">
+                            <div className="bg-white flex flex-col gap-4">
                                 <div className="flex items-center gap-3 bg-light_grey p-2 rounded-[12px]">
                                     <div>
                                         <SearchIcon/>
@@ -307,14 +320,36 @@ export default function TribePage() {
                                             type="text"
                                             className="rounded-xl text-[14px] bg-light_grey border-0 w-[300px] focus:outline-none focus:ring-0 focus:border-transparent"
                                             placeholder="Search tribe"
+                                            value={search}
+                                            onChange={handleTribeSearch}
                                         />
                                     </div>
                                 </div>
+                                <div>
+                                    <p className="font-semiBold text-[14px] text-text-grey">Recent search</p>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    {
+                                        searchResults.length > 0 && (
+                                            searchResults.map((tribe: TribeInterface, index: number) => (
+                                                <Link href={`/tribe/${tribe.id}`} key={index} className="cursor-pointer">
+                                                    <div className="flex gap-2 items-center">
+                                                        <Image src={tribe?.image} alt={tribe?.tribe_name} width={50}
+                                                               height={50}
+                                                               className="border-[2px] border-text-grey rounded-[12px]"/>
+                                                        <p className="font-medium text-text-grey text-[14px]">{tribe?.tribe_name}</p>
+                                                    </div>
+                                                </Link>
+                                            ))
+                                        )
+                                    }
+                                </div>
                             </div>
                         </section>
-                    </div>
                 </div>
-            <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${!modalFlag ? "hidden" : "flex"}`}>
+            </div>
+            <div
+                className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${!modalFlag ? "hidden" : "flex"}`}>
                 <form onSubmit={formik.handleSubmit} className="flex flex-col">
                     <div className="bg-white rounded-lg shadow-lg w-full tablet:w-[640px] p-6 px-[48px] pb-[48px] flex flex-col h-screen tablet:h-full">
                         <div className="flex justify-between items-center">

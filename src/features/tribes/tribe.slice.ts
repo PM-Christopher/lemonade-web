@@ -15,7 +15,8 @@ interface tribeState {
     tribes: TribeInterface[],
     tribe: TribeThreadInterface | null,
     thread: TribeThreadInterface | null,
-    pinnedThreads: IPinned[]
+    pinnedThreads: IPinned[],
+    searchResults: []
 }
 
 interface JoinTribeParams {
@@ -45,7 +46,8 @@ const initialState: tribeState = {
     tribes: [],
     tribe: null,
     thread: null,
-    pinnedThreads: []
+    pinnedThreads: [],
+    searchResults: []
 };
 
 const joinTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tribe/joinTribe", async ({id, token}: JoinTribeParams, { rejectWithValue }) => {
@@ -246,6 +248,23 @@ const deleteThread = createAsyncThunk("tribe/deleteThread", async ({id, token}: 
     }
 });
 
+const searchTribe = createAsyncThunk("tribe/searchTribe", async ({data}: {data: any}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    };
+
+    try {
+        const response = await axiosInstance.post(`/tribes/search-tribe`, data, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const tribeSlice = createSlice({
     name: "tribe",
@@ -385,9 +404,20 @@ const tribeSlice = createSlice({
         builder.addCase(deleteThread.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(searchTribe.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(searchTribe.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.searchResults = payload?.data?.tribes
+        });
+        builder.addCase(searchTribe.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { setTribeUser, removeTribeUser } = tribeSlice.actions
-export { joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread }
+export { joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread, searchTribe }
 export default tribeSlice.reducer;

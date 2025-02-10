@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import SearchIcon from "@/images/icons/search.svg";
 import FilterIcon from "@/images/icons/fIlter.svg";
@@ -5,9 +6,13 @@ import TicketIcon from "@/images/icons/tickets.svg";
 
 type EventSubMenuInterface = {
     toggleMenu: () => void,
+    searchTerm: string,
+    handleEventSearch: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-const EventSubMenu: React.FC<EventSubMenuInterface> = ({toggleMenu}) => {
+const EventSubMenu: React.FC<EventSubMenuInterface> = ({toggleMenu, searchTerm, handleEventSearch}) => {
+
+
     return (
         <div className="flex justify-between px-[16px] items-center gap-[10px]">
             <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-[307px] h-[40px] laptop:w-[235px]">
@@ -20,6 +25,8 @@ const EventSubMenu: React.FC<EventSubMenuInterface> = ({toggleMenu}) => {
                         type="text"
                         className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
                         placeholder="Search events..."
+                        value={searchTerm}
+                        onChange={handleEventSearch}
                     />
                 </div>
             </div>

@@ -23,6 +23,7 @@ import {useAppDispatch} from "@/redux/hook";
 import {filterThreads, getPinThreads, getThreads, pinThread, viewProfile} from "@/features/tribes/tribe.slice";
 import ReportThreadModal from "@/components/tribe/ReportThreadModal";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
+import AddMemberModal from "@/components/tribe/AddMemberModal";
 
 
 const SingleTribePage = ({params}: {params: {id: number}}) => {
@@ -32,6 +33,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     const [userInfoModal, setUserInfoModal] = useState(false)
     const [reportThreadModal, setReportThreadModal] = useState(false)
     const [deleteThreadModal, setDeleteThreadModal] = useState(false)
+    const [addUserModal, setAddUserModal] = useState(false)
 
     const [userId, setUserId] = useState<number|null>(null);
     const [threadId, setThreadId] = useState<number|null>(null);
@@ -55,6 +57,10 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
 
     const { data, loading } = useRequest(`/tribes/${params.id}`, "GET", {}, true, getHeader())
     // const { data: dataThreads, loading: threadLoading } = useRequest(`/tribes/${params.id}/threads/all`, "GET", {}, true, getHeader())
+
+    const toggleAddMember = () => {
+        setAddUserModal(!addUserModal)
+    }
 
     const activateCreateThreadModal = () => {
         setCreateThreadModalOpen(!createThreadModalOpen)
@@ -136,7 +142,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                                     id="search"
                                     type="text"
                                     className="rounded-xl text-[14px] bg-light_grey border-0 w-full focus:outline-none focus:ring-0 focus:border-transparent"
-                                    placeholder="Search tribe"
+                                    placeholder="Search thread"
                                 />
                             </div>
                         </div>
@@ -201,8 +207,12 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                             </div>
                         </div>
                         <div className="hidden tablet:block">
-                            <TribeDetailsCard share={activateShareTribeModal} toggle={activateCreateThreadModal}
-                                              tribe={data?.tribe}/>
+                            <TribeDetailsCard
+                                share={activateShareTribeModal}
+                                toggle={activateCreateThreadModal}
+                                tribe={data?.tribe}
+                                toggleAddMember={toggleAddMember}
+                            />
                         </div>
                     </div>
                     <CreateThreadModal tribe_id={data?.tribe?.id} toggle={activateCreateThreadModal}
@@ -217,6 +227,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                     }
                     <ReportThreadModal toggle={activateReportThreadModal} isOpen={reportThreadModal} threadId={threadId} />
                     <DeleteThreadModal toggle={activateDeleteThreadModal} isOpen={deleteThreadModal} threadId={threadId} setThreadId={setThreadId} />
+                    <AddMemberModal isOpen={addUserModal} toggle={toggleAddMember}  />
                 </div>
             </div>
             {

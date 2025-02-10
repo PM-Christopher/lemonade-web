@@ -11,13 +11,27 @@ import MainLayout from "@/components/layouts/MainLayout";
 import TicketIcon from "@/images/icons/ticket.svg";
 import SettingsIcon from "@/images/icons/settingsIcon.svg"
 import FilterEventModal from "@/components/events/Modals/FilterEventModal";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {useAppDispatch} from "@/redux/hook";
+import {searchEvent} from "@/features/events/event.slice";
 
 const EventPage: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [menuOption, setMenuOption] = useState("events");
     const [togglePaymentModel, setTogglePaymentModel] = useState(false)
     const [toggleFilterEvent, setToggleFilterEvent] = useState(false)
+    const [searchTerm, setSearchTerm] = useState("");
+    const dispatch = useAppDispatch()
+    const { searchResults } = useSelector((state: RootState) => state.event);
 
+    const handleEventSearch = (e: React.ChangeEvent<HTMLInputElement>) =>{
+        const value = e.target.value;
+        setSearchTerm(value);
+        dispatch(searchEvent({ data: { search: value } }));
+    }
+
+    console.log({searchResults})
 
     const activatePaymentModal = () => {
         setTogglePaymentModel(!togglePaymentModel)
@@ -38,7 +52,7 @@ const EventPage: React.FC = () => {
     const renderView = () => {
         switch (menuOption) {
             case "events":
-                return <EventsSectionView />
+                return <EventsSectionView results={searchResults} searchTerm={searchTerm} />
             case "organizer":
                 return <OrganizerSectionView activatePaymentModal={activatePaymentModal} togglePaymentModel={togglePaymentModel} />
             case "agent":
@@ -49,7 +63,7 @@ const EventPage: React.FC = () => {
     const renderSubMenu = () => {
         switch (menuOption){
             case "events":
-                return <EventSubMenu toggleMenu={toggleMenu}  />
+                return <EventSubMenu toggleMenu={toggleMenu} searchTerm={searchTerm} handleEventSearch={handleEventSearch} />
             case "organizer":
                 return <OrganizerSubMenu toggle={activatePaymentModal} />
         }

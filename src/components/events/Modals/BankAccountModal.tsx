@@ -52,7 +52,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({toggle, option}) => {
         initialValues: {
             bank_name: "",
             account_number: "",
-            account_name: "",
+            account_name: "OMOLOLU OLAOLU",
         },
         validationSchema: createEventSchema,
         onSubmit: async (values) => {

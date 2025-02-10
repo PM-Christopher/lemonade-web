@@ -13,7 +13,7 @@ const EventCard: React.FC<EventIF> = ({event}) => {
     return (
         <div className="flex flex-col">
             <div>
-                <Image src={"/images/event_images/event_1.png"} alt="event_1" width={200}/>
+                <Image src={"/images/event_images/event_1.png"} alt="event_1" width={200} height={200}  />
             </div>
             <div className="my-2">
                 <p className="font-sans font-semi-normal text-[16px] leading-[24px]">{event.event_name}</p>

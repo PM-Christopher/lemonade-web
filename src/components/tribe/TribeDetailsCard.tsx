@@ -2,6 +2,7 @@ import React from 'react';
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import ShareIcon from "@/images/icons/share.svg";
+import AddUserIcon from "@/images/icons/addUserIcon.svg"
 import {Button} from "@/components/ui/button";
 import EditIcon from "@/images/icons/edit.svg";
 import DeleteIcon from "@/images/icons/delete.svg";
@@ -16,8 +17,9 @@ type TribeDetailsInterface = {
     toggle: () => void,
     tribe: TribeInterface,
     share: (tribe: TribeInterface) => void
+    toggleAddMember: () => void,
 }
-const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share}) => {
+const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share, toggleAddMember}) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
 
@@ -52,18 +54,32 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                     <p className="font-sans font-normal text-[12px] text-text-grey my-2">Created by <span
                         className="font-semibold">{tribe?.created_by}</span> on {formatLongDate(tribe?.created_at)}</p>
                 </div>
-                <div className="flex flex-col items-center cursor-pointer" onClick={() => share(tribe)}>
-                    <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
-                        <ShareIcon/>
+                <div className="flex gap-[16px]">
+                    <div className="flex flex-col items-center cursor-pointer" onClick={() => share(tribe)}>
+                        <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
+                            <ShareIcon/>
+                        </div>
+                        <p className="text-black-light text-[14px] font-semi-normal font-sans leading-[21px]">Share</p>
                     </div>
-                    <p className="text-black-light text-[14px] font-semi-normal font-sans leading-[21px]">Share</p>
+                    {
+                        tribe?.owner && (
+                            <div className="flex flex-col items-center cursor-pointer" onClick={toggleAddMember}>
+                                <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
+                                    <AddUserIcon/>
+                                </div>
+                                <p className="text-black-light text-[14px] font-semi-normal font-sans leading-[21px]">Add member</p>
+                            </div>
+                        )
+                    }
                 </div>
+
             </div>
             <div className="flex justify-center my-2">
                 {
                     tribe?.has_joined || tribe?.owner ? (
                         <Button
-                            className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]" onClick={toggle}>
+                            className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]"
+                            onClick={toggle}>
                             <div className="flex gap-1 justify-center items-center">
                                 <EditIcon/>
                                 <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Create thread</p>
@@ -110,9 +126,13 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                                             <p className="font-sans font-semi-normal text-[14px] text-black-light leading-[21px]">{member?.user?.username}</p>
                                         </div>
                                     </div>
-                                    <div>
-                                        <DeleteIcon/>
-                                    </div>
+                                    {
+                                        tribe?.owner && (
+                                            <div>
+                                                <DeleteIcon/>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                                 <div className="border-t-[1px] my-2"></div>
                             </>

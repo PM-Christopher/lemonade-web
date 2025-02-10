@@ -8,7 +8,12 @@ import {EventInterface} from "@/interfaces/EventInterface";
 import Link from "next/link";
 import {useMediaQuery} from "react-responsive";
 
-const EventsSectionView: React.FC = () => {
+type EventsInterface = {
+    results: EventInterface[],
+    searchTerm: string,
+}
+
+const EventsSectionView: React.FC<EventsInterface> = ({results, searchTerm}) => {
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
@@ -23,36 +28,77 @@ const EventsSectionView: React.FC = () => {
 
     return (
         <section className="mt-4 flex flex-col items-center">
-            <div className="bg-none laptop:bg-light-green-50 p-[24px] w-full laptop:w-[1008px] rounded-[12px] flex justify-center">
-                {
-                    !loading && (
-                        <Carousel events={data?.trending} showDots={true} showArrows={false}/>
-                    )
-                }
-            </div>
+            {
+                searchTerm ? (
+                    <div>
+                        <p>Showing results for "{searchTerm}"</p>
+                    </div>
+                ) : (
+                    <div className="bg-none laptop:bg-light-green-50 p-[24px] w-full laptop:w-[1008px] rounded-[12px] flex justify-center">
+                        {
+                            !loading && (
+                                <Carousel events={data?.trending} showDots={true} showArrows={false}/>
+                            )
+                        }
+                    </div>
+                )
+            }
+
             <div className="w-full laptop:w-[1008px] p-[24px] rounded-[12px] mt-[48px]">
-                <p className="font-sans font-semibold text-[20px] leading-[28px] mb-[16px]">This week</p>
                 {
-                    isMobile ? (
-                        <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
+                    searchTerm ? (
+                        results.length > 0 ? (
+                            isMobile ? (
+                                <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
+                                    {
+                                        results.map((event: EventInterface, index: number) => (
+                                            <Link href={`/event/${event?.id}`} key={index}>
+                                                <EventCard event={event} />
+                                            </Link>
+                                        ))
+                                    }
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-3 gap-2">
+                                    {
+                                        results.map((event: EventInterface, index: number) => (
+                                            <Link href={`/event/${event?.id}`} key={index}>
+                                                <EventCard event={event} />
+                                            </Link>
+                                        ))
+                                    }
+                                </div>
+                            )
+                        ) : (
+                            <p className="font-semiBold text-[24px]">No results found</p>
+                        )
+                    ): (
+                        <>
+                            <p className="font-sans font-semibold text-[20px] leading-[28px] mb-[16px]">This week</p>
                             {
-                                data?.this_week.map((event: EventInterface, index: number) => (
-                                    <Link href={`/event/${event?.id}`}>
-                                        <EventCard event={event} key={index}/>
-                                    </Link>
-                                ))
+                                isMobile ? (
+                                    <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
+                                        {
+                                            data?.this_week.map((event: EventInterface, index: number) => (
+                                                <Link href={`/event/${event?.id}`} key={index}>
+                                                    <EventCard event={event} />
+                                                </Link>
+                                            ))
+                                        }
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {
+                                            data?.this_week.map((event: EventInterface, index: number) => (
+                                                <Link href={`/event/${event?.id}`} key={index}>
+                                                    <EventCard event={event} />
+                                                </Link>
+                                            ))
+                                        }
+                                    </div>
+                                )
                             }
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-3 gap-2">
-                            {
-                                data?.this_week.map((event: EventInterface, index: number) => (
-                                    <Link href={`/event/${event?.id}`}>
-                                        <EventCard event={event} key={index}/>
-                                    </Link>
-                                ))
-                            }
-                        </div>
+                        </>
                     )
                 }
             </div>
