@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
 import {
     Card,
@@ -29,8 +29,8 @@ export default function VerifyPage() {
         "newToken",
     ]);
     const { user } = useSelector((state: any) => state.auth)
-
-    console.log({user})
+    const [seconds, setSeconds] = useState(60);
+    const [canResend, setCanResend] = useState(false);
 
     const getHeader = () => {
         const token = cookie.newToken;
@@ -40,6 +40,22 @@ export default function VerifyPage() {
                 Authorization: `Bearer ${token}`,
             },
         };
+    };
+
+    useEffect(() => {
+        if (seconds > 0) {
+            const timer = setInterval(() => {
+                setSeconds((prev) => prev - 1);
+            }, 1000);
+            return () => clearInterval(timer);
+        } else {
+            setCanResend(true);
+        }
+    }, [seconds]);
+
+    const handleResend = () => {
+        setSeconds(60);
+        setCanResend(false);
     };
 
     //form validation
@@ -148,9 +164,19 @@ export default function VerifyPage() {
                                         </p>
                                     ) : null}
                                 </div>
-                                <div className="flex justify-center mt-[10px] mb-[10px]">
-                                    <p className="font-sans font-semi-normal text-light-green text-[16px]">Resend code
-                                        in 60 secs</p>
+                                <div className="flex justify-center mt-[10px] mb-[5px]">
+                                    {canResend ? (
+                                        <p
+                                            className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer"
+                                            onClick={handleResend}
+                                        >
+                                            Send code again
+                                        </p>
+                                    ) : (
+                                        <p className="font-sans font-semi-normal text-light-green text-[16px]">
+                                            Resend code in {seconds} secs
+                                        </p>
+                                    )}
                                 </div>
                                 <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid} classes="w-full h-[48px] rounded-[12px]" />
                             </CardContent>

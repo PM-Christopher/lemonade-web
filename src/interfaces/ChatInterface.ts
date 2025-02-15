@@ -14,7 +14,7 @@ export interface ChatInterface {
     id: number
     sender: User;
     receiver: User;
-    latest_message: LatestMessage;
+    latest: LatestMessage;
     isReceiver: boolean
     isSender: boolean
 }

@@ -27,10 +27,10 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
                     <p className="text-text-grey text-[14px] font-normal">L{userType.lemon_id}</p>
                 </div>
                 <div className="flex justify-between">
-                    <p className="font-normal text-[14px] text-light-black">{chat?.latest_message.message}</p>
+                    <p className="font-normal text-[14px] text-light-black">{chat?.latest.message}</p>
                     <div className="flex gap-2">
                         <p className="text-[12px] font-normal text-text-grey">|</p>
-                        <p className="text-[12px] font-normal text-text-grey">{chat?.latest_message.created_at}</p>
+                        <p className="text-[12px] font-normal text-text-grey">{chat?.latest.created_at}</p>
                     </div>
                 </div>
             </div>

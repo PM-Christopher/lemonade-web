@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 import {
@@ -20,8 +20,21 @@ export default function VerifyCodePage() {
         password: "",
         username:"",
     })
+    const [seconds, setSeconds] = useState(60);
+    const [canResend, setCanResend] = useState(false);
 
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        if (seconds > 0) {
+            const timer = setInterval(() => {
+                setSeconds((prev) => prev - 1);
+            }, 1000);
+            return () => clearInterval(timer);
+        } else {
+            setCanResend(true);
+        }
+    }, [seconds]);
 
     const onSignup = async () => {
         try {
@@ -76,8 +89,15 @@ export default function VerifyCodePage() {
                         </CardContent>
                         <CardContent className="flex justify-center mt-[10px] mb-[10px]">
                             <div>
-                                <p className="font-sans font-semi-normal text-light-green text-[16px]">Resend code in 60
-                                    secs</p>
+                                {canResend ? (
+                                    <p className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer">
+                                        Send now
+                                    </p>
+                                ) : (
+                                    <p className="font-sans font-semi-normal text-light-green text-[16px]">
+                                        Resend code in {seconds} secs
+                                    </p>
+                                )}
                             </div>
                         </CardContent>
                         <CardContent className="flex flex-col space-y-2">

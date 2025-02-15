@@ -65,6 +65,8 @@ const ConnectPage = () => {
         dispatch(removeChat())
     }
 
+    console.log({data})
+
     usePusher("chat-channel", "message-sent");
     return (
         <MainLayout>
