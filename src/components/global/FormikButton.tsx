@@ -24,7 +24,8 @@ export const FormikButton = ({ loading = false, title = "Continue", error = true
             
              
             `}
-            disabled={loading || !error}
+            disabled={loading}
+            // disabled={loading || !error}
         >
             {loading ? (
                 <div className="flex justify-center items-center">

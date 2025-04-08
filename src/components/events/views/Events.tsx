@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, {useState} from 'react';
 import Carousel from "@/components/global/ImageSlider";
 import EventCard from "@/components/events/EventCard";
 import {useSelector} from "react-redux";
@@ -23,17 +23,19 @@ const EventsSectionView: React.FC<EventsInterface> = ({results, searchTerm}) => 
             },
         };
     }
+    const [trendingEvents, setTrendingEvents] = useState([])
 
     const { data, loading } = useRequest(`/events/attendees`, "GET", {}, true, getHeader())
 
     return (
-        <section className="mt-4 flex flex-col items-center">
+        <section className="mt-2 flex flex-col items-center">
             {
                 searchTerm ? (
                     <div>
                         <p>Showing results for "{searchTerm}"</p>
                     </div>
                 ) : (
+                    trendingEvents.length > 0 && (
                     <div className="bg-none laptop:bg-light-green-50 p-[24px] w-full laptop:w-[1008px] rounded-[12px] flex justify-center">
                         {
                             !loading && (
@@ -41,6 +43,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({results, searchTerm}) => 
                             )
                         }
                     </div>
+                )
                 )
             }
 

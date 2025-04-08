@@ -422,7 +422,7 @@ export default function TribePage() {
                                 <Textarea
                                     id="description"
                                     className="rounded-xl bg-light_grey form-font border-0 h-[91px] resize-none"
-                                    placeholder="A short bio about yourself..."
+                                    placeholder="Description about this tribe"
                                     value={formik.values.description}
                                     onChange={(e: any) => {
                                         formik.setFieldValue("description", e.target.value)
@@ -456,7 +456,7 @@ export default function TribePage() {
                                         <div className="grid gap-2">
                                             <Label htmlFor="tribe-name"
                                                    className="text-[14px] font-sans font-normal leading-[16.8px] text-text-grey">
-                                                Acceptance fee
+                                                Acceptance fee (₦)
                                             </Label>
                                             <Input
                                                 id="tribe-name"

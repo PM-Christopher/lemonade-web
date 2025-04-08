@@ -70,11 +70,19 @@ export const login = async (
     console.log("start");
     try {
         const { data } = await axiosInstance.post("/auth/login", { ...values });
-        console.log(data)
         if (data.status || data.success) {
             dispatch(setIsRouting(true));
             dispatch(setIsRouting(true));
-            if (data.data.user.status == 0) {
+            const user = data?.data?.user
+            if (user.status == 0) {
+                setCookie("newToken", data.data.token, {
+                    path: "/",
+                    maxAge: 3600 * 6, // Expires after 6hrs
+                    sameSite: false,
+                    // domain: env === 'development' ? '' : ''
+                });
+                router.push("/verify-email");
+            } else if(user.username === null) {
                 setCookie("newToken", data.data.token, {
                     path: "/",
                     maxAge: 3600 * 6, // Expires after 6hrs

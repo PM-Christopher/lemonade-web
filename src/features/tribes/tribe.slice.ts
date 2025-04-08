@@ -5,6 +5,7 @@ import {TribeInterface, TribeThreadInterface} from "@/interfaces/TribeInterface"
 interface IPinned {
     topic: string,
     image: string,
+    id: number
 }
 
 interface tribeState {
@@ -35,7 +36,7 @@ interface TribeResponse {
 }
 
 interface JoinTribeSuccessPayload {
-    data: TribeResponse;
+    data: any;
 }
 
 const initialState: tribeState = {
@@ -49,6 +50,24 @@ const initialState: tribeState = {
     pinnedThreads: [],
     searchResults: []
 };
+
+const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tribe/getTribe", async ({id, token}: JoinTribeParams, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/tribes/${id}`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const joinTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tribe/joinTribe", async ({id, token}: JoinTribeParams, { rejectWithValue }) => {
     const headers = {
@@ -265,6 +284,24 @@ const searchTribe = createAsyncThunk("tribe/searchTribe", async ({data}: {data: 
     }
 });
 
+const addTribeMember = createAsyncThunk("tribe/addTribeMember", async ({data, id, token}: {data: any, id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/tribes/add-member/${id}`, data, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const tribeSlice = createSlice({
     name: "tribe",
@@ -282,11 +319,25 @@ const tribeSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(joinTribe.pending, (state) => {
+        builder.addCase(getTribe.pending, (state) => {
             state.loading = true;
+        });
+        builder.addCase(getTribe.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.tribe = payload?.data?.tribe
+        });
+        builder.addCase(getTribe.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(joinTribe.pending, (state) => {
+            // state.loading = true;
         });
         builder.addCase(joinTribe.fulfilled, (state, { payload }) => {
             state.loading = false;
+            // store tribe state
+            // this is the state
+            state.tribe = payload?.data?.tribe
         });
         builder.addCase(joinTribe.rejected, (state) => {
             state.loading = false;
@@ -296,7 +347,7 @@ const tribeSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(createThread.fulfilled, (state, { payload }) => {
-            state.loading = false;
+            // state.loading = false;
             state.threads = [...state.threads, payload.data.thread]
         });
         builder.addCase(createThread.rejected, (state) => {
@@ -304,21 +355,26 @@ const tribeSlice = createSlice({
         });
 
         builder.addCase(likeThread.pending, (state) => {
-            state.loading = true;
+            // state.loading = true;
         });
         builder.addCase(likeThread.fulfilled, (state, { payload }) => {
             state.loading = false;
-            state.threads = payload.data.threads
+            state.threads = state.threads.map(thread =>
+                thread.id === payload.data.thread.id ? payload.data.thread : thread
+            );
         });
         builder.addCase(likeThread.rejected, (state) => {
             state.loading = false;
         });
 
         builder.addCase(submitVote.pending, (state) => {
-            state.loading = true;
+            // state.loading = true;
         });
         builder.addCase(submitVote.fulfilled, (state, { payload }) => {
             state.loading = false;
+            state.threads = state.threads.map(thread =>
+                thread.id === payload.data.thread.id ? payload.data.thread : thread
+            );
         });
         builder.addCase(submitVote.rejected, (state) => {
             state.loading = false;
@@ -359,7 +415,7 @@ const tribeSlice = createSlice({
         });
 
         builder.addCase(viewProfile.pending, (state) => {
-            state.loading = true;
+            // state.loading = true;
             state.user = null;
         });
         builder.addCase(viewProfile.fulfilled, (state, { payload }) => {
@@ -371,21 +427,35 @@ const tribeSlice = createSlice({
         });
 
         builder.addCase(pinThread.pending, (state) => {
-            state.loading = true;
+            // state.loading = true;
         });
         builder.addCase(pinThread.fulfilled, (state, { payload }) => {
             state.loading = false;
-            state.pinnedThreads = [
-                ...state.pinnedThreads,
-                { topic: payload?.data?.message?.topic, image: payload?.data?.message?.media[0] }
-            ];
+            console.log(payload.message)
+            if (payload?.message === "Pinned thread") {
+                state.pinnedThreads = [
+                    ...state.pinnedThreads,
+                    { id: payload?.data?.message?.id, topic: payload?.data?.message?.topic, image: payload?.data?.message?.media[0] }
+                ];
+                state.threads = state.threads.map(thread =>
+                    thread.id === payload.data.message.id ? payload.data.message : thread
+                );
+            } else {
+                state.pinnedThreads = state.pinnedThreads.filter(
+                    thread => thread.id !== payload.data?.message?.id
+                );
+                state.threads = state.threads.map(thread =>
+                    thread.id === payload.data.message.id ? payload.data.message : thread
+                );
+            }
+
         });
         builder.addCase(pinThread.rejected, (state) => {
             state.loading = false;
         });
 
         builder.addCase(reportThread.pending, (state) => {
-            state.loading = true;
+            // state.loading = true;
         });
         builder.addCase(reportThread.fulfilled, (state, { payload }) => {
             state.loading = false;
@@ -400,6 +470,9 @@ const tribeSlice = createSlice({
         builder.addCase(deleteThread.fulfilled, (state, { payload }) => {
             state.loading = false;
             state.threads = state.threads.filter(thread => thread.id !== payload?.data?.thread_id)
+            state.pinnedThreads = state.pinnedThreads.filter(
+                thread => thread.id !== payload.data?.thread_id
+            );
         });
         builder.addCase(deleteThread.rejected, (state) => {
             state.loading = false;
@@ -415,9 +488,20 @@ const tribeSlice = createSlice({
         builder.addCase(searchTribe.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(addTribeMember.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(addTribeMember.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.tribe = payload?.data?.tribe
+        });
+        builder.addCase(addTribeMember.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { setTribeUser, removeTribeUser } = tribeSlice.actions
-export { joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread, searchTribe }
+export { getTribe, joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread, searchTribe, addTribeMember }
 export default tribeSlice.reducer;

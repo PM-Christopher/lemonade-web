@@ -20,7 +20,14 @@ import ShareTribeModal from "@/components/tribe/ShareTribeModal";
 import shareTribeModal from "@/components/tribe/ShareTribeModal";
 import UserInfoModal from "@/components/tribe/UserInfoModal";
 import {useAppDispatch} from "@/redux/hook";
-import {filterThreads, getPinThreads, getThreads, pinThread, viewProfile} from "@/features/tribes/tribe.slice";
+import {
+    filterThreads,
+    getPinThreads,
+    getThreads,
+    getTribe,
+    pinThread,
+    viewProfile
+} from "@/features/tribes/tribe.slice";
 import ReportThreadModal from "@/components/tribe/ReportThreadModal";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 import AddMemberModal from "@/components/tribe/AddMemberModal";
@@ -41,9 +48,9 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     const moreIconRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useAppDispatch()
 
-    const { user, threads, loading: dataLoading, pinnedThreads } = useSelector((state:any) => state.tribe)
+    const { user, threads, loading: dataLoading, pinnedThreads, tribe } = useSelector((state:any) => state.tribe)
 
-    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+    const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
     const router = useRouter()
 
     const {authToken} = useSelector((state: any) => state.auth)
@@ -55,8 +62,11 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         };
     }
 
-    const { data, loading } = useRequest(`/tribes/${params.id}`, "GET", {}, true, getHeader())
-    // const { data: dataThreads, loading: threadLoading } = useRequest(`/tribes/${params.id}/threads/all`, "GET", {}, true, getHeader())
+    useEffect(() => {
+        if (authToken && params?.id) {
+            dispatch(getTribe({token: authToken, id: params.id}))
+        }
+    }, []);
 
     const toggleAddMember = () => {
         setAddUserModal(!addUserModal)
@@ -116,6 +126,14 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         dispatch(getPinThreads({id: params.id, token: authToken}))
     }, [dispatch])
 
+    const handleScroll = (id: number) => {
+        let itemId = `pinned-${id}`
+        const element = document.getElementById(itemId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
         <MainLayout>
             <div className="bg-light_grey pb-10">
@@ -127,7 +145,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                         </div>
                         <div>
                             <p className="font-sans font-semibold text-[16px] leading-[24px]">
-                                {data?.tribe?.tribe_name}
+                                {tribe?.tribe_name}
                             </p>
                         </div>
                     </div>
@@ -169,8 +187,8 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                             <div className="w-[769px] flex justify-between bg-grey-20">
                                 {
                                     pinnedThreads?.length > 0 && (
-                                        pinnedThreads?.map((pinned: {topic: string, image: string}) => (
-                                            <div className="px-[16px] py-[12px] flex gap-[12px] items-center">
+                                        pinnedThreads?.map((pinned: {topic: string, image: string, id: number}, index: number) => (
+                                            <div className="px-[16px] py-[12px] flex gap-[12px] items-center cursor-pointer" key={index} onClick={() => handleScroll(pinned.id)}>
                                                 <p className="truncate font-semiBold text-[14px]">
                                                     {pinned?.topic}
                                                 </p>
@@ -189,45 +207,53 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                                                 Loading...
                                             </p>
                                         ) : (
-                                            threads.map((thread: Thread, index: number) => (
-                                                <ThreadCard
-                                                    tribe_id={data?.tribe?.id}
-                                                    thread={thread}
-                                                    toggle={activateUserInfoModal}
-                                                    key={index}
-                                                    switchUserId={switchUserId}
-                                                    pinThread={setPinThread}
-                                                    toggleThreadId={toggleThreadId}
-                                                    toggleDeleteThread={toggleDeleteThreadModal}
-                                                />
-                                            ))
+                                            <div className={'flex flex-col gap-[24px]'}>
+                                                {
+                                                   threads && threads.length > 0 && threads.map((thread: Thread, index: number) => (
+                                                        <ThreadCard
+                                                            tribe_id={tribe?.id}
+                                                            thread={thread}
+                                                            toggle={activateUserInfoModal}
+                                                            key={index}
+                                                            switchUserId={switchUserId}
+                                                            pinThread={setPinThread}
+                                                            toggleThreadId={toggleThreadId}
+                                                            toggleDeleteThread={toggleDeleteThreadModal}
+                                                        />
+                                                    ))
+                                                }
+                                            </div>
                                         )
                                     }
                                 </div>
                             </div>
                         </div>
-                        <div className="hidden tablet:block">
-                            <TribeDetailsCard
-                                share={activateShareTribeModal}
-                                toggle={activateCreateThreadModal}
-                                tribe={data?.tribe}
-                                toggleAddMember={toggleAddMember}
-                            />
-                        </div>
+                        {
+                            !isMobile && (
+                                <div className="hidden tablet:block">
+                                    <TribeDetailsCard
+                                        share={activateShareTribeModal}
+                                        toggle={activateCreateThreadModal}
+                                        tribe={tribe}
+                                        toggleAddMember={toggleAddMember}
+                                    />
+                                </div>
+                            )
+                        }
                     </div>
-                    <CreateThreadModal tribe_id={data?.tribe?.id} toggle={activateCreateThreadModal}
+                    <CreateThreadModal tribe_id={tribe?.id} toggle={activateCreateThreadModal}
                                        isOpen={createThreadModalOpen}/>
                     <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen}/>
-                    <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={data?.tribe}/>
+                    <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={tribe}/>
                     {
                         user && (
                             <UserInfoModal toggle={activateUserInfoModal} isOpen={userInfoModal} user={user}
-                                           tribe={data?.tribe}/>
+                                           tribe={tribe}/>
                         )
                     }
                     <ReportThreadModal toggle={activateReportThreadModal} isOpen={reportThreadModal} threadId={threadId} />
                     <DeleteThreadModal toggle={activateDeleteThreadModal} isOpen={deleteThreadModal} threadId={threadId} setThreadId={setThreadId} />
-                    <AddMemberModal isOpen={addUserModal} toggle={toggleAddMember}  />
+                    <AddMemberModal isOpen={addUserModal} toggle={toggleAddMember} id={params.id}  />
                 </div>
             </div>
             {

@@ -264,6 +264,11 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                                     }}
                                     value={formik.values.topic}
                                 />
+                                {formik.touched.topic && formik.errors.topic ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.topic}
+                                    </p>
+                                ) : null}
                             </div>
                             <div className="grid gap-2 mt-4">
                                     <textarea
@@ -275,30 +280,37 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                                             formik.setFieldValue("thoughts", e.target.value)
                                         }}
                                     />
+                                {formik.touched.thoughts && formik.errors.thoughts ? (
+                                    <p className="text-[#FF8D8D] text-[12px]">
+                                        {formik.errors.thoughts}
+                                    </p>
+                                ) : null}
                             </div>
-                            <div className="flex gap-2">
-                                {
-                                    mediaFiles && mediaFiles.length > 0 && (
-                                        mediaFiles.map((media: any, index: number) => (
-                                            <div className="relative inline-block w-[200px] h-[200px]">
-                                                <Image
-                                                    src={media}
-                                                    alt="event_image"
-                                                    width={200}
-                                                    height={200}
-                                                    className="rounded w-full h-full"
-                                                />
+                            <div className="flex flex-col gap-[40px]">
+                                <div className={'flex gap-2'}>
+                                    {
+                                        mediaFiles && mediaFiles.length > 0 && (
+                                            mediaFiles.map((media: any, index: number) => (
+                                                <div className="relative inline-block w-[200px] h-[200px]">
+                                                    <Image
+                                                        src={media}
+                                                        alt="event_image"
+                                                        width={200}
+                                                        height={200}
+                                                        className="rounded w-full h-full"
+                                                    />
 
-                                                <div
-                                                    className="absolute top-2 right-2 w-[30px] h-[30px] bg-white rounded-full flex items-center justify-center cursor-pointer shadow z-10"
-                                                    onClick={() => removeImage(media)}
-                                                >
-                                                    <span className="text-black font-semibold">X</span>
+                                                    <div
+                                                        className="absolute top-2 right-2 w-[30px] h-[30px] bg-white rounded-full flex items-center justify-center cursor-pointer shadow z-10"
+                                                        onClick={() => removeImage(media)}
+                                                    >
+                                                        <span className="text-black font-semibold">X</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))
-                                    )
-                                }
+                                            ))
+                                        )
+                                    }
+                                </div>
                                 {
                                     videoFiles && videoFiles.length > 0 && (
                                         videoFiles.map((media: any, index: number) => (

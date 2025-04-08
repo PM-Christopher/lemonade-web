@@ -35,12 +35,13 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
             dispatch(resetAuth());
         }
     }, [token]);
-    if (!token) {
-        removeCookie("token");
-        dispatch(resetAuth());
-        redirect("/login");
-    }
+    // if (!token) {
+    //     removeCookie("token");
+    //     dispatch(resetAuth());
+    //     redirect("/login");
+    // }
 
+    // console.log(cookies)
     const verifyUserToken = async () => {
         try {
             // Replace with your actual verification API endpoint URL

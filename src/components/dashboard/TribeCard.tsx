@@ -12,7 +12,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
     return (
         <div className="flex flex-col bg-light-yellow p-[16px] px-[16px] rounded-2xl w-[422px] shadow-none">
             <div>
-                <Image src={"/images/forum_icon.png"} alt="forum_icon" width={48} height={48}/>
+                <Image src={tribe?.image} alt="forum_icon" width={48} height={48}/>
             </div>
             <div className="mt-2 flex justify-between">
                 <div>
@@ -24,7 +24,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                     </p>
                 </div>
                 <div>
-                    <Image src={"/images/forum_image.png"} alt="" width={48} height={48}/>
+                    {/*<Image src={"/images/forum_image.png"} alt="" width={48} height={48}/>*/}
                 </div>
             </div>
             <div className="mt-2 flex justify-between">

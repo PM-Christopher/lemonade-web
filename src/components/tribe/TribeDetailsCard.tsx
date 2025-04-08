@@ -116,7 +116,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                 <div className="mt-4">
                     {
                         tribe?.member_list.map((member: TribeMemberInterface, index: number) => (
-                            <>
+                            <React.Fragment key={index}>
                                 <div className="flex justify-between items-center py-1">
                                     <div className="flex gap-2 items-center">
                                     <div>
@@ -135,7 +135,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                                     }
                                 </div>
                                 <div className="border-t-[1px] my-2"></div>
-                            </>
+                            </React.Fragment>
                         ))
                     }
                 </div>

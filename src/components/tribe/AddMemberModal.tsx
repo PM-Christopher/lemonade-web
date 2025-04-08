@@ -4,17 +4,25 @@ import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {PlusIcon, XIcon} from "lucide-react";
+import {useAppDispatch} from "@/redux/hook";
+import {addTribeMember} from "@/features/tribes/tribe.slice";
+import {useSelector} from "react-redux";
+import {isIfStatement} from "@babel/types";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 interface AddMemberIF {
     isOpen: boolean;
     toggle: () => void;
+    id: number
 }
 
-const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle}) => {
+const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
     // State to hold the input value
     const [inputValue, setInputValue] = useState('');
     // State to hold the list of usernames
     const [usernames, setUsernames] = useState<string[]>([]);
+    const dispatch = useAppDispatch()
+    const {authToken} = useSelector((state: any) => state.auth)
 
     // Adds the current input value to the usernames array
     const handleAddUsername = () => {
@@ -29,6 +37,31 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle}) => {
         setUsernames((prev) => prev.filter((_, i) => i !== index));
     };
 
+    const handleAddTribeMember = () => {
+        const data = {usernames}
+        dispatch(addTribeMember({token: authToken, id, data})).then((res: any) => {
+            if (res.payload.status) {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Member added successfully.",
+                        type: "success",
+                    })
+                );
+                toggle()
+            } else {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Error adding member to tribe.",
+                        type: "error",
+                    })
+                );
+            }
+        }).catch(err => {
+            console.log({err})
+        })
+    }
 
     return (
         <div
@@ -45,7 +78,9 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle}) => {
                     </div>
                     <div>
                         <Button
-                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom">
+                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
+                            onClick={handleAddTribeMember}
+                        >
                             <p className="font-sans font-semi-normal text-[12px]">Add member</p>
                         </Button>
                     </div>

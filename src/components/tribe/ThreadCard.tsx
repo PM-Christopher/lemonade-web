@@ -97,7 +97,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
     }
 
     return (
-        <div className="p-4 py-4 w-full h-full grid gap-[50px]">
+        <div className="p-4 py-4 w-full h-full grid gap-[50px]" id={`pinned-${thread.id}`}>
             <div>
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2 items-center">
@@ -155,34 +155,37 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
 
                 {
                     thread?.polls && thread?.thread_polls?.options.length > 0 && (
-                        thread?.thread_polls?.options?.map((option, index) => (
-                            <div className="grid gap-2 mt-[16px] bg-light_grey rounded-[12px] cursor-pointer" onClick={() => pollVote(option.id)} key={index}>
-                                <div className="relative w-full h-[40px] bg-grey rounded-[8px] overflow-hidden">
-                                    {/* Background bar showing the percentage */}
-                                    <div
-                                        className="absolute top-0 left-0 h-full bg-light-green-90 rounded-[8px]"
-                                        style={{width: `${option.vote_percentage}%`}}
-                                    ></div>
-                                    {/* Content of the option */}
-                                    <div className="relative z-10 flex justify-between items-center p-3">
-                                        <div className="flex gap-2 items-center">
-                                            {
-                                                thread?.thread_polls.has_voted && (
-                                                    thread.thread_polls.user_vote?.id === option.id ? (
-                                                        <VotedIcon className="w-[20px] h-[20px]"/>
-                                                    ) : (
-                                                        <NotVoted className="w-[20px] h-[20px]"/>
+                        <div className={'flex flex-col gap-2 mt-4'}>
+                            <p className={'font-medium text-[16px]'}>{thread?.thread_polls?.title}</p>
+                            {thread?.thread_polls?.options?.map((option, index) => (
+                                <div className="grid gap-2 mt-[16px] bg-light_grey rounded-[12px] cursor-pointer" onClick={() => pollVote(option.id)} key={index}>
+                                    <div className="relative w-full h-[40px] bg-grey rounded-[8px] overflow-hidden">
+                                        {/* Background bar showing the percentage */}
+                                        <div
+                                            className="absolute top-0 left-0 h-full bg-light-green-90 rounded-[8px]"
+                                            style={{width: `${option.vote_percentage}%`}}
+                                        ></div>
+                                        {/* Content of the option */}
+                                        <div className="relative z-10 flex justify-between items-center p-3">
+                                            <div className="flex gap-2 items-center">
+                                                {
+                                                    thread?.thread_polls.has_voted && (
+                                                        thread.thread_polls.user_vote?.id === option.id ? (
+                                                            <VotedIcon className="w-[20px] h-[20px]"/>
+                                                        ) : (
+                                                            <NotVoted className="w-[20px] h-[20px]"/>
+                                                        )
                                                     )
-                                                )
-                                            }
+                                                }
 
-                                            <p className="font-semi-normal text-[14px]">{option.content}</p>
+                                                <p className="font-semi-normal text-[14px]">{option.content}</p>
+                                            </div>
+                                            <p className="font-semi-normal text-[14px]">{option.vote_percentage}%</p>
                                         </div>
-                                        <p className="font-semi-normal text-[14px]">{option.vote_percentage}%</p>
                                     </div>
                                 </div>
-                            </div>
-                        ))
+                            ))}
+                        </div>
                     )
                 }
                 {
@@ -226,18 +229,28 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
                         <UserIcon className="w-[16.25px] h-[16.25px]"/>
                         <p className="font-normal text-[16px] text-black-light">View profile</p>
                     </div>
+
                     <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => pinThread(thread?.id)}>
                         <PinIcon className="w-[16.25px] h-[16.25px]"/>
-                        <p className="font-normal text-[16px] text-black-light">Pin Thread</p>
+                        <p className="font-normal text-[16px] text-black-light">{thread?.pinned ? "Unpin" : "Pin"} Thread</p>
                     </div>
+
                     <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => toggleThreadId(thread?.id)}>
                         <FlagIcon className="w-[16.25px] h-[16.25px]"/>
                         <p className="font-normal text-[16px] text-black-light">Report Thread</p>
                     </div>
-                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => toggleDeleteThread(thread?.id)}>
-                        <TrashRedIcon className="w-[16.25px] h-[16.25px]"/>
-                        <p className="text-red-1 font-normal text-[16px]">Delete thread</p>
-                    </div>
+
+                    {
+                        thread?.owner && (
+                            <>
+                                <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => toggleDeleteThread(thread?.id)}>
+                                    <TrashRedIcon className="w-[16.25px] h-[16.25px]"/>
+                                    <p className="text-red-1 font-normal text-[16px]">Delete thread</p>
+                                </div>
+                            </>
+                        )
+                    }
+
                 </div>
             )}
             <div className="w-full border-b-[1px]"></div>

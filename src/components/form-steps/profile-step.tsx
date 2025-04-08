@@ -152,6 +152,8 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
         }
     };
 
+    console.log({errors: formik.errors, valid: formik.isValid})
+
     return (
         <form onSubmit={formik.handleSubmit}>
             <Card className=" w-full tablet:w-[480px] rounded-[16px] shadow-none border-none">
@@ -169,8 +171,8 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                         </p>
                     </div>
                 </CardHeader>
-                <CardContent className="flex justify-center">
-                    <div>
+                <CardContent className="grid gap-4">
+                    <div className={'flex justify-center'}>
                         {
                             avatar ? (
                                 <div style={{background: `url("${avatar}")`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat"}} onClick={handleImageClick} className="w-[80px] h-[80px] cursor-pointer rounded-[24px] border-[1px] border-[#3B4152]"></div>
@@ -186,6 +188,11 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                             onChange={handleFileChange}
                         />
                     </div>
+                    {formik.touched.profile_image && formik.errors.profile_image ? (
+                        <p className="text-[#FF8D8D] text-[12px] text-center">
+                            {formik.errors.profile_image}
+                        </p>
+                    ) : null}
                 </CardContent>
                 <CardContent className="grid gap-4">
                     <div className="grid gap-2">
@@ -199,7 +206,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                         />
-                        {formik.errors.username ? (
+                        {formik.touched.username && formik.errors.username ? (
                             <p className="text-[#FF8D8D] text-[12px]">
                                 {formik.errors.username}
                             </p>
@@ -215,7 +222,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                         />
-                        {formik.errors.bio ? (
+                        {formik.touched.bio && formik.errors.bio ? (
                             <p className="text-[#FF8D8D] text-[12px]">
                                 {formik.errors.bio}
                             </p>
@@ -237,7 +244,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                                 <SelectItem value="Construction">Construction</SelectItem>
                             </SelectContent>
                         </Select>
-                        {formik.errors.industry ? (
+                        {formik.touched.industry && formik.errors.industry ? (
                             <p className="text-[#FF8D8D] text-[12px]">
                                 {formik.errors.industry}
                             </p>
