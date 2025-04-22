@@ -5,11 +5,18 @@ import { persistor, store } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
+import { ProgressProvider } from "@bprogress/next/app";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
       <AntdRegistry>
+        <ProgressProvider
+          height="4px"
+          color="#80BC00"
+          options={{ showSpinner: true }}
+          shallowRouting
+        />
         <ConfigProvider
           theme={{
             components: {
