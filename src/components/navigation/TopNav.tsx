@@ -23,7 +23,7 @@ const TopNav = () => {
       },
     };
   };
-    const { data } = useRequest("/notification", "GET", {}, true, getHeader());
+  const { data } = useRequest("/notification", "GET", {}, true, getHeader());
 
   return (
     <div className="!relative">
@@ -103,12 +103,10 @@ const TopNav = () => {
         open={openNotifications}
         onCancel={() => setOpenNotifications(false)}
         footer={null}
-        className="custom-modal !fixed !right-20 !top-20"
+        className={`custom-modal !fixed ${
+          isMobile ? "" : "!right-20 !top-20"
+        }`}
         closeIcon={null}
-        width={400}
-        classNames={{
-          header: "!mb-5",
-        }}
       >
         {data?.notifications?.length > 0 ? (
           data?.notifications?.map((notification: any, index: number) => (

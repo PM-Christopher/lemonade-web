@@ -139,6 +139,16 @@
   width: 400px !important; 
 }
 
+@media (max-width: 640px) {
+  .custom-modal {
+    width: 100vw !important;
+    height: 100vh !important;
+    top: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
