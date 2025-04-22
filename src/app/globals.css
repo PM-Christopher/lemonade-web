@@ -135,7 +135,9 @@
   }
 }
 
-
+.custom-modal {
+  width: 400px !important; 
+}
 
 @layer base {
   * {
