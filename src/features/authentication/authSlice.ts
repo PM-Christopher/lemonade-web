@@ -66,6 +66,25 @@ const changePassword = createAsyncThunk("auth/changePassword", async ({ data, to
     }
 });
 
+
+const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.patch(`/profile/settings/change-profile-image`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
@@ -188,6 +207,9 @@ const authSlice = createSlice({
             state.loading = false;
         });
 
+
+
+
         builder.addCase(changePassword.pending, (state) => {
             state.loading = true;
         });
@@ -225,6 +247,20 @@ const authSlice = createSlice({
         builder.addCase(logout.pending, (state) => {
             state.loading = true;
         });
+
+
+
+        builder.addCase(updateUserImage.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(updateUserImage.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.user = payload.data.user
+        });
+        builder.addCase(updateUserImage.rejected, (state) => {
+            state.loading = false;
+        });
+
         builder.addCase(logout.fulfilled, (state, { payload }) => {
             state.loading = false;
             state.error = false;
@@ -251,9 +287,9 @@ export const {
     adminUser,
     updateProfileImage,
     updateUser,
-    setSubscriptionId
+    setSubscriptionId,
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage }
 
 export default authSlice.reducer;

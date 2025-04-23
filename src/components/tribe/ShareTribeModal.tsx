@@ -38,7 +38,10 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({toggle, isOpen, tribe})
     };
 
     const shareToSocial = (platform: string) => {
-        const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.id}`;
+
+
+      
+        const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.tribe_name}`;
         const encodedUrl = encodeURIComponent(currentUrl);
         const messageText = "Check this tribe out"
         let shareUrl = '';
@@ -65,6 +68,8 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({toggle, isOpen, tribe})
 
         window.open(shareUrl, '_blank');
     };
+
+
 
     return (
         <div
@@ -113,10 +118,10 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({toggle, isOpen, tribe})
                     <div
                         className="w-full flex rounded-[12px] border-[1px] border-grey-90 justify-between p-[8px] items-center">
                         <div className="w-[full]">
-                        <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.id}`}</p>
+                        <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.tribe_name}`}</p>
                         </div>
                         <Button className="bg-gradient-green w-[80px] h-[35px]"
-                                onClick={() => handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.id}`)}>
+                                onClick={() => handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.tribe_name}`)}>
                             <p>{copied ? "Copied!" : "Copy"}</p>
                         </Button>
                     </div>
