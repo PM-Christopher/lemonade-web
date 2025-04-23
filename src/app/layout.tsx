@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Provider from "@/redux/Provider";
-import {AlertMessage} from "@/components/global/AlertMessage";
+import { AlertMessage } from "@/components/global/AlertMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Lemonade",
-    description: "Lemonade",
+  title: "Lemonade",
+  description: "Lemonade",
 };
 
 export default function RootLayout({
@@ -19,10 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      <Provider>
+        <Provider>
           {children}
           <AlertMessage />
-      </Provider>
+        </Provider>
       </body>
     </html>
   );
