@@ -41,7 +41,7 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({toggle, isOpen, tribe})
 
 
       
-        const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.tribe_name}`;
+        const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`;
         const encodedUrl = encodeURIComponent(currentUrl);
         const messageText = "Check this tribe out"
         let shareUrl = '';

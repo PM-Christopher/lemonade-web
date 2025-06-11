@@ -67,9 +67,9 @@ export default function SignupPage() {
         <AuthLayout>
             <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
-                    <div>
+                    <Link href="/login">
                         <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
-                    </div>
+                    </Link>
                     <div>
                         <Link href="/login">
                             <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
@@ -139,7 +139,7 @@ export default function SignupPage() {
                                         onChange={formik.handleChange}
                                         className="h-12 rounded-xl bg-light_grey form-font border-0"
                                     />
-                                    <span className="text-[12px] font-sans text-grey-40">Password must be at least 8 character long</span>
+
                                     {checkError("password", formik) ? (
                                         <p className="text-[#FF8D8D] text-[12px]">
                                             {formik.errors.password}

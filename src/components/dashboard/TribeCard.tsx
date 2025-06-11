@@ -46,7 +46,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between items-center gap-1 cursor-pointer" onClick={() => router.push(`tribe/${tribe?.id}`)}>
+                <div className="flex justify-between items-center gap-1 cursor-pointer" onClick={() => router.push(`tribe/${tribe?.slug}`)}>
                     <div>
                         <p className="font-sans text-[14px] font-semi-normal text-light-green">View</p>
                     </div>
