@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAppDispatch } from "@/redux/hook";
+import { verifyAccount } from "@/redux/general.slice";
 
 type BankAccountInterface = {
   isOpen: boolean;
@@ -22,6 +24,11 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
   isOpen,
   toggle,
 }) => {
+  const [bankCode, setBankCode] = useState<string>("");
+  const [accountNumber, setAccountNumber] = useState("");
+   const [error, setError] = useState("");
+  const dispatch = useAppDispatch();
+
   const { authToken } = useSelector((state: any) => state.auth);
   const getHeader = () => {
     return {
@@ -38,6 +45,25 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
     true,
     getHeader()
   );
+
+  const getAccount = () => {
+    dispatch(
+      verifyAccount({ bank_code: bankCode, account_number: accountNumber })
+    ).then((res) => {
+      if (res.payload.status) {
+        console.log({ account_name: res.payload.data.account_name });
+        // formik.setFieldValue("account_name", res.payload.data.account_name);
+      } else {
+        setError("Invalid account details");
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (accountNumber.length === 10) {
+      getAccount();
+    }
+  }, [accountNumber]);
 
   return (
     <div
@@ -101,7 +127,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
             </Label>
             <Input
               id="fullname"
-              type="text"
+              type="number"
               placeholder=""
               className="h-12 rounded-xl bg-light_grey form-font border-0"
             />

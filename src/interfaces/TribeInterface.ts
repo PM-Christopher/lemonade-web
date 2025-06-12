@@ -19,6 +19,8 @@ export interface TribeInterface {
     private: boolean
     status: number
     threads: number
+    likes: number
+    comments: number
     hasLiked: boolean
     has_joined: boolean
     created_by: string

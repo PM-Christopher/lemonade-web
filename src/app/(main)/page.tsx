@@ -46,7 +46,9 @@ export default function DashboardPage() {
     getHeader()
   );
 
-  console.log("Events Data", eventsData)
+  console.log({
+    tribes: data?.tribes,
+  })
 
   return (
     <MainLayout>
@@ -73,23 +75,23 @@ export default function DashboardPage() {
             ))}
           </div>
         </section>
-        <section
-          id="business"
-          className="bg-white p-4 pb-7 rounded-lg my-10 mx-10"
-        >
-          <p className="font-sans font-semibold leading-[27px]">
-            Featured businesses
-          </p>
-          <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
-            {businessData?.businesses.map(
-              (business: BusinessInterface, idx: number) => (
-                <div className="w-[343px] tablet:w-[422px]" key={idx}>
-                  <BusinessCard key={idx} business={business} />
-                </div>
-              )
-            )}
-          </div>
-        </section>
+        {/*<section*/}
+        {/*  id="business"*/}
+        {/*  className="bg-white p-4 pb-7 rounded-lg my-10 mx-10"*/}
+        {/*>*/}
+        {/*  <p className="font-sans font-semibold leading-[27px]">*/}
+        {/*    Featured businesses*/}
+        {/*  </p>*/}
+        {/*  <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">*/}
+        {/*    {businessData?.businesses.map(*/}
+        {/*      (business: BusinessInterface, idx: number) => (*/}
+        {/*        <div className="w-[343px] tablet:w-[422px]" key={idx}>*/}
+        {/*          <BusinessCard key={idx} business={business} />*/}
+        {/*        </div>*/}
+        {/*      )*/}
+        {/*    )}*/}
+        {/*  </div>*/}
+        {/*</section>*/}
       </div>
     </MainLayout>
   );

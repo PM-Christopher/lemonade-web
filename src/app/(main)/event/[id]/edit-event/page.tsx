@@ -596,13 +596,13 @@ const EditEventPage = ({ params }: { params: { id: number } }) => {
               {checked && (
                 <div className="grid gap-2 mt-[24px]">
                   <Label
-                    htmlFor="fullname"
+                    htmlFor="commission"
                     className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey"
                   >
-                    Set commission
+                    Set commission (%)
                   </Label>
                   <Input
-                    id="fullname"
+                    id="commission"
                     type="number"
                     placeholder=""
                     className="h-12 rounded-xl bg-light_grey form-font border-0"
