@@ -44,7 +44,7 @@ const AddTicketPage = () => {
             then: (schema) =>
               schema.required().min(1, "Ticket stock must be greater than 1"),
           }),
-          purchase_limit: yup.string().required("Purchase limit is required"),
+          purchase_limit: yup.number(),
           description: yup.string().required("Ticket description is required"),
         })
       )
@@ -62,7 +62,7 @@ const AddTicketPage = () => {
           transfer_commission: false,
           stock_type: "",
           ticket_stock: 0,
-          purchase_limit: "",
+          purchase_limit: 0,
           description: "",
         },
       ],
@@ -88,7 +88,7 @@ const AddTicketPage = () => {
           transfer_commission: false,
           stock_type: "",
           ticket_stock: 0,
-          purchase_limit: "",
+          purchase_limit: 0,
           description: "",
         },
       ],

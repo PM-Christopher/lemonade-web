@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -17,10 +17,27 @@ import PromotionDetailsModal from "@/components/events/Modals/PromotionDetailsMo
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useRouter } from "next/navigation";
+import {useAppDispatch} from "@/redux/hook";
+import {useSelector} from "react-redux";
+import {getEvent} from "@/features/events/event.slice";
+import {formatNumberWithCommas} from "@/lib/formatNumber";
 
-const EventDetailsPage = () => {
+const EventDetailsPage = ({params}: {params: {id: number}}) => {
+  const dispatch = useAppDispatch()
   const [isOpen, setIsOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const { event, loading: dataLoading } = useSelector((state:any) => state.event)
+
+  const {authToken} = useSelector((state: any) => state.auth)
+  const getHeader = () => {
+    return {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    };
+  }
+
+  console.log({event})
   const router = useRouter();
 
   const activateModal = () => {
@@ -30,6 +47,13 @@ const EventDetailsPage = () => {
   const activateDetailsModal = () => {
     setIsDetailsOpen(!isDetailsOpen);
   };
+
+  useEffect(() => {
+    if (authToken && params?.id) {
+      dispatch(getEvent({token: authToken, id: params.id}))
+    }
+  }, []);
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
@@ -50,14 +74,15 @@ const EventDetailsPage = () => {
               <div className="w-[640px] p-[24px] rounded-[12px] bg-white flex flex-col">
                 <div className="bg-green-tint p-[8px] px-[16px] rounded-[8px] flex gap-3 items-center">
                   <Image
-                    src={"/images/event_images/details_image.png"}
+                    src={event?.event?.event_image}
                     alt="details"
                     width={120}
                     height={120}
+                    className={"w-[120px] h-[120px]"}
                   />
                   <div className="flex flex-col">
                     <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      Halloween party
+                      {event?.event?.event_name}
                     </p>
                     <div className="flex items-center gap-2">
                       <CalendarIcon />
@@ -76,7 +101,7 @@ const EventDetailsPage = () => {
                     <div className="flex items-center gap-2">
                       <LocationIcon />
                       <p className="font-sans font-normal text-[16px] leading-[27px] text-text-grey">
-                        Lekki phase 1
+                        {event?.event?.location}
                       </p>
                     </div>
                   </div>
@@ -142,7 +167,7 @@ const EventDetailsPage = () => {
                       Sales Revenue
                     </p>
                     <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom text-black-light">
-                      ₦2,000
+                      ₦{event?.event?.breakdown?.sales_revenue}
                     </p>
                   </div>
                   <div className="border-t-[1px] border-t-grey-20 my-4"></div>
@@ -151,7 +176,7 @@ const EventDetailsPage = () => {
                       Tickets sold
                     </p>
                     <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom text-black-light">
-                      0/2000
+                      {event?.event?.breakdown?.tickets_sold?.sold}/{event?.event?.breakdown?.tickets_sold?.count}
                     </p>
                   </div>
                   <div className="border-t-[1px] border-t-grey-20 my-4"></div>
@@ -160,7 +185,7 @@ const EventDetailsPage = () => {
                       Check ins
                     </p>
                     <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom text-black-light">
-                      0% <span className="font-normal">(0/0)</span>
+                      {event?.event?.breakdown?.checkins?.percentage}% <span className="font-normal">({event?.event?.breakdown?.checkins?.count}/{event?.event?.breakdown?.checkins?.total})</span>
                     </p>
                   </div>
                 </div>
@@ -171,193 +196,99 @@ const EventDetailsPage = () => {
                 <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">
                   Sales revenue by ticket type
                 </p>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Free
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      ₦2,000
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      2/∞
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "100%" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="border-t-[1px] border-t-grey-20 mb-[16px] mt-[32px]"></div>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Regular
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      ₦2,000
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      2/3000
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "10%" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="border-t-[1px] border-t-grey-20 mb-[16px] mt-[32px]"></div>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Gold
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      ₦20,000
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      2/200
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "20%" }}
-                    ></div>
-                  </div>
-                </div>
+                {
+                  event?.event?.sales_revenue?.sales_revenue_breakdown?.length > 0 && (
+                      event?.event?.sales_revenue?.sales_revenue_breakdown?.map((ticket: any, idx: number) => (
+                          <div>
+                            <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
+                              {ticket?.name}
+                            </p>
+                            <div className="flex justify-between mt-[2px]">
+                              <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
+                                ₦{formatNumberWithCommas(ticket?.price)}
+                              </p>
+                              <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
+                                {ticket?.bought}/{ticket?.stock}
+                              </p>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
+                              <div
+                                  className="bg-gradient-progress-green h-[8px] rounded-full"
+                                  style={{ width: `${(ticket?.bought / ticket?.stock) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                      ))
+                    )
+                }
+
               </div>
               <div className="w-[480px] bg-white p-[16px] rounded-[8px] flex flex-col">
                 <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">
                   Ticket sold by ticket type
                 </p>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Free
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      -
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      2/∞
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "100%" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="border-t-[1px] border-t-grey-20 mb-[16px] mt-[32px]"></div>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Regular
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      30%
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      300/3000
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "30%" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="border-t-[1px] border-t-grey-20 mb-[16px] mt-[32px]"></div>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Gold
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      50%
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      100/200
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "50%" }}
-                    ></div>
-                  </div>
-                </div>
+
+                {
+                    event?.event?.sales_revenue?.tickets_sold_breakdown?.length > 0 && (
+                        event?.event?.sales_revenue?.tickets_sold_breakdown?.map((ticket: any, idx: number) => (
+                            <div>
+                              <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
+                                {ticket?.name}
+                              </p>
+                              <div className="flex justify-between mt-[2px]">
+                                <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
+                                  {ticket?.percentage_sold}%
+                                </p>
+                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
+                                  {ticket?.bought}/{ticket?.stock}
+                                </p>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
+                                <div
+                                    className="bg-gradient-progress-green h-[8px] rounded-full"
+                                    style={{ width: `${ticket?.percentage_sold}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                            ))
+                    )
+                }
+
+
+
+
               </div>
               <div className="w-[480px] bg-white p-[16px] rounded-[8px] flex flex-col">
                 <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">
                   Check ins by ticket type
                 </p>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Free
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      1%
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      2/∞
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "10%" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="border-t-[1px] border-t-grey-20 mb-[16px] mt-[32px]"></div>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Regular
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      30%
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      2/3000
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "30%" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="border-t-[1px] border-t-grey-20 mb-[16px] mt-[32px]"></div>
-                <div>
-                  <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                    Gold
-                  </p>
-                  <div className="flex justify-between mt-[2px]">
-                    <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                      50%
-                    </p>
-                    <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                      100/200
-                    </p>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                    <div
-                      className="bg-gradient-progress-green h-[8px] rounded-full"
-                      style={{ width: "50%" }}
-                    ></div>
-                  </div>
-                </div>
+                {
+                    event?.event?.sales_revenue?.tickets_checkins_breakdown?.length > 0 && (
+                        event?.event?.sales_revenue?.tickets_checkins_breakdown?.map((ticket: any, idx: number) => (
+                            <div>
+                              <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
+                                {ticket?.name}
+                              </p>
+                              <div className="flex justify-between mt-[2px]">
+                                <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
+                                  {`${(ticket?.checkin_count / ticket?.stock) * 100}%`}
+                                </p>
+                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
+                                  {ticket?.checkin_count}/{ticket?.stock}
+                                </p>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
+                                <div
+                                    className="bg-gradient-progress-green h-[8px] rounded-full"
+                                    style={{ width: `${(ticket?.checkin_count / ticket?.stock) * 100}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                            )
+                        )
+                    )
+                }
+
               </div>
             </div>
           </div>

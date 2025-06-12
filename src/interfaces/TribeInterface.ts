@@ -14,6 +14,7 @@ export interface TribeInterface {
     description: string
     members: number
     membership_fee: number
+    slug: any
     owner: boolean
     private: boolean
     status: number

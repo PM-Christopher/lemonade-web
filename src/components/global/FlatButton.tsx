@@ -3,19 +3,19 @@ import React from "react";
 import { ColorRing } from "react-loader-spinner";
 import { useAppSelector } from "@/redux/hook";
 
-export const FormikButton = ({
+export const FlatButton = ({
   loading = false,
   title = "Continue",
   error = true,
   classes = null,
   bgColor = null,
   errorColor = null,
-  
+  onClick,
 }: any) => {
   const { isRouting } = useAppSelector((state: any) => state.temp);
   return (
     <button
-      type="submit"
+      type="button"
       className={`${
         classes === null
           ? "rounded-xl px-[14px] py-[10px] flex justify-center items-center w-fit h-[48px]"
@@ -31,6 +31,9 @@ export const FormikButton = ({
             `}
       disabled={loading}
       // disabled={loading || !error}
+      onClick={(ev) => {
+        if (onClick) onClick(ev);
+      }}
     >
       {loading ? (
         <div className="flex justify-center items-center">

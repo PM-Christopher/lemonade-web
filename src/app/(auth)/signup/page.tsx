@@ -18,6 +18,12 @@ import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import {FormikButton} from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import axios from 'axios';
+import {axiosInstance} from "@/lib/axiosInstane";
+import {setIsRouting} from "@/redux/tempSlice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {authSuccess, authUser} from "@/features/authentication/authSlice";
+import { useGoogleLogin } from '@react-oauth/google';
 
 type valuesType = {
     email: string;
@@ -63,13 +69,110 @@ export default function SignupPage() {
         },
     })
 
+    const handleLoginSuccess = async (res: any) => {
+        try {
+            console.log({res})
+
+            if (res.status) {
+                dispatch(setIsRouting(true));
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Successful",
+                        type: "success",
+                    })
+                );
+
+                if (res.data.data.token_type === 'account_verification_token') {
+                    setCookie("newToken", res.data.data.token, {
+                        path: "/",
+                        maxAge: 3600 * 6, // Expires after 6hrs
+                        sameSite: false,
+                    });
+                    dispatch(authUser(res?.data?.data));
+                    router.push("/verify-email");
+                } else {
+                    const user = res.data?.data?.user
+                    if (user.status == 0) {
+                        setCookie("newToken", res.data.data.token, {
+                            path: "/",
+                            maxAge: 3600 * 6, // Expires after 6hrs
+                            sameSite: false,
+                            // domain: env === 'development' ? '' : ''
+                        });
+                        router.push("/verify-email");
+                    } else if(user.username === null) {
+                        setCookie("newToken", res.data.data.token, {
+                            path: "/",
+                            maxAge: 3600 * 6, // Expires after 6hrs
+                            sameSite: false,
+                            // domain: env === 'development' ? '' : ''
+                        });
+                        router.push("/profile-setup");
+                    } else {
+                        setCookie("token", res.data.data.token, {
+                            path: "/",
+                            maxAge: 3600 * 6, // Expires after 6hrs
+                            sameSite: false,
+                        });
+                        dispatch(
+                            updateToastifyReducer({
+                                show: true,
+                                message: "successful",
+                                type: "success",
+                            })
+                        );
+                        dispatch(authSuccess(res.data.data));
+                        setTimeout(() => {
+                            router.push("/");
+                        }, 500);
+                    }
+                }
+            } else {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: res.message || "error",
+                        type: "error",
+                    })
+                );
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert('Login failed!');
+        }
+    };
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            console.log('Auth Code Response:', tokenResponse);
+
+            // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)
+            try {
+                const res = await axiosInstance.post(`/auth/google`, {
+                    token: tokenResponse.access_token
+                });
+
+                await handleLoginSuccess(res)
+
+            } catch (error) {
+                console.error('Error sending code to backend:', error);
+            }
+        },
+        onError: () => {
+            alert('Login Failed');
+        },
+        flow: 'implicit'  // or 'auth-code' if you’re using code flow
+    });
+
     return (
         <AuthLayout>
             <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
-                    <div>
+                    <Link href="/login">
                         <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
-                    </div>
+                    </Link>
                     <div>
                         <Link href="/login">
                             <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
@@ -139,7 +242,7 @@ export default function SignupPage() {
                                         onChange={formik.handleChange}
                                         className="h-12 rounded-xl bg-light_grey form-font border-0"
                                     />
-                                    <span className="text-[12px] font-sans text-grey-40">Password must be at least 8 character long</span>
+
                                     {checkError("password", formik) ? (
                                         <p className="text-[#FF8D8D] text-[12px]">
                                             {formik.errors.password}
@@ -159,7 +262,7 @@ export default function SignupPage() {
                                     <div className="app-icon-border flex justify-center items-center">
                                         <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>
                                     </div>
-                                    <div className="app-icon-border flex justify-center items-center">
+                                    <div className="app-icon-border flex justify-center items-center cursor-pointer" onClick={() => googleLogin()}>
                                         <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
                                     </div>
                                     <div className="app-icon-border flex justify-center items-center">

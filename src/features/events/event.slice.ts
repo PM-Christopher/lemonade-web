@@ -77,6 +77,24 @@ const editEvent = createAsyncThunk("event/editEvent", async ({ data, token, id }
     }
 });
 
+const getEvent = createAsyncThunk("event/getEvent", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/events/${id}`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const searchEvent = createAsyncThunk("event/searchEvent", async ({ data}: { data: any }, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
@@ -135,6 +153,17 @@ const eventSlice = createSlice({
             state.loading = false;
         });
 
+        builder.addCase(getEvent.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getEvent.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.event = payload?.data
+        });
+        builder.addCase(getEvent.rejected, (state) => {
+            state.loading = false;
+        });
+
         builder.addCase(editEvent.pending, (state) => {
             state.loading = true;
         });
@@ -160,5 +189,5 @@ const eventSlice = createSlice({
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent }
 export default eventSlice.reducer;
