@@ -26,6 +26,7 @@ import { addEvent } from "@/features/events/event.slice";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { FlatButton } from "@/components/global/FlatButton";
 
 interface SocialMediaHandles {
   instagram: string;
@@ -89,8 +90,48 @@ const CreateEventPage = () => {
     time_zone: yup.string().required("Time zone is required"),
     start_date: yup.string().required("Start date is required"),
     start_time: yup.string().required("Start time is required"),
-    end_date: yup.string().required("End date is required"),
-    end_time: yup.string().required("End time is required"),
+    end_date: yup
+      .string()
+      .required("End date is required")
+      .test(
+        "end-date-validation",
+        "End date and time cannot be before start date and time",
+        function (value) {
+          const { start_date, start_time, end_time } = this.parent;
+
+          if (!value || !start_date || !start_time || !end_time) {
+            return true; // Let required validation handle missing values
+          }
+
+          // Create complete datetime strings
+          const startDateTime = new Date(`${start_date}T${start_time}`);
+          const endDateTime = new Date(`${value}T${end_time}`);
+
+          // Check if end datetime is after start datetime
+          return endDateTime > startDateTime;
+        }
+      ),
+    end_time: yup
+      .string()
+      .required("End time is required")
+      .test(
+        "end-time-validation",
+        "End date and time cannot be before start date and time",
+        function (value) {
+          const { start_date, start_time, end_date } = this.parent;
+
+          if (!value || !start_date || !start_time || !end_date) {
+            return true; // Let required validation handle missing values
+          }
+
+          // Create complete datetime strings
+          const startDateTime = new Date(`${start_date}T${start_time}`);
+          const endDateTime = new Date(`${end_date}T${value}`);
+
+          // Check if end datetime is after start datetime
+          return endDateTime > startDateTime;
+        }
+      ),
     affiliate_program: yup.boolean().required("Affiliate program is required"),
     commission: yup.number().when("affiliate_program", {
       is: true,
@@ -120,60 +161,110 @@ const CreateEventPage = () => {
     },
     validationSchema: createEventSchema,
     onSubmit: async (values) => {
-      try {
-        await createEventSchema.validate(values, { abortEarly: false });
-        const filteredSocials = (
-          Object.keys(socials) as Array<keyof SocialMediaHandles>
-        )
-          .filter((key) => socials[key]) // Only keep keys with non-empty values
-          .map((key) => ({
-            name: key,
-            value: socials[key],
-          }));
-        const data = {
-          event_image: values.event_image,
-          event_name: values.event_name,
-          event_description: values.event_description,
-          category: values.category,
-          event_type: values.event_type,
-          location: values.location,
-          hosting_platform: values.hosting_platform,
-          meeting_link: values.meeting_link,
-          meeting_passcode: values.meeting_passcode,
-          time_zone: values.time_zone,
-          start_date: `${values.start_date}T${values.start_time}`,
-          end_date: `${values.end_date}T${values.end_time}`,
-          affiliate_program: values.affiliate_program,
-          commission: values.commission,
-          socials: filteredSocials,
-        };
-        dispatch(addEvent(data));
-        router.push("/event/add-ticket");
-      } catch (error:any) {
-        if (error.name === "ValidationError") {
+      // try {
+      //   await createEventSchema.validate(values, { abortEarly: false });
+      //   const filteredSocials = (
+      //     Object.keys(socials) as Array<keyof SocialMediaHandles>
+      //   )
+      //     .filter((key) => socials[key]) // Only keep keys with non-empty values
+      //     .map((key) => ({
+      //       name: key,
+      //       value: socials[key],
+      //     }));
+      //   const data = {
+      //     event_image: values.event_image,
+      //     event_name: values.event_name,
+      //     event_description: values.event_description,
+      //     category: values.category,
+      //     event_type: values.event_type,
+      //     location: values.location,
+      //     hosting_platform: values.hosting_platform,
+      //     meeting_link: values.meeting_link,
+      //     meeting_passcode: values.meeting_passcode,
+      //     time_zone: values.time_zone,
+      //     start_date: `${values.start_date}T${values.start_time}`,
+      //     end_date: `${values.end_date}T${values.end_time}`,
+      //     affiliate_program: values.affiliate_program,
+      //     commission: values.commission,
+      //     socials: filteredSocials,
+      //   };
+      //   dispatch(addEvent(data));
+      //   router.push("/event/add-ticket");
+      // } catch (error: any) {
+      //   if (error.name === "ValidationError") {
+      //     const firstError = error.errors[0];
+      //     dispatch(
+      //       updateToastifyReducer({
+      //         show: true,
+      //         message: firstError,
+      //         type: "error",
+      //       })
+      //     );
+      //   } else {
+      //     dispatch(
+      //       updateToastifyReducer({
+      //         show: true,
+      //         message: "An error occurred while creating the event",
+      //         type: "error",
+      //       })
+      //     );
+      //   }
+      // }
+    },
+  });
 
-           const firstError = error.errors[0]; 
+  const submitFunc = async () => {
+    try {
+      await createEventSchema.validate(formik.values, { abortEarly: false });
+      const filteredSocials = (
+        Object.keys(socials) as Array<keyof SocialMediaHandles>
+      )
+        .filter((key) => socials[key]) // Only keep keys with non-empty values
+        .map((key) => ({
+          name: key,
+          value: socials[key],
+        }));
+      const data = {
+        event_image: formik.values.event_image,
+        event_name: formik.values.event_name,
+        event_description: formik.values.event_description,
+        category: formik.values.category,
+        event_type: formik.values.event_type,
+        location: formik.values.location,
+        hosting_platform: formik.values.hosting_platform,
+        meeting_link: formik.values.meeting_link,
+        meeting_passcode: formik.values.meeting_passcode,
+        time_zone: formik.values.time_zone,
+        start_date: `${formik.values.start_date}T${formik.values.start_time}`,
+        end_date: `${formik.values.end_date}T${formik.values.end_time}`,
+        affiliate_program: formik.values.affiliate_program,
+        commission: formik.values.commission,
+        socials: filteredSocials,
+      };
+      dispatch(addEvent(data));
+      router.push("/event/add-ticket");
+    } catch (error: any) {
+      if (error.name === "ValidationError") {
+        const firstError = error.errors[0];
 
-           dispatch(
+        dispatch(
           updateToastifyReducer({
             show: true,
             message: firstError,
             type: "error",
           })
         );
-        } else {
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "An error occurred while creating the event",
-              type: "error",
-            })
-          );
-        }
+      } else {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "An error occurred while creating the event",
+            type: "error",
+          })
+        );
       }
-    },
-  });
+    }
+  };
 
   return (
     <MainLayout>
@@ -190,7 +281,7 @@ const CreateEventPage = () => {
           </div>
         </div>
         <section className="mt-0 laptop:mt-4 flex flex-col laptop:items-center">
-          <form onSubmit={formik.handleSubmit}>
+          <div>
             <div className="bg-white mt-10 w-full laptop:w-[640px] p-[48px] rounded-[12px] flex flex-col">
               <p className="font-sans font-bold text-[12px] text-light-black leading-[14.4px]">
                 EVENT DETAILS
@@ -422,9 +513,9 @@ const CreateEventPage = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    <div>
+                    {/* <div>
                       <ClockIcon />
-                    </div>
+                    </div> */}
                     <div>
                       <input
                         id="search"
@@ -464,9 +555,9 @@ const CreateEventPage = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    <div>
+                    {/* <div>
                       <ClockIcon />
-                    </div>
+                    </div> */}
                     <div>
                       <input
                         id="search"
@@ -620,14 +711,17 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <FormikButton
+              <FlatButton
                 loading={formik.isSubmitting}
-                error={formik.isValid}
+                error={!formik.isValid}
+                onClick={() => {
+                  submitFunc();
+                }}
                 title="Continue"
                 classes="mt-[24px] h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"
               />
             </div>
-          </form>
+          </div>
         </section>
       </section>
     </MainLayout>
