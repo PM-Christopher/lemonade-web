@@ -53,7 +53,7 @@ const Upcoming = ({events, loading}: {events: EventInterface[], loading: boolean
                                                 {events[0]?.location}
                                             </p>
                                         </div>
-                                        <Link href={"/event/5/details"} className="w-fit">
+                                        <Link href={`/event/${events[0]?.id}/details`} className="w-fit">
                                             <div className="flex items-center gap-2 mt-[40px] w-fit">
                                                 <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-light-green">View
                                                     Details</p>
