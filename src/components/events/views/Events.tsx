@@ -82,7 +82,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
         ) : (
           <>
             <p className="font-sans font-semibold text-[20px] leading-[28px] mb-[16px]">
-              This week
+              All Events
             </p>
             {isMobile ? (
               <div className="flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none">
