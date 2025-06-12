@@ -22,7 +22,7 @@ type OpenChatProps = {
 
 const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_id, toggleOpenedChat}) => {
     const dispatch = useAppDispatch()
-    const [text, setText] = useState<string|null>(null)
+    const [text, setText] = useState<string|null>("")
     const { authToken: token } = useSelector((state: any) => state.auth)
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 
@@ -37,8 +37,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_
 
     const sendMessage = () => {
         const receiver_id = user_id === chat.sender.id ? chat.receiver.id : chat.sender.id
+        setText("")
         dispatch(sendChat({receiver_id, token, message: text}))
-        setText(null)
     }
 
     return (
@@ -50,10 +50,10 @@ const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_
                 <div className="px-[16px] flex justify-between items-center">
                     <div className="flex gap-2 items-center">
                         <ChevronLeft className={`flex laptop:hidden cursor-pointer`} onClick={toggleOpenedChat} />
-                        <Image src={chat.receiver.avatar} alt="avatar" width={24} height={24} className="w-[24px] h-[24px] rounded-[8px] border-[1px] border-grey-90"/>
-                        <p className="font-semibold text-[14px] text-black-light">{chat.receiver.username}</p>
+                        <Image src={chat?.receiver?.avatar} alt="avatar" width={24} height={24} className="w-[24px] h-[24px] rounded-[8px] border-[1px] border-grey-90"/>
+                        <p className="font-semibold text-[14px] text-black-light">{chat?.receiver?.username}</p>
                         <DotIcon className="w-[4px]"/>
-                        <p className="text-text-grey text-[14px] font-semibold">L{chat.receiver.lemon_id}</p>
+                        <p className="text-text-grey text-[14px] font-semibold">L{chat?.receiver?.lemon_id}</p>
                     </div>
                     <MoreIcon className="cursor-pointer" onClick={toggleModal}/>
                 </div>
@@ -66,11 +66,11 @@ const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_
                     {
                         messages.map((message: MessageInterface, index: number) => (
                             <div
-                                className={`text-right p-[8px] max-w-[303px] ml-auto rounded-[12px] ${message.sender ? "bg-light-green-10" : "bg-grey-20"}`}
+                                className={`text-right p-[8px] max-w-[303px] ml-auto rounded-[12px] ${message?.sender ? "bg-light-green-10" : "bg-grey-20"}`}
                                 key={index}
                             >
-                                <p className="font-normal text-[14px]">{message.message}</p>
-                                <p className="text-[12px] text-right text-text-grey">{message.created_at}</p>
+                                <p className="font-normal text-[14px]">{message?.message}</p>
+                                <p className="text-[12px] text-right text-text-grey">{message?.created_at}</p>
                             </div>
                         ))
                     }
@@ -93,6 +93,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_
                                         className="rounded-xl w-full text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent text-black-light"
                                         placeholder="Reply..."
                                         onChange={(e) => setText(e.target.value)}
+                                        value={text}
                                     />
                                 </div>
                                 {text && (
@@ -118,6 +119,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_
                                 className="rounded-xl w-full text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent text-black-light"
                                 placeholder="Reply..."
                                 onChange={(e) => setText(e.target.value)}
+                                value={text}
                             />
                         </div>
                         {text && (

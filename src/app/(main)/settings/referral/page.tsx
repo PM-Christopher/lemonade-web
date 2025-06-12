@@ -12,15 +12,34 @@ import ReferralHistory from "@/components/settings/Modal/ReferralHistory";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
+import {useAppDispatch} from "@/redux/hook";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 function ReferralSettingsPage({}) {
     const router = useRouter()
+    const dispatch = useAppDispatch()
     const {user} = useSelector((state: any) => state.auth)
     const [isOpen, setIsOpen] = useState(false)
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
     }
+
+    const [copied, setCopied] = useState(false);
+    const handleCopy = (textToCopy: string) => {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            setCopied(true);
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Copied to clipboard",
+                    type: "success",
+                })
+            );
+            setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
+        });
+    };
+
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
@@ -43,11 +62,13 @@ function ReferralSettingsPage({}) {
                                     <div
                                         className="rounded-tl-[12px] rounded-bl-[12px] px-[12px] p-[10.5px] bg-light-tint-4 w-full">
                                         <p className="font-bold text-[18px] text-mid-green">
-                                            {user.username.toUpperCase()}
+                                            {user?.username?.toUpperCase()}
                                         </p>
                                     </div>
                                     <div
-                                        className="rounded-tr-[12px] rounded-br-[12px] px-[12px] bg-light-tint-4 w-fit items-center flex h-[48px]">
+                                        className="rounded-tr-[12px] rounded-br-[12px] px-[12px] bg-light-tint-4 w-fit items-center flex h-[48px] cursor-pointer"
+                                        onClick={() => handleCopy(user?.username?.toUpperCase())}
+                                    >
                                         <CopyIcon/>
                                     </div>
                                 </div>
@@ -55,7 +76,9 @@ function ReferralSettingsPage({}) {
                                 <div className="flex justify-between items-center gap-[2px]">
                                     <div
                                         className="rounded-tl-[12px] rounded-bl-[12px] px-[12px] h-[48px] bg-light-tint-4 w-full items-center flex">
-                                        <p className="font-semi-normal text-[14px] text-mid-green">https://app.lemonade.com/ref=?{user.username}</p>
+                                        <p className="font-semi-normal text-[14px] text-mid-green">
+                                            {window.location.origin}/ref=?{user.username}
+                                        </p>
                                     </div>
                                     <div
                                         className="rounded-tr-[12px] rounded-br-[12px] px-[12px] bg-light-tint-4 w-fit items-center flex h-[48px]">

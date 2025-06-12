@@ -136,10 +136,11 @@ const connectSlice = createSlice({
     reducers: {
         addToMessages: (state, action) => {
             const message = action.payload.message
+            console.log({message})
             const user = action.payload.user
             const format_message = {
                 "id": message.id,
-                "message": "This is a type message new",
+                "message": message?.message,
                 "sender": message.sender === user.id,
                 "receiver": message.receiver === user.id,
                 "media": message.media,

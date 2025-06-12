@@ -34,7 +34,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                             <Image src={"/images/heart.png"} alt="like" width={16} height={16} className="w-[16px] h-[16px]" />
                         </div>
                         <div>
-                            <p className="font-sans text-[14px] font-semi-normal text-light-black">120</p>
+                            <p className="font-sans text-[14px] font-semi-normal text-light-black">{tribe?.likes}</p>
                         </div>
                     </div>
                     <div className="flex justify-between items-center gap-1">
@@ -42,7 +42,7 @@ const TribeCard: React.FC<TribeIF> = ({tribe}) => {
                             <Image src={"/images/chat.png"} alt="comment" width={16} height={16}/>
                         </div>
                         <div>
-                            <p className="font-sans text-[14px] font-semi-normal text-light-black">15</p>
+                            <p className="font-sans text-[14px] font-semi-normal text-light-black">{tribe?.comments}</p>
                         </div>
                     </div>
                 </div>

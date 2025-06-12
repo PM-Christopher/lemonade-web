@@ -7,7 +7,10 @@ export const formatNumber = (number: number, places: number) => {
 
 export const formatNumberWithCommas = (number: number) => {
     if(number) {
+        if (number <= 1) {
+            return number
+        }
         return number.toLocaleString('en-US');
     }
-    return null
+    return 0
 };

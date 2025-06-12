@@ -132,7 +132,7 @@ function WalletSettingsPage({}) {
           <div>
             <div className="w-full laptop:min-w-[684px] rounded-[12px] flex flex-col bg-white">
               <div className="border-b-[1px] p-[16px]">
-                <p className="font-semibold text-[16px]">Payout history</p>
+                <p className="font-semibold text-[16px]">Transaction history</p>
               </div>
               <div className="px-[24px]">
                 {data?.payout_history?.map((history: any, index: number) => (
@@ -142,7 +142,7 @@ function WalletSettingsPage({}) {
                   >
                     <div className="flex flex-col">
                       <p className="font-semi-normal text-[14px]">
-                        N{formatNumberWithCommas(history?.amount)}
+                        N{formatNumberWithCommas(history?.amount)} - {history?.message}
                       </p>
                       <p className="font-normal text-[12px] text-text-grey">
                         {history?.date}
