@@ -44,6 +44,7 @@ export interface TicketDetails {
     ticket_description: string;
     quantity: number;
     price: number
+    purchase_limit: number
 }
 
 export interface MyTicketInterface {
