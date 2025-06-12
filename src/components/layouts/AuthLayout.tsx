@@ -5,6 +5,7 @@ import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
 import {setIsRouting} from "@/redux/tempSlice";
 import {useSelector} from "react-redux";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     const isMobile = useMediaQuery({ query: "(max-width: 576px)" });
@@ -32,10 +33,13 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         dispatch(setIsRouting(false));
     }, []);
+
     return (
-        <div>
-            {children}
-        </div>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+            <div>
+                {children}
+            </div>
+        </GoogleOAuthProvider>
     );
 }
 

@@ -14,6 +14,11 @@ import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { login } from "@/features/authentication/authApi";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import {setIsRouting} from "@/redux/tempSlice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {authSuccess, authUser} from "@/features/authentication/authSlice";
+import {useGoogleLogin} from "@react-oauth/google";
+import {axiosInstance} from "@/lib/axiosInstane";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,6 +44,103 @@ export default function LoginPage() {
     onSubmit: async (values) => {
       await login({ ...values }, dispatch, router, setCookie);
     },
+  });
+
+  const handleLoginSuccess = async (res: any) => {
+    try {
+      console.log({res})
+
+      if (res.status) {
+        dispatch(setIsRouting(true));
+        dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Successful",
+              type: "success",
+            })
+        );
+
+        if (res.data.data.token_type === 'account_verification_token') {
+          setCookie("newToken", res.data.data.token, {
+            path: "/",
+            maxAge: 3600 * 6, // Expires after 6hrs
+            sameSite: false,
+          });
+          dispatch(authUser(res?.data?.data));
+          router.push("/verify-email");
+        } else {
+          const user = res.data?.data?.user
+          if (user.status == 0) {
+            setCookie("newToken", res.data.data.token, {
+              path: "/",
+              maxAge: 3600 * 6, // Expires after 6hrs
+              sameSite: false,
+              // domain: env === 'development' ? '' : ''
+            });
+            router.push("/verify-email");
+          } else if(user.username === null) {
+            setCookie("newToken", res.data.data.token, {
+              path: "/",
+              maxAge: 3600 * 6, // Expires after 6hrs
+              sameSite: false,
+              // domain: env === 'development' ? '' : ''
+            });
+            router.push("/profile-setup");
+          } else {
+            setCookie("token", res.data.data.token, {
+              path: "/",
+              maxAge: 3600 * 6, // Expires after 6hrs
+              sameSite: false,
+            });
+            dispatch(
+                updateToastifyReducer({
+                  show: true,
+                  message: "successful",
+                  type: "success",
+                })
+            );
+            dispatch(authSuccess(res.data.data));
+            setTimeout(() => {
+              router.push("/");
+            }, 500);
+          }
+        }
+      } else {
+        dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: res.message || "error",
+              type: "error",
+            })
+        );
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert('Login failed!');
+    }
+  };
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log('Auth Code Response:', tokenResponse);
+
+      // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)
+      try {
+        const res = await axiosInstance.post(`/auth/google`, {
+          token: tokenResponse.access_token
+        });
+
+        await handleLoginSuccess(res)
+
+      } catch (error) {
+        console.error('Error sending code to backend:', error);
+      }
+    },
+    onError: () => {
+      alert('Login Failed');
+    },
+    flow: 'implicit'  // or 'auth-code' if you’re using code flow
   });
 
   return (
@@ -139,13 +241,8 @@ export default function LoginPage() {
                       height={24}
                     />
                   </div>
-                  <div className="app-icon-border flex justify-center items-center">
-                    <Image
-                      src={"/images/google.png"}
-                      alt="logo"
-                      width={24}
-                      height={24}
-                    />
+                  <div className="app-icon-border flex justify-center items-center cursor-pointer" onClick={() => googleLogin()}>
+                    <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
                   </div>
                   <div className="app-icon-border flex justify-center items-center">
                     <Image
