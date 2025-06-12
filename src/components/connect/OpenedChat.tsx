@@ -22,7 +22,7 @@ type OpenChatProps = {
 
 const OpenedChat: React.FC<OpenChatProps> = ({toggleModal, chat, messages, user_id, toggleOpenedChat}) => {
     const dispatch = useAppDispatch()
-    const [text, setText] = useState<string|null>("")
+    const [text, setText] = useState<string|any>("")
     const { authToken: token } = useSelector((state: any) => state.auth)
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
 

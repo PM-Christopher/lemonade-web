@@ -25,6 +25,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { addEvent } from "@/features/events/event.slice";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 interface SocialMediaHandles {
   instagram: string;
@@ -119,33 +120,58 @@ const CreateEventPage = () => {
     },
     validationSchema: createEventSchema,
     onSubmit: async (values) => {
-      const filteredSocials = (
-        Object.keys(socials) as Array<keyof SocialMediaHandles>
-      )
-        .filter((key) => socials[key]) // Only keep keys with non-empty values
-        .map((key) => ({
-          name: key,
-          value: socials[key],
-        }));
-      const data = {
-        event_image: values.event_image,
-        event_name: values.event_name,
-        event_description: values.event_description,
-        category: values.category,
-        event_type: values.event_type,
-        location: values.location,
-        hosting_platform: values.hosting_platform,
-        meeting_link: values.meeting_link,
-        meeting_passcode: values.meeting_passcode,
-        time_zone: values.time_zone,
-        start_date: `${values.start_date}T${values.start_time}`,
-        end_date: `${values.end_date}T${values.end_time}`,
-        affiliate_program: values.affiliate_program,
-        commission: values.commission,
-        socials: filteredSocials,
-      };
-      dispatch(addEvent(data));
-      router.push("/event/add-ticket");
+      try {
+        await createEventSchema.validate(values, { abortEarly: false });
+        const filteredSocials = (
+          Object.keys(socials) as Array<keyof SocialMediaHandles>
+        )
+          .filter((key) => socials[key]) // Only keep keys with non-empty values
+          .map((key) => ({
+            name: key,
+            value: socials[key],
+          }));
+        const data = {
+          event_image: values.event_image,
+          event_name: values.event_name,
+          event_description: values.event_description,
+          category: values.category,
+          event_type: values.event_type,
+          location: values.location,
+          hosting_platform: values.hosting_platform,
+          meeting_link: values.meeting_link,
+          meeting_passcode: values.meeting_passcode,
+          time_zone: values.time_zone,
+          start_date: `${values.start_date}T${values.start_time}`,
+          end_date: `${values.end_date}T${values.end_time}`,
+          affiliate_program: values.affiliate_program,
+          commission: values.commission,
+          socials: filteredSocials,
+        };
+        dispatch(addEvent(data));
+        router.push("/event/add-ticket");
+      } catch (error:any) {
+        if (error.name === "ValidationError") {
+
+           const firstError = error.errors[0]; 
+
+           dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: firstError,
+            type: "error",
+          })
+        );
+        } else {
+
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "An error occurred while creating the event",
+              type: "error",
+            })
+          );
+        }
+      }
     },
   });
 
@@ -306,7 +332,7 @@ const CreateEventPage = () => {
                       id="meeting-platform"
                       className="h-12 rounded-xl bg-light_grey form-font border-0 px-2"
                       value={formik.values.hosting_platform}
-                      onChange={formik.handleChange}
+                      onChange={formik.handleChange("hosting_platform")}
                     >
                       <option value="">Select category</option>
                       <option value="google-meet">Google meet</option>
@@ -326,7 +352,7 @@ const CreateEventPage = () => {
                       placeholder=""
                       className="h-12 rounded-xl bg-light_grey form-font border-0"
                       value={formik.values.meeting_link}
-                      onChange={formik.handleChange}
+                      onChange={formik.handleChange("meeting_link")}
                       onBlur={formik.handleBlur}
                     />
                   </div>
@@ -344,7 +370,7 @@ const CreateEventPage = () => {
                       placeholder=""
                       className="h-12 rounded-xl bg-light_grey form-font border-0"
                       value={formik.values.meeting_passcode}
-                      onChange={formik.handleChange}
+                      onChange={formik.handleChange("meeting_passcode")}
                       onBlur={formik.handleBlur}
                     />
                   </div>
