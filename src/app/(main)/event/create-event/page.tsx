@@ -380,9 +380,9 @@ const CreateEventPage = () => {
                 </Label>
                 <div className="flex justify-between gap-3">
                   <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    <div>
+                    {/* <div>
                       <CalendarIcon />
-                    </div>
+                    </div> */}
                     <div>
                       <input
                         id="search"
@@ -422,9 +422,9 @@ const CreateEventPage = () => {
                 </Label>
                 <div className="flex justify-between gap-3">
                   <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    <div>
+                    {/* <div>
                       <CalendarIcon />
-                    </div>
+                    </div> */}
                     <div>
                       <input
                         id="search"

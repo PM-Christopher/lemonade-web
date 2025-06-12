@@ -92,11 +92,56 @@ const EventDetailsPage = ({ params }: { params: { id: number } }) => {
                   Contact Us
                 </p>
                 <div className="hidden laptop:flex items-center gap-[16px] mt-[16px]">
-                  <FacebookIcon />
-                  <InstagramIcon />
-                  <LinkedInIcon />
-                  <TwitterIcon />
-                  <AttachmentIcon />
+                  <a
+                    href={`${
+                      data?.event?.socials?.find(
+                        (social: any) => social.name === "facebook"
+                      )?.value ?? "#"
+                    }`}
+                    target="_blank"
+                  >
+                    <FacebookIcon className="cursor-pointer" />
+                  </a>
+                  <a
+                    href={`${
+                      data?.event?.socials?.find(
+                        (social: any) => social.name === "instagram"
+                      )?.value ?? "#"
+                    }`}
+                    target="_blank"
+                  >
+                    <InstagramIcon />
+                  </a>
+                  <a
+                    href={`${
+                      data?.event?.socials?.find(
+                        (social: any) => social.name === "linkedin"
+                      )?.value ?? "#"
+                    }`}
+                    target="_blank"
+                  >
+                    <LinkedInIcon />
+                  </a>
+                  <a
+                    href={`${
+                      data?.event?.socials?.find(
+                        (social: any) => social.name === "twitter"
+                      )?.value ?? "#"
+                    }`}
+                    target="_blank"
+                  >
+                    <TwitterIcon />
+                  </a>
+                  <a
+                    href={`${
+                      data?.event?.socials?.find(
+                        (social: any) => social.name === "website"
+                      )?.value ?? "#"
+                    }`}
+                    target="_blank"
+                  >
+                    <AttachmentIcon />
+                  </a>
                 </div>
                 <div className="mt-[40px] hidden laptop:flex">
                   <Link href={`/event/${data?.event?.id}/buy-ticket`}>
@@ -128,11 +173,57 @@ const EventDetailsPage = ({ params }: { params: { id: number } }) => {
                 Contact Us
               </p>
               <div className="flex items-center gap-[16px] mt-[16px]">
-                <FacebookIcon />
-                <InstagramIcon />
-                <LinkedInIcon />
-                <TwitterIcon />
-                <AttachmentIcon />
+                <a
+                  href={`${
+                    data?.event?.socials?.find(
+                      (social: any) => social.name === "facebook"
+                    )?.value ?? "#"
+                  }`}
+                  target="_blank"
+                  className="cursor-pointer"
+                >
+                  <FacebookIcon />
+                </a>
+                <a
+                  href={`${
+                    data?.event?.socials?.find(
+                      (social: any) => social.name === "instagram"
+                    )?.value ?? "#"
+                  }`}
+                  target="_blank"
+                >
+                  <InstagramIcon />
+                </a>
+                <a
+                  href={`${
+                    data?.event?.socials?.find(
+                      (social: any) => social.name === "linkedin"
+                    )?.value ?? "#"
+                  }`}
+                  target="_blank"
+                >
+                  <LinkedInIcon />
+                </a>
+                <a
+                  href={`${
+                    data?.event?.socials?.find(
+                      (social: any) => social.name === "twitter"
+                    )?.value ?? "#"
+                  }`}
+                  target="_blank"
+                >
+                  <TwitterIcon />
+                </a>
+                <a
+                  href={`${
+                    data?.event?.socials?.find(
+                      (social: any) => social.name === "website"
+                    )?.value ?? "#"
+                  }`}
+                  target="_blank"
+                >
+                  <AttachmentIcon />
+                </a>
               </div>
               <div className="mt-[40px]">
                 <Link href={`/event/${data?.event?.id}/buy-ticket`}>
