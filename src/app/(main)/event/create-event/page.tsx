@@ -90,8 +90,48 @@ const CreateEventPage = () => {
     time_zone: yup.string().required("Time zone is required"),
     start_date: yup.string().required("Start date is required"),
     start_time: yup.string().required("Start time is required"),
-    end_date: yup.string().required("End date is required"),
-    end_time: yup.string().required("End time is required"),
+    end_date: yup
+      .string()
+      .required("End date is required")
+      .test(
+        "end-date-validation",
+        "End date and time cannot be before start date and time",
+        function (value) {
+          const { start_date, start_time, end_time } = this.parent;
+
+          if (!value || !start_date || !start_time || !end_time) {
+            return true; // Let required validation handle missing values
+          }
+
+          // Create complete datetime strings
+          const startDateTime = new Date(`${start_date}T${start_time}`);
+          const endDateTime = new Date(`${value}T${end_time}`);
+
+          // Check if end datetime is after start datetime
+          return endDateTime > startDateTime;
+        }
+      ),
+    end_time: yup
+      .string()
+      .required("End time is required")
+      .test(
+        "end-time-validation",
+        "End date and time cannot be before start date and time",
+        function (value) {
+          const { start_date, start_time, end_date } = this.parent;
+
+          if (!value || !start_date || !start_time || !end_date) {
+            return true; // Let required validation handle missing values
+          }
+
+          // Create complete datetime strings
+          const startDateTime = new Date(`${start_date}T${start_time}`);
+          const endDateTime = new Date(`${end_date}T${value}`);
+
+          // Check if end datetime is after start datetime
+          return endDateTime > startDateTime;
+        }
+      ),
     affiliate_program: yup.boolean().required("Affiliate program is required"),
     commission: yup.number().when("affiliate_program", {
       is: true,
@@ -121,56 +161,55 @@ const CreateEventPage = () => {
     },
     validationSchema: createEventSchema,
     onSubmit: async (values) => {
-      try {
-        await createEventSchema.validate(values, { abortEarly: false });
-        const filteredSocials = (
-          Object.keys(socials) as Array<keyof SocialMediaHandles>
-        )
-          .filter((key) => socials[key]) // Only keep keys with non-empty values
-          .map((key) => ({
-            name: key,
-            value: socials[key],
-          }));
-        const data = {
-          event_image: values.event_image,
-          event_name: values.event_name,
-          event_description: values.event_description,
-          category: values.category,
-          event_type: values.event_type,
-          location: values.location,
-          hosting_platform: values.hosting_platform,
-          meeting_link: values.meeting_link,
-          meeting_passcode: values.meeting_passcode,
-          time_zone: values.time_zone,
-          start_date: `${values.start_date}T${values.start_time}`,
-          end_date: `${values.end_date}T${values.end_time}`,
-          affiliate_program: values.affiliate_program,
-          commission: values.commission,
-          socials: filteredSocials,
-        };
-        dispatch(addEvent(data));
-        router.push("/event/add-ticket");
-      } catch (error: any) {
-        if (error.name === "ValidationError") {
-          const firstError = error.errors[0];
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: firstError,
-              type: "error",
-            })
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "An error occurred while creating the event",
-              type: "error",
-            })
-          );
-        }
-      }
+      // try {
+      //   await createEventSchema.validate(values, { abortEarly: false });
+      //   const filteredSocials = (
+      //     Object.keys(socials) as Array<keyof SocialMediaHandles>
+      //   )
+      //     .filter((key) => socials[key]) // Only keep keys with non-empty values
+      //     .map((key) => ({
+      //       name: key,
+      //       value: socials[key],
+      //     }));
+      //   const data = {
+      //     event_image: values.event_image,
+      //     event_name: values.event_name,
+      //     event_description: values.event_description,
+      //     category: values.category,
+      //     event_type: values.event_type,
+      //     location: values.location,
+      //     hosting_platform: values.hosting_platform,
+      //     meeting_link: values.meeting_link,
+      //     meeting_passcode: values.meeting_passcode,
+      //     time_zone: values.time_zone,
+      //     start_date: `${values.start_date}T${values.start_time}`,
+      //     end_date: `${values.end_date}T${values.end_time}`,
+      //     affiliate_program: values.affiliate_program,
+      //     commission: values.commission,
+      //     socials: filteredSocials,
+      //   };
+      //   dispatch(addEvent(data));
+      //   router.push("/event/add-ticket");
+      // } catch (error: any) {
+      //   if (error.name === "ValidationError") {
+      //     const firstError = error.errors[0];
+      //     dispatch(
+      //       updateToastifyReducer({
+      //         show: true,
+      //         message: firstError,
+      //         type: "error",
+      //       })
+      //     );
+      //   } else {
+      //     dispatch(
+      //       updateToastifyReducer({
+      //         show: true,
+      //         message: "An error occurred while creating the event",
+      //         type: "error",
+      //       })
+      //     );
+      //   }
+      // }
     },
   });
 
