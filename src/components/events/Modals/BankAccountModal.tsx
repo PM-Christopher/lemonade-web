@@ -194,8 +194,11 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                 className="h-12 rounded-xl bg-light_grey form-font border-0"
                 value={formik.values.account_number}
                 onChange={(e) => {
-                  setAccountNumber(e.target.value);
-                  formik.setFieldValue("account_number", e.target.value);
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value)) {
+                    setAccountNumber(value);
+                    formik.setFieldValue("account_number", value);
+                  }
                 }}
                 maxLength={10}
               />

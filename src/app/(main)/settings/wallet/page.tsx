@@ -142,7 +142,8 @@ function WalletSettingsPage({}) {
                   >
                     <div className="flex flex-col">
                       <p className="font-semi-normal text-[14px]">
-                        N{formatNumberWithCommas(history?.amount)} - {history?.message}
+                        N{formatNumberWithCommas(history?.amount)} -{" "}
+                        {history?.message}
                       </p>
                       <p className="font-normal text-[12px] text-text-grey">
                         {history?.date}
@@ -166,6 +167,13 @@ function WalletSettingsPage({}) {
                       <div className="bg-red-3 py-[4px] px-[8px] rounded-[8px]">
                         <p className="font-semi-normal text-[12px] text-red-1">
                           Failed
+                        </p>
+                      </div>
+                    )}
+                    {history?.status === "pending" && (
+                      <div className="bg-warning py-[4px] px-[8px] rounded-[8px]">
+                        <p className="font-semi-normal text-[12px] text-warning-bold">
+                          Pending
                         </p>
                       </div>
                     )}
