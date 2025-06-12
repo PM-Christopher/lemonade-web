@@ -10,7 +10,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 
 const BillingHistoryPage = () => {
     const router = useRouter()
-    const { authToken } = useSelector((state: any) => state.auth)
+    const { authToken, user, subscription } = useSelector((state: any) => state.auth)
     const getHeader = () => {
         return {
             headers: {
@@ -19,6 +19,7 @@ const BillingHistoryPage = () => {
         };
     }
 
+    console.log({subscription})
     const { data, loading } = useRequest(`profile/subscription/billing-history`, "GET", {}, true, getHeader())
     return (
         <MainLayout>
@@ -42,7 +43,11 @@ const BillingHistoryPage = () => {
                                     <p className="font-semi-normal text-[14px] ">Renews {data?.plan?.next_billing_date}</p>
                                 </div>
                             </div>
-                            <p className="font-semi-normal text-[16px] text-red-1">Cancel renewal</p>
+                            {
+                                subscription?.plan_price !== "0 NGN/month" && (
+                                    <p className="font-semi-normal text-[16px] text-red-1">Cancel renewal</p>
+                                )
+                            }
                         </div>
 
                         <div className="w-full laptop:w-[640px] mt-[40px]">

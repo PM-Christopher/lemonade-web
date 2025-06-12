@@ -101,7 +101,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
             </Label>
             <Input
               id="fullname"
-              type="text"
+              type="number"
               placeholder=""
               className="h-12 rounded-xl bg-light_grey form-font border-0"
             />

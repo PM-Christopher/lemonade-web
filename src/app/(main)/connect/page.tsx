@@ -65,7 +65,7 @@ const ConnectPage = () => {
         dispatch(removeChat())
     }
 
-    console.log({data})
+    console.log({chatData})
 
     usePusher("chat-channel", "message-sent");
     return (
@@ -126,7 +126,7 @@ const ConnectPage = () => {
                                 </div>
                                 <div className={`${chatOpened ? "block" : "hidden"}`}>
                                     {
-                                        messagesData.length > 0 ? (
+                                        chatOpened ? (
                                             selectedChatId === chatData.id && (
                                                 <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
                                                             chat={chatData} toggleOpenedChat={toggleChatOpened}/>
@@ -171,8 +171,8 @@ const ConnectPage = () => {
                             </div>
                         </div>
                         {
-                            messagesData.length > 0 ? (
-                                selectedChatId === chatData.id && (
+                            chatOpened ? (
+                                selectedChatId === chatData?.id && (
                                     <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
                                                 chat={chatData}/>
                                 )
