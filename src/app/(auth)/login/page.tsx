@@ -233,25 +233,25 @@ export default function LoginPage() {
                   <div className="w-[60px] h-[2px] bg-border-grey" />
                 </div>
                 <div className="flex justify-center items-center gap-[24px] mt-4">
-                  <div className="app-icon-border flex justify-center items-center">
-                    <Image
-                      src={"/images/apple.png"}
-                      alt="logo"
-                      width={24}
-                      height={24}
-                    />
-                  </div>
+                  {/*<div className="app-icon-border flex justify-center items-center">*/}
+                  {/*  <Image*/}
+                  {/*    src={"/images/apple.png"}*/}
+                  {/*    alt="logo"*/}
+                  {/*    width={24}*/}
+                  {/*    height={24}*/}
+                  {/*  />*/}
+                  {/*</div>*/}
                   <div className="app-icon-border flex justify-center items-center cursor-pointer" onClick={() => googleLogin()}>
                     <Image src={'/images/google.png'} alt="logo" width={24} height={24}/>
                   </div>
-                  <div className="app-icon-border flex justify-center items-center">
-                    <Image
-                      src={"/images/facebook.png"}
-                      alt="logo"
-                      width={24}
-                      height={24}
-                    />
-                  </div>
+                  {/*<div className="app-icon-border flex justify-center items-center">*/}
+                  {/*  <Image*/}
+                  {/*    src={"/images/facebook.png"}*/}
+                  {/*    alt="logo"*/}
+                  {/*    width={24}*/}
+                  {/*    height={24}*/}
+                  {/*  />*/}
+                  {/*</div>*/}
                 </div>
               </CardContent>
             </Card>
