@@ -152,7 +152,7 @@ export default function TribePage() {
           );
           activateModal();
           // redirect to the newly created tribe
-          router.push(`/tribe/${data?.data?.tribe?.id}`);
+          router.push(`/tribe/${data?.data?.tribe?.slug}`);
         } else {
           dispatch(
             updateToastifyReducer({
@@ -377,7 +377,7 @@ export default function TribePage() {
                 {searchResults.length > 0 &&
                   searchResults.map((tribe: TribeInterface, index: number) => (
                     <Link
-                      href={`/tribe/${tribe.id}`}
+                      href={`/tribe/${tribe.slug}`}
                       key={index}
                       className="cursor-pointer"
                     >
