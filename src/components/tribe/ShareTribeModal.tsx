@@ -118,10 +118,10 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({toggle, isOpen, tribe})
                     <div
                         className="w-full flex rounded-[12px] border-[1px] border-grey-90 justify-between p-[8px] items-center">
                         <div className="w-[full]">
-                        <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.tribe_name}`}</p>
+                        <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`}</p>
                         </div>
                         <Button className="bg-gradient-green w-[80px] h-[35px]"
-                                onClick={() => handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.tribe_name}`)}>
+                                onClick={() => handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`)}>
                             <p>{copied ? "Copied!" : "Copy"}</p>
                         </Button>
                     </div>

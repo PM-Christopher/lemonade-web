@@ -335,7 +335,7 @@ export default function TribePage() {
             ) : data?.tribes.length > 0 ? (
               <div className="overflow-y-auto max-h-screen hide-scrollbar">
                 {data?.tribes.map((tribe: TribeInterface, index: number) => (
-                  <Link href={`/tribe/${tribe.id}`}>
+                  <Link href={`/tribe/${tribe.slug}`}>
                     <TribeCardList tribe={tribe} key={index} />
                   </Link>
                 ))}
