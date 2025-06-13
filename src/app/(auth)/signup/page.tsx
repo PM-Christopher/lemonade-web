@@ -34,7 +34,7 @@ type valuesType = {
 export default function SignupPage() {
     const router  = useRouter()
     const dispatch = useAppDispatch();
-    const [cookie, setCookie] = useCookies(["newToken"]);
+    const [cookie, setCookie] = useCookies(["token", "newToken"]);
 
     const passwordRules =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~])(?=.{8,})/;
