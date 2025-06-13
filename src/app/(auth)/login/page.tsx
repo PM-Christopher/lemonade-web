@@ -122,7 +122,7 @@ export default function LoginPage() {
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+    onSuccess: async (tokenResponse:any) => {
       console.log('Auth Code Response:', tokenResponse);
 
       // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)

@@ -16,6 +16,7 @@ import PaymentSuccessfulModal from "@/components/events/Modals/PaymentSuccessful
 import PromotionDetailsModal from "@/components/events/Modals/PromotionDetailsModal";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
+import { useRouter } from "next/navigation";
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
 import {getEvent} from "@/features/events/event.slice";
@@ -37,6 +38,7 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
   }
 
   console.log({event})
+  const router = useRouter();
 
   const activateModal = () => {
     setIsOpen(!isOpen);
@@ -56,7 +58,10 @@ const EventDetailsPage = ({params}: {params: {id: number}}) => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
-          <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
+          <div
+            className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]"
+            onClick={() => router.back()}
+          >
             <ChevronLeft />
             <p className="font-sans font-semibold text-[16px] tracking-custom">
               Event details

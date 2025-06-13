@@ -110,11 +110,11 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="bg-white flex justify-between p-[12px] px-10 border-t-[1px] border-b-[1px] items-center">
-          <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]">
-            <ChevronLeft
-              className="cursor-pointer"
-              onClick={() => router.back()}
-            />
+          <div
+            className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft className="cursor-pointer" />
             <p className="font-sans font-semibold text-[16px] tracking-custom">
               Assign ticket
             </p>
