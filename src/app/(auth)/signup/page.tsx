@@ -110,7 +110,7 @@ export default function SignupPage() {
                         });
                         router.push("/profile-setup");
                     } else {
-                        setCookie("token", res.data.data.token, {
+                        setCookie("newToken", res.data.data.token, {
                             path: "/",
                             maxAge: 3600 * 6, // Expires after 6hrs
                             sameSite: false,
