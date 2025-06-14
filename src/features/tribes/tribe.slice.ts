@@ -305,7 +305,7 @@ const searchTribe = createAsyncThunk("tribe/searchTribe", async ({data}: {data: 
     }
 });
 
-const addTribeMember = createAsyncThunk("tribe/addTribeMember", async ({data, id, token}: {data: any, id: number, token: string}, { rejectWithValue }) => {
+const addTribeMember = createAsyncThunk("tribe/addTribeMember", async ({data, id, token}: {data: any, id: any, token: string}, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
