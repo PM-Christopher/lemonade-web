@@ -219,6 +219,11 @@ export default function LoginPage() {
                     onBlur={formik.handleBlur}
                   />
                 </div>
+                <Link href="/forgot-password">
+                  <p className="font-sans text-bl underline text-light-green cursor-pointer">
+                    Forgot password?
+                  </p>
+                </Link>
                 <FormikButton
                   loading={formik.isSubmitting}
                   title="Login"

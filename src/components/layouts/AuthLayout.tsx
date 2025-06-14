@@ -25,7 +25,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             !(
                 pathname === "/signup" ||
                 pathname === "/login" ||
-                pathname === "/forgot-password"
+                pathname === "/forgot-password" ||
+                pathname === "/reset-password"
             ) && redirect("/login");
         }
     }, [pathname, newToken]);
