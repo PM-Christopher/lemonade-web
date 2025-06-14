@@ -20,11 +20,11 @@ export const navLinks = [
         path: "/event",
         icon: event_icon
     },
-    {
-        name: "Business",
-        path: "/business",
-        icon: business_icon
-    },
+    // {
+    //     name: "Business",
+    //     path: "/business",
+    //     icon: business_icon
+    // },
     {
         name: "Connect",
         path: "/connect",

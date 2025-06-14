@@ -13,25 +13,32 @@ import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
+import {axiosInstance} from "@/lib/axiosInstane";
+import {useCookies} from "react-cookie";
 
 
 export default function ForgotPasswordPage() {
     const router  = useRouter()
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-        username:"",
-    })
-
+    const [email, setEmail] = useState("")
+    const [cookie, setCookie] = useCookies(["newToken"]);
     const [loading, setLoading] = useState(false)
 
     const onSignup = async () => {
         try {
             setLoading(true)
-            await axios.post("/api/users/signup", user)
-            toast.success("Signup successfull")
-            toast("Please check your inbox and click on verification link.", {duration: 10000})
-            router.push("/login")
+            const res = await axiosInstance.post("/auth/forgot-password", {email})
+            console.log({res})
+            if (res.status === 200) {
+                setLoading(false)
+                toast("Please check your inbox and click on verification link.", {duration: 10000})
+                setCookie("newToken", res?.data?.data.token, {
+                    path: "/",
+                    maxAge: 3600 * 6, // Expires after 6hrs
+                    sameSite: false,
+                    // domain: env === 'development' ? '' : ''
+                });
+                router.push("/verify-code")
+            }
         } catch (error: any) {
             toast.error(error.message)
         }finally{
@@ -72,6 +79,7 @@ export default function ForgotPasswordPage() {
                                     type="email"
                                     placeholder="e.g. Janedoe@example.com"
                                     className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
                         </CardContent>

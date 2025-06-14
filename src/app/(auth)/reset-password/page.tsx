@@ -13,25 +13,42 @@ import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {axiosInstance} from "@/lib/axiosInstane";
+import {useAppDispatch} from "@/redux/hook";
+import {useCookies} from "react-cookie";
+import {useSelector} from "react-redux";
 
 
 export default function ResetPasswordPage() {
     const router  = useRouter()
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-        username:"",
-    })
+    const dispatch = useAppDispatch();
+    const [cookie, setCookie, removeCookie] = useCookies([
+        "token",
+        "newToken",
+    ]);
+
+    const getHeader = () => {
+        const token = cookie.newToken;
+        console.log({token})
+        return {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    };
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
 
     const [loading, setLoading] = useState(false)
 
     const onSignup = async () => {
         try {
             setLoading(true)
-            await axiosInstance.post("/api/users/signup", user)
-            toast.success("Signup successfull")
-            toast("Please check your inbox and click on verification link.", {duration: 10000})
-            router.push("/login")
+            const res = await axiosInstance.post("/auth/reset-password", {password, confirm_password: confirmPassword}, getHeader())
+            if (res.status === 200) {
+                setLoading(false)
+                toast.success("Password reset successfully")
+                router.push("/login")
+            }
         } catch (error: any) {
             toast.error(error.message)
         }finally{
@@ -72,6 +89,7 @@ export default function ResetPasswordPage() {
                                     id="password"
                                     type="password"
                                     className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                                 <span className="text-[12px] font-sans text-grey-40">Password must be at least 8 character long</span>
                             </div>
@@ -81,6 +99,7 @@ export default function ResetPasswordPage() {
                                     id="password"
                                     type="password"
                                     className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                    onChange={e => setConfirmPassword(e.target.value)}
                                 />
                             </div>
                         </CardContent>

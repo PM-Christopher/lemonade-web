@@ -11,19 +11,39 @@ import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {axiosInstance} from "@/lib/axiosInstane";
+import OtpInput from "react-otp-input";
+import {checkError} from "@/lib/checkError";
+import {useAppDispatch} from "@/redux/hook";
+import {useCookies} from "react-cookie";
+import {useSelector} from "react-redux";
+import * as yup from "yup";
+import {useFormik} from "formik";
+import {authFailure, authStart, loadStop} from "@/features/authentication/authSlice";
+import {setIsRouting} from "@/redux/tempSlice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {FormikButton} from "@/components/global/FormikButton";
 
 
 export default function VerifyCodePage() {
     const router  = useRouter()
-    const [user, setUser] = useState({
-        email: "",
-        password: "",
-        username:"",
-    })
+    const dispatch = useAppDispatch();
+    const [cookie, setCookie, removeCookie] = useCookies([
+        "token",
+        "newToken",
+    ]);
+    const { user } = useSelector((state: any) => state.auth)
     const [seconds, setSeconds] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
-    const [loading, setLoading] = useState(false)
+    const getHeader = () => {
+        const token = cookie.newToken;
+        console.log({token})
+        return {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    };
 
     useEffect(() => {
         if (seconds > 0) {
@@ -36,21 +56,66 @@ export default function VerifyCodePage() {
         }
     }, [seconds]);
 
-    const onSignup = async () => {
+    const handleResend = () => {
+        setSeconds(60);
+        setCanResend(false);
+    };
+
+    //form validation
+    const verifySchema = yup.object({
+        code: yup
+            .string()
+            .length(4)
+            .required("Code is required"),
+    });
+
+
+    const formik = useFormik({
+        initialValues: {
+            code: "",
+        },
+        validationSchema: verifySchema,
+        onSubmit: async (values) => {
+            console.log({values})
+            await verifyOtp(values);
+        },
+    })
+
+    const [otp, setOtp] = useState(formik.values.code);
+
+    const verifyOtp = async (values: any) => {
+        dispatch(authStart())
         try {
-            setLoading(true)
-            await axiosInstance.post("/api/users/signup", user)
-            toast.success("Signup successful")
-            toast("Please check your inbox and click on verification link.", {duration: 10000})
-            router.push("/login")
-        } catch (error: any) {
-            toast.error(error.message)
-        }finally{
-            setLoading(false)
+            const { data } = await axiosInstance.post("/auth/check-otp", { ...values }, getHeader());
+            if (data.success || data.status) {
+                dispatch(setIsRouting(true));
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Email verified",
+                        type: "success",
+                    })
+                );
+                formik.resetForm();
+                router.push("/reset-password");
+                return false
+            }
+            // return false
+        } catch (err: any) {
+            console.log({err})
+            dispatch(authFailure());
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: err?.response?.data?.message || "error",
+                    type: "error",
+                })
+            );
+            return true;
+        } finally {
+            dispatch(loadStop())
         }
     }
-
-
     return (
         <AuthLayout>
             <section className="bg-gradient-light-green">
@@ -74,38 +139,52 @@ export default function VerifyCodePage() {
                             <Image src={"/images/verification.png"} alt="signup image" width={511.06} height={519.77}/>
                         </div>
                     </div>
-                    <Card className="p-10 w-[480px]">
-                        <CardContent className="flex justify-center">
-                            <div className="flex gap-2">
-                                <div
-                                    className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                                <div
-                                    className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                                <div
-                                    className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                                <div
-                                    className="app-icon-border flex justify-center items-center bg-light_grey border-light_grey"></div>
-                            </div>
-                        </CardContent>
-                        <CardContent className="flex justify-center mt-[10px] mb-[10px]">
-                            <div>
-                                {canResend ? (
-                                    <p className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer">
-                                        Send now
-                                    </p>
-                                ) : (
-                                    <p className="font-sans font-semi-normal text-light-green text-[16px]">
-                                        Resend code in {seconds} secs
-                                    </p>
-                                )}
-                            </div>
-                        </CardContent>
-                        <CardContent className="flex flex-col space-y-2">
-                            <Button className="auth-button" onClick={onSignup}>
-                                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Verify"}
-                            </Button>
-                        </CardContent>
-                    </Card>
+                    <form onSubmit={formik.handleSubmit}>
+                        <Card className="p-10 w-[480px]">
+                            <CardContent className="flex justify-center">
+                                <div className="flex flex-col items-center justify-center">
+                                    <OtpInput
+                                        value={formik.values.code}
+                                        onChange={(e) => {
+                                            setOtp(e)
+                                            formik.setFieldValue('code', e)
+                                        }}
+                                        numInputs={4}
+                                        renderSeparator={<span> </span>}
+                                        renderInput={(props) => <input {...props} />}
+                                        containerStyle="gap-2"
+                                        inputStyle={{
+                                            width: "48px",
+                                            height: "48px",
+                                            background: "#F9FAFA",
+                                            borderRadius: "12px"
+                                        }}
+                                    />
+                                    {checkError("code", formik) ? (
+                                        <p className="text-[#FF8D8D] text-[12px] mt-[8px]">
+                                            {formik.errors.code}
+                                        </p>
+                                    ) : null}
+                                </div>
+                            </CardContent>
+                            <CardContent className="flex justify-center mt-[10px] mb-[10px]">
+                                <div>
+                                    {canResend ? (
+                                        <p className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer">
+                                            Send now
+                                        </p>
+                                    ) : (
+                                        <p className="font-sans font-semi-normal text-light-green text-[16px]">
+                                            Resend code in {seconds} secs
+                                        </p>
+                                    )}
+                                </div>
+                            </CardContent>
+                            <CardContent className="flex flex-col space-y-2">
+                                <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid} classes="w-full h-[48px] rounded-[12px]" />
+                            </CardContent>
+                        </Card>
+                    </form>
                 </div>
             </section>
         </AuthLayout>
