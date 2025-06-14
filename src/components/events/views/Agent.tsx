@@ -54,7 +54,7 @@ function AgentSectionView({}) {
       case "promotions":
         return <PromotionsSubMenu events={data?.events} loading={loading} />;
       case "find_event":
-        return <FindEventSubMenu />;
+        return <FindEventSubMenu data={data?.events} loading={loading} />;
       default:
         return <PromotionsSubMenu events={data?.events} loading={loading} />;
     }

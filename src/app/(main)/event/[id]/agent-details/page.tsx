@@ -14,13 +14,88 @@ import AttachmentIcon from "@/images/icons/attachments.svg";
 import { Button } from "@/components/ui/button";
 import AffiliateLinkModal from "@/components/events/Modals/AffiliateLinkModal";
 import MainLayout from "@/components/layouts/MainLayout";
+import { useAppDispatch } from "@/redux/hook";
+import { useSelector } from "react-redux";
+import { useRequest } from "@/hooks/useRequest";
+import { formatNumberWithCommas } from "@/lib/formatNumber";
 
-const AgentDetailsPage = () => {
+const AgentDetailsPage = ({ params }: { params: { id: number } }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { authToken } = useSelector((state: any) => state.auth);
+  const getHeader = () => {
+    return {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    };
+  };
+
+  const { data, loading } = useRequest(
+    `events/affiliate/${params.id}`,
+    "GET",
+    {},
+    true,
+    getHeader()
+  );
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
+
+  type SocialIconName =
+    | "facebook"
+    | "instagram"
+    | "linkedin"
+    | "twitter"
+    | "website";
+
+  type SocialIconProps = {
+    name: string;
+    url: string;
+  };
+
+  const iconMap: Record<SocialIconName, JSX.Element> = {
+    facebook: <FacebookIcon className="w-[24px] h-[24px]" />,
+    instagram: <InstagramIcon className="w-[24px] h-[24px]" />,
+    linkedin: <LinkedInIcon className="w-[24px] h-[24px]" />,
+    twitter: <TwitterIcon className="w-[24px] h-[24px]" />,
+    website: <AttachmentIcon className="w-[24px] h-[24px]" />,
+  };
+
+  const SocialIcon = ({ name, url }: SocialIconProps) => {
+    const icon = iconMap[name.toLowerCase() as SocialIconName];
+    if (!icon) return null;
+
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer" className="mr-2">
+        {icon}
+      </a>
+    );
+  };
+
+  const formatDateParts = (dateString: any) => {
+    const date = new Date(dateString);
+
+    const formattedDate = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }).format(date); 
+
+    const formattedTime = new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).format(date); 
+
+    return { formattedDate, formattedTime };
+  };
+
+
+  const start = formatDateParts(data?.events?.start_date || new Date());
+const end = formatDateParts(data?.events?.end_date || new Date());
 
   return (
     <MainLayout>
@@ -37,7 +112,7 @@ const AgentDetailsPage = () => {
           <div className="flex justify-center">
             <div className="flex flex-col laptop:flex-row w-full laptop:w-[1312px] bg-white rounded-[16px] laptop:items-center gap-[48px] p-0 laptop:p-[4px]">
               <Image
-                src={"/images/event_images/event_details.png"}
+                src={data?.events?.event_image}
                 alt="event details"
                 width={496}
                 height={532}
@@ -45,32 +120,32 @@ const AgentDetailsPage = () => {
               />
               <div className="px-[24px] laptop:px-0">
                 <p className="mb-[24px] font-semibold text-[18px] laptop:text-[32px] leading-[44.8px]">
-                  Unlocking business potentials
+                  {data?.events?.event_name}
                 </p>
                 <div className="flex items-center gap-2 my-2">
                   <CalendarIcon />
                   <p className="font-normal laptop:font-semi-normal text-[14px] laptop:text-[18px] leading-[27px] tracking-custom text-text-grey">
-                    Mon, 23 Mar
+                    {start?.formattedDate}
                   </p>
                   <p>-</p>
                   <p className="font-normal laptop:font-semi-normal text-[14px] laptop:text-[18px] leading-[27px] tracking-custom text-text-grey">
-                    Mon, 23 Mar
+                   {end?.formattedDate}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 mt-[24px]">
                   <ClockIcon />
                   <p className="font-normal laptop:font-semi-normal text-[14px] laptop:text-[18px] leading-[27px] text-text-grey">
-                    04:00PM
+                     {start?.formattedTime}
                   </p>
                   <p>-</p>
                   <p className="font-normal laptop:font-semi-normal text-[14px] laptop:text-[18px] leading-[27px] text-text-grey">
-                    11:00PM
+                      {end?.formattedTime}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 mt-[24px]">
                   <LocationIcon />
                   <p className="font-normal laptop:font-semi-normal text-[14px] laptop:text-[18px] leading-[27px] text-text-grey">
-                    Lekki phase 1
+                    {data?.events?.location}
                   </p>
                 </div>
                 <p className="hidden laptop:block mt-[40px] font-semibold text-[18px] leading-[27px] tracking-custom">
@@ -107,66 +182,50 @@ const AgentDetailsPage = () => {
               </p>
               <div className="w-full laptop:w-[720px] mt-[16px]">
                 <p className="font-semibold text-[16px] leading-[24px] text-light-black">
-                  Are you ready to take your business to the next level?
+                  {data?.events?.event_description}
                 </p>
-                <p className="font-normal text-[16px] leading-[24px] text-light-black mt-2">
+                {/* <p className="font-normal text-[16px] leading-[24px] text-light-black mt-2">
                   Join us at the unlocking business potentials a dynamic
                   conference designed to empower entrepreneurs and business
                   leaders with the tools, strategies, and connections needed to
                   unlock their full potential.
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="laptop:hidden px-[24px]">
               <p className="mt-[40px] font-semibold text-[18px] leading-[27px] tracking-custom">
                 Contact Us
               </p>
+
               <div className="flex items-center gap-[16px] mt-[16px]">
-                <FacebookIcon className="w-[24px] h-[24px]" />
-                <InstagramIcon className="w-[24px] h-[24px]" />
-                <LinkedInIcon className="w-[24px] h-[24px]" />
-                <TwitterIcon className="w-[24px] h-[24px]" />
-                <AttachmentIcon className="w-[24px] h-[24px]" />
+                {data?.events?.socials.map(
+                  (
+                    item: { name: string; value: string },
+                    idx: React.Key | null | undefined
+                  ) => (
+                    <div key={idx}>
+                      <SocialIcon key={idx} name={item.name} url={item.value} />
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div className="w-full laptop:w-[480px] p-[24px] gap-[16px] bg-white rounded-[12px]">
               <p className="font-semibold text-[18px]">Tickets</p>
-              <div className="flex justify-between mt-[16px]">
-                <div className="flex flex-col">
-                  <p className="font-semi-normal text-[14px]">Regular</p>
-                  <p className="font-normal text-[12px] text-text-grey">
-                    Unlimited tickets
+
+              {data?.events?.ticket_sold.map((item: any) => (
+                <div className="flex justify-between mt-[16px]" key={item?.id}>
+                  <div className="flex flex-col">
+                    <p className="font-semi-normal text-[14px]">{item?.name}</p>
+                    <p className="font-normal text-[12px] text-text-grey">
+                      {item?.count}
+                    </p>
+                  </div>
+                  <p className="font-semi-normal text-[14px]">
+                    N {formatNumberWithCommas(item?.price)}
                   </p>
                 </div>
-                <p className="font-semi-normal text-[14px]">Free</p>
-              </div>
-              <div className="flex justify-between mt-[16px]">
-                <div className="flex flex-col">
-                  <p className="font-semi-normal text-[14px]">Regular</p>
-                  <p className="font-normal text-[12px] text-text-grey">
-                    5,000 available tickets
-                  </p>
-                </div>
-                <p className="font-semi-normal text-[14px]">N2,000</p>
-              </div>
-              <div className="flex justify-between mt-[16px]">
-                <div className="flex flex-col">
-                  <p className="font-semi-normal text-[14px]">VIP</p>
-                  <p className="font-normal text-[12px] text-text-grey">
-                    1,000 available tickets
-                  </p>
-                </div>
-                <p className="font-semi-normal text-[14px]">N12,000</p>
-              </div>
-              <div className="flex justify-between mt-[16px]">
-                <div className="flex flex-col">
-                  <p className="font-semi-normal text-[14px]">VVIP</p>
-                  <p className="font-normal text-[12px] text-text-grey">
-                    400 available tickets
-                  </p>
-                </div>
-                <p className="font-semi-normal text-[14px]">N100,000</p>
-              </div>
+              ))}
             </div>
             <div className="mt-[40px] laptop:hidden px-[24px]">
               <Button
@@ -184,7 +243,11 @@ const AgentDetailsPage = () => {
             </div>
           </div>
         </section>
-        <AffiliateLinkModal isOpen={isOpen} toggle={toggleModal} />
+        <AffiliateLinkModal
+          isOpen={isOpen}
+          toggle={toggleModal}
+          item={data?.events?.affiliate_link}
+        />
       </section>
     </MainLayout>
   );
