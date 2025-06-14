@@ -87,7 +87,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                         </Button>
                     ) : (
                         <Button
-                            className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]" onClick={() => handleJoinTribe(tribe?.id)}>
+                            className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]" onClick={() => handleJoinTribe(tribe?.slug)}>
                             <div className="flex gap-1 justify-center">
                                 <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
                             </div>
