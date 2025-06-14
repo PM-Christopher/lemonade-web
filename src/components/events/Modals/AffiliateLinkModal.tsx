@@ -7,9 +7,10 @@ import CopyIcon from "@/images/icons/copyIcon.svg"
 type AffiliateLinkInterface = {
     isOpen: boolean,
     toggle: () => void
+    item: string
 }
 
-const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle}) => {
+const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle, item}) => {
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="bg-white rounded-lg shadow-lg w-full laptop:w-[480px] p-6 h-screen laptop:h-full">
@@ -31,7 +32,7 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle}) 
                     <div className="p-[16px] rounded-[12px] gap-[16px] bg-light-tint mt-[24px] mb-[28px]">
                         <p className="font-semi-normal text-text-grey text-[14px]">Affiliate link</p>
                         <div className="p-[12px] rounded-[12px] gap-[8px] bg-light-tint-3 mt-[8px] flex items-center">
-                            <p className="font-semi-normal text-light-black truncate">https://www.lemonade.com/Event_nameID/ref...</p>
+                            <p className="font-semi-normal text-light-black truncate">{item}</p>
                             <StrikeLine />
                             <CopyIcon />
                         </div>
