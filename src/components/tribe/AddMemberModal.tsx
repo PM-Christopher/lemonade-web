@@ -13,7 +13,7 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 interface AddMemberIF {
     isOpen: boolean;
     toggle: () => void;
-    id: number
+    id: string
 }
 
 const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {

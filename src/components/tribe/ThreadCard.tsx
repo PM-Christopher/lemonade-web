@@ -15,9 +15,17 @@ import PinIcon from "@/images/icons/pinIcon.svg"
 
 import {Thread} from "@/interfaces/TribeInterface";
 import {useAppDispatch} from "@/redux/hook";
-import {likeThread, removeTribeUser, setTribeUser, submitVote} from "@/features/tribes/tribe.slice";
+import {
+    getComments,
+    likeThread,
+    postComment,
+    removeTribeUser,
+    setTribeUser,
+    submitVote
+} from "@/features/tribes/tribe.slice";
 import {useSelector} from "react-redux";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
+import ImageCarousel from "@/components/global/ImageCarousel";
 
 interface ModalPosition {
     top: number;
@@ -41,10 +49,43 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
     const {authToken} = useSelector((state: any) => state.auth)
     const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
     const charLimit = 200; // Set your desired character limit
+    // const { comments } = useSelector((state: any) => state.tribe);
 
     const moreIconRef = useRef<HTMLDivElement | null>(null);
     const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
     const [isModalVisible, setModalVisible] = useState(false);
+
+    const [comment, setComment] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [showCommentForm, setShowCommentForm] = useState(false);
+
+    const handleSubmitComment = async (e: any) => {
+        e.preventDefault();
+        if (!comment.trim()) return;
+
+        try {
+            setSubmitting(true);
+            // Replace this with your Redux dispatch or API call
+            dispatch(postComment({token: authToken, thread_id: thread.id, tribe_id: tribe_id, data: {body: comment}})).then((res) => {
+                if (res.payload.status) {
+                    setComment('');
+                    setShowCommentForm(false);
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Posted comment successfully",
+                            type: "success",
+                        })
+                    );
+                }
+            })
+            // optionally hide form after posting
+        } catch (error) {
+            console.error('Failed to post comment:', error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     const handleMoreIconClick = () => {
         if (moreIconRef.current) {
@@ -146,10 +187,11 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
                 </div>
                 {
                     thread?.media.length > 0 && (
-                        <div>
-                            <Image src={thread?.media[0]} alt="thread_image" width={736} height={540} objectFit="contain"
-                                   className="w-[736px] h-[540px] rounded-[12px]" layout="responsive"/>
-                        </div>
+                        <ImageCarousel images={thread?.media} />
+                        // <div>
+                        //     <Image src={thread?.media[0]} alt="thread_image" width={736} height={540} objectFit="contain"
+                        //            className="w-[736px] h-[540px] rounded-[12px]" layout="responsive"/>
+                        // </div>
                     )
                 }
 
@@ -212,9 +254,39 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
                     }
                 </div>
                 <div
-                    className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center">
+                    className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center cursor-pointer"
+                    onClick={() => setShowCommentForm(true)}
+                >
                     <Image src={chat_image} alt="comment"/>
                 </div>
+            </div>
+            <div>
+                {showCommentForm && (
+                    <form onSubmit={handleSubmitComment} className="flex flex-col gap-2">
+                        <textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Write a comment..."
+                            className="border-[1px] border-grey-90 rounded-[8px] p-2 w-full h-[80px] resize-none focus:outline-none focus:ring-1 focus:ring-light-green"
+                        />
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                type="button"
+                                className="text-[14px] text-black-light px-3 py-1 rounded-[8px] border-[1px] border-grey-90"
+                                onClick={() => setShowCommentForm(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={submitting || !comment.trim()}
+                                className="bg-light-green text-white rounded-[8px] px-4 py-2 font-medium text-[14px] disabled:opacity-60"
+                            >
+                                {submitting ? 'Posting...' : 'Post Comment'}
+                            </button>
+                        </div>
+                    </form>
+                )}
             </div>
             {isModalVisible && modalPosition && (
                 <div

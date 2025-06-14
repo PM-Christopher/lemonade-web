@@ -12,7 +12,7 @@ import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {Thread, TribeThreadInterface} from "@/interfaces/TribeInterface";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import EditIcon from "@/images/icons/edit.svg"
 import {useMediaQuery} from "react-responsive";
@@ -25,15 +25,18 @@ import {
     getPinThreads,
     getThreads,
     getTribe,
-    pinThread,
+    pinThread, verifyTribePayment,
     viewProfile
 } from "@/features/tribes/tribe.slice";
 import ReportThreadModal from "@/components/tribe/ReportThreadModal";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 import AddMemberModal from "@/components/tribe/AddMemberModal";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import useDebounce from "@/hooks/useDebounce";
+import useNxtSearchParams from "@/hooks/useSearchParams";
 
 
-const SingleTribePage = ({params}: {params: {id: number}}) => {
+const SingleTribePage = ({params}: {params: {id:string}}) => {
     const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false)
     const [joinTribeModalOpen, setJoinTribeModalOpen] = useState(false)
     const [shareTribeModalOpen, setShareTribeModalOpen] = useState(false)
@@ -52,6 +55,8 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
 
     const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
     const router = useRouter()
+    const searchParams = useSearchParams();
+    const { setSearchParams, nxtSearchParams } = useNxtSearchParams();
 
     const {authToken} = useSelector((state: any) => state.auth)
     const getHeader = () => {
@@ -61,6 +66,58 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
             },
         };
     }
+
+    const query = nxtSearchParams?.get("search");
+    const [searchValue, setSearchValue] = useState("");
+    const { debouncedValue } = useDebounce(searchValue, 500);
+    useEffect(() => {
+        setSearchParams({ search: debouncedValue });
+    }, [debouncedValue]);
+
+    const [data, setData] = useState<any>(threads);
+
+    useEffect(() => {
+        if (query?.trim() === "") {
+            setData(threads);
+        } else {
+            const q = query?.toLowerCase()?.trim();
+            const filtered = threads.filter((thread: any) => {
+                return !q ||
+                    thread?.topic?.toLowerCase().includes(q) ||
+                    thread?.thoughts?.toLowerCase().includes(q);
+            });
+
+            setData(filtered);
+        }
+    }, [query]);
+
+    const trxref = searchParams.get('trxref');
+    const reference = searchParams.get('reference');
+
+    useEffect(() => {
+        if (trxref) {
+            dispatch(verifyTribePayment({reference: trxref, token: authToken}))
+                .unwrap()
+                .then(() => {
+                    // Remove trxref from URL
+                    const params = new URLSearchParams(searchParams);
+                    params.delete('trxref');
+                    params.delete('reference');
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Joined tribe successfully",
+                            type: "success",
+                        })
+                    );
+                    // Update the URL without reloading
+                    router.replace(`?${params.toString()}`);
+                })
+                .catch((err) => {
+                    console.error('Payment verification failed:', err);
+                });
+        }
+    }, [trxref, dispatch, searchParams, router]);
 
     useEffect(() => {
         if (authToken && params?.id) {
@@ -103,7 +160,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
     }
 
     const sortThreads = (value: any) => {
-        dispatch(filterThreads({id: params.id, token: authToken, data: {filter: value}}))
+        dispatch(filterThreads({id: tribe?.id, token: authToken, data: {filter: value}}))
     }
 
     const toggleThreadId = (id: number) => {
@@ -134,6 +191,8 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
         }
     };
 
+    console.log({data})
+
     return (
         <MainLayout>
             <div className="bg-light_grey pb-10">
@@ -161,6 +220,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                                     type="text"
                                     className="rounded-xl text-[14px] bg-light_grey border-0 w-full focus:outline-none focus:ring-0 focus:border-transparent"
                                     placeholder="Search thread"
+                                    onChange={(e) => setSearchValue(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -209,7 +269,7 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                                         ) : (
                                             <div className={'flex flex-col gap-[24px]'}>
                                                 {
-                                                   threads && threads.length > 0 && threads.map((thread: Thread, index: number) => (
+                                                   data && data.length > 0 ? data.map((thread: Thread, index: number) => (
                                                         <ThreadCard
                                                             tribe_id={tribe?.id}
                                                             thread={thread}
@@ -220,7 +280,11 @@ const SingleTribePage = ({params}: {params: {id: number}}) => {
                                                             toggleThreadId={toggleThreadId}
                                                             toggleDeleteThread={toggleDeleteThreadModal}
                                                         />
-                                                    ))
+                                                    )) : (
+                                                        <>
+                                                            <p>No threads found with - <b>{searchValue}</b></p>
+                                                        </>
+                                                   )
                                                 }
                                             </div>
                                         )

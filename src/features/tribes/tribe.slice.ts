@@ -14,14 +14,15 @@ interface tribeState {
     error: boolean;
     threads: TribeThreadInterface[],
     tribes: TribeInterface[],
-    tribe: TribeThreadInterface | null,
+    tribe: TribeInterface | null,
     thread: TribeThreadInterface | null,
     pinnedThreads: IPinned[],
-    searchResults: []
+    searchResults: [],
+    comments: []
 }
 
 interface JoinTribeParams {
-    id: number;
+    id: string;
     token: string;
 }
 
@@ -48,7 +49,8 @@ const initialState: tribeState = {
     tribe: null,
     thread: null,
     pinnedThreads: [],
-    searchResults: []
+    searchResults: [],
+    comments: []
 };
 
 const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tribe/getTribe", async ({id, token}: JoinTribeParams, { rejectWithValue }) => {
@@ -86,6 +88,25 @@ const joinTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tr
         return rejectWithValue(err.response.data);
     }
 });
+
+const verifyTribePayment = createAsyncThunk("tribe/verifyTribePayment", async ({reference, token}: {reference: string, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/tribes/payment/verify?reference=${reference}`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const createThread = createAsyncThunk<JoinTribeSuccessPayload, CreateThreadParams>("tribe/createThread", async ({id, token, data}: CreateThreadParams, { rejectWithValue }) => {
     const headers = {
@@ -141,7 +162,7 @@ const submitVote = createAsyncThunk("tribe/submitVote", async ({tribe_id, thread
     }
 });
 
-const getThreads = createAsyncThunk("tribe/getThreads", async ({id, token}: {id: number, token: string}, { rejectWithValue }) => {
+const getThreads = createAsyncThunk("tribe/getThreads", async ({id, token}: {id: string, token: string}, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -159,7 +180,7 @@ const getThreads = createAsyncThunk("tribe/getThreads", async ({id, token}: {id:
     }
 });
 
-const filterThreads = createAsyncThunk("tribe/filterThreads", async ({id, token, data}: {id: number, token: string, data: any}, { rejectWithValue }) => {
+const filterThreads = createAsyncThunk("tribe/filterThreads", async ({id, token, data}: {id: string, token: string, data: any}, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -213,7 +234,7 @@ const pinThread = createAsyncThunk("tribe/pinThread", async ({id, token}: {id: n
     }
 });
 
-const getPinThreads = createAsyncThunk("tribe/getPinThreads", async ({id, token}: {id: number, token: string}, { rejectWithValue }) => {
+const getPinThreads = createAsyncThunk("tribe/getPinThreads", async ({id, token}: {id: string, token: string}, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -302,6 +323,41 @@ const addTribeMember = createAsyncThunk("tribe/addTribeMember", async ({data, id
     }
 });
 
+const postComment = createAsyncThunk("tribe/postComment", async ({data, tribe_id, thread_id, token}: {data: any, tribe_id: number, thread_id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/threads/${tribe_id}/${thread_id}/post-comment`, data, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getComments = createAsyncThunk("tribe/getComments", async ({tribe_id, thread_id, token}: {tribe_id: number, thread_id: number, token: string}, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/threads/${tribe_id}/${thread_id}/comments`, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const tribeSlice = createSlice({
     name: "tribe",
@@ -337,7 +393,7 @@ const tribeSlice = createSlice({
             state.loading = false;
             // store tribe state
             // this is the state
-            state.tribe = payload?.data?.tribe
+            // state.tribe = payload?.data?.tribe
         });
         builder.addCase(joinTribe.rejected, (state) => {
             state.loading = false;
@@ -499,9 +555,45 @@ const tribeSlice = createSlice({
         builder.addCase(addTribeMember.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(verifyTribePayment.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(verifyTribePayment.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            if (state.tribe) {
+                state.tribe.has_joined = true;
+            }
+        });
+        builder.addCase(verifyTribePayment.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(postComment.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(postComment.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(postComment.rejected, (state) => {
+            state.loading = false;
+        });
+
+
+
+        builder.addCase(getComments.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getComments.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.comments = payload?.data?.comments;
+        });
+        builder.addCase(getComments.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { setTribeUser, removeTribeUser } = tribeSlice.actions
-export { getTribe, joinTribe, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread, searchTribe, addTribeMember }
+export { getTribe, joinTribe, verifyTribePayment, createThread , likeThread, submitVote, getThreads, filterThreads, viewProfile, pinThread, getPinThreads, reportThread, deleteThread, searchTribe, addTribeMember, postComment, getComments }
 export default tribeSlice.reducer;
