@@ -59,8 +59,7 @@ export default function ForgotPasswordPage() {
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
                         <Link href={"/login"}>
-                            <Image
-                                src={"/images/logo.png"}
+                            <Image src={"/images/logo.png"}
                                 alt="logo"
                                 width={127}
                                 height={56}
