@@ -22,6 +22,7 @@ import {authFailure, authStart, loadStop} from "@/features/authentication/authSl
 import {setIsRouting} from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
+import Link from "next/link";
 
 
 export default function VerifyCodePage() {
@@ -30,6 +31,7 @@ export default function VerifyCodePage() {
     const [cookie, setCookie, removeCookie] = useCookies([
         "token",
         "newToken",
+        "email"
     ]);
     const { user } = useSelector((state: any) => state.auth)
     const [seconds, setSeconds] = useState(60);
@@ -37,7 +39,6 @@ export default function VerifyCodePage() {
 
     const getHeader = () => {
         const token = cookie.newToken;
-        console.log({token})
         return {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -121,10 +122,19 @@ export default function VerifyCodePage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
+                        <Link href={"/login"}>
+                            <Image
+                                src={"/images/logo.png"}
+                                alt="logo"
+                                width={127}
+                                height={56}
+                            />
+                        </Link>
                     </div>
                     <div>
-                        <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        <Link href="/login">
+                            <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        </Link>
                     </div>
                 </div>
                 <div className="min-h-screen flex flex-wrap items-start mt-10 justify-center gap-16">
@@ -132,7 +142,7 @@ export default function VerifyCodePage() {
                         <div>
                             <p className="text-[40px] font-bold leading-[48px] font-ruso">Verification code</p>
                             <p className="text-[18px] font-normal leading-[27px] font-sans">
-                                Enter the 4-digit code sent to tadeniyi@gmail.com <br/> to verify your account
+                                Enter the 4-digit code sent to {cookie.email} <br/> to verify your account
                             </p>
                         </div>
                         <div>

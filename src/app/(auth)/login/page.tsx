@@ -148,12 +148,14 @@ export default function LoginPage() {
       <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
-            <Image
-              src={"/images/logo.png"}
-              alt="logo"
-              width={127}
-              height={56}
-            />
+            <Link href={"/login"}>
+              <Image
+                  src={"/images/logo.png"}
+                  alt="logo"
+                  width={127}
+                  height={56}
+              />
+            </Link>
           </div>
           <div>
             <Link href="/signup">

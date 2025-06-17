@@ -12,7 +12,9 @@ type ChatListInterface = {
 const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, user_id }) => {
     const receiver_id = user_id === chat.sender.id ? chat.receiver.id : chat.sender.id
     const userType = chat.isReceiver ? chat.sender : chat.receiver
+
     return (
+        // <div className={`p-[16px] flex items-center gap-[8px] ${active && "bg-light-green-10"} cursor-pointer`}>
         <div className={`p-[16px] flex items-center gap-[8px] ${active && "bg-light-green-10"} cursor-pointer`} onClick={() => toggleChat(receiver_id, chat.id)}>
             <div>
                 <div

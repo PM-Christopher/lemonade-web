@@ -297,10 +297,14 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
                         minWidth: "150px",
                     }}
                 >
-                    <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => switchUserId(thread?.created_by?.user?.id)}>
-                        <UserIcon className="w-[16.25px] h-[16.25px]"/>
-                        <p className="font-normal text-[16px] text-black-light">View profile</p>
-                    </div>
+                    {
+                        !thread?.owner && (
+                            <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => switchUserId(thread?.created_by?.user?.id)}>
+                                <UserIcon className="w-[16.25px] h-[16.25px]"/>
+                                <p className="font-normal text-[16px] text-black-light">View profile</p>
+                            </div>
+                        )
+                    }
 
                     <div className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer" onClick={() => pinThread(thread?.id)}>
                         <PinIcon className="w-[16.25px] h-[16.25px]"/>

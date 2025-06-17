@@ -54,9 +54,9 @@ const ConnectPage = () => {
     }
 
     const toggleSelectedChat: (receiver_id: number, chat_id: number) => void = (receiver_id: number, chat_id: number) => {
-        setSelectedChatId(chat_id);
-        setChatOpened(!chatOpened)
         dispatch(getChat({receiver_id, token: authToken}))
+        setSelectedChatId(chat_id);
+        setChatOpened(true)
     };
 
     const toggleChatOpened = () => {
@@ -64,8 +64,6 @@ const ConnectPage = () => {
         setSelectedChatId(0)
         dispatch(removeChat())
     }
-
-    console.log({chatData})
 
     usePusher("chat-channel", "message-sent");
     return (
@@ -127,10 +125,11 @@ const ConnectPage = () => {
                                 <div className={`${chatOpened ? "block" : "hidden"}`}>
                                     {
                                         chatOpened ? (
-                                            selectedChatId === chatData.id && (
-                                                <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
-                                                            chat={chatData} toggleOpenedChat={toggleChatOpened}/>
-                                            )
+                                            <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
+                                                        chat={chatData} toggleOpenedChat={toggleChatOpened}/>
+                                            // selectedChatId === chatData.id && (
+                                            //
+                                            // )
                                         ) : (
                                             <EmptyChat/>
                                         )
@@ -164,7 +163,7 @@ const ConnectPage = () => {
                             <div className="overflow-y-auto max-h-screen hide-scrollbar">
                                 {
                                     data?.chats?.map((chat: ChatInterface, index: number) => (
-                                        <ChatListCard user_id={user?.id} chat={chat} active={true}
+                                        <ChatListCard user_id={user?.id} chat={chat} active={chat?.id === selectedChatId}
                                                       toggleChat={toggleSelectedChat} key={index}/>
                                     ))
                                 }
@@ -172,10 +171,11 @@ const ConnectPage = () => {
                         </div>
                         {
                             chatOpened ? (
-                                selectedChatId === chatData?.id && (
-                                    <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
-                                                chat={chatData}/>
-                                )
+                                <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
+                                            chat={chatData} toggleOpenedChat={toggleChatOpened}/>
+                                // selectedChatId === chatData.id && (
+                                //
+                                // )
                             ) : (
                                 <EmptyChat/>
                             )

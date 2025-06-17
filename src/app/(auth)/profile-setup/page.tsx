@@ -10,6 +10,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {useCookies} from "react-cookie";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {useSelector} from "react-redux";
+import Link from "next/link";
 
 
 
@@ -77,7 +78,14 @@ export default function ProfileStepsPage() {
             <section className="bg-white tablet:bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
+                        <Link href={"/login"}>
+                            <Image
+                                src={"/images/logo.png"}
+                                alt="logo"
+                                width={127}
+                                height={56}
+                            />
+                        </Link>
                     </div>
                 </div>
                 <div className="flex flex-col mt-[16px] items-center tablet:items-start justify-center gap-[4px] tablet:gap-16 px-[16px] tablet:px-4 tablet:flex-row">

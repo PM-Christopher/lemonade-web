@@ -19,6 +19,7 @@ import { setIsRouting } from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {useSelector} from "react-redux";
+import Link from "next/link";
 
 
 export default function VerifyPage() {
@@ -119,10 +120,19 @@ export default function VerifyPage() {
             <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
+                        <Link href={"/login"}>
+                            <Image
+                                src={"/images/logo.png"}
+                                alt="logo"
+                                width={127}
+                                height={56}
+                            />
+                        </Link>
                     </div>
                     <div>
-                        <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        <Link href="/login">
+                            <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        </Link>
                     </div>
                 </div>
                 <div className="flex flex-col mt-24 items-center tablet:items-start justify-center gap-16 tablet:px-4 tablet:flex-row">

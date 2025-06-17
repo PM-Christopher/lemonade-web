@@ -16,6 +16,7 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import {useAppDispatch} from "@/redux/hook";
 import {useCookies} from "react-cookie";
 import {useSelector} from "react-redux";
+import Link from "next/link";
 
 
 export default function ResetPasswordPage() {
@@ -62,10 +63,19 @@ export default function ResetPasswordPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
+                        <Link href={"/login"}>
+                            <Image
+                                src={"/images/logo.png"}
+                                alt="logo"
+                                width={127}
+                                height={56}
+                            />
+                        </Link>
                     </div>
                     <div>
-                        <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        <Link href="/login">
+                            <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        </Link>
                     </div>
                 </div>
                 <div className="min-h-screen flex flex-wrap items-start mt-10 justify-center gap-16">

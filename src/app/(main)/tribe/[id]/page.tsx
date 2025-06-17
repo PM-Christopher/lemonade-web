@@ -77,6 +77,12 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
     const [data, setData] = useState<any>(threads);
 
     useEffect(() => {
+        if (threads && threads.length) {
+            setData(threads);
+        }
+    }, [threads]);
+
+    useEffect(() => {
         if (query?.trim() === "") {
             setData(threads);
         } else {
@@ -190,8 +196,6 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
             element.scrollIntoView({ behavior: 'smooth' });
         }
     };
-
-    console.log({data})
 
     return (
         <MainLayout>

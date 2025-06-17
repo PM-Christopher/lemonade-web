@@ -9,6 +9,11 @@ import WebIcon from "@/images/icons/webIcon.svg"
 import ChatIcon from "@/images/icons/chatIcon.svg"
 import {formatString} from "@/lib/helper";
 import {TribeInterface} from "@/interfaces/TribeInterface";
+import {useAppDispatch} from "@/redux/hook";
+import {useSelector} from "react-redux";
+import {sendInvite} from "@/features/connect/connect.slice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import Link from "next/link";
 
 type UserInfoInterface = {
     toggle: () => void,
@@ -18,6 +23,42 @@ type UserInfoInterface = {
 }
 
 const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe}) => {
+    console.log({user})
+    const dispatch = useAppDispatch()
+    const {authToken} = useSelector((state: any) => state.auth)
+
+    const getHeader = () => {
+        return {
+            headers: {
+                Authorization: `Bearer ${authToken}`,
+            },
+        };
+    }
+
+    const sendConnect = ()  => {
+        let data = {message: "I want to connect with you.", invitee_id: user?.id}
+        dispatch(sendInvite({token: authToken, data})).then(res => {
+            if (res.payload.status) {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Connect request sent",
+                        type: "success",
+                    })
+                );
+                toggle()
+            } else {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: res.payload.message,
+                        type: "error",
+                    })
+                );
+            }
+        })
+    }
+
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
@@ -62,13 +103,24 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe
                         }
                         {
                             !tribe?.owner && (
-                                <div className="mt-[16px]">
-                                    <div
-                                        className="w-[343px] h-[48px] p-[14px] px-[48px] flex items-center cursor-pointer border-[1px] border-light-grey-50 justify-center gap-[8px] rounded-[12px]">
-                                        <ChatIcon/>
-                                        <p className="font-semi-normal text-[16px] text-black-light">Open chat</p>
+                                user?.has_connected ? (
+                                    <Link href={"/connect"}>
+                                        <div className="mt-[16px]">
+                                            <div
+                                                className="w-[343px] h-[48px] p-[14px] px-[48px] flex items-center cursor-pointer border-[1px] border-light-grey-50 justify-center gap-[8px] rounded-[12px]">
+                                                <ChatIcon/>
+                                                <p className="font-semi-normal text-[16px] text-black-light">Open chat</p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ) : (
+                                    <div className="mt-[16px]">
+                                        <div
+                                            className="w-[343px] h-[48px] p-[14px] px-[48px] flex items-center cursor-pointer border-[1px] border-light-grey-50 justify-center gap-[8px] rounded-[12px]" onClick={sendConnect}>
+                                            <p className="font-semi-normal text-[16px] text-black-light">Send request</p>
+                                        </div>
                                     </div>
-                                </div>
+                                )
                             )
                         }
                     </div>

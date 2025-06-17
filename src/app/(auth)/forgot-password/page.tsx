@@ -15,23 +15,29 @@ import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {useCookies} from "react-cookie";
+import Link from "next/link";
 
 
 export default function ForgotPasswordPage() {
     const router  = useRouter()
     const [email, setEmail] = useState("")
-    const [cookie, setCookie] = useCookies(["newToken"]);
+    const [cookie, setCookie] = useCookies(["newToken", "email"]);
     const [loading, setLoading] = useState(false)
 
     const onSignup = async () => {
         try {
             setLoading(true)
             const res = await axiosInstance.post("/auth/forgot-password", {email})
-            console.log({res})
             if (res.status === 200) {
                 setLoading(false)
                 toast("Please check your inbox and click on verification link.", {duration: 10000})
                 setCookie("newToken", res?.data?.data.token, {
+                    path: "/",
+                    maxAge: 3600 * 6, // Expires after 6hrs
+                    sameSite: false,
+                    // domain: env === 'development' ? '' : ''
+                });
+                setCookie("email", res?.data?.data.email, {
                     path: "/",
                     maxAge: 3600 * 6, // Expires after 6hrs
                     sameSite: false,
@@ -52,10 +58,19 @@ export default function ForgotPasswordPage() {
             <section className="bg-gradient-light-green">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
-                        <Image src={"/images/logo.png"} alt="logo" width={127} height={56}/>
+                        <Link href={"/login"}>
+                            <Image
+                                src={"/images/logo.png"}
+                                alt="logo"
+                                width={127}
+                                height={56}
+                            />
+                        </Link>
                     </div>
                     <div>
-                        <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        <Link href="/login">
+                            <p className="border-2 rounded-xl font-sans p-[9px] px-[16px] text-bl">Login</p>
+                        </Link>
                     </div>
                 </div>
                 <div className="min-h-screen flex flex-wrap items-start mt-10 justify-center gap-16">
