@@ -25,7 +25,7 @@ interface Comment {
 }
 
 interface CommentsProps {
-    comments: Comment[];
+    comments: any[];
     isVisible: boolean;
     onToggleVisibility: () => void;
     onLikeComment?: (commentId: number) => void;
