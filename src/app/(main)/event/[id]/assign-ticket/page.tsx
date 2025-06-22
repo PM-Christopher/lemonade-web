@@ -11,7 +11,7 @@ import Switch from "react-switch";
 import { useSelector } from "react-redux";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import * as yup from "yup";
-import { useFormik } from "formik";
+import {FieldArray, useFormik} from "formik";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import { buyTicket } from "@/features/events/event.slice";
@@ -60,7 +60,12 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
       fullname: "",
       email: "",
       assign_multiple: false,
-      assigned_tickets: [],
+      assigned_tickets: tickets.map((ticket:any) => ({
+        id: `${ticket.id}`,
+        quantity: ticket.quantity || 0,
+        fullname: "",
+        email: ""
+      })),
     },
     validationSchema: ticketSchema,
     onSubmit: async (values) => {
@@ -185,9 +190,14 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
                   </div>
                 </div>
                 {checked &&
-                  tickets.map((ticket: TicketDetails, index: number) => (
-                    <MultipleTicketCard ticket={ticket} key={index} />
-                  ))}
+                    tickets.map((ticket: TicketDetails, index: number) => (
+                        <MultipleTicketCard
+                            key={ticket.id}
+                            index={index}
+                            ticket={ticket}
+                            formik={formik}
+                        />
+                    ))}
                 <div className="flex justify-between mt-[24px]">
                   <FormikButton
                     title="Pay now"

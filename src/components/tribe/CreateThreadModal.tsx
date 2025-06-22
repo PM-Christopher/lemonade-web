@@ -80,46 +80,68 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files) {
-            const formData = new FormData()
-            Array.from(files).forEach((file, index) => {
-                formData.append(`files[]`, file); // Add each file to the `file[]` key
-            });
-            try {
-                const { data } = await axiosInstance.post("/upload-multiple", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                if(data.status) {
-                    setMediaFiles((prev) => [...prev, ...data.data.images]);
-                    await formik.setFieldValue("media", data.data.images)
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Images uploaded",
-                            type: "success",
-                        })
-                    );
+            const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+
+            const formData = new FormData();
+            const oversizedFiles: string[] = [];
+
+            Array.from(files).forEach((file) => {
+                if (file.size > maxSizeInBytes) {
+                    oversizedFiles.push(file.name);
                 } else {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Error uploading image",
-                            type: "error",
-                        })
-                    );
+                    formData.append("files[]", file);
                 }
-            } catch (err: any) {
+            });
+
+            if (oversizedFiles.length > 0) {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: err?.response?.data?.message || "error",
+                        message: `The following files exceed 2MB: ${oversizedFiles.join(", ")}`,
                         type: "error",
                     })
                 );
             }
+
+            if (formData.has("files[]")) {
+                try {
+                    const { data } = await axiosInstance.post("/upload-multiple", formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
+
+                    if (data.status) {
+                        setMediaFiles((prev) => [...prev, ...data.data.images]);
+                        await formik.setFieldValue("media", data.data.images);
+                        dispatch(
+                            updateToastifyReducer({
+                                show: true,
+                                message: "Images uploaded",
+                                type: "success",
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            updateToastifyReducer({
+                                show: true,
+                                message: "Error uploading image",
+                                type: "error",
+                            })
+                        );
+                    }
+                } catch (err: any) {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: err?.response?.data?.message || "Error",
+                            type: "error",
+                        })
+                    );
+                }
+            }
         }
-    }
+    };
 
     const removeImage = (imageToRemove: string) => {
         setMediaFiles(prevImages => prevImages.filter(image => image !== imageToRemove));

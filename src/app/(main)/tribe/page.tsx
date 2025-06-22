@@ -44,7 +44,7 @@ export default function TribePage() {
   const { authToken } = useSelector((state: any) => state.auth);
   const { searchResults } = useSelector((state: any) => state.tribe);
 
-  const [tribeType, setTribeType] = useState("tln");
+  const [tribeType, setTribeType] = useState("discover");
   const [image, setImage] = useState(null);
   const [monetizedCheck, setMonetizedChecked] = useState(false);
   const [privateCheck, setPrivateCheck] = useState(false);
@@ -252,6 +252,19 @@ export default function TribePage() {
         <div className="flex gap-10">
           <div className="flex flex-col justify-center items-center cursor-pointer">
             <p
+                className={`"font-sans font-semi-normal ${
+                    tribeType === "discover" ? "text-black-light" : "text-text-grey"
+                } text-[14px] leading-[21px]"`}
+                onClick={() => changeTribeType("discover")}
+            >
+              Discover
+            </p>
+            {tribeType === "discover" && (
+                <div className="border h-[0.5px] border-step-color w-20"></div>
+            )}
+          </div>
+          <div className="flex flex-col justify-center items-center cursor-pointer">
+            <p
               className={`"font-sans font-semi-normal ${
                 tribeType === "tln" ? "text-black-light" : "text-text-grey"
               } text-[14px] leading-[21px]"`}
@@ -260,19 +273,6 @@ export default function TribePage() {
               TLN Tribes
             </p>
             {tribeType === "tln" && (
-              <div className="border h-[0.5px] border-step-color w-20"></div>
-            )}
-          </div>
-          <div className="flex flex-col justify-center items-center cursor-pointer">
-            <p
-              className={`"font-sans font-semi-normal ${
-                tribeType === "discover" ? "text-black-light" : "text-text-grey"
-              } text-[14px] leading-[21px]"`}
-              onClick={() => changeTribeType("discover")}
-            >
-              Discover
-            </p>
-            {tribeType === "discover" && (
               <div className="border h-[0.5px] border-step-color w-20"></div>
             )}
           </div>

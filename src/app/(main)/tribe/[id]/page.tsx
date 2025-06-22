@@ -77,6 +77,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
     const [data, setData] = useState<any>(threads);
 
     useEffect(() => {
+        setData([])
         if (threads && threads.length) {
             setData(threads);
         }
@@ -187,7 +188,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
         dispatch(getThreads({id: params.id, token: authToken}))
 
         dispatch(getPinThreads({id: params.id, token: authToken}))
-    }, [dispatch])
+    }, [])
 
     const handleScroll = (id: number) => {
         let itemId = `pinned-${id}`
@@ -267,9 +268,11 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                                     className="flex flex-col gap-2 w-[768px] bg-white overflow-y-auto max-h-screen hide-scrollbar">
                                     {
                                         dataLoading ? (
-                                            <p>
-                                                Loading...
-                                            </p>
+                                            <div className={'p-4'}>
+                                                <p>
+                                                    Loading...
+                                                </p>
+                                            </div>
                                         ) : (
                                             <div className={'flex flex-col gap-[24px]'}>
                                                 {
@@ -285,9 +288,9 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                                                             toggleDeleteThread={toggleDeleteThreadModal}
                                                         />
                                                     )) : (
-                                                        <>
-                                                            <p>No threads found with - <b>{searchValue}</b></p>
-                                                        </>
+                                                        <div className={'p-4'}>
+                                                            <p>No threads found...</p>
+                                                        </div>
                                                    )
                                                 }
                                             </div>

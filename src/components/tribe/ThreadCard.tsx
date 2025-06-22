@@ -3,8 +3,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import MoreIcon from "@/images/icons/moreIcon.svg";
-import chat_image from "@/images/icons/chat.png";
-import HeartIcon from "@/images/icons/heartIcon.svg"
+import ChatIcon from "@/images/icons/chatUnfilledIcon.svg"
+import HeartIcon from "@/images/icons/heartUnfilledIcon.svg"
 import HeartFilledIcon from "@/images/icons/heartFilledIcon.svg"
 import VotedIcon from "@/images/icons/voteChecked.svg"
 import NotVoted from "@/images/icons/notVoted.svg"
@@ -48,6 +48,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
     const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
+    const [hasLiked, setHasLiked] = useState(false);
     const charLimit = 200; // Set your desired character limit
     // const { comments } = useSelector((state: any) => state.tribe);
 
@@ -69,7 +70,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
             dispatch(postComment({token: authToken, thread_id: thread.id, tribe_id: tribe_id, data: {body: comment}})).then((res) => {
                 if (res.payload.status) {
                     setComment('');
-                    setShowCommentForm(false);
+                    // setShowCommentForm(false);
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -104,7 +105,10 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
     };
 
     const postLike = () => {
-        dispatch(likeThread({id: thread?.id, tribe_id: tribe_id, token: authToken}))
+
+        dispatch(likeThread({id: thread?.id, tribe_id: tribe_id, token: authToken})).then((res: any) => {
+
+        })
     }
 
     const pollVote = (option_id: number) => {
@@ -255,37 +259,55 @@ const ThreadCard: React.FC<ThreadCardProps> = ({thread, tribe_id, toggle, switch
                 </div>
                 <div
                     className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center cursor-pointer"
-                    onClick={() => setShowCommentForm(true)}
+                    onClick={() => setShowCommentForm(!showCommentForm)}
                 >
-                    <Image src={chat_image} alt="comment"/>
+                    <ChatIcon className={'font-black'}/>
                 </div>
             </div>
-            <div>
+            <div className={'flex flex-col gap-4'}>
                 {showCommentForm && (
-                    <form onSubmit={handleSubmitComment} className="flex flex-col gap-2">
+                    <div className={'flex flex-col gap-2'}>
+                        <p>Comments - ({thread?.all_comments.length})</p>
+                        {
+                            thread?.all_comments.length > 0 && (
+                                thread?.all_comments.map((comment: any, index) => (
+                                    <div key={index} className={"p-2 flex flex-col gap-2"}>
+                                        <p>{comment.body}</p>
+                                        <div className={'flex gap-2 items-center'}>
+                                            <Image src={comment?.user?.avatar} alt={comment?.user?.fullname} className={'rounded-full'} width={20} height={20} />
+                                            <p className={'text-[10px] text-text-grey'}>{comment?.user?.fullname}</p>
+                                            <p className={'text-[10px] text-text-grey'}>{comment?.created_at}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )
+                        }
+                    {/*  comments go in here  */}
+                        <form onSubmit={handleSubmitComment} className="flex flex-col gap-2 mt-4">
                         <textarea
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             placeholder="Write a comment..."
                             className="border-[1px] border-grey-90 rounded-[8px] p-2 w-full h-[80px] resize-none focus:outline-none focus:ring-1 focus:ring-light-green"
                         />
-                        <div className="flex gap-2 justify-end">
-                            <button
-                                type="button"
-                                className="text-[14px] text-black-light px-3 py-1 rounded-[8px] border-[1px] border-grey-90"
-                                onClick={() => setShowCommentForm(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={submitting || !comment.trim()}
-                                className="bg-light-green text-white rounded-[8px] px-4 py-2 font-medium text-[14px] disabled:opacity-60"
-                            >
-                                {submitting ? 'Posting...' : 'Post Comment'}
-                            </button>
-                        </div>
-                    </form>
+                            <div className="flex gap-2 justify-end">
+                                <button
+                                    type="button"
+                                    className="text-[14px] text-black-light px-3 py-1 rounded-[8px] border-[1px] border-grey-90"
+                                    onClick={() => setShowCommentForm(false)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={submitting || !comment.trim()}
+                                    className="bg-light-green text-white rounded-[8px] px-4 py-2 font-medium text-[14px] disabled:opacity-60"
+                                >
+                                    {submitting ? 'Posting...' : 'Post Comment'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 )}
             </div>
             {isModalVisible && modalPosition && (

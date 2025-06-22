@@ -18,7 +18,8 @@ interface tribeState {
     thread: TribeThreadInterface | null,
     pinnedThreads: IPinned[],
     searchResults: [],
-    comments: []
+    comments: [],
+    commentsLoading: boolean,
 }
 
 interface JoinTribeParams {
@@ -50,7 +51,8 @@ const initialState: tribeState = {
     thread: null,
     pinnedThreads: [],
     searchResults: [],
-    comments: []
+    comments: [],
+    commentsLoading: false,
 };
 
 const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>("tribe/getTribe", async ({id, token}: JoinTribeParams, { rejectWithValue }) => {
@@ -106,7 +108,6 @@ const verifyTribePayment = createAsyncThunk("tribe/verifyTribePayment", async ({
         return rejectWithValue(err.response.data);
     }
 });
-
 
 const createThread = createAsyncThunk<JoinTribeSuccessPayload, CreateThreadParams>("tribe/createThread", async ({id, token, data}: CreateThreadParams, { rejectWithValue }) => {
     const headers = {
@@ -377,6 +378,7 @@ const tribeSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getTribe.pending, (state) => {
             state.loading = true;
+            state.tribe = null
         });
         builder.addCase(getTribe.fulfilled, (state, { payload }) => {
             state.loading = false;
@@ -384,16 +386,17 @@ const tribeSlice = createSlice({
         });
         builder.addCase(getTribe.rejected, (state) => {
             state.loading = false;
+            state.tribe = null
         });
 
         builder.addCase(joinTribe.pending, (state) => {
-            // state.loading = true;
+            state.loading = true;
         });
         builder.addCase(joinTribe.fulfilled, (state, { payload }) => {
             state.loading = false;
-            // store tribe state
-            // this is the state
-            // state.tribe = payload?.data?.tribe
+            if (state.tribe) {
+                state.tribe.has_joined = true;
+            }
         });
         builder.addCase(joinTribe.rejected, (state) => {
             state.loading = false;
@@ -403,7 +406,7 @@ const tribeSlice = createSlice({
             state.loading = true;
         });
         builder.addCase(createThread.fulfilled, (state, { payload }) => {
-            // state.loading = false;
+            state.loading = false;
             state.threads = [...state.threads, payload.data.thread]
         });
         builder.addCase(createThread.rejected, (state) => {
@@ -438,6 +441,7 @@ const tribeSlice = createSlice({
 
         builder.addCase(getThreads.pending, (state) => {
             state.loading = true;
+            state.threads = []
         });
         builder.addCase(getThreads.fulfilled, (state, { payload }) => {
             state.loading = false;
@@ -445,10 +449,12 @@ const tribeSlice = createSlice({
         });
         builder.addCase(getThreads.rejected, (state) => {
             state.loading = false;
+            state.threads = []
         });
 
         builder.addCase(getPinThreads.pending, (state) => {
             state.loading = true;
+            state.pinnedThreads = []
         });
         builder.addCase(getPinThreads.fulfilled, (state, { payload }) => {
             state.loading = false;
@@ -456,6 +462,7 @@ const tribeSlice = createSlice({
         });
         builder.addCase(getPinThreads.rejected, (state) => {
             state.loading = false;
+            state.pinnedThreads = []
         });
 
         builder.addCase(filterThreads.pending, (state) => {
@@ -570,13 +577,22 @@ const tribeSlice = createSlice({
         });
 
         builder.addCase(postComment.pending, (state) => {
-            state.loading = true;
+            state.commentsLoading = true;
         });
         builder.addCase(postComment.fulfilled, (state, { payload }) => {
-            state.loading = false;
+            state.commentsLoading = false;
+            if (state.threads) {
+                const threadIndex = state.threads.findIndex(
+                    (thread) => thread.id === payload.data.comment.thread_id
+                );
+
+                if (threadIndex !== -1) {
+                    state.threads[threadIndex].all_comments.unshift(payload.data.comment);
+                }
+            }
         });
         builder.addCase(postComment.rejected, (state) => {
-            state.loading = false;
+            state.commentsLoading = false;
         });
 
 

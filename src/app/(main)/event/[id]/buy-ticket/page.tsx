@@ -17,6 +17,7 @@ import { addTickets } from "@/features/events/event.slice";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronUp } from "lucide-react";
 import TicketSummary from "@/components/events/Modals/TicketSummary";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 const Page = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
@@ -87,14 +88,30 @@ const Page = ({ params }: { params: { id: number } }) => {
   };
 
   const totalAmount = () => {
-    return 2000 + calculateSubtotal();
+    return calculateSubtotal();
+  };
+
+  const hasValidQuantity = (tickets: any[]): boolean => {
+    return tickets.some(ticket => ticket.quantity > 0);
   };
 
   const proceed = () => {
+    const validTickets = quantities.filter(ticket => ticket.quantity > 0);
+
     const data = {
-      tickets: quantities,
+      tickets: validTickets,
       total: totalAmount(),
     };
+    if (!hasValidQuantity(data.tickets)) {
+      dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Please select at least one ticket quantity before proceeding.",
+            type: "error",
+          })
+      );
+      return;
+    }
     dispatch(addTickets(data));
     router.push(`/event/${params.id}/assign-ticket`);
   };
@@ -128,7 +145,7 @@ const Page = ({ params }: { params: { id: number } }) => {
                       alt="poster"
                       width={120}
                       height={120}
-                      className="rounded-[12px]"
+                      className="rounded-[12px] w-[120px] h-[120px]"
                     />
                   </div>
                   <div className="gap-[4px]">
@@ -269,18 +286,6 @@ const Page = ({ params }: { params: { id: number } }) => {
                       ) : (
                         <>₦ {formatNumberWithCommas(calculateSubtotal())}</>
                       )}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex justify-between mt-[16px]">
-                  <div>
-                    <p className="font-sans font-normal text-text-grey tracking-custom leading-[21px] text-[14px]">
-                      Fee
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-sans font-semibold text-light-black tracking-custom leading-[21px] text-[14px]">
-                      ₦ 2,000
                     </p>
                   </div>
                 </div>

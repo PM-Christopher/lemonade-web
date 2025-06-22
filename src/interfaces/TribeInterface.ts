@@ -103,5 +103,10 @@ export interface TribeThreadInterface {
     tags: string[];
     polls: number;
     created_at: string;
+    videos: string[];
+    pinned: boolean;
+    likes: number;
+    comments: number;
+    all_comments: [];
 }
 

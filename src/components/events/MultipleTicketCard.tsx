@@ -1,14 +1,18 @@
 "use client";
-import React from "react";
+import React, {useEffect} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { TicketDetails } from "@/interfaces/EventInterface";
+import {useFormikContext} from "formik";
 
-interface MultipleTicketProps {
-  ticket: TicketDetails;
-}
+const MultipleTicketCard= ({ ticket, index, formik }: any) => {
+  const namePrefix = `assigned_tickets[${index}]`;
 
-const MultipleTicketCard: React.FC<MultipleTicketProps> = ({ ticket }) => {
+  useEffect(() => {
+    formik.setFieldValue(`assigned_tickets[${index}].id`, ticket.id);
+    formik.setFieldValue(`assigned_tickets[${index}].quantity`, 1);
+  }, []);
+
   return (
     <div className="mt-[24px] bg-grey-20 p-[16px] rounded-[12px] gap-[16px]">
       <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-black-light">
@@ -16,31 +20,43 @@ const MultipleTicketCard: React.FC<MultipleTicketProps> = ({ ticket }) => {
       </p>
       <div className="grid gap-2 mt-[24px]">
         <Label
-          htmlFor="fullname"
-          className="text-text-grey font-sans font-normal text-[14px] leading-[16.8px]"
+            htmlFor={`fullname-${index}`}
+            className="text-text-grey font-sans font-normal text-[14px] leading-[16.8px]"
         >
           Full name
         </Label>
         <Input
-          id="fullname"
-          type="text"
-          placeholder="e.g. Jano doe"
-          className="h-12 rounded-xl bg-light_grey form-font border-0 shadow-none"
+            id={`fullname-${index}`}
+            name={`${namePrefix}.fullname`}
+            type="text"
+            placeholder="e.g. Jano doe"
+            value={formik.values.assigned_tickets[index]?.fullname || ""}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
         />
+        {formik.touched.assigned_tickets?.[index]?.fullname && formik.errors.assigned_tickets?.[index]?.fullname && (
+            <div className="text-red-500 text-sm">{formik.errors.assigned_tickets[index].fullname}</div>
+        )}
       </div>
       <div className="grid gap-2 mt-[16px]">
         <Label
-          htmlFor="email"
-          className="text-text-grey font-sans font-normal text-[14px] leading-[16.8px]"
+            htmlFor={`email-${index}`}
+            className="text-text-grey font-sans font-normal text-[14px] leading-[16.8px]"
         >
           Email address
         </Label>
         <Input
-          id="email"
-          type="email"
-          placeholder="e.g. Janodoe@email.com"
-          className="h-12 rounded-xl bg-light_grey form-font border-0 shadow-none"
+            id={`email-${index}`}
+            name={`${namePrefix}.email`}
+            type="email"
+            placeholder="e.g. Janodoe@email.com"
+            value={formik.values.assigned_tickets[index]?.email || ""}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
         />
+        {formik.touched.assigned_tickets?.[index]?.email && formik.errors.assigned_tickets?.[index]?.email && (
+            <div className="text-red-500 text-sm">{formik.errors.assigned_tickets[index].email}</div>
+        )}
       </div>
       <div className="flex justify-between items-center bg-light_grey rounded-[12px] py-[10px] px-[12px] mt-[16px]">
         <div>

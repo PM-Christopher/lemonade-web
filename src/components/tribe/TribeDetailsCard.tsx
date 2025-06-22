@@ -12,6 +12,9 @@ import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
 import {joinTribe} from "@/features/tribes/tribe.slice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {ColorRing} from "react-loader-spinner";
+import SkeletonLoader from "@/components/global/SkeletonLoader";
 
 type TribeDetailsInterface = {
     toggle: () => void,
@@ -22,13 +25,20 @@ type TribeDetailsInterface = {
 const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share, toggleAddMember}) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
+    const {loading: tribeLoading} = useSelector((state: any) => state.tribe);
 
     const handleJoinTribe = (id: string) => {
         dispatch(joinTribe({token: authToken, id})).then((res:any) => {
-            console.log({res})
             if (res.payload.data.authorization_url) {
                 window.location.href = res.payload.data.authorization_url;
             }
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Joined tribe successfully",
+                    type: "success",
+                })
+            );
         })
     }
 
@@ -38,46 +48,89 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                 <p className="font-sans font-semibold text-[16px] leading-[24px]">Tribe details</p>
             </div>
             <div className="flex justify-center mt-10">
-                <Image src={tribe?.image} alt="tribe" width={96} height={96} className="rounded-[24px] h-[96px]"/>
+                {tribeLoading ? (
+                    <SkeletonLoader className="h-[96px] w-[96px] rounded" />
+                ) : (
+                    <Image src={tribe?.image} alt="tribe" width={96} height={96} className="rounded-[24px] h-[96px]"/>
+                )}
             </div>
             <div className="flex flex-col items-center">
-                <p className="font-sans font-semibold text-[16px] leading-[24px]">
-                    {tribe?.tribe_name}
-                </p>
-                <i className="font-sans font-semi-normal text-[14px] leading-[16.8px] text-text-grey mt-1">
-                    {tribe?.category}
-                </i>
-                <div className="flex gap-1 justify-center items-center mt-1">
-                    <p className="font-sans font-normal text-[12px] text-text-grey">{tribe?.members} members</p>
-                    <DotIcon className="w-[3px] h-[3px]"/>
-                    <p className="font-sans font-normal text-[12px] text-text-grey">{tribe?.threads} threads</p>
-                </div>
-                <div className="flex flex-col items-center w-[311px]">
-                    <p className="text-center font-sans font-normal text-light-black text-[14px] leading-[21px] my-4">
-                        {tribe?.description}
+                {tribeLoading ? (
+                    <SkeletonLoader className="h-[24px] w-[150px] rounded" />
+                ) : (
+                    <p className="font-sans font-semibold text-[16px] leading-[24px]">
+                        {tribe?.tribe_name}
                     </p>
-                    <p className="font-sans font-normal text-[12px] text-text-grey my-2">Created by <span
-                        className="font-semibold">{tribe?.created_by}</span> on {formatLongDate(tribe?.created_at)}</p>
+                )}
+
+                {tribeLoading ? (
+                    <SkeletonLoader className="h-[16px] w-[100px] rounded mt-1" />
+                ) : (
+                    <i className="font-sans font-semi-normal text-[14px] leading-[16.8px] text-text-grey mt-1">
+                        {tribe?.category}
+                    </i>
+                )}
+
+                <div className="flex gap-1 justify-center items-center mt-1">
+                    {tribeLoading ? (
+                        <SkeletonLoader className="h-[12px] w-[80px] rounded" />
+                    ) : (
+                        <p className="font-sans font-normal text-[12px] text-text-grey">{tribe?.members} members</p>
+                    )}
+
+                    {!tribeLoading && <DotIcon className="w-[3px] h-[3px]" />}
+
+                    {tribeLoading ? (
+                        <SkeletonLoader className="h-[12px] w-[60px] rounded" />
+                    ) : (
+                        <p className="font-sans font-normal text-[12px] text-text-grey">{tribe?.threads} threads</p>
+                    )}
                 </div>
+
+                <div className="flex flex-col items-center w-[311px]">
+                    {tribeLoading ? (
+                        <>
+                            <SkeletonLoader className="h-[84px] w-full rounded my-4" />
+                            <SkeletonLoader className="h-[16px] w-[180px] rounded my-2" />
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-center font-sans font-normal text-light-black text-[14px] leading-[21px] my-4">
+                                {tribe?.description}
+                            </p>
+                            <p className="font-sans font-normal text-[12px] text-text-grey my-2">
+                                Created by <span className="font-semibold">{tribe?.created_by}</span> on {formatLongDate(tribe?.created_at)}
+                            </p>
+                        </>
+                    )}
+                </div>
+
                 <div className="flex gap-[16px]">
                     <div className="flex flex-col items-center cursor-pointer" onClick={() => share(tribe)}>
                         <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
-                            <ShareIcon/>
+                            {tribeLoading ? <SkeletonLoader className="h-[24px] w-[24px] rounded-full" /> : <ShareIcon />}
                         </div>
                         <p className="text-black-light text-[14px] font-semi-normal font-sans leading-[21px]">Share</p>
                     </div>
-                    {
-                        tribe?.owner && (
-                            <div className="flex flex-col items-center cursor-pointer" onClick={toggleAddMember}>
-                                <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
-                                    <AddUserIcon/>
-                                </div>
-                                <p className="text-black-light text-[14px] font-semi-normal font-sans leading-[21px]">Add member</p>
-                            </div>
-                        )
-                    }
-                </div>
 
+                    {(!tribeLoading && tribe?.owner) && (
+                        <div className="flex flex-col items-center cursor-pointer" onClick={toggleAddMember}>
+                            <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
+                                <AddUserIcon />
+                            </div>
+                            <p className="text-black-light text-[14px] font-semi-normal font-sans leading-[21px]">Add member</p>
+                        </div>
+                    )}
+
+                    {tribeLoading && (
+                        <div className="flex flex-col items-center">
+                            <div className="flex flex-col items-center bg-light_grey p-[24px] rounded-[16px]">
+                                <SkeletonLoader className="h-[24px] w-[24px] rounded-full" />
+                            </div>
+                            <SkeletonLoader className="h-[21px] w-[80px] rounded mt-2" />
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="flex justify-center my-2">
                 {
@@ -92,9 +145,26 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                         </Button>
                     ) : (
                         <Button
-                            className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]" onClick={() => handleJoinTribe(tribe?.slug)}>
+                            className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]"
+                            onClick={() => handleJoinTribe(tribe?.slug)}
+                            disabled={tribeLoading}
+                        >
                             <div className="flex gap-1 justify-center">
-                                <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
+                                {
+                                    tribeLoading ? (
+                                        <ColorRing
+                                            visible={true}
+                                            height="30"
+                                            width="30"
+                                            ariaLabel="color-ring-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass="color-ring-wrapper"
+                                            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+                                        />
+                                    ) : (
+                                        <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
+                                    )
+                                }
                             </div>
                         </Button>
                     )
