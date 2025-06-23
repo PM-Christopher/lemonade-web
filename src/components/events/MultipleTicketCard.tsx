@@ -10,7 +10,7 @@ const MultipleTicketCard= ({ ticket, index, formik }: any) => {
 
   useEffect(() => {
     formik.setFieldValue(`assigned_tickets[${index}].id`, ticket.id);
-    formik.setFieldValue(`assigned_tickets[${index}].quantity`, 1);
+    formik.setFieldValue(`assigned_tickets[${index}].quantity`, ticket?.quantity);
   }, []);
 
   return (
@@ -70,7 +70,7 @@ const MultipleTicketCard= ({ ticket, index, formik }: any) => {
           </div>
           <div className="p-4 rounded-[8px] bg-mid-grey w-[27.75px] h-[28px] flex items-center justify-center">
             <p className="text-[16px] font-sans font-semi-normal leading-[24px] tracking-custom">
-              1
+              {ticket?.quantity}
             </p>
           </div>
           <div className="p-3 rounded-[8px] bg-light-white w-[24px] h-[24px] flex items-center justify-center">

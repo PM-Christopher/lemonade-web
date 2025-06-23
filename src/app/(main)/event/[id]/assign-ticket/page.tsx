@@ -78,7 +78,7 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
       });
       const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/event`;
       const formValues = { tickets: allTickets, redirect_url, ...values };
-      console.log({ formValues });
+      // console.log({ formValues, tickets });
       dispatch(
         buyTicket({ event_id: params.id, data: formValues, token: authToken })
       ).then((res: any) => {
