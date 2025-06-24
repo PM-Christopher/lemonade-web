@@ -107,6 +107,6 @@ export interface TribeThreadInterface {
     pinned: boolean;
     likes: number;
     comments: number;
-    all_comments: [];
+    all_comments: any[];
 }
 
