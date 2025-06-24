@@ -27,6 +27,8 @@ import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { FlatButton } from "@/components/global/FlatButton";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface SocialMediaHandles {
   instagram: string;
@@ -132,11 +134,17 @@ const CreateEventPage = () => {
           return endDateTime > startDateTime;
         }
       ),
-    affiliate_program: yup.boolean().required("Affiliate program is required"),
-    commission: yup.number().when("affiliate_program", {
-      is: true,
-      then: (schema) => schema.required("Commission rate is required"),
-    }),
+    affiliate_program: yup
+        .boolean()
+        .required("Affiliate program is required"),
+
+    commission: yup
+        .number()
+        .when("affiliate_program", {
+          is: true,
+          then: (schema) => schema.required("Commission rate is required"),
+          otherwise: (schema) => schema.notRequired().nullable(),
+        }),
     socials: yup.array(),
   });
 
@@ -157,7 +165,7 @@ const CreateEventPage = () => {
       end_date: "",
       end_time: "",
       affiliate_program: false,
-      commission: "",
+      commission: null,
     },
     validationSchema: createEventSchema,
     onSubmit: async (values) => {
@@ -264,6 +272,23 @@ const CreateEventPage = () => {
         );
       }
     }
+  };
+
+  const now = new Date()
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 45, 0, 0);
+
+  const timeStringToDate = (timeStr: string) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    const now = new Date();
+    now.setHours(hours);
+    now.setMinutes(minutes);
+    now.setSeconds(0);
+    now.setMilliseconds(0);
+    return now;
   };
 
   return (
@@ -496,35 +521,57 @@ const CreateEventPage = () => {
                   Start date
                 </Label>
                 <div className="flex justify-between gap-3">
-                  <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    {/* <div>
-                      <CalendarIcon />
-                    </div> */}
+
+                  <div className="flex items-center gap-3 bg-light_grey px-[16px] h-[40px] rounded-[12px] w-full">
                     <div>
-                      <input
-                        id="search"
-                        type="date"
-                        className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                        value={formik.values.start_date}
-                        onChange={(e) => {
-                          formik.setFieldValue("start_date", e.target.value);
-                        }}
+                      <CalendarIcon/>
+                    </div>
+                    <div className="w-full">
+                      <DatePicker
+                          selected={formik.values.start_date ? new Date(formik.values.start_date) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              // Update start date
+                              formik.setFieldValue("start_date", date.toISOString().split("T")[0]);
+                            }
+                          }}
+                          minDate={now}
+                          showTimeSelect={false}
+                          dateFormat="yyyy-MM-dd"
+                          className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px]"
+                          placeholderText="From"
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    {/* <div>
-                      <ClockIcon />
-                    </div> */}
+
+                  <div className="flex items-center gap-3 bg-light_grey px-[16px] h-[40px] rounded-[12px] w-full">
                     <div>
-                      <input
-                        id="search"
-                        type="time"
-                        className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                        value={formik.values.start_time}
-                        onChange={(e) => {
-                          formik.setFieldValue("start_time", e.target.value);
-                        }}
+                      <ClockIcon/>
+                    </div>
+                    <div className="w-full">
+                      <DatePicker
+                          selected={formik.values.start_time ? timeStringToDate(formik.values.start_time) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              // Update start date
+                              let formated_time = date.toTimeString().split(" ")[0].slice(0, 5)
+                              formik.setFieldValue("start_time", formated_time);
+                            }
+                          }}
+                          showTimeSelect={true}
+                          showTimeSelectOnly={true}
+                          timeCaption={'Start Time'}
+                          timeIntervals={15}
+                          dateFormat="h:mm aa"
+                          className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px]"
+                          placeholderText="Start Time"
+                          minTime={
+                            formik.values.start_date &&
+                            new Date(formik.values.start_date).toDateString() === now.toDateString()
+                                ? now
+                                : startOfDay
+                          }
+                          maxTime={endOfDay}
                       />
                     </div>
                   </div>
@@ -538,37 +585,63 @@ const CreateEventPage = () => {
                   End date
                 </Label>
                 <div className="flex justify-between gap-3">
-                  <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    {/* <div>
-                      <CalendarIcon />
-                    </div> */}
-                    <div>
-                      <input
-                        id="search"
-                        type="date"
-                        className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                        value={formik.values.end_date}
-                        onChange={(e) => {
-                          formik.setFieldValue("end_date", e.target.value);
+                  <div className="flex items-center gap-3 bg-light_grey px-[16px] h-[40px] rounded-[12px] w-full">
+                    <CalendarIcon />
+                    <DatePicker
+                        selected={formik.values.end_date ? new Date(formik.values.end_date) : null}
+                        onChange={(date) => {
+                          if (date) {
+                            formik.setFieldValue("end_date", date.toISOString().split("T")[0]);
+                          }
                         }}
-                      />
-                    </div>
+                        minDate={
+                          formik.values.start_date ? new Date(formik.values.start_date) : now
+                        }
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="End Date"
+                        className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px]"
+                    />
                   </div>
-                  <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full">
-                    {/* <div>
-                      <ClockIcon />
-                    </div> */}
-                    <div>
-                      <input
-                        id="search"
-                        type="time"
-                        className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                        value={formik.values.end_time}
-                        onChange={(e) => {
-                          formik.setFieldValue("end_time", e.target.value);
+
+                  <div className="flex items-center gap-3 bg-light_grey px-[16px] h-[40px] rounded-[12px] w-full">
+                    <ClockIcon />
+                    <DatePicker
+                        selected={formik.values.end_time ? timeStringToDate(formik.values.end_time) : null}
+                        onChange={(date) => {
+                          if (date) {
+                            formik.setFieldValue("end_time", date.toTimeString().split(" ")[0].slice(0, 5));
+                          }
                         }}
-                      />
-                    </div>
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="End Time"
+                        dateFormat="h:mm aa"
+                        placeholderText="End Time"
+                        minTime={(() => {
+                          const startDate = formik.values.start_date
+                              ? new Date(formik.values.start_date)
+                              : null;
+                          const endDate = formik.values.end_date
+                              ? new Date(formik.values.end_date)
+                              : null;
+                          const startTime = formik.values.start_time
+                              ? new Date(formik.values.start_time)
+                              : null;
+
+                          if (
+                              startDate &&
+                              endDate &&
+                              startDate.toDateString() === endDate.toDateString() &&
+                              startTime
+                          ) {
+                            return startTime;
+                          }
+                          return new Date(new Date().setHours(0, 0, 0, 0)); // <-- fixed: wrap in new Date()
+                        })()}
+                        maxTime={new Date(new Date().setHours(23, 45, 0, 0))}
+                        className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px]"
+                    />
                   </div>
                 </div>
               </div>
@@ -615,7 +688,7 @@ const CreateEventPage = () => {
                     type="number"
                     placeholder=""
                     className="h-12 rounded-xl bg-light_grey form-font border-0"
-                    value={formik.values.commission}
+                    value={formik.values.commission ?? ""}
                     onChange={(e) => {
                       formik.setFieldValue("commission", e.target.value);
                     }}
@@ -713,7 +786,7 @@ const CreateEventPage = () => {
               </div>
               <FlatButton
                 loading={formik.isSubmitting}
-                error={!formik.isValid}
+                error={formik.isValid}
                 onClick={() => {
                   submitFunc();
                 }}

@@ -10,16 +10,29 @@ import BankAccountModal from "@/components/events/Modals/BankAccountModal";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import { useFormik, FieldArray } from "formik";
-import { addEvent, createTickets } from "@/features/events/event.slice";
+import {addEvent, createEvent, createTickets, resetEventState} from "@/features/events/event.slice";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {useSelector} from "react-redux";
+import {useRouter} from "next/navigation";
 
 const AddTicketPage = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [toggleModal, setToggleModal] = useState(false);
   const activateModal = () => {
     setToggleModal(!toggleModal);
+  };
+  const { authToken } = useSelector((state: any) => state.auth);
+  const { event } = useSelector((state: any) => state.event);
+  const getHeader = () => {
+    return {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    };
   };
 
   const addTicketSchema = yup.object({
@@ -99,6 +112,34 @@ const AddTicketPage = () => {
     const updatedTickets = formik.values.tickets.filter((_, i) => i !== index);
     formik.setValues({ tickets: updatedTickets });
   };
+
+  const saveAsDraft = () => {
+    const data = {
+      event: {...event, status: "draft"},
+      tickets: formik.values.tickets
+    };
+    dispatch(createEvent({ token: authToken, data })).then((res) => {
+      if (res.payload.status) {
+        dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Event saved as draft",
+              type: "success",
+            })
+        );
+        dispatch(resetEventState());
+        router.push("/event");
+      } else {
+        dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Error creating event",
+              type: "error",
+            })
+        );
+      }
+    });
+  }
 
   return (
     <MainLayout>
@@ -243,18 +284,22 @@ const AddTicketPage = () => {
                         <option value="limited">Limited stock</option>
                         <option value="unlimited">Unlimited stock</option>
                       </select>
-                      <Input
-                        type="text"
-                        placeholder=""
-                        className="h-12 rounded-xl bg-light_grey form-font border-0 w-full"
-                        value={formik.values.tickets[index].ticket_stock}
-                        onChange={formik.handleChange}
-                        name={`tickets[${index}].ticket_stock`}
-                        readOnly={
-                          formik.values.tickets[index].stock_type ===
-                          "unlimited"
-                        }
-                      />
+                      {
+                          formik.values.tickets[index].stock_type !== "unlimited" && (
+                              <Input
+                                  type="text"
+                                  placeholder=""
+                                  className="h-12 rounded-xl bg-light_grey form-font border-0 w-full"
+                                  value={formik.values.tickets[index].ticket_stock}
+                                  onChange={formik.handleChange}
+                                  name={`tickets[${index}].ticket_stock`}
+                                  readOnly={
+                                      formik.values.tickets[index].stock_type ===
+                                      "unlimited"
+                                  }
+                              />
+                          )
+                      }
                     </div>
                   </div>
 
@@ -273,6 +318,7 @@ const AddTicketPage = () => {
                       className="h-12 rounded-xl bg-light_grey form-font border-0 w-full"
                       value={formik.values.tickets[index].purchase_limit}
                       onChange={formik.handleChange}
+                      min={0}
                     />
                     {/* <select
                       value={formik.values.tickets[index].purchase_limit}
@@ -320,6 +366,7 @@ const AddTicketPage = () => {
                 <Button
                   className="rounded-[12px] h-[48px] p-[14px] px-[48px] bg-light-grey-50 mt-[24px] border-[1px] border-light-grey-50 shadow-none w-full"
                   type="button"
+                  onClick={saveAsDraft}
                 >
                   <div className="flex gap-1 items-center">
                     <p className="font-sans font-semi-normal text-[16px] leading-[19.2px] text-text-grey">
