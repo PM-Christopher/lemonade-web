@@ -74,29 +74,32 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                         </div>
                     </div>
 
-                    {
-                        option === "upcoming" ? (
-                            data?.upcoming.length > 0 ? (
-                                data?.upcoming.map((event: MyTicketInterface, index: number) => (
-                                    <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID}/>
-                                ))
+                    <div
+                        className="flex flex-col w-full gap-[12px] overflow-y-auto max-h-screen hide-scrollbar">
+                        {
+                            option === "upcoming" ? (
+                                data?.upcoming.length > 0 ? (
+                                    data?.upcoming.map((event: MyTicketInterface, index: number) => (
+                                        <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID}/>
+                                    ))
+                                ) : (
+                                    <div className="mt-[10px]">
+                                        <p className="font-semiBold">No event listed</p>
+                                    </div>
+                                )
                             ) : (
-                                <div className="mt-[10px]">
-                                    <p className="font-semiBold">No event listed</p>
-                                </div>
+                                data?.past.length > 0 ? (
+                                    data?.past.map((event: MyTicketInterface, index: number) => (
+                                        <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID} />
+                                    ))
+                                ) : (
+                                    <div className="mt-[10px]">
+                                        <p className="font-semiBold">No event listed</p>
+                                    </div>
+                                )
                             )
-                        ) : (
-                            data?.past.length > 0 ? (
-                                data?.past.map((event: MyTicketInterface, index: number) => (
-                                    <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID} />
-                                ))
-                            ) : (
-                                <div className="mt-[10px]">
-                                    <p className="font-semiBold">No event listed</p>
-                                </div>
-                            )
-                        )
-                    }
+                        }
+                    </div>
                 </div>
             </div>
             {

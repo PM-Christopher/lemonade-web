@@ -26,6 +26,7 @@ export const usePusher = (channelName: string, eventName: string) => {
         const channel = pusher.subscribe(channelName);
 
         const eventHandler = (receivedData: any) => {
+            console.log({receivedData})
             setData(receivedData);
             if(channelName === "chat-channel") {
                 dispatch(addToMessages({message: receivedData.message, user}))

@@ -6,8 +6,8 @@ import {formatDate, formatTime} from "@/lib/dateTimeFormatter";
 const MyEventModal = ({toggle, isOpen, ticket, loading}: {toggle: () => void, isOpen: boolean, ticket: any, loading: boolean}) => {
     return (
         <div
-            className={`fixed inset-0 bg-white laptop:bg-gray-800  bg-opacity-100 laptop:bg-opacity-50 items-start laptop:items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-light_grey laptop:bg-white rounded-lg shadow-none laptop:shadow-lg w-[480px] p-0 laptop:p-6 min-h-screen">
+            className={`fixed inset-0 bg-white laptop:bg-gray-800  bg-opacity-100 laptop:bg-opacity-50 py-[20px] items-start laptop:items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
+            <div className="bg-light_grey laptop:bg-white rounded-lg shadow-none laptop:shadow-lg w-[480px] p-0 laptop:p-6 h-full">
                 <div className="flex justify-between items-center mt-10 p-6 laptop:p-0 bg-white laptop:bg-none">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggle}>

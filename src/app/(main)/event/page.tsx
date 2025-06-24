@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import SideMenu from "@/components/events/SideMenu";
 import EventsSectionView from "@/components/events/views/Events";
@@ -15,23 +15,67 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { searchEvent } from "@/features/events/event.slice";
+import {useRouter, useSearchParams} from "next/navigation";
+import {verifyTribePayment} from "@/features/tribes/tribe.slice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {verifyTransaction} from "@/features/transaction/transaction.slice";
+import VerifyPaymentModal from "@/components/events/Modals/VerifyPaymentModal";
 
 const EventPage: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOption, setMenuOption] = useState("events");
   const [togglePaymentModel, setTogglePaymentModel] = useState(false);
+  const [toggleVPaymentModel, setToggleVPaymentModel] = useState(false);
   const [toggleFilterEvent, setToggleFilterEvent] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useAppDispatch();
   const { searchResults } = useSelector((state: RootState) => state.event);
+  const { authToken } = useSelector((state: any) => state.auth);
+  const getHeader = () => {
+    return {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    };
+  };
+
+  const router = useRouter()
+  const searchParams = useSearchParams();
+  const trxref = searchParams.get('trxref');
+  const {transaction_data, loading: transaction_loading} = useSelector((state: RootState) => state.transaction);
+
+  useEffect(() => {
+    if (trxref) {
+      dispatch(verifyTransaction({data: {trx_ref: trxref}, token: authToken}))
+          .unwrap()
+          .then((res) => {
+            // Remove trxref from URL
+            const params = new URLSearchParams(searchParams);
+            params.delete('trxref');
+            params.delete('reference');
+            dispatch(
+                updateToastifyReducer({
+                  show: true,
+                  message: "Joined tribe successfully",
+                  type: "success",
+                })
+            );
+            setToggleVPaymentModel(true)
+            // Update the URL without reloading
+            router.replace(`?${params.toString()}`);
+          })
+          .catch((err) => {
+            console.error('Payment verification failed:', err);
+          });
+    }
+  }, [trxref, dispatch, searchParams, router]);
+
 
   const handleEventSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
     dispatch(searchEvent({ data: { search: value } }));
   };
-
-  console.log({ searchResults });
 
   const activatePaymentModal = () => {
     setTogglePaymentModel(!togglePaymentModel);
@@ -75,12 +119,24 @@ const EventPage: React.FC = () => {
             toggleMenu={toggleMenu}
             searchTerm={searchTerm}
             handleEventSearch={handleEventSearch}
+            filterEvent={activateFilterEvent}
           />
         );
       case "organizer":
         return <OrganizerSubMenu toggle={activatePaymentModal} />;
     }
   };
+
+  const toggleVerifyPayment = () => {
+    setToggleVPaymentModel(!toggleVPaymentModel)
+  }
+
+  const toggleMoreTickets = () => {
+    toggleMenu()
+    toggleVerifyPayment()
+    // setToggleVPaymentModel(false)
+  }
+
 
   return (
     <MainLayout>
@@ -169,6 +225,7 @@ const EventPage: React.FC = () => {
         toggle={activateFilterEvent}
         isOpen={toggleFilterEvent}
       />
+      <VerifyPaymentModal toggle={toggleVerifyPayment} isOpen={toggleVPaymentModel} event={transaction_data} toggleMore={toggleMoreTickets} />
     </MainLayout>
   );
 };

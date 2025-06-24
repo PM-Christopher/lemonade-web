@@ -6,11 +6,12 @@ import TicketIcon from "@/images/icons/tickets.svg";
 
 type EventSubMenuInterface = {
     toggleMenu: () => void,
+    filterEvent: () => void,
     searchTerm: string,
     handleEventSearch: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-const EventSubMenu: React.FC<EventSubMenuInterface> = ({toggleMenu, searchTerm, handleEventSearch}) => {
+const EventSubMenu: React.FC<EventSubMenuInterface> = ({toggleMenu, searchTerm, handleEventSearch, filterEvent}) => {
 
 
     return (
@@ -30,7 +31,7 @@ const EventSubMenu: React.FC<EventSubMenuInterface> = ({toggleMenu, searchTerm, 
                     />
                 </div>
             </div>
-            <FilterIcon className="w-[19.25px] h-[17.5px]"/>
+            <FilterIcon className="w-[19.25px] h-[17.5px] cursor-pointer" onClick={filterEvent}/>
             <div
                 className="border-[1px] p-[8px] px-[14px] gap-2 items-center border-light-grey-50 rounded-[12px] cursor-pointer hidden laptop:flex"
                 onClick={toggleMenu}>

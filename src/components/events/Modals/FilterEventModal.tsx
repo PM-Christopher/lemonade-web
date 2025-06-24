@@ -18,7 +18,7 @@ type FilterEventInterface = {
 const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
     const {authToken} = useSelector((state: any) => state.auth)
     const [clickedCategory , setClickedCategory] = useState("")
-    const [timeOptions, setTimeOption] = useState(['Today', 'This week', 'Next Weekend'])
+    const [timeOptions, setTimeOption] = useState(['Today', 'This week', 'This Month'])
     const [timeType , setTimeType] = useState("")
 
     const [from, setFrom] = useState("");
@@ -176,10 +176,22 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
                                 <SelectContent className="form-font">
                                     <SelectItem value="all">All Locations</SelectItem>
                                     <SelectItem value="online">Online</SelectItem>
-                                    <SelectItem value="oldest">Oldest</SelectItem>
+                                    <SelectItem value="oldest">Physical</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
+                    </div>
+                    <div className="mt-[40px] flex gap-[4px]">
+                        <button
+                            className="w-full px-[14px] p-[10px] rounded-[12px] border-[1px] border-light-grey-50"
+                        >
+                            <p className="font-sans font-semi-normal text-[16px] text-black-light">Reset filter</p>
+                        </button>
+                        <button
+                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
+                        >
+                            <p className="font-sans font-semi-normal text-[16px] text-white">Apply filter</p>
+                        </button>
                     </div>
                 </div>
             </div>

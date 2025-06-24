@@ -77,8 +77,26 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
         });
       });
       const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/event`;
-      const formValues = { tickets: allTickets, redirect_url, ...values };
-      // console.log({ formValues, tickets });
+      // const formValues = { tickets: allTickets, redirect_url, ...values };
+      let formValues;
+      if (values.assign_multiple) {
+        formValues = {
+          assigned_tickets: values.assigned_tickets,
+          redirect_url,
+          assign_multiple: true,
+          fullname: values.fullname,
+          email: values.email,
+        };
+      } else {
+        formValues = {
+          tickets: allTickets,
+          redirect_url,
+          assign_multiple: false,
+          fullname: values.fullname,
+          email: values.email,
+        };
+      }
+      console.log({formValues})
       dispatch(
         buyTicket({ event_id: params.id, data: formValues, token: authToken })
       ).then((res: any) => {

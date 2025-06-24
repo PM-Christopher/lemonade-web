@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useEffect} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -17,9 +17,13 @@ import { useRequest } from "@/hooks/useRequest";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
+import {usePusher} from "@/hooks/usePusher";
+import {verifyTribePayment} from "@/features/tribes/tribe.slice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import useNxtSearchParams from "@/hooks/useSearchParams";
 
 const EventDetailsPage = ({ params }: { params: { id: number } }) => {
-  const { authToken } = useSelector((state: any) => state.auth);
+  const { authToken, user } = useSelector((state: any) => state.auth);
   const getHeader = () => {
     return {
       headers: {
@@ -35,6 +39,7 @@ const EventDetailsPage = ({ params }: { params: { id: number } }) => {
     true,
     getHeader()
   );
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
