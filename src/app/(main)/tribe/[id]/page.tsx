@@ -35,6 +35,7 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import useDebounce from "@/hooks/useDebounce";
 import useNxtSearchParams from "@/hooks/useSearchParams";
 import PadlockIcon from "@/images/icons/padlockIconFilled.svg"
+import JoinedTribeModal from "@/components/tribe/JoinedTribeModal";
 
 
 const SingleTribePage = ({params}: {params: {id:string}}) => {
@@ -45,6 +46,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
     const [reportThreadModal, setReportThreadModal] = useState(false)
     const [deleteThreadModal, setDeleteThreadModal] = useState(false)
     const [addUserModal, setAddUserModal] = useState(false)
+    const [joinedTribeModal, setJoinedTribeModal] = useState(false)
 
     const [userId, setUserId] = useState<number|null>(null);
     const [threadId, setThreadId] = useState<number|null>(null);
@@ -118,6 +120,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                             type: "success",
                         })
                     );
+                    setJoinedTribeModal(true)
                     // Update the URL without reloading
                     router.replace(`?${params.toString()}`);
                 })
@@ -198,6 +201,10 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
             element.scrollIntoView({ behavior: 'smooth' });
         }
     };
+
+    const toggleJoinedTribeModal = () => {
+        setJoinedTribeModal(!joinedTribeModal)
+    }
 
     return (
         <MainLayout>
@@ -331,6 +338,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                     <CreateThreadModal tribe_id={tribe?.id} toggle={activateCreateThreadModal}
                                        isOpen={createThreadModalOpen}/>
                     <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen} tribe={tribe}/>
+                    <JoinedTribeModal toggle={toggleJoinedTribeModal} isOpen={joinedTribeModal} tribe={tribe} />
                     <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={tribe}/>
                     {
                         user && (
