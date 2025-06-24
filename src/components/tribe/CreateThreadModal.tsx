@@ -141,6 +141,10 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 }
             }
         }
+        // ✅ Reset file input value so the same file can be selected again
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const removeImage = (imageToRemove: string) => {
@@ -260,6 +264,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
             addDefaultOption();
         }
     }, [pollOptions]);
+
 
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>

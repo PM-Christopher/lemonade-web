@@ -195,9 +195,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
     // }
     setShowComments(!showComments);
   };
-
-  console.log("ishe", thread);
-
   return (
     <div
       className="p-4 py-4 w-full h-full grid gap-[50px]"
