@@ -129,6 +129,13 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
     ).padStart(2, "0")}`;
   };
 
+  const expandedTickets = tickets.flatMap((ticket: any) =>
+      Array.from({ length: ticket.quantity }, () => ({
+        ...ticket,
+        quantity: 1 // optional: reset quantity to 1 since each is now a unit
+      }))
+  );
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
@@ -208,7 +215,7 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
                   </div>
                 </div>
                 {checked &&
-                    tickets.map((ticket: TicketDetails, index: number) => (
+                    expandedTickets.map((ticket: TicketDetails, index: number) => (
                         <MultipleTicketCard
                             key={ticket.id}
                             index={index}
