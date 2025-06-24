@@ -48,8 +48,6 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
             setTimeType(selTimeType)
         }
     }
-
-    console.log({data})
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>

@@ -11,6 +11,7 @@ interface tribeState {
     event: null,
     newTickets: [],
     searchResults: [],
+    payment_setting: any
 }
 
 const initialState: tribeState = {
@@ -21,6 +22,7 @@ const initialState: tribeState = {
     event: null,
     newTickets: [],
     searchResults: [],
+    payment_setting: {},
 };
 
 const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, token, data}: {event_id: number, token: string, data: any}, { rejectWithValue }) => {
@@ -112,6 +114,41 @@ const searchEvent = createAsyncThunk("event/searchEvent", async ({ data}: { data
     }
 });
 
+const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async ({ token }: { token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.get(`/events/get-payment-setting`, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", async ({ token, data }: { token: string, data: any }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.patch(`/events/update-payment-setting`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const eventSlice = createSlice({
     name: "event",
@@ -185,9 +222,31 @@ const eventSlice = createSlice({
         builder.addCase(searchEvent.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(getPaymentSetting.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getPaymentSetting.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.payment_setting = payload?.data?.payment_setting;
+        });
+        builder.addCase(getPaymentSetting.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(updatePaymentSetting.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(updatePaymentSetting.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.payment_setting = payload?.data?.payment_setting;
+        });
+        builder.addCase(updatePaymentSetting.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting }
 export default eventSlice.reducer;

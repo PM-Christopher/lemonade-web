@@ -4,7 +4,6 @@ import Image from "next/image";
 import {formatDate, formatTime} from "@/lib/dateTimeFormatter";
 
 const MyEventModal = ({toggle, isOpen, ticket, loading}: {toggle: () => void, isOpen: boolean, ticket: any, loading: boolean}) => {
-    console.log({ticket})
     return (
         <div
             className={`fixed inset-0 bg-white laptop:bg-gray-800  bg-opacity-100 laptop:bg-opacity-50 py-[20px] items-start laptop:items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
