@@ -311,7 +311,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                             </div>
                             {
                                 tribe && !tribe?.has_joined && (
-                                    <div className="fixed bottom-0 left-0 w-[910px] h-[130px] bg-white/50 backdrop-blur-md flex items-center justify-center z-50 flex-col gap-[12px]">
+                                    <div className="fixed bottom-0 left-0 w-full h-[130px] bg-white/50 backdrop-blur-md flex items-center justify-center z-50 flex-col gap-[12px]">
                                         <div className={'flex gap-[2px] items-center'}>
                                             <PadlockIcon />
                                             <p>Paid Tribe</p>
