@@ -749,11 +749,10 @@ const tribeSlice = createSlice({
           (thread) => thread.id === payload.data.comment.thread_id
         );
 
-        if (threadIndex !== -1) {
-          (state.threads[threadIndex].all_comments as any[]).unshift(
-            payload.data.comment
-          );
-        }
+        state.threads[threadIndex].all_comments = [
+          payload.data.comment,
+          ...state.threads[threadIndex].all_comments,
+        ];
       }
     });
     builder.addCase(postComment.rejected, (state) => {

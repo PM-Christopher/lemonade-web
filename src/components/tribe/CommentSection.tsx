@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import HeartIcon from "@/images/icons/heartIcon.svg";
 import HeartFilledIcon from "@/images/icons/heartFilledIcon.svg";
+import moment from "moment";
 
 import { useAppDispatch } from "@/redux/hook";
 
@@ -41,6 +42,17 @@ const CommentsSection: React.FC<CommentsProps> = ({
 }) => {
     const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
+    // This state forces re-render every minute
+    const [, setTick] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTick((tick) => tick + 1);
+        }, 60000); // 60,000 ms = 1 minute
+
+        return () => clearInterval(interval);
+    }, []);
+
     const toggleReplies = (commentId: number) => {
         const newExpanded = new Set(expandedReplies);
         if (newExpanded.has(commentId)) {
@@ -52,15 +64,14 @@ const CommentsSection: React.FC<CommentsProps> = ({
     };
 
     const formatTimeAgo = (dateString: string) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-        
-        if (diffInHours < 1) return 'Just now';
-        if (diffInHours < 24) return `${diffInHours}h ago`;
-        const diffInDays = Math.floor(diffInHours / 24);
-        if (diffInDays < 7) return `${diffInDays}d ago`;
-        return date.toLocaleDateString();
+        const date = moment(dateString);
+        const now = moment();
+
+        const diffInMinutes = now.diff(date, 'minutes');
+
+        if (diffInMinutes < 1) return 'Just now';
+
+        return date.fromNow(); // e.g. "2 hours ago", "3 days ago"
     };
 
     const CommentItem: React.FC<{ comment: Comment; isReply?: boolean }> = ({ comment, isReply = false }) => (
@@ -89,7 +100,7 @@ const CommentsSection: React.FC<CommentsProps> = ({
                         )}
                         <DotIcon className="w-1 h-1 text-gray-400" />
                         <span className="text-xs text-gray-500">
-                            {comment.created_at}
+                            {formatTimeAgo(comment.created_at)}
                         </span>
                         {comment.owner && (
                             <>
