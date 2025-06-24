@@ -18,17 +18,19 @@ import SkeletonLoader from "@/components/global/SkeletonLoader";
 
 type TribeDetailsInterface = {
     toggle: () => void,
+    toggleJoin: () => void,
     tribe: TribeInterface,
     share: (tribe: TribeInterface) => void
     toggleAddMember: () => void,
 }
-const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share, toggleAddMember}) => {
+const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share, toggleAddMember, toggleJoin}) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
     const {loading: tribeLoading} = useSelector((state: any) => state.tribe);
 
     const handleJoinTribe = (id: string) => {
-        dispatch(joinTribe({token: authToken, id})).then((res:any) => {
+        const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${id}`;
+        dispatch(joinTribe({token: authToken, id, data: {redirect_url}})).then((res:any) => {
             if (res.payload.data.authorization_url) {
                 window.location.href = res.payload.data.authorization_url;
             }
@@ -146,25 +148,25 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                     ) : (
                         <Button
                             className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]"
-                            onClick={() => handleJoinTribe(tribe?.slug)}
-                            disabled={tribeLoading}
+                            onClick={toggleJoin}
                         >
                             <div className="flex gap-1 justify-center">
-                                {
-                                    tribeLoading ? (
-                                        <ColorRing
-                                            visible={true}
-                                            height="30"
-                                            width="30"
-                                            ariaLabel="color-ring-loading"
-                                            wrapperStyle={{}}
-                                            wrapperClass="color-ring-wrapper"
-                                            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                                        />
-                                    ) : (
-                                        <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
-                                    )
-                                }
+                                <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
+                                {/*{*/}
+                                {/*    tribeLoading ? (*/}
+                                {/*        <ColorRing*/}
+                                {/*            visible={true}*/}
+                                {/*            height="30"*/}
+                                {/*            width="30"*/}
+                                {/*            ariaLabel="color-ring-loading"*/}
+                                {/*            wrapperStyle={{}}*/}
+                                {/*            wrapperClass="color-ring-wrapper"*/}
+                                {/*            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}*/}
+                                {/*        />*/}
+                                {/*    ) : (*/}
+                                {/*        <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>*/}
+                                {/*    )*/}
+                                {/*}*/}
                             </div>
                         </Button>
                     )

@@ -34,6 +34,7 @@ import AddMemberModal from "@/components/tribe/AddMemberModal";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import useDebounce from "@/hooks/useDebounce";
 import useNxtSearchParams from "@/hooks/useSearchParams";
+import PadlockIcon from "@/images/icons/padlockIconFilled.svg"
 
 
 const SingleTribePage = ({params}: {params: {id:string}}) => {
@@ -265,7 +266,10 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                             </div>
                             <div className="flex gap-2">
                                 <div
-                                    className="flex flex-col gap-2 w-[768px] bg-white overflow-y-auto max-h-screen hide-scrollbar">
+                                    className={`flex flex-col gap-2 w-[768px] bg-white ${
+                                        tribe?.has_joined ? 'overflow-y-auto' : 'overflow-hidden'
+                                    } max-h-screen hide-scrollbar`}
+                                >
                                     {
                                         dataLoading ? (
                                             <div className={'p-4'}>
@@ -298,6 +302,17 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                                     }
                                 </div>
                             </div>
+                            {
+                                tribe && !tribe?.has_joined && (
+                                    <div className="fixed bottom-0 left-0 w-[910px] h-[130px] bg-white/50 backdrop-blur-md flex items-center justify-center z-50 flex-col gap-[12px]">
+                                        <div className={'flex gap-[2px] items-center'}>
+                                            <PadlockIcon />
+                                            <p>Paid Tribe</p>
+                                        </div>
+                                        <p className="text-light-green text-sm underline font-semi-normal cursor-pointer" onClick={activateJoinTribeModal}>Unlock Tribe content</p>
+                                    </div>
+                                )
+                            }
                         </div>
                         {
                             !isMobile && (
@@ -307,6 +322,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                                         toggle={activateCreateThreadModal}
                                         tribe={tribe}
                                         toggleAddMember={toggleAddMember}
+                                        toggleJoin={activateJoinTribeModal}
                                     />
                                 </div>
                             )
@@ -314,7 +330,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                     </div>
                     <CreateThreadModal tribe_id={tribe?.id} toggle={activateCreateThreadModal}
                                        isOpen={createThreadModalOpen}/>
-                    <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen}/>
+                    <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen} tribe={tribe}/>
                     <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={tribe}/>
                     {
                         user && (

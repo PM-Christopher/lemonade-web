@@ -79,9 +79,9 @@ const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
   }
 );
 
-const joinTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
+const joinTribe = createAsyncThunk(
   "tribe/joinTribe",
-  async ({ id, token }: JoinTribeParams, { rejectWithValue }) => {
+  async ({ id, token, data }: { id: any, token: string, data: any }, { rejectWithValue }) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -91,7 +91,7 @@ const joinTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
     try {
       const response = await axiosInstance.post(
         `/tribes/join-tribe/${id}`,
-        {},
+        data,
         { headers }
       );
       return response.data;
