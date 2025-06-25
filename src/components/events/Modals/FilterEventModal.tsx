@@ -9,6 +9,8 @@ import CalendarIcon from "@/images/icons/eventCalendarIcon.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {useAppDispatch} from "@/redux/hook";
+import {filterEvent, resetFilter} from "@/features/events/event.slice";
 
 type FilterEventInterface = {
     toggle: () => void,
@@ -18,11 +20,20 @@ type FilterEventInterface = {
 const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
     const {authToken} = useSelector((state: any) => state.auth)
     const [clickedCategory , setClickedCategory] = useState("")
-    const [timeOptions, setTimeOption] = useState(['Today', 'This week', 'This Month'])
+    const [timeOptions, setTimeOption] = useState(['This week', 'This Month'])
     const [timeType , setTimeType] = useState("")
+    const dispatch = useAppDispatch();
 
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
+
+    const [location, setLocation] = useState("");
+
+    const handleLocationChange = (value: string) => {
+        console.log("Selected Location:", value);
+        setLocation(value);
+        // you can perform other actions based on value here
+    };
 
     const getHeader = () => {
         return {
@@ -48,6 +59,30 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
             setTimeType(selTimeType)
         }
     }
+
+    const handleFilterEvent = () => {
+        const data = {
+            category: clickedCategory,
+            period: timeType,
+            start_date: from,
+            end_date: to,
+            location: location,
+        }
+        dispatch(filterEvent({token: authToken, data})).then((res: any) => {
+            toggle()
+        })
+    }
+
+    const handleResetFilter = () => {
+        dispatch(resetFilter())
+        setClickedCategory("")
+        setTo("")
+        setFrom("")
+        setTimeType("")
+        setLocation("")
+        toggle()
+    }
+
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
@@ -148,7 +183,7 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
                                                 showTimeSelect={false}
                                                 dateFormat="yyyy-MM-dd"
                                                 className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px]"
-                                                placeholderText="From"
+                                                placeholderText="To"
                                             />
                                         </div>
                                     </div>
@@ -162,7 +197,7 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
                             LOCATION
                         </Label>
                         <div className="mt-2">
-                            <Select>
+                            <Select onValueChange={handleLocationChange}>
                                 <SelectTrigger className="bg-mid-grey rounded-xl border-0 w-[180px] px-[16px] h-[40px]">
                                     <SelectValue
                                         placeholder={
@@ -174,7 +209,7 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
                                 <SelectContent className="form-font">
                                     <SelectItem value="all">All Locations</SelectItem>
                                     <SelectItem value="online">Online</SelectItem>
-                                    <SelectItem value="oldest">Physical</SelectItem>
+                                    <SelectItem value="physical">Physical</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -182,11 +217,13 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
                     <div className="mt-[40px] flex gap-[4px]">
                         <button
                             className="w-full px-[14px] p-[10px] rounded-[12px] border-[1px] border-light-grey-50"
+                            onClick={handleResetFilter}
                         >
                             <p className="font-sans font-semi-normal text-[16px] text-black-light">Reset filter</p>
                         </button>
                         <button
                             className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
+                            onClick={handleFilterEvent}
                         >
                             <p className="font-sans font-semi-normal text-[16px] text-white">Apply filter</p>
                         </button>

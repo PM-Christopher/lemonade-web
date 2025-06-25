@@ -7,6 +7,7 @@ import { useRequest } from "@/hooks/useRequest";
 import { EventInterface } from "@/interfaces/EventInterface";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
+import {RootState} from "@/redux/store";
 
 type EventsInterface = {
   results: EventInterface[];
@@ -19,6 +20,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const { authToken } = useSelector((state: any) => state.auth);
+  const { filtered, filteredEvents } = useSelector((state: RootState) => state.event);
   const getHeader = () => {
     return {
       headers: {
@@ -36,12 +38,18 @@ const EventsSectionView: React.FC<EventsInterface> = ({
     getHeader()
   );
 
+  console.log({filtered, filteredEvents})
+
   return (
     <section className="mt-2 flex flex-col items-center">
       {searchTerm ? (
         <div>
           <p>Showing results for "{searchTerm}"</p>
         </div>
+      ) : filtered ? (
+          <div>
+            <p></p>
+          </div>
       ) : (
         trendingEvents.length > 0 && (
           <div className="bg-none laptop:bg-light-green-50 p-[24px] w-full laptop:w-[1008px] rounded-[12px] flex justify-center">
@@ -79,7 +87,20 @@ const EventsSectionView: React.FC<EventsInterface> = ({
           ) : (
             <p className="font-semiBold text-[24px]">No results found</p>
           )
-        ) : (
+        ) : filtered ? (
+            <>
+              <p className="font-sans font-semibold text-[20px] leading-[28px] mb-[16px]">
+                Filtered Events
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {filteredEvents.map((event: EventInterface, index: number) => (
+                    <Link href={`/event/${event?.id}`} key={index}>
+                      <EventCard event={event} />
+                    </Link>
+                ))}
+              </div>
+            </>
+            ) : (
           <>
             <p className="font-sans font-semibold text-[20px] leading-[28px] mb-[16px]">
               All Events

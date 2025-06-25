@@ -11,7 +11,10 @@ interface tribeState {
     event: null,
     newTickets: [],
     searchResults: [],
-    payment_setting: any
+    payment_setting: any,
+    free_event: any,
+    filtered: boolean,
+    filteredEvents: any[]
 }
 
 const initialState: tribeState = {
@@ -23,6 +26,9 @@ const initialState: tribeState = {
     newTickets: [],
     searchResults: [],
     payment_setting: {},
+    free_event: {},
+    filtered: false,
+    filteredEvents: [],
 };
 
 const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, token, data}: {event_id: number, token: string, data: any}, { rejectWithValue }) => {
@@ -150,6 +156,26 @@ const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", asyn
     }
 });
 
+const filterEvent = createAsyncThunk("event/filterEvent", async ({ token, data }: { token: string, data: any }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        let url = `/events/filter-event?category=${data.category}&period=${data.period}&start_date=${data.start_date}&end_date=${data.end_date}&location=${data.location}`
+        const response = await axiosInstance.get(url, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
 const eventSlice = createSlice({
     name: "event",
     initialState,
@@ -167,7 +193,17 @@ const eventSlice = createSlice({
         resetEventState: (state) => {
             state.event = null
             state.newTickets = []
-        }
+        },
+        freeEventState: (state, {payload}) => {
+            state.free_event = payload
+        },
+        resetFreeEventState: (state) => {
+            state.free_event = null
+        },
+        resetFilter: (state) => {
+            state.filtered = false
+            state.filteredEvents = []
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(buyTicket.pending, (state) => {
@@ -244,9 +280,21 @@ const eventSlice = createSlice({
         builder.addCase(updatePaymentSetting.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(filterEvent.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(filterEvent.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.filteredEvents = payload?.data?.events;
+            state.filtered = true
+        });
+        builder.addCase(filterEvent.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
-export const { addTickets, addEvent, createTickets, resetEventState } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting }
+export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent }
 export default eventSlice.reducer;

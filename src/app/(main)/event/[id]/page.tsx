@@ -40,6 +40,8 @@ const EventDetailsPage = ({ params }: { params: { id: number } }) => {
     getHeader()
   );
 
+  console.log({data})
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
@@ -156,7 +158,7 @@ const EventDetailsPage = ({ params }: { params: { id: number } }) => {
                       }
                     >
                       <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">
-                        Buy ticket from ₦2,000
+                        Buy ticket from ₦{data?.event?.minimum_price}
                       </p>
                     </Button>
                   </Link>

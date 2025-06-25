@@ -14,7 +14,7 @@ import * as yup from "yup";
 import {FieldArray, useFormik} from "formik";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
-import { buyTicket } from "@/features/events/event.slice";
+import {buyTicket, freeEventState} from "@/features/events/event.slice";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const AssignTicketPage = ({ params }: { params: { id: number } }) => {
@@ -96,11 +96,19 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
           email: values.email,
         };
       }
-      console.log({formValues})
       dispatch(
         buyTicket({ event_id: params.id, data: formValues, token: authToken })
       ).then((res: any) => {
-        window.location.href = res.payload.data.payment_url;
+        console.log({res})
+        if (res.payload.data.completed) {
+          const data = {
+            completed: true
+          }
+          dispatch(freeEventState(data))
+          router.push("/event");
+        } else if (res.payload.data.payment_url) {
+          // window.location.href = res.payload.data.payment_url;
+        }
       });
     },
   });

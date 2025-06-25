@@ -14,7 +14,7 @@ import FilterEventModal from "@/components/events/Modals/FilterEventModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
-import { searchEvent } from "@/features/events/event.slice";
+import {resetFreeEventState, searchEvent} from "@/features/events/event.slice";
 import {useRouter, useSearchParams} from "next/navigation";
 import {verifyTribePayment} from "@/features/tribes/tribe.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -29,7 +29,7 @@ const EventPage: React.FC = () => {
   const [toggleFilterEvent, setToggleFilterEvent] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useAppDispatch();
-  const { searchResults } = useSelector((state: RootState) => state.event);
+  const { searchResults, free_event } = useSelector((state: RootState) => state.event);
   const { authToken } = useSelector((state: any) => state.auth);
   const getHeader = () => {
     return {
@@ -45,6 +45,22 @@ const EventPage: React.FC = () => {
   const {transaction_data, loading: transaction_loading} = useSelector((state: RootState) => state.transaction);
 
   useEffect(() => {
+    if (free_event) {
+      if (free_event.completed) {
+        dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Event booked successfully",
+              type: "success",
+            })
+        );
+        setToggleVPaymentModel(true)
+        dispatch(resetFreeEventState())
+      }
+    }
+  }, [free_event]);
+
+  useEffect(() => {
     if (trxref) {
       dispatch(verifyTransaction({data: {trx_ref: trxref}, token: authToken}))
           .unwrap()
@@ -56,7 +72,7 @@ const EventPage: React.FC = () => {
             dispatch(
                 updateToastifyReducer({
                   show: true,
-                  message: "Joined tribe successfully",
+                  message: "Event booked successfully",
                   type: "success",
                 })
             );
