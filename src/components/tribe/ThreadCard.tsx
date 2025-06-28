@@ -58,8 +58,8 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   const dispatch = useAppDispatch();
   const { authToken } = useSelector((state: any) => state.auth);
   const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
-  const charLimit = 200; // Set your desired character limit
-  // const { comments } = useSelector((state: any) => state.tribe);
+  const charLimit = 200; 
+
 
   const moreIconRef = useRef<HTMLDivElement | null>(null);
   const [modalPosition, setModalPosition] = useState<ModalPosition | null>(
