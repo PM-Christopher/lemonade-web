@@ -107,7 +107,7 @@ const AssignTicketPage = ({ params }: { params: { id: number } }) => {
           dispatch(freeEventState(data))
           router.push("/event");
         } else if (res.payload.data.payment_url) {
-          // window.location.href = res.payload.data.payment_url;
+          window.location.href = res.payload.data.payment_url;
         }
       });
     },
