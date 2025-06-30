@@ -16,7 +16,6 @@ import PinIcon from "@/images/icons/pinIcon.svg";
 import { Thread } from "@/interfaces/TribeInterface";
 import { useAppDispatch } from "@/redux/hook";
 
-
 import ChatIcon from "@/images/icons/chatIcon.svg";
 import {
   getComments,
@@ -60,8 +59,8 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
   const charLimit = 200; 
 
-
   const moreIconRef = useRef<HTMLDivElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null); // Add modal ref
   const [modalPosition, setModalPosition] = useState<ModalPosition | null>(
     null
   );
@@ -73,6 +72,37 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
 
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
+
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isModalVisible &&
+        modalRef.current &&
+        moreIconRef.current &&
+        !modalRef.current.contains(event.target as Node) &&
+        !moreIconRef.current.contains(event.target as Node)
+      ) {
+        setModalVisible(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (isModalVisible && event.key === 'Escape') {
+        setModalVisible(false);
+      }
+    };
+
+    if (isModalVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isModalVisible]);
 
   const handleSubmitComment = async (e: any) => {
     e.preventDefault();
@@ -195,6 +225,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
     // }
     setShowComments(!showComments);
   };
+
   return (
     <div
       className="p-4 py-4 w-full h-full grid gap-[50px]"
@@ -333,12 +364,8 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           onClick={() => setShowCommentForm(!showCommentForm)}
         >
           {/* <Image src={chat_image} alt="comment" /> */}
-
           <ChatIcon/>
-
         </div>
-
-      
       </div>
 
       <CommentsSection
@@ -378,6 +405,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       </div>
       {isModalVisible && modalPosition && (
         <div
+          ref={modalRef}
           className="absolute bg-white shadow-lg z-10 rounded-[12px] flex flex-col w-[170px]"
           style={{
             top: modalPosition.top,
@@ -387,8 +415,11 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         >
           {!thread?.owner && (
             <div
-              className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer"
-              onClick={() => switchUserId(thread?.created_by?.user?.id)}
+              className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-gray-50 transition-colors"
+              onClick={() => {
+                switchUserId(thread?.created_by?.user?.id);
+                setModalVisible(false);
+              }}
             >
               <UserIcon className="w-[16.25px] h-[16.25px]" />
               <p className="font-normal text-[16px] text-black-light">
@@ -398,8 +429,11 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           )}
 
           <div
-            className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer"
-            onClick={() => pinThread(thread?.id)}
+            className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              pinThread(thread?.id);
+              setModalVisible(false);
+            }}
           >
             <PinIcon className="w-[16.25px] h-[16.25px]" />
             <p className="font-normal text-[16px] text-black-light">
@@ -408,8 +442,11 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           </div>
 
           <div
-            className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer"
-            onClick={() => toggleThreadId(thread?.id)}
+            className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-gray-50 transition-colors"
+            onClick={() => {
+              toggleThreadId(thread?.id);
+              setModalVisible(false);
+            }}
           >
             <FlagIcon className="w-[16.25px] h-[16.25px]" />
             <p className="font-normal text-[16px] text-black-light">
@@ -418,17 +455,18 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           </div>
 
           {thread?.owner && (
-            <>
-              <div
-                className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer"
-                onClick={() => toggleDeleteThread(thread?.id)}
-              >
-                <TrashRedIcon className="w-[16.25px] h-[16.25px]" />
-                <p className="text-red-1 font-normal text-[16px]">
-                  Delete thread
-                </p>
-              </div>
-            </>
+            <div
+              className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-red-50 transition-colors"
+              onClick={() => {
+                toggleDeleteThread(thread?.id);
+                setModalVisible(false);
+              }}
+            >
+              <TrashRedIcon className="w-[16.25px] h-[16.25px]" />
+              <p className="text-red-1 font-normal text-[16px]">
+                Delete thread
+              </p>
+            </div>
           )}
         </div>
       )}

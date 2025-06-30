@@ -50,6 +50,9 @@ export default function DashboardPage() {
     tribes: data?.tribes,
   })
 
+
+  console.log("eventsData", eventsData)
+
   return (
     <MainLayout>
       <div className="w-full">

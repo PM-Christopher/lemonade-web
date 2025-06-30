@@ -16,9 +16,10 @@ type ConnectInterface = {
     toggle: () => void,
     isOpen: boolean,
     user: any
+    reloadFunc: any
 }
 
-const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user}) => {
+const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadFunc}) => {
     const dispatch = useAppDispatch()
     const { authToken } = useSelector((state: any) => state.auth)
     const connectSchema = yup.object({
@@ -43,12 +44,13 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user}) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: res.payload.message,
+                        message: res.payload.message || "Invite sent Successfully",
                         type: "success",
                     })
                 );
                 formik.resetForm()
                 toggle()
+                reloadFunc()
             } else {
                 dispatch(
                     updateToastifyReducer({

@@ -48,6 +48,32 @@ const AccountSettingsPage = () => {
     });
   };
 
+
+  const settingsItems = [
+  {
+    id: 'update-password',
+    icon: <PadlockIcon />,
+    label: 'Update Password',
+    onClick: toggleSettingsModal,
+    textColor: 'text-black' // or your default text color
+  },
+  {
+    id: 'delete-account',
+    icon: <TrashIcon />,
+    label: 'Delete account',
+    onClick: () => router.push("/settings/account/delete-account"),
+    textColor: 'text-black'
+  },
+  {
+    id: 'logout',
+    icon: <LogoutIcon />,
+    label: 'Log out',
+    onClick: handleLogout,
+    textColor: 'text-red-1'
+  }
+];
+
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
@@ -62,37 +88,25 @@ const AccountSettingsPage = () => {
             </p>
           </div>
         </div>
-        <section className="mt-4 flex flex-col px-5 items-center">
-          <div className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex flex-col bg-white gap-4">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-[8px] items-center">
-                <PadlockIcon />
-                <p className="font-normal text-[16px]">Update Password</p>
-              </div>
-              <ChevronRight
-                className="cursor-pointer"
-                onClick={toggleSettingsModal}
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-[8px] items-center">
-                <TrashIcon />
-                <p className="font-normal text-[16px]">Delete account</p>
-              </div>
-              <ChevronRight
-                className="cursor-pointer"
-                onClick={() => router.push("/settings/account/delete-account")}
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-[8px] items-center">
-                <LogoutIcon />
-                <p className="font-normal text-[16px] text-red-1">Log out</p>
-              </div>
-              <ChevronRight className="cursor-pointer" onClick={handleLogout} />
-            </div>
-          </div>
-        </section>
+       <section className="mt-4 flex flex-col px-5 items-center">
+  <div className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex flex-col bg-white gap-4">
+    {settingsItems.map((item, index) => (
+      <div 
+        key={item.id}
+        className="flex justify-between items-center cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors duration-200"
+        onClick={item.onClick}
+      >
+        <div className="flex gap-[8px] items-center">
+          {item.icon}
+          <p className={`font-normal text-[16px] ${item.textColor}`}>
+            {item.label}
+          </p>
+        </div>
+        <ChevronRight className="text-gray-400" />
+      </div>
+    ))}
+  </div>
+</section>
         <UpdatePasswordModal
           user={user}
           toggle={toggleSettingsModal}

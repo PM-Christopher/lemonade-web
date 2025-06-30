@@ -13,9 +13,10 @@ type InviteInterface = {
     toggle: () => void,
     isOpen: boolean,
     invite: any
+    reloadFunc: any
 }
 
-const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite}) => {
+const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadFunc}) => {
     const dispatch = useAppDispatch()
     const {authToken, user} = useSelector((state: any) => state.auth)
 
@@ -31,6 +32,8 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite}) => {
                     })
                 );
                 toggle()
+
+                reloadFunc()
             } else {
                 dispatch(
                     updateToastifyReducer({
@@ -46,7 +49,7 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite}) => {
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-full laptop:w-[480px] p-6 h-screen laptop:h-full">
+            <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-full laptop:w-[480px] p-6 h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggle}>
@@ -56,7 +59,7 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite}) => {
                     </div>
                 </div>
                 <div className="mt-[24px]">
-                    <div className="flex flex-col items-center justify-center gap-y-[470px]">
+                    <div className="flex flex-col justify-between min-h-[calc(100vh-120px)] laptop:min-h-0">
                         <div className="flex flex-col items-center justify-center">
                             <div className="relative flex items-center justify-center">
                                 <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>

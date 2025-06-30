@@ -107,6 +107,11 @@ const TopNav = () => {
           isMobile ? "" : "!right-20 !top-20"
         }`}
         closeIcon={null}
+        bodyStyle={{
+          maxHeight: isMobile ? '60vh' : '400px',
+          overflowY: 'auto',
+          padding: '16px'
+        }}
       >
         {data?.notifications?.length > 0 ? (
           data?.notifications?.map((notification: any, index: number) => (

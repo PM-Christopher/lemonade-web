@@ -26,7 +26,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] h-screen laptop:h-full p-6">
+      <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto p-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggle}>
@@ -73,8 +73,8 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({
               <p className="text-[14px] font-semibold text-center">
                 Social links
               </p>
-              <div className="flex gap-[16px] mt-[12px]">
-                {userInfo?.receiver?.socials.map((link: any) => (
+              <div className="flex gap-[16px] mt-[12px] justify-center">
+                {userInfo?.receiver?.socials?.map((link: any) => (
                   <a
                     href={link.value}
                     target="_blank"

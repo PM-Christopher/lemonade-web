@@ -32,7 +32,7 @@ const SettingsModal: React.FC<SettingsInterface>= ({toggle, isOpen, user_connect
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: data.message,
+                    message: data.message || "Visibility Updated",
                     type: "success",
                 })
             );
