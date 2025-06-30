@@ -6,8 +6,8 @@ import {formatDate, formatTime} from "@/lib/dateTimeFormatter";
 const MyEventModal = ({toggle, isOpen, ticket, loading}: {toggle: () => void, isOpen: boolean, ticket: any, loading: boolean}) => {
     return (
         <div
-            className={`fixed inset-0 bg-white laptop:bg-gray-800  bg-opacity-100 laptop:bg-opacity-50 py-[20px] items-start laptop:items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-light_grey laptop:bg-white rounded-lg shadow-none laptop:shadow-lg w-[480px] p-0 laptop:p-6 h-full">
+            className={`fixed inset-0 bg-white laptop:bg-gray-800 bg-opacity-100 laptop:bg-opacity-50 py-[20px] items-start laptop:items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
+            <div className="bg-light_grey laptop:bg-white rounded-lg shadow-none laptop:shadow-lg w-[480px] p-0 laptop:p-6 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mt-10 p-6 laptop:p-0 bg-white laptop:bg-none">
                     <div className="flex items-center gap-2">
                         <div className="cursor-pointer" onClick={toggle}>
@@ -54,12 +54,11 @@ const MyEventModal = ({toggle, isOpen, ticket, loading}: {toggle: () => void, is
                                         <p className="font-semi-normal text-[14px]">{ticket?.ticket[0]?.venue}</p>
                                     </div>
                                 </div>
-                                <div className="flex justify-center items-center mt-[94px] laptop:mt-0">
+                                <div className="flex justify-center items-center mt-[94px] laptop:mt-[48px]">
                                     <Image src={ticket?.ticket[0]?.qr_code} alt="qr_code" width={240} height={240}/>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
