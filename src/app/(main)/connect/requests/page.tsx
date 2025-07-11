@@ -94,7 +94,7 @@ const ConnectRequestPage = () => {
       }
     }
   };
-  console.log(data?.invites);
+  console.log({user});
 
   return (
     <MainLayout>
@@ -137,6 +137,7 @@ const ConnectRequestPage = () => {
                     key={index}
                     invite={invite}
                     toggle={toggleMenu}
+                    user={user}
                   />
                 ))
               ) : (
@@ -161,6 +162,7 @@ const ConnectRequestPage = () => {
             toggle={toggleConnectModal}
             isOpen={isConnectOpen}
             reloadFunc={getData}
+            authUser={user}
           />
         )}
       </section>

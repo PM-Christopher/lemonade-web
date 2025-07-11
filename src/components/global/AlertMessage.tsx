@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import Alert from "@mui/material/Alert";
+import {toast, Toaster} from "react-hot-toast";
 
 export const AlertMessage = () => {
     const dispatch = useDispatch();
@@ -32,16 +33,46 @@ export const AlertMessage = () => {
         };
     }, [showToast, dispatch]);
 
+    useEffect(() => {
+        if (showToast.message) {
+            if (showToast.type === "success") {
+                toast.success(showToast.message);
+            } else {
+                toast.error(showToast.message);
+            }
+        }
+    }, [showToast]);
+
     return showToast.show ? (
         <div className="fixed top-10 left-0 w-full" style={{ zIndex: 99999 }}>
             <div className="px-5 w-full tablet:w-[872px] tablet:mx-auto z-100">
-                <Alert
-                    variant="filled"
-                    severity={showToast.type === "success" ? "success" : "error"}
-                    onClose={() => {}}
-                >
-                    {showToast.message}
-                </Alert>
+                <Toaster
+                    position="top-center"
+                    reverseOrder={false}
+                    gutter={8}
+                    toastOptions={{
+                        duration: 5000,
+                        style: {
+                            background: "#363636",
+                            color: "#fff",
+                            width: "100%",
+                        },
+                        success: {
+                            duration: 3000,
+                            iconTheme: {
+                                primary: "green",
+                                secondary: "black",
+                            },
+                        },
+                    }}
+                />
+                {/*<Alert*/}
+                {/*    variant="filled"*/}
+                {/*    severity={showToast.type === "success" ? "success" : "error"}*/}
+                {/*    onClose={() => {}}*/}
+                {/*>*/}
+                {/*    {showToast.message}*/}
+                {/*</Alert>*/}
             </div>
         </div>
     ) : null;

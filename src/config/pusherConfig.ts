@@ -3,7 +3,7 @@ import {baseUrl} from "./url";
 
 const app_key: any = process.env.NEXT_PUBLIC_PUSHER_KEY;
 const url: any = process.env.NEXT_PUBLIC_BASE_URL;
-Pusher.logToConsole = true;
+Pusher.logToConsole = false;
 export const pusherConfig = (token: any) => {
     return new Pusher(app_key, {
         cluster: "eu",

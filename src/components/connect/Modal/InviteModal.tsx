@@ -3,7 +3,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import {Button} from "@/components/ui/button";
-import {formatStringUCFirst} from "@/lib/helper";
+import {formatStringUCFirst, getDistanceFromLatLonInKm} from "@/lib/helper";
 import {useAppDispatch} from "@/redux/hook";
 import {inviteResponse} from "@/features/connect/connect.slice";
 import {useSelector} from "react-redux";
@@ -13,7 +13,7 @@ type InviteInterface = {
     toggle: () => void,
     isOpen: boolean,
     invite: any
-    reloadFunc: any
+    reloadFunc: any,
 }
 
 const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadFunc}) => {
@@ -69,10 +69,13 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadF
                             </div>
                             <p className="font-semibold text-[18px]">{invite?.invitee?.lemon_id_full}</p>
                             <p className="font-semi-normal text-[14px] text-light-black">{invite?.invitee?.username}</p>
+                            <p className="font-semi-normal text-[14px] text-light-black">{invite?.invitee?.bio}</p>
                             <p className="font-normal text-[12px] text-text-grey">{formatStringUCFirst(invite?.invitee?.industry)}</p>
                             <div className="mt-[16px] flex gap-2 items-center">
                                 <LocationIcon/>
-                                <p className="font-semi-normal text-mid-green text-[12px]">3kms away</p>
+                                <p className="font-semi-normal text-mid-green text-[12px]">
+                                    {getDistanceFromLatLonInKm(user?.connect_info?.latitude, user?.connect_info?.longitude, invite?.location?.latitude, invite?.location?.longitude)}kms away
+                                </p>
                             </div>
                             <div className="flex flex-col p-[16px] bg-light_grey mt-[32px] rounded-[12px]">
                                 <p className="font-semi-normal text-[12px] text-text-grey">Message</p>

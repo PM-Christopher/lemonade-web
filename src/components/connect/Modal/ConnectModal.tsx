@@ -11,15 +11,17 @@ import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import {sendInvite} from "@/features/connect/connect.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {getDistanceFromLatLonInKm} from "@/lib/helper";
 
 type ConnectInterface = {
     toggle: () => void,
     isOpen: boolean,
     user: any
-    reloadFunc: any
+    reloadFunc: any,
+    authUser: any
 }
 
-const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadFunc}) => {
+const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadFunc, authUser}) => {
     const dispatch = useAppDispatch()
     const { authToken } = useSelector((state: any) => state.auth)
     const connectSchema = yup.object({
@@ -64,6 +66,8 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadF
         })
     }
 
+    console.log({user, authUser})
+
     return (
         <div
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
@@ -90,27 +94,39 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadF
                             <p className="font-normal text-[12px] text-text-grey">{user?.industry}</p>
                             <div className="mt-[16px] flex gap-2 items-center">
                                 <LocationIcon/>
-                                <p className="font-semi-normal text-mid-green text-[12px]">3kms away</p>
+                                <p className="font-semi-normal text-mid-green text-[12px]">
+                                    {getDistanceFromLatLonInKm(authUser?.connect_info?.latitude, authUser?.connect_info?.longitude, user?.connect_info?.latitude, user?.connect_info?.longitude)} kms away
+                                </p>
                             </div>
-                            <div className="grid gap-2 mt-[24px] w-full">
-                                <div className="flex justify-between">
-                                    <Label htmlFor="fullname"
-                                           className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Invite
-                                        message</Label>
-                                    <Label htmlFor="fullname"
-                                           className="font-sans font-normal text-[12px] leading-[16.8px] text-text-grey">100
-                                        characters</Label>
-                                </div>
-                                <textarea
-                                    className="h-[131px] rounded-xl bg-light_grey form-font border-0 resize-none p-2 px-4"
-                                    placeholder="" onChange={formik.handleChange} value={formik.values.message} name="message" id="message"></textarea>
-                            </div>
-                            <div className="mt-[32px] w-full">
-                                <Button
-                                    className="h-[48px] p-[14px] px-[48px] bg-gradient-green rounded-[12px] shadow-custom-bottom w-full">
-                                    <p className="font-semi-normal text-[16px]">Send invite</p>
-                                </Button>
-                            </div>
+                            {
+                                user?.hasConnected ? (
+                                    <div className={'mt-[24px]'}>
+                                        <p className={'text-[12px] text-text-grey'}>You are already connected!!!</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="grid gap-2 mt-[24px] w-full">
+                                            <div className="flex justify-between">
+                                                <Label htmlFor="fullname"
+                                                       className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Invite
+                                                    message</Label>
+                                                <Label htmlFor="fullname"
+                                                       className="font-sans font-normal text-[12px] leading-[16.8px] text-text-grey">100
+                                                    characters</Label>
+                                            </div>
+                                            <textarea
+                                                className="h-[131px] rounded-xl bg-light_grey form-font border-0 resize-none p-2 px-4"
+                                                placeholder="" onChange={formik.handleChange} value={formik.values.message} name="message" id="message"></textarea>
+                                        </div>
+                                        <div className="mt-[32px] w-full">
+                                            <Button
+                                                className="h-[48px] p-[14px] px-[48px] bg-gradient-green rounded-[12px] shadow-custom-bottom w-full">
+                                                <p className="font-semi-normal text-[16px]">Send invite</p>
+                                            </Button>
+                                        </div>
+                                    </>
+                                )
+                            }
                         </div>
                     </div>
                 </div>

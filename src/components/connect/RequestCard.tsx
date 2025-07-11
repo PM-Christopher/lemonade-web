@@ -1,15 +1,17 @@
 import React from 'react';
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
+import {getDistanceFromLatLonInKm} from "@/lib/helper";
 
 type RequestInterface = {
     toggle: () => void,
     invite: any,
     toggleInviteIndex: (index: number) => void,
-    index: number
+    index: number,
+    user: any
 }
 
-const RequestCard: React.FC<RequestInterface> = ({toggle, invite, toggleInviteIndex, index}) => {
+const RequestCard: React.FC<RequestInterface> = ({toggle, invite, toggleInviteIndex, index, user}) => {
     return (
         <>
             <div className="flex justify-between pb-[16px] border-b-[1px] border-b-mid-grey mb-[32px] cursor-pointer" onClick={() => {
@@ -28,7 +30,10 @@ const RequestCard: React.FC<RequestInterface> = ({toggle, invite, toggleInviteIn
                             className="font-normal">wants to connect with you</span>
                         </p>
                         <div className="flex items-center gap-[8px]">
-                            <p className="font-normal text-[12px] text-text-grey">2km away</p>
+                            <p className="font-normal text-[12px] text-text-grey">
+                                {getDistanceFromLatLonInKm(user?.connect_info?.latitude, user?.connect_info?.longitude, invite?.location?.latitude, invite?.location?.longitude)}
+                                km away
+                            </p>
                             <p className="text-grey-80">|</p>
                             <p className="font-normal text-[12px] text-light-black truncate w-[195px] laptop:w-full">{invite?.message}</p>
                         </div>
