@@ -1,6 +1,7 @@
 import React from 'react';
 import DotIcon from "@/images/icons/dot.svg";
 import {ChatInterface} from "@/interfaces/ChatInterface";
+import {formatTimeAgo} from "@/lib/helper";
 
 type ChatListInterface = {
     active: boolean,
@@ -11,7 +12,7 @@ type ChatListInterface = {
 
 const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, user_id }) => {
     const receiver_id = user_id === chat.sender.id ? chat.receiver.id : chat.sender.id
-    const userType = chat.isReceiver ? chat.sender : chat.receiver
+    const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver
 
     return (
         // <div className={`p-[16px] flex items-center gap-[8px] ${active && "bg-light-green-10"} cursor-pointer`}>
@@ -32,7 +33,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
                     <p className="font-normal text-[14px] text-light-black">{chat?.latest.message}</p>
                     <div className="flex gap-2">
                         <p className="text-[12px] font-normal text-text-grey">|</p>
-                        <p className="text-[12px] font-normal text-text-grey">{chat?.latest.created_at}</p>
+                        <p className="text-[12px] font-normal text-text-grey">{formatTimeAgo(chat?.latest.created_at)}</p>
                     </div>
                 </div>
             </div>

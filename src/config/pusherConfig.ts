@@ -2,19 +2,14 @@ import Pusher from "pusher-js";
 import {baseUrl} from "./url";
 
 const app_key: any = process.env.NEXT_PUBLIC_PUSHER_KEY;
+const url: any = process.env.NEXT_PUBLIC_BASE_URL;
+Pusher.logToConsole = true;
 export const pusherConfig = (token: any) => {
     return new Pusher(app_key, {
         cluster: "eu",
-        userAuthentication: {
-            transport: "ajax",
-            endpoint: `${baseUrl}/pusher/auth/user`,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        },
-        channelAuthorization: {
-            transport: "ajax",
-            endpoint: `${baseUrl}/pusher/auth/channel`,
+        // Laravel uses this endpoint to authorize private channels
+        authEndpoint: `${url}/broadcasting/auth`,
+        auth: {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
