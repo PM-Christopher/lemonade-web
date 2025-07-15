@@ -30,7 +30,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({toggle, isOpen, tribe}) =
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: "Redirecting to payment gateway",
+                    message: "Joined tribe successfully",
                     type: "success",
                 })
             );

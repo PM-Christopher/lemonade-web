@@ -310,7 +310,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                                 </div>
                             </div>
                             {
-                                tribe && !tribe?.has_joined && tribe?.monetized && (
+                                tribe && !tribe?.has_joined && tribe?.monetized ? (
                                     <div className="fixed bottom-0 left-0 w-full h-[130px] bg-white/50 backdrop-blur-md flex items-center justify-center z-50 flex-col gap-[12px]">
                                         <div className={'flex gap-[2px] items-center'}>
                                             <PadlockIcon />
@@ -318,7 +318,7 @@ const SingleTribePage = ({params}: {params: {id:string}}) => {
                                         </div>
                                         <p className="text-light-green text-sm underline font-semi-normal cursor-pointer" onClick={activateJoinTribeModal}>Unlock Tribe content</p>
                                     </div>
-                                )
+                                ) : (<></>)
                             }
                         </div>
                         {
