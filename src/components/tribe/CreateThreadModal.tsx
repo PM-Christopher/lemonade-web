@@ -226,7 +226,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: "Error uploading image",
+                        message: "Error creating thread",
                         type: "error",
                     })
                 );

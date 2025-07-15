@@ -53,7 +53,7 @@ export const AlertMessage = () => {
                     toastOptions={{
                         duration: 5000,
                         style: {
-                            background: "#363636",
+                            background: "#BFDF37",
                             color: "#fff",
                             width: "100%",
                         },
@@ -64,6 +64,13 @@ export const AlertMessage = () => {
                                 secondary: "black",
                             },
                         },
+                        error: {
+                            duration: 3000,
+                            iconTheme: {
+                                primary: "red",
+                                secondary: "white",
+                            },
+                        }
                     }}
                 />
                 {/*<Alert*/}

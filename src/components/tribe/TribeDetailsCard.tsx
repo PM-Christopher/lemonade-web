@@ -22,8 +22,9 @@ type TribeDetailsInterface = {
     tribe: TribeInterface,
     share: (tribe: TribeInterface) => void
     toggleAddMember: () => void,
+    threads: any
 }
-const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share, toggleAddMember, toggleJoin}) => {
+const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share, toggleAddMember, toggleJoin, threads}) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
     const {loading: tribeLoading} = useSelector((state: any) => state.tribe);
@@ -85,7 +86,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
                     {tribeLoading ? (
                         <SkeletonLoader className="h-[12px] w-[60px] rounded" />
                     ) : (
-                        <p className="font-sans font-normal text-[12px] text-text-grey">{tribe?.threads} threads</p>
+                        <p className="font-sans font-normal text-[12px] text-text-grey">{threads.length} threads</p>
                     )}
                 </div>
 
