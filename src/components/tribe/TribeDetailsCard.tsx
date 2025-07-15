@@ -35,6 +35,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
             if (res.payload.data.authorization_url) {
                 window.location.href = res.payload.data.authorization_url;
             }
+            toggleJoin()
             dispatch(
                 updateToastifyReducer({
                     show: true,
