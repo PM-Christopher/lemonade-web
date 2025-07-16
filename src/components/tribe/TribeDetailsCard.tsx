@@ -34,15 +34,16 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({toggle, tribe, share
         dispatch(joinTribe({token: authToken, id, data: {redirect_url}})).then((res:any) => {
             if (res.payload.data.authorization_url) {
                 window.location.href = res.payload.data.authorization_url;
+            } else {
+                toggleJoin()
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Joined tribe successfully",
+                        type: "success",
+                    })
+                );
             }
-            toggleJoin()
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Joined tribe successfully",
-                    type: "success",
-                })
-            );
         })
     }
 
