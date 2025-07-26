@@ -48,8 +48,6 @@ export default function LoginPage() {
 
   const handleLoginSuccess = async (res: any) => {
     try {
-      console.log({res})
-
       if (res.status) {
         dispatch(setIsRouting(true));
         dispatch(

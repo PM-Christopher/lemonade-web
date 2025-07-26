@@ -12,6 +12,7 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import TopNav from "@/components/navigation/TopNav";
 import {useMediaQuery} from "react-responsive";
 import BottomNav from "@/components/navigation/BottomNav";
+import {useRefreshToken} from "@/hooks/useRefreshToken";
 
 const MainLayout = ({children}: {children: React.ReactNode}) => {
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
@@ -56,6 +57,12 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
             console.log("working userdata  error>>>>>>");
         }
     };
+
+    const { refreshAccessToken } = useRefreshToken();
+
+    useEffect(() => {
+        refreshAccessToken();
+    }, [])
 
     return (
         <div className="bg-light_grey pb-10 min-h-screen h-full overflow-hidden w-full">
