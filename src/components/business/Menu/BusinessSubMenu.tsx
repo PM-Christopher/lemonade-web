@@ -20,7 +20,7 @@ const BusinessSubMenu: React.FC<BusinessSubMenuInterface> = ({ toggle }) => {
                         id="search"
                         type="text"
                         className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                        placeholder="Search events..."
+                        placeholder="Search business..."
                     />
                 </div>
             </div>
