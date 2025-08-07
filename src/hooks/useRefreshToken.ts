@@ -12,7 +12,7 @@ export const useRefreshToken = () => {
         isRefreshing.current = true
         try {
             const res = await axiosInstance.post('/auth/refresh', {})
-            console.log({res})
+            // console.log({res})
             const {access_token} = res.data
 
 
@@ -25,7 +25,7 @@ export const useRefreshToken = () => {
             });
         }
         catch(err) {
-            console.log({err})
+            // console.log({err})
             // window.location.href = "/login";
         } finally {
             isRefreshing.current = false
@@ -34,7 +34,7 @@ export const useRefreshToken = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            console.log('TRIGGERED!!!')
+            // console.log('TRIGGERED!!!')
             refreshAccessToken();
         }, 60 * 1000)
         return () => clearInterval(interval)

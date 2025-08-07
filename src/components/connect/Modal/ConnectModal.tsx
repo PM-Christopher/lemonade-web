@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
@@ -16,13 +16,15 @@ import {getDistanceFromLatLonInKm} from "@/lib/helper";
 type ConnectInterface = {
     toggle: () => void,
     isOpen: boolean,
-    user: any
+    users: any
     reloadFunc: any,
     authUser: any
 }
 
-const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadFunc, authUser}) => {
+const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reloadFunc, authUser}) => {
     const dispatch = useAppDispatch()
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const user = users[currentIndex];
     const { authToken } = useSelector((state: any) => state.auth)
     const connectSchema = yup.object({
         message: yup
@@ -66,7 +68,19 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadF
         })
     }
 
-    console.log({user, authUser})
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+        }
+    };
+
+    const handleNext = () => {
+        if (currentIndex < users.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
+    if (!user) return null;
 
     return (
         <div
@@ -127,6 +141,22 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, user, reloadF
                                     </>
                                 )
                             }
+                            <div className="mt-6 flex justify-between w-full px-4">
+                                <Button
+                                    variant="outline"
+                                    disabled={currentIndex === 0}
+                                    onClick={handlePrev}
+                                >
+                                    ← Previous
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    disabled={currentIndex === users.length - 1}
+                                    onClick={handleNext}
+                                >
+                                    Next →
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>

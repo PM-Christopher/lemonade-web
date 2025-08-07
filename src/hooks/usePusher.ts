@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { addToMessages } from "@/features/connect/connect.slice";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 export const usePusher = (channelName: string, eventName: string) => {
     const [cookies] = useCookies(["token"]);
@@ -21,6 +22,14 @@ export const usePusher = (channelName: string, eventName: string) => {
 
             if (channelName === `chat.${user?.id}`) {
                 dispatch(addToMessages({ message: receivedData.message, user }));
+            } else if (channelName === `request.${user?.id}` && eventName === 'request.service') {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "New business service request",
+                        type: "success",
+                    })
+                );
             }
         };
 

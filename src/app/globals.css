@@ -133,6 +133,10 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+
+  .message-textarea {
+    @apply rounded-xl w-full text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent text-black-light resize-none overflow-hidden min-h-[20px] max-h-[120px];
+  }
 }
 
 .custom-modal {

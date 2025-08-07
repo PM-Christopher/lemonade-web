@@ -152,7 +152,7 @@ const ServiceDetailsModal:React.FC<ServiceDetailsInterface> = ({isOpen, toggleMe
             className={`fixed inset-0 bg-gray-800 bg-opacity-50 flex items-start justify-center z-50 overflow-y-auto ${isOpen ? "flex" : "hidden"} `}
         >
             <div className="w-full laptop:w-[640px] px-4 py-[5vh]">
-                <div className="bg-white rounded-lg shadow-lg w-full max-h-[90vh] overflow-y-auto p-6">
+                <div className="bg-white rounded-lg shadow-lg w-full max-h-[90vh] overflow-y-auto p-6 hide-scrollbar">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                             <div className="cursor-pointer" onClick={toggleMenu}>

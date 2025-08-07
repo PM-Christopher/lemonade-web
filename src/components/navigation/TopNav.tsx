@@ -33,9 +33,6 @@ const TopNav = () => {
     setOpenDetailModal(true);
   };
 
-
-  console.log("selectedNotification", selectedNotification)
-
   return (
     <div className="!relative">
       <nav className="flex flex-wrap items-center justify-between p-2 px-10 bg-white relative">

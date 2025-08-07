@@ -141,7 +141,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 }
             }
         }
-        // ✅ Reset file input value so the same file can be selected again
+        // Reset file input value so the same file can be selected again
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }

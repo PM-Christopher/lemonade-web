@@ -3,8 +3,12 @@ import {AlertMessage} from "@/components/global/AlertMessage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {useRefreshToken} from "@/hooks/useRefreshToken";
 import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import {usePusher} from "@/hooks/usePusher";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
+    const { user } = useSelector((state: any) => state.auth)
+    usePusher(`request.${user?.id}`, "request.service");
     return (
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
             {children}

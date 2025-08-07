@@ -128,9 +128,6 @@ const ConnectPage = () => {
                                         chatOpened ? (
                                             <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
                                                         chat={chatData} toggleOpenedChat={toggleChatOpened}/>
-                                            // selectedChatId === chatData.id && (
-                                            //
-                                            // )
                                         ) : (
                                             <EmptyChat/>
                                         )
@@ -174,9 +171,6 @@ const ConnectPage = () => {
                             chatOpened ? (
                                 <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
                                             chat={chatData} toggleOpenedChat={toggleChatOpened}/>
-                                // selectedChatId === chatData.id && (
-                                //
-                                // )
                             ) : (
                                 <EmptyChat/>
                             )

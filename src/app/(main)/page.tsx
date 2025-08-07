@@ -46,13 +46,6 @@ export default function DashboardPage() {
     getHeader()
   );
 
-  console.log({
-    tribes: data?.tribes,
-  })
-
-
-  console.log("eventsData", eventsData)
-
   return (
     <MainLayout>
       <div className="w-full">

@@ -20,6 +20,7 @@ interface SendChatParams {
     message: string|null;
     token: string;
     receiver_id: number;
+    media: string[]
 }
 
 interface ChatResponse {
@@ -58,7 +59,7 @@ const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/
     }
 });
 
-const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connect/sendChat", async ({message, token, receiver_id}: SendChatParams, { rejectWithValue }) => {
+const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connect/sendChat", async ({message, media, token, receiver_id}: SendChatParams, { rejectWithValue }) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -66,7 +67,7 @@ const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connec
     };
 
     try {
-        const response = await axiosInstance.post(`/messages?receiver_id=${receiver_id}`, { message }, { headers });
+        const response = await axiosInstance.post(`/messages?receiver_id=${receiver_id}`, { message, media }, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -136,7 +137,6 @@ const connectSlice = createSlice({
     reducers: {
         addToMessages: (state, action) => {
             const message = action.payload.message
-            console.log({message})
             const user = action.payload.user
             const format_message = {
                 "id": message.id,

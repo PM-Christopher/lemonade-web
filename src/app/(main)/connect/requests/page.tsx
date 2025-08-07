@@ -158,7 +158,7 @@ const ConnectRequestPage = () => {
         )}
         {connUser && (
           <ConnectModal
-            user={connUser}
+            users={connUser}
             toggle={toggleConnectModal}
             isOpen={isConnectOpen}
             reloadFunc={getData}
