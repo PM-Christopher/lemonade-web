@@ -7,6 +7,7 @@ interface User {
 
 interface LatestMessage {
     message: string;
+    type: string;
     created_at: string;
 }
 

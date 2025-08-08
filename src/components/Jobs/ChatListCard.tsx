@@ -2,6 +2,7 @@ import React from 'react';
 import DotIcon from "@/images/icons/dot.svg";
 import {ChatInterface} from "@/interfaces/ChatInterface";
 import {formatTimeAgo} from "@/lib/helper";
+import Image from "next/image";
 
 type ChatListInterface = {
     active: boolean,
@@ -30,7 +31,16 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
                     <p className="text-text-grey text-[14px] font-normal">L{userType.lemon_id}</p>
                 </div>
                 <div className="flex justify-between">
-                    <p className="font-normal text-[14px] text-light-black">{chat?.latest.message}</p>
+                    {
+                        chat?.latest.type === 'text' ? (
+                            <p className="font-normal text-[14px] text-light-black">{chat?.latest.message}</p>
+                        ) : (
+                            <div className={'flex flex-wrap items-center gap-[4px]'}>
+                                <Image src={chat?.latest?.message} alt={'message'} width={16} height={16} className={'w-[16px] h-[16px] rounded'} />
+                                <p className="font-normal text-[12px] text-light-black"> - File</p>
+                            </div>
+                        )
+                    }
                     <div className="flex gap-2">
                         <p className="text-[12px] font-normal text-text-grey">|</p>
                         <p className="text-[12px] font-normal text-text-grey">{formatTimeAgo(chat?.latest.created_at)}</p>

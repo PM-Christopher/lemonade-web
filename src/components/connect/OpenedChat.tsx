@@ -65,7 +65,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   }, [text]);
 
   const sendMessage = () => {
-    if (!text.trim()) return; // Don't send empty messages
+    if (!text.trim() && mediaFiles.length < 1) return; // Don't send empty messages
 
     const receiver_id = user_id === chat.sender.id ? chat.receiver.id : chat.sender.id;
     setText("");
@@ -306,7 +306,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                     rows={1}
                 />
                 </div>
-                {text.trim() && (
+                {text.trim() || mediaFiles.length > 0 && (
                     <div className="flex-shrink-0">
                       {
                         mediaLoading ? (
