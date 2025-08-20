@@ -54,7 +54,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({business}) => {
                                     business.services.length > 1 && (
                                         <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
                                             <p className="font-semi-normal text-[14px] text-text-grey">
-                                                +{business.services.length}
+                                                +{business.services.length - 1}
                                             </p>
                                         </div>
                                     )

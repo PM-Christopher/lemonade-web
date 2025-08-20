@@ -30,6 +30,7 @@ import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useRouter} from "next/navigation";
+import {businessButtons} from "@/lib/constant";
 
 const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -107,6 +108,25 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     };
 
     const hasMoreReviews = displayCount < reviews.length;
+
+    const handleButtonsClick = (type: "call" | "web" | "email", value: string) => {
+        let href = "";
+
+        switch (type) {
+            case "call":
+                href = `tel:${value}`;
+                break;
+            case "web":
+                href = value.startsWith("http") ? value : `https://${value}`;
+                break;
+            case "email":
+                href = `mailto:${value}`;
+                break;
+            default:
+                break;
+        }
+        window.open(href, "_blank");
+    }
 
     return (
         <MainLayout>
@@ -229,20 +249,20 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                             </div>
                         ) : (
                             <div className="flex justify-center items-center mt-[24px] gap-8">
-                                <div className="flex flex-col items-center gap-[8px]">
+                                <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.call, data?.business?.phone_number)}>
                                     <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px] bg-white">
                                         <PhoneIcon/>
                                     </div>
                                     <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Call</p>
                                 </div>
-                                <div className="flex flex-col items-center gap-[8px]">
+                                <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.email, data?.business?.email)}>
                                     <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px] bg-white">
                                         <MessageIcon/>
                                     </div>
                                     <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Send
                                         email</p>
                                 </div>
-                                <div className="flex flex-col items-center gap-[8px]">
+                                <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.web, data?.business?.website_url)}>
                                     <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px] bg-white">
                                         <WebIcon/>
                                     </div>

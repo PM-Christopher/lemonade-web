@@ -121,13 +121,21 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
                                         <div className="w-full">
                                             <input
                                                 id="amount"
-                                                type="number"
+                                                type="text"
                                                 className="text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
                                                 value={formik.values.amount}
                                                 onChange={(e) => {
-                                                    formik.setFieldValue("amount", e.target.value)
+                                                    // Only digits, no leading 0
+                                                    let value = e.target.value.replace(/\D/g, ""); // remove non-digits
+
+                                                    if (value.startsWith("0")) {
+                                                        value = value.replace(/^0+/, ""); // strip leading zeros
+                                                    }
+
+                                                    formik.setFieldValue("amount", value);
                                                 }}
-                                                min={1}
+                                                inputMode="numeric" // brings up number pad on mobile
+                                                pattern="[1-9][0-9]*" // regex: must start with 1–9
                                             />
                                         </div>
                                     </div>
