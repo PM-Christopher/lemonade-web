@@ -108,11 +108,9 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
                         <div className="flex flex-col gap-y-[250px]">
                             <div className="mt-10">
                                 <div className="grid gap-2 mt-[24px]">
-                                    <Label htmlFor="amount"
-                                           className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">I
-                                        want
-                                        to
-                                        book you for</Label>
+                                    <Label htmlFor="amount" className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">
+                                        I want to book you for
+                                    </Label>
                                     <div
                                         className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full h-[48px]">
                                         <div>

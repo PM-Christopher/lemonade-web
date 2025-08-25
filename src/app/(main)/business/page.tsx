@@ -8,11 +8,13 @@ import SideMenu from "@/components/business/SideMenu";
 import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
 import {useSelector} from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
+import BusinessFilter from "@/components/business/Modals/BusinessFilter";
 
 const BusinessPage = () => {
     const [menuOption, setMenuOption] = useState("business");
     const [isOpen, setIsOpen] = useState(false)
     const [isServiceOpen, setItServiceOpen] = useState(false)
+    const [businessFilter, setBusinessFilter] = useState(false)
 
     const {job} = useSelector((state: any) => state.business)
 
@@ -22,6 +24,10 @@ const BusinessPage = () => {
 
     const toggleMenu = () => {
         setIsOpen(!isOpen)
+    }
+
+    const toggleBusinessFilter = () => {
+        setBusinessFilter(!businessFilter)
     }
 
     const toggleServiceDetailsMenu = () => {
@@ -42,11 +48,11 @@ const BusinessPage = () => {
     const renderSubMenu = () => {
         switch (menuOption) {
             case "business":
-                return <BusinessSubMenu toggle={toggleMenu} />
+                return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />
             case "listings":
                 return <></>
             default:
-                return <BusinessSubMenu toggle={toggleMenu} />
+                return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />
         }
     }
 
@@ -73,6 +79,7 @@ const BusinessPage = () => {
                 </div>
                 {renderView()}
                 <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu}/>
+                <BusinessFilter toggle={toggleBusinessFilter} isOpen={businessFilter} />
             </section>
         </MainLayout>
     );

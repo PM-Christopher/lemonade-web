@@ -46,49 +46,60 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
         <>
             {
                 jobs?.length > 0 ? (
-                    jobs?.map((job: any, index: any) => (
-                        <div key={index}>
-                            <div className="flex flex-col cursor-pointer" onClick={() => {
-                                fetchJob(job?.id, job)
-                            }}>
-                                <div className="flex justify-between">
-                                    <div className="flex gap-[8px]">
-                                        <Image src={job?.image} alt="logo" width={40} height={40}
-                                               className="rounded-[16px] border-[1px] border-step-color"/>
-                                        <div className="flex flex-col">
-                                            <p className="font-semi-normal text-[14px]">{job?.name}</p>
-                                            <p className="font-normal text-[12px] text-text-grey">{job?.city}, {formatCountry(job?.country)}</p>
-                                        </div>
-                                    </div>
-                                    <ChevronRight onClick={() => {
-                                        fetchJob(job?.id, job)
-                                    }} className="cursor-pointer"/>
-                                </div>
-                                <div className="flex justify-between mt-[12px] items-center">
-                                    <div className="flex gap-2">
-                                        <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
-                                            <p className="font-semi-normal text-[14px] text-text-grey">
-                                                {formatStringUCFirst(job?.services[0])}
-                                            </p>
-                                        </div>
-                                        {
-                                            job?.services.length > 1 && (
-                                                <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
-                                                    <p className="font-semi-normal text-[14px] text-text-grey">
-                                                        +{job?.services.length -1}
+                    <div className="h-[calc(100vh-100px)] flex flex-col overflow-y-auto hide-scrollbar pb-[100px]">
+                        <div className="flex flex-col w-full gap-[12px]">
+                            {jobs?.map((job: any, index: any) => (
+                                <div key={index}>
+                                    <div
+                                        className="flex flex-col cursor-pointer"
+                                        onClick={() => fetchJob(job?.id, job)}
+                                    >
+                                        <div className="flex justify-between">
+                                            <div className="flex gap-[8px]">
+                                                <Image
+                                                    src={job?.image}
+                                                    alt="logo"
+                                                    width={40}
+                                                    height={40}
+                                                    className="rounded-[16px] border-[1px] border-step-color"
+                                                />
+                                                <div className="flex flex-col">
+                                                    <p className="font-semi-normal text-[14px]">{job?.name}</p>
+                                                    <p className="font-normal text-[12px] text-text-grey">
+                                                        {job?.city}, {formatCountry(job?.country)}
                                                     </p>
                                                 </div>
-                                            )
-                                        }
+                                            </div>
+                                            <ChevronRight
+                                                onClick={() => fetchJob(job?.id, job)}
+                                                className="cursor-pointer"
+                                            />
+                                        </div>
+                                        <div className="flex justify-between mt-[12px] items-center">
+                                            <div className="flex gap-2">
+                                                <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
+                                                    <p className="font-semi-normal text-[14px] text-text-grey">
+                                                        {formatStringUCFirst(job?.services[0])}
+                                                    </p>
+                                                </div>
+                                                {job?.services.length > 1 && (
+                                                    <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
+                                                        <p className="font-semi-normal text-[14px] text-text-grey">
+                                                            +{job?.services.length - 1}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <p className="font-semibold text-[14px]">
+                                                N{formatNumberWithCommas(job?.amount)}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <p className="font-semibold text-[14px]">
-                                        N{formatNumberWithCommas(job?.amount)}
-                                    </p>
+                                    <div className="border-b-[1px] border-b-mid-grey p-0 my-[16px]"></div>
                                 </div>
-                            </div>
-                            <div className="border-b-[1px] border-b-mid-grey p-0 my-[16px]"></div>
+                            ))}
                         </div>
-                    ))
+                    </div>
                     ) : (
                         <div className="flex justify-center items-center mt-[150px]">
                             <div className="flex flex-col items-center">

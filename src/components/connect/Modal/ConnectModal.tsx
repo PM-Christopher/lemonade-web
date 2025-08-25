@@ -83,10 +83,9 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reload
     if (!user) return null;
 
     return (
-        <div
-            className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
+        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <form onSubmit={formik.handleSubmit}>
-                <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] h-screen laptop:h-full p-6">
+                <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] p-6 h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto hide-scrollbar">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
                             <div className="cursor-pointer" onClick={toggle}>

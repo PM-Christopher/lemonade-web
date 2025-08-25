@@ -32,7 +32,6 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
     const handleLocationChange = (value: string) => {
         console.log("Selected Location:", value);
         setLocation(value);
-        // you can perform other actions based on value here
     };
 
     const getHeader = () => {
@@ -84,8 +83,7 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
     }
 
     return (
-        <div
-            className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
+        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">

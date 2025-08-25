@@ -5,10 +5,11 @@ import TicketIcon from "@/images/icons/tickets.svg";
 import BriefCaseIcon from "@/images/icons/caseIcon.svg"
 
 type BusinessSubMenuInterface = {
-    toggle: () => void
+    toggle: () => void,
+    toggleBusiness: () => void
 }
 
-const BusinessSubMenu: React.FC<BusinessSubMenuInterface> = ({ toggle }) => {
+const BusinessSubMenu: React.FC<BusinessSubMenuInterface> = ({ toggle, toggleBusiness }) => {
     return (
         <div className="flex justify-between items-center gap-[10px]">
             <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-[235px] h-[40px]">
@@ -24,7 +25,7 @@ const BusinessSubMenu: React.FC<BusinessSubMenuInterface> = ({ toggle }) => {
                     />
                 </div>
             </div>
-            <FilterIcon className="w-[21px] h-[21px]" />
+            <FilterIcon className="w-[21px] h-[21px] cursor-pointer" onClick={toggleBusiness} />
             <div
                 className="border-0 laptop:border-[1px] p-[8px] px-[14px] gap-2 flex items-center laptop:border-light-grey-50 rounded-[12px] cursor-pointer" onClick={toggle}>
                 <BriefCaseIcon className="w-[21px] h-[21px]"/>

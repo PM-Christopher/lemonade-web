@@ -11,7 +11,8 @@ import {useSearchParams} from "next/navigation";
 import {axiosInstance} from "@/lib/axiosInstane";
 import PaymentConfirmModal from "@/components/business/Modals/PaymentConfirmModal";
 import {useAppDispatch} from "@/redux/hook";
-import {addJob} from "@/features/business/business.slice";
+import {addJob, getBusinesses} from "@/features/business/business.slice";
+import {RootState} from "@/redux/store";
 
 const BusinessSection = () => {
     const dispatch = useAppDispatch()
@@ -21,6 +22,7 @@ const BusinessSection = () => {
     const [isVerifyJob, setIsVerifyJob] = useState(false)
     const {job} = useSelector((state: any) => state.business)
     const {authToken} = useSelector((state: any) => state.auth)
+    const { businesses } = useSelector((state: RootState) => state.business);
     const getHeader = () => {
         return {
             headers: {
@@ -32,6 +34,10 @@ const BusinessSection = () => {
     const toggleVerifyJob = () => {
         setIsVerifyJob(!isVerifyJob)
     }
+
+    useEffect(() => {
+        dispatch(getBusinesses({ token: authToken }))
+    }, [dispatch]);
 
     useEffect(() => {
         const verifyPayment = async () => {
@@ -56,6 +62,7 @@ const BusinessSection = () => {
     }, [trxref]);
 
     const { data, loading } = useRequest("/business", "GET", {}, true, getHeader())
+
     return (
         <section className="mt-4 flex flex-col items-center">
             <div className="p-[16px] w-full laptop:w-[1312px] rounded-0 laptop:rounded-[12px] gap-[12px] bg-light-green-50">
@@ -79,7 +86,7 @@ const BusinessSection = () => {
                                 <Spinner/>
                             </div>
                         ) : (
-                            data?.businesses.map((business: BusinessInterface, index: number) => (
+                            businesses?.map((business: BusinessInterface, index: number) => (
                                 <Link href={`/business/${business.id}`} key={index}>
                                     <AllBusinessCard business={business} />
                                 </Link>
