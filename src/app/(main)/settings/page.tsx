@@ -42,7 +42,7 @@ const earnSettings: SettingsItem[] = [
 ];
 
 const moreSettings: SettingsItem[] = [
-    { title: "Support", icon: SupportIcon, path: "/settings/support" },
+    // { title: "Support", icon: SupportIcon, path: "/settings/support" },
     { title: "Terms and conditions", icon: PaperIcon, path: "/settings/terms-and-conditions" },
     { title: "Privacy policy", icon: PaperIcon, path: "/settings/privacy" },
 ];

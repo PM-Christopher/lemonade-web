@@ -43,8 +43,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
     //form validation
     const profileStepSchema = yup.object({
         profile_image: yup
-            .string()
-            .required("Profile image is required"),
+            .string(),
         bio: yup
             .string()
             .required("Bio is required"),
@@ -120,7 +119,6 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
-                console.log({data})
                 if(data.status) {
                     setAvatar(data.data.image)
                     await formik.setFieldValue("profile_image", data.data.image)
@@ -151,8 +149,6 @@ const ProfileStep: React.FC<ProfileInterface> = ({loading, next_step}) => {
             }
         }
     };
-
-    console.log({errors: formik.errors, valid: formik.isValid})
 
     return (
         <form onSubmit={formik.handleSubmit}>

@@ -18,6 +18,17 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 
+type Ticket = {
+    ticket_type: string;  // was: "free" | "paid"
+    name: string;
+    price: number;
+    transfer_commission: boolean;
+    stock_type: string;   // was: "unlimited" | "limited"
+    ticket_stock: number | string;
+    purchase_limit: number;
+    description: string;
+};
+
 const AddTicketPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -82,8 +93,38 @@ const AddTicketPage = () => {
     },
     validationSchema: addTicketSchema,
     onSubmit: async (values) => {
-      dispatch(createTickets(values));
-      setToggleModal(!toggleModal);
+        const ticketTypes = hasPaidTicket(values.tickets)
+        if (!ticketTypes) {
+            const data = {
+                event,
+                tickets: values.tickets,
+            };
+
+            dispatch(createEvent({ token: authToken, data })).then((res) => {
+                if (res.payload.status) {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Event created successfully",
+                            type: "success",
+                        })
+                    );
+                    dispatch(resetEventState());
+                    router.push("/event");
+                } else {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Error creating event",
+                            type: "error",
+                        })
+                    );
+                }
+            });
+        } else {
+            dispatch(createTickets(values));
+            setToggleModal(!toggleModal);
+        }
     },
   });
 
@@ -140,6 +181,10 @@ const AddTicketPage = () => {
       }
     });
   }
+
+    function hasPaidTicket(tickets: Ticket[]): boolean {
+        return tickets.some(ticket => ticket.ticket_type === "paid");
+    }
 
   return (
     <MainLayout>
@@ -320,16 +365,6 @@ const AddTicketPage = () => {
                       onChange={formik.handleChange}
                       min={0}
                     />
-                    {/* <select
-                      value={formik.values.tickets[index].purchase_limit}
-                      onChange={formik.handleChange}
-                      className="h-12 rounded-xl bg-light_grey form-font border-0 p-2 w-full"
-                      name={`tickets[${index}].purchase_limit`}
-                    >
-                      <option value="">Select limit</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                    </select> */}
                   </div>
 
                   <div className="grid gap-2 mt-[24px]">
