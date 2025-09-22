@@ -71,8 +71,6 @@ export default function SignupPage() {
 
     const handleLoginSuccess = async (res: any) => {
         try {
-            console.log({res})
-
             if (res.status) {
                 dispatch(setIsRouting(true));
                 dispatch(
@@ -146,8 +144,6 @@ export default function SignupPage() {
 
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
-            console.log('Auth Code Response:', tokenResponse);
-
             // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)
             try {
                 const res = await axiosInstance.post(`/auth/google`, {

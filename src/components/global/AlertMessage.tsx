@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import Alert from "@mui/material/Alert";
 import {toast, Toaster} from "react-hot-toast";
 
 export const AlertMessage = () => {
@@ -73,13 +72,6 @@ export const AlertMessage = () => {
                         }
                     }}
                 />
-                {/*<Alert*/}
-                {/*    variant="filled"*/}
-                {/*    severity={showToast.type === "success" ? "success" : "error"}*/}
-                {/*    onClose={() => {}}*/}
-                {/*>*/}
-                {/*    {showToast.message}*/}
-                {/*</Alert>*/}
             </div>
         </div>
     ) : null;

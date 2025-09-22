@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Provider from "@/redux/Provider";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import {FcmProvider} from "@/context/FcmContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Provider>
-          <LayoutWrapper>{children}</LayoutWrapper>
+          <LayoutWrapper>
+              <FcmProvider>
+                  {children}
+              </FcmProvider>
+          </LayoutWrapper>
         </Provider>
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,31 +19,53 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {authSuccess, authUser} from "@/features/authentication/authSlice";
 import {useGoogleLogin} from "@react-oauth/google";
 import {axiosInstance} from "@/lib/axiosInstane";
+import {useFcm} from "@/context/FcmContext";
 
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [cookie, setCookie] = useCookies(["token", "newToken"]);
+  const { fcmToken } = useFcm()
 
   const [loading, setLoading] = useState(false);
 
   const loginSchema = yup.object({
-    email: yup
-      .string()
-      .email("Please enter a valid email")
-      .required("Email is required"),
-    password: yup.string().min(8).required("Password is required"),
+      email: yup
+          .string()
+          .email("Please enter a valid email")
+          .required("Email is required"),
+      password: yup.string().min(8).required("Password is required"),
+      notification: yup.object({
+          device_token: yup
+              .string().nullable(),
+          device_type: yup
+              .string().nullable(),
+          platform: yup
+              .string()
+              .nullable(),
+      }),
   });
 
+  useEffect(() => {
+      if (fcmToken) {
+          formik.setFieldValue('device_token', fcmToken);
+      }
+  }, [fcmToken])
+
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: loginSchema,
-    onSubmit: async (values) => {
-      await login({ ...values }, dispatch, router, setCookie);
-    },
+      initialValues: {
+          email: "",
+          password: "",
+          notification: {
+              device_token: fcmToken,
+              device_type: "desktop",
+              platform: ""
+          }
+      },
+      validationSchema: loginSchema,
+      onSubmit: async (values) => {
+          await login({ ...values }, dispatch, router, setCookie);
+      },
   });
 
   const handleLoginSuccess = async (res: any) => {

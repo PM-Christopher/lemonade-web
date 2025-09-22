@@ -1,10 +1,10 @@
 'use client'
 import {AlertMessage} from "@/components/global/AlertMessage";
 import {GoogleOAuthProvider} from "@react-oauth/google";
-import {useRefreshToken} from "@/hooks/useRefreshToken";
-import {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {usePusher} from "@/hooks/usePusher";
+import { Toaster } from "react-hot-toast";
+import "@/app/globals.css";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     const { user } = useSelector((state: any) => state.auth)
@@ -12,7 +12,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     return (
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
             {children}
-            <AlertMessage />
+            {/*<AlertMessage />*/}
+            <Toaster position="top-right" reverseOrder={false} />
         </GoogleOAuthProvider>
     );
 };

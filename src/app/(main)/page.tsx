@@ -1,17 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
+import React from "react";
 import TribeCard from "@/components/dashboard/TribeCard";
 import EventCard from "@/components/dashboard/EventCard";
-import BusinessCard from "@/components/dashboard/BusinessCard";
 import { useSelector } from "react-redux";
 import { useRequest } from "@/hooks/useRequest";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import { EventInterface } from "@/interfaces/EventInterface";
-import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import MainLayout from "@/components/layouts/MainLayout";
-import BottomNav from "@/components/navigation/BottomNav";
 import { useMediaQuery } from "react-responsive";
+import { useFcm } from "@/context/FcmContext";
+import NotificationToast from "@/components/NotificationToast";
 
 export default function DashboardPage() {
   const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
@@ -23,6 +21,7 @@ export default function DashboardPage() {
       },
     };
   };
+  const { notification } = useFcm()
 
   const { data } = useRequest(
     "/tribes?type=discover",
@@ -48,6 +47,7 @@ export default function DashboardPage() {
 
   return (
     <MainLayout>
+        {/*<NotificationToast payload={{title: "This is a test", body: "This is the body of the test"}} />*/}
       <div className="w-full">
         <section id="forums" className="bg-white p-4 rounded-lg m-4 mx-10">
           <p className="font-sans font-semibold leading-[27px]">

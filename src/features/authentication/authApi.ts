@@ -15,10 +15,8 @@ export const signup = async (
     setCookie: any
 ) => {
     dispatch(authStart());
-    console.log("start");
     try {
         const { data } = await axiosInstance.post("/auth/register", { ...values });
-        console.log(data)
         if (data.status || data.success) {
             dispatch(setIsRouting(true));
             dispatch(
@@ -40,17 +38,16 @@ export const signup = async (
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: data.message || "error",
+                    message: "Error creating new account",
                     type: "error",
                 })
             );
         }
     } catch (error: any) {
-        console.log({error})
         dispatch(
             updateToastifyReducer({
                 show: true,
-                message: error.response.data.message || "error",
+                message: "Error creating new account",
                 type: "error",
             })
         );
@@ -67,7 +64,6 @@ export const login = async (
     setCookie: any
 ) => {
     dispatch(authStart());
-    console.log("start");
     try {
         const { data } = await axiosInstance.post("/auth/login", { ...values });
         if (data.status || data.success) {
@@ -112,17 +108,16 @@ export const login = async (
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: data.message || "error",
+                    message: "Error trying to log in",
                     type: "error",
                 })
             );
         }
     } catch (error: any) {
-        console.log({error})
         dispatch(
             updateToastifyReducer({
                 show: true,
-                message: error.response.data.message || "error",
+                message: "Error trying to login",
                 type: "error",
             })
         );

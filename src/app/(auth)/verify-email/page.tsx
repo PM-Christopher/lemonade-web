@@ -29,13 +29,12 @@ export default function VerifyPage() {
         "token",
         "newToken",
     ]);
-    const { user } = useSelector((state: any) => state.auth)
+    const { user, code } = useSelector((state: any) => state.auth)
     const [seconds, setSeconds] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
     const getHeader = () => {
         const token = cookie.newToken;
-        console.log({token})
         return {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -58,6 +57,12 @@ export default function VerifyPage() {
         setSeconds(60);
         setCanResend(false);
     };
+
+    useEffect(() => {
+        if (code) {
+            formik.setFieldValue('code', code)
+        }
+    }, [code])
 
     //form validation
     const verifySchema = yup.object({

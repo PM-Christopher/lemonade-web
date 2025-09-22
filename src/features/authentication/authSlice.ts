@@ -14,6 +14,7 @@ interface authState {
     subscription_id: number | null,
     plan: {} | null,
     appSettings: {} | null
+    code: string | null;
 }
 
 const initialState: authState = {
@@ -27,7 +28,8 @@ const initialState: authState = {
     subscription: null,
     subscription_id: null,
     plan: null,
-    appSettings: null
+    appSettings: null,
+    code: null
 };
 
 const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, token, url }: { data: any, token: string, url: string }, { rejectWithValue }) => {
@@ -172,6 +174,7 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = false;
             state.user = action.payload.user;
+            state.code = action.payload.code;
         },
         updateHasPin: (state) => {
             state.user = { ...state.user, hasPin: true };
