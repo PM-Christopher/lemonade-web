@@ -48,7 +48,7 @@ export default function LoginPage() {
 
   useEffect(() => {
       if (fcmToken) {
-          formik.setFieldValue('device_token', fcmToken);
+          formik.setFieldValue('notification.device_token', fcmToken);
       }
   }, [fcmToken])
 

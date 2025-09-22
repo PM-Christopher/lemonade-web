@@ -8,7 +8,6 @@
 
 # testing
 /coverage
-/public/firebase-messaging-sw.js
 
 # next.js
 /.next/
