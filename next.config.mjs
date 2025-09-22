@@ -21,27 +21,6 @@ const nextConfig = {
             'res.cloudinary.com',
         ],
     },
-    async rewrites() {
-        return [
-            {
-                source: '/firebase-messaging-sw.js',
-                destination: '/firebase-messaging-sw.js',
-            },
-        ];
-    },
-    async headers() {
-        return [
-            {
-                source: '/firebase-messaging-sw.js',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'public, max-age=0, must-revalidate',
-                    },
-                ],
-            },
-        ];
-    },
 };
 
 export default nextConfig;
