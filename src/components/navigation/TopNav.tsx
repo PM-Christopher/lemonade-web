@@ -176,7 +176,7 @@ const TopNav = () => {
         open={openDetailModal}
         onCancel={() => setOpenDetailModal(false)}
         footer={null}
-        styles={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}
+        bodyStyle={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}
       >
         {selectedNotification ? (
           <div className="space-y-4">
