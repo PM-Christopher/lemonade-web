@@ -55,7 +55,7 @@ const EventPage: React.FC = () => {
 
   useEffect(() => {
     if (trxref) {
-      dispatch(verifyTransaction({data: {trx_ref: trxref}, token: authToken}))
+      dispatch(verifyTransaction({data: {trx_ref: trxref}}))
           .unwrap()
           .then((res) => {
             // Remove trxref from URL
