@@ -12,8 +12,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     return (
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
             {children}
-            {/*<AlertMessage />*/}
-            <Toaster position="top-right" reverseOrder={false} />
+            <AlertMessage />
         </GoogleOAuthProvider>
     );
 };

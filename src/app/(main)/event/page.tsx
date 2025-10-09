@@ -31,13 +31,6 @@ const EventPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { searchResults, free_event } = useSelector((state: RootState) => state.event);
   const { authToken } = useSelector((state: any) => state.auth);
-  const getHeader = () => {
-    return {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-  };
 
   const router = useRouter()
   const searchParams = useSearchParams();
@@ -158,7 +151,7 @@ const EventPage: React.FC = () => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} />
-        <div className="bg-white flex justify-between py-5 border-t-[1px] border-b-[1px] laptop:items-center flex-col laptop:flex-row gap-2">
+        <div className="bg-white flex justify-between py-5 border-t-[1px] border-b-[1px] laptop:items-center flex-col laptop:flex-row gap-2 pr-[10px]">
           <div className="flex justify-between items-center px-[16px]">
             <div
               className={

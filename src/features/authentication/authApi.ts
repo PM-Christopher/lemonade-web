@@ -92,6 +92,11 @@ export const login = async (
                     maxAge: 3600 * 6, // Expires after 6hrs
                     sameSite: false,
                 });
+                setCookie("refresh_token", data.data.refresh_token, {
+                    path: "/",
+                    maxAge: 3600 * 24 * 7, // 7 days for a refresh token
+                    sameSite: "Lax",
+                });
                 dispatch(
                     updateToastifyReducer({
                         show: true,

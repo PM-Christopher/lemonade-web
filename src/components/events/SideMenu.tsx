@@ -4,7 +4,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import SideMenuEventCard from "@/components/events/SideMenuEventCard";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
-import { MyTicketInterface } from "@/interfaces/EventInterface";
+import {MyTicketInterface} from "@/interfaces/EventInterface";
 import MyEventModal from "@/components/events/Modals/MyEventModal";
 
 type SideMenuInterface = {
@@ -21,13 +21,13 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
     const [myEventSelected, setMyEventSelected] = useState(null)
     const [myEvent, setMyEvent] = useState(false)
     const [ticket, setTicket] = useState({})
-    const [ticketId, setTicketId] = useState<number|null>()
+    const [ticketId, setTicketId] = useState<number | null>()
 
-    const toggleOption = (option:string) => {
+    const toggleOption = (option: string) => {
         setOption(option)
     }
 
-    const toggleEventID= (id: number) => {
+    const toggleEventID = (id: number) => {
         setMyEvent(!myEvent)
         setTicketId(id)
     }
@@ -36,16 +36,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
         setMyEvent(!myEvent)
     }
 
-    const {authToken} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
-    const {data: ticketData, loading: ticketLoading} = useRequest(`/events/attendees/my-ticket/${ticketId}`, "GET", {}, true, getHeader())
-    const { data, loading } = useRequest(`/events/attendees/my-tickets`, "GET", {}, true, getHeader())
+    const {data: ticketData, loading: ticketLoading} = useRequest(`/events/attendees/my-ticket/${ticketId}`)
+    const {data, loading} = useRequest(`/events/attendees/my-tickets`)
 
     return (
         <>
@@ -57,20 +49,25 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                 <div className="w-screen laptop:w-[585px] h-full bg-white p-[48px] px-[20px]">
                     <div className="flex justify-between items-center">
                         <div>
-                            <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">My tickets</p>
+                            <p className="font-sans font-semibold text-[16px] leading-[24px] tracking-custom">My
+                                tickets</p>
                         </div>
                         <div>
-                            <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
+                            <CloseIcon className="cursor-pointer" onClick={toggleMenu}/>
                         </div>
                     </div>
                     <div className="flex justify-between mt-[10px] border-b-[1px] border-b-light-grey-50">
-                        <div className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] ${option === 'upcoming' && 'border-b-step-color border-b-2'}`}>
-                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom cursor-pointer" onClick={() => toggleOption("upcoming")}>
+                        <div
+                            className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] ${option === 'upcoming' && 'border-b-step-color border-b-2'}`}>
+                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom cursor-pointer"
+                               onClick={() => toggleOption("upcoming")}>
                                 Upcoming events
                             </p>
                         </div>
-                        <div className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] ${option === 'past' && 'border-b-step-color border-b-2'}`}>
-                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom cursor-pointer" onClick={() => toggleOption("past")}>Past events</p>
+                        <div
+                            className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] ${option === 'past' && 'border-b-step-color border-b-2'}`}>
+                            <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom cursor-pointer"
+                               onClick={() => toggleOption("past")}>Past events</p>
                         </div>
                     </div>
 
@@ -80,7 +77,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                             option === "upcoming" ? (
                                 data?.upcoming.length > 0 ? (
                                     data?.upcoming.map((event: MyTicketInterface, index: number) => (
-                                        <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID}/>
+                                        <SideMenuEventCard ticket_id={event.id} event={event.event} key={index}
+                                                           toggle={toggleEventID}/>
                                     ))
                                 ) : (
                                     <div className="mt-[10px]">
@@ -90,7 +88,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                             ) : (
                                 data?.past.length > 0 ? (
                                     data?.past.map((event: MyTicketInterface, index: number) => (
-                                        <SideMenuEventCard ticket_id={event.id} event={event.event} key={index} toggle={toggleEventID} />
+                                        <SideMenuEventCard ticket_id={event.id} event={event.event} key={index}
+                                                           toggle={toggleEventID}/>
                                     ))
                                 ) : (
                                     <div className="mt-[10px]">
@@ -112,7 +111,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                     ></div>
                 )
             }
-            <MyEventModal ticket={ticketData} loading={ticketLoading} toggle={toggleMyEvent} isOpen={myEvent} />
+            <MyEventModal ticket={ticketData} loading={ticketLoading} toggle={toggleMyEvent} isOpen={myEvent}/>
         </>
     );
 }

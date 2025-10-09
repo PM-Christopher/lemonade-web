@@ -12,6 +12,7 @@ import toastifyReducer from "./toastifySlice"
 import generalReducer from "./general.slice"
 import businessReducer from "@/features/business/business.slice"
 import transactionReducer from "@/features/transaction/transaction.slice"
+import dashboardReducer from "@/features/dashboard/dashboard.slice"
 
 const persistConfig = {
     key: "root",
@@ -28,7 +29,8 @@ const reducers = combineReducers({
     event: eventReducer,
     general: generalReducer,
     business: businessReducer,
-    transaction: transactionReducer
+    transaction: transactionReducer,
+    dashboard: dashboardReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

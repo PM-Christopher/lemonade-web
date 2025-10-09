@@ -1,5 +1,5 @@
 export const formatDate = (dateString: Date) => {
-    if(dateString) {
+    if (dateString) {
         const date = new Date(dateString)
 
         const dayMonthFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -12,32 +12,34 @@ export const formatDate = (dateString: Date) => {
     return null
 }
 
-export const formatLongDate = (dateString: Date, type="long") => {
-    if(dateString) {
-        const date = new Date(dateString)
-        if(type === "long") {
-            const dayMonthFormatter = new Intl.DateTimeFormat('en-GB', {
-                day: 'numeric',
-                month: 'long',
-                year: "numeric"
-            })
-
-            return dayMonthFormatter.format(date);
-        } else if(type === "mid") {
-            const dayMonthFormatter = new Intl.DateTimeFormat('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                weekday: "short"
-            })
-
-            return dayMonthFormatter.format(date);
+export const formatLongDate = (
+    dateString?: string | Date,
+    type: "long" | "mid" = "long"
+): string | null => {
+    if (dateString) {
+        const date = new Date(dateString);
+        if (type === "long") {
+            const formatter = new Intl.DateTimeFormat("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+            return formatter.format(date);
+        } else if (type === "mid") {
+            const formatter = new Intl.DateTimeFormat("en-GB", {
+                day: "numeric",
+                month: "short",
+                weekday: "short",
+            });
+            return formatter.format(date);
         }
     }
     return null;
-}
+};
+
 
 export const formatTime = (dateString: Date) => {
-    if(dateString) {
+    if (dateString) {
         const date = new Date(dateString)
 
         const timeFormatter = new Intl.DateTimeFormat('en-GB', {
@@ -50,17 +52,17 @@ export const formatTime = (dateString: Date) => {
     return null
 }
 
-export const formatLongTime = (dateString: Date) => {
-    if(dateString) {
-        const date = new Date(dateString)
+export const formatLongTime = (dateString?: string | Date): string | null => {
+    if (dateString) {
+        const date = new Date(dateString);
 
         const timeFormatter = new Intl.DateTimeFormat('en-GB', {
             hour: 'numeric',
-            minute: "numeric",
+            minute: 'numeric',
             hour12: true,
         });
 
         return timeFormatter.format(date).toUpperCase();
     }
-    return null
-}
+    return null;
+};

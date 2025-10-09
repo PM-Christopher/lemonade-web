@@ -25,7 +25,7 @@ export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [cookie, setCookie] = useCookies(["token", "newToken"]);
-  const { fcmToken } = useFcm()
+  const { fcmToken, notification } = useFcm()
 
   const [loading, setLoading] = useState(false);
 

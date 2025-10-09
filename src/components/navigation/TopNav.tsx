@@ -26,7 +26,7 @@ const TopNav = () => {
       },
     };
   };
-  const { data } = useRequest("/notification", "GET", {}, true, getHeader());
+  // const { data } = useRequest("/notification", "GET", {}, true, getHeader());
 
   const handleViewMore = (notification: any) => {
     setSelectedNotification(notification);
@@ -107,65 +107,65 @@ const TopNav = () => {
         </div>
       </nav>
 
-      <Modal
-        title={
-          <p className="uppercase text-text-grey text-lg">Notifications</p>
-        }
-        open={openNotifications}
-        onCancel={() => setOpenNotifications(false)}
-        footer={null}
-        className={`custom-modal !fixed ${isMobile ? "" : "!right-20 !top-20"}`}
-        closeIcon={null}
-        bodyStyle={{
-          maxHeight: isMobile ? "60vh" : "400px",
-          overflowY: "auto",
-          padding: "16px",
-        }}
-      >
-        {data?.notifications?.length > 0 ? (
-          data?.notifications?.map((notification: any, index: number) => (
-            <div
-              key={index}
-              className={`${index !== 0 && "mt-5"} ${
-                index !== data?.notifications?.length - 1 &&
-                "border-b border-b-grey-light pb-5"
-              } flex flex-col gap-3 !w-full`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-full flex items-center justify-center bg-gray-100">
-                  <FaBell size={18} />
-                </div>
-                <div className="space-y-1 !w-full">
-                  <div className="flex justify-between items-center !w-full">
-                    <p className="text-black-light text-base font-semibold">
-                      {notification?.title ?? ""}
-                    </p>
-                    <p className="text-grey-90">
-                      {dayjs(
-                        notification?.meta?.created_at ||
-                          notification?.created_at
-                      ).format("DD MMM")}
-                    </p>
-                  </div>
-                  <p>{notification?.body ?? ""}</p>
-                </div>
-              </div>
+      {/*<Modal*/}
+      {/*  title={*/}
+      {/*    <p className="uppercase text-text-grey text-lg">Notifications</p>*/}
+      {/*  }*/}
+      {/*  open={openNotifications}*/}
+      {/*  onCancel={() => setOpenNotifications(false)}*/}
+      {/*  footer={null}*/}
+      {/*  className={`custom-modal !fixed ${isMobile ? "" : "!right-20 !top-20"}`}*/}
+      {/*  closeIcon={null}*/}
+      {/*  styles={{*/}
+      {/*    maxHeight: isMobile ? "60vh" : "400px",*/}
+      {/*    overflowY: "auto",*/}
+      {/*    padding: "16px",*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  {data?.notifications?.length > 0 ? (*/}
+      {/*    data?.notifications?.map((notification: any, index: number) => (*/}
+      {/*      <div*/}
+      {/*        key={index}*/}
+      {/*        className={`${index !== 0 && "mt-5"} ${*/}
+      {/*          index !== data?.notifications?.length - 1 &&*/}
+      {/*          "border-b border-b-grey-light pb-5"*/}
+      {/*        } flex flex-col gap-3 !w-full`}*/}
+      {/*      >*/}
+      {/*        <div className="flex items-start gap-3">*/}
+      {/*          <div className="size-10 rounded-full flex items-center justify-center bg-gray-100">*/}
+      {/*            <FaBell size={18} />*/}
+      {/*          </div>*/}
+      {/*          <div className="space-y-1 !w-full">*/}
+      {/*            <div className="flex justify-between items-center !w-full">*/}
+      {/*              <p className="text-black-light text-base font-semibold">*/}
+      {/*                {notification?.title ?? ""}*/}
+      {/*              </p>*/}
+      {/*              <p className="text-grey-90">*/}
+      {/*                {dayjs(*/}
+      {/*                  notification?.meta?.created_at ||*/}
+      {/*                    notification?.created_at*/}
+      {/*                ).format("DD MMM")}*/}
+      {/*              </p>*/}
+      {/*            </div>*/}
+      {/*            <p>{notification?.body ?? ""}</p>*/}
+      {/*          </div>*/}
+      {/*        </div>*/}
 
-              <div className="flex justify-end">
-                <Button
-                  type="link"
-                  className="text-light-green p-0"
-                  onClick={() => handleViewMore(notification)}
-                >
-                  View More
-                </Button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <Empty description="No new notifications" />
-        )}
-      </Modal>
+      {/*        <div className="flex justify-end">*/}
+      {/*          <Button*/}
+      {/*            type="link"*/}
+      {/*            className="text-light-green p-0"*/}
+      {/*            onClick={() => handleViewMore(notification)}*/}
+      {/*          >*/}
+      {/*            View More*/}
+      {/*          </Button>*/}
+      {/*        </div>*/}
+      {/*      </div>*/}
+      {/*    ))*/}
+      {/*  ) : (*/}
+      {/*    <Empty description="No new notifications" />*/}
+      {/*  )}*/}
+      {/*</Modal>*/}
 
       <Modal
         title={
@@ -176,7 +176,7 @@ const TopNav = () => {
         open={openDetailModal}
         onCancel={() => setOpenDetailModal(false)}
         footer={null}
-        bodyStyle={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}
+        styles={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}
       >
         {selectedNotification ? (
           <div className="space-y-4">

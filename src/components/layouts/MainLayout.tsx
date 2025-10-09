@@ -29,13 +29,13 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
         dispatch(setIsRouting(false));
     }, []);
 
-    useEffect(() => {
-        if (!token) {
-            router.push("/login");
-            removeCookie("token");
-            dispatch(resetAuth());
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (!token) {
+    //         router.push("/login");
+    //         removeCookie("token");
+    //         dispatch(resetAuth());
+    //     }
+    // }, [token]);
     // if (!token) {
     //     removeCookie("token");
     //     dispatch(resetAuth());
@@ -57,12 +57,6 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
             console.log("working userdata  error>>>>>>");
         }
     };
-
-    const { refreshAccessToken } = useRefreshToken();
-
-    useEffect(() => {
-        refreshAccessToken();
-    }, [])
 
     return (
         <div className="bg-light_grey pb-10 min-h-screen h-full overflow-hidden w-full">

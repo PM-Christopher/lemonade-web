@@ -21,12 +21,12 @@ const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDo
 
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? businesses.length - 1 : currentIndex - 1;
+        const newIndex = isFirstSlide ? businesses?.length - 1 : currentIndex - 1;
         setCurrentIndex(newIndex);
     };
 
     const nextSlide = () => {
-        const isLastSlide = currentIndex === businesses.length - 1;
+        const isLastSlide = currentIndex === businesses?.length - 1;
         const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
@@ -39,7 +39,7 @@ const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDo
         <div className="relative w-full overflow-hidden rounded-[12px]">
             <div className="grid grid-cols-4 gap-2 mt-3">
                 {
-                    businesses.map((business: BusinessInterface, index: number) => (
+                    businesses?.map((business: BusinessInterface, index: number) => (
                         <BusinessCard business={business} key={index}/>
                     ))
                 }

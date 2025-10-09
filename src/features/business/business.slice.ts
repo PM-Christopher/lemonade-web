@@ -1,19 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {TicketDetails} from "@/interfaces/EventInterface";
+import {BusinessInterface} from "@/interfaces/BusinessInterface";
 
 interface businessState {
     loading: boolean;
     error: boolean;
     job: any
-    businesses: any
+    businesses: BusinessInterface[];
+    business: any
 }
 
 const initialState: businessState = {
     loading: false,
     error: false,
     job: null,
-    businesses: null,
+    businesses: [],
+    business: null
 };
 
 const getBusinesses = createAsyncThunk("business/getBusinesses", async ({ token }: { token: string }, { rejectWithValue }) => {
@@ -34,6 +37,17 @@ const getBusinesses = createAsyncThunk("business/getBusinesses", async ({ token 
     }
 });
 
+const getBusiness = createAsyncThunk("business/getBusiness", async ({id}: {id: number}, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/business/${id}`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const requestService = createAsyncThunk("business/requestService", async ({ id, token, data}: {id: number, token: string, data: any}, { rejectWithValue }) => {
     const headers = {
@@ -109,6 +123,18 @@ const businessSlice = createSlice({
             state.loading = false;
         });
 
+        builder.addCase(getBusiness.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getBusiness.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.business = payload.data.business;
+        });
+        builder.addCase(getBusiness.rejected, (state) => {
+            state.loading = false;
+        });
+
+
         builder.addCase(requestService.pending, (state) => {
             state.loading = true;
         });
@@ -145,5 +171,5 @@ const businessSlice = createSlice({
 });
 
 export const { addJob } = businessSlice.actions
-export { requestService, getJob, filterBusiness, getBusinesses }
+export { requestService, getJob, filterBusiness, getBusinesses, getBusiness }
 export default businessSlice.reducer;

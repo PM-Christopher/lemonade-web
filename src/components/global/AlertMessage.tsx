@@ -4,12 +4,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import {toast, Toaster} from "react-hot-toast";
+import {RootState} from "@/redux/store";
 
 export const AlertMessage = () => {
     const dispatch = useDispatch();
-
-    // @ts-ignore
-    const { showToast } = useSelector((s: any) => s.toast);
+    const { showToast } = useSelector((s: RootState) => s.toast);
 
     useEffect(() => {
         let timer: any;

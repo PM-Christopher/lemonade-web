@@ -1,3 +1,14 @@
+interface Social {
+    name: string;
+    value: string;
+}
+
+export interface GuestListCardProps {
+    name: string;
+    type: string;
+    id: number;
+}
+
 export interface EventInterface {
     id: number
     user_id: number
@@ -12,7 +23,7 @@ export interface EventInterface {
     end_date: Date
     affiliate_program: boolean
     commission: number
-    socials?: string[]
+    socials?: Social[]
     qr_code?: string
     owns: boolean
     created_by: {
@@ -20,6 +31,7 @@ export interface EventInterface {
     }
     created_at: Date
     num_of_tickets: number
+    minimum_price: number
 }
 
 export interface TicketInterface {
@@ -64,4 +76,16 @@ export interface EventTicketInterface {
     ticket_code: string;
     qr_code: string;
     void: boolean;
+}
+
+export interface PromotionInterface {
+    id: number;
+    name: string;
+    price_option: 'one-time' | 'recurring' | string; // adjust if more options exist
+    price: number;
+    breakdown: string[];
+    status: 'active' | 'inactive' | string; // adjust based on possible statuses
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
 }

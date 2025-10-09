@@ -76,7 +76,7 @@ const AddBusinessPage = () => {
     };
 
 
-    const { data, loading } = useRequest(`/business-categories`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`/business-categories`, "GET")
 
     const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
     const [frameworksList, setFrameworksList] = useState<businessCategories[]>([]);
@@ -361,7 +361,7 @@ const AddBusinessPage = () => {
                                         <input
                                             id="search"
                                             type="text"
-                                            className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            className="pl-[5px] text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
                                             placeholder="Email address"
                                             value={formik.values.email}
                                             onChange={(e) => {
@@ -386,7 +386,7 @@ const AddBusinessPage = () => {
                                         <input
                                             id="search"
                                             type="text"
-                                            className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            className="pl-[5px] text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
                                             placeholder="Phone number"
                                             value={formik.values.phone_number}
                                             onChange={(e) => {
@@ -411,7 +411,7 @@ const AddBusinessPage = () => {
                                         <input
                                             id="search"
                                             type="text"
-                                            className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                                            className="pl-[5px] text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
                                             placeholder="Website URL"
                                             value={formik.values.website_url}
                                             onChange={(e) => {

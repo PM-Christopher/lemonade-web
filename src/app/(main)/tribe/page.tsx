@@ -77,17 +77,9 @@ export default function TribePage() {
 
   const { data, loading } = useRequest(
     `/tribes?type=${tribeType}`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
   const { data: tribe_cat } = useRequest(
     `/tribes-categories`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
 
   const [modalFlag, setModalFlag] = useState(false);
@@ -133,7 +125,6 @@ export default function TribePage() {
     },
     validationSchema: createTribeSchema,
     onSubmit: async (values) => {
-      console.log("titi");
       values.membership_fee = values.membership_fee ? values.membership_fee : 0;
       try {
         const { data } = await axiosInstance.post(
@@ -141,7 +132,6 @@ export default function TribePage() {
           values,
           getHeader()
         );
-        console.log({ data });
         if (data.status) {
           dispatch(
             updateToastifyReducer({
@@ -177,7 +167,6 @@ export default function TribePage() {
     },
   });
 
-  //   console.log("erro", formik.errors)
 
   const showError = (errorMessage: any) => {
     dispatch(
@@ -209,7 +198,6 @@ export default function TribePage() {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log({ data });
         if (data.status) {
           setImage(data.data.image);
           await formik.setFieldValue("image", data.data.image);

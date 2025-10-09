@@ -49,7 +49,7 @@ const CheckInsPage = ({params}: { params: { id: number } }) => {
                 <GuestSideMenu toggleMenu={toggleMenu} isOpen={isOpen} guestDetails={guestDetails} loading={guestDetailLoading} id={params.id} />
                 <div
                     className="bg-white flex justify-between p-[12px] px-10 border-b-grey-20 border-t-grey-20 border-t-[1px] border-b-[1px] items-center">
-                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
+                    <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px]"
                          onClick={() => router.back()}>
                         <ChevronLeft/>
                         <p className="font-sans font-semibold text-[16px] tracking-custom">
@@ -94,7 +94,7 @@ const CheckInsPage = ({params}: { params: { id: number } }) => {
                                             isOpen: isOpen,
                                             toggleMenu: toggleMenu,
                                             setSelectedGuest: setSelectedGuest
-                                        }}
+                                    }}
                                     />
                                 ))
                             )

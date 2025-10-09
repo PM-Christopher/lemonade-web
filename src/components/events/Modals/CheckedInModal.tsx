@@ -4,10 +4,11 @@ import Image from "next/image";
 
 type CheckedInInterface = {
     toggle: () => void,
-    isOpen: boolean
+    isOpen: boolean,
+    guestDetails: any
 }
 
-const CheckedInModal: React.FC<CheckedInInterface> = ({toggle, isOpen}) => {
+const CheckedInModal: React.FC<CheckedInInterface> = ({toggle, isOpen, guestDetails}) => {
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
@@ -28,7 +29,7 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({toggle, isOpen}) => {
                         <p className="font-sans font-semibold text-[20px] leading-[28px] text-center text-black-light">Check
                             in Successful!</p>
                         <p className="font-sans font-normal text-[16px] leading-[24px] tracking-custom text-center text-light-black">Guest
-                            with ticket ID HP092W2 has been successfully checked in.</p>
+                            with ticket ID {guestDetails?.ticket?.ticket_id.toUpperCase()} has been successfully checked in.</p>
                     </div>
                 </div>
                 <div className="mt-[40px]">

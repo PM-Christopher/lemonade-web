@@ -1,23 +1,51 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
-import {TicketDetails} from "@/interfaces/EventInterface";
+import {EventInterface, PromotionInterface, TicketDetails, TicketInterface} from "@/interfaces/EventInterface";
 import {likeThread} from "@/features/tribes/tribe.slice";
 
-interface tribeState {
+interface eventState {
     loading: boolean;
     error: boolean;
     tickets: TicketDetails[];
-    total: number,
-    event: null,
-    newTickets: [],
-    searchResults: [],
-    payment_setting: any,
-    free_event: any,
-    filtered: boolean,
-    filteredEvents: any[]
+    total: number;
+    event: EventInterface | null;
+    newTickets: [];
+    searchResults: [];
+    payment_setting: any;
+    free_event: any;
+    filtered: boolean;
+    filteredEvents: any[];
+    events: {
+        trending: any[],
+        this_week: any[],
+        upcoming: any[],
+    }
+    organizer_events: {
+        drafts: any[],
+        past: any[],
+        upcoming: any[]
+    };
+    affiliate_events: EventInterface[]
+    affiliate_data: any[]
+    ticket_data: {
+        event: EventInterface,
+        tickets: TicketInterface[]
+    }
+    guestList: any[]
+    guestDetails: any
+    promotions: PromotionInterface[]
+    promotion: any
+
+    eventsLoading: boolean;
+    filteredLoading: boolean;
+    affiliateLoading: boolean;
+    affiliateDataLoading: boolean;
+    guestDetailLoading: boolean;
+    checkInLoading: boolean;
+    promotionLoading: boolean;
 }
 
-const initialState: tribeState = {
+const initialState: eventState = {
     loading: false,
     error: false,
     tickets: [],
@@ -29,6 +57,33 @@ const initialState: tribeState = {
     free_event: {},
     filtered: false,
     filteredEvents: [],
+    events: {
+        trending: [],
+        this_week: [],
+        upcoming: [],
+    },
+    eventsLoading: false,
+    filteredLoading: false,
+    organizer_events: {
+        drafts: [],
+        past: [],
+        upcoming: []
+    },
+    affiliate_events: [],
+    affiliateLoading: false,
+    affiliateDataLoading: false,
+    affiliate_data: [],
+    ticket_data: {
+        event: {} as EventInterface,
+        tickets: [] as TicketInterface[]
+    },
+    guestList: [],
+    guestDetails: {},
+    guestDetailLoading: false,
+    checkInLoading: false,
+    promotions: [],
+    promotionLoading: false,
+    promotion: {}
 };
 
 const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, token, data}: {event_id: number, token: string, data: any}, { rejectWithValue }) => {
@@ -85,15 +140,21 @@ const editEvent = createAsyncThunk("event/editEvent", async ({ data, token, id }
     }
 });
 
-const getEvent = createAsyncThunk("event/getEvent", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const getEvents = createAsyncThunk("event/getEvents", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/events/${id}`, { headers });
+        const response = await axiosInstance.get(`/events/attendees`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getEvent = createAsyncThunk("event/getEvent", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/${id}`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -175,6 +236,126 @@ const filterEvent = createAsyncThunk("event/filterEvent", async ({ token, data }
     }
 });
 
+const getOrganizerEvents = createAsyncThunk("event/getOrganizerEvents", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getAffiliateEvents = createAsyncThunk("event/getAffiliateEvents", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/affiliate`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getAffiliateData = createAsyncThunk("event/getAffiliateData", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/affiliate/data`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getEventTicketData = createAsyncThunk("event/getEventTicketData", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/attendees/${id}/tickets`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getGuestList = createAsyncThunk("event/getGuestList", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/${id}/guest-list`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getGuestListDetails = createAsyncThunk("event/getGuestListDetails", async ({ id, guest_id }: { id: number, guest_id: number|null }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/${id}/${guest_id}/guest-details`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const checkInGuest = createAsyncThunk("event/checkInGuest", async ({ id, guest_id }: { id: number, guest_id: number|null }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.patch(`/events/${id}/${guest_id}/check-in`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getPromotions = createAsyncThunk("event/getPromotions", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/promotions`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const payForPromotion = createAsyncThunk("event/payForPromotion", async ({id, data}: {id: number, data: any}, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.post(`/events/${id}/promote-event`, data);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({ id, promotion_id }: { id: number, promotion_id:number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/${id}/${promotion_id}/event-promotion`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const eventSlice = createSlice({
     name: "event",
@@ -231,7 +412,7 @@ const eventSlice = createSlice({
         });
         builder.addCase(getEvent.fulfilled, (state, { payload }) => {
             state.loading = false;
-            state.event = payload?.data
+            state.event = payload?.data?.event
         });
         builder.addCase(getEvent.rejected, (state) => {
             state.loading = false;
@@ -282,19 +463,141 @@ const eventSlice = createSlice({
         });
 
         builder.addCase(filterEvent.pending, (state) => {
-            state.loading = true;
+            state.filteredLoading = true;
         });
         builder.addCase(filterEvent.fulfilled, (state, { payload }) => {
-            state.loading = false;
+            state.filteredLoading = false;
             state.filteredEvents = payload?.data?.events;
             state.filtered = true
         });
         builder.addCase(filterEvent.rejected, (state) => {
+            state.filteredLoading = false;
+        });
+
+        builder.addCase(getEvents.pending, (state) => {
+            state.eventsLoading = true;
+        });
+        builder.addCase(getEvents.fulfilled, (state, { payload }) => {
+            state.eventsLoading = false;
+            state.events = payload?.data
+        });
+        builder.addCase(getEvents.rejected, (state) => {
+            state.eventsLoading = false;
+        });
+
+        builder.addCase(getOrganizerEvents.pending, (state) => {
+            state.eventsLoading = true;
+        });
+        builder.addCase(getOrganizerEvents.fulfilled, (state, { payload }) => {
+            state.eventsLoading = false;
+            state.organizer_events = payload?.data
+        });
+        builder.addCase(getOrganizerEvents.rejected, (state) => {
+            state.eventsLoading = false;
+        });
+
+        builder.addCase(getAffiliateEvents.pending, (state) => {
+            state.affiliateLoading = true;
+        });
+        builder.addCase(getAffiliateEvents.fulfilled, (state, { payload }) => {
+            state.affiliateLoading = false;
+            state.affiliate_events = payload?.data?.events
+        });
+        builder.addCase(getAffiliateEvents.rejected, (state) => {
+            state.affiliateLoading = false;
+        });
+
+        builder.addCase(getAffiliateData.pending, (state) => {
+            state.affiliateDataLoading = true;
+        });
+        builder.addCase(getAffiliateData.fulfilled, (state, { payload }) => {
+            state.affiliateDataLoading = false;
+            state.affiliate_data = payload?.data
+        });
+        builder.addCase(getAffiliateData.rejected, (state) => {
+            state.affiliateDataLoading = false;
+        });
+
+        builder.addCase(getEventTicketData.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getEventTicketData.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.ticket_data = payload?.data
+        });
+        builder.addCase(getEventTicketData.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(getGuestList.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getGuestList.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.guestList = payload?.data?.guest_list;
+        });
+        builder.addCase(getGuestList.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(getGuestListDetails.pending, (state) => {
+            state.guestDetailLoading = true;
+        });
+        builder.addCase(getGuestListDetails.fulfilled, (state, { payload }) => {
+            state.guestDetailLoading = false;
+            state.guestDetails = payload?.data?.guest_details;
+        });
+        builder.addCase(getGuestListDetails.rejected, (state) => {
+            state.guestDetailLoading = false;
+        });
+
+        builder.addCase(checkInGuest.pending, (state) => {
+            state.checkInLoading = true;
+        });
+        builder.addCase(checkInGuest.fulfilled, (state, { payload }) => {
+            state.checkInLoading = false;
+            state.guestDetails = payload?.data?.guest_details;
+        });
+        builder.addCase(checkInGuest.rejected, (state) => {
+            state.checkInLoading = false;
+        });
+
+        builder.addCase(getPromotions.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getPromotions.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.promotions = payload?.data?.promotions;
+        });
+        builder.addCase(getPromotions.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(payForPromotion.pending, (state) => {
+            state.promotionLoading = true;
+        });
+        builder.addCase(payForPromotion.fulfilled, (state, { payload }) => {
+            state.promotionLoading = false;
+            state.promotions = payload?.data?.promotions;
+        });
+        builder.addCase(payForPromotion.rejected, (state) => {
+            state.promotionLoading = false;
+        });
+
+        builder.addCase(getEventPromotion.pending, (state) => {
+            state.promotionLoading = true;
+        });
+        builder.addCase(getEventPromotion.fulfilled, (state, { payload }) => {
+            state.promotionLoading = false;
+            state.promotion = payload?.data?.promotion;
+        });
+        builder.addCase(getEventPromotion.rejected, (state) => {
+            state.promotionLoading = false;
+        });
+
     }
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion }
 export default eventSlice.reducer;

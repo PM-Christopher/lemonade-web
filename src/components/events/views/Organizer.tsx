@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+"use client"
+import React, {useEffect, useState} from 'react';
 import Upcoming from "@/components/events/views/Organizer/Upcoming";
 import PastEvent from "@/components/events/views/Organizer/PastEvent";
 import Draft from "@/components/events/views/Organizer/Draft";
@@ -8,6 +9,9 @@ import {useRequest} from "@/hooks/useRequest";
 import {PlusIcon} from "lucide-react";
 import {useMediaQuery} from "react-responsive";
 import {useRouter} from "next/navigation";
+import {useAppDispatch} from "@/redux/hook";
+import {RootState} from "@/redux/store";
+import {getOrganizerEvents} from "@/features/events/event.slice";
 
 type OrganizerSectionInterface = {
     activatePaymentModal: () => void,
@@ -15,30 +19,26 @@ type OrganizerSectionInterface = {
 }
 
 const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaymentModal, togglePaymentModel}) => {
+    const dispatch = useAppDispatch()
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const router = useRouter()
     const [orOption, setOrOption] = useState("upcoming")
-    const {authToken} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
+    const { organizer_events, eventsLoading } = useSelector((state: RootState) => state.event)
 
-    const { data, loading } = useRequest(`/events`, "GET", {}, true, getHeader())
+    useEffect(() => {
+        dispatch(getOrganizerEvents())
+    }, []);
 
     const renderView = () => {
         switch (orOption) {
             case "upcoming":
-                return <Upcoming events={data?.upcoming} loading={loading} />
+                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading} />
             case "past":
-                return <PastEvent events={data?.past} loading={loading} />
+                return <PastEvent events={organizer_events?.past} loading={eventsLoading} />
             case "draft":
-                return <Draft events={data?.drafts} loading={loading} />
+                return <Draft events={organizer_events?.drafts} loading={eventsLoading} />
             default:
-                return <Upcoming events={data?.upcoming} loading={loading} />
+                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading} />
         }
     }
 

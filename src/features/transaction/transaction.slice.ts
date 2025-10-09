@@ -13,15 +13,9 @@ const initialState: transactionState = {
     transaction_data: null,
 };
 
-const verifyTransaction = createAsyncThunk("transaction/verifyTransaction", async ({token, data}: {token: string, data: any}, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const verifyTransaction = createAsyncThunk("transaction/verifyTransaction", async ({data}: {data: any}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/transaction/verify-transaction`, data, { headers });
+        const response = await axiosInstance.post(`/transaction/verify-transaction`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

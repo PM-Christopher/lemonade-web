@@ -1,6 +1,7 @@
 import {useRef, useCallback, useEffect} from "react";
 import {axiosInstance} from "@/lib/axiosInstane";
 import { useCookies } from "react-cookie";
+import Cookies from "js-cookie"
 
 export const useRefreshToken = () => {
     const isRefreshing = useRef(false);
@@ -11,21 +12,19 @@ export const useRefreshToken = () => {
 
         isRefreshing.current = true
         try {
-            const res = await axiosInstance.post('/auth/refresh', {})
-            // console.log({res})
-            const {access_token} = res.data
+            console.log({here: "here"})
+            const res = await axiosInstance.post('/auth/refresh', {
+                refresh_token: Cookies.get("refresh_token"),
+            })
+            const {token} = res?.data?.data
 
 
-            if(!access_token) throw new Error(("No access token provided"));
+            if(!token) throw new Error(("No access token provided"));
 
-            setCookie("token", access_token, {
-                path: "/",
-                maxAge: 3600 * 6, // Expires after 6hrs
-                sameSite: false,
-            });
+            Cookies.set("token", token, { expires: 1 / 96, sameSite: "Lax" });
         }
         catch(err) {
-            // console.log({err})
+            console.log({err})
             // window.location.href = "/login";
         } finally {
             isRefreshing.current = false

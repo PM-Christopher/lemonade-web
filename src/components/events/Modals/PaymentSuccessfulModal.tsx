@@ -2,13 +2,16 @@ import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import PromotionImage from "@/images/promoteEventIcon.png";
+import {formatLongDate} from "@/lib/dateTimeFormatter";
+import {formatNumberWithCommas} from "@/lib/formatNumber";
 
 type PSInterface = {
     toggle: () => void,
-    isOpen: boolean
+    isOpen: boolean,
+    promotion: any
 }
 
-const PaymentSuccessfulModal: React.FC<PSInterface> = ({toggle, isOpen}) => {
+const PaymentSuccessfulModal: React.FC<PSInterface> = ({toggle, isOpen, promotion}) => {
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
@@ -35,14 +38,17 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({toggle, isOpen}) => {
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex flex-col">
-                        <p className="font-sans font-semibold text-[20px] leading-[20px]">Instagram Feed Post</p>
+                        <p className="font-sans font-semibold text-[20px] leading-[20px]">
+                            {promotion?.name}
+                        </p>
                     </div>
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex flex-col">
                         <p className="font-sans font-normal text-[14px] text-text-grey leading-[20px]">Date</p>
-                        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">SAT,
-                            MAR 30</p>
+                        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">
+                            {formatLongDate(promotion?.promotion_date, 'mid')?.toUpperCase()}
+                        </p>
                     </div>
                 </div>
                 <div className="mt-[24px]">
@@ -54,14 +60,16 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({toggle, isOpen}) => {
                 <div className="mt-[24px]">
                     <div className="flex flex-col">
                         <p className="font-sans font-normal text-[14px] text-text-grey leading-[20px]">Amount</p>
-                        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">₦500,000</p>
+                        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">
+                            ₦{formatNumberWithCommas(promotion?.price)}
+                        </p>
                     </div>
                 </div>
                 <div className="mt-[40px]">
                     <button
                         className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
                         onClick={toggle}>
-                        <p className="font-sans font-semi-normal text-[16px] text-white">Go to business</p>
+                        <p className="font-sans font-semi-normal text-[16px] text-white">Go to event</p>
                     </button>
                 </div>
             </div>

@@ -15,4 +15,6 @@ export interface BusinessInterface {
     website_url: string;
     city: string;
     country: string;
+    hasBoost: boolean;
+    owner: boolean;
 }

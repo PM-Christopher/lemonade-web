@@ -31,7 +31,7 @@ export default function ProfileStepsPage() {
         };
     };
 
-    const { data } = useRequest("/profile/user", "GET", {}, true, getHeader());
+    const { data } = useRequest("/profile/user");
 
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
