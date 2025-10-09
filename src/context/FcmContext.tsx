@@ -56,7 +56,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
             }
         };
 
-        // Foreground listener
+        // Foreground listener on the app
         const unsubscribe = onMessage(messaging, (payload) => {
             setNotification(payload?.notification);
             setShowToaster(true);
