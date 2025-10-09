@@ -34,10 +34,6 @@ const AgentDetailsPage = ({ params }: { params: { id: number } }) => {
 
   const { data, loading } = useRequest(
     `events/affiliate/${params.id}`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
 
   const toggleModal = () => {

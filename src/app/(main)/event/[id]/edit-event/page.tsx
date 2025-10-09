@@ -54,10 +54,6 @@ const EditEventPage = ({ params }: { params: { id: number } }) => {
   };
   const { data, loading } = useRequest(
     `/events/${params.id}`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
   const [eventType, setEventType] = useState("");
   const [checked, setChecked] = useState(false);
