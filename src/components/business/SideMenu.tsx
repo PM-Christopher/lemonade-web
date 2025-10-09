@@ -21,7 +21,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, detailsToggl
             },
         };
     }
-    const { data, loading } = useRequest(`/business/jobs/all`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`/business/jobs/all`)
 
     const renderCards = () => {
         switch (jobType) {
