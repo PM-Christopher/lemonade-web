@@ -24,10 +24,6 @@ const BillingHistoryPage = () => {
   console.log({ subscription });
   const { data, loading } = useRequest(
     `profile/subscription/billing-history`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
   return (
     <MainLayout>

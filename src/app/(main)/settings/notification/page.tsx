@@ -22,10 +22,6 @@ const NotificationSettingsPage = () => {
 
   const { data, loading } = useRequest(
     `profile/notification-settings`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
   const [isOpen, setIsOpen] = useState(false);
   const [notificationType, setNotificationType] = useState("");

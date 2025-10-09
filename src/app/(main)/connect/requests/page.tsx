@@ -45,10 +45,6 @@ const ConnectRequestPage = () => {
 
   const { data, loading, getData} = useRequest(
     "/connect/get-invites",
-    "GET",
-    {},
-    true,
-    getHeader()
   );
 
   const handleSearch = (e: any) => {

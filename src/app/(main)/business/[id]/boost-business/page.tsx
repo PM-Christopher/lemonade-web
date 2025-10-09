@@ -39,7 +39,7 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
     const [selectedPackages, setSelectedPackages] = useState<BoostPackages[]>([])
     const [pkgPrice, setPkgPrice] = useState<number|null>(null);
 
-    const { data, loading } = useRequest(`/listing/boosts`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`/listing/boosts`)
 
     const editBusinessSchema = yup.object({
         "package": yup

@@ -34,7 +34,7 @@ const JobsPage = ({params}: {params: {id: number}}) => {
         }
     }
 
-    const { data, loading } = useRequest(`/listing/${params.id}/job-data`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`/listing/${params.id}/job-data`)
 
     return (
         <MainLayout>

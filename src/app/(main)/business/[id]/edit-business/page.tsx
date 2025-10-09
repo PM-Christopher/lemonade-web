@@ -63,8 +63,8 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
         };
     }
 
-    const { data, loading } = useRequest(`/business/${params.id}`, "GET", {}, true, getHeader())
-    const { data: categories, loading: categoryLoading } = useRequest(`/business-categories`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`/business/${params.id}`)
+    const { data: categories, loading: categoryLoading } = useRequest(`/business-categories`)
 
     const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && inputValue.trim() !== '') {

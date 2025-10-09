@@ -19,7 +19,7 @@ const PricingPage = () => {
         };
     }
 
-    const { data, loading } = useRequest(`subscription`, "GET", {}, true, getHeader())
+    const { data, loading } = useRequest(`subscription`)
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">

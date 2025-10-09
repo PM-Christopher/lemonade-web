@@ -55,7 +55,6 @@ const ProfileSettingsPage = ({}) => {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log({ data });
         if (data.status) {
           setAvatar(data.data.image);
           // await formik.setFieldValue("profile_image", data.data.image)

@@ -27,10 +27,6 @@ function WalletSettingsPage({}) {
 
   const { data, loading } = useRequest(
     `profile/wallet`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
   const [isRefOpen, setIsRefOpen] = useState(false);
   const [isAfOpen, setIsAfOpen] = useState(false);

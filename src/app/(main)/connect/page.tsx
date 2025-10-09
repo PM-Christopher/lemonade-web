@@ -41,9 +41,9 @@ const ConnectPage = () => {
         };
     }
 
-    const { data } = useRequest("/messages", "GET", {}, true, getHeader())
+    const { data } = useRequest("/messages")
 
-    const { data: connection_info, loading: connect_loading } = useRequest("/connect", "GET", {}, true, getHeader())
+    const { data: connection_info, loading: connect_loading } = useRequest("/connect")
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
