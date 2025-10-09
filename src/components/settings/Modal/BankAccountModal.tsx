@@ -46,10 +46,6 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
 
   const { data, loading } = useRequest(
     `/get-all-banks`,
-    "GET",
-    {},
-    true,
-    getHeader()
   );
 
   const bankAccountSchema = yup.object({
