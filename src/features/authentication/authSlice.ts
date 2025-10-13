@@ -3,7 +3,7 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import {buyTicket} from "@/features/events/event.slice";
 
 interface authState {
-    user: {} | null;
+    user: any | null;
     loading: boolean;
     error: boolean;
     authToken: string | null;
@@ -31,6 +31,71 @@ const initialState: authState = {
     appSettings: null,
     code: null
 };
+
+const verifyEmailOtp = createAsyncThunk("auth/verifyEmailOtp", async ({ data, url, token }: { data: any, url: string, token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`${url}`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const resendOtp = createAsyncThunk("auth/resendOtp", async ({ token }: { token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.post(`/otp/resend`, {}, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const forgotPassword = createAsyncThunk("auth/forgotPassword", async ({ data }: { data: { email: string } }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.post(`/auth/forgot-password`, data);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const resetPassword = createAsyncThunk("auth/resetPassword", async ({ data, token }: { data: { password: string, confirm_password: string }, token: string }, { rejectWithValue }) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+    try {
+        const response = await axiosInstance.post(`/auth/reset-password`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, token, url }: { data: any, token: string, url: string }, { rejectWithValue }) => {
     const headers = {
@@ -67,7 +132,6 @@ const changePassword = createAsyncThunk("auth/changePassword", async ({ data, to
         return rejectWithValue(err.response.data);
     }
 });
-
 
 const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
     const headers = {
@@ -210,7 +274,53 @@ const authSlice = createSlice({
             state.loading = false;
         });
 
+        builder.addCase(verifyEmailOtp.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(verifyEmailOtp.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.error = false
+        });
+        builder.addCase(verifyEmailOtp.rejected, (state) => {
+            state.loading = false;
+            state.error = true;
+        });
 
+        builder.addCase(resendOtp.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(resendOtp.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.error = false
+        });
+        builder.addCase(resendOtp.rejected, (state) => {
+            state.loading = false;
+            state.error = true;
+        });
+
+        builder.addCase(forgotPassword.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(forgotPassword.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.error = false
+        });
+        builder.addCase(forgotPassword.rejected, (state) => {
+            state.loading = false;
+            state.error = true;
+        });
+
+        builder.addCase(resetPassword.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(resetPassword.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.error = false
+        });
+        builder.addCase(resetPassword.rejected, (state) => {
+            state.loading = false;
+            state.error = true;
+        });
 
 
         builder.addCase(changePassword.pending, (state) => {
@@ -247,12 +357,6 @@ const authSlice = createSlice({
             state.loading = false;
         });
 
-        builder.addCase(logout.pending, (state) => {
-            state.loading = true;
-        });
-
-
-
         builder.addCase(updateUserImage.pending, (state) => {
             state.loading = true;
         });
@@ -262,6 +366,10 @@ const authSlice = createSlice({
         });
         builder.addCase(updateUserImage.rejected, (state) => {
             state.loading = false;
+        });
+
+        builder.addCase(logout.pending, (state) => {
+            state.loading = true;
         });
 
         builder.addCase(logout.fulfilled, (state, { payload }) => {
@@ -293,6 +401,6 @@ export const {
     setSubscriptionId,
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword }
 
 export default authSlice.reducer;

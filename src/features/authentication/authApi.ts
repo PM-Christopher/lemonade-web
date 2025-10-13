@@ -47,7 +47,7 @@ export const signup = async (
         dispatch(
             updateToastifyReducer({
                 show: true,
-                message: "Error creating new account",
+                message: error?.response?.data?.message || "Something went wrong. Please try again.",
                 type: "error",
             })
         );

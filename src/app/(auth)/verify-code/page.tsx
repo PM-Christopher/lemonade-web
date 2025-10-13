@@ -18,7 +18,7 @@ import {useCookies} from "react-cookie";
 import {useSelector} from "react-redux";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {authFailure, authStart, loadStop} from "@/features/authentication/authSlice";
+import {authFailure, authStart, loadStop, resendOtp, verifyEmailOtp} from "@/features/authentication/authSlice";
 import {setIsRouting} from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
@@ -26,6 +26,8 @@ import Link from "next/link";
 
 
 export default function VerifyCodePage() {
+    const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
+    const STORAGE_KEY = process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY || "otp_timer_start";
     const router  = useRouter()
     const dispatch = useAppDispatch();
     const [cookie, setCookie, removeCookie] = useCookies([
@@ -34,8 +36,9 @@ export default function VerifyCodePage() {
         "email"
     ]);
     const { user } = useSelector((state: any) => state.auth)
-    const [seconds, setSeconds] = useState(60);
-    const [canResend, setCanResend] = useState(false);
+    const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
+    const [canResend, setCanResend] = useState<boolean>(false);
+
 
     const getHeader = () => {
         const token = cookie.newToken;
@@ -47,19 +50,75 @@ export default function VerifyCodePage() {
     };
 
     useEffect(() => {
+        const savedStartTime = localStorage.getItem(STORAGE_KEY);
+
+        if (savedStartTime) {
+            // calculate how much time has passed
+            const elapsed = Math.floor((Date.now() - parseInt(savedStartTime, 10)) / 1000);
+            const remaining = COUNTDOWN_DURATION - elapsed;
+
+            if (remaining > 0) {
+                // Continue from where it left off
+                setSeconds(remaining);
+                setCanResend(false);
+            } else {
+                // Timer already expired
+                setSeconds(0);
+                setCanResend(true);
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        } else {
+            // No key yet, start a fresh countdown
+            const startTime = Date.now();
+            localStorage.setItem(STORAGE_KEY, startTime.toString());
+            setSeconds(COUNTDOWN_DURATION);
+            setCanResend(false);
+        }
+    }, []);
+
+    useEffect(() => {
         if (seconds > 0) {
             const timer = setInterval(() => {
-                setSeconds((prev) => prev - 1);
+                setSeconds((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        setCanResend(true);
+                        localStorage.removeItem(STORAGE_KEY);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
             }, 1000);
             return () => clearInterval(timer);
-        } else {
-            setCanResend(true);
         }
     }, [seconds]);
 
-    const handleResend = () => {
-        setSeconds(60);
-        setCanResend(false);
+    const handleResend = async () => {
+        const { payload } = await dispatch(resendOtp({token: cookie.newToken}))
+        formik.setFieldValue('code', null)
+        if (!payload.status) {
+            setCanResend(true)
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: payload?.message,
+                    type: "error",
+                })
+            );
+            return
+        } else {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: `A new code has been sent to ${user?.email}. Please try again`,
+                    type: "success",
+                })
+            );
+            const newStartTime = Date.now();
+            localStorage.setItem(STORAGE_KEY, newStartTime.toString());
+            setSeconds(COUNTDOWN_DURATION);
+            setCanResend(false);
+        }
     };
 
     //form validation
@@ -70,14 +129,13 @@ export default function VerifyCodePage() {
             .required("Code is required"),
     });
 
-
     const formik = useFormik({
         initialValues: {
             code: "",
         },
         validationSchema: verifySchema,
+        validateOnChange: false,
         onSubmit: async (values) => {
-            console.log({values})
             await verifyOtp(values);
         },
     })
@@ -85,38 +143,32 @@ export default function VerifyCodePage() {
     const [otp, setOtp] = useState(formik.values.code);
 
     const verifyOtp = async (values: any) => {
-        dispatch(authStart())
-        try {
-            const { data } = await axiosInstance.post("/auth/check-otp", { ...values }, getHeader());
-            if (data.success || data.status) {
-                dispatch(setIsRouting(true));
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Email verified",
-                        type: "success",
-                    })
-                );
-                formik.resetForm();
-                router.push("/reset-password");
-                return false
-            }
-            // return false
-        } catch (err: any) {
-            console.log({err})
-            dispatch(authFailure());
+        const {payload} = await dispatch(verifyEmailOtp({data: values, url: "/auth/check-otp", token: cookie.newToken}))
+        if (!payload.status) {
+            setCanResend(true)
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: err?.response?.data?.message || "error",
+                    message: payload?.message,
                     type: "error",
                 })
             );
-            return true;
-        } finally {
-            dispatch(loadStop())
+            formik.setFieldValue('code', null)
+            return
+        } else if (payload.status) {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Email verified",
+                    type: "success",
+                })
+            );
+            formik.resetForm();
+            router.push("/reset-password");
+            return false
         }
     }
+
     return (
         <AuthLayout>
             <section className="bg-gradient-light-green">
@@ -156,18 +208,46 @@ export default function VerifyCodePage() {
                                     <OtpInput
                                         value={formik.values.code}
                                         onChange={(e) => {
-                                            setOtp(e)
-                                            formik.setFieldValue('code', e)
+                                            setOtp(e);
+                                            formik.setFieldValue("code", e, true);
+                                            // Automatically submit when OTP is fully entered
+                                            if (e.length === 4) {
+                                                setTimeout(() => {
+                                                    formik.submitForm();
+                                                }, 0);
+                                            }
                                         }}
                                         numInputs={4}
-                                        renderSeparator={<span> </span>}
-                                        renderInput={(props) => <input {...props} />}
-                                        containerStyle="gap-2"
-                                        inputStyle={{
-                                            width: "48px",
-                                            height: "48px",
-                                            background: "#F9FAFA",
-                                            borderRadius: "12px"
+                                        renderSeparator={<span style={{ width: "12px" }}></span>}
+                                        renderInput={(props) => (
+                                            <div
+                                                style={{
+                                                    borderRadius: "12px",
+                                                    padding: "2px", // thickness of gradient border
+                                                    background: "linear-gradient(90deg, #9BE303, #7FBB00)", // gradient green
+                                                }}
+                                            >
+                                                <input
+                                                    {...props}
+                                                    style={{
+                                                        width: "56px",
+                                                        height: "56px",
+                                                        borderRadius: "10px", // slightly smaller to show gradient
+                                                        border: "none",
+                                                        backgroundColor: "#E5E7EB", // gray background
+                                                        color: "#111827",
+                                                        textAlign: "center",
+                                                        fontSize: "20px",
+                                                        fontWeight: 500,
+                                                        outline: "none",
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                        containerStyle={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            gap: "12px",
                                         }}
                                     />
                                     {checkError("code", formik) ? (
@@ -178,10 +258,13 @@ export default function VerifyCodePage() {
                                 </div>
                             </CardContent>
                             <CardContent className="flex justify-center mt-[10px] mb-[10px]">
-                                <div>
+                                <div className="flex justify-center mt-[10px] mb-[5px] cursor-pointer">
                                     {canResend ? (
-                                        <p className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer">
-                                            Send now
+                                        <p
+                                            className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer"
+                                            onClick={handleResend}
+                                        >
+                                            Send code again
                                         </p>
                                     ) : (
                                         <p className="font-sans font-semi-normal text-light-green text-[16px]">

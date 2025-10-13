@@ -17,43 +17,65 @@ import {useAppDispatch} from "@/redux/hook";
 import {useCookies} from "react-cookie";
 import {useSelector} from "react-redux";
 import Link from "next/link";
+import {RootState} from "@/redux/store";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import {resetPassword} from "@/features/authentication/authSlice";
+import * as yup from "yup";
+import {useFormik} from "formik";
 
 
 export default function ResetPasswordPage() {
     const router  = useRouter()
     const dispatch = useAppDispatch();
+    const { loading } = useSelector((state: RootState) => state.auth)
     const [cookie, setCookie, removeCookie] = useCookies([
         "token",
         "newToken",
     ]);
 
-    const getHeader = () => {
-        const token = cookie.newToken;
-        console.log({token})
-        return {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    };
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
+    const resetPasswordSchema = yup.object({
+        password: yup
+            .string()
+            .required("Password is required"),
 
-    const [loading, setLoading] = useState(false)
+        confirm_password: yup
+            .string()
+            .oneOf([yup.ref("password")], "Passwords must match")
+            .required("Confirm password is required"),
+    });
 
-    const onSignup = async () => {
+    const formik = useFormik({
+        initialValues: {
+            password: "",
+            confirm_password: "",
+        },
+        validationSchema: resetPasswordSchema,
+        onSubmit: async (values) => {
+            await onSignup(values)
+        },
+    })
+
+    const onSignup = async (values: any) => {
         try {
-            setLoading(true)
-            const res = await axiosInstance.post("/auth/reset-password", {password, confirm_password: confirmPassword}, getHeader())
-            if (res.status === 200) {
-                setLoading(false)
-                toast.success("Password reset successfully")
+            const { payload } = await dispatch(resetPassword({token: cookie.newToken, data: {password: values.password, confirm_password: values.confirm_password}}))
+            if (payload.status) {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Password reset successfully",
+                        type: "success",
+                    })
+                );
                 router.push("/login")
             }
         } catch (error: any) {
-            toast.error(error.message)
-        }finally{
-            setLoading(false)
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: error.message,
+                    type: "error",
+                })
+            );
         }
     }
 
@@ -78,48 +100,80 @@ export default function ResetPasswordPage() {
                         </Link>
                     </div>
                 </div>
-                <div className="min-h-screen flex flex-wrap items-start mt-10 justify-center gap-16">
-                    <div className="flex flex-col">
-                        <div>
-                            <p className="text-[40px] font-bold leading-[48px] font-ruso">Reset password</p>
-                            <p className="text-[18px] font-normal leading-[27px] font-sans mt-2">
-                                Stronger password, stronger protection! Combine <br/> uppercase, lowercase, numbers, and
-                                symbols to <br/> protect your account.
-                            </p>
+                <form onSubmit={formik.handleSubmit}>
+                    <div className="min-h-screen flex flex-wrap items-start mt-10 justify-center gap-16">
+                        <div className="flex flex-col">
+                            <div>
+                                <p className="text-[40px] font-bold leading-[48px] font-ruso">Reset password</p>
+                                <p className="text-[18px] font-normal leading-[27px] font-sans mt-2">
+                                    Stronger password, stronger protection! Combine <br/> uppercase, lowercase, numbers, and
+                                    symbols to <br/> protect your account.
+                                </p>
+                            </div>
+                            <div>
+                                <Image src={"/images/reset_password.png"} alt="signup image" width={511.06} height={519.77}/>
+                            </div>
                         </div>
-                        <div>
-                            <Image src={"/images/reset_password.png"} alt="signup image" width={511.06} height={519.77}/>
-                        </div>
+                        <Card className="p-10 w-[480px]">
+                            <CardContent className="grid gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="password" className="font-label">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                        value={formik.values.password}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    <span className="text-[12px] font-sans text-grey-40">Password must be at least 8 character long</span>
+                                    {formik.touched.password && formik.errors.password ? (
+                                        <p className="text-[#FF8D8D] text-[12px] text-left">
+                                            {formik.errors.password}
+                                        </p>
+                                    ) : null}
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="password" className="font-label">Confirm password</Label>
+                                    <Input
+                                        id="confirm_password"
+                                        type="password"
+                                        className="h-12 rounded-xl bg-light_grey form-font border-0"
+                                        value={formik.values.confirm_password}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.confirm_password && formik.errors.confirm_password ? (
+                                        <p className="text-[#FF8D8D] text-[12px] text-left">
+                                            {formik.errors.confirm_password}
+                                        </p>
+                                    ) : null}
+                                </div>
+                            </CardContent>
+                            <CardContent className="flex flex-col space-y-2">
+                                <Button
+                                    type="submit"
+                                    disabled={loading || !formik.isValid || !formik.dirty}
+                                    aria-busy={loading}
+                                    aria-disabled={loading || !formik.isValid}
+                                    className={`w-full h-12 font-semibold rounded-xl flex items-center justify-center gap-2 transition-all duration-200
+                                ${loading || !formik.isValid
+                                        ? "bg-green-700 cursor-not-allowed opacity-90"
+                                        : "bg-gradient-green hover:brightness-110 active:scale-[0.98]"}
+                                    `}>
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 animate-spin"/>
+                                            <span>Saving...</span>
+                                        </>
+                                    ) : (
+                                        "Save password"
+                                    )}
+                                </Button>
+                            </CardContent>
+                        </Card>
                     </div>
-                    <Card className="p-10 w-[480px]">
-                        <CardContent className="grid gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="password" className="font-label">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                                <span className="text-[12px] font-sans text-grey-40">Password must be at least 8 character long</span>
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="password" className="font-label">Confirm password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    className="h-12 rounded-xl bg-light_grey form-font border-0"
-                                    onChange={e => setConfirmPassword(e.target.value)}
-                                />
-                            </div>
-                        </CardContent>
-                        <CardContent className="flex flex-col space-y-2">
-                            <Button className="auth-button" onClick={onSignup}>
-                                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : "Save password"}
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </div>
+                </form>
             </section>
         </AuthLayout>
     )

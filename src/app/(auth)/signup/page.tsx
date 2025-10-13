@@ -24,6 +24,8 @@ import {setIsRouting} from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {authSuccess, authUser} from "@/features/authentication/authSlice";
 import { useGoogleLogin } from '@react-oauth/google';
+import TermsOfUseModal from "@/components/TermsOfUseModal";
+import PrivacyPolicyModal from "@/components/PrivacyPolicyModal";
 
 type valuesType = {
     email: string;
@@ -35,6 +37,16 @@ export default function SignupPage() {
     const router  = useRouter()
     const dispatch = useAppDispatch();
     const [cookie, setCookie] = useCookies(["token", "newToken"]);
+    const [termOpen, setTermOpen] = React.useState(false);
+    const [privacyOpen, setPrivacyOpen] = React.useState(false);
+
+    const togglePrivacy = () => {
+        setPrivacyOpen(!privacyOpen);
+    }
+
+    const toggleTermOpen = () => {
+        setTermOpen(!termOpen);
+    }
 
     const passwordRules =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~])(?=.{8,})/;
@@ -267,13 +279,19 @@ export default function SignupPage() {
                                 </div>
                             </CardContent>
                             <CardFooter className="flex flex-col justify-center mt-4">
-                                <p className="text-[14px] font-normal w-[295px] tablet:w-[384px] text-center">By continuing you agree with Lemonade
-                                    network’s <span className="text-mid-green underline cursor-pointer">Terms of Use</span> and <span className="text-mid-green underline cursor-pointer">Privacy Policies</span> </p>
+                                <p className="text-[14px] font-normal w-[295px] tablet:w-[384px] text-center">
+                                    By continuing you agree with Lemonade network’s{" "}
+                                    <span className="text-mid-green underline cursor-pointer" onClick={toggleTermOpen}>Terms of Use</span>{" "}
+                                    and{" "}
+                                    <span className="text-mid-green underline cursor-pointer" onClick={togglePrivacy}>Privacy Policy</span>
+                                </p>
                             </CardFooter>
                         </Card>
                     </form>
                 </div>
             </section>
+            <TermsOfUseModal toggle={toggleTermOpen} option={termOpen} />
+            <PrivacyPolicyModal toggle={togglePrivacy} option={privacyOpen} />
         </AuthLayout>
     )
 }

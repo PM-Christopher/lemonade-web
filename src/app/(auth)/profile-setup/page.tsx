@@ -11,27 +11,24 @@ import {useCookies} from "react-cookie";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {useSelector} from "react-redux";
 import Link from "next/link";
+import {RootState} from "@/redux/store";
+import {useAppDispatch} from "@/redux/hook";
+import {getUserProfile} from "@/features/settings/profile.slice";
 
 
 
 export default function ProfileStepsPage() {
     const router  = useRouter()
     const [loading, setLoading] = useState(false)
+    const dispatch = useAppDispatch()
     const [step, setStep] = useState(1);
     const [cookies, setCookie] = useCookies(["newToken"]);
     const { user } = useSelector((state: any) => state.auth)
+    const { data } = useSelector((state: RootState) => state.profile)
 
-    const getHeader = () => {
-        const token = cookies.newToken;
-        console.log({cookies})
-        return {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    };
-
-    const { data } = useRequest("/profile/user");
+    useEffect(() => {
+        dispatch(getUserProfile({token: cookies.newToken}))
+    }, []);
 
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);

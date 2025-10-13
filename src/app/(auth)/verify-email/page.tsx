@@ -1,6 +1,6 @@
 'use client'
 import React, {useEffect, useState} from "react"
-import { useRouter } from "next/navigation"
+import {useRouter} from "next/navigation"
 import {
     Card,
     CardContent,
@@ -11,27 +11,29 @@ import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import {authFailure, authStart, loadStop} from "@/features/authentication/authSlice";
-import { useAppDispatch } from "@/redux/hook";
-import {axiosInstance} from "@/lib/axiosInstane";
+import { resendOtp, verifyEmailOtp } from "@/features/authentication/authSlice";
+import {useAppDispatch} from "@/redux/hook";
 import {useCookies} from "react-cookie";
-import { setIsRouting } from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {useSelector} from "react-redux";
 import Link from "next/link";
+import {RootState} from "@/redux/store";
 
 
 export default function VerifyPage() {
-    const router  = useRouter()
+    const router = useRouter()
     const dispatch = useAppDispatch();
     const [cookie, setCookie, removeCookie] = useCookies([
         "token",
         "newToken",
     ]);
-    const { user, code } = useSelector((state: any) => state.auth)
-    const [seconds, setSeconds] = useState(60);
-    const [canResend, setCanResend] = useState(false);
+    const {user, code} = useSelector((state: RootState) => state.auth)
+    const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
+    const STORAGE_KEY = process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY || "otp_timer_start";
+
+    const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
+    const [canResend, setCanResend] = useState<boolean>(false);
 
     const getHeader = () => {
         const token = cookie.newToken;
@@ -43,43 +45,92 @@ export default function VerifyPage() {
     };
 
     useEffect(() => {
+        const savedStartTime = localStorage.getItem(STORAGE_KEY);
+
+        if (savedStartTime) {
+            // calculate how much time has passed
+            const elapsed = Math.floor((Date.now() - parseInt(savedStartTime, 10)) / 1000);
+            const remaining = COUNTDOWN_DURATION - elapsed;
+
+            if (remaining > 0) {
+                // Continue from where it left off
+                setSeconds(remaining);
+                setCanResend(false);
+            } else {
+                // Timer already expired
+                setSeconds(0);
+                setCanResend(true);
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        } else {
+            // No key yet, start a fresh countdown
+            const startTime = Date.now();
+            localStorage.setItem(STORAGE_KEY, startTime.toString());
+            setSeconds(COUNTDOWN_DURATION);
+            setCanResend(false);
+        }
+    }, []);
+
+    useEffect(() => {
         if (seconds > 0) {
             const timer = setInterval(() => {
-                setSeconds((prev) => prev - 1);
+                setSeconds((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        setCanResend(true);
+                        localStorage.removeItem(STORAGE_KEY);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
             }, 1000);
             return () => clearInterval(timer);
-        } else {
-            setCanResend(true);
         }
     }, [seconds]);
 
-    const handleResend = () => {
-        setSeconds(60);
-        setCanResend(false);
-    };
-
-    useEffect(() => {
-        if (code) {
-            formik.setFieldValue('code', code)
+    const handleResend = async () => {
+        const { payload } = await dispatch(resendOtp({token: cookie.newToken}))
+        formik.setFieldValue('code', null)
+        if (!payload.status) {
+            setCanResend(true)
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: payload?.message,
+                    type: "error",
+                })
+            );
+            return
+        } else {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: `A new code has been sent to ${user?.email}. Please try again`,
+                    type: "success",
+                })
+            );
+            const newStartTime = Date.now();
+            localStorage.setItem(STORAGE_KEY, newStartTime.toString());
+            setSeconds(COUNTDOWN_DURATION);
+            setCanResend(false);
         }
-    }, [code])
+    };
 
     //form validation
     const verifySchema = yup.object({
         code: yup
             .string()
-            .length(4)
+            .length(4, 'Code must be 4 characters')
             .required("Code is required"),
     });
-
 
     const formik = useFormik({
         initialValues: {
             code: "",
         },
         validationSchema: verifySchema,
+        validateOnChange: false,
         onSubmit: async (values) => {
-            console.log({values})
             await verifyOtp(values);
         },
     })
@@ -87,39 +138,31 @@ export default function VerifyPage() {
     const [otp, setOtp] = useState(formik.values.code);
 
     const verifyOtp = async (values: any) => {
-        dispatch(authStart())
-        try {
-            const { data } = await axiosInstance.post("/otp/verify", { ...values }, getHeader());
-            if (data.success || data.status) {
-                dispatch(setIsRouting(true));
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Email verified",
-                        type: "success",
-                    })
-                );
-                formik.resetForm();
-                router.push("/profile-setup");
-                return false
-            }
-            // return false
-        } catch (err: any) {
-            console.log({err})
-            dispatch(authFailure());
+        const {payload} = await dispatch(verifyEmailOtp({data: values, url: "/otp/verify", token: cookie.newToken}))
+        if (!payload.status) {
+            setCanResend(true)
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: err?.response?.data?.message || "error",
+                    message: payload?.message,
                     type: "error",
                 })
             );
-            return true;
-        } finally {
-            dispatch(loadStop())
+            formik.setFieldValue('code', null)
+            return
+        } else if (payload.status) {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Email verified",
+                    type: "success",
+                })
+            );
+            formik.resetForm();
+            router.push("/profile-setup");
+            return false
         }
     }
-
     return (
         <AuthLayout>
             <section className="bg-gradient-light-green min-h-screen h-full overflow-hidden">
@@ -140,10 +183,12 @@ export default function VerifyPage() {
                         </Link>
                     </div>
                 </div>
-                <div className="flex flex-col mt-24 items-center tablet:items-start justify-center gap-16 tablet:px-4 tablet:flex-row">
+                <div
+                    className="flex flex-col mt-24 items-center tablet:items-start justify-center gap-16 tablet:px-4 tablet:flex-row">
                     <div className="flex flex-col phone:mb-[16px]">
                         <div className="text-center phone:text-left">
-                            <p className="text-[24px] tablet:text-[40px] font-bold leading-[48px] font-ruso">Verify email address</p>
+                            <p className="text-[24px] tablet:text-[40px] font-bold leading-[48px] font-ruso">Verify
+                                email address</p>
                             <p className="text-[14px] tablet:text-[18px] font-normal leading-[27px] w-[327px] tablet:w-[421px]">
                                 Enter the 4-digit code sent to {user?.email} to verify your account
                             </p>
@@ -159,27 +204,57 @@ export default function VerifyPage() {
                                     <OtpInput
                                         value={formik.values.code}
                                         onChange={(e) => {
-                                            setOtp(e)
-                                            formik.setFieldValue('code', e)
+                                            setOtp(e);
+                                            formik.setFieldValue("code", e, true);
+                                            // Automatically submit when OTP is fully entered
+                                            if (e.length === 4) {
+                                                setTimeout(() => {
+                                                    formik.submitForm();
+                                                }, 0);
+                                            }
                                         }}
                                         numInputs={4}
-                                        renderSeparator={<span> </span>}
-                                        renderInput={(props) => <input {...props} />}
-                                        containerStyle="gap-2"
-                                        inputStyle={{
-                                            width: "48px",
-                                            height: "48px",
-                                            background: "#F9FAFA",
-                                            borderRadius: "12px"
+                                        renderSeparator={<span style={{ width: "12px" }}></span>}
+                                        renderInput={(props) => (
+                                            <div
+                                                style={{
+                                                    borderRadius: "12px",
+                                                    padding: "2px", // thickness of gradient border
+                                                    background: "linear-gradient(90deg, #9BE303, #7FBB00)", // gradient green
+                                                }}
+                                            >
+                                                <input
+                                                    {...props}
+                                                    style={{
+                                                        width: "56px",
+                                                        height: "56px",
+                                                        borderRadius: "10px", // slightly smaller to show gradient
+                                                        border: "none",
+                                                        backgroundColor: "#E5E7EB", // gray background
+                                                        color: "#111827",
+                                                        textAlign: "center",
+                                                        fontSize: "20px",
+                                                        fontWeight: 500,
+                                                        outline: "none",
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                        containerStyle={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            gap: "12px",
                                         }}
                                     />
+
+
                                     {checkError("code", formik) ? (
                                         <p className="text-[#FF8D8D] text-[12px] mt-[8px]">
                                             {formik.errors.code}
                                         </p>
                                     ) : null}
                                 </div>
-                                <div className="flex justify-center mt-[10px] mb-[5px]">
+                                <div className="flex justify-center mb-[5px]">
                                     {canResend ? (
                                         <p
                                             className="font-sans font-semi-normal text-light-green text-[16px] cursor-pointer"
@@ -193,7 +268,8 @@ export default function VerifyPage() {
                                         </p>
                                     )}
                                 </div>
-                                <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid} classes="w-full h-[48px] rounded-[12px]" />
+                                <FormikButton loading={formik.isSubmitting} title="Verify" error={formik.isValid}
+                                              classes="w-full h-[48px] rounded-[12px]"/>
                             </CardContent>
                         </Card>
                     </form>
