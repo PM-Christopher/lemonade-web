@@ -14,32 +14,63 @@ type RequestInterface = {
 const RequestCard: React.FC<RequestInterface> = ({toggle, invite, toggleInviteIndex, index, user}) => {
     return (
         <>
-            <div className="flex justify-between pb-[16px] border-b-[1px] border-b-mid-grey mb-[32px] cursor-pointer" onClick={() => {
-                toggle()
-                toggleInviteIndex(index)
-            }}>
-                <div className="flex gap-2">
-                    <div className="relative flex items-center justify-center">
-                        <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
-                        <p className="absolute text-black text-[12px] font-semibold text-center">
+            <div
+                className="flex justify-between items-center p-4 border-b border-mid-grey mb-8 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200"
+                onClick={() => {
+                    toggle();
+                    toggleInviteIndex(index);
+                }}
+            >
+                {/* Left section: Avatar + Info */}
+                <div className="flex gap-3 items-center">
+                    {/* Avatar with lemon image and ID */}
+                    <div className="relative w-[44px] h-[44px] flex items-center justify-center rounded-full overflow-hidden bg-gray-100">
+                        <Image
+                            src="/images/lemon.png"
+                            alt="lemon"
+                            fill
+                            className="object-contain"
+                        />
+                        <p className="absolute inset-0 flex items-center justify-center text-black text-[12px] font-semibold">
                             {invite?.invitee.lemon_id_short}
                         </p>
                     </div>
+
+                    {/* Text Info */}
                     <div className="flex flex-col">
-                        <p className="text-[14px] font-semibold">{invite?.invitee?.lemon_id_full} <span
-                            className="font-normal">wants to connect with you</span>
+                        <p className="text-[14px] font-semibold text-gray-900">
+                            {invite?.invitee?.lemon_id_full}{" "}
+                            <span className="font-normal text-gray-600">wants to connect with you</span>
                         </p>
-                        <div className="flex items-center gap-[8px]">
-                            <p className="font-normal text-[12px] text-text-grey">
-                                {getDistanceFromLatLonInKm(user?.connect_info?.latitude, user?.connect_info?.longitude, invite?.location?.latitude, invite?.location?.longitude)}
+
+                        <div className="flex items-center gap-2 mt-1 text-[12px] text-gray-500">
+                            <p className="whitespace-nowrap">
+                                {getDistanceFromLatLonInKm(
+                                    user?.connect_info?.latitude,
+                                    user?.connect_info?.longitude,
+                                    invite?.location?.latitude,
+                                    invite?.location?.longitude
+                                )}{" "}
                                 km away
                             </p>
-                            <p className="text-grey-80">|</p>
-                            <p className="font-normal text-[12px] text-light-black truncate w-[195px] laptop:w-full">{invite?.message}</p>
+                            <span className="text-gray-300">|</span>
+                            <p className="truncate max-w-[180px] laptop:max-w-full">
+                                {invite?.message}
+                            </p>
                         </div>
                     </div>
                 </div>
-                <ChevronRight onClick={toggle} />
+
+                {/* Right section: Chevron */}
+                <div
+                    className="p-2 rounded-full hover:bg-gray-200 transition-all"
+                    onClick={(e) => {
+                        e.stopPropagation(); // prevent triggering parent onClick
+                        toggle();
+                    }}
+                >
+                    <ChevronRight className="w-4 h-4 text-gray-500" />
+                </div>
             </div>
         </>
     );

@@ -83,84 +83,118 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reload
     if (!user) return null;
 
     return (
-        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <form onSubmit={formik.handleSubmit}>
-                <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] p-6 h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto hide-scrollbar">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                            <div className="cursor-pointer" onClick={toggle}>
-                                <CloseIcon className="w-[11.25px]"/>
-                            </div>
-                            <p className="font-semibold text-[16px]">Connect</p>
-                        </div>
+        <div
+            className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300
+    ${isOpen ? "visible bg-gray-800/50 opacity-100" : "invisible opacity-0"}`}
+        >
+            <form
+                onSubmit={formik.handleSubmit}
+                className="w-screen h-screen laptop:w-[480px] laptop:h-auto bg-white rounded-none laptop:rounded-2xl shadow-2xl
+               p-6 laptop:max-h-[90vh] overflow-y-auto hide-scrollbar transform transition-all duration-300
+               scale-100 laptop:scale-95 hover:scale-100"
+            >
+                {/* Header */}
+                <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                    <div className="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={toggle}
+                            className="p-2 rounded-full hover:bg-gray-100 transition-all"
+                        >
+                            <CloseIcon className="w-[12px]" />
+                        </button>
+                        <p className="font-semibold text-[16px] text-gray-800">Connect</p>
                     </div>
-                    <div className="mt-[24px]">
-                        <div className="flex flex-col items-center justify-center">
-                            <div className="relative">
-                                <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
-                                <p className="absolute bottom-3.5 left-2 text-black text-[12px] font-semibold text-center">
-                                    L{user?.short_lemon_id}
-                                </p>
+                </div>
+
+                {/* Content */}
+                <div className="mt-6 flex flex-col items-center text-center space-y-2">
+                    {/* Profile Avatar */}
+                    <div className="relative w-[40px] h-[40px]">
+                        <Image src="/images/lemon.png" alt="lemon" width={40} height={40} />
+                        <p className="absolute bottom-2 left-2 text-black text-[12px] font-semibold">
+                            L{user?.short_lemon_id}
+                        </p>
+                    </div>
+
+                    {/* User Info */}
+                    <p className="font-semibold text-[18px] text-gray-900">{user?.long_lemon_id}</p>
+                    <p className="text-[14px] text-gray-700">{user?.username}</p>
+                    <p className="text-[12px] text-gray-500">{user?.industry}</p>
+
+                    {/* Distance */}
+                    <div className="mt-3 flex gap-2 items-center text-[12px] text-mid-green">
+                        <LocationIcon />
+                        <p>
+                            {getDistanceFromLatLonInKm(
+                                authUser?.connect_info?.latitude,
+                                authUser?.connect_info?.longitude,
+                                user?.connect_info?.latitude,
+                                user?.connect_info?.longitude
+                            )}{" "}
+                            kms away
+                        </p>
+                    </div>
+
+                    {/* Already Connected */}
+                    {user?.hasConnected ? (
+                        <p className="mt-6 text-[12px] text-text-grey">
+                            You are already connected!
+                        </p>
+                    ) : (
+                        <>
+                            {/* Invite Message */}
+                            <div className="grid gap-2 mt-6 w-full">
+                                <div className="flex justify-between text-gray-500 text-[13px]">
+                                    <Label htmlFor="message">Invite message</Label>
+                                    <span>100 characters</span>
+                                </div>
+                                <textarea
+                                    id="message"
+                                    name="message"
+                                    onChange={formik.handleChange}
+                                    value={formik.values.message}
+                                    placeholder="Write a short friendly invite..."
+                                    className="h-[120px] w-full rounded-xl bg-light_grey border-0 p-3 px-4 text-sm text-gray-700
+                         resize-none focus:ring-2 focus:ring-green-400 outline-none transition-all"
+                                />
                             </div>
-                            <p className="font-semibold text-[18px]">{user.long_lemon_id}</p>
-                            <p className="font-semi-normal text-[14px] text-light-black">{user?.username}</p>
-                            <p className="font-normal text-[12px] text-text-grey">{user?.industry}</p>
-                            <div className="mt-[16px] flex gap-2 items-center">
-                                <LocationIcon/>
-                                <p className="font-semi-normal text-mid-green text-[12px]">
-                                    {getDistanceFromLatLonInKm(authUser?.connect_info?.latitude, authUser?.connect_info?.longitude, user?.connect_info?.latitude, user?.connect_info?.longitude)} kms away
-                                </p>
-                            </div>
-                            {
-                                user?.hasConnected ? (
-                                    <div className={'mt-[24px]'}>
-                                        <p className={'text-[12px] text-text-grey'}>You are already connected!!!</p>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div className="grid gap-2 mt-[24px] w-full">
-                                            <div className="flex justify-between">
-                                                <Label htmlFor="fullname"
-                                                       className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Invite
-                                                    message</Label>
-                                                <Label htmlFor="fullname"
-                                                       className="font-sans font-normal text-[12px] leading-[16.8px] text-text-grey">100
-                                                    characters</Label>
-                                            </div>
-                                            <textarea
-                                                className="h-[131px] rounded-xl bg-light_grey form-font border-0 resize-none p-2 px-4"
-                                                placeholder="" onChange={formik.handleChange} value={formik.values.message} name="message" id="message"></textarea>
-                                        </div>
-                                        <div className="mt-[32px] w-full">
-                                            <Button
-                                                className="h-[48px] p-[14px] px-[48px] bg-gradient-green rounded-[12px] shadow-custom-bottom w-full">
-                                                <p className="font-semi-normal text-[16px]">Send invite</p>
-                                            </Button>
-                                        </div>
-                                    </>
-                                )
-                            }
-                            <div className="mt-6 flex justify-between w-full px-4">
+
+                            {/* Send Button */}
+                            <div className="mt-6 w-full">
                                 <Button
-                                    variant="outline"
-                                    disabled={currentIndex === 0}
-                                    onClick={handlePrev}
+                                    type="submit"
+                                    className="h-[48px] w-full bg-gradient-green rounded-xl shadow-custom-bottom hover:brightness-110 transition-all"
                                 >
-                                    ← Previous
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    disabled={currentIndex === users.length - 1}
-                                    onClick={handleNext}
-                                >
-                                    Next →
+                                    <p className="font-medium text-[16px]">Send Invite</p>
                                 </Button>
                             </div>
-                        </div>
+                        </>
+                    )}
+
+                    {/* Navigation Buttons */}
+                    <div className="mt-8 flex justify-between w-full px-2">
+                        <Button
+                            variant="outline"
+                            disabled={currentIndex === 0}
+                            onClick={handlePrev}
+                            className="hover:bg-gray-100 transition-all"
+                        >
+                            ← Previous
+                        </Button>
+                        <Button
+                            variant="outline"
+                            disabled={currentIndex === users.length - 1}
+                            onClick={handleNext}
+                            className="hover:bg-gray-100 transition-all"
+                        >
+                            Next →
+                        </Button>
                     </div>
                 </div>
             </form>
         </div>
+
     );
 }
 

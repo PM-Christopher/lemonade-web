@@ -19,8 +19,9 @@ import SupportIcon from "@/images/icons/supportIcon.svg";
 import PaperIcon from "@/images/icons/paperIcon.svg";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { formatString, splitLemonId } from "@/lib/helper";
+import {formatString, getInitials, splitLemonId} from "@/lib/helper";
 import MainLayout from "@/components/layouts/MainLayout";
+import {RootState} from "@/redux/store";
 
 interface SettingsItem {
     title: string;
@@ -49,7 +50,9 @@ const moreSettings: SettingsItem[] = [
 
 function SettingsPage() {
     const router = useRouter();
-    const { user } = useSelector((state: any) => state.auth);
+    const { user } = useSelector((state: RootState) => state.auth);
+
+    console.log({user})
 
     return (
         <MainLayout>
@@ -68,13 +71,28 @@ function SettingsPage() {
                             className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex justify-between items-center bg-step-color"
                         >
                             <div className="flex items-center gap-[8px]">
-                                <Image
-                                    src={user?.profile_image}
-                                    alt="profile"
-                                    width={56}
-                                    height={56}
-                                    className="w-[56px] h-[56px] rounded-[24px] border-[1px] border-grey-90"
-                                />
+                                {user?.profile_image ? (
+                                    <Image
+                                        src={user?.profile_image}
+                                        alt="avatar"
+                                        width={40}
+                                        height={40}
+                                        className="rounded-full border-[2px] border-[#3B4152] w-[40px] h-[40px]
+                   transition-all duration-300 ease-in-out
+                   group-hover:scale-110 group-hover:border-green-400
+                   group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
+                                    />
+                                ) : (
+                                    <div
+                                        className="flex items-center justify-center rounded-full border-[2px] border-[#3B4152] w-[40px] h-[40px]
+                   text-sm font-medium text-white bg-gradient-green
+                   transition-all duration-300 ease-in-out
+                   group-hover:scale-110 group-hover:border-green-400
+                   group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)] group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600"
+                                    >
+                                        <p className="text-[18px] font-ruso">{getInitials(user?.fullname)}</p>
+                                    </div>
+                                )}
                                 <div className="flex flex-col">
                                     <p className="font-semibold text-[18px] text-black-light">{user?.fullname}</p>
                                     <p className="font-semi-normal text-[14px] text-light-black">{user?.username}</p>

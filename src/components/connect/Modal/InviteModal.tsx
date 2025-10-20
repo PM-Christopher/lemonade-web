@@ -21,8 +21,7 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadF
     const {authToken, user} = useSelector((state: any) => state.auth)
 
     const requestAction = (action: string) => {
-        dispatch(inviteResponse({token: authToken, data: {option:action}, id: invite.id})).then((res) => {
-            console.log(res)
+        dispatch(inviteResponse({token: authToken, data: {option: action}, id: invite.id})).then((res) => {
             if (res.payload.status) {
                 dispatch(
                     updateToastifyReducer({
@@ -47,55 +46,92 @@ const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadF
     }
 
     return (
-        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-full laptop:w-[480px] p-6 h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-center">
+        <div
+            className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${isOpen ? "opacity-100 visible bg-gray-800/50" : "opacity-0 invisible"}`}
+        >
+            <div
+                className="bg-white rounded-none laptop:rounded-lg shadow-2xl w-full laptop:w-[480px] p-6 h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto
+               flex flex-col justify-between hide-scrollbar"
+            >
+                {/* Header */}
+                <div className="flex justify-between items-center border-b border-gray-200 pb-3">
                     <div className="flex items-center gap-2">
-                        <div className="cursor-pointer" onClick={toggle}>
-                            <CloseIcon className="w-[11.25px]"/>
-                        </div>
-                        <p className="font-semibold text-[16px]">New Invite</p>
+                        <button
+                            type="button"
+                            className="p-2 rounded-full hover:bg-gray-100 transition-all"
+                            onClick={toggle}
+                        >
+                            <CloseIcon className="w-[12px]"/>
+                        </button>
+                        <p className="font-semibold text-[16px] text-gray-900">New Invite</p>
                     </div>
                 </div>
-                <div className="mt-[24px]">
-                    <div className="flex flex-col justify-between min-h-[calc(100vh-120px)] laptop:min-h-0">
-                        <div className="flex flex-col items-center justify-center">
-                            <div className="relative flex items-center justify-center">
-                                <Image src={'/images/lemon.png'} alt="lemon" width={33} height={41}/>
-                                <p className="absolute text-black text-[12px] font-semibold text-center">
-                                    {invite?.invitee?.lemon_id_short}
-                                </p>
-                            </div>
-                            <p className="font-semibold text-[18px]">{invite?.invitee?.lemon_id_full}</p>
-                            <p className="font-semi-normal text-[14px] text-light-black">{invite?.invitee?.username}</p>
-                            <p className="font-semi-normal text-[14px] text-light-black">{invite?.invitee?.bio}</p>
-                            <p className="font-normal text-[12px] text-text-grey">{formatStringUCFirst(invite?.invitee?.industry)}</p>
-                            <div className="mt-[16px] flex gap-2 items-center">
-                                <LocationIcon/>
-                                <p className="font-semi-normal text-mid-green text-[12px]">
-                                    {getDistanceFromLatLonInKm(user?.connect_info?.latitude, user?.connect_info?.longitude, invite?.location?.latitude, invite?.location?.longitude)}kms away
-                                </p>
-                            </div>
-                            <div className="flex flex-col p-[16px] bg-light_grey mt-[32px] rounded-[12px]">
-                                <p className="font-semi-normal text-[12px] text-text-grey">Message</p>
-                                <p className="font-normal text-[14px] text-light-black max-w-[384px] mt-[8px]">
-                                    {invite?.message}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="mt-[32px] flex justify-between gap-[16px]">
-                            <Button
-                                className="h-[48px] p-[14px] px-[48px] border-[1px] border-light-grey-50 bg-white rounded-[12px] w-full"
-                                onClick={() => requestAction("rejected")}>
-                                <p className="font-semi-normal text-[16px] text-black-light">Reject invite</p>
-                            </Button>
-                            <Button
-                                className="h-[48px] p-[14px] px-[48px] bg-gradient-green rounded-[12px] shadow-custom-bottom w-full"
-                                onClick={() => requestAction("accepted")}>
-                                <p className="font-semi-normal text-[16px]">Accept invite</p>
-                            </Button>
-                        </div>
+
+                {/* Content */}
+                <div className="mt-6 flex flex-col items-center text-center space-y-3">
+                    {/* Avatar */}
+                    <div
+                        className="relative w-[44px] h-[44px] flex items-center justify-center rounded-full overflow-hidden bg-gray-100">
+                        <Image
+                            src="/images/lemon.png"
+                            alt="lemon"
+                            fill
+                            className="object-contain"
+                        />
+                        <p className="absolute inset-0 flex items-center justify-center text-black text-[12px] font-semibold">
+                            {invite?.invitee?.lemon_id_short}
+                        </p>
                     </div>
+
+                    {/* User Info */}
+                    <p className="font-semibold text-[18px] text-gray-900">
+                        {invite?.invitee?.lemon_id_full}
+                    </p>
+                    <p className="text-[14px] text-gray-700">{invite?.invitee?.username}</p>
+                    {invite?.invitee?.bio && (
+                        <p className="text-[14px] text-gray-700">{invite?.invitee?.bio}</p>
+                    )}
+                    {invite?.invitee?.industry && (
+                        <p className="text-[12px] text-gray-500">{formatStringUCFirst(invite?.invitee?.industry)}</p>
+                    )}
+
+                    {/* Distance */}
+                    <div className="flex items-center gap-2 mt-2 text-[12px] text-mid-green">
+                        <LocationIcon/>
+                        <p>
+                            {getDistanceFromLatLonInKm(
+                                user?.connect_info?.latitude,
+                                user?.connect_info?.longitude,
+                                invite?.location?.latitude,
+                                invite?.location?.longitude
+                            )}{" "}
+                            kms away
+                        </p>
+                    </div>
+
+                    {/* Message */}
+                    {invite?.message && (
+                        <div className="flex flex-col p-4 bg-light_grey rounded-lg mt-4 w-full max-w-[384px]">
+                            <p className="text-[12px] text-gray-500 font-medium">Message</p>
+                            <p className="text-[14px] text-gray-800 mt-1">{invite?.message}</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions */}
+                <div className="mt-6 flex gap-4 w-full">
+                    <Button
+                        className="flex-1 h-[48px] bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+                        onClick={() => requestAction("rejected")}
+                    >
+                        <p className="text-[16px] text-gray-900 font-medium">Reject Invite</p>
+                    </Button>
+                    <Button
+                        className="flex-1 h-[48px] bg-gradient-green rounded-lg shadow-lg hover:brightness-105 transition-all"
+                        onClick={() => requestAction("accepted")}
+                    >
+                        <p className="text-[16px] font-medium">Accept Invite</p>
+                    </Button>
                 </div>
             </div>
         </div>

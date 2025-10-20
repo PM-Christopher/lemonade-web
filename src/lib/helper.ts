@@ -63,7 +63,6 @@ export const formatSingleTime = (timeString: string) => {
 }
 
 export const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    console.log({lat1, lon1, lat2, lon2});
     const toRad = (value: any) => (value * Math.PI) / 180;
 
     const R = 6371; // Earth's radius in km
@@ -81,3 +80,14 @@ export const getDistanceFromLatLonInKm = (lat1: number, lon1: number, lat2: numb
      // Distance in km
     return Math.round(R * c);
 }
+
+export const getInitials = (name?: string | null): string => {
+    if (!name) return ""; // handle undefined/null
+    const trimmed = name.trim();
+    if (!trimmed) return "";
+
+    return trimmed
+        .split(/\s+/) // split by one or more spaces
+        .map(word => word.charAt(0).toUpperCase())
+        .join("");
+};

@@ -8,7 +8,8 @@ interface chatState {
     error: boolean;
     chat: ChatInterface | null
     messages: MessageInterface[]
-    receiver_id: number|null
+    receiver_id: number|null,
+    invites: any[]
 }
 
 interface GetChatParams {
@@ -38,7 +39,8 @@ const initialState: chatState = {
     error: false,
     chat: null,
     messages: [],
-    receiver_id: null
+    receiver_id: null,
+    invites: [],
 };
 
 const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/getChat", async ({receiver_id, token}: GetChatParams, { rejectWithValue }) => {
@@ -131,6 +133,18 @@ const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: 
     }
 });
 
+const getInvites = createAsyncThunk("connect/getInvites", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/connect/get-invites`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const connectSlice = createSlice({
     name: "connect",
     initialState,
@@ -206,10 +220,21 @@ const connectSlice = createSlice({
         builder.addCase(sendInvite.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(getInvites.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getInvites.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.invites = payload?.data?.invites;
+        });
+        builder.addCase(getInvites.rejected, (state) => {
+            state.loading = false;
+        });
     }
     }
 });
 
 export const { addToMessages, removeChat } = connectSlice.actions
-export { getChat, sendChat, inviteResponse, findUser, sendInvite }
+export { getChat, sendChat, inviteResponse, findUser, sendInvite, getInvites }
 export default connectSlice.reducer;

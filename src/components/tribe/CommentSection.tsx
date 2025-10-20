@@ -6,6 +6,7 @@ import HeartFilledIcon from "@/images/icons/heartFilledIcon.svg";
 import moment from "moment";
 
 import { useAppDispatch } from "@/redux/hook";
+import {getInitials} from "@/lib/helper";
 
 interface Comment {
     id: number;
@@ -79,13 +80,23 @@ const CommentsSection: React.FC<CommentsProps> = ({
             <div className="flex gap-3">
                 {/* Avatar */}
                 <div className="flex-shrink-0">
-                    <Image 
-                        src={comment.user.avatar} 
-                        alt={comment.user.username}
-                        width={isReply ? 32 : 40} 
-                        height={isReply ? 32 : 40}
-                        className={`${isReply ? 'w-8 h-8' : 'w-10 h-10'} rounded-full border border-grey-90`}
-                    />
+                    <div
+                        className={`${
+                            isReply ? "w-8 h-8" : "w-10 h-10"
+                        } rounded-full border border-grey-90 overflow-hidden flex items-center justify-center bg-gray-200 text-[12px] font-semibold text-gray-700`}
+                    >
+                        {comment.user.avatar ? (
+                            <Image
+                                src={comment.user.avatar}
+                                alt={comment.user.username}
+                                width={isReply ? 32 : 40}
+                                height={isReply ? 32 : 40}
+                                className="object-cover w-full h-full"
+                            />
+                        ) : (
+                            getInitials(comment.user.fullname)
+                        )}
+                    </div>
                 </div>
 
                 {/* Comment Content */}

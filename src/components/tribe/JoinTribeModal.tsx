@@ -34,6 +34,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({toggle, isOpen, tribe}) =
                     type: "success",
                 })
             );
+            toggle()
         })
     }
 
