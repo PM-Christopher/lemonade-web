@@ -220,6 +220,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                         <div>
                             <p className="font-sans font-semibold text-[16px] leading-[24px]">
                                 {tribe?.tribe_name}
+
                             </p>
                         </div>
                     </div>
