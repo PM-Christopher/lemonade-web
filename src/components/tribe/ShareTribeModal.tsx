@@ -15,7 +15,7 @@ import {useRouter} from "next/navigation";
 type ShareTribeInterface = {
     toggle: () => void,
     isOpen: boolean,
-    tribe: TribeInterface
+    tribe: TribeInterface | any
 }
 
 const ShareTribeModal: React.FC<ShareTribeInterface> = ({toggle, isOpen, tribe}) => {

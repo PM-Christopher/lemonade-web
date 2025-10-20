@@ -17,7 +17,7 @@ interface tribeState {
   error: boolean;
   threads: TribeThreadInterface[];
   tribes: TribeInterface[];
-  tribe: TribeInterface;
+  tribe: TribeInterface | null;
   thread: TribeThreadInterface | null;
   pinnedThreads: IPinned[];
   searchResults: [];

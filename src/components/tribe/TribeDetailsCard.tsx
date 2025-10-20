@@ -21,8 +21,8 @@ import {TribeDetailsSkeleton} from "@/components/Skeletons";
 type TribeDetailsInterface = {
     toggle: () => void,
     toggleJoin: () => void,
-    tribe: TribeInterface,
-    share: (tribe: TribeInterface) => void
+    tribe: TribeInterface | null,
+    share: (tribe: TribeInterface|null) => void
     toggleAddMember: () => void,
     threads: any
 }

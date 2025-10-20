@@ -19,7 +19,7 @@ type UserInfoInterface = {
     toggle: () => void,
     isOpen: boolean,
     user: any,
-    tribe:  TribeInterface
+    tribe:  TribeInterface | any
 }
 
 const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe}) => {

@@ -299,7 +299,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                                             {data.map((thread: Thread) => (
                                                 <ThreadCard
                                                     key={thread.id ?? Math.random()}
-                                                    tribe_id={tribe.id}
+                                                    tribe_id={tribe?.id}
                                                     thread={thread}
                                                     toggle={activateUserInfoModal}
                                                     switchUserId={switchUserId}

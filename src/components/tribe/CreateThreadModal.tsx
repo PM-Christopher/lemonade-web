@@ -21,7 +21,7 @@ import DatePicker from "react-datepicker";
 type CreateThreadInterface = {
     toggle: () => void,
     isOpen: boolean,
-    tribe_id: number
+    tribe_id: any
 }
 
 const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tribe_id}) => {

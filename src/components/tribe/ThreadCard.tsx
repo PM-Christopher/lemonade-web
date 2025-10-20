@@ -37,7 +37,7 @@ interface ModalPosition {
 
 interface ThreadCardProps {
     thread: Thread;
-    tribe_id: number;
+    tribe_id: number | any;
     toggle: () => void;
     switchUserId: any;
     pinThread: any;
