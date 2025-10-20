@@ -165,8 +165,16 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     }
 
     const sortThreads = (value: any) => {
-        dispatch(filterThreads({id: tribe?.id, token: authToken, data: {filter: value}}))
-    }
+        if (!tribe) return; // do nothing if tribe is undefined
+
+        dispatch(
+            filterThreads({
+                id: tribe.id, // safe, guaranteed number
+                token: authToken,
+                data: { filter: value },
+            })
+        );
+    };
 
     const toggleThreadId = (id: number) => {
         setThreadId(id)

@@ -17,7 +17,7 @@ interface tribeState {
   error: boolean;
   threads: TribeThreadInterface[];
   tribes: TribeInterface[];
-  tribe: TribeInterface | null;
+  tribe: TribeInterface;
   thread: TribeThreadInterface | null;
   pinnedThreads: IPinned[];
   searchResults: [];
@@ -253,7 +253,7 @@ const getThreads = createAsyncThunk(
 const filterThreads = createAsyncThunk(
   "tribe/filterThreads",
   async (
-    { id, token, data }: { id: string; token: string; data: any },
+    { id, token, data }: { id: number; token: string; data: any },
     { rejectWithValue }
   ) => {
     const headers = {
