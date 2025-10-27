@@ -25,7 +25,7 @@ const PricingCard: React.FC<PricingInterface> = ({active, subscription}) => {
 
     const handleSubscribe = (id: number, subscription: any) => {
         dispatch(setSubscriptionId({ id, plan: subscription }))
-        router.push("/settings/pricing/cancel-subscription")
+        router.push("/settings/plan/cancel-subscription")
     }
     return (
         <div className="flex flex-col items-center">

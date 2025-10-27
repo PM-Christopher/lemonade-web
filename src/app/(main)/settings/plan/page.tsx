@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, {useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PricingCard from "@/components/settings/PricingCard";
@@ -7,19 +7,18 @@ import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useRouter} from "next/navigation";
+import UpgradePlanModal from "@/components/settings/Modal/UpgradePlanModal";
 
 const PricingPage = () => {
-    const {subscription, user, authToken} = useSelector((state: any) => state.auth)
+    const {subscription, user} = useSelector((state: any) => state.auth)
     const router = useRouter()
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
+    const { data } = useRequest(`subscription`)
+    const [isOpen, setIsOpen] = useState(false)
+
+    const toggleModal = () => {
+        setIsOpen(!isOpen)
     }
 
-    const { data, loading } = useRequest(`subscription`)
     return (
         <MainLayout>
             <section className="bg-light_grey pb-10">
@@ -41,6 +40,7 @@ const PricingPage = () => {
                     </div>
                 </section>
             </section>
+            <UpgradePlanModal isOpen={isOpen} toggle={toggleModal} />
         </MainLayout>
     );
 }
