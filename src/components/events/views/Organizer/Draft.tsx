@@ -10,7 +10,7 @@ const Draft = ({events, loading}: {events: EventInterface[], loading: boolean}) 
                 <EventsSkeleton count={3} />
             ) : events.length > 0 ? (
                 events.map((event, index) => (
-                    <OrganizerEventCard key={index} event={event} draft={false} />
+                    <OrganizerEventCard key={index} event={event} draft={true} />
                 ))
             ) : (
                 <div className="col-span-2 laptop:col-span-3 flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg border border-gray-200">

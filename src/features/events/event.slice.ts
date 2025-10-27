@@ -140,6 +140,18 @@ const editEvent = createAsyncThunk("event/editEvent", async ({ data, token, id }
     }
 });
 
+const publishEvent = createAsyncThunk("event/publishEvent", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.patch(`/events/publish-event/${id}`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 const getEvents = createAsyncThunk("event/getEvents", async (_, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.get(`/events/attendees`);
@@ -595,9 +607,42 @@ const eventSlice = createSlice({
             state.promotionLoading = false;
         });
 
+        builder.addCase(publishEvent.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(publishEvent.fulfilled, (state, { payload }) => {
+            state.loading = false;
+
+            // --- 1. Remove the event from organizer drafts
+            const draftIndex = state.organizer_events.drafts.findIndex(
+                (event) => event.id === payload?.data?.event?.id
+            );
+
+            if (draftIndex !== -1) {
+                const [publishedEvent] = state.organizer_events.drafts.splice(draftIndex, 1);
+
+                // --- 2. Add it to organizer upcoming
+                state.organizer_events.upcoming.push(publishedEvent);
+
+                // --- 3. Add it to global events for users
+                // Prevent duplicates
+                const existsInUpcoming = state.events.upcoming.some(
+                    (event) => event.id === payload.id
+                );
+
+                if (!existsInUpcoming) {
+                    state.events.upcoming.push(publishedEvent);
+                }
+
+            }
+        });
+        builder.addCase(publishEvent.rejected, (state) => {
+            state.loading = false;
+        });
+
     }
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent }
 export default eventSlice.reducer;

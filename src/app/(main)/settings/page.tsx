@@ -32,7 +32,7 @@ interface SettingsItem {
 const accountSettings: SettingsItem[] = [
     { title: "Profile settings", icon: ProfileIcon, path: "/settings/profile" },
     { title: "Account settings", icon: GearIcon, path: "/settings/account" },
-    { title: "Pricing", icon: PricingIcon, path: "/settings/pricing" },
+    { title: "Plan", icon: PricingIcon, path: "/settings/plan" },
     { title: "Billing History", icon: BillingIcon, path: "/settings/billing-history" },
     { title: "Notification settings", icon: BellIcon, path: "/settings/notification" },
 ];

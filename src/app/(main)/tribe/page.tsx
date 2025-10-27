@@ -20,12 +20,14 @@ import {authFailure, loadStop} from "@/features/authentication/authSlice";
 import {useMediaQuery} from "react-responsive";
 import {searchTribe} from "@/features/tribes/tribe.slice";
 import CreateTribeModal from "@/components/tribe/CreateTribeModal";
+import {TribeListSkeleton} from "@/components/Skeletons";
 
 export default function TribePage() {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const {authToken} = useSelector((state: any) => state.auth);
     const {searchResults} = useSelector((state: any) => state.tribe);
+    const [showTooltip, setShowTooltip] = useState(false);
 
     const [tribeType, setTribeType] = useState("discover");
     const [search, setSearch] = useState("");
@@ -155,159 +157,141 @@ export default function TribePage() {
 
     return (
         <MainLayout>
-            <div
-                className="bg-white flex flex-col tablet:flex-row justify-between gap-[10px] p-2 px-10 border-t-[1px] border-b-[1px] items-center">
-                <div className="flex gap-10">
-                    <div className="flex flex-col justify-center items-center cursor-pointer">
-                        <p
-                            className={`"font-sans font-semi-normal ${
-                                tribeType === "discover" ? "text-black-light" : "text-text-grey"
-                            } text-[14px] leading-[21px]"`}
-                            onClick={() => changeTribeType("discover")}
+            <div className="bg-white flex flex-col tablet:flex-row justify-between items-center border-y border-gray-200 px-6 py-3 gap-4">
+                {/* Tabs */}
+                <div className="flex gap-8">
+                    {[
+                        { key: "discover", label: "Discover" },
+                        { key: "tln", label: "TLN Tribes" },
+                        { key: "mine", label: "My Tribes" },
+                    ].map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => changeTribeType(tab.key)}
+                            className={`flex flex-col items-center transition-all duration-200 ${
+                                tribeType === tab.key
+                                    ? "text-black-light"
+                                    : "text-gray-500 hover:text-gray-700"
+                            }`}
                         >
-                            Discover
-                        </p>
-                        {tribeType === "discover" && (
-                            <div className="border h-[0.5px] border-step-color w-20"></div>
-                        )}
-                    </div>
-                    <div className="flex flex-col justify-center items-center cursor-pointer">
-                        <p
-                            className={`"font-sans font-semi-normal ${
-                                tribeType === "tln" ? "text-black-light" : "text-text-grey"
-                            } text-[14px] leading-[21px]"`}
-                            onClick={() => changeTribeType("tln")}
-                        >
-                            TLN Tribes
-                        </p>
-                        {tribeType === "tln" && (
-                            <div className="border h-[0.5px] border-step-color w-20"></div>
-                        )}
-                    </div>
-                    <div className="flex flex-col justify-center items-center cursor-pointer">
-                        <p
-                            className={`"font-sans font-semi-normal ${
-                                tribeType === "mine" ? "text-black-light" : "text-text-grey"
-                            } text-[14px] leading-[21px]"`}
-                            onClick={() => changeTribeType("mine")}
-                        >
-                            My Tribes
-                        </p>
-                        {tribeType === "mine" && (
-                            <div className="border h-[0.5px] border-step-color w-20"></div>
-                        )}
-                    </div>
+                            <span className="text-sm font-medium">{tab.label}</span>
+                            <div
+                                className={`h-[2px] mt-1 w-16 transition-all duration-200 ${
+                                    tribeType === tab.key ? "bg-step-color" : "bg-transparent"
+                                }`}
+                            />
+                        </button>
+                    ))}
                 </div>
-                <div className="flex items-center gap-2">
-                    <div className="bg-white block tablet:hidden">
-                        <div className="flex items-center gap-3 bg-light_grey p-2 rounded-[12px] w-[291px] h-[48px]">
-                            <div>
-                                <SearchIcon/>
-                            </div>
-                            <div>
-                                <input
-                                    id="search"
-                                    type="text"
-                                    className="rounded-xl text-[14px] bg-light_grey border-0 w-[300px] focus:outline-none focus:ring-0 focus:border-transparent"
-                                    placeholder="Search tribe"
-                                />
-                            </div>
+
+                {/* Search & Create Button */}
+                <div className="flex items-center gap-3">
+                    {/* Mobile Search */}
+                    <div className="block tablet:hidden">
+                        <div className="flex items-center gap-3 bg-light_grey p-2 rounded-xl w-[260px] h-[44px]">
+                            <SearchIcon className="text-gray-500" />
+                            <input
+                                type="text"
+                                placeholder="Search tribe"
+                                className="bg-light_grey border-0 text-sm w-full focus:outline-none placeholder-gray-500"
+                            />
                         </div>
                     </div>
+
+                    {/* Create Button */}
                     <Button
-                        className="auth-button py-[20px] rounded-[12px] border-step-color shadow-custom-bottom"
+                        className="auth-button py-2 px-4 rounded-xl border-step-color shadow-custom-bottom flex items-center gap-2"
                         onClick={activateModal}
                     >
-                        {isMobile ? (
-                            <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">
-                                +
-                            </p>
-                        ) : (
-                            <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">
-                                + Create Tribe
-                            </p>
-                        )}
+      <span className="text-base font-medium">
+        {isMobile ? "+" : "+ Create Tribe"}
+      </span>
                     </Button>
                 </div>
             </div>
-            <div className="">
-                <div className="flex justify-around">
-                    <section
-                        id="tribes"
-                        className="p-10 py-4 w-[704px] h-[1000px] shadow-div-shadow-2"
-                    >
-                        {loading ? (
-                            <div className="flex justify-center items-center">
-                                <Spinner/>
-                            </div>
-                        ) : data?.tribes.length > 0 ? (
-                            <div className="overflow-y-auto max-h-screen hide-scrollbar">
-                                {data?.tribes.map((tribe: TribeInterface, index: number) => (
-                                    <Link href={`/tribe/${tribe.slug}`}>
-                                        <TribeCardList tribe={tribe} key={index}/>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="flex justify-center items-center">
-                                <p className="font-semibold text-[24px] text-text-grey">
-                                    No tribes found
-                                </p>
-                            </div>
-                        )}
-                    </section>
-                    <section
-                        id="search-tribes"
-                        className="p-10 py-4 w-[480px] h-[325px] bg-white rounded-[12px] hidden tablet:block"
-                    >
-                        <div className="bg-white flex flex-col gap-4">
-                            <div className="flex items-center gap-3 bg-light_grey p-2 rounded-[12px]">
-                                <div>
-                                    <SearchIcon/>
-                                </div>
-                                <div>
-                                    <input
-                                        id="search"
-                                        type="text"
-                                        className="rounded-xl text-[14px] bg-light_grey border-0 w-[300px] focus:outline-none focus:ring-0 focus:border-transparent"
-                                        placeholder="Search tribe"
-                                        value={search}
-                                        onChange={handleTribeSearch}
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="font-semiBold text-[14px] text-text-grey">
-                                    Recent search
-                                </p>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                {searchResults.length > 0 &&
-                                    searchResults.map((tribe: TribeInterface, index: number) => (
-                                        <Link
-                                            href={`/tribe/${tribe.slug}`}
-                                            key={index}
-                                            className="cursor-pointer"
-                                        >
-                                            <div className="flex gap-2 items-center">
-                                                <Image
-                                                    src={tribe?.image}
-                                                    alt={tribe?.tribe_name}
-                                                    width={50}
-                                                    height={50}
-                                                    className="border-[2px] border-text-grey rounded-[12px]"
-                                                />
-                                                <p className="font-medium text-text-grey text-[14px]">
-                                                    {tribe?.tribe_name}
-                                                </p>
-                                            </div>
-                                        </Link>
-                                    ))}
-                            </div>
+
+            {/* Content Section */}
+            <div className="flex flex-col tablet:flex-row justify-center gap-6 mt-4 px-4 tablet:px-10">
+                {/* Tribe List Section */}
+                <section className="bg-white shadow-div-shadow-2 rounded-xl w-full tablet:w-[700px] p-6 min-h-[200px]">
+                    {loading ? (
+                        <TribeListSkeleton count={4} />
+                    ) : data?.tribes?.length > 0 ? (
+                        <div className="overflow-y-auto max-h-[80vh] hide-scrollbar space-y-4">
+                            {data.tribes.map((tribe: TribeInterface, index: number) => (
+                                <Link href={`/tribe/${tribe.slug}`} key={index}>
+                                    <TribeCardList tribe={tribe} />
+                                </Link>
+                            ))}
                         </div>
-                    </section>
-                </div>
+                    ) : (
+                        <div className="flex justify-center items-center h-full">
+                            <p className="text-gray-500 text-lg font-medium">No tribes found</p>
+                        </div>
+                    )}
+                </section>
+
+                {/* Search Sidebar (Desktop) */}
+                <section className="hidden tablet:block bg-white rounded-xl p-6 w-[420px] h-fit">
+                    <div className="flex flex-col gap-4">
+                        {/* Search Input */}
+                        <div className="relative w-full">
+                            {/* Search Input */}
+                            <div className="flex items-center gap-3 bg-light_grey p-2 rounded-xl">
+                                <SearchIcon className="text-gray-500" />
+                                <input
+                                    id="search"
+                                    type="text"
+                                    className="bg-light_grey border-0 w-full text-sm focus:outline-none placeholder-gray-500"
+                                    placeholder="Search tribe"
+                                    value={search}
+                                    onChange={handleTribeSearch}
+                                    onFocus={() => setShowTooltip(true)}
+                                    onBlur={() => setShowTooltip(false)}
+                                />
+                            </div>
+
+                            {/* Tooltip */}
+                            {(!search || search.trim() === "") && showTooltip && (
+                                <div className="absolute left-2 bottom-[-28px] bg-gray-800 text-white text-xs rounded-md py-1 px-2 shadow-md animate-fade-in">
+                                    Start typing to search...
+                                    <div className="absolute left-4 -top-1 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                </div>
+                            )}
+                        </div>
+
+
+                        {/* Recent Search */}
+                        <p className="text-sm font-semibold text-gray-500">Recent Search</p>
+
+                        <div className="flex flex-col gap-2">
+                            {searchResults.length > 0 ? (
+                                searchResults.map((tribe: TribeInterface, index: number) => (
+                                    <Link
+                                        href={`/tribe/${tribe.slug}`}
+                                        key={index}
+                                        className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition"
+                                    >
+                                        <Image
+                                            src={tribe.image}
+                                            alt={tribe.tribe_name}
+                                            width={48}
+                                            height={48}
+                                            className="rounded-lg border border-gray-200"
+                                        />
+                                        <p className="text-sm text-gray-700 font-medium">
+                                            {tribe.tribe_name}
+                                        </p>
+                                    </Link>
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-400 italic">No recent searches</p>
+                            )}
+                        </div>
+                    </div>
+                </section>
             </div>
+
             <CreateTribeModal modalFlag={modalFlag} activateModal={activateModal}/>
         </MainLayout>
     );

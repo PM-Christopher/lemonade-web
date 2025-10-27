@@ -576,9 +576,9 @@ const tribeSlice = createSlice({
     });
     builder.addCase(likeThread.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.threads = state.threads.map((thread) =>
-        thread.id === payload.data.thread.id ? payload.data.thread : thread
-      );
+      // state.threads = state.threads.map((thread) =>
+      //   thread.id === payload.data.thread.id ? payload.data.thread : thread
+      // );
     });
     builder.addCase(likeThread.rejected, (state) => {
       state.loading = false;
@@ -653,26 +653,42 @@ const tribeSlice = createSlice({
     builder.addCase(pinThread.fulfilled, (state, { payload }) => {
       state.loading = false;
       console.log(payload.message);
-      if (payload?.message === "Pinned thread") {
-        state.pinnedThreads = [
-          ...state.pinnedThreads,
-          {
-            id: payload?.data?.message?.id,
-            topic: payload?.data?.message?.topic,
-            image: payload?.data?.message?.media[0],
-          },
-        ];
-        state.threads = state.threads.map((thread) =>
-          thread.id === payload.data.message.id ? payload.data.message : thread
-        );
-      } else {
-        state.pinnedThreads = state.pinnedThreads.filter(
-          (thread) => thread.id !== payload.data?.message?.id
-        );
-        state.threads = state.threads.map((thread) =>
-          thread.id === payload.data.message.id ? payload.data.message : thread
-        );
-      }
+        if (payload?.message === "Pinned thread") {
+            const pinnedThread = payload.data.message;
+
+            // ✅ Add to pinnedThreads if not already there
+            if (!state.pinnedThreads.some((t) => t.id === pinnedThread.id)) {
+                state.pinnedThreads = [
+                    ...state.pinnedThreads,
+                    {
+                        id: pinnedThread.id,
+                        topic: pinnedThread.topic,
+                        image: pinnedThread.media?.[0] || null,
+                    },
+                ];
+            }
+
+            // ✅ Update the thread in the main list to mark as pinned
+            state.threads = state.threads.map((thread) =>
+                thread.id === pinnedThread.id
+                    ? { ...thread, pinned: true }
+                    : thread
+            );
+        } else if (payload?.message === "Unpinned thread") {
+            const unpinnedThread = payload.data.message;
+
+            // ✅ Remove from pinnedThreads
+            state.pinnedThreads = state.pinnedThreads.filter(
+                (thread) => thread.id !== unpinnedThread.id
+            );
+
+            // ✅ Update the thread in the main list to mark as unpinned
+            state.threads = state.threads.map((thread) =>
+                thread.id === unpinnedThread.id
+                    ? { ...thread, pinned: false }
+                    : thread
+            );
+        }
     });
     builder.addCase(pinThread.rejected, (state) => {
       state.loading = false;

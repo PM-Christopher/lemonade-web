@@ -17,34 +17,83 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
 
     return (
         // <div className={`p-[16px] flex items-center gap-[8px] ${active && "bg-light-green-10"} cursor-pointer`}>
-        <div className={`p-[16px] flex items-center gap-[8px] ${active && "bg-light-green-10"} cursor-pointer`} onClick={() => toggleChat(receiver_id, chat.id)}>
-            <div>
-                <div
-                    className={`w-[48px] h-[48px] bg-cover bg-center rounded-[16px]`}
-                    style={{background: `url(${userType.avatar})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat"}}
-                ></div>
+        <div
+            className={`p-4 flex items-center gap-3 rounded-xl transition-all duration-150 ${
+                active ? 'bg-light-green-10' : 'hover:bg-gray-50'
+            } cursor-pointer`}
+            onClick={() => toggleChat(receiver_id, chat.id)}
+        >
+            {/* Avatar / Initials */}
+            <div
+                className={`w-[48px] h-[48px] rounded-[16px] flex items-center justify-center text-white font-semibold text-lg shadow-sm ${
+                    userType?.avatar ? '' : 'bg-gray-500'
+                }`}
+                style={
+                    userType?.avatar
+                        ? {
+                            backgroundImage: `url(${userType.avatar})`,
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                        }
+                        : {}
+                }
+            >
+                {!userType?.avatar && (
+                    <>
+                        {userType?.username
+                            ?.split(' ')
+                            .map((n) => n[0])
+                            .join('')
+                            .toUpperCase()
+                            .slice(0, 2)}
+                    </>
+                )}
             </div>
-            <div className="flex flex-col w-full border-b-[1px] py-[12px] border-b-grey-20">
-                <div className="flex items-center gap-[4px]">
-                    <p className="font-semibold text-[14px] text-black-light">{userType.username}</p>
-                    <DotIcon className="w-[4px]"/>
-                    <p className="text-text-grey text-[14px] font-normal">L{userType.lemon_id}</p>
+
+            {/* Chat Info */}
+            <div className="flex flex-col w-full border-b border-grey-20 pb-2">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <p className="font-semibold text-[14px] text-black-light truncate">
+                            {userType.username}
+                        </p>
+                        <DotIcon className="w-[10px] h-[5px] text-gray-400" />
+                        <p className="text-text-grey text-[13px] font-normal">
+                            L{userType.lemon_id}
+                        </p>
+                    </div>
+
+                    {/* Timestamp */}
+                    {chat?.latest?.created_at ? (
+                        <p className="text-[12px] font-normal text-text-grey whitespace-nowrap">
+                            {formatTimeAgo(chat.latest.created_at)}
+                        </p>
+                    ) : (
+                        <p className="text-[12px] font-normal text-gray-400 italic whitespace-nowrap">
+                            —
+                        </p>
+                    )}
                 </div>
-                <div className="flex justify-between">
-                    {
-                        chat?.latest.type === 'text' ? (
-                            <p className="font-normal text-[14px] text-light-black">{chat?.latest.message}</p>
+
+                {/* Message Preview */}
+                <div className="mt-1 flex items-center justify-between">
+                    {chat?.latest && (chat.latest.message || chat.latest.type) ? (
+                        chat.latest.type === 'text' ? (
+                            <p className="font-normal text-[14px] text-light-black truncate">
+                                {chat.latest.message}
+                            </p>
                         ) : (
-                            <div className={'flex flex-wrap items-center gap-[4px]'}>
-                                <Image src={chat?.latest?.message} alt={'message'} width={16} height={16} className={'w-[16px] h-[16px] rounded'} />
-                                <p className="font-normal text-[12px] text-light-black"> - File</p>
+                            <div className="flex items-center gap-1 text-light-black text-[13px]">
+                                <p className="font-normal">📎 File</p>
                             </div>
                         )
-                    }
-                    <div className="flex gap-2">
-                        <p className="text-[12px] font-normal text-text-grey">|</p>
-                        <p className="text-[12px] font-normal text-text-grey">{formatTimeAgo(chat?.latest.created_at)}</p>
-                    </div>
+                    ) : (
+                        <p className="font-normal text-[14px] text-gray-400 italic">
+                            No recent message
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

@@ -27,7 +27,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
 
     useEffect(() => {
         dispatch(getOrganizerEvents())
-    }, []);
+    }, [orOption]);
 
     const renderView = () => {
         switch (orOption) {
@@ -50,14 +50,18 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
         <>
             <div className="bg-white flex justify-center laptop:justify-between border-b-[1px] items-center pt-[8px] pb-[1px] px-[16px]">
                 <div className="flex gap-10">
-                    <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === 'upcoming' && "border-b-step-color border-b-2"}`}>
-                        <p className="font-sans font-semi-normal text-black-light text-[14px] leading-[21px] cursor-pointer" onClick={() =>switchOption("upcoming")}>Upcoming</p>
-                    </div>
-                    <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === 'past' && "border-b-step-color border-b-2"}`}>
-                        <p className="font-sans font-semi-normal text-text-grey text-[14px] leading-[21px] cursor-pointer" onClick={() =>switchOption("past")}>Past events</p>
-                    </div>
-                    <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === 'draft' && "border-b-step-color border-b-2"}`}>
-                        <p className="font-sans font-semi-normal text-text-grey text-[14px] leading-[21px] cursor-pointer" onClick={() =>switchOption("draft")}>Draft</p>
+                    <div className="flex gap-6">
+                        {[
+                            { label: "Upcoming", key: "upcoming" },
+                            { label: "Past Events", key: "past" },
+                            { label: "Drafts", key: "draft" },
+                        ].map((tab) => (
+                            <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === tab.key && "border-b-step-color border-b-2"}`}>
+                                <p className={`font-sans font-semi-normal ${orOption === tab.key ? "text-black-light" : "text-text-grey"} text-[14px] leading-[21px] cursor-pointer`} onClick={() =>switchOption(tab.key)}>
+                                    {tab.label}
+                                </p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

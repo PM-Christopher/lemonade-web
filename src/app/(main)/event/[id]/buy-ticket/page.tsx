@@ -46,11 +46,12 @@ const Page = ({params}: { params: { id: number } }) => {
             }));
             setQuantities(initialQuantities);
         }
-    }, []);
+    }, [tickets]);
 
     const handleIncrement = (index: number) => {
         setQuantities((prevQuantities) =>
             prevQuantities.map((ticketDetail, i) => {
+                console.log({i, index})
                 if (i === index) {
                     // Only increment if quantity is less than purchase_limit
                     if (ticketDetail.quantity < ticketDetail.purchase_limit) {

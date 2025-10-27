@@ -686,7 +686,10 @@ const CreateEventPage = () => {
                                                 selected={formik.values.end_time ? timeStringToDate(formik.values.end_time) : null}
                                                 onChange={(date) => {
                                                     if (date) {
-                                                        formik.setFieldValue("end_time", date.toTimeString().split(" ")[0].slice(0, 5));
+                                                        formik.setFieldValue(
+                                                            "end_time",
+                                                            date.toTimeString().split(" ")[0].slice(0, 5)
+                                                        );
                                                     }
                                                 }}
                                                 showTimeSelect
@@ -696,27 +699,19 @@ const CreateEventPage = () => {
                                                 dateFormat="h:mm aa"
                                                 placeholderText="End Time"
                                                 minTime={(() => {
-                                                    const startDate = formik.values.start_date
-                                                        ? new Date(formik.values.start_date)
-                                                        : null;
-                                                    const endDate = formik.values.end_date
-                                                        ? new Date(formik.values.end_date)
-                                                        : null;
-                                                    const startTime = formik.values.start_time
-                                                        ? new Date(formik.values.start_time)
-                                                        : null;
-
-                                                    if (
-                                                        startDate &&
-                                                        endDate &&
-                                                        startDate.toDateString() === endDate.toDateString() &&
-                                                        startTime
-                                                    ) {
-                                                        return startTime;
+                                                    if (formik.values.start_time) {
+                                                        const [hours, minutes] = formik.values.start_time.split(":").map(Number);
+                                                        const selectedDate = new Date();
+                                                        selectedDate.setHours(hours, minutes, 0, 0);
+                                                        return selectedDate;
                                                     }
-                                                    return new Date(new Date().setHours(0, 0, 0, 0)); // <-- fixed: wrap in new Date()
+                                                    return new Date(new Date().setHours(0, 0, 0, 0)); // <-- wrap in Date
                                                 })()}
-                                                maxTime={new Date(new Date().setHours(23, 45, 0, 0))}
+                                                maxTime={(() => {
+                                                    const max = new Date();
+                                                    max.setHours(23, 45, 0, 0);
+                                                    return max;
+                                                })()}
                                                 className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px] border-none focus:border-none focus:outline-none focus:ring-0"
                                             />
                                         </div>

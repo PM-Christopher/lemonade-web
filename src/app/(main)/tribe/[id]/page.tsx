@@ -257,106 +257,133 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                         </Select>
                     </div>
                 </div>
-                <div>
-                    <div className="flex justify-around mt-4">
-                        <div className="flex flex-col px-10">
-                            <div className="w-[769px] flex justify-between bg-grey-20">
-                                {
-                                    pinnedThreads?.length > 0 && (
-                                        pinnedThreads?.map((pinned: {
-                                            topic: string,
-                                            image: string,
-                                            id: number
-                                        }, index: number) => (
-                                            <div className="px-[16px] py-[12px] flex gap-[12px] items-center cursor-pointer"
-                                                 key={index} onClick={() => handleScroll(pinned.id)}>
-                                                <p className="truncate font-semiBold text-[14px]">
-                                                    {pinned?.topic}
-                                                </p>
-                                                <PinnedIcon className="w-[10px]"/>
-                                            </div>
-                                        ))
-                                    )
-                                }
+                <div className="flex justify-around mt-4">
+                    {/* Left Content Section */}
+                    <div className="flex flex-col px-4 laptop:px-10 w-full max-w-[1000px]">
+                        {/* Pinned Threads */}
+                        {pinnedThreads?.length > 0 && (
+                            <div className="flex flex-wrap items-center justify-start gap-3 bg-grey-20 p-3 rounded-lg">
+                                {pinnedThreads.map((pinned, index) => (
+                                    <button
+                                        key={pinned.id ?? index}
+                                        onClick={() => handleScroll(pinned.id)}
+                                        className="flex items-center gap-2 px-3 py-2 bg-white rounded-md hover:bg-grey-10 transition"
+                                    >
+                                        <p className="truncate font-semibold text-sm text-gray-800 max-w-[150px]">
+                                            {pinned.topic}
+                                        </p>
+                                        <PinnedIcon className="w-3 text-gray-600" />
+                                    </button>
+                                ))}
                             </div>
-                            <div className="flex gap-2">
-                                <div
-                                    className={`flex flex-col gap-2 w-[768px] bg-white ${
-                                        tribe?.has_joined ? 'overflow-y-auto' : 'overflow-hidden'
-                                    } max-h-screen hide-scrollbar`}
-                                >
-                                    {dataLoading ? (
-                                        <ThreadsSkeleton count={4} />
-                                    ) : data === undefined ? (
-                                        // Still waiting for threads to be set (prevents flicker)
-                                        <ThreadsSkeleton count={4} />
-                                    ) : data.length === 0 ? (
-                                        <div className="p-4">
-                                            <p className="text-gray-500">No threads found...</p>
-                                        </div>
-                                    ) : (
-                                        <div className="flex flex-col gap-6">
-                                            {data.map((thread: Thread) => (
-                                                <ThreadCard
-                                                    key={thread.id ?? Math.random()}
-                                                    tribe_id={tribe?.id}
-                                                    thread={thread}
-                                                    toggle={activateUserInfoModal}
-                                                    switchUserId={switchUserId}
-                                                    pinThread={setPinThread}
-                                                    toggleThreadId={toggleThreadId}
-                                                    toggleDeleteThread={toggleDeleteThreadModal}
-                                                />
-                                            ))}
-                                        </div>
-                                    )}
+                        )}
+
+                        {/* Threads Section */}
+                        <div
+                            className={`mt-4 flex flex-col gap-4 bg-white rounded-xl shadow-sm ${
+                                tribe?.has_joined ? "overflow-y-auto" : "overflow-hidden"
+                            } max-h-[100vh] hide-scrollbar p-4`}
+                        >
+                            {dataLoading || data === undefined ? (
+                                <ThreadsSkeleton count={4} />
+                            ) : data.length === 0 ? (
+                                <div className="p-6 text-center text-gray-500">
+                                    No threads found...
                                 </div>
-                            </div>
-                            {
-                                tribe && !tribe?.has_joined && tribe?.monetized ? (
-                                    <div
-                                        className="fixed bottom-0 left-0 w-full h-[130px] bg-white/50 backdrop-blur-md flex items-center justify-center z-50 flex-col gap-[12px]">
-                                        <div className={'flex gap-[2px] items-center'}>
-                                            <PadlockIcon/>
-                                            <p>Paid Tribe</p>
-                                        </div>
-                                        <p className="text-light-green text-sm underline font-semi-normal cursor-pointer"
-                                           onClick={activateJoinTribeModal}>Unlock Tribe content</p>
-                                    </div>
-                                ) : (<></>)
-                            }
+                            ) : (
+                                <div className="flex flex-col gap-6">
+                                    {data.map((thread: Thread) => (
+                                        <ThreadCard
+                                            key={thread.id ?? Math.random()}
+                                            tribe_id={tribe?.id}
+                                            thread={thread}
+                                            toggle={activateUserInfoModal}
+                                            switchUserId={switchUserId}
+                                            pinThread={setPinThread}
+                                            toggleThreadId={toggleThreadId}
+                                            toggleDeleteThread={toggleDeleteThreadModal}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                        {
-                            !isMobile && (
-                                <div className="hidden tablet:block">
-                                    <TribeDetailsCard
-                                        share={activateShareTribeModal}
-                                        toggle={activateCreateThreadModal}
-                                        tribe={tribe}
-                                        toggleAddMember={toggleAddMember}
-                                        toggleJoin={activateJoinTribeModal}
-                                        threads={threads}
-                                    />
+
+                        {/* Monetized Tribe Overlay */}
+                        {tribe && !tribe.has_joined && tribe.monetized && (
+                            <div className="fixed bottom-0 left-0 w-full h-[130px] bg-white/60 backdrop-blur-md flex flex-col items-center justify-center gap-3 z-50">
+                                <div className="flex items-center gap-2 text-gray-700">
+                                    <PadlockIcon />
+                                    <p>Paid Tribe</p>
                                 </div>
-                            )
-                        }
+                                <button
+                                    onClick={activateJoinTribeModal}
+                                    className="text-light-green text-sm underline font-medium hover:text-green-700 transition"
+                                >
+                                    Unlock Tribe content
+                                </button>
+                            </div>
+                        )}
                     </div>
-                    <CreateThreadModal tribe_id={tribe?.id} toggle={activateCreateThreadModal}
-                                       isOpen={createThreadModalOpen}/>
-                    <JoinTribeModal toggle={activateJoinTribeModal} isOpen={joinTribeModalOpen} tribe={tribe}/>
-                    <JoinedTribeModal toggle={toggleJoinedTribeModal} isOpen={joinedTribeModal} tribe={tribe}/>
-                    <ShareTribeModal toggle={activateShareTribeModal} isOpen={shareTribeModalOpen} tribe={tribe}/>
-                    {
-                        user && (
-                            <UserInfoModal toggle={activateUserInfoModal} isOpen={userInfoModal} user={user}
-                                           tribe={tribe}/>
-                        )
-                    }
-                    <ReportThreadModal toggle={activateReportThreadModal} isOpen={reportThreadModal}
-                                       threadId={threadId}/>
-                    <DeleteThreadModal toggle={activateDeleteThreadModal} isOpen={deleteThreadModal} threadId={threadId}
-                                       setThreadId={setThreadId}/>
-                    <AddMemberModal isOpen={addUserModal} toggle={toggleAddMember} id={params.id}/>
+
+                    {/* Right Sidebar (Desktop only) */}
+                    {!isMobile && (
+                        <aside className="hidden tablet:block">
+                            <TribeDetailsCard
+                                share={activateShareTribeModal}
+                                toggle={activateCreateThreadModal}
+                                tribe={tribe}
+                                toggleAddMember={toggleAddMember}
+                                toggleJoin={activateJoinTribeModal}
+                                threads={threads}
+                            />
+                        </aside>
+                    )}
+
+                    {/* Modals */}
+                    <CreateThreadModal
+                        tribe_id={tribe?.id}
+                        toggle={activateCreateThreadModal}
+                        isOpen={createThreadModalOpen}
+                    />
+                    <JoinTribeModal
+                        toggle={activateJoinTribeModal}
+                        isOpen={joinTribeModalOpen}
+                        tribe={tribe}
+                    />
+                    <JoinedTribeModal
+                        toggle={toggleJoinedTribeModal}
+                        isOpen={joinedTribeModal}
+                        tribe={tribe}
+                    />
+                    <ShareTribeModal
+                        toggle={activateShareTribeModal}
+                        isOpen={shareTribeModalOpen}
+                        tribe={tribe}
+                    />
+                    {user && (
+                        <UserInfoModal
+                            toggle={activateUserInfoModal}
+                            isOpen={userInfoModal}
+                            user={user}
+                            tribe={tribe}
+                        />
+                    )}
+                    <ReportThreadModal
+                        toggle={activateReportThreadModal}
+                        isOpen={reportThreadModal}
+                        threadId={threadId}
+                    />
+                    <DeleteThreadModal
+                        toggle={activateDeleteThreadModal}
+                        isOpen={deleteThreadModal}
+                        threadId={threadId}
+                        setThreadId={setThreadId}
+                    />
+                    <AddMemberModal
+                        isOpen={addUserModal}
+                        toggle={toggleAddMember}
+                        id={params.id}
+                    />
                 </div>
             </div>
             {

@@ -1,34 +1,26 @@
 "use client";
-import React, {useEffect, useRef, useState} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import DotIcon from "@/images/icons/dot.svg";
-import MoreIcon from "@/images/icons/moreIcon.svg";
-import chat_image from "@/images/icons/chat.png";
-import HeartIcon from "@/images/icons/heartIcon.svg";
-import HeartFilledIcon from "@/images/icons/heartFilledIcon.svg";
-import VotedIcon from "@/images/icons/voteChecked.svg";
-import NotVoted from "@/images/icons/notVoted.svg";
-import FlagIcon from "@/images/icons/flagIcon.svg";
-import UserIcon from "@/images/icons/userIcon.svg";
-import TrashRedIcon from "@/images/icons/deleteRedTrash.svg";
-import PinIcon from "@/images/icons/pinIcon.svg";
-
-import {Thread} from "@/interfaces/TribeInterface";
-import {useAppDispatch} from "@/redux/hook";
-
-import ChatIcon from "@/images/icons/chatIcon.svg";
 import {
-    getComments,
-    likeThread,
-    postComment,
-    removeTribeUser,
-    setTribeUser,
-    submitVote,
-} from "@/features/tribes/tribe.slice";
-import {useSelector} from "react-redux";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
+    Heart as HeartIcon,
+    MessageCircle as ChatIcon,
+    MoreVertical as MoreIcon,
+    Flag as FlagIcon,
+    Trash2 as TrashIcon,
+    Pin as PinIcon,
+    User as UserIcon,
+} from "lucide-react";
 import ImageCarousel from "@/components/global/ImageCarousel";
 import CommentsSection from "./CommentSection";
+import { useAppDispatch } from "@/redux/hook";
+import { useSelector } from "react-redux";
+import {
+    postComment,
+    likeThread,
+    submitVote,
+} from "@/features/tribes/tribe.slice";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { Thread } from "@/interfaces/TribeInterface";
 
 interface ModalPosition {
     top: number;
@@ -37,10 +29,10 @@ interface ModalPosition {
 
 interface ThreadCardProps {
     thread: Thread;
-    tribe_id: number | any;
+    tribe_id: number|any;
     toggle: () => void;
-    switchUserId: any;
-    pinThread: any;
+    switchUserId: (id: number) => void;
+    pinThread: (id: number) => void;
     toggleThreadId: (id: number) => void;
     toggleDeleteThread: (id: number) => void;
 }
@@ -48,451 +40,342 @@ interface ThreadCardProps {
 const ThreadCard: React.FC<ThreadCardProps> = ({
                                                    thread,
                                                    tribe_id,
-                                                   toggle,
                                                    switchUserId,
                                                    pinThread,
                                                    toggleThreadId,
                                                    toggleDeleteThread,
                                                }) => {
     const dispatch = useAppDispatch();
-    const {authToken} = useSelector((state: any) => state.auth);
-    const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
-    const charLimit = 200;
+    const { authToken } = useSelector((state: any) => state.auth);
 
-    const moreIconRef = useRef<HTMLDivElement | null>(null);
-    const modalRef = useRef<HTMLDivElement | null>(null); // Add modal ref
-    const [modalPosition, setModalPosition] = useState<ModalPosition | null>(
-        null
-    );
-    const [isModalVisible, setModalVisible] = useState(false);
-
+    const [isExpanded, setIsExpanded] = useState(false);
     const [comment, setComment] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [showCommentForm, setShowCommentForm] = useState(false);
-
-    const [showComments, setShowComments] = useState(false);
-    const [comments, setComments] = useState([]);
     const [hasLiked, setHasLiked] = useState(thread?.hasLiked || false);
     const [likeCount, setLikeCount] = useState(thread?.likes || 0);
 
-    // Click outside handler
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
+    const modalRef = useRef<HTMLDivElement>(null);
+    const moreIconRef = useRef<HTMLDivElement>(null);
+
+    // --- Modal close on outside click or Esc
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+        const close = (e: MouseEvent | KeyboardEvent) => {
             if (
-                isModalVisible &&
-                modalRef.current &&
-                moreIconRef.current &&
-                !modalRef.current.contains(event.target as Node) &&
-                !moreIconRef.current.contains(event.target as Node)
+                e instanceof KeyboardEvent
+                    ? e.key === "Escape"
+                    : modalRef.current &&
+                    moreIconRef.current &&
+                    !modalRef.current.contains(e.target as Node) &&
+                    !moreIconRef.current.contains(e.target as Node)
             ) {
                 setModalVisible(false);
             }
         };
-
-        const handleEscapeKey = (event: KeyboardEvent) => {
-            if (isModalVisible && event.key === 'Escape') {
-                setModalVisible(false);
-            }
-        };
-
         if (isModalVisible) {
-            document.addEventListener('mousedown', handleClickOutside);
-            document.addEventListener('keydown', handleEscapeKey);
+            document.addEventListener("mousedown", close);
+            document.addEventListener("keydown", close);
         }
-
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.removeEventListener('keydown', handleEscapeKey);
+            document.removeEventListener("mousedown", close);
+            document.removeEventListener("keydown", close);
         };
     }, [isModalVisible]);
 
-    const handleSubmitComment = async (e: any) => {
+    // --- Comment submit
+    const handleSubmitComment = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!comment.trim()) return;
 
+        setSubmitting(true);
         try {
-            setSubmitting(true);
-            // Replace this with your Redux dispatch or API call
-            dispatch(
+            const res = await dispatch(
                 postComment({
                     token: authToken,
                     thread_id: thread.id,
-                    tribe_id: tribe_id,
-                    data: {body: comment},
+                    tribe_id,
+                    data: { body: comment },
                 })
-            ).then((res) => {
-                if (res.payload.status) {
-                    setComment("");
-                    setShowCommentForm(false);
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Posted comment successfully",
-                            type: "success",
-                        })
-                    );
-                }
-            });
-            // optionally hide form after posting
-        } catch (error) {
-            console.error("Failed to post comment:", error);
+            );
+            if (res.payload.status) {
+                setComment("");
+                setShowCommentForm(false);
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Posted comment successfully",
+                        type: "success",
+                    })
+                );
+            }
+        } catch {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Failed to post comment",
+                    type: "error",
+                })
+            );
         } finally {
             setSubmitting(false);
         }
     };
 
-    const handleMoreIconClick = () => {
-        if (moreIconRef.current) {
-            const rect = moreIconRef.current.getBoundingClientRect();
-            const position: ModalPosition = {
-                top: rect.top + window.scrollY + 25,
-                left: rect.right + window.scrollX - 150, // Adjust modal position relative to the button
-            };
-            setModalPosition(position);
-        }
-        setModalVisible(!isModalVisible); // Toggle modal visibility
-    };
-
-    const handleToggle = () => {
-        setIsExpanded(!isExpanded); // Toggle the expanded state
-    };
-
-    const postLike = async () => {
-        // Optimistic UI update
-        const previousLikedState = hasLiked;
-        const previousLikeCount = likeCount;
-
-        // Toggle instantly
-        setHasLiked(!hasLiked);
-        setLikeCount(hasLiked ? likeCount - 1 : likeCount + 1);
+    // --- Likes (optimistic update)
+    const postLike = useCallback(async () => {
+        const prevLiked = hasLiked;
+        const prevCount = likeCount;
+        setHasLiked(!prevLiked);
+        setLikeCount(prevLiked ? prevCount - 1 : prevCount + 1);
 
         try {
-            const {payload} = await dispatch(likeThread({id: thread?.id, tribe_id: tribe_id, token: authToken}));
-            // If API failed, revert
-            if (!payload?.status) {
-                setHasLiked(previousLikedState);
-                setLikeCount(previousLikeCount);
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Failed to like post. Please try again.",
-                        type: "error",
-                    })
-                );
-            }
-        } catch (error) {
-            // Revert on network or server error
-            setHasLiked(previousLikedState);
-            setLikeCount(previousLikeCount);
+            const { payload } = await dispatch(
+                likeThread({ id: thread.id, tribe_id, token: authToken })
+            );
+            if (!payload?.status) throw new Error();
+        } catch {
+            setHasLiked(prevLiked);
+            setLikeCount(prevCount);
             dispatch(
                 updateToastifyReducer({
                     show: true,
-                    message: "Something went wrong. Please try again.",
+                    message: "Failed to like post",
                     type: "error",
                 })
             );
         }
-    };
+    }, [hasLiked, likeCount, thread.id, tribe_id, authToken, dispatch]);
 
-    const pollVote = (option_id: number) => {
+    // --- Poll vote
+    const pollVote = (option_id: number) =>
         dispatch(
             submitVote({
                 tribe_id,
                 thread_id: thread.id,
                 poll_id: thread.thread_polls.id,
-                data: {option_id},
+                data: { option_id },
                 token: authToken,
             })
-        )
-            .then((res: any) => {
-                if (res.payload.status) {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Vote submitted",
-                            type: "success",
-                        })
-                    );
-                } else {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Error submitting vote",
-                            type: "error",
-                        })
-                    );
-                }
-            })
-            .catch((error) => {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: error.message || "Something went wrong. Please try again",
-                        type: "error",
-                    })
-                );
-            });
+        ).then((res: any) =>
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: res.payload.status ? "Vote submitted" : "Error submitting vote",
+                    type: res.payload.status ? "success" : "error",
+                })
+            )
+        );
+
+    // --- Modal open positioning
+    const handleMoreIconClick = () => {
+        if (!moreIconRef.current) return;
+        const rect = moreIconRef.current.getBoundingClientRect();
+        setModalPosition({
+            top: rect.top + window.scrollY + 25,
+            left: rect.right + window.scrollX - 150,
+        });
+        setModalVisible(!isModalVisible);
     };
 
-    const handleLikeComment = (commentId: number) => {
-        console.log("Liking comment:", commentId);
-    };
-
-    const handleReplyToComment = (commentId: number, parentId?: number) => {
-        console.log("Replying to comment:", commentId, parentId);
-    };
+    const charLimit = 200;
+    const truncatedText =
+        !thread.thoughts || thread.thoughts.length <= charLimit
+            ? thread.thoughts
+            : `${thread.thoughts.slice(0, charLimit)}...`;
 
     return (
-        <div
-            className="p-4 py-4 w-full h-full grid gap-[50px]"
-            id={`pinned-${thread.id}`}
-        >
-            <div>
-                <div className="flex justify-between items-center">
-                    <div className="flex gap-2 items-center">
-                        <div>
-                            <Image
-                                src={thread?.created_by?.user?.avatar}
-                                alt=""
-                                width={48}
-                                height={48}
-                                className="w-[48px] h-[48px] rounded-[16px] border-[1px] border-grey-90"
-                            />
-                        </div>
-                        <div>
-                            <p className="font-semi-normal font-sans text-[14px] leading-[14.4px]">
-                                {thread?.created_by?.user?.username}
-                            </p>
-                        </div>
-                        {thread?.created_by.user.verified && (
-                            <div>
-                                <Image
-                                    src={"/images/verified.png"}
-                                    alt="verifed"
-                                    width={13}
-                                    height={13}
-                                />
-                            </div>
+        <div className="p-4 w-full h-full grid gap-8" id={`pinned-${thread.id}`}>
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <Image
+                        src={thread?.created_by?.user?.avatar || "/default-avatar.png"}
+                        alt="avatar"
+                        width={48}
+                        height={48}
+                        className="w-12 h-12 rounded-2xl border border-gray-200"
+                    />
+                    <div className="flex items-center gap-1">
+                        <p className="font-semibold text-sm">
+                            {thread?.created_by?.user?.username}
+                        </p>
+                        {thread?.created_by?.user?.verified && (
+                            <Image src="/images/verified.png" alt="verified" width={13} height={13} />
                         )}
-                        <div>
-                            <DotIcon className="w-[3px] h-[3px]"/>
-                        </div>
-                        <div>
-                            <p className="font-sans font-normal text-[12px] leading-[14.4px]">
-                                {thread?.created_at}
-                            </p>
-                        </div>
                     </div>
-                    <div className="cursor-pointer" ref={moreIconRef}>
-                        <MoreIcon
-                            className="cursor-pointer"
-                            onClick={handleMoreIconClick}
-                        />
-                    </div>
+                    <span className="text-xs text-gray-500">{thread?.created_at}</span>
                 </div>
-                <div className="mt-[4px]">
-                    <p className="font-sans font-semibold text-[14px] leading-[21px]">
-                        {thread?.topic}
-                    </p>
-                    <p className="font-sans font-normal leading-[21px] text-[14px] text-light-black mt-[30px]">
-                        {isExpanded ||
-                        !thread?.thoughts ||
-                        thread.thoughts.length <= charLimit
-                            ? thread?.thoughts
-                            : `${thread.thoughts.slice(0, charLimit)}...`}
-                    </p>
-                    {thread?.thoughts && thread.thoughts.length > charLimit && (
-                        <p
-                            className="font-sans font-semi-normal text-[14px] text-light-green cursor-pointer"
-                            onClick={handleToggle}
+                <div ref={moreIconRef}>
+                    <MoreIcon className="cursor-pointer w-5 h-5" onClick={handleMoreIconClick} />
+                </div>
+            </div>
+
+            {/* Content */}
+            <div>
+                <p className="font-semibold text-sm">{thread?.topic}</p>
+                <p className="text-gray-700 text-sm mt-2">
+                    {isExpanded ? thread.thoughts : truncatedText}
+                </p>
+                {thread?.thoughts && thread.thoughts.length > charLimit && (
+                    <button
+                        className="text-light-green text-sm mt-1"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                    >
+                        {isExpanded ? "See less" : "See more"}
+                    </button>
+                )}
+            </div>
+
+            {thread?.media?.length > 0 && <ImageCarousel images={thread.media} />}
+
+            {/* Polls */}
+            {thread?.polls && thread?.thread_polls?.options?.length > 0 && (
+                <div className="mt-4 space-y-3">
+                    <p className="font-medium text-base">{thread.thread_polls.title}</p>
+                    {thread.thread_polls.options.map((opt) => (
+                        <div
+                            key={opt.id}
+                            className="relative w-full h-10 bg-gray-100 rounded-lg cursor-pointer overflow-hidden"
+                            onClick={() => pollVote(opt.id)}
                         >
-                            {isExpanded ? "see less" : "see more"}
-                        </p>
-                    )}
-                </div>
-                {thread?.media.length > 0 && (
-                    <ImageCarousel images={thread?.media}/>
-                )}
-
-                {thread?.polls && thread?.thread_polls?.options.length > 0 && (
-                    <div className={"flex flex-col gap-2 mt-4"}>
-                        <p className={"font-medium text-[16px]"}>
-                            {thread?.thread_polls?.title}
-                        </p>
-                        {thread?.thread_polls?.options?.map((option, index) => (
                             <div
-                                className="grid gap-2 mt-[16px] bg-light_grey rounded-[12px] cursor-pointer"
-                                onClick={() => pollVote(option.id)}
-                                key={index}
-                            >
-                                <div className="relative w-full h-[40px] bg-grey rounded-[8px] overflow-hidden">
-                                    {/* Background bar showing the percentage */}
-                                    <div
-                                        className="absolute top-0 left-0 h-full bg-light-green-90 rounded-[8px]"
-                                        style={{width: `${option.vote_percentage}%`}}
-                                    ></div>
-                                    {/* Content of the option */}
-                                    <div className="relative z-10 flex justify-between items-center p-3">
-                                        <div className="flex gap-2 items-center">
-                                            {thread?.thread_polls.has_voted &&
-                                                (thread.thread_polls.user_vote?.id === option.id ? (
-                                                    <VotedIcon className="w-[20px] h-[20px]"/>
-                                                ) : (
-                                                    <NotVoted className="w-[20px] h-[20px]"/>
-                                                ))}
-
-                                            <p className="font-semi-normal text-[14px]">
-                                                {option.content}
-                                            </p>
-                                        </div>
-                                        <p className="font-semi-normal text-[14px]">
-                                            {option.vote_percentage}%
-                                        </p>
-                                    </div>
-                                </div>
+                                className="absolute top-0 left-0 h-full bg-light-green-90 transition-all"
+                                style={{ width: `${opt.vote_percentage}%` }}
+                            />
+                            <div className="relative z-10 flex justify-between items-center px-3 h-full">
+                                <span>{opt.content}</span>
+                                <span>{opt.vote_percentage}%</span>
                             </div>
-                        ))}
-                    </div>
-                )}
-                {thread?.polls && (
-                    <div className="mt-2">
-                        <p className="text-text-grey text-[12px] font-semi-normal">
-                            {`${thread?.thread_polls.total_votes} vote${
-                                thread?.thread_polls.total_votes === 1 ? "" : "s"
-                            }`}
-                        </p>
-                    </div>
-                )}
-            </div>
-            <div className="flex gap-4 mt-2">
-                <div
-                    className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center cursor-pointer"
+                        </div>
+                    ))}
+                    <p className="text-xs text-gray-500">
+                        {thread.thread_polls.total_votes} vote
+                        {thread.thread_polls.total_votes !== 1 && "s"}
+                    </p>
+                </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-3">
+                <button
                     onClick={postLike}
+                    className="flex items-center gap-1 bg-gray-100 rounded-lg px-3 py-1.5"
                 >
-                    <div className="flex items-center gap-[4px]">
-                        {hasLiked ? <HeartFilledIcon/> : <HeartIcon className=""/>}
-                        {
-                            thread?.owner && (
-                                <p className={"font-ruso text-[14px] text-text-grey"}>{thread?.likes}</p>
-                            )
-                        }
-                        {/*<span className="text-[12px]">{likeCount}</span>*/}
-                    </div>
-                </div>
-                <div
-                    className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center cursor-pointer"
+                    {hasLiked ? (
+                        <HeartIcon className="text-green-400 fill-green-400 w-5 h-5" />
+                    ) : (
+                        <HeartIcon className="w-5 h-5" />
+                    )}
+                    <span className="text-sm">{likeCount}</span>
+                </button>
+
+                <button
                     onClick={() => setShowCommentForm(!showCommentForm)}
+                    className="flex items-center gap-1 bg-gray-100 rounded-lg px-3 py-1.5"
                 >
-                    {/* <Image src={chat_image} alt="comment" /> */}
-                    <ChatIcon/>
-                </div>
+                    <ChatIcon className="w-5 h-5" />
+                </button>
             </div>
 
+            {/* Comments */}
             <CommentsSection
                 comments={thread?.all_comments}
                 isVisible={true}
-                onToggleVisibility={() => setShowComments(false)}
-                onLikeComment={handleLikeComment}
-                onReplyToComment={handleReplyToComment}
+                onToggleVisibility={() => null}
+                onLikeComment={() => null}
+                onReplyToComment={() => null}
             />
-            <div>
-                {showCommentForm && (
-                    <form onSubmit={handleSubmitComment} className="flex flex-col gap-2">
-            <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Write a comment..."
-                className="border-[1px] border-grey-90 rounded-[8px] p-2 w-full h-[80px] resize-none focus:outline-none focus:ring-1 focus:ring-light-green"
-            />
-                        <div className="flex gap-2 justify-end">
-                            <button
-                                type="button"
-                                className="text-[14px] text-black-light px-3 py-1 rounded-[8px] border-[1px] border-grey-90"
-                                onClick={() => setShowCommentForm(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={submitting || !comment.trim()}
-                                className="bg-light-green text-white rounded-[8px] px-4 py-2 font-medium text-[14px] disabled:opacity-60"
-                            >
-                                {submitting ? "Posting..." : "Post Comment"}
-                            </button>
-                        </div>
-                    </form>
-                )}
-            </div>
+
+            {/* Comment Form */}
+            {showCommentForm && (
+                <form onSubmit={handleSubmitComment} className="flex flex-col gap-2">
+          <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Write a comment..."
+              className="border border-gray-300 rounded-md p-2 w-full h-20 resize-none focus:ring-1 focus:ring-light-green"
+          />
+                    <div className="flex justify-end gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setShowCommentForm(false)}
+                            className="text-sm px-3 py-1 border border-gray-300 rounded-md"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={submitting || !comment.trim()}
+                            className="bg-light-green text-white text-sm px-4 py-1.5 rounded-md disabled:opacity-60"
+                        >
+                            {submitting ? "Posting..." : "Post"}
+                        </button>
+                    </div>
+                </form>
+            )}
+
+            {/* Modal */}
             {isModalVisible && modalPosition && (
                 <div
                     ref={modalRef}
-                    className="absolute bg-white shadow-lg z-10 rounded-[12px] flex flex-col w-[170px]"
-                    style={{
-                        top: modalPosition.top,
-                        left: modalPosition.left,
-                        minWidth: "150px",
-                    }}
+                    className="absolute bg-white shadow-lg z-10 rounded-xl w-44"
+                    style={{ top: modalPosition.top, left: modalPosition.left }}
                 >
                     {!thread?.owner && (
-                        <div
-                            className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-gray-50 transition-colors"
-                            onClick={() => {
-                                switchUserId(thread?.created_by?.user?.id);
-                                setModalVisible(false);
-                            }}
-                        >
-                            <UserIcon className="w-[16.25px] h-[16.25px]"/>
-                            <p className="font-normal text-[16px] text-black-light">
-                                View profile
-                            </p>
-                        </div>
+                        <ModalItem
+                            icon={<UserIcon size={16} />}
+                            label="View profile"
+                            onClick={() => switchUserId(thread.created_by.user.id)}
+                        />
                     )}
-
-                    <div
-                        className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-gray-50 transition-colors"
-                        onClick={() => {
-                            pinThread(thread?.id);
-                            setModalVisible(false);
-                        }}
-                    >
-                        <PinIcon className="w-[16.25px] h-[16.25px]"/>
-                        <p className="font-normal text-[16px] text-black-light">
-                            {thread?.pinned ? "Unpin" : "Pin"} Thread
-                        </p>
-                    </div>
-
-                    <div
-                        className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-gray-50 transition-colors"
-                        onClick={() => {
-                            toggleThreadId(thread?.id);
-                            setModalVisible(false);
-                        }}
-                    >
-                        <FlagIcon className="w-[16.25px] h-[16.25px]"/>
-                        <p className="font-normal text-[16px] text-black-light">
-                            Report Thread
-                        </p>
-                    </div>
-
+                    <ModalItem
+                        icon={<PinIcon size={16} />}
+                        label={thread?.pinned ? "Unpin Thread" : "Pin Thread"}
+                        onClick={() => pinThread(thread.id)}
+                    />
+                    <ModalItem
+                        icon={<FlagIcon size={16} />}
+                        label="Report Thread"
+                        onClick={() => toggleThreadId(thread.id)}
+                    />
                     {thread?.owner && (
-                        <div
-                            className="p-[12px] px-[16px] flex gap-[8px] items-center cursor-pointer hover:bg-red-50 transition-colors"
-                            onClick={() => {
-                                toggleDeleteThread(thread?.id);
-                                setModalVisible(false);
-                            }}
-                        >
-                            <TrashRedIcon className="w-[16.25px] h-[16.25px]"/>
-                            <p className="text-red-1 font-normal text-[16px]">
-                                Delete thread
-                            </p>
-                        </div>
+                        <ModalItem
+                            icon={<TrashIcon size={16} className="text-red-500" />}
+                            label="Delete Thread"
+                            danger
+                            onClick={() => toggleDeleteThread(thread.id)}
+                        />
                     )}
                 </div>
             )}
-            <div className="w-full border-b-[1px]"></div>
+            <div className="w-full border-b" />
         </div>
     );
 };
+
+// Reusable modal item
+const ModalItem = ({
+                       icon,
+                       label,
+                       onClick,
+                       danger = false,
+                   }: {
+    icon: React.ReactNode;
+    label: string;
+    onClick: () => void;
+    danger?: boolean;
+}) => (
+    <div
+        onClick={onClick}
+        className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-50 ${
+            danger ? "text-red-500 hover:bg-red-50" : "text-gray-800"
+        }`}
+    >
+        {icon}
+        <span className="text-sm">{label}</span>
+    </div>
+);
 
 export default ThreadCard;

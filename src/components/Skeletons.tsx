@@ -131,6 +131,49 @@ export const TribeDetailsSkeleton = () => {
     )
 }
 
+export const TribeListSkeleton = ({count}: {count: number}) => {
+    return (
+        <div className="space-y-3 animate-pulse">
+            {Array.from({ length: count }).map((_, i) => (
+                <div
+                    key={i}
+                    className="bg-mid-grey rounded-[16px] mb-2 border-[1px] border-grey-30 overflow-hidden"
+                >
+                    {/* Top Section */}
+                    <div className="flex items-center justify-between bg-white p-4 rounded-[16px]">
+                        <div className="flex gap-2 items-center">
+                            {/* Tribe Image */}
+                            <div className="w-[40px] h-[40px] bg-gray-200 rounded-full"></div>
+
+                            {/* Tribe Info */}
+                            <div className="flex flex-col gap-1">
+                                <div className="w-[100px] h-[12px] bg-gray-200 rounded"></div>
+                                <div className="w-[140px] h-[10px] bg-gray-100 rounded"></div>
+                            </div>
+                        </div>
+
+                        {/* Join Button */}
+                        <div className="flex items-center gap-1 border-[1px] px-[16px] p-[6px] rounded-[12px] border-gray-200">
+                            <div className="w-[40px] h-[10px] bg-gray-200 rounded"></div>
+                            <div className="w-[16px] h-[16px] bg-gray-100 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    {/* Bottom Section */}
+                    <div className="flex justify-between items-center p-4 bg-mid-grey rounded-b-[16px] py-6">
+                        <div className="w-[60px] h-[10px] bg-gray-200 rounded"></div>
+                        <div className="w-[80px] h-[10px] bg-gray-200 rounded"></div>
+                        <div className="flex gap-2 items-center">
+                            <div className="w-[16px] h-[16px] bg-gray-200 rounded"></div>
+                            <div className="w-[70px] h-[10px] bg-gray-200 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
 export const ThreadsSkeleton = ({count}: { count: number }) => {
     return (
         <>
