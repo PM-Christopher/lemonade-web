@@ -14,10 +14,21 @@ const PricingPage = () => {
     const router = useRouter()
     const { data } = useRequest(`subscription`)
     const [isOpen, setIsOpen] = useState(false)
+    const [subId, setSubId] = useState<number|null>(null)
+    const [subMode, setSubMode] = useState<string>('')
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
     }
+
+    const toggleSubId = (sub_id: number) => {
+        setSubId(sub_id)
+    }
+
+    const toggleSubMode = (mode: string) => {
+        setSubMode(mode)
+    }
+
 
     return (
         <MainLayout>
@@ -33,14 +44,21 @@ const PricingPage = () => {
                 <section className="mt-[48px] flex flex-col items-center">
                     <div className="flex flex-col laptop:flex-row gap-[48px]">
                         {
-                            data?.subscriptions?.map((sub: any, index: any) => (
-                                <PricingCard subscription={sub} active={subscription?.title === sub?.title}/>
+                            data?.subscriptions?.map((sub: any, index: number) => (
+                                <PricingCard
+                                    key={index}
+                                    toggle={toggleModal}
+                                    subscription={sub}
+                                    active={subscription?.title === sub?.title}
+                                    setSubId={toggleSubId}
+                                    toggleSubMode={toggleSubMode}
+                                />
                             ))
                         }
                     </div>
                 </section>
             </section>
-            <UpgradePlanModal isOpen={isOpen} toggle={toggleModal} />
+            <UpgradePlanModal isOpen={isOpen} toggle={toggleModal} sub_id={subId} subMode={subMode} />
         </MainLayout>
     );
 }

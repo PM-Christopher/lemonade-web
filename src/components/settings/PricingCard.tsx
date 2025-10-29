@@ -13,20 +13,36 @@ import {useRouter} from "next/navigation";
 import CheckIcon from "@/images/icons/checkGreenIcon.svg"
 import {useAppDispatch} from "@/redux/hook";
 import {setSubscriptionId} from "@/features/authentication/authSlice";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
 
 type PricingInterface = {
     active: boolean,
     subscription: any
+    toggle: () => void
+    setSubId: (id: number) => void
+    toggleSubMode: (mode: string) => void
 }
 
-const PricingCard: React.FC<PricingInterface> = ({active, subscription}) => {
+const PricingCard: React.FC<PricingInterface> = ({active, subscription, toggle, setSubId, toggleSubMode}) => {
     const router = useRouter()
     const dispatch = useAppDispatch()
+    const { user, subscription: user_sub } = useSelector((state:RootState) => state.auth)
 
     const handleSubscribe = (id: number, subscription: any) => {
-        dispatch(setSubscriptionId({ id, plan: subscription }))
-        router.push("/settings/plan/cancel-subscription")
+        setSubId(id)
+        if (user_sub) {
+            if (user_sub.title === 'Pay-As-You-Go') {
+                toggle()
+                toggleSubMode("upgrade")
+            } else {
+                toggleSubMode("downgrade")
+                dispatch(setSubscriptionId({ id, plan: subscription }))
+                router.push("/settings/plan/cancel-subscription")
+            }
+        }
     }
+
     return (
         <div className="flex flex-col items-center">
             <div className="w-[260px] pt-[16px] px-[48px] rounded-tl-[16px] rounded-tr-[16px]"

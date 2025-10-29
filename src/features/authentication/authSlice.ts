@@ -10,11 +10,18 @@ interface authState {
     admin: any;
     adminToken: string | null;
     isLoggedIn: boolean;
-    subscription: {} | null,
+    subscription: {
+        title: string
+        plan_price: string
+        payment_method: string
+        next_billing_date: string
+        id: number
+    } | null,
     subscription_id: number | null,
     plan: {} | null,
     appSettings: {} | null
     code: string | null;
+    upgradeLoading: boolean
 }
 
 const initialState: authState = {
@@ -29,7 +36,8 @@ const initialState: authState = {
     subscription_id: null,
     plan: null,
     appSettings: null,
-    code: null
+    code: null,
+    upgradeLoading: false
 };
 
 const verifyEmailOtp = createAsyncThunk("auth/verifyEmailOtp", async ({ data, url, token }: { data: any, url: string, token: string }, { rejectWithValue }) => {
@@ -177,6 +185,18 @@ const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ da
     };
     try {
         const response = await axiosInstance.patch(`/profile/notification-settings/update-all-notification`, data, { headers });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const changePlan = createAsyncThunk("auth/changePlan", async ({ data }: { data: any }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.post(`/profile/subscription/change-plan`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -383,6 +403,16 @@ const authSlice = createSlice({
         builder.addCase(logout.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(changePlan.pending, (state) => {
+            state.upgradeLoading = true;
+        });
+        builder.addCase(changePlan.fulfilled, (state, { payload }) => {
+            state.upgradeLoading = false;
+        });
+        builder.addCase(changePlan.rejected, (state) => {
+            state.upgradeLoading = false;
+        });
     }
 });
 
@@ -401,6 +431,6 @@ export const {
     setSubscriptionId,
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan }
 
 export default authSlice.reducer;

@@ -30,7 +30,9 @@ const config: Config = {
 			  'custom-bottom': '0px -2px 2px 0px #658E0D inset',
 			  'div-shadow-1': '-8px 8px 12px 0px rgba(187, 187, 187, 0.15)',
 			  'div-shadow-2': '2px 0px 8px 0px rgba(230, 230, 230, 0.25)',
-			  'event-custom': "0px -1px 2px 0px #9FC207 inset"
+			  'event-custom': "0px -1px 2px 0px #9FC207 inset",
+              'green-inset': 'inset 0px 2px 0px 0px #C1FF3C, inset 0px -2px 2px 0px #658E0D',
+              'green-inset-strong': 'inset 0px 3px 0px 0px #C1FF3C, inset 0px -3px 3px 0px #658E0D',
 		  },
 		  fontWeight: {
 			  regular: "100",
