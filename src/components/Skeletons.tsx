@@ -131,10 +131,51 @@ export const TribeDetailsSkeleton = () => {
     )
 }
 
-export const TribeListSkeleton = ({count}: {count: number}) => {
+export const SubscriptionsSkeleton = ({count, dataList}: { count: number, dataList: number }) => {
+    return (
+        <>
+            {Array.from({length: count}).map((_, i) => (
+                <div className="flex flex-col items-center animate-pulse" key={i}>
+                    {/* Header Section */}
+                    <div className="w-[260px] pt-[16px] px-[48px] rounded-tl-[16px] rounded-tr-[16px] bg-grey-20">
+                        <div className="h-[24px] w-[120px] bg-light-grey-70 rounded-md mx-auto mb-2"></div>
+                        <div className="h-[20px] w-[100px] bg-light-grey-70 rounded-md mx-auto"></div>
+                    </div>
+
+                    {/* Card Section */}
+                    <div className="w-[311px] rounded-[12px] border-[2px] border-light-grey-60 mt-1">
+                        <div className="rounded-tl-[12px] rounded-tr-[12px] bg-grey-20 p-[12px]">
+                            <div className="h-[20px] w-[140px] bg-light-grey-70 rounded-md"></div>
+                        </div>
+
+                        <div className="bg-white p-4 flex flex-col rounded-bl-[12px] rounded-br-[12px] gap-[20px]">
+                            {Array.from({length: dataList}).map((_, index) => (
+                                <div
+                                    key={index}
+                                    className="flex justify-between items-center"
+                                >
+                                    <div className="flex gap-2 items-center">
+                                        <div className="h-[20px] w-[20px] bg-light-grey-70 rounded-md"></div>
+                                        <div className="h-[14px] w-[120px] bg-light-grey-70 rounded-md"></div>
+                                    </div>
+                                    <div className="h-[14px] w-[40px] bg-light-grey-70 rounded-md"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Button Section */}
+                    <div className="h-[48px] w-[250px] bg-light-grey-70 rounded-[12px] mt-[56px]"></div>
+                </div>
+            ))}
+        </>
+    )
+}
+
+export const TribeListSkeleton = ({count}: { count: number }) => {
     return (
         <div className="space-y-3 animate-pulse">
-            {Array.from({ length: count }).map((_, i) => (
+            {Array.from({length: count}).map((_, i) => (
                 <div
                     key={i}
                     className="bg-mid-grey rounded-[16px] mb-2 border-[1px] border-grey-30 overflow-hidden"
@@ -153,7 +194,8 @@ export const TribeListSkeleton = ({count}: {count: number}) => {
                         </div>
 
                         {/* Join Button */}
-                        <div className="flex items-center gap-1 border-[1px] px-[16px] p-[6px] rounded-[12px] border-gray-200">
+                        <div
+                            className="flex items-center gap-1 border-[1px] px-[16px] p-[6px] rounded-[12px] border-gray-200">
                             <div className="w-[40px] h-[10px] bg-gray-200 rounded"></div>
                             <div className="w-[16px] h-[16px] bg-gray-100 rounded-full"></div>
                         </div>
@@ -918,7 +960,8 @@ export const InviteSkeleton = ({count}: { count: number }) => {
         <>
             {[...Array(count)].map((_, i) => (
                 <div
-                    className="flex justify-between pb-[16px] border-b-[1px] border-b-mid-grey mb-[32px] animate-pulse" key={i}>
+                    className="flex justify-between pb-[16px] border-b-[1px] border-b-mid-grey mb-[32px] animate-pulse"
+                    key={i}>
                     <div className="flex gap-2">
                         {/* Avatar + Lemon ID */}
                         <div className="relative flex items-center justify-center">
@@ -945,5 +988,55 @@ export const InviteSkeleton = ({count}: { count: number }) => {
                 </div>
             ))}
         </>
+    )
+}
+
+export const BillingHistorySkeleton = ({count}: { count: number }) => {
+    return (
+        <div className="w-full laptop:w-[640px] flex flex-col gap-10 animate-pulse">
+            {/* Current Plan Skeleton */}
+            <div className="rounded-2xl bg-green-tint border-b-4 border-b-step-color p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div className="flex flex-col gap-2 w-full sm:w-[60%]">
+                    <div className="h-[20px] w-[100px] bg-light-grey-70 rounded-md"></div>
+                    <div className="h-[28px] w-[140px] bg-light-grey-70 rounded-md"></div>
+                    <div className="bg-light-green-50 px-3 py-2 rounded-lg w-[180px]">
+                        <div className="h-[16px] w-[120px] bg-light-grey-70 rounded-md"></div>
+                    </div>
+                </div>
+                <div className="h-[20px] w-[100px] bg-light-grey-70 rounded-md"></div>
+            </div>
+
+            {/* Payment Info Skeleton */}
+            <div className="flex flex-col gap-4">
+                <div className="h-[16px] w-[120px] bg-light-grey-70 rounded-md"></div>
+
+                <div className="flex items-center gap-3 bg-light-green-10 w-fit px-2 py-1 rounded-lg">
+                    <div className="flex items-center gap-2 bg-light-green-50 px-3 py-2 rounded-xl">
+                        <div className="h-[24px] w-[33px] bg-light-grey-70 rounded-md"></div>
+                        <div className="h-[16px] w-[60px] bg-light-grey-70 rounded-md"></div>
+                    </div>
+                    <div className="h-[16px] w-[100px] bg-light-grey-70 rounded-md"></div>
+                </div>
+            </div>
+
+            {/* Payment History Skeleton */}
+            <div className="flex flex-col gap-4">
+                <div className="h-[16px] w-[140px] bg-light-grey-70 rounded-md"></div>
+
+                {/* 3 Dummy History Rows */}
+                <div className="flex flex-col divide-y divide-light-green-20 border border-light-green-20 rounded-xl overflow-hidden">
+                    {Array.from({length: count}).map((_, i) => (
+                        <div
+                            key={i}
+                            className="flex flex-col laptop:flex-row justify-between items-start laptop:items-center px-4 py-3 bg-white"
+                        >
+                            <div className="h-[18px] w-[150px] bg-light-grey-70 rounded-md"></div>
+                            <div className="h-[16px] w-[100px] bg-light-grey-70 rounded-md mt-2 laptop:mt-0"></div>
+                            <div className="h-[18px] w-[80px] bg-light-grey-70 rounded-md mt-2 laptop:mt-0"></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
     )
 }

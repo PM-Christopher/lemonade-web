@@ -51,9 +51,13 @@ const Page = ({params}: { params: { id: number } }) => {
     const handleIncrement = (index: number) => {
         setQuantities((prevQuantities) =>
             prevQuantities.map((ticketDetail, i) => {
-                console.log({i, index})
-                if (i === index) {
-                    // Only increment if quantity is less than purchase_limit
+                console.log({ticketDetail})
+                if (i == index) {
+                    // Only increment if the quantity is less than purchase_limit
+                    // console.log({
+                    //     quantity: ticketDetail.quantity,
+                    //     limit: ticketDetail.purchase_limit
+                    // })
                     if (ticketDetail.quantity < ticketDetail.purchase_limit) {
                         return {...ticketDetail, quantity: ticketDetail.quantity + 1};
                     }
@@ -111,6 +115,8 @@ const Page = ({params}: { params: { id: number } }) => {
     const toggleSummaryModal = () => {
         setSummaryModal(!summaryModal);
     };
+
+    console.log({tickets})
 
     return (
         <MainLayout>

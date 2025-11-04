@@ -52,7 +52,6 @@ function SettingsPage() {
     const router = useRouter();
     const { user } = useSelector((state: RootState) => state.auth);
 
-    console.log({user})
 
     return (
         <MainLayout>

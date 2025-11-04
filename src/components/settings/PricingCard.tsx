@@ -12,7 +12,7 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "next/navigation";
 import CheckIcon from "@/images/icons/checkGreenIcon.svg"
 import {useAppDispatch} from "@/redux/hook";
-import {setSubscriptionId} from "@/features/authentication/authSlice";
+import {changeReason, getSubscription, setSubscriptionId} from "@/features/authentication/authSlice";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 
@@ -31,12 +31,14 @@ const PricingCard: React.FC<PricingInterface> = ({active, subscription, toggle, 
 
     const handleSubscribe = (id: number, subscription: any) => {
         setSubId(id)
+        dispatch(getSubscription({id}))
         if (user_sub) {
             if (user_sub.title === 'Pay-As-You-Go') {
                 toggle()
                 toggleSubMode("upgrade")
             } else {
                 toggleSubMode("downgrade")
+                dispatch(changeReason({ sub_id: id }));
                 dispatch(setSubscriptionId({ id, plan: subscription }))
                 router.push("/settings/plan/cancel-subscription")
             }

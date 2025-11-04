@@ -113,7 +113,7 @@
     @apply w-[56px] h-[56px] border-[1px] rounded-[12px]
   }
   .auth-button {
-    @apply w-full h-12 bg-gradient-green rounded-xl py-4
+    @apply w-full h-12 bg-gradient-green border border-step-color rounded-xl py-4
   }
   .custom-editor .e-toolbar {
     @apply absolute bottom-0 left-0 w-full; /* Move toolbar to the bottom */

@@ -16,14 +16,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 
 function WalletSettingsPage({}) {
   const router = useRouter();
-  const { authToken } = useSelector((state: any) => state.auth);
-  const getHeader = () => {
-    return {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-  };
 
   const { data, loading } = useRequest(
     `profile/wallet`,
@@ -48,8 +40,6 @@ function WalletSettingsPage({}) {
   const togglePModal = () => {
     setIsPOpen(!isPOpen);
   };
-
-  console.log({ data });
 
   return (
     <MainLayout>

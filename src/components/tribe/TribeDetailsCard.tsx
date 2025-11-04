@@ -132,7 +132,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                             {
                                 tribe?.has_joined || tribe?.owner ? (
                                     <Button
-                                        className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]"
+                                        className="border border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] p-[14px] px-[24px] rounded-[37px]"
                                         onClick={toggle}>
                                         <div className="flex gap-1 justify-center items-center">
                                             <EditIcon/>
@@ -142,12 +142,11 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                                     </Button>
                                 ) : (
                                     <Button
-                                        className="bg-gradient-green border-step-color shadow-custom-bottom h-[60px] p-[14px] px-[24px] rounded-[37px]"
+                                        className="bg-gradient-green border border-step-color shadow-green-inset hover:shadow-green-inset-strong h-[60px] p-[14px] px-[24px] rounded-[37px]"
                                         onClick={toggleJoin}
                                     >
                                         <div className="flex gap-1 justify-center">
-                                            <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join
-                                                tribe</p>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
                                         </div>
                                     </Button>
                                 )

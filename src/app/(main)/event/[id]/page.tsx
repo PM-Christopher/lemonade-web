@@ -50,31 +50,34 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
 
                 {
                     loading ? (
-                        <EventDetailsSkeleton />
-                        ) : (
+                        <EventDetailsSkeleton/>
+                    ) : (
                         <section className="mt-4 flex flex-col items-center">
-                            <div className="flex justify-center w-full">
-                                <div className="flex flex-col laptop:flex-row items-start laptop:items-center gap-10 w-full laptop:max-w-[1100px] bg-white shadow-md hover:shadow-lg transition-shadow duration-300 rounded-2xl overflow-hidden pl-[20px]">
+                            <div className="flex justify-center w-full px-4">
+                                <section
+                                    className="flex flex-col laptop:flex-row items-start laptop:items-center gap-10 w-full laptop:max-w-[1100px] bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl overflow-hidden">
                                     {/* Event Image */}
-                                    <div className="w-full laptop:w-[480px] h-auto">
+                                    <div className="w-full laptop:w-[480px]">
                                         <Image
                                             src={event?.event_image || "/images/default-event.jpg"}
-                                            alt={event?.event_name || "event image"}
+                                            alt={event?.event_name || "Event image"}
                                             width={496}
                                             height={532}
-                                            className="w-full h-auto object-cover laptop:rounded-2xl"
+                                            loading="lazy"
+                                            className="w-full h-auto object-cover laptop:rounded-l-2xl"
                                         />
                                     </div>
 
                                     {/* Event Details */}
-                                    <div className="flex flex-col justify-between px-6 py-6 laptop:px-10 laptop:py-8 w-full">
+                                    <article
+                                        className="flex flex-col justify-between w-full px-6 py-8 laptop:px-10 laptop:py-10 space-y-4">
                                         {/* Event Title */}
-                                        <p className="mb-5 font-sans font-semibold text-[22px] laptop:text-[32px] leading-snug text-gray-900">
+                                        <h1 className="font-sans font-semibold text-[22px] laptop:text-[32px] leading-snug text-gray-900">
                                             {event?.event_name}
-                                        </p>
+                                        </h1>
 
                                         {/* Date */}
-                                        <div className="flex items-center gap-3 text-gray-600 mb-3">
+                                        <div className="flex items-center gap-3 text-gray-600">
                                             <CalendarIcon className="text-gray-500"/>
                                             <p className="font-sans text-[16px]">
                                                 {formatLongDate(event?.start_date, "mid")} –{" "}
@@ -83,7 +86,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </div>
 
                                         {/* Time */}
-                                        <div className="flex items-center gap-3 text-gray-600 mb-3">
+                                        <div className="flex items-center gap-3 text-gray-600">
                                             <ClockIcon className="text-gray-500"/>
                                             <p className="font-sans text-[16px]">
                                                 {formatLongTime(event?.start_date)} – {formatLongTime(event?.end_date)}
@@ -91,14 +94,14 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </div>
 
                                         {/* Location */}
-                                        <div className="flex items-center gap-3 text-gray-600 mb-6">
+                                        <div className="flex items-center gap-3 text-gray-600">
                                             <LocationIcon className="text-gray-500"/>
                                             <p className="font-sans text-[16px]">{event?.location}</p>
                                         </div>
 
                                         {/* Contact & Socials */}
-                                        <div className="hidden laptop:flex flex-col">
-                                            <p className="font-sans font-semibold text-[18px] text-gray-800 mb-3">
+                                        <div className="hidden laptop:flex flex-col space-y-3 pt-4">
+                                            <p className="font-sans font-semibold text-[18px] text-gray-800">
                                                 Contact Us
                                             </p>
                                             <div className="flex items-center gap-4">
@@ -110,13 +113,16 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                                     {name: "website", icon: <AttachmentIcon/>},
                                                 ].map((social, i) => {
                                                     const link =
-                                                        event?.socials?.find((s: any) => s.name === social.name)?.value ?? "#";
+                                                        event?.socials?.find((s: any) => s.name === social.name)?.value ??
+                                                        "#";
                                                     return (
                                                         <a
                                                             key={i}
                                                             href={link}
                                                             target="_blank"
-                                                            className="p-2 rounded-full bg-gray-100 hover:bg-green-50 hover:text-green-600 transition-colors"
+                                                            rel="noopener noreferrer"
+                                                            aria-label={`Visit our ${social.name}`}
+                                                            className="p-2 rounded-full bg-gray-100 hover:bg-green-50 hover:text-green-600 focus:ring-2 focus:ring-green-400 transition-colors"
                                                         >
                                                             {social.icon}
                                                         </a>
@@ -126,18 +132,20 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </div>
 
                                         {/* CTA */}
-                                        <div className="mt-10 hidden laptop:flex">
-                                            <Link href={`/event/${event?.id}/buy-ticket`}>
-                                                <Button className="bg-gradient-green hover:opacity-90 w-[231px] h-[56px] py-3.5 px-6 gap-2 rounded-[12px] border-b-2 border-transparent shadow-custom-bottom transition-all duration-300">
-                                                    <p className="font-sans font-medium text-[16px] leading-[19.2px] text-white">
+                                        <div className="hidden laptop:flex pt-6">
+                                            <Link href={`/event/${event?.id}/buy-ticket`} passHref>
+                                                <Button
+                                                    className="bg-gradient-green hover:opacity-90 w-[231px] h-[56px] rounded-[12px] border-b-2 border-transparent shadow-green-inset hover:shadow-green-inset-strong transition-all duration-300 flex items-center justify-center">
+                                                    <span className="font-sans font-medium text-[16px] leading-[19.2px] text-white">
                                                         Buy ticket from ₦{event?.minimum_price}
-                                                    </p>
+                                                    </span>
                                                 </Button>
                                             </Link>
                                         </div>
-                                    </div>
-                                </div>
+                                    </article>
+                                </section>
                             </div>
+
 
                             <div className="w-full mt-[40px] laptop:max-w-[1100px]">
                                 <p className="font-sans font-semibold text-[24px] leading-[33.6px] text-gray-900">
@@ -157,11 +165,11 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
 
                                     <div className="flex items-center gap-[16px] mt-[16px]">
                                         {[
-                                            { name: 'facebook', icon: <FacebookIcon /> },
-                                            { name: 'instagram', icon: <InstagramIcon /> },
-                                            { name: 'linkedin', icon: <LinkedInIcon /> },
-                                            { name: 'twitter', icon: <TwitterIcon /> },
-                                            { name: 'website', icon: <AttachmentIcon /> },
+                                            {name: 'facebook', icon: <FacebookIcon/>},
+                                            {name: 'instagram', icon: <InstagramIcon/>},
+                                            {name: 'linkedin', icon: <LinkedInIcon/>},
+                                            {name: 'twitter', icon: <TwitterIcon/>},
+                                            {name: 'website', icon: <AttachmentIcon/>},
                                         ].map((social, i) => {
                                             const link =
                                                 event?.socials?.find((s: any) => s.name === social.name)?.value ?? '#';

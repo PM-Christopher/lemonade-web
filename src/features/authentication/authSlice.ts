@@ -1,6 +1,7 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {buyTicket} from "@/features/events/event.slice";
+import {headers} from "next/headers";
 
 interface authState {
     user: any | null;
@@ -16,12 +17,17 @@ interface authState {
         payment_method: string
         next_billing_date: string
         id: number
-    } | null,
+    } | any | null,
     subscription_id: number | null,
     plan: {} | null,
     appSettings: {} | null
     code: string | null;
-    upgradeLoading: boolean
+    upgradeLoading: boolean;
+    downgradeData: {
+        reason?: string;
+        sub_id?: number | null;
+    }
+    pricing: any
 }
 
 const initialState: authState = {
@@ -37,7 +43,9 @@ const initialState: authState = {
     plan: null,
     appSettings: null,
     code: null,
-    upgradeLoading: false
+    upgradeLoading: false,
+    downgradeData: {},
+    pricing: null
 };
 
 const verifyEmailOtp = createAsyncThunk("auth/verifyEmailOtp", async ({ data, url, token }: { data: any, url: string, token: string }, { rejectWithValue }) => {
@@ -223,6 +231,19 @@ const logout = createAsyncThunk("auth/logout", async ({ token }: { token: string
     }
 });
 
+const getSubscription = createAsyncThunk("auth/getSubscription", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/subscription/${id}`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -281,6 +302,23 @@ const authSlice = createSlice({
             state.subscription_id = action.payload.id;
             state.plan = action.payload.plan
         },
+        changeSubscription: (state, {payload}) => {
+            state.subscription = payload;
+        },
+        changeReason: (state, action: PayloadAction<{ sub_id?: number; reason?: string }>) => {
+            if (!state.downgradeData) {
+                state.downgradeData = {}; // ensure it's defined
+            }
+            if (action.payload.sub_id !== undefined) {
+                state.downgradeData.sub_id = action.payload.sub_id;
+            }
+            if (action.payload.reason !== undefined) {
+                state.downgradeData.reason = action.payload.reason;
+            }
+        },
+        clearReason: (state) => {
+            state.downgradeData = {};
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(updateUserData.pending, (state) => {
@@ -409,9 +447,21 @@ const authSlice = createSlice({
         });
         builder.addCase(changePlan.fulfilled, (state, { payload }) => {
             state.upgradeLoading = false;
+            state.subscription = payload?.data?.subscription
         });
         builder.addCase(changePlan.rejected, (state) => {
             state.upgradeLoading = false;
+        });
+
+        builder.addCase(getSubscription.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getSubscription.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.pricing = payload.data
+        });
+        builder.addCase(getSubscription.rejected, (state) => {
+            state.loading = false;
         });
     }
 });
@@ -429,8 +479,11 @@ export const {
     updateProfileImage,
     updateUser,
     setSubscriptionId,
+    changeSubscription,
+    changeReason,
+    clearReason
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan, getSubscription }
 
 export default authSlice.reducer;

@@ -53,13 +53,6 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const { business, loading } = useSelector((state: RootState) => state.business)
 
     const {authToken} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
 
     const toggleMenu = () => {
         setIsOpen(!isOpen)
@@ -96,7 +89,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                 console.log({trxref})
                 setVerifyLoading(true);
                 try {
-                    const { data } = await axiosInstance.patch(`listing/verify-business-boost?reference=${trxref}`, {}, getHeader());
+                    const { data } = await axiosInstance.patch(`listing/verify-business-boost?reference=${trxref}`, {});
                     if (data.status) {
                         if (data.data.verified) {
                             setBoost(data.data.boost)

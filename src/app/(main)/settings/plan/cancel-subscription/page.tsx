@@ -11,12 +11,16 @@ const CancelSubscriptionPage = () => {
     const [section, setSection] = useState("reason")
     const router = useRouter()
 
+    const toggleSection = (secName: string) => {
+        setSection(secName)
+    }
+
     const renderSection  = () => {
         switch (section) {
             case "cancel":
                 return <CancelSection />
             case "reason":
-                return <ReasonSection />
+                return <ReasonSection toggle={toggleSection} />
             default:
                 return <CancelSection />
         }

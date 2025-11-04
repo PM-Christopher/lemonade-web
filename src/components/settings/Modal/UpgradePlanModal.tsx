@@ -19,21 +19,22 @@ interface UpgradePlanProps {
     toggle: () => void;
     sub_id: number|null;
     subMode: string|null;
+    pricing: any[]
 }
 
-const UpgradePlanModal = ({isOpen, toggle, sub_id, subMode}: UpgradePlanProps) => {
+const UpgradePlanModal = ({isOpen, toggle, sub_id, subMode, pricing}: UpgradePlanProps) => {
     const [selected, setSelected] = useState<number|null>(null);
     const dispatch = useAppDispatch()
     const [subType, setSubType] = useState<string|null>("")
     const { upgradeLoading } = useSelector((state: RootState) => state.auth)
 
-    const handleSelectedPlan = (membership: { id: number; billingPeriod: string }) => {
+    const handleSelectedPlan = (membership: { id: number; type: string }) => {
         setSelected(prevSelected =>
             prevSelected === membership.id ? null : membership.id
         );
 
         setSubType(prevSelected =>
-            selected === membership.id ? null : membership.billingPeriod
+            selected === membership.id ? null : membership.type
         );
     };
 
@@ -143,13 +144,13 @@ const UpgradePlanModal = ({isOpen, toggle, sub_id, subMode}: UpgradePlanProps) =
                     <div className="mt-10">
                         <div className={'flex flex-col gap-[16px]'}>
                             {
-                                membershipPlans?.map((membership) => (
+                                pricing?.map((membership: any) => (
                                     <div className={`rounded-[12px] p-[16px] cursor-pointer ${selected === membership.id ? "border-[1px] border-step-color bg-light-green-10" : "bg-mid-grey"}`} key={membership.id} onClick={() => handleSelectedPlan(membership)}>
                                         <div className={"flex justify-between items-center"}>
                                             <p className={'text-[16px] font-semiBold text-black-light'}>{membership.title}</p>
-                                            <p className={'text-[16px] font-semiBold text-black-light'}>₦{formatNumberWithCommas(membership.amount)} / {membership.paid}</p>
+                                            <p className={'text-[16px] font-semiBold text-black-light'}>₦{formatNumberWithCommas(membership.amount)}/{membership.pay_by}</p>
                                         </div>
-                                        <p className={'font-normal text-[14px] text-text-grey'}>Billed {membership.billingPeriod}</p>
+                                        <p className={'font-normal text-[14px] text-text-grey'}>Billed {membership.type}</p>
                                     </div>
                                 ))
                             }

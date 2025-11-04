@@ -51,7 +51,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({toggle, isOpen, tribe}) =
                     </div>
                     <div>
                         <Button
-                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
+                            className="auth-button px-[14px] p-[10px] rounded-[12px] shadow-green-inset hover:shadow-green-inset-strong"
                             onClick={() => handleJoinTribe(tribe.slug)}
                             disabled={tribeLoading}
                         >
