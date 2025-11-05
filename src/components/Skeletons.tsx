@@ -556,6 +556,67 @@ export const GuestListSkeleton = ({count}: { count: 4 }) => {
     )
 }
 
+export const TransactionHistorySkeleton = ({count}: { count: 4 }) => {
+    return (
+        <div className="px-[24px] animate-pulse">
+            {[...Array(count)].map((_, index) => (
+                <div
+                    key={index}
+                    className="pt-[16px] pb-[24px] flex justify-between items-center"
+                >
+                    {/* Left side: Amount + message */}
+                    <div className="flex flex-col gap-2 w-[60%]">
+                        <div className="h-[16px] w-[120px] bg-light-grey-70 rounded-md"></div>
+                        <div className="h-[12px] w-[80px] bg-light-grey-70 rounded-md"></div>
+                    </div>
+
+                    {/* Right side: Status badge */}
+                    <div className="h-[20px] w-[80px] bg-light-grey-70 rounded-[8px]"></div>
+                </div>
+            ))}
+        </div>
+    )
+}
+
+export const WalletDetailSkeleton = () => {
+    return (
+        <div className="flex flex-col w-full laptop:w-[580px] animate-pulse gap-4">
+            {/* Earnings Card */}
+            <div className="rounded-[12px] p-[16px] flex flex-col bg-white gap-4">
+                {/* Total Amount Earned */}
+                <div className="flex flex-col p-[16px] border-b-[1px] border-b-mid-grey gap-2">
+                    <div className="h-[14px] w-[140px] bg-light-grey-70 rounded-md"></div>
+                    <div className="h-[20px] w-[100px] bg-light-grey-70 rounded-md"></div>
+                </div>
+
+                {/* Referral Earnings */}
+                <div className="flex justify-between p-[16px] border-b-[1px] border-b-mid-grey items-center">
+                    <div className="flex flex-col gap-2">
+                        <div className="h-[14px] w-[120px] bg-light-grey-70 rounded-md"></div>
+                        <div className="h-[20px] w-[80px] bg-light-grey-70 rounded-md"></div>
+                    </div>
+                    <div className="h-[24px] w-[24px] bg-light-grey-70 rounded-full"></div>
+                </div>
+
+                {/* Affiliate Earnings */}
+                <div className="flex justify-between p-[16px] items-center">
+                    <div className="flex flex-col gap-2">
+                        <div className="h-[14px] w-[120px] bg-light-grey-70 rounded-md"></div>
+                        <div className="h-[20px] w-[80px] bg-light-grey-70 rounded-md"></div>
+                    </div>
+                    <div className="h-[24px] w-[24px] bg-light-grey-70 rounded-full"></div>
+                </div>
+            </div>
+
+            {/* Payout Request */}
+            <div className="rounded-[12px] p-[16px] flex flex-col bg-light-tint gap-4">
+                <div className="h-[14px] w-[80%] bg-light-grey-70 rounded-md"></div>
+                <div className="h-[48px] w-[200px] bg-light-grey-70 rounded-[12px]"></div>
+            </div>
+        </div>
+    )
+}
+
 export const GuestDetailSkeleton = () => {
     return (
         <div className="flex flex-col px-[64px] py-[24px] gap-[24px] mt-4 animate-pulse">

@@ -31,6 +31,19 @@ const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({ token
     }
 });
 
+const requestPayout = createAsyncThunk("profile/requestPayout", async ({ data }: { data: any }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.post(`/profile/wallet/request-payout`, data);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
 const profileSlice = createSlice({
     name: "profile",
     initialState,
@@ -46,9 +59,19 @@ const profileSlice = createSlice({
         builder.addCase(getUserProfile.rejected, (state) => {
             state.loading = false;
         });
+
+        builder.addCase(requestPayout.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(requestPayout.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(requestPayout.rejected, (state) => {
+            state.loading = false;
+        });
     }
 });
 
 export const {  } = profileSlice.actions
-export { getUserProfile }
+export { getUserProfile, requestPayout }
 export default profileSlice.reducer;

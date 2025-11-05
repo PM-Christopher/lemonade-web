@@ -290,6 +290,9 @@ const authSlice = createSlice({
         updateCreatedAccount: (state) => {
             state.user = { ...state.user, createdAccount: true };
         },
+        updateHasBankAccount: (state) => {
+            state.user = { ...state.user, has_bank_account: true };
+        },
         adminUser: (state, action) => {
             state.loading = false;
             state.error = false;
@@ -481,7 +484,8 @@ export const {
     setSubscriptionId,
     changeSubscription,
     changeReason,
-    clearReason
+    clearReason,
+    updateHasBankAccount
 } = authSlice.actions;
 
 export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan, getSubscription }
