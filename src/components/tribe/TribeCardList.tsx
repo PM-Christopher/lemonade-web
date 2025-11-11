@@ -4,12 +4,14 @@ import MoneyIcon from "@/images/icons/money.svg";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {formatLongDate} from "@/lib/dateTimeFormatter";
 import ChatsIcon from "@/images/icons/chatsIcon.svg"
+import {useRouter} from "next/navigation";
 
 type TribeCardIF = {
     tribe: TribeInterface
 }
 
 const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
+    const router = useRouter()
     return (
         <div className="bg-mid-grey rounded-[16px] mb-2 border-[1px] border-grey-30">
             <div className="flex items-center justify-between bg-white p-4 rounded-[16px]">
@@ -28,18 +30,17 @@ const TribeCardList: React.FC<TribeCardIF> = ({tribe}) => {
                 </div>
                 {
                     tribe.has_joined || !tribe.owner && (
-                        <div className="flex items-center gap-1 border-[1px] px-[16px] p-[4px] rounded-[12px]">
-                            <div>
-                                <p className="font-sans font-semi-normal text-[14px] text-light-green">Join</p>
-                            </div>
-                            {
-                                tribe.monetized === 1 && (
-                                    <div>
-                                        <MoneyIcon/>
-                                    </div>
-                                )
-                            }
-                        </div>
+                        <button
+                            className="flex items-center gap-1 border border-light-green/20 px-4 py-1 rounded-xl transition-all duration-200 hover:bg-light-green/10 hover:border-light-green/40 hover:shadow-sm active:scale-95"
+                            onClick={() => router.push(`tribe/${tribe.slug}`)}
+                        >
+                            <span className="font-sans font-semibold text-sm text-light-green">
+                                Join
+                            </span>
+                            {tribe.monetized && (
+                                <MoneyIcon className="w-4 h-4 text-light-green" />
+                            )}
+                        </button>
                     )
                 }
 

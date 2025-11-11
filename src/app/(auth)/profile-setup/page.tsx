@@ -27,7 +27,7 @@ export default function ProfileStepsPage() {
     const { data } = useSelector((state: RootState) => state.profile)
 
     useEffect(() => {
-        dispatch(getUserProfile({token: cookies.newToken}))
+        dispatch(getUserProfile())
     }, []);
 
     const nextStep = () => setStep(step + 1);

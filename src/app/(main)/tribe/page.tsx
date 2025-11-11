@@ -18,15 +18,16 @@ import * as yup from "yup";
 import {useFormik} from "formik";
 import {authFailure, loadStop} from "@/features/authentication/authSlice";
 import {useMediaQuery} from "react-responsive";
-import {searchTribe} from "@/features/tribes/tribe.slice";
+import {getTribes, searchTribe} from "@/features/tribes/tribe.slice";
 import CreateTribeModal from "@/components/tribe/CreateTribeModal";
 import {TribeListSkeleton} from "@/components/Skeletons";
+import {RootState} from "@/redux/store";
 
 export default function TribePage() {
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const {authToken} = useSelector((state: any) => state.auth);
-    const {searchResults} = useSelector((state: any) => state.tribe);
+    const {authToken} = useSelector((state: RootState) => state.auth);
+    const {searchResults, tribes, loading, searchLoading} = useSelector((state: RootState) => state.tribe);
     const [showTooltip, setShowTooltip] = useState(false);
 
     const [tribeType, setTribeType] = useState("discover");
@@ -42,14 +43,14 @@ export default function TribePage() {
         };
     };
 
-    // onChange handler that updates local state and dispatches an action
+    // onChange handler that updates the local state and dispatches an action
     const handleTribeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearch(value);
         dispatch(searchTribe({data: {search: value}}));
     };
 
-    const {data, loading} = useRequest(
+    const { data } = useRequest(
         `/tribes?type=${tribeType}`,
     );
 
@@ -155,15 +156,20 @@ export default function TribePage() {
         }
     }, [formik.errors, formik.submitCount]);
 
+    useEffect(() => {
+        dispatch(getTribes({tribe_type: tribeType}))
+    }, [tribeType]);
+
     return (
         <MainLayout>
-            <div className="bg-white flex flex-col tablet:flex-row justify-between items-center border-y border-gray-200 px-6 py-3 gap-4">
+            <div
+                className="bg-white flex flex-col tablet:flex-row justify-between items-center border-y border-gray-200 px-6 py-3 gap-4">
                 {/* Tabs */}
                 <div className="flex gap-8">
                     {[
-                        { key: "discover", label: "Discover" },
-                        { key: "tln", label: "TLN Tribes" },
-                        { key: "mine", label: "My Tribes" },
+                        {key: "discover", label: "Discover"},
+                        {key: "tln", label: "TLN Tribes"},
+                        {key: "mine", label: "My Tribes"},
                     ].map((tab) => (
                         <button
                             key={tab.key}
@@ -189,7 +195,7 @@ export default function TribePage() {
                     {/* Mobile Search */}
                     <div className="block tablet:hidden">
                         <div className="flex items-center gap-3 bg-light_grey p-2 rounded-xl w-[260px] h-[44px]">
-                            <SearchIcon className="text-gray-500" />
+                            <SearchIcon className="text-gray-500"/>
                             <input
                                 type="text"
                                 placeholder="Search tribe"
@@ -203,9 +209,9 @@ export default function TribePage() {
                         className="auth-button py-2 px-4 rounded-xl border-step-color shadow-custom-bottom flex items-center gap-2"
                         onClick={activateModal}
                     >
-      <span className="text-base font-medium">
-        {isMobile ? "+" : "+ Create Tribe"}
-      </span>
+                        <span className="text-base font-medium">
+                            {isMobile ? "+" : "+ Create Tribe"}
+                        </span>
                     </Button>
                 </div>
             </div>
@@ -215,12 +221,12 @@ export default function TribePage() {
                 {/* Tribe List Section */}
                 <section className="bg-white shadow-div-shadow-2 rounded-xl w-full tablet:w-[700px] p-6 min-h-[200px]">
                     {loading ? (
-                        <TribeListSkeleton count={4} />
-                    ) : data?.tribes?.length > 0 ? (
+                        <TribeListSkeleton count={4}/>
+                    ) : tribes?.length > 0 ? (
                         <div className="overflow-y-auto max-h-[80vh] hide-scrollbar space-y-4">
-                            {data.tribes.map((tribe: TribeInterface, index: number) => (
+                            {tribes.map((tribe: TribeInterface, index: number) => (
                                 <Link href={`/tribe/${tribe.slug}`} key={index}>
-                                    <TribeCardList tribe={tribe} />
+                                    <TribeCardList tribe={tribe}/>
                                 </Link>
                             ))}
                         </div>
@@ -238,7 +244,7 @@ export default function TribePage() {
                         <div className="relative w-full">
                             {/* Search Input */}
                             <div className="flex items-center gap-3 bg-light_grey p-2 rounded-xl">
-                                <SearchIcon className="text-gray-500" />
+                                <SearchIcon className="text-gray-500"/>
                                 <input
                                     id="search"
                                     type="text"
@@ -253,7 +259,8 @@ export default function TribePage() {
 
                             {/* Tooltip */}
                             {(!search || search.trim() === "") && showTooltip && (
-                                <div className="absolute left-2 bottom-[-28px] bg-gray-800 text-white text-xs rounded-md py-1 px-2 shadow-md animate-fade-in">
+                                <div
+                                    className="absolute left-2 bottom-[-28px] bg-gray-800 text-white text-xs rounded-md py-1 px-2 shadow-md animate-fade-in">
                                     Start typing to search...
                                     <div className="absolute left-4 -top-1 w-2 h-2 bg-gray-800 rotate-45"></div>
                                 </div>
@@ -264,28 +271,57 @@ export default function TribePage() {
                         {/* Recent Search */}
                         <p className="text-sm font-semibold text-gray-500">Recent Search</p>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col">
                             {searchResults.length > 0 ? (
-                                searchResults.map((tribe: TribeInterface, index: number) => (
-                                    <Link
-                                        href={`/tribe/${tribe.slug}`}
-                                        key={index}
-                                        className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition"
-                                    >
-                                        <Image
-                                            src={tribe.image}
-                                            alt={tribe.tribe_name}
-                                            width={48}
-                                            height={48}
-                                            className="rounded-lg border border-gray-200"
-                                        />
-                                        <p className="text-sm text-gray-700 font-medium">
-                                            {tribe.tribe_name}
-                                        </p>
-                                    </Link>
-                                ))
+                                <div className="divide-y divide-gray-100">
+                                    {searchResults.map((tribe: TribeInterface, index: number) => (
+                                        <Link
+                                            href={`/tribe/${tribe.slug}`}
+                                            key={tribe.slug || index}
+                                            className="flex items-center gap-3 px-3 py-3 hover:bg-gradient-to-r hover:from-gray-50 hover:to-transparent transition-all duration-200 group first:rounded-t-lg last:rounded-b-lg"
+                                        >
+                                            <div className="relative flex-shrink-0">
+                                                <Image
+                                                    src={tribe.image}
+                                                    alt={tribe.tribe_name}
+                                                    width={48}
+                                                    height={48}
+                                                    className="rounded-xl border border-gray-200 group-hover:border-gray-300 transition-colors w-[48px] h-[48px] object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-semibold text-gray-900 group-hover:text-gray-950 truncate">
+                                                    {tribe.tribe_name}
+                                                </p>
+                                            </div>
+                                            <svg
+                                                className="w-5 h-5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </Link>
+                                    ))}
+                                </div>
                             ) : (
-                                <p className="text-sm text-gray-400 italic">No recent searches</p>
+                                <div className="flex flex-col items-center justify-center py-8 px-4">
+                                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                                        <svg
+                                            className="w-6 h-6 text-gray-400"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <p className="text-sm font-medium text-gray-900 mb-1">No recent searches</p>
+                                    <p className="text-xs text-gray-500 text-center">
+                                        Your search history will appear here
+                                    </p>
+                                </div>
                             )}
                         </div>
                     </div>

@@ -7,39 +7,39 @@ export const TribesSkeleton = ({count}: { count: number }) => {
             {[...Array(count)].map((_, i) => (
                 <div
                     key={i}
-                    className="flex flex-col bg-light-yellow p-4 rounded-2xl w-[422px] shadow-none h-[200px] animate-pulse"
+                    className="flex flex-col bg-light-yellow p-3 sm:p-4 rounded-2xl w-[422px] shadow-none h-[180px] sm:h-[200px] animate-pulse flex-shrink-0"
                 >
                     {/* Image placeholder */}
                     <div className="flex-shrink-0">
-                        <div className="w-12 h-12 rounded-lg bg-gray-300"/>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gray-300"/>
                     </div>
 
                     {/* Text placeholders */}
                     <div className="mt-2 flex justify-between flex-1">
                         <div className="flex-1 min-w-0">
-                            <div className="h-3 bg-gray-300 rounded w-1/2 mb-2"/>
-                            <div className="h-3 bg-gray-300 rounded w-3/4"/>
+                            <div className="h-2.5 sm:h-3 bg-gray-300 rounded w-1/2 mb-2"/>
+                            <div className="h-2.5 sm:h-3 bg-gray-300 rounded w-3/4"/>
                         </div>
                         <div className="flex-shrink-0 ml-2">
-                            <div className="w-12 h-12 bg-gray-200 rounded-lg"/>
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-lg"/>
                         </div>
                     </div>
 
                     {/* Footer placeholders */}
                     <div className="mt-auto pt-2 flex justify-between">
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5 sm:gap-2">
                             <div className="flex items-center gap-1">
-                                <div className="w-4 h-4 bg-gray-300 rounded"/>
-                                <div className="w-6 h-3 bg-gray-300 rounded"/>
+                                <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gray-300 rounded"/>
+                                <div className="w-5 h-2.5 sm:w-6 sm:h-3 bg-gray-300 rounded"/>
                             </div>
                             <div className="flex items-center gap-1">
-                                <div className="w-4 h-4 bg-gray-300 rounded"/>
-                                <div className="w-6 h-3 bg-gray-300 rounded"/>
+                                <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gray-300 rounded"/>
+                                <div className="w-5 h-2.5 sm:w-6 sm:h-3 bg-gray-300 rounded"/>
                             </div>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="w-10 h-3 bg-gray-300 rounded"/>
-                            <div className="w-3 h-3 bg-gray-300 rounded"/>
+                            <div className="w-8 h-2.5 sm:w-10 sm:h-3 bg-gray-300 rounded"/>
+                            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gray-300 rounded"/>
                         </div>
                     </div>
                 </div>
@@ -303,7 +303,7 @@ export const EventsSkeleton = ({count}: { count: number }) => {
             {[...Array(count)].map((_, i) => (
                 <div
                     key={i}
-                    className="flex flex-col h-[280px] w-[200px] rounded-2xl overflow-hidden shadow-sm animate-pulse"
+                    className="flex flex-col h-[280px] w-full sm:w-[200px] rounded-2xl overflow-hidden shadow-sm animate-pulse"
                 >
                     {/* Image placeholder */}
                     <div className="flex-shrink-0 h-[200px] bg-gray-300 rounded-t-2xl"/>
@@ -675,11 +675,11 @@ export const GuestDetailSkeleton = () => {
 
 export const BusinessesSkeleton = ({count}: { count: number }) => {
     return (
-        <div className={"flex overflow-x-auto mt-3 space-x-2 scrollbar-hide py-4 shadow-none"}>
+        <>
             {[...Array(count)].map((_, i) => (
                 <div
                     key={i}
-                    className="w-[343px] tablet:w-[422px] rounded-lg bg-white p-[4px] animate-pulse"
+                    className="w-full sm:w-[343px] tablet:w-[422px] rounded-lg bg-white p-[4px] animate-pulse"
                 >
                     {/* Main image placeholder */}
                     <div className="relative">
@@ -687,14 +687,14 @@ export const BusinessesSkeleton = ({count}: { count: number }) => {
 
                         {/* Overlay logo */}
                         <div
-                            className="absolute bottom-[-35px] right-[260px] w-16 h-16 bg-gray-300 rounded-xl border border-gray-200"/>
+                            className="absolute bottom-[-35px] left-4 sm:right-[260px] sm:left-auto w-16 h-16 bg-gray-300 rounded-xl border border-gray-200"/>
                     </div>
 
                     {/* Content */}
                     <div className="p-[10px]">
                         {/* Name + city + rating */}
-                        <div className="mt-10 flex justify-between">
-                            <div className="flex items-center gap-2">
+                        <div className="mt-10 flex flex-wrap sm:flex-nowrap justify-between gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                                 <div className="h-4 w-20 bg-gray-300 rounded"/>
                                 <div className="w-1 h-1 bg-gray-300 rounded-full"/>
                                 <div className="h-3 w-24 bg-gray-300 rounded"/>
@@ -706,8 +706,8 @@ export const BusinessesSkeleton = ({count}: { count: number }) => {
                         </div>
 
                         {/* Services + rate */}
-                        <div className="flex justify-between items-center mt-2">
-                            <div className="flex gap-2 items-center">
+                        <div className="flex flex-wrap sm:flex-nowrap justify-between items-center mt-2 gap-2">
+                            <div className="flex gap-2 items-center flex-wrap">
                                 <div className="p-2 px-3 rounded-full bg-gray-200">
                                     <div className="h-3 w-12 bg-gray-300 rounded"/>
                                 </div>
@@ -720,7 +720,7 @@ export const BusinessesSkeleton = ({count}: { count: number }) => {
                     </div>
                 </div>
             ))}
-        </div>
+        </>
     )
 }
 

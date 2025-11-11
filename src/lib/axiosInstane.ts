@@ -1,15 +1,12 @@
-import { baseUrl } from "@/config/url";
-import axios from "axios";
+import {baseUrl} from "@/config/url";
+import axios, {AxiosError} from "axios";
 import Cookies from "js-cookie";
+import {setupCache} from "axios-cache-interceptor";
 
-export const axiosInstance = axios.create({
-    baseURL: baseUrl,
-    headers: { "Content-Type": "application/json" },
-    withCredentials: true,
-});
-
-let isRefreshing = false;
+let isRefreshing: boolean = false;
 let failedQueue: any[] = [];
+
+/* ---------------- Helper Functions ---------------- */
 
 const processQueue = (error: any, token: string | null = null) => {
     failedQueue.forEach((prom) => {
@@ -19,21 +16,46 @@ const processQueue = (error: any, token: string | null = null) => {
     failedQueue = [];
 };
 
-// ✅ Attach access token before every request
+function clearAllCookies() {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        document.cookie =
+            name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    }
+}
+
+/* ---------------- Base Axios Instance ---------------- */
+let axiosClient = axios.create({
+    baseURL: baseUrl,
+    headers: { "Content-Type": "application/json" },
+    withCredentials: true,
+});
+
+// ✅ Add caching to all GET requests
+export const axiosInstance = setupCache(axiosClient, {
+    ttl: 1000 * 60 * 5, // cache GET responses for 5 minutes
+    methods: ["get"],
+    interpretHeader: false,
+});
+
+/* ---------------- Add Token to Every Request ---------------- */
 axiosInstance.interceptors.request.use((config) => {
     const token = Cookies.get("token");
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
 
-// ✅ Handle errors globally
+/* ---------------- Global Error Handling + Token Refresh ---------------- */
 axiosInstance.interceptors.response.use(
     (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
+    async (error: AxiosError) => {
+        const originalRequest: any = error.config;
 
         if (error.response) {
-            const { status } = error.response;
+            const {status} = error.response;
 
             // 🔑 Handle expired/invalid access token
             if (status === 403 && !originalRequest._retry) {
@@ -41,7 +63,7 @@ axiosInstance.interceptors.response.use(
 
                 if (isRefreshing) {
                     return new Promise((resolve, reject) => {
-                        failedQueue.push({ resolve, reject });
+                        failedQueue.push({resolve, reject});
                     })
                         .then((token) => {
                             originalRequest.headers.Authorization = "Bearer " + token;
@@ -61,7 +83,7 @@ axiosInstance.interceptors.response.use(
 
                 try {
                     // use plain axios to avoid recursive interceptor calls
-                    const { data } = await axios.post(`${baseUrl}/auth/refresh`, {
+                    const {data} = await axios.post(`${baseUrl}/auth/refresh`, {
                         refresh_token: refreshToken,
                     });
 
@@ -97,14 +119,3 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-function clearAllCookies() {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-        document.cookie =
-            name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-    }
-}

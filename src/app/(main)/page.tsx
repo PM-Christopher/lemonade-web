@@ -3,22 +3,22 @@ import React, {useEffect} from "react";
 import TribeCard from "@/components/dashboard/TribeCard";
 import EventCard from "@/components/dashboard/EventCard";
 import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {EventInterface} from "@/interfaces/EventInterface";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useMediaQuery} from "react-responsive";
-import NotificationToast from "@/components/NotificationToast";
 import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
 import {getDashboardBusinesses, getDashboardEvents, getDashboardTribes} from "@/features/dashboard/dashboard.slice";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import BusinessCard from "@/components/dashboard/BusinessCard";
 import {BusinessesSkeleton, EventsSkeleton, TribesSkeleton} from "@/components/Skeletons";
+import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 export default function DashboardPage() {
     const isMobile = useMediaQuery({query: "(max-width: 640px)"});
-    const {authToken} = useSelector((state: any) => state.auth);
+    const router = useRouter()
     const {
         tribes,
         tribeLoading,
@@ -30,9 +30,9 @@ export default function DashboardPage() {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(getDashboardTribes())
-        dispatch(getDashboardEvents())
-        dispatch(getDashboardBusinesses())
+        if (!tribes?.length) dispatch(getDashboardTribes());
+        if (!events?.length) dispatch(getDashboardEvents());
+        if (!businesses?.length) dispatch(getDashboardBusinesses());
     }, []);
 
     return (
@@ -79,7 +79,13 @@ export default function DashboardPage() {
                             ) : (
                                 events.length > 0 ? (
                                     events?.map((event: EventInterface, idx: number) => (
-                                        <EventCard event={event} key={idx}/>
+                                        <div
+                                            className={"cursor-pointer"}
+                                            key={idx}
+                                            onClick={() => router.push(`/events/${event.id}`)}
+                                        >
+                                            <EventCard event={event} />
+                                        </div>
                                     ))
                                 ) : (
                                     <div className="col-span-6 flex flex-col items-center justify-center py-10 bg-gray-50 rounded-lg border border-gray-200">
@@ -107,7 +113,11 @@ export default function DashboardPage() {
                                 businesses.length > 0 ? (
                                     businesses.map(
                                         (business: BusinessInterface, idx: number) => (
-                                            <div className="w-[343px] tablet:w-[422px]" key={idx}>
+                                            <div
+                                                className="w-[343px] tablet:w-[422px] cursor-pointer"
+                                                key={idx}
+                                                onClick={() => router.push(`/business/${business.id}`)}
+                                            >
                                                 <BusinessCard key={idx} business={business}/>
                                             </div>
                                         )

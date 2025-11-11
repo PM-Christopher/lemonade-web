@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import { axiosInstance } from "@/lib/axiosInstane";
 import Cookies from "js-cookie";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {EventInterface} from "@/interfaces/EventInterface";
@@ -29,7 +29,11 @@ const initialState: dashboardState = {
 
 const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/tribes?type=discover`);
+        const response = await axiosInstance.get(`/tribes?type=discover`, {
+            cache: {
+                ttl: 1000 * 60
+            }
+        });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -41,7 +45,11 @@ const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", asyn
 
 const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/events`);
+        const response = await axiosInstance.get(`/events`, {
+            cache: {
+                ttl: 1000 * 60
+            }
+        });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -53,7 +61,11 @@ const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", asyn
 
 const getDashboardBusinesses = createAsyncThunk("dashboard/getDashboardBusinesses", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/business`);
+        const response = await axiosInstance.get(`/business`, {
+            cache: {
+                ttl: 1000 * 60
+            }
+        });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -77,7 +89,7 @@ const dashboardSlice = createSlice({
             state.tribeLoading = false;
             state.tribes = payload?.data?.tribes
         });
-        builder.addCase(getDashboardTribes.rejected, (state) => {
+        builder.addCase(getDashboardTribes.rejected, (state, error) => {
             state.tribeLoading = false;
         });
 

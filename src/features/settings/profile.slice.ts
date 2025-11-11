@@ -13,15 +13,9 @@ const initialState: profileState = {
     data: {}
 };
 
-const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const getUserProfile = createAsyncThunk("profile/getUserProfile", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/profile/user`, { headers });
+        const response = await axiosInstance.get(`/profile/user`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
