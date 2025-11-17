@@ -20,6 +20,7 @@ const BusinessPage = () => {
     const [isServiceOpen, setItServiceOpen] = useState(false)
     const [businessFilter, setBusinessFilter] = useState(false)
 
+    // load items from redux store
     const {job, businesses, listings, loading, jobLoading} = useSelector((state: RootState) => state.business)
 
     useEffect(() => {
