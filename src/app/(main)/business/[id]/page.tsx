@@ -24,7 +24,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatDecimal, formatStringUCFirst} from "@/lib/helper";
 import Link from "next/link";
-import {useSearchParams} from "next/navigation";
+import {usePathname, useSearchParams} from "next/navigation";
 import {axiosInstance} from "@/lib/axiosInstane";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal from "@/components/business/Modals/BoostDetailsModal";
@@ -35,6 +35,8 @@ import {useAppDispatch} from "@/redux/hook";
 import {RootState} from "@/redux/store";
 import {getBusiness} from "@/features/business/business.slice";
 import {BusinessDetailSkeleton} from "@/components/Skeletons";
+import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
+import SubmitDisputeModal from "@/components/business/Modals/SubmitDisputeModal";
 
 const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -49,6 +51,9 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const [boostDetails, setBoostDetails] = useState(false)
     const router = useRouter()
     const dispatch = useAppDispatch()
+    const [isDisputeOpen, setIsDisputeOpen] = useState(false)
+    const [isSubmitDisputeOpen, setIsSubmitDisputeOpen] = useState(false)
+    const pathname = usePathname()
 
     const { business, loading } = useSelector((state: RootState) => state.business)
 
@@ -70,9 +75,25 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
         setBoostDetails(!boostDetails)
     }
 
+    const toggleDisputeModal = () => {
+        setIsDisputeOpen(!isDisputeOpen)
+    }
+
+    const toggleSubmitDisputeModal = () => {
+        setIsSubmitDisputeOpen(!isSubmitDisputeOpen)
+    }
+
     useEffect(() => {
         dispatch(getBusiness({ id: params.id }))
     }, []);
+
+    useEffect(() => {
+        const shouldOpen = searchParams.get("modal");
+        if (shouldOpen === "disputeOpen") {
+            toggleDisputeModal()
+            router.replace(pathname);
+        }
+    }, [searchParams]);
 
     // business reviews
     const { data: reviewData, loading: reviewLoading } = useRequest(`/business/${params.id}/business-reviews`)
@@ -86,14 +107,17 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     useEffect(() => {
         const verifyBusinessBoost = async () => {
             if (trxref) {
-                console.log({trxref})
                 setVerifyLoading(true);
                 try {
                     const { data } = await axiosInstance.patch(`listing/verify-business-boost?reference=${trxref}`, {});
                     if (data.status) {
                         if (data.data.verified) {
+                            const params = new URLSearchParams(searchParams);
+                            params.delete('trxref');
+                            params.delete('reference');
                             setBoost(data.data.boost)
                             setIsVerifyBoost(true)
+                            router.replace(`?${params.toString()}`);
                         }
                     }
                 } catch (error) {
@@ -179,15 +203,29 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                         </div>
 
                                         {
-                                            !business?.owner && (
+                                            (!business?.owner && !business?.hasActiveServiceRequest) && (
                                                 <div className="flex justify-center mt-[16px]">
-                                                    <Button className="bg-gradient-green w-fit p-[14px] px-[24px] shadow-custom-bottom">
-                                                        <p className="font-normal text-white" onClick={toggleRequestModal}>Request
-                                                            service</p>
+                                                    <Button
+                                                        className="bg-gradient-green w-fit p-[14px] px-[24px] shadow-custom-bottom"
+                                                        onClick={toggleRequestModal}
+                                                    >
+                                                        <p className="font-normal text-white">Request service</p>
                                                     </Button>
                                                 </div>
                                             )
                                         }
+
+                                        {
+                                            business?.hasActiveServiceRequest && (
+                                                <div className="flex justify-center mt-4">
+                                                    <div className="bg-gradient-green rounded-xl px-4 py-2 flex items-center shadow-custom-bottom">
+                                                        <p className="text-white font-medium">In Progress</p>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+
+
                                     </div>
                                     {
                                         business?.owner && business.hasBoost && (
@@ -398,6 +436,9 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                 <RequestServiceModal id={params.id} token={authToken} isOpen={isRequestOpen}
                                      toggleMenu={toggleRequestModal} services={business?.services}/>
                 <BoostDetailsModal boost={business?.boost} isOpen={boostDetails} toggleMenu={toggleBoostDetails}/>
+                <DisputeJobModal isOpen={isDisputeOpen} toggle={toggleDisputeModal} job={business} toggleSubmit={toggleSubmitDisputeModal} />
+                <SubmitDisputeModal isOpen={isSubmitDisputeOpen} toggle={toggleSubmitDisputeModal} />
+
             </section>
         </MainLayout>
     );

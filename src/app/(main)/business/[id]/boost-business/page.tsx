@@ -17,15 +17,22 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import {FormikButton} from "@/components/global/FormikButton";
 import MainLayout from "@/components/layouts/MainLayout";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {BoostPackagesSkeleton} from "@/components/Skeletons";
+import {useSearchParams} from "next/navigation";
+import useNxtSearchParams from "@/hooks/useSearchParams";
 
 interface BoostPackages {
     duration: number
     price: number
 }
 
-const BoostBusinessPage = ({params}: {params: {id: number}}) => {
+const BoostBusinessPage = ({params}: { params: { id: number } }) => {
     const dispatch = useAppDispatch()
     const {authToken} = useSelector((state: any) => state.auth)
+    const searchParams = useSearchParams();
+    const {setSearchParams, nxtSearchParams} = useNxtSearchParams();
     const getHeader = () => {
         return {
             headers: {
@@ -35,11 +42,11 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
     }
     const [packageTitle, setPackageTitle] = useState("")
     const [selectedPackage, setSelectedPackage] = useState({price: 0, duration: 0})
-    const [pkgIndex, setPkgIndex] = useState<number|null>(null)
+    const [pkgIndex, setPkgIndex] = useState<number | null>(null)
     const [selectedPackages, setSelectedPackages] = useState<BoostPackages[]>([])
-    const [pkgPrice, setPkgPrice] = useState<number|null>(null);
+    const [pkgPrice, setPkgPrice] = useState<number | null>(null);
 
-    const { data, loading } = useRequest(`/listing/boosts`)
+    const {data, loading} = useRequest(`/listing/boosts`)
 
     const editBusinessSchema = yup.object({
         "package": yup
@@ -67,7 +74,7 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
         onSubmit: async (values) => {
             const formData = {...values, callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${params.id}`}
             const {data} = await axiosInstance.post(`listing/boost-business/${params.id}`, formData, getHeader())
-            if(data.status) {
+            if (data.status) {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -102,6 +109,23 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
         formik.setFieldValue("option", index)
     }
 
+    const now = new Date()
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 45, 0, 0);
+
+    const timeStringToDate = (timeStr: string) => {
+        const [hours, minutes] = timeStr.split(":").map(Number);
+        const now = new Date();
+        now.setHours(hours);
+        now.setMinutes(minutes);
+        now.setSeconds(0);
+        now.setMilliseconds(0);
+        return now;
+    };
+
     return (
         <MainLayout>
             <section className="bg-white laptop:bg-light_grey pb-10">
@@ -116,24 +140,30 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                     <form onSubmit={formik.handleSubmit}>
                         <div className="flex flex-col laptop:flex-row laptop:justify-between gap-10 gap-y-[154px]">
                             <div className="flex flex-col">
-                                <div className="w-screen laptop:w-[640px] p-[24px] px-[48px] bg-none laptop:bg-white rounded-[12px]">
+                                <div
+                                    className="w-screen laptop:w-[640px] p-[24px] px-[48px] bg-none laptop:bg-white rounded-[12px]">
                                     <p className="text-text-grey text-[14px] font-normal mb-[10px]">Select Package</p>
                                     <div className="flex flex-wrap items-center gap-2">
                                         {
-                                            data?.packages?.map((pkg: any, index: number) => (
-                                                <div
-                                                    className={`p-[16px] bg-light-tint w-fit flex flex-col items-center justify-center rounded-[12px] cursor-pointer ${pkgIndex === index && "border-[2px] border-step-color"}`}
-                                                    key={index} onClick={() => handleSelectPackage(index)}>
-                                                    <Image src={"/images/featured.png"} alt="featured" width={74} height={74}/>
-                                                    <p className="font-semi-normal text-[12px] text-mid-green">Featured</p>
-                                                    <p className="font-bold text-[16px]">
-                                                        ₦{pkg.title}
-                                                    </p>
-                                                    <p className="font-normal text-[12px] text-text-grey w-[121.72px] text-center mt-[4px]">
-                                                        {pkg.description}
-                                                    </p>
-                                                </div>
-                                            ))
+                                            loading ? (
+                                                <BoostPackagesSkeleton count={4}/>
+                                            ) : (
+                                                data?.packages?.map((pkg: any, index: number) => (
+                                                    <div
+                                                        className={`p-[16px] bg-light-tint w-fit flex flex-col items-center justify-center rounded-[12px] cursor-pointer ${pkgIndex === index && "border-[2px] border-step-color"}`}
+                                                        key={index} onClick={() => handleSelectPackage(index)}>
+                                                        <Image src={"/images/featured.png"} alt="featured" width={74}
+                                                               height={74}/>
+                                                        <p className="font-semi-normal text-[12px] text-mid-green">Featured</p>
+                                                        <p className="font-bold text-[16px]">
+                                                            ₦{pkg.title}
+                                                        </p>
+                                                        <p className="font-normal text-[12px] text-text-grey w-[121.72px] text-center mt-[4px]">
+                                                            {pkg.description}
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            )
                                         }
                                     </div>
                                     {
@@ -155,8 +185,9 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                                                                 duration: number,
                                                                 price: number
                                                             }, index: number) => (
-                                                                <option value={index}
-                                                                        key={index}>{pkg.duration} day</option>
+                                                                <option value={index} key={index}>
+                                                                    {pkg.duration} {pkg.duration > 1 ? 'days' : 'day'}
+                                                                </option>
                                                             ))
                                                         }
                                                     </select>
@@ -167,41 +198,76 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                                                                className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey">Start
                                                             date</Label>
                                                         <div className="flex justify-between gap-3">
-                                                            <div
-                                                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px] w-full">
-                                                                <div>
-                                                                    <CalendarIcon/>
+                                                            <div className={'flex flex-col gap-[4px] w-full'}>
+                                                                <div
+                                                                    className="flex items-center gap-3 bg-light_grey px-[16px] h-[40px] rounded-[12px] w-full">
+                                                                    <div>
+                                                                        <CalendarIcon/>
+                                                                    </div>
+                                                                    <div className="w-full">
+                                                                        <DatePicker
+                                                                            selected={formik.values.start_date ? new Date(formik.values.start_date) : null}
+                                                                            onChange={(date: Date | null) => {
+                                                                                if (date) {
+                                                                                    // Update start date
+                                                                                    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split("T")[0]
+                                                                                    formik.setFieldValue("start_date", localDate);
+                                                                                } else {
+                                                                                    formik.setFieldValue('start_date', null)
+                                                                                }
+                                                                            }}
+                                                                            minDate={now}
+                                                                            showTimeSelect={false}
+                                                                            dateFormat="yyyy-MM-dd"
+                                                                            className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px] border-none focus:border-none focus:outline-none focus:ring-0"
+                                                                            placeholderText="Click to select date"
+                                                                        />
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <input
-                                                                        id="search"
-                                                                        type="date"
-                                                                        className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                                                                        placeholder=""
-                                                                        value={formik.values.start_date}
-                                                                        onChange={(e) => {
-                                                                            formik.setFieldValue("start_date", e.target.value)
-                                                                        }}
-                                                                    />
-                                                                </div>
+                                                                {formik.touched.start_date && formik.errors.start_date ? (
+                                                                    <p className="text-[#FF8D8D] text-[12px] text-left">
+                                                                        {formik.errors.start_date}
+                                                                    </p>
+                                                                ) : null}
                                                             </div>
-                                                            <div
-                                                                className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px] w-full">
-                                                                <div>
-                                                                    <ClockIcon/>
+                                                            <div className={'flex flex-col w-full gap-[4px]'}>
+                                                                <div
+                                                                    className="flex items-center gap-3 bg-light_grey px-[16px] h-[40px] rounded-[12px] w-full">
+                                                                    <div>
+                                                                        <ClockIcon/>
+                                                                    </div>
+                                                                    <div className="w-full">
+                                                                        <DatePicker
+                                                                            selected={formik.values.start_time ? timeStringToDate(formik.values.start_time) : null}
+                                                                            onChange={(date: Date | null) => {
+                                                                                if (date) {
+                                                                                    // Update start date
+                                                                                    let formated_time = date.toTimeString().split(" ")[0].slice(0, 5)
+                                                                                    formik.setFieldValue("start_time", formated_time);
+                                                                                }
+                                                                            }}
+                                                                            showTimeSelect={true}
+                                                                            showTimeSelectOnly={true}
+                                                                            timeCaption={'Start Time'}
+                                                                            timeIntervals={15}
+                                                                            dateFormat="h:mm aa"
+                                                                            className="font-sans font-semi-normal text-[12px] shadow-none cursor-pointer w-full bg-light_grey px-[10px] border-none focus:border-none focus:outline-none focus:ring-0"
+                                                                            placeholderText="Click to select time"
+                                                                            minTime={
+                                                                                formik.values.start_date &&
+                                                                                new Date(formik.values.start_date).toDateString() === now.toDateString()
+                                                                                    ? now
+                                                                                    : startOfDay
+                                                                            }
+                                                                            maxTime={endOfDay}
+                                                                        />
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    <input
-                                                                        id="search"
-                                                                        type="time"
-                                                                        className="rounded-xl text-[14px] font-sans bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                                                                        placeholder=""
-                                                                        value={formik.values.start_time}
-                                                                        onChange={(e) => {
-                                                                            formik.setFieldValue("start_time", e.target.value)
-                                                                        }}
-                                                                    />
-                                                                </div>
+                                                                {formik.touched.start_time && formik.errors.start_time ? (
+                                                                    <p className="text-[#FF8D8D] text-[12px] text-left">
+                                                                        {formik.errors.start_time}
+                                                                    </p>
+                                                                ) : null}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -254,11 +320,11 @@ const BoostBusinessPage = ({params}: {params: {id: number}}) => {
                                         </div>
                                         <FormikButton title="Pay now" error={formik.isValid}
                                                       loading={formik.isSubmitting}
-                                                      classes="px-[48px] p-[14px] h-[48px] flex items-center rounded-[12px] border-step-color shadow-custom-bottom"/>
+                                                      classes="px-[48px] p-[14px] h-[48px] flex items-center rounded-[12px] border-step-color shadow-green-inset hover:shadow-green-inset-strong"/>
                                     </div>
                                 </div>
                             </div>
-                            <div className="border-t-[1px]">
+                            <div className="border-t-[1px] laptop:hidden">
                                 <div
                                     className="mt-[24px] flex justify-around gap-[16px] items-center pt-[16px] pl-[16px] pr-[16px]">
                                     <div className="">

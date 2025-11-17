@@ -7,7 +7,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {Spinner} from "evergreen-ui";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import Link from "next/link";
-import {useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {axiosInstance} from "@/lib/axiosInstane";
 import PaymentConfirmModal from "@/components/business/Modals/PaymentConfirmModal";
 import {useAppDispatch} from "@/redux/hook";
@@ -15,41 +15,40 @@ import {addJob, getBusinesses} from "@/features/business/business.slice";
 import {RootState} from "@/redux/store";
 import {AllBusinessSkeleton, BusinessCarouselSkeleton} from "@/components/Skeletons";
 
-const BusinessSection = () => {
+interface BusinessSectionProps {
+    businesses: BusinessInterface[];
+    loading: boolean;
+}
+
+const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, loading}) => {
     const dispatch = useAppDispatch()
+    const router = useRouter()
     const searchParams = useSearchParams()
     const trxref = searchParams.get("trxref")
     const [verifyLoading, setVerifyLoading] = useState(false)
     const [isVerifyJob, setIsVerifyJob] = useState(false)
-    const {job} = useSelector((state: any) => state.business)
-    const {authToken} = useSelector((state: any) => state.auth)
-    const { businesses, loading } = useSelector((state: RootState) => state.business);
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
+    const {job} = useSelector((state: RootState) => state.business)
 
     const toggleVerifyJob = () => {
         setIsVerifyJob(!isVerifyJob)
     }
 
     useEffect(() => {
-        dispatch(getBusinesses({ token: authToken }))
-    }, [dispatch]);
-
-    useEffect(() => {
         const verifyPayment = async () => {
             if (trxref) {
                 setVerifyLoading(true);
                 try {
-                    const { data } = await axiosInstance.patch(`business/verify-payment?reference=${trxref}`, {}, getHeader());
+                    const { data } = await axiosInstance.patch(`business/verify-payment?reference=${trxref}`);
                     if (data.status) {
                         if (data.data.verified) {
+                            // Remove trxref from URL
+                            const params = new URLSearchParams(searchParams);
+                            params.delete('trxref');
+                            params.delete('reference');
                             setIsVerifyJob(true)
                             dispatch(addJob({job: data.data.job}))
+                            // Update the URL without reloading
+                            router.replace(`?${params.toString()}`);
                         }
                     }
                 } catch (error) {
@@ -64,9 +63,10 @@ const BusinessSection = () => {
     const { data } = useRequest("/business")
 
     return (
-        <section className="mt-4 flex flex-col items-center">
-            <div className="p-[16px] w-full laptop:w-[1312px] rounded-0 laptop:rounded-[12px] gap-[12px] bg-light-green-50">
-                <p className="font-semibold text-[18px]">Featured</p>
+        <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
+            {/* Featured Section */}
+            <div className="p-4 w-full max-w-[1312px] rounded-none sm:rounded-xl gap-3 bg-light-green-50">
+                <p className="font-semibold text-lg sm:text-xl mb-3">Featured</p>
                 {
                     loading ? (
                         <BusinessCarouselSkeleton count={4} />
@@ -77,8 +77,8 @@ const BusinessSection = () => {
                             showArrows={false}
                         />
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-12 rounded-xl bg-white border border-gray-100 shadow-sm">
-                            <div className="flex flex-col items-center text-center">
+                        <div className="flex flex-col items-center justify-center py-8 sm:py-12 px-4 rounded-xl bg-white border border-gray-100 shadow-sm">
+                            <div className="flex flex-col items-center text-center max-w-md">
                                 <div className="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-gray-100">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -97,11 +97,12 @@ const BusinessSection = () => {
                         </div>
                     )
                 }
-
             </div>
-            <div className="p-[16px] rounded-[12px] w-full laptop:w-[1312px] shadow-sm mt-[24px]">
-                <p className="font-semibold text-[18px]">All business</p>
-                <div className="grid grid-cols-1 laptop:grid-cols-4 gap-2">
+
+            {/* All Business Section */}
+            <div className="p-4 rounded-xl w-full max-w-[1312px] shadow-sm mt-6 bg-white">
+                <p className="font-semibold text-lg sm:text-xl mb-4">All business</p>
+                <div className="grid grid-cols-1 phone:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 gap-2">
                     {
                         loading ? (
                             <AllBusinessSkeleton count={4} />

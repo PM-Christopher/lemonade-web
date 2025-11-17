@@ -24,7 +24,7 @@ export const FormikButton = ({
             ${loading && "opacity-70"} ${
         bgColor && !error ? errorColor : bgColor
       } ${
-        bgColor === null ? (!error ? "bg-mid-green" : "bg-gradient-green") : ""
+        bgColor === null ? (!error ? "bg-mid-green" : "bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong transition-shadow duration-300") : ""
       }
             
              

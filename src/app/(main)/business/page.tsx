@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import BusinessSection from "@/components/business/Sections/BusinessSection";
 import ListingSection from "@/components/business/Sections/ListingSection";
@@ -9,14 +9,29 @@ import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModa
 import {useSelector} from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import BusinessFilter from "@/components/business/Modals/BusinessFilter";
+import {RootState} from "@/redux/store";
+import {getBusinesses, getListings} from "@/features/business/business.slice";
+import {useAppDispatch} from "@/redux/hook";
 
 const BusinessPage = () => {
+    const dispatch = useAppDispatch()
     const [menuOption, setMenuOption] = useState("business");
     const [isOpen, setIsOpen] = useState(false)
     const [isServiceOpen, setItServiceOpen] = useState(false)
     const [businessFilter, setBusinessFilter] = useState(false)
 
-    const {job} = useSelector((state: any) => state.business)
+    const {job, businesses, listings, loading, jobLoading} = useSelector((state: RootState) => state.business)
+
+    useEffect(() => {
+        if (menuOption === "business") {
+            dispatch(getBusinesses())
+        }
+        else if (menuOption === "listings") {
+            dispatch(getListings())
+        }
+    }, [menuOption]);
+
+
 
     const switchOption = (option: string) => {
         setMenuOption(option)
@@ -37,11 +52,11 @@ const BusinessPage = () => {
     const renderView = () => {
         switch (menuOption) {
             case "business":
-                return <BusinessSection />
+                return <BusinessSection businesses={businesses} loading={loading} />
             case "listings":
-                return <ListingSection />
+                return <ListingSection businesses={listings} loading={loading} />
             default:
-                return <BusinessSection />
+                return <BusinessSection businesses={businesses} loading={loading} />
         }
     }
 
@@ -78,7 +93,7 @@ const BusinessPage = () => {
                     {renderSubMenu()}
                 </div>
                 {renderView()}
-                <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu}/>
+                <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu} loading={jobLoading}/>
                 <BusinessFilter toggle={toggleBusinessFilter} isOpen={businessFilter} />
             </section>
         </MainLayout>

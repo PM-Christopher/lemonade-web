@@ -71,7 +71,7 @@ const PricingPage = () => {
                     <div className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
                          onClick={() => router.back()}>
                         <ChevronLeft/>
-                        <p className="font-sans font-semibold text-[16px] tracking-custom">Pricing</p>
+                        <p className="font-sans font-semibold text-[16px] tracking-custom">Plan</p>
                     </div>
                 </div>
 

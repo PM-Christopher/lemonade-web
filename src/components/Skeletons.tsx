@@ -1052,11 +1052,31 @@ export const InviteSkeleton = ({count}: { count: number }) => {
     )
 }
 
+export const BoostPackagesSkeleton = ({count}: { count: number }) => {
+    return (
+        <>
+            {[...Array(count)].map((_, i) => (
+                <div
+                    className={`p-[16px] bg-light-tint w-fit flex flex-col items-center justify-center rounded-[12px] animate-pulse`}
+                    key={i}
+                >
+                    <div className="w-[74px] h-[74px] bg-gray-200 rounded-[8px]"/>
+                    <div className="w-[60px] h-[12px] bg-gray-200 rounded-[4px] mt-[8px]"/>
+                    <div className="w-[80px] h-[16px] bg-gray-200 rounded-[4px] mt-[8px]"/>
+                    <div className="w-[120px] h-[12px] bg-gray-200 rounded-[4px] mt-[4px]"/>
+                </div>
+
+            ))}
+        </>
+    )
+}
+
 export const BillingHistorySkeleton = ({count}: { count: number }) => {
     return (
         <div className="w-full laptop:w-[640px] flex flex-col gap-10 animate-pulse">
             {/* Current Plan Skeleton */}
-            <div className="rounded-2xl bg-green-tint border-b-4 border-b-step-color p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+            <div
+                className="rounded-2xl bg-green-tint border-b-4 border-b-step-color p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                 <div className="flex flex-col gap-2 w-full sm:w-[60%]">
                     <div className="h-[20px] w-[100px] bg-light-grey-70 rounded-md"></div>
                     <div className="h-[28px] w-[140px] bg-light-grey-70 rounded-md"></div>
@@ -1085,7 +1105,8 @@ export const BillingHistorySkeleton = ({count}: { count: number }) => {
                 <div className="h-[16px] w-[140px] bg-light-grey-70 rounded-md"></div>
 
                 {/* 3 Dummy History Rows */}
-                <div className="flex flex-col divide-y divide-light-green-20 border border-light-green-20 rounded-xl overflow-hidden">
+                <div
+                    className="flex flex-col divide-y divide-light-green-20 border border-light-green-20 rounded-xl overflow-hidden">
                     {Array.from({length: count}).map((_, i) => (
                         <div
                             key={i}
@@ -1097,6 +1118,66 @@ export const BillingHistorySkeleton = ({count}: { count: number }) => {
                         </div>
                     ))}
                 </div>
+            </div>
+        </div>
+    )
+}
+
+export const ImagesLoadingSkeleton = ({count}: { count: number }) => {
+    return (
+        <>
+            {Array(count).fill(0).map((_, index) => (
+                <div className="relative inline-block w-[165.5px] h-[165.5px] animate-pulse">
+                    {/* Image Skeleton */}
+                    <div className="w-full h-full bg-gray-200 rounded-[12px]"/>
+
+                    {/* Remove Button Skeleton */}
+                    <div
+                        className="absolute top-0 right-0 m-2 w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center shadow">
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                    </div>
+                </div>
+            ))}
+        </>
+    )
+}
+
+export const JobListSkeleton = ({count}: { count: number }) => {
+    return (
+        <div className="flex flex-col overflow-y-auto hide-scrollbar pb-24">
+            <div className="flex flex-col w-full gap-4">
+                {Array(count).fill(0).map((_, index) => (
+                    <div
+                        key={index}
+                        className="bg-white rounded-2xl shadow-sm p-4 animate-pulse"
+                    >
+                        {/* Top Row Skeleton: Logo + Name */}
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="flex gap-3 items-center">
+                                <div className="w-[40px] h-[40px] bg-gray-200 rounded-xl"/>
+                                <div className="flex flex-col gap-2">
+                                    <div className="w-[120px] h-4 bg-gray-200 rounded"/>
+                                    <div className="w-[80px] h-3 bg-gray-200 rounded mt-1"/>
+                                </div>
+                            </div>
+                            <div className="w-4 h-4 bg-gray-200 rounded"/>
+                        </div>
+
+                        {/* Bottom Row Skeleton: Services + Amount */}
+                        <div className="flex justify-between items-center mt-2">
+                            <div className="flex gap-2 flex-wrap">
+                                <div className="w-[60px] h-5 bg-gray-200 rounded-full"/>
+                                <div className="w-[40px] h-5 bg-gray-200 rounded-full"/>
+                            </div>
+                            <div className="w-[50px] h-4 bg-gray-200 rounded"/>
+                        </div>
+
+                        {/* Divider Skeleton */}
+                        {index !== 3 && (
+                            <div className="my-4 h-px bg-gray-300 rounded-full"></div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     )

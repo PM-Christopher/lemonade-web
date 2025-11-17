@@ -7,6 +7,7 @@ import Dropzone from "react-dropzone";
 import Image from "next/image";
 import upload_image from "@/image/icons/upload_image.png";
 import {CircleSpinner, RingSpinner} from "react-spinner-overlay";
+import {ImagesLoadingSkeleton} from "@/components/Skeletons";
 
 const MultipleFileUploader = ({ setField, images, title, type, length="single" }: {setField: any, images: string[], title: string, type: string, length: string|null}) => {
     const dispatch = useAppDispatch()
@@ -40,6 +41,10 @@ const MultipleFileUploader = ({ setField, images, title, type, length="single" }
                     setLoading(false)
                     if (type === "business") {
                         await setField.setFieldValue("gallery", [...data.data.images])
+                        setPortfolioImages(prevImages => [...prevImages, ...data.data.images])
+                    }
+                    if (type === "dispute") {
+                        await setField.setFieldValue("attachments", [...data.data.images])
                         setPortfolioImages(prevImages => [...prevImages, ...data.data.images])
                     }
                     dispatch(
@@ -82,57 +87,55 @@ const MultipleFileUploader = ({ setField, images, title, type, length="single" }
     };
 
     return (
-        <>
-            {
-               loading ? (
-                   <div className="w-full h-[200px] bg-grey-20 opacity-50 backdrop-blur-lg rounded-[8px] flex justify-center items-center">
-                       {/* Your content goes here */}
-                       <RingSpinner color="#6B9D00" loading={loading} size={150} />
-                   </div>
-               ) : (
-                   <div className="flex flex-wrap items-center gap-[4px] mt-[16px]">
-                       <Dropzone onDrop={acceptedFiles => handleFileChange(acceptedFiles)}>
-                           {({getRootProps, getInputProps}) => (
-                               <section
-                                   className="border-dashed border-2 w-[165.5px] h-[165.5px] p-[16px] rounded-[12px] bg-light_grey cursor-pointer">
-                                   <div {...getRootProps()}>
-                                       <input {...getInputProps()} />
-                                       <div className="flex flex-col items-center w-[133.5px]">
-                                           <Image src={"/images/upload_image.png"} alt="upload" width={48} height={48}/>
-                                           <p className="mt-[12px] font-semi-normal font-sans text-[14px] leading-[21px] tracking-custom text-center">
-                                               {title}
-                                           </p>
-                                           <p className="mt-[4px] font-sans font-normal text-[12px] leading-[14.4px] text-grey-40 items-center text-center">
-                                               PNG, JPG, JPEG, less than 2MB
-                                           </p>
-                                       </div>
-                                   </div>
-                               </section>
-                           )}
-                       </Dropzone>
+        <div className="flex flex-wrap items-center gap-4 mt-4">
+            {/* Dropzone */}
+            <Dropzone onDrop={acceptedFiles => handleFileChange(acceptedFiles)}>
+                {({ getRootProps, getInputProps }) => (
+                    <section
+                        {...getRootProps()}
+                        className="flex flex-col items-center justify-center w-[170px] h-[170px] p-4 border-2 border-dashed border-gray-300 rounded-2xl bg-light_grey cursor-pointer hover:bg-gray-100 transition"
+                    >
+                        <input {...getInputProps()} />
+                        <Image src={"/images/upload_image.png"} alt="upload" width={48} height={48} />
+                        <p className="mt-3 text-center font-sans font-semibold text-[14px] leading-[21px] text-black">
+                            {title}
+                        </p>
+                        <p className="mt-1 text-center text-[12px] font-normal text-gray-400">
+                            PNG, JPG, JPEG, less than 2MB
+                        </p>
+                    </section>
+                )}
+            </Dropzone>
 
-                       {portfolioImages.length > 0 && (
-                           portfolioImages.map((image) => (
-                               <div className="relative inline-block">
-                                   <Image
-                                       src={image}
-                                       alt="event_image"
-                                       width={165.5}
-                                       height={165.5}
-                                       className="rounded-[12px] w-full h-full"
-                                   />
+            {/* Loading Skeleton */}
+            {loading ? (
+                <ImagesLoadingSkeleton count={4} />
+            ) : (
+                portfolioImages.length > 0 &&
+                portfolioImages.map((image) => (
+                    <div
+                        key={image}
+                        className="relative w-[170px] h-[170px] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition transform hover:scale-105 duration-300"
+                    >
+                        <Image
+                            src={image}
+                            alt="uploaded_image"
+                            width={170}
+                            height={170}
+                            className="object-cover w-full h-full"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => removeImage(image)}
+                            className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow hover:bg-red-50 transition"
+                        >
+                            <span className="text-red-500 font-bold text-lg">×</span>
+                        </button>
+                    </div>
+                ))
+            )}
+        </div>
 
-                                   <div
-                                       className="absolute top-0 right-0 m-2 w-6 h-6 bg-white rounded-full flex items-center justify-center cursor-pointer shadow" onClick={() => removeImage(image)}>
-                                       <span className="text-red-500 text-xl font-bold">X</span>
-                                   </div>
-                               </div>
-                           ))
-                       )}
-                   </div>
-               )
-            }
-        </>
     );
 }
 

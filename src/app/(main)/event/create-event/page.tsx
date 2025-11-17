@@ -794,7 +794,7 @@ const CreateEventPage = () => {
                                         id="search"
                                         type="url"
                                         className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full px-1"
-                                        placeholder="Website URL"
+                                        placeholder="https://example.com"
                                         value={socials.website}
                                         onChange={handleSocialsChange}
                                         name="website"

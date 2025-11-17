@@ -14,57 +14,94 @@ const PaymentConfirmModal = ({isOpen, job, toggleMenu}: {isOpen: boolean, toggle
     }
     return (
         <div
-            className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${isOpen ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[480px] p-6">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <div className="cursor-pointer" onClick={toggleMenu}>
-                            <CloseIcon/>
-                        </div>
-                    </div>
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 
+        ${isOpen ? "flex" : "hidden"} items-center justify-center p-4`}
+        >
+            <div
+                className="
+            bg-white rounded-2xl shadow-xl
+            w-full max-w-[480px]
+            p-6 animate-[fadeIn_0.25s_ease-out]
+            max-h-[90vh] overflow-y-auto hide-scrollbar
+        "
+            >
+                {/* Close Button */}
+                <div className="flex justify-end">
+                    <button
+                        onClick={toggleMenu}
+                        className="p-2 rounded-lg hover:bg-gray-100 transition"
+                    >
+                        <CloseIcon />
+                    </button>
                 </div>
-                <div className="mt-10 flex flex-col">
-                    <div className="flex flex-col items-center">
-                        <Image src={"/images/jobVerified.png"} alt="promote" width={160} height={160}/>
-                    </div>
-                    <div className="px-[10px]">
-                        <div className="mt-[24px] flex flex-col items-center">
-                            <p className="font-semiBold text-[20px] text-center text-light-green">Payment successful</p>
-                            <p className="font-normal text-[14px] text-center">Your payment has been successfully received and held securely until service completion.</p>
-                        </div>
-                        <div className="mt-[24px]">
-                            <p className="font-semiBold text-[20px]">N{formatNumberWithCommas(job?.amount)}</p>
-                        </div>
-                        <div className="flex flex-col mt-[24px]">
-                            <p className="text-[14px] font-normal text-text-grey">Business name</p>
-                            <p className="text-[14px] font-semi-normal text-light-black">
-                                {job?.name}
-                            </p>
-                        </div>
 
-                        <div className="flex flex-col mt-[16px]">
-                            <p className="text-[14px] font-normal text-text-grey">Services rendered</p>
-                            <p className="text-[14px] font-semi-normal text-light-black">
-                                {job?.services?.length}
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col mt-[16px]">
-                            <p className="text-[14px] font-normal text-text-grey">Payment date</p>
-                            <p className="text-[14px] font-semi-normal text-light-black">
-                                {job?.updated_at}
-                            </p>
-                        </div>
-                    </div>
-
-                    <Button className="bg-gradient-green w-full h-[48px] mt-[24px]"
-                            onClick={backToBusiness}
-                            type="button">
-                        <p className="text-white">View service</p>
-                    </Button>
+                {/* Icon */}
+                <div className="flex justify-center mt-4">
+                    <Image
+                        src={"/images/jobVerified.png"}
+                        alt="Payment Verified"
+                        width={160}
+                        height={160}
+                    />
                 </div>
+
+                {/* Title & Description */}
+                <div className="mt-6 text-center px-4">
+                    <p className="font-semibold text-[22px] text-light-green">
+                        Payment successful
+                    </p>
+                    <p className="text-[14px] text-text-grey mt-2">
+                        Your payment has been securely received and held until the service is completed.
+                    </p>
+                </div>
+
+                {/* Amount */}
+                <div className="mt-6">
+                    <p className="text-[14px] text-text-grey">Amount paid</p>
+                    <p className="text-[22px] font-semibold mt-1">
+                        N{formatNumberWithCommas(job?.amount)}
+                    </p>
+                </div>
+
+                {/* Business Name */}
+                <div className="mt-5">
+                    <p className="text-[14px] text-text-grey">Business name</p>
+                    <p className="text-[16px] font-medium text-light-black">
+                        {job?.name}
+                    </p>
+                </div>
+
+                {/* Services Rendered */}
+                <div className="mt-5">
+                    <p className="text-[14px] text-text-grey">Services rendered</p>
+                    <p className="text-[16px] font-medium text-light-black">
+                        {job?.services?.length}
+                    </p>
+                </div>
+
+                {/* Payment Date */}
+                <div className="mt-5">
+                    <p className="text-[14px] text-text-grey">Payment date</p>
+                    <p className="text-[16px] font-medium text-light-black">
+                        {job?.updated_at}
+                    </p>
+                </div>
+
+                {/* Button */}
+                <Button
+                    className="
+                bg-gradient-green w-full h-[48px]
+                mt-8 rounded-xl shadow-md
+                hover:shadow-lg transition
+            "
+                    onClick={backToBusiness}
+                    type="button"
+                >
+                    <p className="text-white text-[16px] font-medium">View service</p>
+                </Button>
             </div>
         </div>
+
     );
 }
 

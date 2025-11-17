@@ -6,9 +6,14 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {useAppDispatch} from "@/redux/hook";
+import {makeJobPayment} from "@/features/business/business.slice";
 
 const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: () => void, job: any}) => {
+    const dispatch = useAppDispatch();
     const {authToken} = useSelector((state: any) => state.auth)
+    const { payLoading } = useSelector((state: RootState) => state.business)
     const router = useRouter()
     const getHeader = () => {
         return {
@@ -19,24 +24,26 @@ const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: ()
     }
 
     const handlePayNow = async () => {
-        const { data } = await axiosInstance.post(`business/jobs/${job?.id}/pay`, {
-            callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`
-        }, getHeader())
-        console.log({data})
-        if (data.status) {
-            updateToastifyReducer({
-                show: true,
-                message: "Redirecting to payment link",
-                type: "success",
-            })
+        const { payload } = await dispatch(makeJobPayment({id: job.id, data: {callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`}}))
+
+        if (payload.status) {
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Redirecting to payment link",
+                    type: "success",
+                })
+            )
             toggleMenu()
-            window.location.href = data.data.payment
+            window.location.href = payload.data.payment
         } else {
-            updateToastifyReducer({
-                show: true,
-                message: "Something went wrong",
-                type: "error",
-            })
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Something went wrong",
+                    type: "error",
+                })
+            )
         }
     }
     return (
@@ -64,8 +71,37 @@ const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: ()
                         <Button
                             className="bg-gradient-green p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-custom-bottom w-full"
                             onClick={handlePayNow}
+                            disabled={payLoading}
                         >
-                            <p className="font-semi-normal text-[16px]">Pay now</p>
+                            {
+                                payLoading ? (
+                                    <div className={'flex gap-2'}>
+                                        <svg
+                                            className="animate-spin h-4 w-4 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            />
+                                        </svg>
+                                        <p className="font-semi-normal text-[16px] text-light-white">Loading...</p>
+                                    </div>
+                                ) : (
+                                        <p className="font-semi-normal text-[16px]">Pay now</p>
+                                    )
+                            }
                         </Button>
                     </div>
                 </div>

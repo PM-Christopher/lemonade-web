@@ -17,4 +17,5 @@ export interface BusinessInterface {
     country: string;
     hasBoost: boolean;
     owner: boolean;
+    hasActiveServiceRequest: boolean
 }

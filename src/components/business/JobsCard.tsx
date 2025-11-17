@@ -9,6 +9,7 @@ import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
 import {getJob} from "@/features/business/business.slice";
 import JobEmpty from "@/image/JobEmpty.png"
+import {RootState} from "@/redux/store";
 
 type JobCardInterface = {
     jobs: any,
@@ -19,88 +20,97 @@ type JobCardInterface = {
 const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
     const dispatch = useAppDispatch()
     const [isOpen, setIsOpen] = useState(false)
-    const {authToken} = useSelector((state: any) => state.auth)
-    const [fetchedJob, setFetchedJob] = useState(null);
+    const { job, jobLoading } = useSelector((state: RootState) => state.business)
+
 
     const detailsToggle = () => {
         setIsOpen(!isOpen)
     }
 
-    const fetchJob = (id: number, job: any) => {
+    const fetchJob = async (id: number, job: any) => {
         const businessType = job?.isOwner ? "listing" : "business"
-        dispatch(getJob({id, token: authToken, type: businessType})).then((res) => {
-            if (res.payload.status) {
-                setFetchedJob(res.payload.data.job)
-                if (type === "listing") {
-                    detailsToggle()
-                } else {
-                    if (toggleMenu) {
-                        toggleMenu()
-                    }
+        const { payload } = await dispatch(getJob({id, type: businessType}))
+        if (payload.status) {
+            if (type === "listing") {
+                detailsToggle()
+            } else {
+                if (toggleMenu) {
+                    toggleMenu()
                 }
             }
-        })
+        }
     }
 
     return (
         <>
             {
                 jobs?.length > 0 ? (
-                    <div className="h-[calc(100vh-100px)] flex flex-col overflow-y-auto hide-scrollbar pb-[100px]">
-                        <div className="flex flex-col w-full gap-[12px]">
-                            {jobs?.map((job: any, index: any) => (
-                                <div key={index}>
-                                    <div
-                                        className="flex flex-col cursor-pointer"
-                                        onClick={() => fetchJob(job?.id, job)}
-                                    >
-                                        <div className="flex justify-between">
-                                            <div className="flex gap-[8px]">
-                                                <Image
-                                                    src={job?.image}
-                                                    alt="logo"
-                                                    width={40}
-                                                    height={40}
-                                                    className="rounded-[16px] border-[1px] border-step-color"
-                                                />
-                                                <div className="flex flex-col">
-                                                    <p className="font-semi-normal text-[14px]">{job?.name}</p>
-                                                    <p className="font-normal text-[12px] text-text-grey">
-                                                        {job?.city}, {formatCountry(job?.country)}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <ChevronRight
-                                                onClick={() => fetchJob(job?.id, job)}
-                                                className="cursor-pointer"
+                    <div className="flex flex-col overflow-y-auto hide-scrollbar pb-24">
+                        <div className="flex flex-col w-full gap-4">
+                            {jobs?.map((job: any, index: number) => (
+                                <div
+                                    key={index}
+                                    className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 p-4 cursor-pointer"
+                                    onClick={() => fetchJob(job?.id, job)}
+                                >
+                                    {/* Top Row: Logo + Name */}
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex gap-3 items-center">
+                                            <Image
+                                                src={job?.image}
+                                                alt="logo"
+                                                width={48}
+                                                height={48}
+                                                className="rounded-xl border border-step-color object-cover w-[40px] h-[40px]"
                                             />
+                                            <div className="flex flex-col">
+                                                <p className="text-[15px] font-semibold text-black">{job?.name}</p>
+                                                <p className="text-[13px] text-text-grey mt-1">
+                                                    {job?.city}, {formatCountry(job?.country)}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="flex justify-between mt-[12px] items-center">
-                                            <div className="flex gap-2">
-                                                <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
-                                                    <p className="font-semi-normal text-[14px] text-text-grey">
-                                                        {formatStringUCFirst(job?.services[0])}
-                                                    </p>
-                                                </div>
-                                                {job?.services.length > 1 && (
-                                                    <div className="p-[2px] px-[8px] bg-grey-20 rounded-[12px]">
-                                                        <p className="font-semi-normal text-[14px] text-text-grey">
-                                                            +{job?.services.length - 1}
+                                        <ChevronRight className="text-text-grey" />
+                                    </div>
+
+                                    {/* Bottom Row: Services + Amount */}
+                                    <div className="flex justify-between items-center mt-4">
+                                        <div className="flex gap-2 flex-wrap">
+                                            {job?.services?.map((service: string, i: number) =>
+                                                i === 0 ? (
+                                                    <div
+                                                        key={i}
+                                                        className="px-3 py-1 bg-grey-20 rounded-full max-w-max"
+                                                    >
+                                                        <p className="text-[13px] text-text-grey font-medium">
+                                                            {formatStringUCFirst(service)}
                                                         </p>
                                                     </div>
-                                                )}
-                                            </div>
-                                            <p className="font-semibold text-[14px]">
-                                                N{formatNumberWithCommas(job?.amount)}
-                                            </p>
+                                                ) : null
+                                            )}
+                                            {job?.services.length > 1 && (
+                                                <div className="px-3 py-1 bg-grey-20 rounded-full">
+                                                    <p className="text-[13px] text-text-grey font-medium">
+                                                        +{job?.services.length - 1}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
+                                        <p className="text-[15px] font-semibold text-black">
+                                            N{formatNumberWithCommas(job?.amount)}
+                                        </p>
                                     </div>
-                                    <div className="border-b-[1px] border-b-mid-grey p-0 my-[16px]"></div>
+
+                                    {/* Divider */}
+                                    {index !== jobs.length - 1 && (
+                                        <div className="my-4 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                                    )}
                                 </div>
                             ))}
                         </div>
                     </div>
-                    ) : (
+
+                ) : (
                         <div className="flex justify-center items-center mt-[150px]">
                             <div className="flex flex-col items-center">
                                 <Image src={"/images/jobEmpty.png"} alt="empty_jobs" width={160} height={141} />
@@ -109,11 +119,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                         </div>
                 )
             }
-            {
-                type === "listing" && (
-                    <ServiceDetailsModal job={fetchedJob} isOpen={isOpen} toggleMenu={detailsToggle} />
-                )
-            }
+            <ServiceDetailsModal job={job} isOpen={isOpen} toggleMenu={detailsToggle} loading={jobLoading} />
         </>
     );
 }

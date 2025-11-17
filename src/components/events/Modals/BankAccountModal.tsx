@@ -138,7 +138,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                                 title="Submit"
                                 error={formik.isValid}
                                 loading={formik.isSubmitting}
-                                classes="w-full h-12 rounded-xl px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
+                                classes="w-full h-[48px] rounded-xl px-[14px] p-[10px] rounded-[12px] border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                             />
                         </div>
                     </div>
