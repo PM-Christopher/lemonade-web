@@ -1,3 +1,4 @@
+"use client"
 import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -36,7 +37,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
     const [isCompletionOpen, setIsCompletionOpen] = useState(false)
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const { markLoading } = useSelector((state: RootState) => state.business)
+    const {markLoading} = useSelector((state: RootState) => state.business)
 
     const toggleConfirmPayment = () => {
         setIsConfirmOpen(!isConfirmOpen)
@@ -51,7 +52,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
     }
 
     const markJob = async (option: string) => {
-        const {payload} = await dispatch(markJobRequest({id: job.id, data: {status: option, remark}}))
+        const {payload} = await dispatch(markJobRequest({id: job?.id, data: {status: option, remark}}))
 
         if (payload.status) {
             dispatch(updateToastifyReducer({
@@ -174,7 +175,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
                                 <>
                                     {job?.user?.avatar ? (
                                         <Image
-                                            src={job.user.avatar}
+                                            src={job?.user?.avatar}
                                             alt="avatar"
                                             width={72}
                                             height={72}
@@ -292,9 +293,12 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
                             {
                                 job?.isOwner && job?.status === "ACCEPTED" && (
                                     job?.payment_made ? (
-                                            <div className="mt-[40px] flex justify-center gap-3 mb-[10px] w-full laptop:w-[544px]">
-                                                <Button className="bg-white border-[1px] border-light-grey-50 p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-none w-full">
-                                                    <p className="font-semi-normal text-[16px] text-black-light">Dispute Job</p></Button>
+                                            <div
+                                                className="mt-[40px] flex justify-center gap-3 mb-[10px] w-full laptop:w-[544px]">
+                                                <Button
+                                                    className="bg-white border-[1px] border-light-grey-50 p-[14px] px-[48px] h-[48px] rounded-[12px] shadow-none w-full">
+                                                    <p className="font-semi-normal text-[16px] text-black-light">Dispute Job</p>
+                                                </Button>
                                             </div>
                                         ) :
                                         (
@@ -374,9 +378,10 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
                 </div>
 
                 {/* Nested Modals */}
-                <ConfirmPaymentModal isOpen={isConfirmOpen} toggleMenu={toggleConfirmPayment} sMenu={toggleMenu} job={job}/>
+                <ConfirmPaymentModal isOpen={isConfirmOpen} toggleMenu={toggleConfirmPayment} sMenu={toggleMenu}
+                                     job={job}/>
                 <PayNowModal job={job} isOpen={isPayNowOpen} toggleMenu={togglePayNow}/>
-                <ConfirmCompletionModal isOpen={isCompletionOpen} toggle={toggleCompletion} job={job} />
+                <ConfirmCompletionModal isOpen={isCompletionOpen} toggle={toggleCompletion} job={job}/>
             </div>
         </div>
 

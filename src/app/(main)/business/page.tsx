@@ -94,7 +94,14 @@ const BusinessPage = () => {
                     {renderSubMenu()}
                 </div>
                 {renderView()}
-                <ServiceDetailsModal job={job} isOpen={isServiceOpen} toggleMenu={toggleServiceDetailsMenu} loading={jobLoading}/>
+                {job && (
+                    <ServiceDetailsModal
+                        job={job}
+                        isOpen={isServiceOpen}
+                        toggleMenu={toggleServiceDetailsMenu}
+                        loading={jobLoading}
+                    />
+                )}
                 <BusinessFilter toggle={toggleBusinessFilter} isOpen={businessFilter} />
             </section>
         </MainLayout>

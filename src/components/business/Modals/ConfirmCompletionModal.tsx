@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
@@ -21,7 +22,7 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({isOpen, 
 
     const markCompleted = async () => {
         const { payload } = await dispatch(markJobCompleted({id: job?.id}))
-        if (payload.status) {
+        if (payload?.status) {
             dispatch(addJob({job: payload?.data?.job}))
             dispatch(updateToastifyReducer({
                 show: true,

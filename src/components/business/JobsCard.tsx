@@ -1,3 +1,4 @@
+"use client"
 import React, {useState} from 'react';
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
@@ -102,7 +103,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                                     </div>
 
                                     {/* Divider */}
-                                    {index !== jobs.length - 1 && (
+                                    {index !== jobs?.length - 1 && (
                                         <div className="my-4 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                                     )}
                                 </div>
