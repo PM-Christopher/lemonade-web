@@ -233,17 +233,19 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
                         </div>
 
                         {/* Required Services */}
-                        <div>
-                            <p className="text-[14px] text-gray-500">Required Services</p>
-                            <p className="text-[16px] text-black mt-1">
-                                {job?.services?.map((service: string, index: number) => (
-                                    <span key={index}>
-                {formatStringUCFirst(service)}
-                                        {index < job?.services?.length - 1 && ", "}
-              </span>
-                                ))}
-                            </p>
-                        </div>
+                        {Array.isArray(job?.services) && job.services.length > 0 && (
+                            <div>
+                                <p className="text-[14px] text-gray-500">Required Services</p>
+                                <p className="text-[16px] text-black mt-1">
+                                    {job.services.map((service: string, index: number) => (
+                                        <span key={index}>
+                                            {formatStringUCFirst(service)}
+                                            {index < job.services.length - 1 && ', '}
+                                        </span>
+                                    ))}
+                                </p>
+                            </div>
+                        )}
 
                         {/* Additional Info */}
                         {job?.additional_information && (
@@ -377,11 +379,29 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
                     </div>
                 </div>
 
-                {/* Nested Modals */}
-                <ConfirmPaymentModal isOpen={isConfirmOpen} toggleMenu={toggleConfirmPayment} sMenu={toggleMenu}
-                                     job={job}/>
-                <PayNowModal job={job} isOpen={isPayNowOpen} toggleMenu={togglePayNow}/>
-                <ConfirmCompletionModal isOpen={isCompletionOpen} toggle={toggleCompletion} job={job}/>
+                {
+                    job && (
+                        <>
+                            {/* Nested Modals */}
+                            <ConfirmPaymentModal
+                                isOpen={isConfirmOpen}
+                                toggleMenu={toggleConfirmPayment}
+                                sMenu={toggleMenu}
+                                job={job}
+                            />
+                            <PayNowModal
+                                job={job}
+                                isOpen={isPayNowOpen}
+                                toggleMenu={togglePayNow}
+                            />
+                            <ConfirmCompletionModal
+                                isOpen={isCompletionOpen}
+                                toggle={toggleCompletion}
+                                job={job}
+                            />
+                        </>
+                    )
+                }
             </div>
         </div>
 

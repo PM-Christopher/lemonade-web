@@ -3,8 +3,6 @@ import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {Button} from "@/components/ui/button";
-import {Simulate} from "react-dom/test-utils";
-import toggle = Simulate.toggle;
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";

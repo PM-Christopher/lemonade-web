@@ -77,24 +77,27 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                                     {/* Bottom Row: Services + Amount */}
                                     <div className="flex justify-between items-center mt-4">
                                         <div className="flex gap-2 flex-wrap">
-                                            {job?.services?.map((service: string, i: number) =>
-                                                i === 0 ? (
-                                                    <div
-                                                        key={i}
-                                                        className="px-3 py-1 bg-grey-20 rounded-full max-w-max"
-                                                    >
-                                                        <p className="text-[13px] text-text-grey font-medium">
-                                                            {formatStringUCFirst(service)}
-                                                        </p>
-                                                    </div>
-                                                ) : null
-                                            )}
-                                            {job?.services.length > 1 && (
-                                                <div className="px-3 py-1 bg-grey-20 rounded-full">
-                                                    <p className="text-[13px] text-text-grey font-medium">
-                                                        +{job?.services.length - 1}
-                                                    </p>
-                                                </div>
+                                            {Array.isArray(job?.services) && (
+                                                <>
+                                                    {job.services.length > 0 && (
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {job.services[0] && (
+                                                                <div className="px-3 py-1 bg-grey-20 rounded-full max-w-max">
+                                                                    <p className="text-[13px] text-text-grey font-medium">
+                                                                        {formatStringUCFirst(job.services[0])}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                            {job.services.length > 1 && (
+                                                                <div className="px-3 py-1 bg-grey-20 rounded-full">
+                                                                    <p className="text-[13px] text-text-grey font-medium">
+                                                                        +{job.services.length - 1}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </>
                                             )}
                                         </div>
                                         <p className="text-[15px] font-semibold text-black">
@@ -120,7 +123,16 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                         </div>
                 )
             }
-            <ServiceDetailsModal job={job} isOpen={isOpen} toggleMenu={detailsToggle} loading={jobLoading} />
+            {
+                job && (
+                    <ServiceDetailsModal
+                        job={job}
+                        isOpen={isOpen}
+                        toggleMenu={detailsToggle}
+                        loading={jobLoading}
+                    />
+                )
+            }
         </>
     );
 }

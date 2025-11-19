@@ -25,13 +25,13 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, detailsToggl
     const renderCards = () => {
         switch (jobType) {
             case "in-progress":
-                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.in_progress} />
+                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.in_progress || []} />
             case "completed":
-                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.completed} />
+                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.completed || []} />
             case "sent-offers":
-                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.sent_offers} />
+                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.sent_offers || []} />
             default:
-                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.in_progress} />
+                return <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.in_progress || []} />
         }
     }
 

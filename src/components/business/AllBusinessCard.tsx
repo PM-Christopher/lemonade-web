@@ -44,29 +44,56 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({business}) => {
                 </div>
 
                 {/* Bottom Section - Services and Price */}
-                <div className="bg-mid-grey p-3 px-4 rounded-bl-xl rounded-br-xl mt-auto">
-                    <div className="flex justify-between items-center gap-2">
-                        <div className="flex gap-2 flex-wrap items-center min-w-0 flex-1">
+                {/*<div className="bg-mid-grey p-3 px-4 rounded-bl-xl rounded-br-xl mt-auto">*/}
+                {/*    <div className="flex justify-between items-center gap-2">*/}
+                {/*        <div className="flex gap-2 flex-wrap items-center min-w-0 flex-1">*/}
+                {/*            <div className="py-0.5 px-2 bg-grey-20 rounded-xl flex-shrink-0">*/}
+                {/*                <p className="font-semi-normal text-sm text-text-grey truncate">*/}
+                {/*                    {business.services[0]}*/}
+                {/*                </p>*/}
+                {/*            </div>*/}
+                {/*            {business.services.length > 1 && (*/}
+                {/*                <div className="py-0.5 px-2 bg-grey-20 rounded-xl flex-shrink-0">*/}
+                {/*                    <p className="font-semi-normal text-sm text-text-grey">*/}
+                {/*                        +{business.services.length - 1}*/}
+                {/*                    </p>*/}
+                {/*                </div>*/}
+                {/*            )}*/}
+                {/*        </div>*/}
+                {/*        {business.service_rate && (*/}
+                {/*            <p className="font-semibold text-sm whitespace-nowrap flex-shrink-0">*/}
+                {/*                N {formatNumberWithCommas(business.service_rate)}/hr*/}
+                {/*            </p>*/}
+                {/*        )}*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+
+                <div className="flex gap-2 flex-wrap items-center min-w-0 flex-1">
+                    { business.services?.length > 0 && (
+                        <>
                             <div className="py-0.5 px-2 bg-grey-20 rounded-xl flex-shrink-0">
                                 <p className="font-semi-normal text-sm text-text-grey truncate">
-                                    {business.services[0]}
+                                    { business.services[0] }
                                 </p>
                             </div>
-                            {business.services.length > 1 && (
+                            { business.services.length > 1 && (
                                 <div className="py-0.5 px-2 bg-grey-20 rounded-xl flex-shrink-0">
                                     <p className="font-semi-normal text-sm text-text-grey">
-                                        +{business.services.length - 1}
+                                        {"+" + (business.services.length - 1)}
                                     </p>
                                 </div>
-                            )}
-                        </div>
-                        {business.service_rate && (
-                            <p className="font-semibold text-sm whitespace-nowrap flex-shrink-0">
-                                N {formatNumberWithCommas(business.service_rate)}/hr
-                            </p>
-                        )}
-                    </div>
+                            ) }
+                        </>
+                    ) }
+
+                    { /* ...existing service_rate code... */ }
+                    { business.service_rate && (
+                        <p className="font-semibold text-sm whitespace-nowrap flex-shrink-0">
+                            {"N " + formatNumberWithCommas(business.service_rate) + "/hr"}
+                        </p>
+                    ) }
                 </div>
+
             </div>
         </div>
     );
