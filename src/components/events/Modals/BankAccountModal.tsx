@@ -73,7 +73,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                     account_number: values.account_number,
                 },
             };
-            dispatch(createEvent({token: authToken, data})).then((res) => {
+            dispatch(createEvent({ data })).then((res) => {
                 if (res.payload.status) {
                     dispatch(
                         updateToastifyReducer({
