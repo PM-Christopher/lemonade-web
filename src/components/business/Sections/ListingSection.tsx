@@ -55,10 +55,18 @@ const ListingSection: React.FC<ListingInterface> = ({businesses, loading}) => {
                 </div>
             ) : (
                 // Business List
-                <div className="p-4 rounded-xl w-full max-w-[1312px] shadow-sm mt-6 bg-white">
-                    <h2 className="font-semibold text-lg sm:text-xl mb-4 font-sans">
-                        All Listings
-                    </h2>
+                <div className="p-4 pb-[20px] rounded-xl w-full max-w-[1312px] shadow-sm mt-6 bg-white">
+                    <div className={"flex justify-between items-center"}>
+                        <h2 className="font-semibold text-lg sm:text-xl mb-4 font-sans">
+                            All Listings
+                        </h2>
+                        <Button
+                            className="bg-gradient-green h-12 rounded-xl px-8 sm:px-12 hover:opacity-90 transition-opacity shadow-green-inset hover:shadow-green-inset-strong"
+                            onClick={() => router.push("/business/add-business")}
+                        >
+                            <span className="font-semi-normal text-base">Add business</span>
+                        </Button>
+                    </div>
                     <div className="grid grid-cols-1 laptop:grid-cols-4 gap-2">
                         {businesses.map((business: BusinessInterface) => (
                             <Link

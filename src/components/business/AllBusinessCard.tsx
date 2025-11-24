@@ -13,9 +13,9 @@ type BusinessCardIF  = {
 const AllBusinessCard: React.FC<BusinessCardIF> = ({business}) => {
     return (
         <div className="border-2 border-mid-grey rounded-xl shadow-lg h-full flex flex-col">
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 p-[16px] gap-[20px]">
                 {/* Top Section - Business Info */}
-                <div className="p-[16px]">
+                <div className="">
                     <div className="flex justify-between">
                         <div className="flex flex-row laptop:flex-col items-center justify-center laptop:items-start gap-[8px] laptop:gap-[10px]">
                             <Image
