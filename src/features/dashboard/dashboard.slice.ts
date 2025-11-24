@@ -29,7 +29,7 @@ const initialState: dashboardState = {
 
 const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/tribes?type=discover`, {
+        const response = await axiosInstance.get(`/dashboard/tribes`, {
             cache: {
                 ttl: 1000 * 60
             }
@@ -45,7 +45,7 @@ const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", asyn
 
 const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/events`, {
+        const response = await axiosInstance.get(`/dashboard/events`, {
             cache: {
                 ttl: 1000 * 60
             }
@@ -61,7 +61,7 @@ const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", asyn
 
 const getDashboardBusinesses = createAsyncThunk("dashboard/getDashboardBusinesses", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/business`, {
+        const response = await axiosInstance.get(`/dashboard/businesses`, {
             cache: {
                 ttl: 1000 * 60
             }
@@ -99,7 +99,7 @@ const dashboardSlice = createSlice({
         });
         builder.addCase(getDashboardEvents.fulfilled, (state, { payload }) => {
             state.eventLoading = false;
-            state.events = payload?.data?.upcoming
+            state.events = payload?.data?.events
         });
         builder.addCase(getDashboardEvents.rejected, (state) => {
             state.eventLoading = false;

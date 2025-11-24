@@ -13,9 +13,12 @@ const initialState: profileState = {
     data: {}
 };
 
-const getUserProfile = createAsyncThunk("profile/getUserProfile", async (_, { rejectWithValue }) => {
+const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({token}: {token: string}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/profile/user`);
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        }
+        const response = await axiosInstance.get(`/profile/user`, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {

@@ -800,6 +800,7 @@ const CreateEventPage = () => {
                                         name="website"
                                     />
                                 </div>
+
                             </div>
                             <div
                                 className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] mt-[16px]">

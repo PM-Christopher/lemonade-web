@@ -1,6 +1,5 @@
 "use client";
-import React, {useState} from "react";
-import TopNav from "@/components/navigation/TopNav";
+import React, {useEffect, useState} from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
@@ -9,8 +8,14 @@ import {PlusIcon} from "lucide-react";
 import BankAccountModal from "@/components/events/Modals/BankAccountModal";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
-import {useFormik, FieldArray} from "formik";
-import {addEvent, createEvent, createTickets, resetEventState} from "@/features/events/event.slice";
+import { useFormik } from "formik";
+import {
+    createEvent,
+    createTickets,
+    editEventTickets,
+    getEventTickets,
+    resetEventState
+} from "@/features/events/event.slice";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -18,7 +23,6 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import {RootState} from "@/redux/store";
-import {getIn} from "yup";
 
 type Ticket = {
     ticket_type: string;  // was: "free" | "paid"
@@ -29,19 +33,24 @@ type Ticket = {
     ticket_stock: number | string;
     purchase_limit: number;
     description: string;
+    ticket_id?: string;
 };
 
-const AddTicketPage = () => {
+const AddTicketPage = ({ params }: { params: { id: number } }) => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const [toggleModal, setToggleModal] = useState(false);
     const activateModal = () => {
         setToggleModal(!toggleModal);
     };
-    const {authToken} = useSelector((state: RootState) => state.auth);
-    const {event} = useSelector((state: RootState) => state.event);
+    const { event, event_tickets, loading } = useSelector((state: RootState) => state.event);
+
+    useEffect(() => {
+        dispatch(getEventTickets({id: params.id}))
+    }, []);
 
     const ticketSchema = yup.object().shape({
+        ticket_id: yup.string(),
         ticket_type: yup.string().required("Ticket type is required"),
 
         name: yup.string().required("Ticket name is required"),
@@ -129,20 +138,44 @@ const AddTicketPage = () => {
             .required("Tickets is required"),
     });
 
+    // Build initial tickets from Redux state (event_tickets) if available
+    const hasExistingTickets = Array.isArray(event_tickets) && event_tickets.length > 0;
+
+    const initialTickets: Ticket[] = hasExistingTickets
+        ? event_tickets.map((t: any) => ({
+            ticket_id: t.ticket_id ?? "",
+            ticket_type: t.ticket_type ?? "",
+            name: t.name ?? "",
+            // ensure price is a string for the text input
+            price: t.price !== null && t.price !== undefined ? String(t.price) : "",
+            transfer_commission: Boolean(t.transfer_commission),
+            stock_type: t.stock_type ?? "",
+            ticket_stock:
+                t.ticket_stock !== null && t.ticket_stock !== undefined
+                    ? t.ticket_stock
+                    : "",
+            purchase_limit:
+                t.purchase_limit !== null && t.purchase_limit !== undefined
+                    ? Number(t.purchase_limit)
+                    : 0,
+            description: t.description ?? "",
+        }))
+        : [
+            {
+                ticket_type: "",
+                name: "",
+                price: "",
+                transfer_commission: false,
+                stock_type: "",
+                ticket_stock: 0,
+                purchase_limit: 0,
+                description: "",
+            },
+        ];
+
     const formik = useFormik({
         initialValues: {
-            tickets: [
-                {
-                    ticket_type: "",
-                    name: "",
-                    price: "",
-                    transfer_commission: false,
-                    stock_type: "",
-                    ticket_stock: 0,
-                    purchase_limit: 0,
-                    description: "",
-                },
-            ],
+            tickets: initialTickets,
         },
         validationSchema: addTicketSchema,
         onSubmit: async (values) => {
@@ -154,42 +187,29 @@ const AddTicketPage = () => {
                         : 0,
             }));
 
-            const ticketTypes = hasPaidTicket(normalizedTickets)
+            const data = {
+                tickets: normalizedTickets,
+            };
+            const { payload } = await dispatch(editEventTickets({ data, id: params.id }))
 
-            if (ticketTypes) {
-                const data = {
-                    event,
-                    tickets: normalizedTickets,
-                };
-
-                const { payload } = await dispatch(createEvent({data}))
-
-                if (payload.status) {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Event created successfully",
-                            type: "success",
-                        })
-                    );
-                    dispatch(resetEventState());
-                    router.push("/event");
-                } else {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Error creating event",
-                            type: "error",
-                        })
-                    );
-                }
-
+            if (payload.status) {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Tickets updated successfully",
+                        type: "success",
+                    })
+                );
+                dispatch(resetEventState());
+                router.push(`/event/${params.id}/details`);
             } else {
-                const data = {
-                    tickets: normalizedTickets,
-                }
-                dispatch(createTickets(data));
-                setToggleModal(!toggleModal);
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Error updating tickets. Please try again.",
+                        type: "error",
+                    })
+                );
             }
         },
     });
@@ -293,6 +313,7 @@ const AddTicketPage = () => {
                         <div className="bg-white mt-10 w-full laptop:w-[640px] p-[48px] rounded-[12px] flex flex-col">
                             {formik.values.tickets.map((ticket, index) => (
                                 <div className="mb-[24px]" key={index}>
+                                    <input type="hidden" name="ticket_id" value={ticket.ticket_id}/>
                                     {index > 0 && (
                                         <div
                                             className="mb-[16px] flex justify-between items-center bg-grey-20 rounded-[8px] px-[16px] p-[8px]">
@@ -503,22 +524,11 @@ const AddTicketPage = () => {
                             </Button>
 
                             <div className="flex justify-between gap-3">
-                                <Button
-                                    className="rounded-[12px] h-[48px] p-[14px] px-[48px] bg-light-grey-50 mt-[24px] border-[1px] border-light-grey-50 shadow-none w-full"
-                                    type="button"
-                                    onClick={saveAsDraft}
-                                >
-                                    <div className="flex gap-1 items-center">
-                                        <p className="font-sans font-semi-normal text-[16px] leading-[19.2px] text-text-grey">
-                                            Save as draft
-                                        </p>
-                                    </div>
-                                </Button>
                                 <FormikButton
-                                    title="Publish"
+                                    title="Save ticket"
                                     loading={formik.isSubmitting}
                                     error={formik.isValid}
-                                    classes="rounded-[12px] h-[48px] p-[14px] px-[48px] mt-[24px] border-0 shadow-none w-full"
+                                    classes="rounded-[12px] h-[48px] p-[14px] px-[48px] mt-[24px] border-0 w-full"
                                 />
                             </div>
                         </div>

@@ -7,6 +7,7 @@ interface eventState {
     loading: boolean;
     error: boolean;
     tickets: TicketDetails[];
+    event_tickets: TicketInterface[];
     total: number;
     event: EventInterface | null;
     newTickets: [];
@@ -49,6 +50,7 @@ const initialState: eventState = {
     loading: false,
     error: false,
     tickets: [],
+    event_tickets: [],
     total: 0,
     event: null,
     newTickets: [],
@@ -104,15 +106,9 @@ const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, token, 
     }
 });
 
-const createEvent = createAsyncThunk("event/createEvent", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const createEvent = createAsyncThunk("event/createEvent", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/events/create-event`, data, { headers });
+        const response = await axiosInstance.post(`/events/create-event`, data );
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -368,6 +364,29 @@ const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({ i
     }
 });
 
+const getEventTickets = createAsyncThunk("event/getEventTickets", async ({id}: {id:number}, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/${id}/event-tickets`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, data}: {id:number, data: any}, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.patch(`/events/${id}/edit-tickets`, data);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
 
 const eventSlice = createSlice({
     name: "event",
@@ -409,6 +428,27 @@ const eventSlice = createSlice({
             state.loading = false;
         });
 
+        builder.addCase(getEventTickets.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getEventTickets.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.event_tickets = payload?.data?.tickets
+        });
+        builder.addCase(getEventTickets.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(editEventTickets.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(editEventTickets.fulfilled, (state, { payload }) => {
+            state.loading = false;
+        });
+        builder.addCase(editEventTickets.rejected, (state) => {
+            state.loading = false;
+        });
+
         builder.addCase(createEvent.pending, (state) => {
             state.loading = true;
         });
@@ -445,7 +485,6 @@ const eventSlice = createSlice({
         });
         builder.addCase(searchEvent.fulfilled, (state, { payload }) => {
             state.loading = false;
-            console.log({events: payload?.data?.events});
             state.searchResults = payload?.data?.events;
         });
         builder.addCase(searchEvent.rejected, (state) => {
@@ -644,5 +683,5 @@ const eventSlice = createSlice({
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets }
 export default eventSlice.reducer;

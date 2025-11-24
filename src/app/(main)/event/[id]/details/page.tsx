@@ -191,7 +191,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                                     </div>
                                                 </div>
                                             </Link>
-                                            <Link href={"/"}>
+                                            <Link href={`/event/${params.id}/add-ticket`}>
                                                 <div className="flex flex-col items-center gap-[8px]">
                                                     <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px]">
                                                         <TicketIcon/>
@@ -253,27 +253,41 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </p>
                                         {
                                             event?.sales_revenue?.sales_revenue_breakdown?.length > 0 && (
-                                                event?.sales_revenue?.sales_revenue_breakdown?.map((ticket: any, idx: number) => (
-                                                    <div key={idx}>
-                                                        <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
-                                                            {ticket?.name}
-                                                        </p>
-                                                        <div className="flex justify-between mt-[2px]">
-                                                            <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                                                                ₦{formatNumberWithCommas(ticket?.price)}
+                                                event?.sales_revenue?.sales_revenue_breakdown?.map((ticket: any, idx: number) => {
+                                                    const totalStock = Number(ticket?.stock) || 0;
+                                                    const bought = Number(ticket?.bought) || 0;
+
+                                                    const progressWidth =
+                                                        ticket?.stock_type === "unlimited"
+                                                            ? bought > 0
+                                                                ? "100%"
+                                                                : "0%"
+                                                            : totalStock > 0
+                                                                ? `${Math.min((bought / totalStock) * 100, 100)}%`
+                                                                : "0%";
+
+                                                    return (
+                                                        <div key={idx}>
+                                                            <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
+                                                                {ticket?.name}
                                                             </p>
-                                                            <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                                                                {ticket?.bought}/{ticket?.stock}
-                                                            </p>
+                                                            <div className="flex justify-between mt-[2px]">
+                                                                <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
+                                                                    ₦{formatNumberWithCommas(ticket?.price)}
+                                                                </p>
+                                                                <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
+                                                                    {ticket?.bought}/{ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
+                                                                </p>
+                                                            </div>
+                                                            <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
+                                                                <div
+                                                                    className="bg-gradient-progress-green h-[8px] rounded-full"
+                                                                    style={{ width: progressWidth }}
+                                                                ></div>
+                                                            </div>
                                                         </div>
-                                                        <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
-                                                            <div
-                                                                className="bg-gradient-progress-green h-[8px] rounded-full"
-                                                                style={{width: `${(ticket?.bought / ticket?.stock) * 100}%`}}
-                                                            ></div>
-                                                        </div>
-                                                    </div>
-                                                ))
+                                                    );
+                                                })
                                             )
                                         }
 
@@ -295,7 +309,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                                                 {ticket?.percentage_sold}%
                                                             </p>
                                                             <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                                                                {ticket?.bought}/{ticket?.stock}
+                                                                {ticket?.bought}/{ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                                                             </p>
                                                         </div>
                                                         <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
@@ -317,30 +331,53 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </p>
                                         {
                                             event?.sales_revenue?.tickets_checkins_breakdown?.length > 0 && (
-                                                event?.sales_revenue?.tickets_checkins_breakdown?.map((ticket: any, idx: number) => (
+                                                event?.sales_revenue?.tickets_checkins_breakdown?.map((ticket: any, idx: number) => {
+                                                    const totalStock = Number(ticket?.stock) || 0;
+                                                    const checkinCount = Number(ticket?.checkin_count) || 0;
+
+                                                    const progressWidth =
+                                                        ticket?.stock_type === "unlimited"
+                                                            ? checkinCount > 0
+                                                                ? "100%"
+                                                                : "0%"
+                                                            : totalStock > 0
+                                                                ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
+                                                                : "0%"
+
+                                                    const percentageText =
+                                                        ticket?.stock_type === "unlimited"
+                                                            ? checkinCount > 0
+                                                                ? "100%"
+                                                                : "0%"
+                                                            : totalStock > 0
+                                                                ? `${Math.min((checkinCount / totalStock) * 100, 100).toFixed(0)}%`
+                                                                : "0%";
+
+                                                    return (
                                                         <div key={idx}>
                                                             <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
                                                                 {ticket?.name}
                                                             </p>
                                                             <div className="flex justify-between mt-[2px]">
                                                                 <p className="font-sans font-semibold text-[18px] leading-[27px] tracking-custom">
-                                                                    {`${(ticket?.checkin_count / ticket?.stock) * 100}%`}
+                                                                    {percentageText}
                                                                 </p>
                                                                 <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                                                                    {ticket?.checkin_count}/{ticket?.stock}
+                                                                    {ticket?.checkin_count}/{ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                                                                 </p>
                                                             </div>
                                                             <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
                                                                 <div
                                                                     className="bg-gradient-progress-green h-[8px] rounded-full"
-                                                                    style={{width: `${(ticket?.checkin_count / ticket?.stock) * 100}%`}}
+                                                                    style={{ width: progressWidth }}
                                                                 ></div>
                                                             </div>
                                                         </div>
-                                                    )
-                                                )
+                                                    );
+                                                })
                                             )
                                         }
+
 
                                     </div>
                                 </div>

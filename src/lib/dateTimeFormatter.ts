@@ -38,19 +38,20 @@ export const formatLongDate = (
 };
 
 
-export const formatTime = (dateString: Date) => {
-    if (dateString) {
-        const date = new Date(dateString)
+export const formatTime = (value: Date | string | null) => {
+    if (!value) return null;
 
-        const timeFormatter = new Intl.DateTimeFormat('en-GB', {
-            hour: 'numeric',
-            hour12: true,
-        });
+    const date = value instanceof Date ? value : new Date(value);
 
-        return timeFormatter.format(date).toUpperCase();
-    }
-    return null
-}
+    const timeFormatter = new Intl.DateTimeFormat('en-GB', {
+        hour: 'numeric',
+        minute: '2-digit',  // 👈 include minutes
+        hour12: true,
+    });
+
+    // e.g. "1:30 pm" → "1:30PM"
+    return timeFormatter.format(date).replace(' ', '').toUpperCase();
+};
 
 export const formatLongTime = (dateString?: string | Date): string | null => {
     if (dateString) {

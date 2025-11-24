@@ -35,15 +35,6 @@ export default function VerifyPage() {
     const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
     const [canResend, setCanResend] = useState<boolean>(false);
 
-    const getHeader = () => {
-        const token = cookie.newToken;
-        return {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    };
-
     useEffect(() => {
         const savedStartTime = localStorage.getItem(STORAGE_KEY);
 
@@ -138,7 +129,8 @@ export default function VerifyPage() {
     const [otp, setOtp] = useState(formik.values.code);
 
     const verifyOtp = async (values: any) => {
-        const {payload} = await dispatch(verifyEmailOtp({data: values, url: "/otp/verify", token: cookie.newToken}))
+        const { payload } = await dispatch(verifyEmailOtp({data: values, url: "/otp/verify", token: cookie.newToken}))
+        console.log({payload})
         if (!payload.status) {
             setCanResend(true)
             dispatch(
@@ -207,11 +199,11 @@ export default function VerifyPage() {
                                             setOtp(e);
                                             formik.setFieldValue("code", e, true);
                                             // Automatically submit when OTP is fully entered
-                                            if (e.length === 4) {
-                                                setTimeout(() => {
-                                                    formik.submitForm();
-                                                }, 0);
-                                            }
+                                            // if (e.length === 4) {
+                                            //     setTimeout(() => {
+                                            //         formik.submitForm();
+                                            //     }, 0);
+                                            // }
                                         }}
                                         numInputs={4}
                                         renderSeparator={<span style={{ width: "12px" }}></span>}

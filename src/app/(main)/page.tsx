@@ -35,6 +35,8 @@ export default function DashboardPage() {
         if (!businesses?.length) dispatch(getDashboardBusinesses());
     }, []);
 
+    // console.log({events})
+
     return (
         <MainLayout>
             {/*<NotificationToast payload={{title: "This is a test", body: "This is the body of the test"}} />*/}
@@ -77,12 +79,12 @@ export default function DashboardPage() {
                             eventLoading ? (
                                 <EventsSkeleton count={6}/>
                             ) : (
-                                events.length > 0 ? (
+                                events?.length > 0 ? (
                                     events?.map((event: EventInterface, idx: number) => (
                                         <div
                                             className={"cursor-pointer"}
                                             key={idx}
-                                            onClick={() => router.push(`/events/${event.id}`)}
+                                            onClick={() => router.push(`/event/${event.id}`)}
                                         >
                                             <EventCard event={event} />
                                         </div>
@@ -110,8 +112,8 @@ export default function DashboardPage() {
                             businessLoading ? (
                                 <BusinessesSkeleton count={3}/>
                             ) : (
-                                businesses.length > 0 ? (
-                                    businesses.map(
+                                businesses?.length > 0 ? (
+                                    businesses?.map(
                                         (business: BusinessInterface, idx: number) => (
                                             <div
                                                 className="w-[343px] tablet:w-[422px] cursor-pointer"

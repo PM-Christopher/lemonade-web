@@ -151,7 +151,7 @@ const EventPage: React.FC = () => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} />
-        <div className="bg-white flex justify-between py-5 border-t-[1px] border-b-[1px] laptop:items-center flex-col laptop:flex-row gap-2 pr-[10px]">
+        <div className="bg-white flex justify-between py-[8px] px-[64px] border-t-[1px] border-b-[1px] laptop:items-center flex-col laptop:flex-row">
           <div className="flex justify-between items-center px-[16px]">
             <div
               className={

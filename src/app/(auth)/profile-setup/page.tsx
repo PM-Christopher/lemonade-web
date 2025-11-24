@@ -23,12 +23,14 @@ export default function ProfileStepsPage() {
     const dispatch = useAppDispatch()
     const [step, setStep] = useState(1);
     const [cookies, setCookie] = useCookies(["newToken"]);
-    const { user } = useSelector((state: any) => state.auth)
+    const { user } = useSelector((state: RootState) => state.auth)
     const { data } = useSelector((state: RootState) => state.profile)
 
     useEffect(() => {
-        dispatch(getUserProfile())
+        dispatch(getUserProfile({ token: cookies.newToken }))
     }, []);
+
+    console.log({data})
 
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
@@ -71,7 +73,7 @@ export default function ProfileStepsPage() {
 
 
     return (
-        <AuthLayout>
+        <section>
             <section className="bg-white tablet:bg-gradient-light-green min-h-screen h-full overflow-hidden">
                 <div className="flex flex-wrap items-center justify-between p-2 px-10">
                     <div>
@@ -109,6 +111,6 @@ export default function ProfileStepsPage() {
                     {renderStep()}
                 </div>
             </section>
-        </AuthLayout>
+        </section>
     )
 }

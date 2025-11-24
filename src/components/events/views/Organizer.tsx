@@ -55,8 +55,8 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
                             { label: "Upcoming", key: "upcoming" },
                             { label: "Past Events", key: "past" },
                             { label: "Drafts", key: "draft" },
-                        ].map((tab) => (
-                            <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === tab.key && "border-b-step-color border-b-2"}`}>
+                        ].map((tab, idx:number) => (
+                            <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === tab.key && "border-b-step-color border-b-2"}`} key={idx}>
                                 <p className={`font-sans font-semi-normal ${orOption === tab.key ? "text-black-light" : "text-text-grey"} text-[14px] leading-[21px] cursor-pointer`} onClick={() =>switchOption(tab.key)}>
                                     {tab.label}
                                 </p>
