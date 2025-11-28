@@ -21,7 +21,7 @@ const BusinessPage = () => {
     const [businessFilter, setBusinessFilter] = useState(false)
 
     // load items from redux store
-    const {job, businesses, listings, loading, jobLoading} = useSelector((state: RootState) => state.business)
+    const { job, businesses, featured, listings, loading, jobLoading } = useSelector((state: RootState) => state.business)
 
     useEffect(() => {
         if (menuOption === "business") {
@@ -53,11 +53,11 @@ const BusinessPage = () => {
     const renderView = () => {
         switch (menuOption) {
             case "business":
-                return <BusinessSection businesses={businesses} loading={loading} />
+                return <BusinessSection businesses={businesses} loading={loading} featured={featured} />
             case "listings":
                 return <ListingSection businesses={listings} loading={loading} />
             default:
-                return <BusinessSection businesses={businesses} loading={loading} />
+                return <BusinessSection businesses={businesses} featured={featured} loading={loading} />
         }
     }
 

@@ -12,7 +12,7 @@ type EventCardIF = {
 const EventCard: React.FC<EventCardIF> = ({event}) => {
     return (
         <div className="bg-white flex flex-col w-[165px] laptop:w-[316px] rounded-[12px] mb-[16px]">
-            <Image src={event?.event_image} alt="event_1" width={316} height={316} className="w-[165px] h-[165px] laptop:w-[316px] laptop:h-[316px]" />
+            <Image src={event?.event_image} alt="event_1" width={316} height={316} className="w-[165px] h-[165px] laptop:w-[316px] laptop:h-[316px] rounded-t-[12px]" />
             <div className="p-2">
                 <p className="my-2 font-sans font-semibold text-[14px] laptop:text-[18px] leading-[27px] tracking-custom">
                     {event.event_name}

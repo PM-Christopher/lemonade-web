@@ -8,6 +8,7 @@ interface businessState {
     error: boolean;
     job: any
     businesses: BusinessInterface[];
+    featured: BusinessInterface[];
     listings: BusinessInterface[];
     business: any
     listing: any
@@ -26,6 +27,7 @@ const initialState: businessState = {
     error: false,
     job: null,
     businesses: [],
+    featured: [],
     listings: [],
     business: null,
     listing: null,
@@ -224,6 +226,7 @@ const businessSlice = createSlice({
         builder.addCase(getBusinesses.fulfilled, (state, { payload }) => {
             state.loading = false;
             state.businesses = payload.data.businesses;
+            state.featured = payload.data.featured;
         });
         builder.addCase(getBusinesses.rejected, (state) => {
             state.loading = false;

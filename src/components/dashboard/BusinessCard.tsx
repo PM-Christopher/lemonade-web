@@ -15,17 +15,17 @@ const BusinessCard: React.FC<BusinessIF> = ({business}) => {
         <>
             <div className="relative">
                 <Image
-                    src={"/images/business_images/business_1.png"}
+                    src={business?.image}
                     alt="Main Image"
-                    className="rounded-lg w-full"
+                    className="rounded-lg w-[319px] h-[105px]"
                     width={319}
                     height={105}
                 />
                 <div className="absolute bottom-[-35px] left-4 tablet:right-[260px] tablet:left-auto w-16 h-16">
                     <Image
-                        src={"/images/business_images/business_logo_1.png"}
+                        src={business?.image}
                         alt="Overlay Image"
-                        className="border border-step-color rounded-xl"
+                        className="border border-step-color rounded-xl w-[56px] h-[56px]"
                         height={56}
                         width={56}
                     />

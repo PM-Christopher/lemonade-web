@@ -875,7 +875,7 @@ const CreateEventPage = () => {
                                 error={formik.isValid}
                                 onClick={formik.handleSubmit}
                                 title="Continue"
-                                classes="mt-[24px] h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"
+                                classes="mt-[24px] h-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"
                             />
                         </div>
                     </div>

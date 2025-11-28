@@ -36,6 +36,7 @@ interface eventState {
     guestDetails: any
     promotions: PromotionInterface[]
     promotion: any
+    programDetails: any
 
     eventsLoading: boolean;
     filteredLoading: boolean;
@@ -44,6 +45,8 @@ interface eventState {
     guestDetailLoading: boolean;
     checkInLoading: boolean;
     promotionLoading: boolean;
+    generateLinkLoading: boolean;
+    generatedLink: string | null;
 }
 
 const initialState: eventState = {
@@ -85,18 +88,15 @@ const initialState: eventState = {
     checkInLoading: false,
     promotions: [],
     promotionLoading: false,
-    promotion: {}
+    promotion: {},
+    programDetails: {},
+    generatedLink: null,
+    generateLinkLoading: false
 };
 
-const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, token, data}: {event_id: number, token: string, data: any}, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, data}: {event_id: number, data: any}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/events/attendees/${event_id}/assign-tickets`, data, { headers });
+        const response = await axiosInstance.post(`/events/attendees/${event_id}/assign-tickets`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -388,6 +388,31 @@ const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, 
     }
 });
 
+const getProgram = createAsyncThunk("event/getProgram", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/events/affiliate/${id}`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const generateAffiliateLink = createAsyncThunk("event/generateAffiliateLink", async ({ id }: { id: number }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.post(`/events/affiliate/${id}/generate-link`);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
 const eventSlice = createSlice({
     name: "event",
     initialState,
@@ -467,6 +492,17 @@ const eventSlice = createSlice({
             state.event = payload?.data?.event
         });
         builder.addCase(getEvent.rejected, (state) => {
+            state.loading = false;
+        });
+
+        builder.addCase(getProgram.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getProgram.fulfilled, (state, { payload }) => {
+            state.loading = false;
+            state.programDetails = payload?.data
+        });
+        builder.addCase(getProgram.rejected, (state) => {
             state.loading = false;
         });
 
@@ -679,9 +715,21 @@ const eventSlice = createSlice({
             state.loading = false;
         });
 
+        builder.addCase(generateAffiliateLink.pending, (state) => {
+            state.generateLinkLoading = true;
+        });
+        builder.addCase(generateAffiliateLink.fulfilled, (state, { payload }) => {
+            state.generateLinkLoading = false;
+            state.generatedLink = payload?.data?.referral_id;
+            state.programDetails.events = payload?.data?.events
+        });
+        builder.addCase(generateAffiliateLink.rejected, (state) => {
+            state.generateLinkLoading = false;
+        });
+
     }
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets, getProgram, generateAffiliateLink }
 export default eventSlice.reducer;

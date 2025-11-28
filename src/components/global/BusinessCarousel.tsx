@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import BusinessCard from "@/components/dashboard/BusinessCard";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
+import FeaturedBusiness from "@/components/business/FeaturedBusiness";
 
 interface ImageSlider {
     businesses: BusinessInterface[],
@@ -36,13 +37,11 @@ const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDo
     };
 
     return (
-        <div className="relative w-full overflow-hidden rounded-[12px]">
-            <div className="grid grid-cols-4 gap-2 mt-3">
-                {
-                    businesses?.map((business: BusinessInterface, index: number) => (
-                        <BusinessCard business={business} key={index}/>
-                    ))
-                }
+        <div className="w-full">
+            <div className="mt-3 grid gap-3 grid-cols-4">
+                {businesses?.map((business: BusinessInterface) => (
+                    <FeaturedBusiness business={business} key={business.id} />
+                ))}
             </div>
         </div>
     );

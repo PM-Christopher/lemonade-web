@@ -17,10 +17,11 @@ import {AllBusinessSkeleton, BusinessCarouselSkeleton} from "@/components/Skelet
 
 interface BusinessSectionProps {
     businesses: BusinessInterface[];
+    featured: BusinessInterface[];
     loading: boolean;
 }
 
-const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, loading}) => {
+const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, featured, loading}) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -60,8 +61,6 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, loading}) 
         verifyPayment();
     }, [trxref]);
 
-    const { data } = useRequest("/business")
-
     return (
         <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
             {/* Featured Section */}
@@ -70,9 +69,9 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, loading}) 
                 {
                     loading ? (
                         <BusinessCarouselSkeleton count={4} />
-                    ) : data?.featured?.length > 0 ? (
+                    ) : featured?.length > 0 ? (
                         <BusinessCarousel
-                            businesses={data.featured}
+                            businesses={featured}
                             showDots={false}
                             showArrows={false}
                         />
@@ -99,9 +98,9 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, loading}) 
                 }
             </div>
 
-            {/* All Business Section */}
+            {/* All Business Sections */}
             <div className="p-4 rounded-xl w-full max-w-[1312px] shadow-sm mt-6 bg-white">
-                <p className="font-semibold text-lg sm:text-xl mb-4">All business</p>
+                <p className="font-semibold text-lg sm:text-xl mb-4">All businesses</p>
                 <div className="grid grid-cols-1 phone:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 gap-2">
                     {
                         loading ? (

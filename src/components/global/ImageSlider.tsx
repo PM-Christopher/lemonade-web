@@ -40,107 +40,134 @@ const Carousel: React.FC<ImageSlider> = ({showArrows = false, showDots = true, e
     };
 
     return (
-        <div className="relative w-full h-[488px] overflow-hidden rounded-[12px] shadow-lg">
-            {events?.map((image, index) => (
-                <div
-                    key={index}
-                    className={`inset-0 w-full transition-opacity duration-1000 ease-in-out ${
-                        index === currentIndex
-                            ? "flex"
-                            : "hidden"
-                    }`}
-                >
-                    <Image
+        <div className="relative w-full overflow-hidden rounded-2xl shadow-lg bg-black/5">
+            {/* Responsive height via aspect ratio */}
+            <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-[21/9]">
+                {events?.map((item, index) => (
+                    <div
                         key={index}
-                        src={image?.event_image}
-                        alt={`Slide ${index}`}
-                        fill={true}
-                    />
-                </div>
-            ))}
+                        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                            index === currentIndex ? "opacity-100" : "opacity-0 pointer-events-none"
+                        }`}
+                    >
+                        <Image
+                            src={item?.event_image}
+                            alt={item?.event_name ? `${item.event_name} banner` : `Slide ${index + 1}`}
+                            fill
+                            priority={index === 0}
+                            className="object-cover"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1100px"
+                        />
 
-            {/* Arrows */}
-            {
-                showArrows && (
-                    <div className="absolute inset-0 flex items-center justify-between px-4">
+                        {/* Readability overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"/>
+                    </div>
+                ))}
+
+                {/* Arrows */}
+                {showArrows && (events?.length ?? 0) > 1 && (
+                    <div className="absolute inset-0 flex items-center justify-between px-2 sm:px-3">
                         <button
+                            type="button"
                             onClick={prevSlide}
-                            className="bg-white/60 rounded-full p-2 shadow hover:bg-gray-100"
+                            aria-label="Previous slide"
+                            className="group inline-flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-white/70 backdrop-blur-md shadow hover:bg-white focus:outline-none focus:ring-2 focus:ring-white/60 active:scale-95 transition"
                         >
                             <svg
-                                className="w-6 h-6"
+                                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900 group-hover:scale-105 transition"
                                 fill="none"
                                 stroke="currentColor"
-                                strokeWidth="2"
+                                strokeWidth="2.5"
                                 viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </button>
 
                         <button
+                            type="button"
                             onClick={nextSlide}
-                            className="bg-white/60 rounded-full p-2 shadow hover:bg-gray-100"
+                            aria-label="Next slide"
+                            className="group inline-flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-white/70 backdrop-blur-md shadow hover:bg-white focus:outline-none focus:ring-2 focus:ring-white/60 active:scale-95 transition"
                         >
                             <svg
-                                className="w-6 h-6"
+                                className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900 group-hover:scale-105 transition"
                                 fill="none"
                                 stroke="currentColor"
-                                strokeWidth="2"
+                                strokeWidth="2.5"
                                 viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
                             </svg>
                         </button>
                     </div>
-                )
-            }
+                )}
 
-            {/* Dots */}
-            {
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                    <div className="bg-[#1A2600]/10 backdrop-blur-lg flex flex-col w-[540px] pt-[32px] pb-[16px] px-[24px]">
+                {/* Bottom info panel */}
+                <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-6">
+                    <div
+                        className="mx-auto w-full max-w-[980px] rounded-2xl bg-[#1A2600]/20 backdrop-blur-xl border border-white/10 shadow-lg">
                         <div
-                            className="flex justify-between items-center">
-                            <div className="flex flex-col">
-                                <p className="text-white font-semibold font-sans text-[20px] laptop:text-[32px] leading-[44.8px]">
-                                    {events[currentIndex]?.event_name}
+                            className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-5 lg:px-6 py-4">
+                            {/* Text */}
+                            <div className="min-w-0">
+                                <p className="text-white font-semibold font-sans text-[18px] sm:text-[22px] lg:text-[28px] leading-tight truncate">
+                                    {events?.[currentIndex]?.event_name}
                                 </p>
-                                <div className="flex gap-[4px] items-center">
-                                    <CalendarIcon className="text-white w-[12px] laptop:w-[14px] h-[12px] laptop:h-[14px]" />
-                                    <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">
-                                        {formatLongDate(events[currentIndex]?.start_date, "mid")}
-                                    </p>
+
+                                <div className="mt-2 flex flex-wrap gap-x-2 gap-y-1 items-center text-white/90">
+                                    <div className="flex gap-[6px] items-center">
+                                        <CalendarIcon className="text-white w-4 h-4"/>
+                                        <p className="font-sans font-normal text-[13px] sm:text-[14px] leading-[16.8px]">
+                                            {formatLongDate(events?.[currentIndex]?.start_date, "mid")}
+                                        </p>
+                                    </div>
+
                                     <DotIcon className="w-[4px] h-[4px]"/>
-                                    <p className="text-white font-sans font-normal text-[14px] leading-[16.8px]">
-                                        {formatTime(events[currentIndex]?.start_date)} - {formatTime(events[currentIndex]?.end_date)}
+
+                                    <p className="font-sans font-normal text-[13px] sm:text-[14px] leading-[16.8px]">
+                                        {formatTime(events?.[currentIndex]?.start_date)} - {formatTime(events?.[currentIndex]?.end_date)}
                                     </p>
                                 </div>
                             </div>
-                            <div>
-                                <div className="border-[1px] border-light-grey-50 p-[10px] px-[12px] rounded-[12px]">
-                                    <p className="text-white text-[16px] font-sans font-semi-normal leading-[19.2px]">Get
-                                        ticket</p>
-                                </div>
+
+                            {/* CTA */}
+                            <div className="flex sm:justify-end">
+                                <button
+                                    type="button"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl px-4 py-2.5 border border-white/25 bg-white/10 hover:bg-white/20 text-white font-sans font-semi-normal text-[14px] sm:text-[16px] leading-[19.2px] transition"
+                                >
+                                    Get ticket
+                                </button>
                             </div>
                         </div>
-                        <div className="justify-center mt-2 hidden laptop:flex">
-                            {events?.map((_, index) => (
+
+                        {/* Dots (scrollable on mobile, centered on desktop) */}
+                        {(events?.length ?? 0) > 1 && (
+                            <div className="px-4 sm:px-5 lg:px-6 pb-4">
                                 <div
-                                    key={index}
-                                    onClick={() => goToSlide(index)}
-                                    className={`w-3 h-3 mx-[2px] rounded-full cursor-pointer ${
-                                        currentIndex === index ? 'bg-step-color' : 'bg-white'
-                                    }`}
-                            ></div>
-                            ))}
-                        </div>
+                                    className="flex items-center gap-2 overflow-x-auto hide-scrollbar sm:justify-center">
+                                    {events?.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            type="button"
+                                            aria-label={`Go to slide ${index + 1}`}
+                                            onClick={() => goToSlide(index)}
+                                            className={`h-2.5 rounded-full transition-all ${
+                                                currentIndex === index
+                                                    ? "w-8 bg-step-color"
+                                                    : "w-2.5 bg-white/70 hover:bg-white"
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
-            }
+            </div>
         </div>
+
     );
 }
 

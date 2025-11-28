@@ -16,6 +16,8 @@ import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
 import {buyTicket, freeEventState} from "@/features/events/event.slice";
 import MainLayout from "@/components/layouts/MainLayout";
+import {RootState} from "@/redux/store";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 const AssignTicketPage = ({params}: { params: { id: number } }) => {
     const [checked, setChecked] = useState(false);
@@ -26,8 +28,7 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
     const handleChange = () => {
         setChecked(!checked);
     };
-    const {tickets, total} = useSelector((state: any) => state.event);
-    const {authToken} = useSelector((state: any) => state.auth);
+    const { tickets, total, loading } = useSelector((state: RootState) => state.event);
 
     const ticketSchema = yup.object({
         fullname: yup.string().required("Fullname is required"),
@@ -97,9 +98,7 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                     email: values.email,
                 };
             }
-            dispatch(
-                buyTicket({event_id: params.id, data: formValues, token: authToken})
-            ).then((res: any) => {
+            dispatch(buyTicket({ event_id: params.id, data: formValues })).then((res: any) => {
                 if (res.payload.data.completed) {
                     const data = {
                         completed: true
@@ -107,6 +106,13 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                     dispatch(freeEventState(data))
                     router.push("/event");
                 } else if (res.payload.data.payment_url) {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Redirecting to payment page. Please wait...",
+                            type: "success",
+                        })
+                    );
                     window.location.href = res.payload.data.payment_url;
                 }
             });
@@ -117,7 +123,7 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
 
     useEffect(() => {
         const savedExpiry = localStorage.getItem(key);
-        let expiryTime:number;
+        let expiryTime: number;
 
         if (savedExpiry) {
             expiryTime = parseInt(savedExpiry, 10);
@@ -182,8 +188,8 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                                     <p className="font-sans font-normal text-[14px] leading-[21px]">
                                         Your tickets has been reserved for{" "}
                                         <span className="text-light-tint-2 font-semiBold">
-                      {formatTime(timeLeft)}
-                    </span>{" "}
+                                            {formatTime(timeLeft)}
+                                        </span>{" "}
                                         mins. Complete your purchase to secure your spot.
                                     </p>
                                 </div>
@@ -250,9 +256,9 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                                 <div className="flex justify-between mt-[24px]">
                                     <FormikButton
                                         title="Pay now"
-                                        loading={formik.isSubmitting}
+                                        loading={formik.isSubmitting || loading}
                                         error={formik.isValid}
-                                        classes="w-full h-[48px] py-[14px] px-[48px] gap-[8px] rounded-[12px] border-b-2 border-step-color"
+                                        classes="w-full h-[48px] gap-[8px] rounded-[12px] border-b-2 border-step-color"
                                     />
                                 </div>
                             </section>
