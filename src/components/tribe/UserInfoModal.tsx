@@ -7,7 +7,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg"
 import TwitterIcon from "@/images/icons/twitter-color.svg"
 import WebIcon from "@/images/icons/webIcon.svg"
 import ChatIcon from "@/images/icons/chatIcon.svg"
-import {formatString} from "@/lib/helper";
+import {formatString, getInitials} from "@/lib/helper";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
@@ -73,8 +73,27 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe
                 </div>
                 <div className="mt-[24px]">
                     <div className="flex flex-col items-center justify-center">
-                        <Image src={user?.profile_image} alt="check in" width={64} height={64}
-                               className="w-[64px] h-[64px] rounded-[24px] border-[1px] border-grey-90"/>
+                        {
+                            user?.profile_image ? (
+                                <Image
+                                    src={user?.profile_image}
+                                    alt="check in"
+                                    width={64}
+                                    height={64}
+                                    className="w-[64px] h-[64px] rounded-[24px] border-[1px] border-grey-90"
+                                />
+                            ) : (
+                                <div className="flex items-center justify-center rounded-full border-[2px] border-[#3B4152] w-[40px] h-[40px]
+                   text-sm font-medium text-white bg-gradient-green
+                   transition-all duration-300 ease-in-out
+                   group-hover:scale-110 group-hover:border-green-400
+                   group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)] group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600"
+                                >
+                                    <p className="text-[18px] font-ruso">{getInitials(user?.fullname)}</p>
+                                </div>
+                            )
+                        }
+
                         <p className="font-semibold text-[18px] mt-[16px]">{user?.username}</p>
                         <p className="font-normal text-[12px] text-text-grey">{formatString(user?.industry)}</p>
                         <p className="max-w-[416px] font-normal text-[14px] text-light-black text-center mt-[16px]">

@@ -16,6 +16,7 @@ interface eventState {
     free_event: any;
     filtered: boolean;
     filteredEvents: any[];
+    affiliateEvents: any[];
     events: {
         trending: any[],
         this_week: any[],
@@ -62,6 +63,7 @@ const initialState: eventState = {
     free_event: {},
     filtered: false,
     filteredEvents: [],
+    affiliateEvents: [],
     events: {
         trending: [],
         this_week: [],
@@ -412,6 +414,18 @@ const generateAffiliateLink = createAsyncThunk("event/generateAffiliateLink", as
     }
 });
 
+const searchAffiliateEvent = createAsyncThunk("event/searchAffiliateEvent", async ({ data }: { data: any }, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.post(`/events/search-affiliate-events`, data);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const eventSlice = createSlice({
     name: "event",
@@ -727,9 +741,20 @@ const eventSlice = createSlice({
             state.generateLinkLoading = false;
         });
 
+        builder.addCase(searchAffiliateEvent.pending, (state) => {
+            state.affiliateLoading = true;
+        });
+        builder.addCase(searchAffiliateEvent.fulfilled, (state, { payload }) => {
+            state.affiliateLoading = false;
+            state.affiliateEvents = payload?.data?.events
+        });
+        builder.addCase(searchAffiliateEvent.rejected, (state) => {
+            state.affiliateLoading = false;
+        });
+
     }
 });
 
 export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets, getProgram, generateAffiliateLink }
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets, getProgram, generateAffiliateLink, searchAffiliateEvent }
 export default eventSlice.reducer;

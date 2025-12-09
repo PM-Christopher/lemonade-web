@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import {
     Heart as HeartIcon,
@@ -12,15 +12,16 @@ import {
 } from "lucide-react";
 import ImageCarousel from "@/components/global/ImageCarousel";
 import CommentsSection from "./CommentSection";
-import { useAppDispatch } from "@/redux/hook";
-import { useSelector } from "react-redux";
+import {useAppDispatch} from "@/redux/hook";
+import {useSelector} from "react-redux";
 import {
     postComment,
     likeThread,
     submitVote,
 } from "@/features/tribes/tribe.slice";
-import { updateToastifyReducer } from "@/redux/toastifySlice";
-import type { Thread } from "@/interfaces/TribeInterface";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
+import type {Thread, TribeInterface} from "@/interfaces/TribeInterface";
+import {getInitials} from "@/lib/helper";
 
 interface ModalPosition {
     top: number;
@@ -29,16 +30,18 @@ interface ModalPosition {
 
 interface ThreadCardProps {
     thread: Thread;
-    tribe_id: number|any;
+    tribe_id: number | any;
     toggle: () => void;
     switchUserId: (id: number) => void;
     pinThread: (id: number) => void;
     toggleThreadId: (id: number) => void;
     toggleDeleteThread: (id: number) => void;
+    tribe: TribeInterface | null
 }
 
 const ThreadCard: React.FC<ThreadCardProps> = ({
                                                    thread,
+                                                   tribe,
                                                    tribe_id,
                                                    switchUserId,
                                                    pinThread,
@@ -46,7 +49,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                                                    toggleDeleteThread,
                                                }) => {
     const dispatch = useAppDispatch();
-    const { authToken } = useSelector((state: any) => state.auth);
+    const {authToken} = useSelector((state: any) => state.auth);
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [comment, setComment] = useState("");
@@ -96,7 +99,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     token: authToken,
                     thread_id: thread.id,
                     tribe_id,
-                    data: { body: comment },
+                    data: {body: comment},
                 })
             );
             if (res.payload.status) {
@@ -131,8 +134,8 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         setLikeCount(prevLiked ? prevCount - 1 : prevCount + 1);
 
         try {
-            const { payload } = await dispatch(
-                likeThread({ id: thread.id, tribe_id, token: authToken })
+            const {payload} = await dispatch(
+                likeThread({id: thread.id, tribe_id, token: authToken})
             );
             if (!payload?.status) throw new Error();
         } catch {
@@ -155,7 +158,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 tribe_id,
                 thread_id: thread.id,
                 poll_id: thread.thread_polls.id,
-                data: { option_id },
+                data: {option_id},
                 token: authToken,
             })
         ).then((res: any) =>
@@ -190,25 +193,40 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <Image
-                        src={thread?.created_by?.user?.avatar || "/default-avatar.png"}
-                        alt="avatar"
-                        width={48}
-                        height={48}
-                        className="w-12 h-12 rounded-2xl border border-gray-200"
-                    />
+                    {
+                        thread?.created_by?.user?.avatar ? (
+                            <Image
+                                src={thread?.created_by?.user?.avatar || "/default-avatar.png"}
+                                alt="avatar"
+                                width={48}
+                                height={48}
+                                className="w-12 h-12 rounded-2xl border border-gray-200"
+                            />
+                        ) : (
+                            <div
+                                className="flex items-center justify-center rounded-full border-[2px] border-[#3B4152] w-[40px] h-[40px]
+                   text-sm font-medium text-white bg-gradient-green
+                   transition-all duration-300 ease-in-out
+                   group-hover:scale-110 group-hover:border-green-400
+                   group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)] group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600"
+                            >
+                                <p className="text-[18px] font-ruso">{getInitials(thread?.created_by?.user?.fullname)}</p>
+                            </div>
+                        )
+                    }
+
                     <div className="flex items-center gap-1">
                         <p className="font-semibold text-sm">
                             {thread?.created_by?.user?.username}
                         </p>
                         {thread?.created_by?.user?.verified && (
-                            <Image src="/images/verified.png" alt="verified" width={13} height={13} />
+                            <Image src="/images/verified.png" alt="verified" width={13} height={13}/>
                         )}
                     </div>
                     <span className="text-xs text-gray-500">{thread?.created_at}</span>
                 </div>
                 <div ref={moreIconRef}>
-                    <MoreIcon className="cursor-pointer w-5 h-5" onClick={handleMoreIconClick} />
+                    <MoreIcon className="cursor-pointer w-5 h-5" onClick={handleMoreIconClick}/>
                 </div>
             </div>
 
@@ -228,7 +246,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 )}
             </div>
 
-            {thread?.media?.length > 0 && <ImageCarousel images={thread.media} />}
+            {thread?.media?.length > 0 && <ImageCarousel images={thread.media}/>}
 
             {/* Polls */}
             {thread?.polls && thread?.thread_polls?.options?.length > 0 && (
@@ -242,7 +260,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                         >
                             <div
                                 className="absolute top-0 left-0 h-full bg-light-green-90 transition-all"
-                                style={{ width: `${opt.vote_percentage}%` }}
+                                style={{width: `${opt.vote_percentage}%`}}
                             />
                             <div className="relative z-10 flex justify-between items-center px-3 h-full">
                                 <span>{opt.content}</span>
@@ -264,9 +282,9 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     className="flex items-center gap-1 bg-gray-100 rounded-lg px-3 py-1.5"
                 >
                     {hasLiked ? (
-                        <HeartIcon className="text-green-400 fill-green-400 w-5 h-5" />
+                        <HeartIcon className="text-green-400 fill-green-400 w-5 h-5"/>
                     ) : (
-                        <HeartIcon className="w-5 h-5" />
+                        <HeartIcon className="w-5 h-5"/>
                     )}
                     <span className="text-sm">{likeCount}</span>
                 </button>
@@ -275,7 +293,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     onClick={() => setShowCommentForm(!showCommentForm)}
                     className="flex items-center gap-1 bg-gray-100 rounded-lg px-3 py-1.5"
                 >
-                    <ChatIcon className="w-5 h-5" />
+                    <ChatIcon className="w-5 h-5"/>
                 </button>
             </div>
 
@@ -321,28 +339,34 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 <div
                     ref={modalRef}
                     className="absolute bg-white shadow-lg z-10 rounded-xl w-44"
-                    style={{ top: modalPosition.top, left: modalPosition.left }}
+                    style={{top: modalPosition.top, left: modalPosition.left}}
                 >
                     {!thread?.owner && (
                         <ModalItem
-                            icon={<UserIcon size={16} />}
+                            icon={<UserIcon size={16}/>}
                             label="View profile"
                             onClick={() => switchUserId(thread.created_by.user.id)}
                         />
                     )}
-                    <ModalItem
-                        icon={<PinIcon size={16} />}
-                        label={thread?.pinned ? "Unpin Thread" : "Pin Thread"}
-                        onClick={() => pinThread(thread.id)}
-                    />
-                    <ModalItem
-                        icon={<FlagIcon size={16} />}
-                        label="Report Thread"
-                        onClick={() => toggleThreadId(thread.id)}
-                    />
+                    {
+                        tribe?.has_joined && (
+                            <>
+                                <ModalItem
+                                    icon={<PinIcon size={16}/>}
+                                    label={thread?.pinned ? "Unpin Thread" : "Pin Thread"}
+                                    onClick={() => pinThread(thread.id)}
+                                />
+                                <ModalItem
+                                    icon={<FlagIcon size={16}/>}
+                                    label="Report Thread"
+                                    onClick={() => toggleThreadId(thread.id)}
+                                />
+                            </>
+                        )
+                    }
                     {thread?.owner && (
                         <ModalItem
-                            icon={<TrashIcon size={16} className="text-red-500" />}
+                            icon={<TrashIcon size={16} className="text-red-500"/>}
                             label="Delete Thread"
                             danger
                             onClick={() => toggleDeleteThread(thread.id)}
@@ -350,7 +374,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                     )}
                 </div>
             )}
-            <div className="w-full border-b" />
+            <div className="w-full border-b"/>
         </div>
     );
 };

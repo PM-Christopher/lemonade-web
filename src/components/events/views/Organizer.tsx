@@ -20,10 +20,10 @@ type OrganizerSectionInterface = {
 
 const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaymentModal, togglePaymentModel}) => {
     const dispatch = useAppDispatch()
-    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+    const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
     const router = useRouter()
     const [orOption, setOrOption] = useState("upcoming")
-    const { organizer_events, eventsLoading } = useSelector((state: RootState) => state.event)
+    const {organizer_events, eventsLoading} = useSelector((state: RootState) => state.event)
 
     useEffect(() => {
         dispatch(getOrganizerEvents())
@@ -32,13 +32,13 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
     const renderView = () => {
         switch (orOption) {
             case "upcoming":
-                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading} />
+                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading}/>
             case "past":
-                return <PastEvent events={organizer_events?.past} loading={eventsLoading} />
+                return <PastEvent events={organizer_events?.past} loading={eventsLoading}/>
             case "draft":
-                return <Draft events={organizer_events?.drafts} loading={eventsLoading} />
+                return <Draft events={organizer_events?.drafts} loading={eventsLoading}/>
             default:
-                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading} />
+                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading}/>
         }
     }
 
@@ -48,20 +48,43 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
 
     return (
         <>
-            <div className="bg-white flex justify-center laptop:justify-between border-b-[1px] items-center pt-[8px] pb-[1px] px-[16px]">
+            <div
+                className="bg-white flex justify-center laptop:justify-between border-b-[1px] items-center pt-[8px] pb-[1px] px-[16px]">
                 <div className="flex gap-10">
-                    <div className="flex gap-6">
+                    <div className="flex gap-4 sm:gap-6">
                         {[
-                            { label: "Upcoming", key: "upcoming" },
-                            { label: "Past Events", key: "past" },
-                            { label: "Drafts", key: "draft" },
-                        ].map((tab, idx:number) => (
-                            <div className={`flex flex-col items-center pt-[8px] px-[16px] pb-[2px] ${orOption === tab.key && "border-b-step-color border-b-2"}`} key={idx}>
-                                <p className={`font-sans font-semi-normal ${orOption === tab.key ? "text-black-light" : "text-text-grey"} text-[14px] leading-[21px] cursor-pointer`} onClick={() =>switchOption(tab.key)}>
-                                    {tab.label}
-                                </p>
-                            </div>
-                        ))}
+                            {label: "Upcoming", key: "upcoming"},
+                            {label: "Past Events", key: "past"},
+                            {label: "Drafts", key: "draft"},
+                        ].map((tab) => {
+                            const isActive = orOption === tab.key;
+
+                            return (
+                                <button
+                                    key={tab.key}
+                                    type="button"
+                                    onClick={() => switchOption(tab.key)}
+                                    className="group flex flex-col items-center px-4 py-2"
+                                >
+                                    <span
+                                        className={[
+                                            "font-sans text-sm leading-[21px] transition-colors duration-200",
+                                            isActive ? "text-black-light font-semibold" : "text-text-grey font-normal",
+                                        ].join(" ")}
+                                    >
+                                        {tab.label}
+                                    </span>
+
+                                    {/* centered underline */}
+                                    <span
+                                        className={[
+                                            "h-[2px] rounded-full bg-step-color transition-all duration-300 ease-out",
+                                            isActive ? "w-full opacity-100" : "w-0 opacity-0 group-hover:w-full group-hover:opacity-60",
+                                        ].join(" ")}
+                                    />
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
@@ -69,7 +92,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaym
             <section className="mt-4 flex flex-col items-center px-[10px]">
                 {/*<EmptyEvent />*/}
                 {renderView()}
-                <PaymentSettingsModal toggle={activatePaymentModal} option={togglePaymentModel} />
+                <PaymentSettingsModal toggle={activatePaymentModal} option={togglePaymentModel}/>
             </section>
             {
                 isMobile && (

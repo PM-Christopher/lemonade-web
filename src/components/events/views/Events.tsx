@@ -78,7 +78,27 @@ const EventsSectionView: React.FC<EventsInterface> = ({
                             </div>
                         )
                     ) : (
-                        <p className="font-semiBold text-[24px]">No results found</p>
+                        <div className="col-span-2 laptop:col-span-3 flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg border border-gray-200">
+                            <svg
+                                className="w-12 h-12 text-gray-300 mb-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8c-1.657 0-3 1.343-3 3 0 1.306.835 2.418 2 2.83V17h2v-3.17c1.165-.412 2-1.524 2-2.83 0-1.657-1.343-3-3-3z"
+                                />
+                            </svg>
+                            <p className="text-gray-600 font-medium">
+                                No results found
+                            </p>
+                            <p className="text-gray-400 text-sm mt-1">
+                                Search for another event.
+                            </p>
+                        </div>
                     )
                 ) : filtered ? (
                     <>

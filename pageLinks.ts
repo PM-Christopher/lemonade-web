@@ -8,29 +8,34 @@ export const navLinks = [
     {
         name: "Home",
         path: "/",
-        icon: home_icon
+        icon: home_icon,
+        title: "home"
     },
     {
         name: "Tribe",
         path: "/tribe",
-        icon: tribe_icon
+        icon: tribe_icon,
+        title: "tribe"
     },
     {
         name: "Events",
         path: "/event",
-        icon: event_icon
+        icon: event_icon,
+        title: "event"
     },
     {
         name: "Business",
         path: "/business",
-        icon: business_icon
+        icon: business_icon,
+        title: "business"
     },
     {
         name: "Connect",
         path: "/connect",
-        icon: connect_icon
+        icon: connect_icon,
+        title: "connect"
     }
-]
+] as const
 
 export const timezones = [
     { label: "(GMT-12:00) International Date Line West", value: "Pacific/Kwajalein" },

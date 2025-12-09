@@ -11,7 +11,7 @@ import Link from "next/link";
 import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
 import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
-import {getChat, removeChat} from "@/features/connect/connect.slice";
+import {getChat, getConnection, getMessages, removeChat} from "@/features/connect/connect.slice";
 import OpenedChat from "@/components/connect/OpenedChat";
 import EmptyChat from "@/components/connect/EmptyChat";
 import Pusher from "pusher-js";
@@ -19,31 +19,32 @@ import {usePusher} from "@/hooks/usePusher";
 import {useAppDispatch} from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useMediaQuery} from "react-responsive";
+import {RootState} from "@/redux/store";
+import {ChatListCardSkeleton} from "@/components/Skeletons";
 
 const ConnectPage = () => {
     const dispatch = useAppDispatch()
-    const [isOpen,setIsOpen] = useState(false)
-    const [isSettingsOpen,setIsSettingsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [selectedChatId, setSelectedChatId] = useState(0)
     const [messages, setMessages] = useState<MessageInterface[]>([])
-    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+    const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
     const [chatOpened, setChatOpened] = useState(false)
     const {authToken, user} = useSelector((state: any) => state.auth)
     usePusher(`chat.${user?.id}`, "message.sent");
 
-    const {messages: messagesData, chat: chatData, loading} = useSelector((state: any) => state.chat)
+    const {
+        messages: messagesData,
+        chat: chatData,
+        loading,
+        chats,
+        connection_info
+    } = useSelector((state: RootState) => state.chat)
 
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
-
-    const { data } = useRequest("/messages")
-
-    const { data: connection_info, loading: connect_loading } = useRequest("/connect")
+    useEffect(() => {
+        dispatch(getMessages())
+        dispatch(getConnection())
+    }, [dispatch]);
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
@@ -65,8 +66,7 @@ const ConnectPage = () => {
         dispatch(removeChat())
     }
 
-    // console.log({chats: data?.chats})
-
+    const loadingChat = false
     return (
         <MainLayout>
             <section className="bg-white laptop:bg-light_grey pb-10">
@@ -100,34 +100,67 @@ const ConnectPage = () => {
                                 <div className={`${chatOpened ? "hidden" : "flex"} flex-col w-screen h-[648px] bg-white`}>
                                     <div className="p-[8px] px-[16px]">
                                         <div
-                                            className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px]">
-                                            <div>
+                                            className="flex items-center gap-3 rounded-2xl bg-light_grey px-4 py-3 shadow-sm ring-1 ring-black/5">
+                                            {/* Icon */}
+                                            <span className="shrink-0 text-gray-500">
                                                 <SearchIcon/>
-                                            </div>
-                                            <div>
-                                                <input
-                                                    id="search"
-                                                    type="text"
-                                                    className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                                                    placeholder="Search user, chat..."
-                                                />
-                                            </div>
+                                            </span>
+
+                                            {/* Input */}
+                                            <input
+                                                id="search"
+                                                type="text"
+                                                className="w-full bg-transparent text-[14px] outline-none placeholder:text-gray-400"
+                                                placeholder="Search user, chat..."
+                                            />
+
+                                            {/* Optional quick action */}
+                                            <button
+                                                type="button"
+                                                className="shrink-0 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-gray-700 ring-1 ring-black/5 hover:bg-gray-50 active:scale-[0.98] transition"
+                                            >
+                                                Search
+                                            </button>
                                         </div>
+
                                     </div>
                                     <div className="overflow-y-auto max-h-screen hide-scrollbar">
                                         {
-                                            data?.chats?.map((chat: ChatInterface, index: number) => (
-                                                <ChatListCard user_id={user?.id} chat={chat} active={chat?.id === selectedChatId}
-                                                              toggleChat={toggleSelectedChat} key={index}/>
-                                            ))
+                                            loadingChat ? (
+                                                <ChatListCardSkeleton count={6}/>
+                                            ) : (
+                                                chats.length > 0 ? (
+                                                    chats?.map((chat: ChatInterface, index: number) => (
+                                                        <ChatListCard
+                                                            user_id={user?.id}
+                                                            chat={chat}
+                                                            active={chat?.id === selectedChatId}
+                                                            toggleChat={toggleSelectedChat}
+                                                            key={index}
+                                                        />
+                                                    ))
+                                                ) : (
+                                                    <div className={"flex flex-col items-center justify-center mt-32 w-full"}>
+                                                        <p className={"font-ruso text-center"}>Connect with someone new today to start chatting</p>
+                                                        <button type={"button"} className={"bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"}>
+                                                            <p>Send request</p>
+                                                        </button>
+                                                    </div>
+                                                )
+                                            )
                                         }
                                     </div>
                                 </div>
                                 <div className={`${chatOpened ? "block" : "hidden"}`}>
                                     {
                                         chatOpened ? (
-                                            <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
-                                                        chat={chatData} toggleOpenedChat={toggleChatOpened}/>
+                                            <OpenedChat
+                                                user_id={user?.id}
+                                                messages={messagesData}
+                                                toggleModal={toggleModal}
+                                                chat={chatData}
+                                                toggleOpenedChat={toggleChatOpened}
+                                            />
                                         ) : (
                                             <EmptyChat/>
                                         )
@@ -144,33 +177,70 @@ const ConnectPage = () => {
                             </div>
                             <div className="p-[8px] px-[16px]">
                                 <div
-                                    className="flex items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px]">
-                                    <div>
+                                    className="flex items-center gap-3 rounded-2xl bg-light_grey px-4 py-3 shadow-sm ring-1 ring-black/5">
+                                    {/* Icon */}
+                                    <span className="shrink-0 text-gray-500">
                                         <SearchIcon/>
-                                    </div>
-                                    <div>
-                                        <input
-                                            id="search"
-                                            type="text"
-                                            className="rounded-xl text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent"
-                                            placeholder="Search user, chat..."
-                                        />
-                                    </div>
+                                    </span>
+
+                                    {/* Input */}
+                                    <input
+                                        id="search"
+                                        type="text"
+                                        className="w-full bg-transparent text-[14px] outline-none placeholder:text-gray-400"
+                                        placeholder="Search user, chat..."
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") return;
+                                        }}
+                                    />
+
+                                    {/* Optional quick action */}
+                                    <button
+                                        type="button"
+                                        className="shrink-0 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-gray-700 ring-1 ring-black/5 hover:bg-gray-50 active:scale-[0.98] transition"
+                                    >
+                                        Search
+                                    </button>
                                 </div>
                             </div>
                             <div className="overflow-y-auto max-h-screen hide-scrollbar">
                                 {
-                                    data?.chats?.map((chat: ChatInterface, index: number) => (
-                                        <ChatListCard user_id={user?.id} chat={chat} active={chat?.id === selectedChatId}
-                                                      toggleChat={toggleSelectedChat} key={index}/>
-                                    ))
+                                    loadingChat ? (
+                                        <ChatListCardSkeleton count={6}/>
+                                    ) : (
+                                        chats.length > 0 ? (
+                                            chats?.map((chat: ChatInterface, index: number) => (
+                                                <ChatListCard
+                                                    user_id={user?.id}
+                                                    chat={chat}
+                                                    active={chat?.id === selectedChatId}
+                                                    toggleChat={toggleSelectedChat}
+                                                    key={index}
+                                                />
+                                            ))
+                                        ) : (
+                                            <Link href={"/connect/requests"}>
+                                                <div className={"flex flex-col items-center justify-center mt-32 w-full gap-4"}>
+                                                    <p className={"font-ruso text-center"}>Connect with someone new today to start chatting</p>
+                                                    <button type={"button"} className={"bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[48px] px-[12px] rounded-[12px]"}>
+                                                        <p className={"font-ruso text-white"}>Send request</p>
+                                                    </button>
+                                                </div>
+                                            </Link>
+                                        )
+                                    )
                                 }
                             </div>
                         </div>
                         {
                             chatOpened ? (
-                                <OpenedChat user_id={user?.id} messages={messagesData} toggleModal={toggleModal}
-                                            chat={chatData} toggleOpenedChat={toggleChatOpened}/>
+                                <OpenedChat
+                                    user_id={user?.id}
+                                    messages={messagesData}
+                                    toggleModal={toggleModal}
+                                    chat={chatData}
+                                    toggleOpenedChat={toggleChatOpened}
+                                />
                             ) : (
                                 <EmptyChat/>
                             )

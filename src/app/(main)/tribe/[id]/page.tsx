@@ -208,6 +208,8 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
         setJoinedTribeModal(!joinedTribeModal)
     }
 
+    console.log({tribe})
+
     return (
         <MainLayout>
             <div className="bg-light_grey pb-10">
@@ -296,6 +298,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                                         <ThreadCard
                                             key={thread.id ?? Math.random()}
                                             tribe_id={tribe?.id}
+                                            tribe={tribe}
                                             thread={thread}
                                             toggle={activateUserInfoModal}
                                             switchUserId={switchUserId}

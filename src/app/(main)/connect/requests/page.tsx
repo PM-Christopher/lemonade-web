@@ -150,8 +150,31 @@ const ConnectRequestPage = () => {
                                             />
                                         ))
                                     ) : (
-                                        <div>
-                                            <p className="font-semibold text-[16px]">No request found</p>
+                                        <div
+                                            className="flex flex-col items-center justify-center py-8 sm:py-12 px-4 rounded-xl bg-white border border-gray-100 shadow-sm">
+                                            <div className="flex flex-col items-center text-center max-w-md">
+                                                <div
+                                                    className="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-gray-100">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        strokeWidth="1.5"
+                                                        stroke="currentColor"
+                                                        className="w-6 h-6 text-gray-400"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round" strokeLinejoin="round"
+                                                            d="M3.5 4.5l17 7.5-17 7.5 3-7.5-3-7.5zm3 7.5l6 3 6-3-6-3-6 3z"
+                                                        />
+                                                    </svg>
+
+                                                </div>
+                                                <p className="text-base font-semibold text-gray-700">No Requests Found</p>
+                                                <p className="mt-1 text-sm text-gray-500">
+                                                    Check back later for connection requests from other users. You can also invite friends to connect with you using the invite link below.
+                                                </p>
+                                            </div>
                                         </div>
                                     )
                                 )

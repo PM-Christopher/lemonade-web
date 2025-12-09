@@ -12,7 +12,7 @@ const config: Config = {
   theme: {
 	  screens: {
 		  phone: "640px",       // Small phones and larger
-		  tablet: "768px",      // Tablets and larger
+		  tablet: "767px",      // Tablets and larger
 		  laptop: "1024px",     // Laptops and larger
 		  desktop: "1280px",    // Desktops and larger
 		  wide: "1536px"        // Large desktops and ultra-wide screens

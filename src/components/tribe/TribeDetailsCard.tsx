@@ -55,6 +55,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
             }
         })
     }
+    const members = tribe?.member_list ?? [];
 
     return (
         <>
@@ -173,42 +174,48 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                             <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-text-grey">Members</p>
                             <div className="mt-4">
                                 {
-                                    tribe?.member_list.map((member: TribeMemberInterface, index: number) => (
-                                        <React.Fragment key={index}>
-                                            <div className="flex justify-between items-center py-1">
-                                                <div className="flex gap-2 items-center">
-                                                    <div>
-                                                        {/*<Image src={member?.user?.avatar} alt="avatar" width={20} height={20} className="w-[20px] h-[20px] rounded-[6px]"/>*/}
-                                                        <div
-                                                            className="w-[20px] h-[20px] rounded-[6px] overflow-hidden flex items-center justify-center bg-gray-200 text-[10px] font-semibold text-gray-700">
-                                                            {member?.user?.avatar ? (
-                                                                <Image
-                                                                    src={member.user.avatar}
-                                                                    alt="avatar"
-                                                                    width={20}
-                                                                    height={20}
-                                                                    className="w-[20px] h-[20px] object-cover"
-                                                                />
-                                                            ) : (
-                                                                getInitials(member?.user?.fullname)
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-sans font-semi-normal text-[14px] text-black-light leading-[21px]">{member?.user?.username}</p>
-                                                    </div>
-                                                </div>
-                                                {
-                                                    tribe?.owner && (
+                                    members?.length > 0 ? (
+                                        tribe?.member_list.map((member: TribeMemberInterface, index: number) => (
+                                            <React.Fragment key={index}>
+                                                <div className="flex justify-between items-center py-1">
+                                                    <div className="flex gap-2 items-center">
                                                         <div>
-                                                            <DeleteIcon/>
+                                                            {/*<Image src={member?.user?.avatar} alt="avatar" width={20} height={20} className="w-[20px] h-[20px] rounded-[6px]"/>*/}
+                                                            <div
+                                                                className="w-[20px] h-[20px] rounded-[6px] overflow-hidden flex items-center justify-center bg-gray-200 text-[10px] font-semibold text-gray-700">
+                                                                {member?.user?.avatar ? (
+                                                                    <Image
+                                                                        src={member.user.avatar}
+                                                                        alt="avatar"
+                                                                        width={20}
+                                                                        height={20}
+                                                                        className="w-[20px] h-[20px] object-cover"
+                                                                    />
+                                                                ) : (
+                                                                    getInitials(member?.user?.fullname)
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    )
-                                                }
-                                            </div>
-                                            <div className="border-t-[1px] my-2"></div>
-                                        </React.Fragment>
-                                    ))
+                                                        <div>
+                                                            <p className="font-sans font-semi-normal text-[14px] text-black-light leading-[21px]">{member?.user?.username}</p>
+                                                        </div>
+                                                    </div>
+                                                    {
+                                                        tribe?.owner && (
+                                                            <div>
+                                                                <DeleteIcon/>
+                                                            </div>
+                                                        )
+                                                    }
+                                                </div>
+                                                <div className="border-t-[1px] my-2"></div>
+                                            </React.Fragment>
+                                        ))
+                                    ) : (
+                                        <p className={'font-normal text-[14px] text-text-grey leading-[21px]'}>
+                                            No members yet.
+                                        </p>
+                                    )
                                 }
                             </div>
                         </div>

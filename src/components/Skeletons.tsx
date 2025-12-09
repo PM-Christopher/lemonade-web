@@ -1182,3 +1182,37 @@ export const JobListSkeleton = ({count}: { count: number }) => {
         </div>
     )
 }
+
+export const ChatListCardSkeleton = ({count}: { count: number }) => {
+    return (
+        Array(count).fill(0).map((_, index) => (
+            <div className="p-4 flex items-center gap-3 rounded-xl cursor-pointer animate-pulse">
+                {/* Avatar Skeleton */}
+                <div className="w-[48px] h-[48px] rounded-[16px] bg-gray-200 shadow-sm"/>
+
+                {/* Chat Info Skeleton */}
+                <div className="flex flex-col w-full border-b border-grey-20 pb-2">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            {/* Username */}
+                            <div className="h-[12px] w-[120px] bg-gray-200 rounded"/>
+                            {/* Dot */}
+                            <div className="w-[10px] h-[5px] bg-gray-200 rounded-full"/>
+                            {/* Lemon ID */}
+                            <div className="h-[10px] w-[60px] bg-gray-200 rounded"/>
+                        </div>
+
+                        {/* Timestamp */}
+                        <div className="h-[10px] w-[50px] bg-gray-200 rounded"/>
+                    </div>
+
+                    {/* Message Preview */}
+                    <div className="mt-2">
+                        <div className="h-[12px] w-[80%] bg-gray-200 rounded"/>
+                    </div>
+                </div>
+            </div>
+        ))
+    )
+}

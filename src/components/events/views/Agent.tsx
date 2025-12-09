@@ -46,80 +46,102 @@ function AgentSectionView({}) {
             case "promotions":
                 return <PromotionsSubMenu events={affiliate_events} loading={affiliateLoading}/>;
             case "find_event":
-                return <FindEventSubMenu data={affiliate_events} loading={affiliateLoading}/>;
+                return <FindEventSubMenu />;
             default:
                 return <PromotionsSubMenu events={affiliate_events} loading={affiliateLoading}/>;
         }
     };
     return (
-        <section className="mt-4 flex flex-col laptop:items-center">
-            <div className="flex flex-col laptop:flex-row gap-[24px]">
-                <div className="w-full laptop:w-[550px] p-[16px] bg-white rounded-[12px] h-full">
-                    <div className="">
-                        <div className="flex flex-col">
-                            <p className="font-sans font-normal text-text-grey text-[14px] mb-4">
-                                All time commission
-                            </p>
-                            {
-                                affiliateDataLoading ? (
-                                    < AffiliateDataSkeleton />
-                                ) : (
-                                    <>
-                                        <p className="font-sans font-semibold text-[18px] tracking-custom leading-[27px]">
-                                            ₦{total_commission?.toLocaleString() ?? 0}
-                                        </p>
-                                        <div className="border-t-mid-grey border-t-[1px] my-[16px]"></div>
-                                        <p className="font-sans font-normal text-text-grey text-[14px]">
-                                            Total Tickets Sold
-                                        </p>
-                                        <p className="font-sans font-semibold text-[18px] tracking-custom leading-[27px]">
-                                            {tickets_sold?.toLocaleString() ?? 0}
-                                        </p>
-                                        <div className="border-t-mid-grey border-t-[1px] my-[16px]"></div>
-                                        <div
-                                            className="flex gap-2 items-center cursor-pointer"
-                                            onClick={() => router.push("/settings/wallet")}
-                                        >
-                                            <p className="font-sans font-semi-normal text-[16px] text-light-green tracking-custom leading-[27px]">
-                                                Go to Wallet
+        <section className="mt-6">
+            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+                <section className="mt-6 px-4 sm:px-6 laptop:px-0">
+                    <div className="mx-auto w-full max-w-6xl">
+                        {/* lg = laptop */}
+                        <div className="flex flex-col gap-6 laptop:flex-row laptop:items-stretch">
+                            {/* Left card */}
+                            <aside className="w-full laptop:w-[420px] xl:w-[550px]">
+                                <div className="h-fit rounded-2xl bg-white p-5 sm:p-6 shadow-sm ring-1 ring-black/5">
+                                    <p className="font-sans text-[13px] sm:text-[14px] text-text-grey mb-4">
+                                        All time commission
+                                    </p>
+
+                                    {affiliateDataLoading ? (
+                                        <AffiliateDataSkeleton/>
+                                    ) : (
+                                        <>
+                                            <p className="font-sans font-semibold text-[22px] sm:text-[26px] leading-tight tracking-custom">
+                                                ₦{total_commission?.toLocaleString() ?? 0}
                                             </p>
-                                            <ChevronRight/>
-                                        </div>
-                                    </>
-                                )
-                            }
+
+                                            <div className="my-5 border-t border-mid-grey/70"/>
+
+                                            <p className="font-sans text-[13px] sm:text-[14px] text-text-grey">
+                                                Total Tickets Sold
+                                            </p>
+                                            <p className="font-sans font-semibold text-[18px] sm:text-[20px] leading-tight tracking-custom mt-1">
+                                                {tickets_sold?.toLocaleString() ?? 0}
+                                            </p>
+
+                                            <div className="my-5 border-t border-mid-grey/70"/>
+
+                                            <button
+                                                type="button"
+                                                className="group inline-flex items-center gap-2 rounded-xl px-3 py-2 -ml-3 hover:bg-gray-50 transition"
+                                                onClick={() => router.push("/settings/wallet")}
+                                            >
+                                                <span
+                                                    className="font-sans font-semi-normal text-[15px] sm:text-[16px] text-light-green tracking-custom">
+                                                    Go to Wallet
+                                                </span>
+                                                <span className="transition-transform group-hover:translate-x-0.5">
+                                                    <ChevronRight/>
+                                                </span>
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </aside>
+
+                            {/* Right card */}
+                            <main className="w-full min-w-0">
+                                <div className="rounded-2xl bg-white p-5 sm:p-6 shadow-sm ring-1 ring-black/5">
+                                    {/* Tabs */}
+                                    <div className="mb-4 flex w-full gap-2 overflow-x-auto rounded-xl bg-gray-50 p-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => setView("promotions")}
+                                            className={`flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-center font-sans text-[13px] sm:text-[14px] tracking-custom transition ${
+                                                view === "promotions"
+                                                    ? "bg-white shadow-sm text-gray-900 ring-1 ring-black/5"
+                                                    : "text-gray-600 hover:text-gray-900"
+                                            }`}
+                                        >
+                                            Promotions
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => setView("find_event")}
+                                            className={`flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-center font-sans text-[13px] sm:text-[14px] tracking-custom transition ${
+                                                view === "find_event"
+                                                    ? "bg-white shadow-sm text-gray-900 ring-1 ring-black/5"
+                                                    : "text-gray-600 hover:text-gray-900"
+                                            }`}
+                                        >
+                                            Find events
+                                        </button>
+                                    </div>
+
+                                    <div className="min-w-0">{renderView()}</div>
+                                </div>
+                            </main>
                         </div>
                     </div>
-                </div>
-                <div className="w-screen laptop:w-full">
-                    <div className="p-[16px] bg-white rounded-[12px]">
-                        <div className="flex justify-between mt-[10px] border-b-[1px] border-b-mid-grey mb-[10px]">
-                            <div
-                                className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] cursor-pointer ${
-                                    view === "promotions" && "border-b-step-color border-b-2"
-                                }`}
-                                onClick={() => setView("promotions")}
-                            >
-                                <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                                    Promotions
-                                </p>
-                            </div>
-                            <div
-                                className={`h-10 w-full laptop:w-[276.5px] py-[8px] px-[16px] cursor-pointer ${
-                                    view === "find_event" && "border-b-step-color border-b-2"
-                                }`}
-                                onClick={() => setView("find_event")}
-                            >
-                                <p className="text-center font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
-                                    Find events
-                                </p>
-                            </div>
-                        </div>
-                        {renderView()}
-                    </div>
-                </div>
+                </section>
+
             </div>
         </section>
+
     );
 }
 

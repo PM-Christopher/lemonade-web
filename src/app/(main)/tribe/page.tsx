@@ -22,26 +22,27 @@ import {getTribes, searchTribe} from "@/features/tribes/tribe.slice";
 import CreateTribeModal from "@/components/tribe/CreateTribeModal";
 import {TribeListSkeleton} from "@/components/Skeletons";
 import {RootState} from "@/redux/store";
+import {usePersistentMenuState} from "@/context/MenuStateProvider";
 
 export default function TribePage() {
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const {authToken} = useSelector((state: RootState) => state.auth);
     const {searchResults, tribes, loading, searchLoading} = useSelector((state: RootState) => state.tribe);
     const [showTooltip, setShowTooltip] = useState(false);
+    const { setActive, getActive } = usePersistentMenuState();
 
-    const [tribeType, setTribeType] = useState("discover");
+    // Always read tribe tab state from the "tribe" menu
+    const persistedTribeType = getActive("tribe") ?? "discover";
+    const [tribeType, setTribeType] = useState(persistedTribeType);
+
+    // ✅ Sync local state when persisted value changes (e.g. after refresh hydration)
+    useEffect(() => {
+        setTribeType(persistedTribeType);
+    }, [persistedTribeType]);
+
     const [search, setSearch] = useState("");
 
     const isMobile = useMediaQuery({query: "(max-width: 640px)"});
-
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    };
 
     // onChange handler that updates the local state and dispatches an action
     const handleTribeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,9 +51,6 @@ export default function TribePage() {
         dispatch(searchTribe({data: {search: value}}));
     };
 
-    const { data } = useRequest(
-        `/tribes?type=${tribeType}`,
-    );
 
     const [modalFlag, setModalFlag] = useState(false);
 
@@ -102,7 +100,6 @@ export default function TribePage() {
                 const {data} = await axiosInstance.post(
                     "/tribes/create-tribe",
                     values,
-                    getHeader()
                 );
                 if (data.status) {
                     dispatch(
@@ -158,36 +155,78 @@ export default function TribePage() {
 
     useEffect(() => {
         dispatch(getTribes({tribe_type: tribeType}))
-    }, [tribeType]);
+    }, [dispatch, tribeType]);
 
     return (
         <MainLayout>
             <div
                 className="bg-white flex flex-col tablet:flex-row justify-between items-center border-y border-gray-200 px-6 py-3 gap-4">
                 {/* Tabs */}
-                <div className="flex gap-8">
+                {/*<div className="flex gap-8">*/}
+                {/*    {[*/}
+                {/*        {key: "discover", label: "Discover"},*/}
+                {/*        {key: "tln", label: "TLN Tribes"},*/}
+                {/*        {key: "mine", label: "My Tribes"},*/}
+                {/*    ].map((tab) => (*/}
+                {/*        <button*/}
+                {/*            key={tab.key}*/}
+                {/*            onClick={() => {*/}
+                {/*                changeTribeType(tab.key)*/}
+                {/*                setActive("tribe", tab.key)*/}
+                {/*            }}*/}
+                {/*            className={`flex flex-col items-center transition-all duration-200 ${*/}
+                {/*                tribeType === tab.key*/}
+                {/*                    ? "text-black-light"*/}
+                {/*                    : "text-gray-500 hover:text-gray-700"*/}
+                {/*            }`}*/}
+                {/*        >*/}
+                {/*            <span className="text-sm font-medium">{tab.label}</span>*/}
+                {/*            <div*/}
+                {/*                className={`h-[2px] mt-1 w-16 transition-all duration-200 ${*/}
+                {/*                    tribeType === tab.key ? "bg-step-color" : "bg-transparent"*/}
+                {/*                }`}*/}
+                {/*            />*/}
+                {/*        </button>*/}
+                {/*    ))}*/}
+                {/*</div>*/}
+
+                <div className="flex gap-4 sm:gap-6">
                     {[
                         {key: "discover", label: "Discover"},
                         {key: "tln", label: "TLN Tribes"},
                         {key: "mine", label: "My Tribes"},
-                    ].map((tab) => (
-                        <button
-                            key={tab.key}
-                            onClick={() => changeTribeType(tab.key)}
-                            className={`flex flex-col items-center transition-all duration-200 ${
-                                tribeType === tab.key
-                                    ? "text-black-light"
-                                    : "text-gray-500 hover:text-gray-700"
-                            }`}
-                        >
-                            <span className="text-sm font-medium">{tab.label}</span>
-                            <div
-                                className={`h-[2px] mt-1 w-16 transition-all duration-200 ${
-                                    tribeType === tab.key ? "bg-step-color" : "bg-transparent"
-                                }`}
-                            />
-                        </button>
-                    ))}
+                    ].map((tab) => {
+                        const isActive = tribeType === tab.key;
+
+                        return (
+                            <button
+                                key={tab.key}
+                                type="button"
+                                onClick={() => {
+                                    changeTribeType(tab.key)
+                                    setActive("tribe", tab.key)
+                                }}
+                                className="group flex flex-col items-center px-4 py-2"
+                            >
+                                    <span
+                                        className={[
+                                            "font-sans text-sm leading-[21px] transition-colors duration-200",
+                                            isActive ? "text-black-light font-semibold" : "text-text-grey font-normal",
+                                        ].join(" ")}
+                                    >
+                                        {tab.label}
+                                    </span>
+
+                                {/* centered underline */}
+                                <span
+                                    className={[
+                                        "h-[2px] rounded-full bg-step-color transition-all duration-300 ease-out",
+                                        isActive ? "w-full opacity-100" : "w-0 opacity-0 group-hover:w-full group-hover:opacity-60",
+                                    ].join(" ")}
+                                />
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* Search & Create Button */}

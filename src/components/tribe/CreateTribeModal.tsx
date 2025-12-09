@@ -32,7 +32,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [monetizedCheck, setMonetizedChecked] = useState(false);
     const [privateCheck, setPrivateCheck] = useState(false);
-    const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
+    const isMobile = useMediaQuery({query: "(max-width: 640px)"});
 
     const createTribeSchema = yup.object({
         tribe_name: yup.string().required("Tribe name is required"),
@@ -69,7 +69,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
         onSubmit: async (values) => {
             values.membership_fee = values.membership_fee ? values.membership_fee : 0;
             try {
-                const { data } = await axiosInstance.post(
+                const {data} = await axiosInstance.post(
                     "/tribes/create-tribe",
                     values,
                 );
@@ -108,7 +108,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
         },
     });
 
-    const { data: tribe_cat } = useRequest(
+    const {data: tribe_cat} = useRequest(
         `/tribes-categories`,
     );
 
@@ -128,7 +128,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
             const formData = new FormData();
             formData.append("file", file);
             try {
-                const { data } = await axiosInstance.post("/upload", formData, {
+                const {data} = await axiosInstance.post("/upload", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
@@ -181,7 +181,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                 <form onSubmit={formik.handleSubmit} className="flex flex-col">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-[8px]">
-                            <CloseIcon onClick={activateModal} className="cursor-pointer" />
+                            <CloseIcon onClick={activateModal} className="cursor-pointer"/>
                             <p className="font-semiBold text-[18px]">Create Tribe</p>
                         </div>
                         <div className="hidden tablet:block">
@@ -217,7 +217,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                         <input
                             type="file"
                             ref={fileInputRef}
-                            style={{ display: "none" }}
+                            style={{display: "none"}}
                             onChange={handleFileChange}
                         />
                     </div>
@@ -253,11 +253,10 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                                 }}
                             >
                                 <SelectTrigger className="bg-light_grey rounded-xl border-0 h-[48px]">
-                                    <SelectValue placeholder="Select category" />
+                                    <SelectValue placeholder="Select category"/>
                                 </SelectTrigger>
                                 <SelectContent className="form-font">
-                                    {tribe_cat?.categories?.map(
-                                        (category: any, index: number) => (
+                                    {tribe_cat?.categories?.map((category: any, index: number) => (
                                             <SelectItem value={category?.name} key={index}>
                                                 {category?.name}
                                             </SelectItem>
@@ -293,7 +292,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                             <div className="flex justify-between mb-[24px]">
                                 <div className="flex gap-2">
                                     <div>
-                                        <DollarBillIcon />
+                                        <DollarBillIcon/>
                                     </div>
                                     <div>
                                         <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-black-light">
@@ -335,7 +334,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                                         }}
                                     />
                                     <div className="flex gap-2 items-center mt-[5px] mb-[24px]">
-                                        <InfoIcon />
+                                        <InfoIcon/>
                                         <p className="text-text-grey font-normal text-[12px]">
                                             {" "}
                                             10% of membership fees go to the Lemonade Network
@@ -347,7 +346,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                             <div className="flex justify-between">
                                 <div className="flex gap-2">
                                     <div>
-                                        <PadlockIcon />
+                                        <PadlockIcon/>
                                     </div>
                                     <div>
                                         <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-black-light">
@@ -374,7 +373,8 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                         </div>
                     </div>
                     {isMobile && (
-                        <div className="flex flex-col fixed bottom-0 left-0 w-full pt-[16px] pr-[16px] pb-[24px] pl-[16px] justify-center items-center">
+                        <div
+                            className="flex flex-col fixed bottom-0 left-0 w-full pt-[16px] pr-[16px] pb-[24px] pl-[16px] justify-center items-center">
                             <div className="mt-auto">
                                 <FormikButton
                                     title="Create tribe"

@@ -15,7 +15,7 @@ import BottomNav from "@/components/navigation/BottomNav";
 import {useRefreshToken} from "@/hooks/useRefreshToken";
 
 const MainLayout = ({children}: {children: React.ReactNode}) => {
-    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+    const isMobile = useMediaQuery({ query: "(max-width: 766px)" });
     const { admin } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const router = useRouter();

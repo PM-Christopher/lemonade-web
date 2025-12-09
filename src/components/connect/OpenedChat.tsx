@@ -21,7 +21,7 @@ import {WindmillSpinner} from "react-spinner-overlay";
 type OpenChatProps = {
   toggleModal: () => void;
   messages: MessageInterface[];
-  chat: ChatInterface;
+  chat: ChatInterface | null;
   user_id: number;
   toggleOpenedChat?: () => void;
 };

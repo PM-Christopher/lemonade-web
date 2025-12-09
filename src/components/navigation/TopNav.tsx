@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {navLinks} from "../../../pageLinks";
@@ -6,10 +6,11 @@ import {activeLink} from "@/lib/activeLink";
 import {useSelector} from "react-redux";
 import {formatName, getInitials} from "@/lib/helper";
 import {useMediaQuery} from "react-responsive";
-import {Empty, Modal, Button} from "antd";
+import {Button, Empty, Modal} from "antd";
 import {useRequest} from "@/hooks/useRequest";
 import dayjs from "dayjs";
 import {FaBell} from "react-icons/fa";
+import {usePersistentMenuState} from "@/context/MenuStateProvider";
 
 const TopNav = () => {
     const {user} = useSelector((state: any) => state.auth);
@@ -20,11 +21,13 @@ const TopNav = () => {
     const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
 
     const {data} = useRequest("/notification");
+    const { setSelectedMenu } = usePersistentMenuState()
 
     const handleViewMore = (notification: any) => {
         setSelectedNotification(notification);
         setOpenDetailModal(true);
     };
+
 
     return (
         <div className="!relative">
@@ -44,7 +47,13 @@ const TopNav = () => {
 
                 <div className="hidden tablet:flex justify-center items-center gap-8">
                     {navLinks.map((link, idx) => (
-                        <Link href={link.path} key={idx}>
+                        <Link
+                            href={link.path}
+                            key={idx}
+                            onClick={() => {
+                                setSelectedMenu(link.title)
+                            }}
+                        >
                             <div
                                 className={`flex flex-col gap-2 items-center ${
                                     activeLink(link.path, true)
