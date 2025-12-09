@@ -22,7 +22,7 @@ interface GetChatParams {
 interface SendChatParams {
     message: string|null;
     token: string;
-    receiver_id: number;
+    receiver_id: number|null;
     media: string[]
 }
 
