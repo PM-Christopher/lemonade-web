@@ -29,7 +29,8 @@ export default function TribePage() {
     const dispatch = useAppDispatch();
     const {searchResults, tribes, loading, searchLoading} = useSelector((state: RootState) => state.tribe);
     const [showTooltip, setShowTooltip] = useState(false);
-    const { setActive, getActive } = usePersistentMenuState();
+    const [hasSearched, setHasSearched] = useState(false);
+    const {setActive, getActive} = usePersistentMenuState();
 
     // Always read tribe tab state from the "tribe" menu
     const persistedTribeType = getActive("tribe") ?? "discover";
@@ -44,13 +45,12 @@ export default function TribePage() {
 
     const isMobile = useMediaQuery({query: "(max-width: 640px)"});
 
-    // onChange handler that updates the local state and dispatches an action
     const handleTribeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setHasSearched(true);
         const value = e.target.value;
         setSearch(value);
         dispatch(searchTribe({data: {search: value}}));
     };
-
 
     const [modalFlag, setModalFlag] = useState(false);
 
@@ -161,35 +161,6 @@ export default function TribePage() {
         <MainLayout>
             <div
                 className="bg-white flex flex-col tablet:flex-row justify-between items-center border-y border-gray-200 px-6 py-3 gap-4">
-                {/* Tabs */}
-                {/*<div className="flex gap-8">*/}
-                {/*    {[*/}
-                {/*        {key: "discover", label: "Discover"},*/}
-                {/*        {key: "tln", label: "TLN Tribes"},*/}
-                {/*        {key: "mine", label: "My Tribes"},*/}
-                {/*    ].map((tab) => (*/}
-                {/*        <button*/}
-                {/*            key={tab.key}*/}
-                {/*            onClick={() => {*/}
-                {/*                changeTribeType(tab.key)*/}
-                {/*                setActive("tribe", tab.key)*/}
-                {/*            }}*/}
-                {/*            className={`flex flex-col items-center transition-all duration-200 ${*/}
-                {/*                tribeType === tab.key*/}
-                {/*                    ? "text-black-light"*/}
-                {/*                    : "text-gray-500 hover:text-gray-700"*/}
-                {/*            }`}*/}
-                {/*        >*/}
-                {/*            <span className="text-sm font-medium">{tab.label}</span>*/}
-                {/*            <div*/}
-                {/*                className={`h-[2px] mt-1 w-16 transition-all duration-200 ${*/}
-                {/*                    tribeType === tab.key ? "bg-step-color" : "bg-transparent"*/}
-                {/*                }`}*/}
-                {/*            />*/}
-                {/*        </button>*/}
-                {/*    ))}*/}
-                {/*</div>*/}
-
                 <div className="flex gap-4 sm:gap-6">
                     {[
                         {key: "discover", label: "Discover"},
@@ -339,30 +310,63 @@ export default function TribePage() {
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
                                             >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                      d="M9 5l7 7-7 7"/>
                                             </svg>
                                         </Link>
                                     ))}
                                 </div>
-                            ) : (
+                            ) : hasSearched && search !== "" ? (
+                                // After user has searched and nothing found
                                 <div className="flex flex-col items-center justify-center py-8 px-4">
-                                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                                    <div
+                                        className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
                                         <svg
                                             className="w-6 h-6 text-gray-400"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
                                         >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <p className="text-sm font-medium text-gray-900 mb-1">No tribes found</p>
+                                    <p className="text-xs text-gray-500 text-center">
+                                        Try a different name or keyword.
+                                    </p>
+                                </div>
+                            ) : (
+                                // Before user has ever searched
+                                <div className="flex flex-col items-center justify-center py-8 px-4">
+                                    <div
+                                        className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                                        <svg
+                                            className="w-6 h-6 text-gray-400"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                            />
                                         </svg>
                                     </div>
                                     <p className="text-sm font-medium text-gray-900 mb-1">No recent searches</p>
                                     <p className="text-xs text-gray-500 text-center">
-                                        Your search history will appear here
+                                        Your search history will appear here.
                                     </p>
                                 </div>
                             )}
                         </div>
+
                     </div>
                 </section>
             </div>

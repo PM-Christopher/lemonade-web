@@ -15,6 +15,7 @@ import {useRouter} from "next/navigation";
 import {EventsSkeleton} from "@/components/Skeletons";
 
 const Upcoming = ({events, loading}: { events: EventInterface[], loading: boolean }) => {
+    const router = useRouter();
     return (
         <>
             {
@@ -92,8 +93,11 @@ const Upcoming = ({events, loading}: { events: EventInterface[], loading: boolea
                         <p className="text-gray-400 text-sm mt-1">
                             Start creating events to engage your audience.
                         </p>
-                        <button className="mt-4 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg shadow hover:bg-primary-dark transition">
-                            Create Event
+                        <button
+                            onClick={() => router.push('/event/create-event')}
+                            className="mt-4 px-4 py-2 bg-gradient-green text-white text-sm font-medium rounded-lg shadow-green-inset hover:shadow-green-inset-strong transition"
+                        >
+                            Add Event
                         </button>
                     </div>
                 )}

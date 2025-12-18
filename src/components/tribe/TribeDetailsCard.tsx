@@ -22,7 +22,7 @@ type TribeDetailsInterface = {
     toggle: () => void,
     toggleJoin: () => void,
     tribe: TribeInterface | null,
-    share: (tribe: TribeInterface|null) => void
+    share: (tribe: TribeInterface | null) => void
     toggleAddMember: () => void,
     threads: any
 }
@@ -147,7 +147,8 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                                         onClick={toggleJoin}
                                     >
                                         <div className="flex gap-1 justify-center">
-                                            <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join tribe</p>
+                                            <p className="font-sans font-semi-normal text-[16px] leading-[19.2px]">Join
+                                                tribe</p>
                                         </div>
                                     </Button>
                                 )
@@ -159,10 +160,9 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                                     <div className="flex flex-col">
                                         <p className="font-sans font-semi-normal text-[16px] leading-[24px] text-black-light">Monetized
                                             Tribe</p>
-                                        <p className="font-sans font-normal text-[12px] text-text-grey leading-[14.4px]">Only
-                                            paid user
-                                            are
-                                            allowed.</p>
+                                        <p className="font-sans font-normal text-[12px] text-text-grey leading-[14.4px]">
+                                            Only paid users are allowed.
+                                        </p>
                                     </div>
                                     <div>
                                         <p className="font-sans font-semi-normal text-light-black text-[14px] leading-[21px]">N {formatNumberWithCommas(tribe?.membership_fee)}</p>

@@ -119,10 +119,11 @@ export const login = async (
             );
         }
     } catch (error: any) {
+        console.log(error);
         dispatch(
             updateToastifyReducer({
                 show: true,
-                message: "Error trying to login",
+                message: error?.response?.data?.message || "Error trying to login",
                 type: "error",
             })
         );

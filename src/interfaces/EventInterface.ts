@@ -7,6 +7,9 @@ export interface GuestListCardProps {
     name: string;
     type: string;
     id: number;
+    ticket_name: string
+    status: string
+    checked_in: boolean
 }
 
 export interface EventInterface {
@@ -32,6 +35,7 @@ export interface EventInterface {
     created_at: Date
     num_of_tickets: number
     minimum_price: number
+    tickets: TicketInterface[]
 }
 
 export interface TicketInterface {

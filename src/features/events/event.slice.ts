@@ -1,7 +1,16 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {EventInterface, PromotionInterface, TicketDetails, TicketInterface} from "@/interfaces/EventInterface";
 import {likeThread} from "@/features/tribes/tribe.slice";
+
+export type GuestListCardProps = {
+    id: number;
+    name: string;
+    type: string;
+    ticket_name: string;
+    status: string;
+    checked_in: boolean;
+};
 
 interface eventState {
     loading: boolean;
@@ -48,6 +57,10 @@ interface eventState {
     promotionLoading: boolean;
     generateLinkLoading: boolean;
     generatedLink: string | null;
+
+    searchTerm: string;
+    guestSearchResults: GuestListCardProps[];
+    guestSearchLoading: boolean;
 }
 
 const initialState: eventState = {
@@ -93,7 +106,11 @@ const initialState: eventState = {
     promotion: {},
     programDetails: {},
     generatedLink: null,
-    generateLinkLoading: false
+    generateLinkLoading: false,
+
+    searchTerm: "",
+    guestSearchResults: [],
+    guestSearchLoading: false,
 };
 
 const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, data}: {event_id: number, data: any}, { rejectWithValue }) => {
@@ -426,6 +443,21 @@ const searchAffiliateEvent = createAsyncThunk("event/searchAffiliateEvent", asyn
     }
 });
 
+const guestSearch = createAsyncThunk("event/guestSearch", async ({ id, q }: { q: any, id: number }, { rejectWithValue, signal }) => {
+    try {
+        const response = await axiosInstance.post(`/events/${id}/search-guest-list`, null, {
+            params: { q },
+            signal
+        });
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
 
 const eventSlice = createSlice({
     name: "event",
@@ -454,6 +486,13 @@ const eventSlice = createSlice({
         resetFilter: (state) => {
             state.filtered = false
             state.filteredEvents = []
+        },
+        setSearchTerm(state, action: PayloadAction<string>) {
+            state.searchTerm = action.payload;
+        },
+        clearSearch(state) {
+            state.guestSearchResults = [];
+            state.guestSearchLoading = false;
         },
     },
     extraReducers: (builder) => {
@@ -657,7 +696,19 @@ const eventSlice = createSlice({
         });
         builder.addCase(checkInGuest.fulfilled, (state, { payload }) => {
             state.checkInLoading = false;
-            state.guestDetails = payload?.data?.guest_details;
+            const updatedGuest = payload?.data?.guest_details;
+            // modify guest-list
+            state.guestDetails = updatedGuest
+            const index = state.guestList?.findIndex((g) => g.id === updatedGuest?.id) ?? -1
+            if (index !== -1) {
+                state.guestList[index] = {
+                    ...state.guestList[index],
+                    ...updatedGuest,
+                    id: updatedGuest?.id,
+                }
+            } else {
+                state.guestList = [...(state.guestList ?? []), updatedGuest]
+            }
         });
         builder.addCase(checkInGuest.rejected, (state) => {
             state.checkInLoading = false;
@@ -752,9 +803,21 @@ const eventSlice = createSlice({
             state.affiliateLoading = false;
         });
 
+        builder.addCase(guestSearch.pending, (state) => {
+            state.guestSearchLoading = true;
+        });
+        builder.addCase(guestSearch.fulfilled, (state, { payload }) => {
+            state.guestSearchLoading = false;
+            state.guestSearchResults = payload?.data?.guest_list
+            console.log(payload?.data?.guest_list)
+        });
+        builder.addCase(guestSearch.rejected, (state) => {
+            state.guestSearchLoading = false;
+        });
+
     }
 });
 
-export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets, getProgram, generateAffiliateLink, searchAffiliateEvent }
+export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter, setSearchTerm, clearSearch } = eventSlice.actions
+export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets, getProgram, generateAffiliateLink, searchAffiliateEvent, guestSearch }
 export default eventSlice.reducer;

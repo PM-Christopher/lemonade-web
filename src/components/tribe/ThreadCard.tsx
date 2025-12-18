@@ -304,6 +304,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 onToggleVisibility={() => null}
                 onLikeComment={() => null}
                 onReplyToComment={() => null}
+                thread={thread}
             />
 
             {/* Comment Form */}

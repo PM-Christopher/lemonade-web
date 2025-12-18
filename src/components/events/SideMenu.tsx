@@ -36,7 +36,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
         setMyEvent(!myEvent)
     }
 
-    const {data: ticketData, loading: ticketLoading} = useRequest(`/events/attendees/my-ticket/${ticketId}`)
+    const url = ticketId ? `/events/attendees/my-ticket/${ticketId}` : null
+    const {data: ticketData, loading: ticketLoading} = useRequest(url as any)
     const {data, loading} = useRequest(`/events/attendees/my-tickets`)
 
     return (

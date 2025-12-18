@@ -7,6 +7,9 @@ import moment from "moment";
 
 import { useAppDispatch } from "@/redux/hook";
 import {getInitials} from "@/lib/helper";
+import {Thread, TribeInterface, TribeThreadInterface} from "@/interfaces/TribeInterface";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
 
 interface Comment {
     id: number;
@@ -32,6 +35,7 @@ interface CommentsProps {
     onToggleVisibility: () => void;
     onLikeComment?: (commentId: number) => void;
     onReplyToComment?: (commentId: number, parentId?: number) => void;
+    thread: Thread | null
 }
 
 const CommentsSection: React.FC<CommentsProps> = ({ 
@@ -39,7 +43,8 @@ const CommentsSection: React.FC<CommentsProps> = ({
     isVisible, 
     onToggleVisibility,
     onLikeComment,
-    onReplyToComment 
+    onReplyToComment,
+    thread
 }) => {
     const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
@@ -53,6 +58,8 @@ const CommentsSection: React.FC<CommentsProps> = ({
 
         return () => clearInterval(interval);
     }, []);
+
+    const { user } = useSelector((state: RootState) => state.auth)
 
     const toggleReplies = (commentId: number) => {
         const newExpanded = new Set(expandedReplies);
@@ -113,7 +120,7 @@ const CommentsSection: React.FC<CommentsProps> = ({
                         <span className="text-xs text-gray-500">
                             {formatTimeAgo(comment.created_at)}
                         </span>
-                        {comment.owner && (
+                        {comment?.user_id === user?.id && (
                             <>
                                 <DotIcon className="w-1 h-1 text-gray-400" />
                                 <span className="text-xs text-light-green font-medium">Author</span>

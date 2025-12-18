@@ -34,7 +34,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, guestDe
     const handleCheckInGuest = () => {
         dispatch(checkInGuest({id, guest_id: guestDetails?.id})).then((res: any) => {
             if (res.payload.status) {
-                toggleMenu()
+                // toggleMenu()
                 toggleModal()
             }
         }).catch((err: any) => {
@@ -108,7 +108,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, guestDe
                                     <div className={'flex flex-col text-right'}>
                                         <p className={'font-normal text-[14px] text-text-grey'}>Ticket type</p>
                                         <p className={'font-medium text-[14px] text-light-black'}>
-                                            {formatStringUCFirst(guestDetails?.ticket?.type)}
+                                            {formatStringUCFirst(guestDetails?.ticket?.ticket_name)}
                                         </p>
                                     </div>
                                 </div>
@@ -129,7 +129,9 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, guestDe
                                                 <div
                                                     className={'px-[8px] py-[2px] rounded-[12px] flex items-center gap-[4px] bg-warning justify-center'}>
                                                     <ClockIcon/>
-                                                    <p className={'font-medium text-[14px] text-warning-bold'}>Pending</p>
+                                                    <p className={'font-medium text-[14px] text-warning-bold'}>
+                                                        Not Checked In
+                                                    </p>
                                                 </div>
                                             )
                                         }
@@ -145,7 +147,10 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, guestDe
                                 {
                                     !guestDetails?.checked_in && (
                                         <button
-                                            className={'bg-gradient-green h-[48px] text-white rounded-[12px] shadow-event-custom flex justify-center items-center'}
+                                            className={`
+                                            bg-gradient-green h-[48px] text-white rounded-[12px] shadow-green-inset hover:shadow-green-inset-strong flex justify-center items-center
+                                            ${checkInLoading && 'opacity-50 cursor-not-allowed'}
+                                            `}
                                             type={'button'}
                                             onClick={handleCheckInGuest}
                                             disabled={checkInLoading}

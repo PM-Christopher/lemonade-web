@@ -542,15 +542,30 @@ export const GuestListSkeleton = ({count}: { count: 4 }) => {
     return (
         <>
             {[...Array(count)].map((_, i) => (
-                <div className="p-4 flex justify-between pb-[16px] border-b-2 border-b-grey-20 animate-pulse" key={i}>
-                    <div className="flex gap-[8px]">
-                        <div className="flex flex-col gap-[6px]">
-                            <div className="h-[14px] w-[120px] bg-grey-20 rounded-md"></div>
-                            <div className="h-[12px] w-[60px] bg-grey-20 rounded-md"></div>
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm animate-pulse">
+                    <div className="min-w-0 w-full">
+                        {/* Name + ticket */}
+                        <div className="flex items-center gap-2">
+                            <div className="h-[14px] w-[140px] bg-gray-200 rounded" />
+                            <span className="h-1 w-1 rounded-full bg-gray-200" />
+                            <div className="h-[12px] w-[90px] bg-gray-200 rounded" />
+                        </div>
+
+                        {/* Status pill */}
+                        <div className="mt-2">
+                            <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 ring-1 ring-gray-200 bg-gray-50">
+                                <div className="h-1.5 w-1.5 rounded-full bg-gray-200" />
+                                <div className="h-[11px] w-[90px] bg-gray-200 rounded" />
+                            </div>
                         </div>
                     </div>
-                    <div className="w-[16px] h-[16px] bg-grey-20 rounded-md"></div>
+
+                    {/* Right chevron */}
+                    <div className="flex items-center gap-2">
+                        <div className="h-5 w-5 bg-gray-200 rounded" />
+                    </div>
                 </div>
+
             ))}
         </>
     )
@@ -1214,5 +1229,57 @@ export const ChatListCardSkeleton = ({count}: { count: number }) => {
                 </div>
             </div>
         ))
+    )
+}
+
+export const MyTicketSkeleton = () => {
+    return (
+        <div className="p-6 laptop:p-0 animate-pulse">
+            <div className="flex flex-col items-center mt-[16px] laptop:mt-10 bg-white laptop:bg-none p-6 laptop:p-0 rounded-[16px] laptop:rounded-none">
+                <div className="flex justify-center">
+                    <div className="w-[340px] flex flex-col gap-[16px]">
+                        {/* Event name */}
+                        <div className="h-[18px] w-[220px] bg-gray-200 rounded" />
+
+                        {/* Date + Time */}
+                        <div className="flex justify-between">
+                            <div className="flex flex-col gap-2">
+                                <div className="h-[12px] w-[40px] bg-gray-200 rounded" />
+                                <div className="h-[12px] w-[90px] bg-gray-200 rounded" />
+                            </div>
+                            <div className="flex flex-col gap-2 items-end">
+                                <div className="h-[12px] w-[40px] bg-gray-200 rounded" />
+                                <div className="h-[12px] w-[70px] bg-gray-200 rounded" />
+                            </div>
+                        </div>
+
+                        {/* Ticket type + Ticket ID */}
+                        <div className="flex justify-between">
+                            <div className="flex flex-col gap-2">
+                                <div className="h-[12px] w-[70px] bg-gray-200 rounded" />
+                                <div className="h-[12px] w-[100px] bg-gray-200 rounded" />
+                            </div>
+                            <div className="flex flex-col gap-2 items-end">
+                                <div className="h-[12px] w-[60px] bg-gray-200 rounded" />
+                                <div className="h-[12px] w-[110px] bg-gray-200 rounded" />
+                            </div>
+                        </div>
+
+                        {/* Venue */}
+                        <div className="flex justify-between">
+                            <div className="flex flex-col gap-2">
+                                <div className="h-[12px] w-[45px] bg-gray-200 rounded" />
+                                <div className="h-[12px] w-[200px] bg-gray-200 rounded" />
+                            </div>
+                        </div>
+
+                        {/* QR Code */}
+                        <div className="flex justify-center items-center mt-[94px] laptop:mt-[48px]">
+                            <div className="w-[240px] h-[240px] bg-gray-200 rounded-[12px]" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }

@@ -29,6 +29,7 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FlatButton} from "@/components/global/FlatButton";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {getTimeZones} from "@/lib/helper";
 
 interface SocialMediaHandles {
     instagram: string;
@@ -292,6 +293,8 @@ const CreateEventPage = () => {
         return now;
     };
 
+    const timeZones = getTimeZones()
+
     return (
         <MainLayout>
             <section className="bg-white laptop:bg-light_grey pb-10">
@@ -550,8 +553,10 @@ const CreateEventPage = () => {
                                     }}
                                 >
                                     <option value="">Select time zone</option>
-                                    {timezones.map((timezone, index) => (
-                                        <option value={timezone.value}>{timezone.label}</option>
+                                    {timeZones.map((timezone, index) => (
+                                        <option value={timezone.timeZone} key={index}>
+                                            {timezone.timeZone} - {timezone.gmt}
+                                        </option>
                                     ))}
                                 </select>
                                 {formik.touched.time_zone && formik.errors.time_zone ? (

@@ -1,4 +1,7 @@
 import moment from 'moment';
+import {aryIanaTimeZones} from "../../timezones";
+import ct from "countries-and-timezones";
+const displayRegion = new Intl.DisplayNames(["en"], { type: "region" });
 
 export const formatName = (name: string) => {
     if(name) {
@@ -90,4 +93,55 @@ export const getInitials = (name?: string | null): string => {
         .split(/\s+/) // split by one or more spaces
         .map(word => word.charAt(0).toUpperCase())
         .join("");
+};
+
+const getOffsetMinutes = (timeZone: string, date = new Date()) => {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone,
+        timeZoneName: "longOffset", // e.g. "GMT+01:00"
+    }).formatToParts(date);
+
+    const raw = parts.find((p) => p.type === "timeZoneName")?.value ?? "GMT"; // "GMT", "GMT+01:00", "GMT-05:00"
+    const m = raw.match(/^GMT([+-])(\d{2}):(\d{2})$/);
+
+    if (!m) return 0; // "GMT" => 0
+    const sign = m[1] === "-" ? -1 : 1;
+    const hours = parseInt(m[2], 10);
+    const mins = parseInt(m[3], 10);
+
+    return sign * (hours * 60 + mins);
+};
+
+const getGmtLabel = (offsetMinutes: number) => {
+    const sign = offsetMinutes < 0 ? "-" : "+";
+    const abs = Math.abs(offsetMinutes);
+    const hh = String(Math.floor(abs / 60)).padStart(2, "0");
+    const mm = String(abs % 60).padStart(2, "0");
+    return `GMT (${sign}${hh}:${mm})`;
+};
+
+export const getTimeZones = () => {
+    const date = new Date();
+
+    const mapped = aryIanaTimeZones.map((timeZone) => {
+        const info = ct.getTimezone(timeZone);
+        const countries =
+            info?.countries?.map((code) => displayRegion.of(code) ?? code) ?? [];
+
+        const offsetMinutes = getOffsetMinutes(timeZone, date);
+
+        return {
+            country: countries[0] ?? "Unknown",
+            timeZone,
+            offsetMinutes,
+            gmt: getGmtLabel(offsetMinutes),
+            now: date.toLocaleString("en-GB", { timeZone }),
+        };
+    });
+
+    // Sort by GMT offset (then by timezone name to keep it stable)
+    mapped.sort((a, b) => a.offsetMinutes - b.offsetMinutes || a.timeZone.localeCompare(b.timeZone));
+
+    // Keep only GMT -12:00 .. +12:00 (remove this filter if you want ALL)
+    return mapped.filter((x) => x.offsetMinutes >= -12 * 60 && x.offsetMinutes <= 12 * 60);
 };
