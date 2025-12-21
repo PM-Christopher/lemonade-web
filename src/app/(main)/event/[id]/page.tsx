@@ -23,16 +23,37 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 import useNxtSearchParams from "@/hooks/useSearchParams";
 import {useAppDispatch} from "@/redux/hook";
 import {RootState} from "@/redux/store";
-import {getEvent} from "@/features/events/event.slice";
+import {getEvent, setEventReferral} from "@/features/events/event.slice";
 import {EventDetailsSkeleton} from "@/components/Skeletons";
+import {useSearchParams} from "next/navigation";
 
 const EventDetailsPage = ({params}: { params: { id: number } }) => {
     const dispatch = useAppDispatch()
     const {event, loading} = useSelector((state: RootState) => state.event)
 
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const code = searchParams.get("referral");
+        if (!code) return;
+
+        const eventId = Number(params.id);
+
+        // Store in redux
+        dispatch(setEventReferral({ eventId, code }));
+
+        // Persist until payment completes (survives refresh)
+        sessionStorage.setItem(`event_referral:${eventId}`, code);
+    }, [dispatch, params.id, searchParams]);
+
     useEffect(() => {
         dispatch(getEvent({id: params.id}))
     }, []);
+
+    const referralFromUrl = searchParams.get("referral");
+    const buyTicketHref = referralFromUrl
+        ? `/event/${event?.id}/buy-ticket?referral=${encodeURIComponent(referralFromUrl)}`
+        : `/event/${event?.id}/buy-ticket`;
 
     return (
         <MainLayout>
@@ -133,7 +154,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
 
                                         {/* CTA */}
                                         <div className="hidden laptop:flex pt-6">
-                                            <Link href={`/event/${event?.id}/buy-ticket`} passHref>
+                                            <Link href={buyTicketHref} passHref>
                                                 <Button
                                                     className="bg-gradient-green hover:opacity-90 w-[231px] h-[56px] rounded-[12px] border-b-2 border-transparent shadow-green-inset hover:shadow-green-inset-strong transition-all duration-300 flex items-center justify-center">
                                                     <span className="font-sans font-medium text-[16px] leading-[19.2px] text-white">
@@ -187,14 +208,9 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                     </div>
 
                                     <div className="mt-[40px]">
-                                        <Link href={`/event/${event?.id}/buy-ticket`}>
+                                        <Link href={buyTicketHref}>
                                             <Button
-                                                className="
-              bg-gradient-green hover:opacity-90
-              w-[231px] h-[56px] py-3.5 px-6 gap-2
-              rounded-[12px] border-b-2 border-transparent shadow-custom-bottom
-              transition-all duration-300
-            "
+                                                className="bg-gradient-green hover:opacity-90 w-[231px] h-[56px] py-3.5 px-6 gap-2 rounded-[12px] border-b-2 border-transparent shadow-custom-bottomtransition-all duration-300"
                                             >
                                                 <p className="font-sans font-medium text-[16px] leading-[19.2px] text-white">
                                                     Buy ticket from ₦{event?.minimum_price ?? '2,000'}

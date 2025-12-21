@@ -75,7 +75,9 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({isOpen, toggle, i
 
                             <div className="mt-2 flex items-center gap-2 rounded-2xl bg-light-tint-3 p-3">
                                 <p className="min-w-0 flex-1 truncate font-semi-normal text-light-black">
-                                    {item}
+                                    {
+                                        process.env.NEXT_PUBLIC_BASE_URL+"/"+item
+                                    }
                                 </p>
 
                                 <div className="shrink-0 flex items-center gap-2">

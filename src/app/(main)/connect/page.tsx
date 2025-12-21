@@ -173,7 +173,7 @@ const ConnectPage = () => {
                         <div
                             className="w-[375px] h-[648px] border-[1px] bg-white flex flex-col rounded-tl-[16px] rounded-bl-[16px]">
                             <div className="p-[16px]">
-                                <p className="font-bold text-[18px] text-black-light">Chats</p>
+                                <p className="font-bold font-ruso text-[18px] text-black-light">Chats</p>
                             </div>
                             <div className="p-[8px] px-[16px]">
                                 <div

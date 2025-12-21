@@ -15,7 +15,7 @@ const EmptyChat = () => {
             </div>
 
             <div className="flex justify-center items-center h-screen bg-white rounded-tr-[16px] rounded-br-[16px] p-[16px] mb-16">
-                <p className="font-semibold text-[20px]">Open chat to begin messaging</p>
+                <p className="font-semibold text-[20px] font-ruso">Open chat to begin messaging</p>
             </div>
 
             <div className="absolute bottom-0 left-0 w-full text-white p-[16px] px-[13px] rounded-br-[16px]">

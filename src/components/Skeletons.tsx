@@ -1283,3 +1283,113 @@ export const MyTicketSkeleton = () => {
         </div>
     )
 }
+
+export const EventFormSkeleton = () => {
+    return (
+        <form>
+            <div className="bg-white mt-10 w-[640px] p-[48px] rounded-[12px] flex flex-col animate-pulse">
+                {/* Header */}
+                <div className="h-3 w-28 bg-gray-200 rounded" />
+
+                {/* Uploader */}
+                <div className="mt-6 w-full h-[160px] bg-gray-200 rounded-[12px]" />
+
+                {/* Event name */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-24 bg-gray-200 rounded" />
+                    <div className="h-12 w-full bg-gray-200 rounded-xl" />
+                </div>
+
+                {/* Description */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-32 bg-gray-200 rounded" />
+                    <div className="h-[131px] w-full bg-gray-200 rounded-xl" />
+                </div>
+
+                {/* Category */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-28 bg-gray-200 rounded" />
+                    <div className="h-12 w-full bg-gray-200 rounded-xl" />
+                </div>
+
+                {/* EVENT TYPE */}
+                <div className="mt-[48px] h-3 w-24 bg-gray-200 rounded" />
+
+                {/* Physical / Online buttons */}
+                <div className="flex gap-2 mt-[16px]">
+                    <div className="h-[48px] w-[140px] bg-gray-200 rounded-[12px]" />
+                    <div className="h-[48px] w-[140px] bg-gray-200 rounded-[12px]" />
+                </div>
+
+                {/* Location / Online fields placeholder */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-28 bg-gray-200 rounded" />
+                    <div className="h-12 w-full bg-gray-200 rounded-[12px]" />
+                </div>
+
+                {/* Time zone */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-32 bg-gray-200 rounded" />
+                    <div className="h-12 w-full bg-gray-200 rounded-xl" />
+                </div>
+
+                {/* Start date */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-24 bg-gray-200 rounded" />
+                    <div className="flex justify-between gap-3">
+                        <div className="h-[40px] w-full bg-gray-200 rounded-[12px]" />
+                        <div className="h-[40px] w-full bg-gray-200 rounded-[12px]" />
+                    </div>
+                </div>
+
+                {/* End date */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-24 bg-gray-200 rounded" />
+                    <div className="flex justify-between gap-3">
+                        <div className="h-[40px] w-full bg-gray-200 rounded-[12px]" />
+                        <div className="h-[40px] w-full bg-gray-200 rounded-[12px]" />
+                    </div>
+                </div>
+
+                {/* AFFILIATE PROGRAM */}
+                <div className="mt-[48px] h-3 w-36 bg-gray-200 rounded" />
+
+                {/* Affiliate toggle row */}
+                <div className="flex justify-between mt-[28px] items-start gap-4">
+                    <div className="flex gap-2 w-full">
+                        <div className="w-6 h-6 bg-gray-200 rounded" />
+                        <div className="flex flex-col gap-2 w-full">
+                            <div className="h-4 w-[220px] bg-gray-200 rounded" />
+                            <div className="h-3 w-[260px] bg-gray-200 rounded" />
+                        </div>
+                    </div>
+                    <div className="w-12 h-6 bg-gray-200 rounded-full" />
+                </div>
+
+                {/* Commission field placeholder */}
+                <div className="grid gap-2 mt-[24px]">
+                    <div className="h-3 w-32 bg-gray-200 rounded" />
+                    <div className="h-12 w-full bg-gray-200 rounded-xl" />
+                    <div className="h-3 w-[260px] bg-gray-200 rounded" />
+                </div>
+
+                {/* SOCIAL DETAILS */}
+                <div className="mt-[48px] h-3 w-44 bg-gray-200 rounded" />
+
+                {/* Social inputs (5 rows) */}
+                <div className="mt-[16px] flex flex-col gap-3">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-3 bg-gray-200 p-2 px-[12px] rounded-[12px]">
+                            <div className="w-5 h-5 bg-gray-300 rounded" />
+                            <div className="h-5 w-full bg-gray-300 rounded" />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Submit button */}
+                <div className="mt-[24px] h-[48px] w-full bg-gray-200 rounded-[12px]" />
+            </div>
+        </form>
+
+    )
+}

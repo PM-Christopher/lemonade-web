@@ -17,12 +17,13 @@ import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 import {formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
+import {FaNairaSign} from "react-icons/fa6";
 
 const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
     const [copied, setCopied] = useState(false);
     const dispatch = useAppDispatch();
     const router = useRouter()
-    const { loading, programDetails } = useSelector((state: RootState) => state.event)
+    const {loading, programDetails} = useSelector((state: RootState) => state.event)
 
     const handleCopy = (textToCopy: string) => {
         navigator.clipboard.writeText(textToCopy).then(() => {
@@ -111,14 +112,16 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                                 <div
                                                     className="p-[12px] rounded-[12px] gap-[8px] bg-light-tint-3 mt-[8px] flex items-center">
                                                     <p className="w-[251px] laptop:w-[500px] font-semi-normal text-light-black truncate">
-                                                        {programDetails?.events?.affiliate_link || "No affiliate link"}
+                                                        {
+                                                            process.env.NEXT_PUBLIC_APP_URL + "/" + programDetails?.events?.affiliate_link || "No affiliate link"
+                                                        }
                                                     </p>
                                                     <StrikeLine/>
                                                     <CopyIcon
                                                         className="w-[20px] h-[20px] cursor-pointer"
                                                         onClick={() =>
                                                             handleCopy(
-                                                                `${process.env.NEXT_PUBLIC_APP_URL}/event/${programDetails?.events?.id}/123432`
+                                                                `${process.env.NEXT_PUBLIC_APP_URL + "/" + programDetails?.events?.affiliate_link}`
                                                             )
                                                         }
                                                     />
@@ -140,7 +143,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                         Total commission
                                     </p>
                                     <p className="font-sans font-semibold text-[18px] tracking-custom leading-[27px]">
-                                        N {programDetails?.events?.breakdown?.total_commission || 0}
+                                        ₦ {formatNumberWithCommas(programDetails?.events?.breakdown?.total_commissions) || 0}
                                     </p>
                                     <div className="border-t-mid-grey border-t-[1px] my-[16px]"></div>
                                     <p className="font-sans font-normal text-text-grey text-[14px]">
@@ -168,12 +171,11 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
 
                                                 const progressWidth =
                                                     commission?.stock_type === "unlimited"
-                                                        ? checkinCount > 0
-                                                            ? "100%"
-                                                            : "0%"
+                                                        ? "100%"
                                                         : totalStock > 0
                                                             ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
-                                                            : "0%"
+                                                            : "0%";
+
                                                 return (
                                                     <div>
                                                         <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
@@ -190,7 +192,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                                         <div className="w-full bg-gray-200 rounded-full h-[8px] mt-[4px]">
                                                             <div
                                                                 className="bg-gradient-progress-green h-[8px] rounded-full"
-                                                                style={{ width: progressWidth }}
+                                                                style={{width: progressWidth}}
                                                             ></div>
                                                         </div>
                                                     </div>
@@ -211,18 +213,14 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
 
                                                 const progressWidth =
                                                     ticket?.stock_type === "unlimited"
-                                                        ? checkinCount > 0
-                                                            ? "100%"
-                                                            : "0%"
+                                                        ? "100%"
                                                         : totalStock > 0
                                                             ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
-                                                            : "0%"
+                                                            : "0%";
 
                                                 const percentageText =
                                                     ticket?.stock_type === "unlimited"
-                                                        ? checkinCount > 0
-                                                            ? "100%"
-                                                            : "0%"
+                                                        ? "100%"
                                                         : totalStock > 0
                                                             ? `${Math.min((checkinCount / totalStock) * 100, 100).toFixed(0)}%`
                                                             : "0%";

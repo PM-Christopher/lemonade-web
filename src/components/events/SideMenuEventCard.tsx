@@ -9,9 +9,6 @@ import {formatDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
 
 const SideMenuEventCard = ({ event, toggle, ticket_id }: { event: EventInterface, toggle: (id: number) => void, ticket_id: number }) => {
 
-    console.log({
-        tickets: event.tickets
-    })
 
     return (
         <div className="p-4 flex justify-between cursor-pointer" onClick={() => toggle(ticket_id)}>
@@ -31,7 +28,7 @@ const SideMenuEventCard = ({ event, toggle, ticket_id }: { event: EventInterface
                     <div className="flex items-center gap-[4px]">
                         <CalendarIcon/>
                         <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">
-                            {formatDate(event.start_date)}
+                            {formatDate(event?.start_date)}
                         </p>
                         <DotFilledIcon className="text-text-grey w-[10px]"/>
                         <p className="font-sans font-semi-normal text-text-grey text-[12px] leading-[14.4px]">

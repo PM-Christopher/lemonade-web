@@ -1,12 +1,12 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import MultipleTicketCard from "@/components/events/MultipleTicketCard";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import Switch from "react-switch";
 import {useSelector} from "react-redux";
 import {TicketDetails} from "@/interfaces/EventInterface";
@@ -25,10 +25,12 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
     const [timeLeft, setTimeLeft] = useState(COUNTDOWN_DURATION); // 10 minutes in seconds
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const pathname = usePathname()
+    const searchParams = useSearchParams();
     const handleChange = () => {
         setChecked(!checked);
     };
-    const { tickets, total, loading } = useSelector((state: RootState) => state.event);
+    const {tickets, total, loading, eventReferrals} = useSelector((state: RootState) => state.event);
 
     const ticketSchema = yup.object({
         fullname: yup.string().required("Fullname is required"),
@@ -56,6 +58,12 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                     .required(),
         }),
     });
+
+    const referralFromUrl = searchParams.get("referral");
+    const assignTicketHref = referralFromUrl
+        ? `/event/${params.id}/buy-ticket?referral=${encodeURIComponent(referralFromUrl)}`
+        : `/event/${params.id}/buy-ticket`;
+
 
     const formik = useFormik({
         initialValues: {
@@ -88,6 +96,7 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                     assign_multiple: true,
                     fullname: values.fullname,
                     email: values.email,
+                    referral: referralFromUrl ?? null
                 };
             } else {
                 formValues = {
@@ -96,9 +105,10 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                     assign_multiple: false,
                     fullname: values.fullname,
                     email: values.email,
+                    referral: referralFromUrl ?? null
                 };
             }
-            dispatch(buyTicket({ event_id: params.id, data: formValues })).then((res: any) => {
+            dispatch(buyTicket({event_id: params.id, data: formValues})).then((res: any) => {
                 if (res.payload.data.completed) {
                     const data = {
                         completed: true
@@ -121,34 +131,43 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
 
     const key = `ticketExpiryTime_${params.id}`;
 
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
     useEffect(() => {
         const savedExpiry = localStorage.getItem(key);
-        let expiryTime: number;
 
-        if (savedExpiry) {
-            expiryTime = parseInt(savedExpiry, 10);
-        } else {
-            expiryTime = Date.now() + COUNTDOWN_DURATION * 1000
-            localStorage.setItem(key, expiryTime.toString());
-        }
+        const expiryTime =
+            savedExpiry && !Number.isNaN(parseInt(savedExpiry, 10))
+                ? parseInt(savedExpiry, 10)
+                : Date.now() + COUNTDOWN_DURATION * 1000;
+
+        localStorage.setItem(key, String(expiryTime));
+
+        const clear = () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
 
         const updateTimer = () => {
-            const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000))
+            const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
             setTimeLeft(remaining);
 
-            // if time runs out, clear and redirect
             if (remaining <= 0) {
-                clearInterval(intervalId);
+                clear();
                 localStorage.removeItem(key);
-                router.push(`/event/${params.id}/buy-ticket`);
+                router.push(assignTicketHref);
             }
-        }
+        };
 
         updateTimer();
-        const intervalId = setInterval(updateTimer, 1000)
+        intervalRef.current = setInterval(updateTimer, 1000);
 
-        return () => clearInterval(intervalId);
-    }, [router, params.id]);
+        return () => {
+            clear();
+        };
+    }, [router, params.id, key]);
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
@@ -164,6 +183,28 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
             quantity: 1 // optional: reset quantity to 1 since each is now a unit
         }))
     );
+
+    const eventId = String(params.id);
+
+    const referralFromState = useSelector(
+        (state: RootState) => state.event?.eventReferrals?.[eventId]
+    );
+
+    useEffect(() => {
+        const referralInUrl = searchParams.get("referral");
+
+        // If URL already has it, do nothing
+        if (referralInUrl) return;
+
+        // If state doesn't have it, do nothing
+        if (!referralFromState) return;
+
+        // Preserve any existing query params, then set referral
+        const nextParams = new URLSearchParams(searchParams.toString());
+        nextParams.set("referral", referralFromState);
+
+        router.replace(`${pathname}?${nextParams.toString()}`);
+    }, [pathname, router, searchParams, referralFromState]);
 
     return (
         <MainLayout>

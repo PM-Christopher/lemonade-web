@@ -6,7 +6,7 @@ import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 
-export const SingleFileUploader = ({ setField, image, title, type, length="single" }: {setField: any, image: string, title: string, type: string, length: string|null}) => {
+export const SingleFileUploader = ({ setField, image, title, type, length="single" }: {setField: any, image?: string, title: string, type: string, length: string|null}) => {
     const dispatch = useAppDispatch()
     const [elementImage, setElementImage] = useState("")
 

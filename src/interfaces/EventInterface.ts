@@ -22,11 +22,11 @@ export interface EventInterface {
     event_type: string
     location: string
     time_zone: string
-    start_date: Date
-    end_date: Date
+    start_date: string|Date
+    end_date: string|Date
     affiliate_program: boolean
     commission: number
-    socials?: Social[]
+    socials: Social[]
     qr_code?: string
     owns: boolean
     created_by: {
@@ -36,6 +36,9 @@ export interface EventInterface {
     num_of_tickets: number
     minimum_price: number
     tickets: TicketInterface[]
+    hosting_platform?: string
+    meeting_link?: string
+    meeting_passcode?: string
 }
 
 export interface TicketInterface {

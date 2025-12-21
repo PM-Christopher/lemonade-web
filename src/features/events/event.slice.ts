@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
 import {EventInterface, PromotionInterface, TicketDetails, TicketInterface} from "@/interfaces/EventInterface";
 import {likeThread} from "@/features/tribes/tribe.slice";
+import {RootState} from "@/redux/store";
 
 export type GuestListCardProps = {
     id: number;
@@ -49,6 +50,7 @@ interface eventState {
     programDetails: any
 
     eventsLoading: boolean;
+    editEventLoading: boolean;
     filteredLoading: boolean;
     affiliateLoading: boolean;
     affiliateDataLoading: boolean;
@@ -61,6 +63,7 @@ interface eventState {
     searchTerm: string;
     guestSearchResults: GuestListCardProps[];
     guestSearchLoading: boolean;
+    eventReferrals?: Record<string, string>;
 }
 
 const initialState: eventState = {
@@ -83,6 +86,7 @@ const initialState: eventState = {
         upcoming: [],
     },
     eventsLoading: false,
+    editEventLoading: false,
     filteredLoading: false,
     organizer_events: {
         drafts: [],
@@ -111,9 +115,13 @@ const initialState: eventState = {
     searchTerm: "",
     guestSearchResults: [],
     guestSearchLoading: false,
+    eventReferrals: {},
 };
 
-const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, data}: {event_id: number, data: any}, { rejectWithValue }) => {
+const buyTicket = createAsyncThunk("event/buyTicket", async ({event_id, data}: {
+    event_id: number,
+    data: any
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.post(`/events/attendees/${event_id}/assign-tickets`, data);
         return response.data;
@@ -125,9 +133,9 @@ const buyTicket = createAsyncThunk("event/buyTicket", async ({ event_id, data}: 
     }
 });
 
-const createEvent = createAsyncThunk("event/createEvent", async ({ data }: { data: any }, { rejectWithValue }) => {
+const createEvent = createAsyncThunk("event/createEvent", async ({data}: { data: any }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.post(`/events/create-event`, data );
+        const response = await axiosInstance.post(`/events/create-event`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -137,15 +145,12 @@ const createEvent = createAsyncThunk("event/createEvent", async ({ data }: { dat
     }
 });
 
-const editEvent = createAsyncThunk("event/editEvent", async ({ data, token, id }: { data: any, token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const editEvent = createAsyncThunk("event/editEvent", async ({data, id}: {
+    data: any,
+    id: number
+}, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.put(`/events/update-event/${id}`, data, { headers });
+        const response = await axiosInstance.put(`/events/update-event/${id}`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -155,7 +160,7 @@ const editEvent = createAsyncThunk("event/editEvent", async ({ data, token, id }
     }
 });
 
-const publishEvent = createAsyncThunk("event/publishEvent", async ({ id }: { id: number }, { rejectWithValue }) => {
+const publishEvent = createAsyncThunk("event/publishEvent", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.patch(`/events/publish-event/${id}`);
         return response.data;
@@ -167,7 +172,7 @@ const publishEvent = createAsyncThunk("event/publishEvent", async ({ id }: { id:
     }
 });
 
-const getEvents = createAsyncThunk("event/getEvents", async (_, { rejectWithValue }) => {
+const getEvents = createAsyncThunk("event/getEvents", async (_, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/attendees`);
         return response.data;
@@ -179,26 +184,38 @@ const getEvents = createAsyncThunk("event/getEvents", async (_, { rejectWithValu
     }
 });
 
-const getEvent = createAsyncThunk("event/getEvent", async ({ id }: { id: number }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.get(`/events/${id}`);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+const getEvent = createAsyncThunk(
+    "event/getEvent",
+    async ({id}: { id: number },
+           {rejectWithValue, signal}) => {
+        try {
+            const response = await axiosInstance.get(`/events/${id}`, {
+                signal,
+                params: {
+                    _ts: Date.now()
+                },
+                headers: {
+                    "Cache-Control": "no-cache",
+                    Pragma: "no-cache"
+                }
+            });
+            return response.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data);
         }
-        return rejectWithValue(err.response.data);
-    }
-});
+    });
 
-const searchEvent = createAsyncThunk("event/searchEvent", async ({ data}: { data: any }, { rejectWithValue }) => {
+const searchEvent = createAsyncThunk("event/searchEvent", async ({data}: { data: any }, {rejectWithValue}) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
     };
 
     try {
-        const response = await axiosInstance.post(`/events/search-events`, data, { headers });
+        const response = await axiosInstance.post(`/events/search-events`, data, {headers});
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -208,25 +225,9 @@ const searchEvent = createAsyncThunk("event/searchEvent", async ({ data}: { data
     }
 });
 
-const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
-    try {
-        const response = await axiosInstance.get(`/events/get-payment-setting`, { headers });
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", async ({ token, data }: { token: string, data: any }, { rejectWithValue }) => {
+const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async ({token}: {
+    token: string
+}, {rejectWithValue}) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -234,7 +235,7 @@ const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", asyn
     };
 
     try {
-        const response = await axiosInstance.patch(`/events/update-payment-setting`, data, { headers });
+        const response = await axiosInstance.get(`/events/get-payment-setting`, {headers});
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -244,7 +245,31 @@ const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", asyn
     }
 });
 
-const filterEvent = createAsyncThunk("event/filterEvent", async ({ token, data }: { token: string, data: any }, { rejectWithValue }) => {
+const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", async ({token, data}: {
+    token: string,
+    data: any
+}, {rejectWithValue}) => {
+    const headers = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axiosInstance.patch(`/events/update-payment-setting`, data, {headers});
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const filterEvent = createAsyncThunk("event/filterEvent", async ({token, data}: {
+    token: string,
+    data: any
+}, {rejectWithValue}) => {
     const headers = {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -253,7 +278,7 @@ const filterEvent = createAsyncThunk("event/filterEvent", async ({ token, data }
 
     try {
         let url = `/events/filter-event?category=${data.category}&period=${data.period}&start_date=${data.start_date}&end_date=${data.end_date}&location=${data.location}`
-        const response = await axiosInstance.get(url, { headers });
+        const response = await axiosInstance.get(url, {headers});
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -263,7 +288,7 @@ const filterEvent = createAsyncThunk("event/filterEvent", async ({ token, data }
     }
 });
 
-const getOrganizerEvents = createAsyncThunk("event/getOrganizerEvents", async (_, { rejectWithValue }) => {
+const getOrganizerEvents = createAsyncThunk("event/getOrganizerEvents", async (_, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events`);
         return response.data;
@@ -275,7 +300,7 @@ const getOrganizerEvents = createAsyncThunk("event/getOrganizerEvents", async (_
     }
 });
 
-const getAffiliateEvents = createAsyncThunk("event/getAffiliateEvents", async (_, { rejectWithValue }) => {
+const getAffiliateEvents = createAsyncThunk("event/getAffiliateEvents", async (_, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/affiliate`);
         return response.data;
@@ -287,7 +312,7 @@ const getAffiliateEvents = createAsyncThunk("event/getAffiliateEvents", async (_
     }
 });
 
-const getAffiliateData = createAsyncThunk("event/getAffiliateData", async (_, { rejectWithValue }) => {
+const getAffiliateData = createAsyncThunk("event/getAffiliateData", async (_, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/affiliate/data`);
         return response.data;
@@ -299,7 +324,9 @@ const getAffiliateData = createAsyncThunk("event/getAffiliateData", async (_, { 
     }
 });
 
-const getEventTicketData = createAsyncThunk("event/getEventTicketData", async ({ id }: { id: number }, { rejectWithValue }) => {
+const getEventTicketData = createAsyncThunk("event/getEventTicketData", async ({id}: {
+    id: number
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/attendees/${id}/tickets`);
         return response.data;
@@ -311,7 +338,7 @@ const getEventTicketData = createAsyncThunk("event/getEventTicketData", async ({
     }
 });
 
-const getGuestList = createAsyncThunk("event/getGuestList", async ({ id }: { id: number }, { rejectWithValue }) => {
+const getGuestList = createAsyncThunk("event/getGuestList", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/${id}/guest-list`);
         return response.data;
@@ -323,7 +350,10 @@ const getGuestList = createAsyncThunk("event/getGuestList", async ({ id }: { id:
     }
 });
 
-const getGuestListDetails = createAsyncThunk("event/getGuestListDetails", async ({ id, guest_id }: { id: number, guest_id: number|null }, { rejectWithValue }) => {
+const getGuestListDetails = createAsyncThunk("event/getGuestListDetails", async ({id, guest_id}: {
+    id: number,
+    guest_id: number | null
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/${id}/${guest_id}/guest-details`);
         return response.data;
@@ -335,7 +365,10 @@ const getGuestListDetails = createAsyncThunk("event/getGuestListDetails", async 
     }
 });
 
-const checkInGuest = createAsyncThunk("event/checkInGuest", async ({ id, guest_id }: { id: number, guest_id: number|null }, { rejectWithValue }) => {
+const checkInGuest = createAsyncThunk("event/checkInGuest", async ({id, guest_id}: {
+    id: number,
+    guest_id: number | null
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.patch(`/events/${id}/${guest_id}/check-in`);
         return response.data;
@@ -347,7 +380,7 @@ const checkInGuest = createAsyncThunk("event/checkInGuest", async ({ id, guest_i
     }
 });
 
-const getPromotions = createAsyncThunk("event/getPromotions", async (_, { rejectWithValue }) => {
+const getPromotions = createAsyncThunk("event/getPromotions", async (_, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/promotions`);
         return response.data;
@@ -359,7 +392,10 @@ const getPromotions = createAsyncThunk("event/getPromotions", async (_, { reject
     }
 });
 
-const payForPromotion = createAsyncThunk("event/payForPromotion", async ({id, data}: {id: number, data: any}, { rejectWithValue }) => {
+const payForPromotion = createAsyncThunk("event/payForPromotion", async ({id, data}: {
+    id: number,
+    data: any
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.post(`/events/${id}/promote-event`, data);
         return response.data;
@@ -371,7 +407,10 @@ const payForPromotion = createAsyncThunk("event/payForPromotion", async ({id, da
     }
 });
 
-const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({ id, promotion_id }: { id: number, promotion_id:number }, { rejectWithValue }) => {
+const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({id, promotion_id}: {
+    id: number,
+    promotion_id: number
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/${id}/${promotion_id}/event-promotion`);
         return response.data;
@@ -383,7 +422,7 @@ const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({ i
     }
 });
 
-const getEventTickets = createAsyncThunk("event/getEventTickets", async ({id}: {id:number}, { rejectWithValue }) => {
+const getEventTickets = createAsyncThunk("event/getEventTickets", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/${id}/event-tickets`);
         return response.data;
@@ -395,7 +434,10 @@ const getEventTickets = createAsyncThunk("event/getEventTickets", async ({id}: {
     }
 });
 
-const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, data}: {id:number, data: any}, { rejectWithValue }) => {
+const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, data}: {
+    id: number,
+    data: any
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.patch(`/events/${id}/edit-tickets`, data);
         return response.data;
@@ -407,7 +449,7 @@ const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, 
     }
 });
 
-const getProgram = createAsyncThunk("event/getProgram", async ({ id }: { id: number }, { rejectWithValue }) => {
+const getProgram = createAsyncThunk("event/getProgram", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.get(`/events/affiliate/${id}`);
         return response.data;
@@ -419,7 +461,9 @@ const getProgram = createAsyncThunk("event/getProgram", async ({ id }: { id: num
     }
 });
 
-const generateAffiliateLink = createAsyncThunk("event/generateAffiliateLink", async ({ id }: { id: number }, { rejectWithValue }) => {
+const generateAffiliateLink = createAsyncThunk("event/generateAffiliateLink", async ({id}: {
+    id: number
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.post(`/events/affiliate/${id}/generate-link`);
         return response.data;
@@ -431,7 +475,9 @@ const generateAffiliateLink = createAsyncThunk("event/generateAffiliateLink", as
     }
 });
 
-const searchAffiliateEvent = createAsyncThunk("event/searchAffiliateEvent", async ({ data }: { data: any }, { rejectWithValue }) => {
+const searchAffiliateEvent = createAsyncThunk("event/searchAffiliateEvent", async ({data}: {
+    data: any
+}, {rejectWithValue}) => {
     try {
         const response = await axiosInstance.post(`/events/search-affiliate-events`, data);
         return response.data;
@@ -443,10 +489,13 @@ const searchAffiliateEvent = createAsyncThunk("event/searchAffiliateEvent", asyn
     }
 });
 
-const guestSearch = createAsyncThunk("event/guestSearch", async ({ id, q }: { q: any, id: number }, { rejectWithValue, signal }) => {
+const guestSearch = createAsyncThunk("event/guestSearch", async ({id, q}: { q: any, id: number }, {
+    rejectWithValue,
+    signal
+}) => {
     try {
         const response = await axiosInstance.post(`/events/${id}/search-guest-list`, null, {
-            params: { q },
+            params: {q},
             signal
         });
         return response.data;
@@ -463,14 +512,14 @@ const eventSlice = createSlice({
     name: "event",
     initialState,
     reducers: {
-        addTickets: (state, { payload }) =>  {
+        addTickets: (state, {payload}) => {
             state.total = payload.total
             state.tickets = payload.tickets
         },
         addEvent: (state, {payload}) => {
             state.event = payload
         },
-        createTickets: (state, { payload }) =>  {
+        createTickets: (state, {payload}) => {
             state.newTickets = payload.tickets
         },
         resetEventState: (state) => {
@@ -494,12 +543,33 @@ const eventSlice = createSlice({
             state.guestSearchResults = [];
             state.guestSearchLoading = false;
         },
+        clearAffiliateEventSearch(state) {
+            state.affiliateEvents = [];
+            state.affiliateLoading = false; // optional safety
+        },
+        setEventReferral: (
+            state,
+            action: PayloadAction<{ eventId: number | string; code: string }>
+        ) => {
+            const key = String(action.payload.eventId);
+
+            // ✅ guard for rehydrated/old state shape
+            if (!state.eventReferrals) state.eventReferrals = {};
+
+            state.eventReferrals[key] = action.payload.code;
+        },
+
+        clearEventReferral: (state, action: PayloadAction<{ eventId: number | string }>) => {
+            const key = String(action.payload.eventId);
+            if (!state.eventReferrals) return;
+            delete state.eventReferrals[key];
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(buyTicket.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(buyTicket.fulfilled, (state, { payload }) => {
+        builder.addCase(buyTicket.fulfilled, (state, {payload}) => {
             state.loading = false;
         });
         builder.addCase(buyTicket.rejected, (state) => {
@@ -509,7 +579,7 @@ const eventSlice = createSlice({
         builder.addCase(getEventTickets.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getEventTickets.fulfilled, (state, { payload }) => {
+        builder.addCase(getEventTickets.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.event_tickets = payload?.data?.tickets
         });
@@ -520,7 +590,7 @@ const eventSlice = createSlice({
         builder.addCase(editEventTickets.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(editEventTickets.fulfilled, (state, { payload }) => {
+        builder.addCase(editEventTickets.fulfilled, (state, {payload}) => {
             state.loading = false;
         });
         builder.addCase(editEventTickets.rejected, (state) => {
@@ -530,7 +600,7 @@ const eventSlice = createSlice({
         builder.addCase(createEvent.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(createEvent.fulfilled, (state, { payload }) => {
+        builder.addCase(createEvent.fulfilled, (state, {payload}) => {
             state.loading = false;
         });
         builder.addCase(createEvent.rejected, (state) => {
@@ -540,7 +610,7 @@ const eventSlice = createSlice({
         builder.addCase(getEvent.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getEvent.fulfilled, (state, { payload }) => {
+        builder.addCase(getEvent.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.event = payload?.data?.event
         });
@@ -551,7 +621,7 @@ const eventSlice = createSlice({
         builder.addCase(getProgram.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getProgram.fulfilled, (state, { payload }) => {
+        builder.addCase(getProgram.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.programDetails = payload?.data
         });
@@ -560,19 +630,24 @@ const eventSlice = createSlice({
         });
 
         builder.addCase(editEvent.pending, (state) => {
-            state.loading = true;
+            state.editEventLoading = true;
         });
-        builder.addCase(editEvent.fulfilled, (state, { payload }) => {
-            state.loading = false;
+        builder.addCase(editEvent.fulfilled, (state, {payload}) => {
+            state.editEventLoading = false;
+            const updated = payload?.data?.event ?? payload?.data ?? payload;
+
+            if (updated?.id) {
+                state.event = updated; // ✅ keep the page in sync after edits
+            }
         });
         builder.addCase(editEvent.rejected, (state) => {
-            state.loading = false;
+            state.editEventLoading = false;
         });
 
         builder.addCase(searchEvent.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(searchEvent.fulfilled, (state, { payload }) => {
+        builder.addCase(searchEvent.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.searchResults = payload?.data?.events;
         });
@@ -583,7 +658,7 @@ const eventSlice = createSlice({
         builder.addCase(getPaymentSetting.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getPaymentSetting.fulfilled, (state, { payload }) => {
+        builder.addCase(getPaymentSetting.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.payment_setting = payload?.data?.payment_setting;
         });
@@ -594,7 +669,7 @@ const eventSlice = createSlice({
         builder.addCase(updatePaymentSetting.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(updatePaymentSetting.fulfilled, (state, { payload }) => {
+        builder.addCase(updatePaymentSetting.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.payment_setting = payload?.data?.payment_setting;
         });
@@ -605,7 +680,7 @@ const eventSlice = createSlice({
         builder.addCase(filterEvent.pending, (state) => {
             state.filteredLoading = true;
         });
-        builder.addCase(filterEvent.fulfilled, (state, { payload }) => {
+        builder.addCase(filterEvent.fulfilled, (state, {payload}) => {
             state.filteredLoading = false;
             state.filteredEvents = payload?.data?.events;
             state.filtered = true
@@ -617,7 +692,7 @@ const eventSlice = createSlice({
         builder.addCase(getEvents.pending, (state) => {
             state.eventsLoading = true;
         });
-        builder.addCase(getEvents.fulfilled, (state, { payload }) => {
+        builder.addCase(getEvents.fulfilled, (state, {payload}) => {
             state.eventsLoading = false;
             state.events = payload?.data
         });
@@ -628,7 +703,7 @@ const eventSlice = createSlice({
         builder.addCase(getOrganizerEvents.pending, (state) => {
             state.eventsLoading = true;
         });
-        builder.addCase(getOrganizerEvents.fulfilled, (state, { payload }) => {
+        builder.addCase(getOrganizerEvents.fulfilled, (state, {payload}) => {
             state.eventsLoading = false;
             state.organizer_events = payload?.data
         });
@@ -639,7 +714,7 @@ const eventSlice = createSlice({
         builder.addCase(getAffiliateEvents.pending, (state) => {
             state.affiliateLoading = true;
         });
-        builder.addCase(getAffiliateEvents.fulfilled, (state, { payload }) => {
+        builder.addCase(getAffiliateEvents.fulfilled, (state, {payload}) => {
             state.affiliateLoading = false;
             state.affiliate_events = payload?.data?.events
         });
@@ -650,7 +725,7 @@ const eventSlice = createSlice({
         builder.addCase(getAffiliateData.pending, (state) => {
             state.affiliateDataLoading = true;
         });
-        builder.addCase(getAffiliateData.fulfilled, (state, { payload }) => {
+        builder.addCase(getAffiliateData.fulfilled, (state, {payload}) => {
             state.affiliateDataLoading = false;
             state.affiliate_data = payload?.data
         });
@@ -661,7 +736,7 @@ const eventSlice = createSlice({
         builder.addCase(getEventTicketData.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getEventTicketData.fulfilled, (state, { payload }) => {
+        builder.addCase(getEventTicketData.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.ticket_data = payload?.data
         });
@@ -672,7 +747,7 @@ const eventSlice = createSlice({
         builder.addCase(getGuestList.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getGuestList.fulfilled, (state, { payload }) => {
+        builder.addCase(getGuestList.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.guestList = payload?.data?.guest_list;
         });
@@ -683,7 +758,7 @@ const eventSlice = createSlice({
         builder.addCase(getGuestListDetails.pending, (state) => {
             state.guestDetailLoading = true;
         });
-        builder.addCase(getGuestListDetails.fulfilled, (state, { payload }) => {
+        builder.addCase(getGuestListDetails.fulfilled, (state, {payload}) => {
             state.guestDetailLoading = false;
             state.guestDetails = payload?.data?.guest_details;
         });
@@ -694,7 +769,7 @@ const eventSlice = createSlice({
         builder.addCase(checkInGuest.pending, (state) => {
             state.checkInLoading = true;
         });
-        builder.addCase(checkInGuest.fulfilled, (state, { payload }) => {
+        builder.addCase(checkInGuest.fulfilled, (state, {payload}) => {
             state.checkInLoading = false;
             const updatedGuest = payload?.data?.guest_details;
             // modify guest-list
@@ -717,7 +792,7 @@ const eventSlice = createSlice({
         builder.addCase(getPromotions.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(getPromotions.fulfilled, (state, { payload }) => {
+        builder.addCase(getPromotions.fulfilled, (state, {payload}) => {
             state.loading = false;
             state.promotions = payload?.data?.promotions;
         });
@@ -728,7 +803,7 @@ const eventSlice = createSlice({
         builder.addCase(payForPromotion.pending, (state) => {
             state.promotionLoading = true;
         });
-        builder.addCase(payForPromotion.fulfilled, (state, { payload }) => {
+        builder.addCase(payForPromotion.fulfilled, (state, {payload}) => {
             state.promotionLoading = false;
             state.promotions = payload?.data?.promotions;
         });
@@ -739,7 +814,7 @@ const eventSlice = createSlice({
         builder.addCase(getEventPromotion.pending, (state) => {
             state.promotionLoading = true;
         });
-        builder.addCase(getEventPromotion.fulfilled, (state, { payload }) => {
+        builder.addCase(getEventPromotion.fulfilled, (state, {payload}) => {
             state.promotionLoading = false;
             state.promotion = payload?.data?.promotion;
         });
@@ -750,7 +825,7 @@ const eventSlice = createSlice({
         builder.addCase(publishEvent.pending, (state) => {
             state.loading = true;
         });
-        builder.addCase(publishEvent.fulfilled, (state, { payload }) => {
+        builder.addCase(publishEvent.fulfilled, (state, {payload}) => {
             state.loading = false;
 
             // --- 1. Remove the event from organizer drafts
@@ -783,7 +858,7 @@ const eventSlice = createSlice({
         builder.addCase(generateAffiliateLink.pending, (state) => {
             state.generateLinkLoading = true;
         });
-        builder.addCase(generateAffiliateLink.fulfilled, (state, { payload }) => {
+        builder.addCase(generateAffiliateLink.fulfilled, (state, {payload}) => {
             state.generateLinkLoading = false;
             state.generatedLink = payload?.data?.referral_id;
             state.programDetails.events = payload?.data?.events
@@ -795,7 +870,7 @@ const eventSlice = createSlice({
         builder.addCase(searchAffiliateEvent.pending, (state) => {
             state.affiliateLoading = true;
         });
-        builder.addCase(searchAffiliateEvent.fulfilled, (state, { payload }) => {
+        builder.addCase(searchAffiliateEvent.fulfilled, (state, {payload}) => {
             state.affiliateLoading = false;
             state.affiliateEvents = payload?.data?.events
         });
@@ -806,7 +881,7 @@ const eventSlice = createSlice({
         builder.addCase(guestSearch.pending, (state) => {
             state.guestSearchLoading = true;
         });
-        builder.addCase(guestSearch.fulfilled, (state, { payload }) => {
+        builder.addCase(guestSearch.fulfilled, (state, {payload}) => {
             state.guestSearchLoading = false;
             state.guestSearchResults = payload?.data?.guest_list
             console.log(payload?.data?.guest_list)
@@ -818,6 +893,46 @@ const eventSlice = createSlice({
     }
 });
 
-export const { addTickets, addEvent, createTickets, resetEventState, freeEventState, resetFreeEventState, resetFilter, setSearchTerm, clearSearch } = eventSlice.actions
-export { buyTicket, createEvent, editEvent, searchEvent, getEvent, getPaymentSetting, updatePaymentSetting, filterEvent, getEvents, getOrganizerEvents, getAffiliateEvents, getAffiliateData, getEventTicketData, getGuestList, getGuestListDetails, checkInGuest, getPromotions, payForPromotion, getEventPromotion, publishEvent, getEventTickets, editEventTickets, getProgram, generateAffiliateLink, searchAffiliateEvent, guestSearch }
+export const {
+    addTickets,
+    addEvent,
+    createTickets,
+    resetEventState,
+    freeEventState,
+    resetFreeEventState,
+    resetFilter,
+    setSearchTerm,
+    clearSearch,
+    clearAffiliateEventSearch,
+    setEventReferral,
+    clearEventReferral,
+} = eventSlice.actions
+export {
+    buyTicket,
+    createEvent,
+    editEvent,
+    searchEvent,
+    getEvent,
+    getPaymentSetting,
+    updatePaymentSetting,
+    filterEvent,
+    getEvents,
+    getOrganizerEvents,
+    getAffiliateEvents,
+    getAffiliateData,
+    getEventTicketData,
+    getGuestList,
+    getGuestListDetails,
+    checkInGuest,
+    getPromotions,
+    payForPromotion,
+    getEventPromotion,
+    publishEvent,
+    getEventTickets,
+    editEventTickets,
+    getProgram,
+    generateAffiliateLink,
+    searchAffiliateEvent,
+    guestSearch
+}
 export default eventSlice.reducer;

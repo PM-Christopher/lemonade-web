@@ -6,7 +6,7 @@ import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import ClockIcon from "@/images/icons/clock.svg";
 import {Button} from "@/components/ui/button";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
@@ -27,6 +27,7 @@ const Page = ({params}: { params: { id: number } }) => {
     const [summaryModal, setSummaryModal] = useState(false);
     const {loading, ticket_data} = useSelector((state: RootState) => state.event);
     const { event, tickets } = ticket_data || {};
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         dispatch(getEventTicketData({id: params.id}))
@@ -86,6 +87,11 @@ const Page = ({params}: { params: { id: number } }) => {
         return tickets.some(ticket => ticket.quantity > 0);
     };
 
+    const referralFromUrl = searchParams.get("referral");
+    const buyTicketHref = referralFromUrl
+        ? `/event/${params.id}/assign-ticket?referral=${encodeURIComponent(referralFromUrl)}`
+        : `/event/${params.id}/assign-ticket`;
+
     const proceed = () => {
         const validTickets = quantities.filter(ticket => ticket.quantity > 0);
 
@@ -104,12 +110,14 @@ const Page = ({params}: { params: { id: number } }) => {
             return;
         }
         dispatch(addTickets(data));
-        router.push(`/event/${params.id}/assign-ticket`);
+        // router.push(`/event/${params.id}/assign-ticket`);
+        router.push(buyTicketHref);
     };
 
     const toggleSummaryModal = () => {
         setSummaryModal(!summaryModal);
     };
+
 
     return (
         <MainLayout>

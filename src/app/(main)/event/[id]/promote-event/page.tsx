@@ -49,7 +49,7 @@ function PromoteEventPage({params}: { params: { id: number } }) {
 
 
     const handlePaymentForPromotion = async () => {
-        const formatted = moment().format("YYYY-MM-DDTHH:mm:ss");
+        const formatted = moment().format("YYYY-MM-DD");
         const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/event/${params.id}/details`;
         const payload = {
             promo: selectedPromotion?.id,

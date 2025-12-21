@@ -61,42 +61,54 @@ export const login = async (
     values: any,
     dispatch: any,
     router: any,
-    setCookie: any
+    setCookie: any,
+    nextPath: string = "/"
 ) => {
     dispatch(authStart());
+
     try {
         const { data } = await axiosInstance.post("/auth/login", { ...values });
+
         if (data.status || data.success) {
             dispatch(setIsRouting(true));
-            dispatch(setIsRouting(true));
-            const user = data?.data?.user
+
+            const user = data?.data?.user;
+
+            // helper to preserve "next" through onboarding flows
+            const pushWithNext = (path: string) => {
+                const url = `${path}?next=${encodeURIComponent(nextPath)}`;
+                router.push(url);
+            };
+
             if (user.status == 0) {
                 setCookie("newToken", data.data.token, {
                     path: "/",
-                    maxAge: 3600 * 6, // Expires after 6hrs
+                    maxAge: 3600 * 6,
                     sameSite: false,
-                    // domain: env === 'development' ? '' : ''
                 });
-                router.push("/verify-email");
-            } else if(user.username === null) {
+
+                pushWithNext("/verify-email");
+            } else if (user.username === null) {
                 setCookie("newToken", data.data.token, {
                     path: "/",
-                    maxAge: 3600 * 6, // Expires after 6hrs
+                    maxAge: 3600 * 6,
                     sameSite: false,
-                    // domain: env === 'development' ? '' : ''
                 });
-                router.push("/profile-setup");
+
+                pushWithNext("/profile-setup");
             } else {
                 setCookie("token", data.data.token, {
                     path: "/",
-                    maxAge: 3600 * 6, // Expires after 6hrs
+                    maxAge: 3600 * 6,
                     sameSite: false,
                 });
+
                 setCookie("refresh_token", data.data.refresh_token, {
                     path: "/",
-                    maxAge: 3600 * 24 * 7, // 7 days for a refresh token
+                    maxAge: 3600 * 24 * 7,
                     sameSite: "Lax",
                 });
+
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -104,9 +116,12 @@ export const login = async (
                         type: "success",
                     })
                 );
+
                 await dispatch(authSuccess(data.data));
+
                 setTimeout(() => {
-                    router.push("/");
+                    // ✅ redirect back to originally entered URL
+                    router.push(nextPath || "/");
                 }, 500);
             }
         } else {
@@ -119,7 +134,6 @@ export const login = async (
             );
         }
     } catch (error: any) {
-        console.log(error);
         dispatch(
             updateToastifyReducer({
                 show: true,
@@ -128,8 +142,9 @@ export const login = async (
             })
         );
         dispatch(authFailure());
-    }  finally {
+    } finally {
         dispatch(loadStop());
     }
-}
+};
+
 
