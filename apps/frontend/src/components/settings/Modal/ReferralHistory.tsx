@@ -24,7 +24,7 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({
     };
   };
   const { data } = useRequest(
-    `/wallet/referral-history`,
+    `/user/wallet/referral-history`,
   );
 
   const { totalEarned, total_referrals, total_subscribed } = useMemo(() => {

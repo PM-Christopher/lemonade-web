@@ -30,7 +30,7 @@ const BusinessFilter = ({toggle, isOpen}: FilterBusinessInterface) => {
             },
         };
     }
-    const { data, loading } = useRequest(`/business-categories`, "GET")
+    const { data, loading } = useRequest(`/shared/utilities/business-categories`, "GET")
 
     const [category, setCategory] = useState("");
     const [location, setLocation] = useState("")

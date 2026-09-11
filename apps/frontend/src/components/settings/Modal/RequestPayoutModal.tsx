@@ -76,7 +76,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({isOpen, toggle}) 
                 account_name: formik.values.account_name,
                 amount: 100000
             }
-            const {data} = await axiosInstance.post("/profile/wallet/request-payout", formData)
+            const {data} = await axiosInstance.post("/user/profile/wallet/request-payout", formData)
             if (data.status) {
                 formik.resetForm()
                 dispatch(

@@ -29,7 +29,7 @@ export const SingleFileUploader = ({ setField, image, title, type, length="singl
             const formData = new FormData()
             formData.append("file", files[0])
             try {
-                const { data } = await axiosInstance.post("/upload", formData, {
+                const { data } = await axiosInstance.post("/shared/utilities/upload", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

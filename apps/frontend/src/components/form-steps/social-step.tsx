@@ -88,7 +88,7 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
 
         dispatch(authStart())
         try {
-            const { data } = await axiosInstance.post("/profile/socials-set-up", requestBody, getHeader());
+            const { data } = await axiosInstance.post("/user/profile/socials-set-up", requestBody, getHeader());
             console.log({data})
             if(data.status) {
                 dispatch(authSuccess(data.data));

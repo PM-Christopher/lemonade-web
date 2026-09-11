@@ -45,9 +45,7 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
     // console.log(cookies)
     const verifyUserToken = async () => {
         try {
-            // Replace with your actual verification API endpoint URL
-            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`;
-            const { data } = await axiosInstance.get(url, {
+            const { data } = await axiosInstance.get(`/user/profile/user`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const userDetails = data.data;

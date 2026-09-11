@@ -123,7 +123,7 @@ const buyTicket = createAsyncThunk("event/buyTicket", async ({event_id, data}: {
     data: any
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.post(`/events/attendees/${event_id}/assign-tickets`, data);
+        const response = await axiosInstance.post(`/user/events/attendees/${event_id}/assign-tickets`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -135,7 +135,7 @@ const buyTicket = createAsyncThunk("event/buyTicket", async ({event_id, data}: {
 
 const createEvent = createAsyncThunk("event/createEvent", async ({data}: { data: any }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.post(`/events/create-event`, data);
+        const response = await axiosInstance.post(`/user/events/create-event`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -150,7 +150,7 @@ const editEvent = createAsyncThunk("event/editEvent", async ({data, id}: {
     id: number
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.put(`/events/update-event/${id}`, data);
+        const response = await axiosInstance.put(`/user/events/update-event/${id}`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -162,7 +162,7 @@ const editEvent = createAsyncThunk("event/editEvent", async ({data, id}: {
 
 const publishEvent = createAsyncThunk("event/publishEvent", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.patch(`/events/publish-event/${id}`);
+        const response = await axiosInstance.patch(`/user/events/publish-event/${id}`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -174,7 +174,7 @@ const publishEvent = createAsyncThunk("event/publishEvent", async ({id}: { id: n
 
 const getEvents = createAsyncThunk("event/getEvents", async (_, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/attendees`);
+        const response = await axiosInstance.get(`/user/events/attendees`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -189,7 +189,7 @@ const getEvent = createAsyncThunk(
     async ({id}: { id: number },
            {rejectWithValue, signal}) => {
         try {
-            const response = await axiosInstance.get(`/events/${id}`, {
+            const response = await axiosInstance.get(`/user/events/${id}`, {
                 signal,
                 params: {
                     _ts: Date.now()
@@ -215,7 +215,7 @@ const searchEvent = createAsyncThunk("event/searchEvent", async ({data}: { data:
     };
 
     try {
-        const response = await axiosInstance.post(`/events/search-events`, data, {headers});
+        const response = await axiosInstance.post(`/user/events/search-events`, data, {headers});
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -235,7 +235,7 @@ const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async ({to
     };
 
     try {
-        const response = await axiosInstance.get(`/events/get-payment-setting`, {headers});
+        const response = await axiosInstance.get(`/user/events/get-payment-setting`, {headers});
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -256,7 +256,7 @@ const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", asyn
     };
 
     try {
-        const response = await axiosInstance.patch(`/events/update-payment-setting`, data, {headers});
+        const response = await axiosInstance.patch(`/user/events/update-payment-setting`, data, {headers});
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -277,7 +277,7 @@ const filterEvent = createAsyncThunk("event/filterEvent", async ({token, data}: 
     };
 
     try {
-        let url = `/events/filter-event?category=${data.category}&period=${data.period}&start_date=${data.start_date}&end_date=${data.end_date}&location=${data.location}`
+        let url = `/user/events/filter-event?category=${data.category}&period=${data.period}&start_date=${data.start_date}&end_date=${data.end_date}&location=${data.location}`
         const response = await axiosInstance.get(url, {headers});
         return response.data;
     } catch (err: any) {
@@ -290,7 +290,7 @@ const filterEvent = createAsyncThunk("event/filterEvent", async ({token, data}: 
 
 const getOrganizerEvents = createAsyncThunk("event/getOrganizerEvents", async (_, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events`);
+        const response = await axiosInstance.get(`/user/events`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -302,7 +302,7 @@ const getOrganizerEvents = createAsyncThunk("event/getOrganizerEvents", async (_
 
 const getAffiliateEvents = createAsyncThunk("event/getAffiliateEvents", async (_, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/affiliate`);
+        const response = await axiosInstance.get(`/user/events/affiliate`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -314,7 +314,7 @@ const getAffiliateEvents = createAsyncThunk("event/getAffiliateEvents", async (_
 
 const getAffiliateData = createAsyncThunk("event/getAffiliateData", async (_, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/affiliate/data`);
+        const response = await axiosInstance.get(`/user/events/affiliate/data`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -328,7 +328,7 @@ const getEventTicketData = createAsyncThunk("event/getEventTicketData", async ({
     id: number
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/attendees/${id}/tickets`);
+        const response = await axiosInstance.get(`/user/events/attendees/${id}/tickets`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -340,7 +340,7 @@ const getEventTicketData = createAsyncThunk("event/getEventTicketData", async ({
 
 const getGuestList = createAsyncThunk("event/getGuestList", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/${id}/guest-list`);
+        const response = await axiosInstance.get(`/user/events/${id}/guest-list`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -355,7 +355,7 @@ const getGuestListDetails = createAsyncThunk("event/getGuestListDetails", async 
     guest_id: number | null
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/${id}/${guest_id}/guest-details`);
+        const response = await axiosInstance.get(`/user/events/${id}/${guest_id}/guest-details`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -370,7 +370,7 @@ const checkInGuest = createAsyncThunk("event/checkInGuest", async ({id, guest_id
     guest_id: number | null
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.patch(`/events/${id}/${guest_id}/check-in`);
+        const response = await axiosInstance.patch(`/user/events/${id}/${guest_id}/check-in`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -382,7 +382,7 @@ const checkInGuest = createAsyncThunk("event/checkInGuest", async ({id, guest_id
 
 const getPromotions = createAsyncThunk("event/getPromotions", async (_, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/promotions`);
+        const response = await axiosInstance.get(`/user/events/promotions`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -397,7 +397,7 @@ const payForPromotion = createAsyncThunk("event/payForPromotion", async ({id, da
     data: any
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.post(`/events/${id}/promote-event`, data);
+        const response = await axiosInstance.post(`/user/events/${id}/promote-event`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -412,7 +412,7 @@ const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({id
     promotion_id: number
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/${id}/${promotion_id}/event-promotion`);
+        const response = await axiosInstance.get(`/user/events/${id}/${promotion_id}/event-promotion`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -424,7 +424,7 @@ const getEventPromotion = createAsyncThunk("event/getEventPromotion", async ({id
 
 const getEventTickets = createAsyncThunk("event/getEventTickets", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/${id}/event-tickets`);
+        const response = await axiosInstance.get(`/user/events/${id}/event-tickets`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -439,7 +439,7 @@ const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, 
     data: any
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.patch(`/events/${id}/edit-tickets`, data);
+        const response = await axiosInstance.patch(`/user/events/${id}/edit-tickets`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -451,7 +451,7 @@ const editEventTickets = createAsyncThunk("event/editEventTickets", async ({id, 
 
 const getProgram = createAsyncThunk("event/getProgram", async ({id}: { id: number }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.get(`/events/affiliate/${id}`);
+        const response = await axiosInstance.get(`/user/events/affiliate/${id}`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -465,7 +465,7 @@ const generateAffiliateLink = createAsyncThunk("event/generateAffiliateLink", as
     id: number
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.post(`/events/affiliate/${id}/generate-link`);
+        const response = await axiosInstance.post(`/user/events/affiliate/${id}/generate-link`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -479,7 +479,7 @@ const searchAffiliateEvent = createAsyncThunk("event/searchAffiliateEvent", asyn
     data: any
 }, {rejectWithValue}) => {
     try {
-        const response = await axiosInstance.post(`/events/search-affiliate-events`, data);
+        const response = await axiosInstance.post(`/user/events/search-affiliate-events`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -494,7 +494,7 @@ const guestSearch = createAsyncThunk("event/guestSearch", async ({id, q}: { q: a
     signal
 }) => {
     try {
-        const response = await axiosInstance.post(`/events/${id}/search-guest-list`, null, {
+        const response = await axiosInstance.post(`/user/events/${id}/search-guest-list`, null, {
             params: {q},
             signal
         });

@@ -21,7 +21,7 @@ const PricingPage = () => {
     const dispatch = useAppDispatch()
     const searchParams = useSearchParams()
     const trxref = searchParams.get("trxref")
-    const {data, loading} = useRequest(`subscription`)
+    const {data, loading} = useRequest(`user/subscription`)
     const [isOpen, setIsOpen] = useState(false)
     const [subId, setSubId] = useState<number | null>(null)
     const [subMode, setSubMode] = useState<string>('')

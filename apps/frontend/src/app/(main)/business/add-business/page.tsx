@@ -76,7 +76,7 @@ const AddBusinessPage = () => {
     };
 
 
-    const { data, loading } = useRequest(`/business-categories`, "GET")
+    const { data, loading } = useRequest(`/shared/utilities/business-categories`, "GET")
 
     const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
     const [frameworksList, setFrameworksList] = useState<businessCategories[]>([]);
@@ -145,7 +145,7 @@ const AddBusinessPage = () => {
         },
         validationSchema: createBusinessSchema,
         onSubmit: async (values) => {
-            const {data} = await axiosInstance.post(`listing`, values, getHeader())
+            const {data} = await axiosInstance.post(`/user/listing`, values, getHeader())
             if(data.status) {
                 dispatch(
                     updateToastifyReducer({

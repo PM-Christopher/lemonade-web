@@ -32,7 +32,7 @@ const MultipleFileUploader = ({ setField, images, title, type, length="single" }
                 formData.append("files[]", file)
             })
             try {
-                const { data } = await axiosInstance.post("/upload-multiple", formData, {
+                const { data } = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

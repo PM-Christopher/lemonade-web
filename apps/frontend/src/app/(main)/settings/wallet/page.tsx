@@ -27,7 +27,7 @@ function WalletSettingsPage({}) {
     const {loading: profileLoading} = useSelector((state: RootState) => state.profile)
 
     const {data, loading} = useRequest(
-        `profile/wallet`,
+        `user/profile/wallet`,
     );
     const [isRefOpen, setIsRefOpen] = useState(false);
     const [isAfOpen, setIsAfOpen] = useState(false);

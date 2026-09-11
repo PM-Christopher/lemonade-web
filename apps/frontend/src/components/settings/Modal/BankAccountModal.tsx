@@ -45,7 +45,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
   };
 
   const { data, loading } = useRequest(
-    `/get-all-banks`,
+    `/shared/utilities/get-all-banks`,
   );
 
   const bankAccountSchema = yup.object({
@@ -89,7 +89,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
         account_number: formik.values.account_number,
         account_name: formik.values.account_name,
       }
-      const { data } = await axiosInstance.post("/profile/bank-account/create-account", formData, getHeader())
+      const { data } = await axiosInstance.post("/user/profile/bank-account/create-account", formData, getHeader())
       if(data.status) {
         formik.resetForm()
         dispatch(

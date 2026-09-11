@@ -55,7 +55,7 @@ const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/
     };
 
     try {
-        const response = await axiosInstance.get(`/messages/chat?receiver_id=${receiver_id}`, { headers });
+        const response = await axiosInstance.get(`/user/messages/chat?receiver_id=${receiver_id}`, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -73,7 +73,7 @@ const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connec
     };
 
     try {
-        const response = await axiosInstance.post(`/messages?receiver_id=${receiver_id}`, { message, media }, { headers });
+        const response = await axiosInstance.post(`/user/messages?receiver_id=${receiver_id}`, { message, media }, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -91,7 +91,7 @@ const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({token,
     };
 
     try {
-        const response = await axiosInstance.post(`/connect/invite-response/${id}`, data, { headers });
+        const response = await axiosInstance.post(`/user/connect/invite-response/${id}`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -109,7 +109,7 @@ const findUser = createAsyncThunk("connect/findUser", async ({token, search}: {t
     };
 
     try {
-        const response = await axiosInstance.get(`/connect/find-user?search=${search}`, { headers });
+        const response = await axiosInstance.get(`/user/connect/find-user?search=${search}`, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -127,7 +127,7 @@ const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: 
     };
 
     try {
-        const response = await axiosInstance.post(`/connect/send-invite`, data, { headers });
+        const response = await axiosInstance.post(`/user/connect/send-invite`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -139,7 +139,7 @@ const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: 
 
 const getInvites = createAsyncThunk("connect/getInvites", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/connect/get-invites`);
+        const response = await axiosInstance.get(`/user/connect/get-invites`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -151,7 +151,7 @@ const getInvites = createAsyncThunk("connect/getInvites", async (_, { rejectWith
 
 const getConnection = createAsyncThunk("connect/getConnection", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/connect`);
+        const response = await axiosInstance.get(`/user/connect`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -163,7 +163,7 @@ const getConnection = createAsyncThunk("connect/getConnection", async (_, { reje
 
 const getMessages = createAsyncThunk("connect/getMessages", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/messages`);
+        const response = await axiosInstance.get(`/user/messages`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

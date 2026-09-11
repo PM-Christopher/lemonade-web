@@ -17,7 +17,7 @@ const initialState: transactionState = {
 
 const verifyTransaction = createAsyncThunk("transaction/verifyTransaction", async ({data}: {data: any}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/transaction/verify-transaction`, data);
+        const response = await axiosInstance.post(`/user/transaction/verify-transaction`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -29,7 +29,7 @@ const verifyTransaction = createAsyncThunk("transaction/verifyTransaction", asyn
 
 const getBanks = createAsyncThunk("transaction/getBanks", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/get-all-banks`);
+        const response = await axiosInstance.get(`/shared/utilities/get-all-banks`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

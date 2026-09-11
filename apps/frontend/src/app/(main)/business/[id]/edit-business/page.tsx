@@ -63,8 +63,8 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
         };
     }
 
-    const { data, loading } = useRequest(`/business/${params.id}`)
-    const { data: categories, loading: categoryLoading } = useRequest(`/business-categories`)
+    const { data, loading } = useRequest(`/user/business/${params.id}`)
+    const { data: categories, loading: categoryLoading } = useRequest(`/shared/utilities/business-categories`)
 
     const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && inputValue.trim() !== '') {
@@ -145,7 +145,7 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
         },
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
-            const {data} = await axiosInstance.patch(`listing/${params.id}`, values, getHeader())
+            const {data} = await axiosInstance.patch(`/user/listing/${params.id}`, values, getHeader())
             if(data.status) {
                 dispatch(
                     updateToastifyReducer({

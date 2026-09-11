@@ -70,7 +70,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
             values.membership_fee = values.membership_fee ? values.membership_fee : 0;
             try {
                 const {data} = await axiosInstance.post(
-                    "/tribes/create-tribe",
+                    "/user/tribes/create-tribe",
                     values,
                 );
                 if (data.status) {
@@ -109,7 +109,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
     });
 
     const {data: tribe_cat} = useRequest(
-        `/tribes-categories`,
+        `/shared/utilities/tribes-categories`,
     );
 
     const handleChange = (type: string) => {
@@ -128,7 +128,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
             const formData = new FormData();
             formData.append("file", file);
             try {
-                const {data} = await axiosInstance.post("/upload", formData, {
+                const {data} = await axiosInstance.post("/shared/utilities/upload", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },

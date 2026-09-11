@@ -158,7 +158,7 @@ export default function LoginPage() {
 
             // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)
             try {
-                const res = await axiosInstance.post(`/auth/google`, {
+                const res = await axiosInstance.post(`/user/auth/google`, {
                     token: tokenResponse.access_token
                 });
 

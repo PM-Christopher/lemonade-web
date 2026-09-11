@@ -16,7 +16,7 @@ const initialState: generalState = {
 const verifyAccount = createAsyncThunk("general/verifyAccount", async ({ bank_code, account_number }: {bank_code: string, account_number: string}, { rejectWithValue }) => {
 
     try {
-        const response = await axiosInstance.post(`/verify-account`, {
+        const response = await axiosInstance.post(`/shared/utilities/verify-account`, {
             bank_code,
             account_number
         });

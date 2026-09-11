@@ -74,7 +74,7 @@ const resendOtp = createAsyncThunk("auth/resendOtp", async ({ token }: { token: 
     };
 
     try {
-        const response = await axiosInstance.post(`/otp/resend`, {}, { headers });
+        const response = await axiosInstance.post(`/user/otp/resend`, {}, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -86,7 +86,7 @@ const resendOtp = createAsyncThunk("auth/resendOtp", async ({ token }: { token: 
 
 const forgotPassword = createAsyncThunk("auth/forgotPassword", async ({ data }: { data: { email: string } }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/auth/forgot-password`, data);
+        const response = await axiosInstance.post(`/user/auth/forgot-password`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -103,7 +103,7 @@ const resetPassword = createAsyncThunk("auth/resetPassword", async ({ data, toke
         Authorization: `Bearer ${token}`,
     };
     try {
-        const response = await axiosInstance.post(`/auth/reset-password`, data, { headers });
+        const response = await axiosInstance.post(`/user/auth/reset-password`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -139,7 +139,7 @@ const changePassword = createAsyncThunk("auth/changePassword", async ({ data, to
     };
 
     try {
-        const response = await axiosInstance.patch(`/profile/settings/change-password`, data, { headers });
+        const response = await axiosInstance.patch(`/user/profile/settings/change-password`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -157,7 +157,7 @@ const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data, toke
     };
 
     try {
-        const response = await axiosInstance.patch(`/profile/settings/change-profile-image`, data, { headers });
+        const response = await axiosInstance.patch(`/user/profile/settings/change-profile-image`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -175,7 +175,7 @@ const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data, toke
     };
 
     try {
-        const response = await axiosInstance.post(`/profile/settings/delete-account`, data, { headers });
+        const response = await axiosInstance.post(`/user/profile/settings/delete-account`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -192,7 +192,7 @@ const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ da
         Authorization: `Bearer ${token}`,
     };
     try {
-        const response = await axiosInstance.patch(`/profile/notification-settings/update-all-notification`, data, { headers });
+        const response = await axiosInstance.patch(`/user/profile/notification-settings/update-all-notification`, data, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -204,7 +204,7 @@ const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ da
 
 const changePlan = createAsyncThunk("auth/changePlan", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/profile/subscription/change-plan`, data);
+        const response = await axiosInstance.post(`/user/profile/subscription/change-plan`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -221,7 +221,7 @@ const logout = createAsyncThunk("auth/logout", async ({ token }: { token: string
         Authorization: `Bearer ${token}`,
     };
     try {
-        const response = await axiosInstance.post(`/profile/logout`, {}, { headers });
+        const response = await axiosInstance.post(`/user/profile/logout`, {}, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -233,7 +233,7 @@ const logout = createAsyncThunk("auth/logout", async ({ token }: { token: string
 
 const getSubscription = createAsyncThunk("auth/getSubscription", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/subscription/${id}`);
+        const response = await axiosInstance.get(`/user/subscription/${id}`);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

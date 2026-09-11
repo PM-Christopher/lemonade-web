@@ -98,7 +98,7 @@ export default function TribePage() {
             values.membership_fee = values.membership_fee ? values.membership_fee : 0;
             try {
                 const {data} = await axiosInstance.post(
-                    "/tribes/create-tribe",
+                    "/user/tribes/create-tribe",
                     values,
                 );
                 if (data.status) {

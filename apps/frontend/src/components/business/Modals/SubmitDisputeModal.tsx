@@ -42,7 +42,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({isOpen, toggle})
     })
 
     const handleDispute = async (values: any) => {
-        const {payload} = await dispatch(disputeJob({url: `/business/jobs/${job.id}/dispute`, data: values}))
+        const {payload} = await dispatch(disputeJob({url: `/user/business/jobs/${job.id}/dispute`, data: values}))
         if (payload.status) {
             toggle()
             dispatch(updateToastifyReducer({

@@ -126,7 +126,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
             if (formData.has("files[]")) {
                 try {
-                    const {data} = await axiosInstance.post("/upload-multiple", formData, {
+                    const {data} = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },

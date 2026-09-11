@@ -108,7 +108,7 @@ const SkillStep: React.FC<SkillsInterface> = ({loading, next_step, prev_step}) =
         dispatch(authStart())
 
         try {
-            const { data } = await axiosInstance.post("/profile/skills-set-up", { ...values }, getHeader());
+            const { data } = await axiosInstance.post("/user/profile/skills-set-up", { ...values }, getHeader());
             console.log({data})
             if(data.status) {
                 next_step()

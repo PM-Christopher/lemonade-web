@@ -105,7 +105,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
 
             if (formData.has("files[]")) {
                 try {
-                    const { data } = await axiosInstance.post("/upload-multiple", formData, {
+                    const { data } = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -159,7 +159,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 formData.append(`files[]`, file); // Add each file to the `file[]` key
             });
             try {
-                const { data } = await axiosInstance.post("/upload-multiple", formData, {
+                const { data } = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

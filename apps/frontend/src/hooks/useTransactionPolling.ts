@@ -27,7 +27,7 @@ export const useTransactionPolling = (config: null | {
         const verifyTransaction = async () => {
             try {
                 setLoading(true)
-                const res = await axiosInstance.post(`/transaction/verify-transaction`, {trx_ref: transactionId})
+                const res = await axiosInstance.post(`/user/transaction/verify-transaction`, {trx_ref: transactionId})
                 const resData = res?.data?.data
                 setData(resData)
 

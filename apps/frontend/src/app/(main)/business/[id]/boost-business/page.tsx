@@ -46,7 +46,7 @@ const BoostBusinessPage = ({params}: { params: { id: number } }) => {
     const [selectedPackages, setSelectedPackages] = useState<BoostPackages[]>([])
     const [pkgPrice, setPkgPrice] = useState<number | null>(null);
 
-    const {data, loading} = useRequest(`/listing/boosts`)
+    const {data, loading} = useRequest(`/user/listing/boosts`)
 
     const editBusinessSchema = yup.object({
         "package": yup
@@ -73,7 +73,7 @@ const BoostBusinessPage = ({params}: { params: { id: number } }) => {
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
             const formData = {...values, callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${params.id}`}
-            const {data} = await axiosInstance.post(`listing/boost-business/${params.id}`, formData, getHeader())
+            const {data} = await axiosInstance.post(`/user/listing/boost-business/${params.id}`, formData, getHeader())
             if (data.status) {
                 dispatch(
                     updateToastifyReducer({

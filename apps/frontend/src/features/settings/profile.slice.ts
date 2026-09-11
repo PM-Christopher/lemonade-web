@@ -18,7 +18,7 @@ const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({token}
         const headers = {
             Authorization: `Bearer ${token}`,
         }
-        const response = await axiosInstance.get(`/profile/user`, { headers });
+        const response = await axiosInstance.get(`/user/profile/user`, { headers });
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -30,7 +30,7 @@ const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({token}
 
 const requestPayout = createAsyncThunk("profile/requestPayout", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/profile/wallet/request-payout`, data);
+        const response = await axiosInstance.post(`/user/profile/wallet/request-payout`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

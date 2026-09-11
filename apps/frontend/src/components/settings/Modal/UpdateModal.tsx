@@ -162,43 +162,43 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                 return {
                     schema: usernameSchema,
                     initialValues: { username: "" },
-                    endpoint: "/profile/settings/change-username"
+                    endpoint: "/user/profile/settings/change-username"
                 };
             case "bio":
                 return {
                     schema: bioSchema,
                     initialValues: { bio: "" },
-                    endpoint: "/profile/settings/change-bio"
+                    endpoint: "/user/profile/settings/change-bio"
                 };
             case "industry":
                 return {
                     schema: industrySchema,
                     initialValues: { industry: "" },
-                    endpoint: "/profile/settings/change-profession"
+                    endpoint: "/user/profile/settings/change-profession"
                 };
             case "addresses":
                 return {
                     schema: addressSchema,
                     initialValues: { address: "", city: "", country: "", state: "" },
-                    endpoint: "/profile/settings/change-address"
+                    endpoint: "/user/profile/settings/change-address"
                 };
             case "skills-interest":
                 return {
                     schema: skillsSchema,
                     initialValues: { skills: [], interests: [] },
-                    endpoint: "/profile/settings/change-skills"
+                    endpoint: "/user/profile/settings/change-skills"
                 };
             case "socials":
                 return {
                     schema: socialsSchema,
                     initialValues: { socials: [] },
-                    endpoint: "/profile/settings/change-socials"
+                    endpoint: "/user/profile/settings/change-socials"
                 };
             default:
                 return {
                     schema: usernameSchema,
                     initialValues: { username: "" },
-                    endpoint: "/profile/settings/change-username"
+                    endpoint: "/user/profile/settings/change-username"
                 };
         }
     };

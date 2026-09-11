@@ -65,7 +65,7 @@ const getTribes = createAsyncThunk(
     async ({tribe_type}: {tribe_type: string}, {rejectWithValue}) => {
 
         try {
-            const response = await axiosInstance.get(`/tribes?type=${tribe_type}`, {
+            const response = await axiosInstance.get(`/user/tribes?type=${tribe_type}`, {
                 cache: {
                     ttl: 1000 * 60
                 }
@@ -86,7 +86,7 @@ const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
     async ({id, token}: JoinTribeParams, {rejectWithValue}) => {
 
         try {
-            const response = await axiosInstance.get(`/tribes/${id}`, {
+            const response = await axiosInstance.get(`/user/tribes/${id}`, {
                 cache: {
                     ttl: 1000 * 60
                 }
@@ -106,7 +106,7 @@ const joinTribe = createAsyncThunk(
     async ({id, token, data}: { id: any, token: string, data: any }, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.post(
-                `/tribes/join-tribe/${id}`,
+                `/user/tribes/join-tribe/${id}`,
                 data,
             );
             return response.data;
@@ -151,7 +151,7 @@ const createThread = createAsyncThunk<
     async ({id, token, data}: CreateThreadParams, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.post(
-                `/tribes/${id}/threads/create-thread`,
+                `/user/tribes/${id}/threads/create-thread`,
                 data,
             );
             return response.data;
@@ -172,7 +172,7 @@ const likeThread = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.post(
-                `/threads/${tribe_id}/${id}/post-like`,
+                `/user/threads/${tribe_id}/${id}/post-like`,
                 {},
             );
             return response.data;
@@ -205,7 +205,7 @@ const submitVote = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.post(
-                `/threads/${tribe_id}/${thread_id}/${poll_id}/poll-action`,
+                `/user/threads/${tribe_id}/${thread_id}/${poll_id}/poll-action`,
                 data,
             );
             return response.data;
@@ -222,7 +222,7 @@ const getThreads = createAsyncThunk(
     "tribe/getThreads",
     async ({id, token}: { id: string; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.get(`/tribes/${id}/threads/all`, {
+            const response = await axiosInstance.get(`/user/tribes/${id}/threads/all`, {
                 cache: {
                     ttl: 1000 * 60
                 }
@@ -245,7 +245,7 @@ const filterThreads = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.post(
-                `/tribes/${id}/threads/sort-thread`,
+                `/user/tribes/${id}/threads/sort-thread`,
                 data,
             );
             return response.data;
@@ -262,7 +262,7 @@ const viewProfile = createAsyncThunk(
     "tribe/viewProfile",
     async ({id, token}: { id: number; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.get(`/threads/view-profile/${id}`, {
+            const response = await axiosInstance.get(`/user/threads/view-profile/${id}`, {
                 cache: {
                     ttl: 1000 * 60
                 }
@@ -282,7 +282,7 @@ const pinThread = createAsyncThunk(
     async ({id, token}: { id: number; token: string }, {rejectWithValue}) => {
         try {
             const response = await axiosInstance.post(
-                `/threads/${id}/pin-thread`,
+                `/user/threads/${id}/pin-thread`,
                 {},
             );
             return response.data;
@@ -299,7 +299,7 @@ const getPinThreads = createAsyncThunk(
     "tribe/getPinThreads",
     async ({id, token}: { id: string; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.get(`/threads/${id}/pinned`, {
+            const response = await axiosInstance.get(`/user/threads/${id}/pinned`, {
                 cache: {
                     ttl: 1000 * 60
                 }
@@ -322,7 +322,7 @@ const reportThread = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.post(
-                `/threads/${id}/report-thread`,
+                `/user/threads/${id}/report-thread`,
                 data,
             );
             return response.data;
@@ -343,7 +343,7 @@ const deleteThread = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.delete(
-                `/threads/${id}/delete-thread`,
+                `/user/threads/${id}/delete-thread`,
             );
             return response.data;
         } catch (err: any) {
@@ -359,7 +359,7 @@ const searchTribe = createAsyncThunk(
     "tribe/searchTribe",
     async ({data}: { data: any }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.post(`/tribes/search-tribe`, data);
+            const response = await axiosInstance.post(`/user/tribes/search-tribe`, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -378,7 +378,7 @@ const addTribeMember = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.post(
-                `/tribes/add-member/${id}`,
+                `/user/tribes/add-member/${id}`,
                 data,
             );
             return response.data;
@@ -404,7 +404,7 @@ const postComment = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.post(
-                `/threads/${tribe_id}/${thread_id}/post-comment`,
+                `/user/threads/${tribe_id}/${thread_id}/post-comment`,
                 data,
             );
             return response.data;
@@ -429,7 +429,7 @@ const getComments = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.get(
-                `/threads/${tribe_id}/${thread_id}/comments`, {
+                `/user/threads/${tribe_id}/${thread_id}/comments`, {
                     cache: {
                         ttl: 1000 * 60
                     }

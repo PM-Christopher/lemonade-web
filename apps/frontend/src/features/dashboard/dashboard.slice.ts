@@ -29,7 +29,7 @@ const initialState: dashboardState = {
 
 const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/dashboard/tribes`, {
+        const response = await axiosInstance.get(`/user/dashboard/tribes`, {
             cache: {
                 ttl: 1000 * 60
             }
@@ -45,7 +45,7 @@ const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", asyn
 
 const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/dashboard/events`, {
+        const response = await axiosInstance.get(`/user/dashboard/events`, {
             cache: {
                 ttl: 1000 * 60
             }
@@ -61,7 +61,7 @@ const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", asyn
 
 const getDashboardBusinesses = createAsyncThunk("dashboard/getDashboardBusinesses", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/dashboard/businesses`, {
+        const response = await axiosInstance.get(`/user/dashboard/businesses`, {
             cache: {
                 ttl: 1000 * 60
             }

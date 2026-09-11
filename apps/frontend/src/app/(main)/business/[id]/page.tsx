@@ -96,7 +96,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     }, [searchParams]);
 
     // business reviews
-    const { data: reviewData, loading: reviewLoading } = useRequest(`/business/${params.id}/business-reviews`)
+    const { data: reviewData, loading: reviewLoading } = useRequest(`/user/business/${params.id}/business-reviews`)
 
     useEffect(() => {
         if (reviewData) {

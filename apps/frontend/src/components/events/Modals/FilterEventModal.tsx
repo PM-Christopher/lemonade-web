@@ -41,7 +41,7 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
             },
         };
     }
-    const { data, loading } = useRequest(`/event-categories`)
+    const { data, loading } = useRequest(`/shared/utilities/event-categories`)
 
     const handleCategoryClick = (category: string) => {
         if (category === clickedCategory) {

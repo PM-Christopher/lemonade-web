@@ -143,7 +143,7 @@ export default function VerifyCodePage() {
     const [otp, setOtp] = useState(formik.values.code);
 
     const verifyOtp = async (values: any) => {
-        const {payload} = await dispatch(verifyEmailOtp({data: values, url: "/auth/check-otp", token: cookie.newToken}))
+        const {payload} = await dispatch(verifyEmailOtp({data: values, url: "/user/auth/check-otp", token: cookie.newToken}))
         if (!payload.status) {
             setCanResend(true)
             dispatch(

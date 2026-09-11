@@ -20,7 +20,7 @@ const TopNav = () => {
     const [selectedNotification, setSelectedNotification] = useState<any>(null);
     const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
 
-    const {data} = useRequest("/notification");
+    const {data} = useRequest("/user/notification");
     const { setSelectedMenu } = usePersistentMenuState()
 
     const handleViewMore = (notification: any) => {

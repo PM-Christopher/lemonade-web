@@ -13,7 +13,7 @@ export const useRefreshToken = () => {
         isRefreshing.current = true
         try {
             console.log({here: "here"})
-            const res = await axiosInstance.post('/auth/refresh', {
+            const res = await axiosInstance.post('/user/auth/refresh', {
                 refresh_token: Cookies.get("refresh_token"),
             })
             const {token} = res?.data?.data

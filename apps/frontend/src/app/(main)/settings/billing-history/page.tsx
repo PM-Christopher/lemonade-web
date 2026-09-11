@@ -23,7 +23,7 @@ const BillingHistoryPage = () => {
     };
 
     const {data, loading} = useRequest(
-        `profile/subscription/billing-history`,
+        `user/profile/subscription/billing-history`,
     );
 
     return (

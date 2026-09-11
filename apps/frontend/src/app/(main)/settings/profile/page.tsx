@@ -50,7 +50,7 @@ const ProfileSettingsPage = ({}) => {
       formData.append("file", file);
       try {
         dispatch(setIsRouting(true));
-        const { data } = await axiosInstance.post("/upload", formData, {
+        const { data } = await axiosInstance.post("/shared/utilities/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

@@ -39,7 +39,7 @@ const ConnectRequestPage = () => {
     };
 
     const {getData} = useRequest(
-        "/connect/get-invites",
+        "/user/connect/get-invites",
     );
 
     useEffect(() => {

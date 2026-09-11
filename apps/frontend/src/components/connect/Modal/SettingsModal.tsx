@@ -27,7 +27,7 @@ const SettingsModal: React.FC<SettingsInterface>= ({toggle, isOpen, user_connect
     }
 
     const handleChange = async () => {
-        const { data } = await axiosInstance.patch("/connect/update-visibility", {visibility: !checked}, getHeader());
+        const { data } = await axiosInstance.patch("/user/connect/update-visibility", {visibility: !checked}, getHeader());
         if (data.status) {
             dispatch(
                 updateToastifyReducer({

@@ -24,7 +24,7 @@ const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: ()
     }
 
     const handlePayNow = async () => {
-        const { payload } = await dispatch(makeJobPayment({id: job.id, data: {callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`}}))
+        const { payload } = await dispatch(makeJobPayment({id: job.id, data: {redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`}}))
 
         if (payload.status) {
             dispatch(

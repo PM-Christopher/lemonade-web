@@ -16,7 +16,7 @@ export const signup = async (
 ) => {
     dispatch(authStart());
     try {
-        const { data } = await axiosInstance.post("/auth/register", { ...values });
+        const { data } = await axiosInstance.post("/user/auth/register", { ...values });
         if (data.status || data.success) {
             dispatch(setIsRouting(true));
             dispatch(
@@ -67,7 +67,7 @@ export const login = async (
     dispatch(authStart());
 
     try {
-        const { data } = await axiosInstance.post("/auth/login", { ...values });
+        const { data } = await axiosInstance.post("/user/auth/login", { ...values });
 
         if (data.status || data.success) {
             dispatch(setIsRouting(true));
