@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {announcementsApi} from "@/features/announcements/api";
 
 
 interface announcementState {
@@ -17,14 +17,8 @@ const initialState: announcementState = {
 };
 
 const getAnnouncementData = createAsyncThunk("announcement/getAnnouncementData", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response = await axiosInstance.get(`/admin/announcement`, { headers });
+        let response = await announcementsApi.getAnnouncements(token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -35,14 +29,8 @@ const getAnnouncementData = createAsyncThunk("announcement/getAnnouncementData",
 });
 
 const getAnnouncementDetail = createAsyncThunk("announcement/getAnnouncementDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response = await axiosInstance.get(`admin/announcement/${id}`, { headers });
+        let response = await announcementsApi.getAnnouncement(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

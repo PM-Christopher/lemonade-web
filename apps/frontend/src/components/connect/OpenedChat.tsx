@@ -14,7 +14,7 @@ import {useMediaQuery} from "react-responsive";
 import {usePusher} from "@/hooks/usePusher";
 import {formatSingleTime, getInitials} from "@/lib/helper";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {connectApi} from "@/features/connect/api";
 import {Spinner} from "evergreen-ui";
 import {WindmillSpinner} from "react-spinner-overlay";
 
@@ -126,7 +126,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
             if (formData.has("files[]")) {
                 try {
-                    const {data} = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
+                    const {data} = await connectApi.uploadMultiple(formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {businessApi} from "@/features/business/api";
 import {TicketDetails} from "@/interfaces/EventInterface";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 
@@ -43,7 +43,7 @@ const initialState: businessState = {
 
 const getListings = createAsyncThunk("business/getListings", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/listing`);
+        const response = await businessApi.getListings();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -55,7 +55,7 @@ const getListings = createAsyncThunk("business/getListings", async (_, { rejectW
 
 const getListing = createAsyncThunk("business/getListing", async ({id}: {id: number}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/listing/${id}`);
+        const response = await businessApi.getListing(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -67,7 +67,7 @@ const getListing = createAsyncThunk("business/getListing", async ({id}: {id: num
 
 const getJobsData = createAsyncThunk("business/getJobsData", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/business/jobs/all`);
+        const response = await businessApi.getJobsData();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -80,7 +80,7 @@ const getJobsData = createAsyncThunk("business/getJobsData", async (_, { rejectW
 const getBusinesses = createAsyncThunk("business/getBusinesses", async (_, { rejectWithValue }) => {
 
     try {
-        const response = await axiosInstance.get(`/user/business`);
+        const response = await businessApi.getBusinesses();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -92,7 +92,7 @@ const getBusinesses = createAsyncThunk("business/getBusinesses", async (_, { rej
 
 const getBusiness = createAsyncThunk("business/getBusiness", async ({id}: {id: number}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/business/${id}`);
+        const response = await businessApi.getBusiness(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -103,14 +103,8 @@ const getBusiness = createAsyncThunk("business/getBusiness", async ({id}: {id: n
 });
 
 const requestService = createAsyncThunk("business/requestService", async ({ id, token, data}: {id: number, token: string, data: any}, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.post(`/user/business/${id}/request-service`, data, { headers });
+        const response = await businessApi.requestService(id, data, token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -122,7 +116,7 @@ const requestService = createAsyncThunk("business/requestService", async ({ id, 
 
 const getJob = createAsyncThunk("business/getJob", async ({ id, type}: {id: number, type: string}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/${type}/jobs/job/${id}`);
+        const response = await businessApi.getJob(type, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -133,14 +127,8 @@ const getJob = createAsyncThunk("business/getJob", async ({ id, type}: {id: numb
 });
 
 const filterBusiness = createAsyncThunk("business/filterBusiness", async ({ token, value}: {token: string, value: { location: string, category: string, service_type: string, start_range: string, end_range: string } }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/user/business/filter-business?location=${value.location}&category=${value.category}&service_type=${value.service_type}&start_range=${value.start_range}&end_range=${value.end_range}`, { headers });
+        const response = await businessApi.filterBusiness(token, value);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -152,7 +140,7 @@ const filterBusiness = createAsyncThunk("business/filterBusiness", async ({ toke
 
 const markJobRequest = createAsyncThunk("business/markJobRequest", async ({ id, data}: {id: number, data: any}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/user/listing/jobs/${id}/mark-job`, data);
+        const response = await businessApi.markJobRequest(id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -164,7 +152,7 @@ const markJobRequest = createAsyncThunk("business/markJobRequest", async ({ id, 
 
 const requestJobPayment = createAsyncThunk("business/requestJobPayment", async ({ id }: {id: number}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.patch(`/user/listing/jobs/${id}/request-payment`);
+        const response = await businessApi.requestJobPayment(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -176,7 +164,7 @@ const requestJobPayment = createAsyncThunk("business/requestJobPayment", async (
 
 const makeJobPayment = createAsyncThunk("business/makeJobPayment", async ({ id, data }: {id: number, data: any}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/user/business/jobs/${id}/pay`, data);
+        const response = await businessApi.makeJobPayment(id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -188,7 +176,7 @@ const makeJobPayment = createAsyncThunk("business/makeJobPayment", async ({ id, 
 
 const markJobCompleted = createAsyncThunk("business/markJobCompleted", async ({ id }: {id: number}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/user/business/jobs/${id}/mark-completed`);
+        const response = await businessApi.markJobCompleted(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -198,9 +186,9 @@ const markJobCompleted = createAsyncThunk("business/markJobCompleted", async ({ 
     }
 });
 
-const disputeJob = createAsyncThunk("business/disputeJob", async ({ url, data }: {url: string, data: any}, { rejectWithValue }) => {
+const disputeJob = createAsyncThunk("business/disputeJob", async ({ id, data }: {id: number, data: any}, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(url, data);
+        const response = await businessApi.disputeJob(id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

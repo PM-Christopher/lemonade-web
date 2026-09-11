@@ -11,7 +11,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {Spinner} from "evergreen-ui";
 import MainLayout from "@/components/layouts/MainLayout";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {tribesApi} from "@/features/tribes/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import * as yup from "yup";
@@ -97,10 +97,7 @@ export default function TribePage() {
         onSubmit: async (values) => {
             values.membership_fee = values.membership_fee ? values.membership_fee : 0;
             try {
-                const {data} = await axiosInstance.post(
-                    "/user/tribes/create-tribe",
-                    values,
-                );
+                const {data} = await tribesApi.createTribe(values);
                 if (data.status) {
                     dispatch(
                         updateToastifyReducer({

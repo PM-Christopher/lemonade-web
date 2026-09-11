@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {settingsApi} from "@/features/settings/api";
 
 interface profileState {
     loading: boolean;
@@ -15,10 +15,7 @@ const initialState: profileState = {
 
 const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({token}: {token: string}, { rejectWithValue }) => {
     try {
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        }
-        const response = await axiosInstance.get(`/user/profile/user`, { headers });
+        const response = await settingsApi.getUserProfile(token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -30,7 +27,7 @@ const getUserProfile = createAsyncThunk("profile/getUserProfile", async ({token}
 
 const requestPayout = createAsyncThunk("profile/requestPayout", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/user/profile/wallet/request-payout`, data);
+        const response = await settingsApi.requestPayout(data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

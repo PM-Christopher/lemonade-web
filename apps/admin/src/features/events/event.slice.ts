@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {eventsApi} from "@/features/events/api";
 
 
 interface eventState {
@@ -19,28 +19,9 @@ const initialState: eventState = {
 };
 
 const getEventData = createAsyncThunk("event/getEventData", async ({ token, trxType }: { token: string, trxType: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response;
-        switch (trxType) {
-            case "events":
-                response = await axiosInstance.get(`/admin/events`, { headers });
-                return response.data;
-            case "affiliates":
-                response = await axiosInstance.get(`/admin/affiliates`, { headers });
-                return response.data;
-            case "promotions":
-                response = await axiosInstance.get(`/admin/event-promotions`, { headers });
-                return response.data;
-            default:
-                response = await axiosInstance.get(`/admin/events`, { headers });
-                return response.data;
-        }
+        const response = await eventsApi.getEventData(token, trxType);
+        return response.data;
     } catch (err: any) {
         if (!err.response) {
             throw err;
@@ -50,14 +31,8 @@ const getEventData = createAsyncThunk("event/getEventData", async ({ token, trxT
 });
 
 const getEventDetail = createAsyncThunk("event/getEventDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/events/${id}`, { headers });
+        const response = await eventsApi.getEventDetail(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -68,28 +43,9 @@ const getEventDetail = createAsyncThunk("event/getEventDetail", async ({ token, 
 });
 
 const eventAction = createAsyncThunk("event/eventAction", async ({ token, id, actionType }: { token: string, id: number, actionType: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response;
-        switch (actionType) {
-            case "suspend":
-                response = await axiosInstance.patch(`/admin/events/${id}/suspend-event`, {}, { headers });
-                return response.data;
-            case "activate":
-                response = await axiosInstance.patch(`/admin/events/${id}/activate-event`, {}, { headers });
-                return response.data;
-            case "delete":
-                response = await axiosInstance.delete(`/admin/events/${id}/delete-event`, { headers });
-                return response.data;
-            default:
-                response = await axiosInstance.patch(`/admin/events/${id}/suspend-event`, {}, { headers });
-                return response.data;
-        }
+        const response = await eventsApi.eventAction(token, id, actionType);
+        return response.data;
     } catch (err: any) {
         if (!err.response) {
             throw err;
@@ -99,14 +55,8 @@ const eventAction = createAsyncThunk("event/eventAction", async ({ token, id, ac
 });
 
 const updateCommissionCharge = createAsyncThunk("event/updateCommissionCharge", async ({ token, data }: { token: any, data: any }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.patch(`/admin/events/update-commission-charge`, data, { headers });
+        const response = await eventsApi.updateCommissionCharge(token, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

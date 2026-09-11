@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {userApi} from "@/features/user/api";
 
 interface userState {
     loading: boolean;
@@ -20,25 +20,9 @@ const initialState: userState = {
 };
 
 const getUserData = createAsyncThunk("user/getUserData", async ({ token, trxType }: { token: string, trxType: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response;
-        switch (trxType) {
-            case "users":
-                response = await axiosInstance.get(`/admin/users`, { headers });
-                return response.data;
-            case "affiliates":
-                response = await axiosInstance.get(`/admin/users/affiliates/log`, { headers });
-                return response.data;
-            default:
-                response = await axiosInstance.get(`/admin/users`, { headers });
-                return response.data;
-        }
+        const response = await userApi.getUserData(token, trxType);
+        return response.data;
     } catch (err: any) {
         if (!err.response) {
             throw err;
@@ -48,14 +32,8 @@ const getUserData = createAsyncThunk("user/getUserData", async ({ token, trxType
 });
 
 const getUserDetail = createAsyncThunk("user/getUserDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/users/${id}`, { headers });
+        const response = await userApi.getUserDetail(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -69,14 +47,8 @@ const getUserDetail = createAsyncThunk("user/getUserDetail", async ({ token, id 
 
 
 const getAffiliateDetail = createAsyncThunk("user/getAffiliateDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/users/affiliates/${id}/detail`, { headers });
+        const response = await userApi.getAffiliateDetail(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -88,34 +60,9 @@ const getAffiliateDetail = createAsyncThunk("user/getAffiliateDetail", async ({ 
 
 
 const getAccountInfo = createAsyncThunk("user/getAccountInfo", async ({ token, id, infoType }: { token: string, id: number, infoType: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response;
-        switch (infoType) {
-            case "activities-log":
-                response = await axiosInstance.get(`/admin/users/${id}/user-logs`, { headers });
-                return response.data;
-            case "tribes":
-                response = await axiosInstance.get(`/admin/users/${id}/user-tribes`, { headers });
-                return response.data;
-            case "business":
-                response = await axiosInstance.get(`/admin/users/${id}/user-logs`, { headers });
-                return response.data;
-            case "events":
-                response = await axiosInstance.get(`/admin/users/${id}/user-events`, { headers });
-                return response.data;
-            case "wallet":
-                response = await axiosInstance.get(`/admin/users/${id}/user-wallet`, { headers });
-                return response.data;
-            default:
-                response = await axiosInstance.get(`/admin/users/${id}/user-logs`, { headers });
-                return response.data;
-        }
+        const response = await userApi.getAccountInfo(token, id, infoType);
+        return response.data;
     } catch (err: any) {
         if (!err.response) {
             throw err;
@@ -125,28 +72,9 @@ const getAccountInfo = createAsyncThunk("user/getAccountInfo", async ({ token, i
 });
 
 const userAction = createAsyncThunk("user/userAction", async ({ token, id, actionType }: { token: string, id: number, actionType: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response;
-        switch (actionType) {
-            case "suspend":
-                response = await axiosInstance.patch(`/admin/users/${id}/suspend-user`, {}, { headers });
-                return response.data;
-            case "deactivate":
-                response = await axiosInstance.patch(`/admin/users/${id}/deactivate-user`, {}, { headers });
-                return response.data;
-            case "reactivate":
-                response = await axiosInstance.patch(`/admin/users/${id}/reactivate-user`, {}, { headers });
-                return response.data;
-            default:
-                response = await axiosInstance.patch(`/admin/users/${id}/suspend-user`, {}, { headers });
-                return response.data;
-        }
+        const response = await userApi.userAction(token, id, actionType);
+        return response.data;
     } catch (err: any) {
         if (!err.response) {
             throw err;

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { exportsApi } from "@/features/exports/api";
 
 // Define the state type for better type safety
 interface ExportState {
@@ -20,17 +20,8 @@ const getCSV = createAsyncThunk(
     { token, table }: { token: string; table: string },
     { rejectWithValue }
   ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      const response = await axiosInstance.get(
-        `/admin/export?table=${table}&type=csv`,
-        { headers }
-      );
+      const response = await exportsApi.getCSV(token, table);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

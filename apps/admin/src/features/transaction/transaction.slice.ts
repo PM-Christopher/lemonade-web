@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {transactionApi} from "@/features/transaction/api";
 
 interface transactionState {
     loading: boolean;
@@ -20,14 +20,8 @@ const initialState: transactionState = {
 };
 
 const getPlanSubscriptions = createAsyncThunk("transaction/getPlanSubscriptions", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/transaction/plan-subscription/`, { headers });
+        const response = await transactionApi.getPlanSubscriptions(token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -38,14 +32,8 @@ const getPlanSubscriptions = createAsyncThunk("transaction/getPlanSubscriptions"
 });
 
 const getPlanSubscription = createAsyncThunk("transaction/getPlanSubscription", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/transaction/plan-subscription/${id}`, { headers });
+        const response = await transactionApi.getPlanSubscription(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -56,14 +44,8 @@ const getPlanSubscription = createAsyncThunk("transaction/getPlanSubscription", 
 });
 
 const getWalletDetail = createAsyncThunk("transaction/getWalletDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/transaction/wallet-withdrawal/${id}`, { headers });
+        const response = await transactionApi.getWalletWithdrawal(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -74,14 +56,8 @@ const getWalletDetail = createAsyncThunk("transaction/getWalletDetail", async ({
 });
 
 const getEventDetail = createAsyncThunk("transaction/getEventDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/transaction/event/${id}`, { headers });
+        const response = await transactionApi.getEventDetail(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -92,34 +68,9 @@ const getEventDetail = createAsyncThunk("transaction/getEventDetail", async ({ t
 });
 
 const getTransactionData = createAsyncThunk("transaction/getTransactionData", async ({ token, trxType }: { token: string, trxType: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response;
-        switch (trxType) {
-            case "plan-subscriptions":
-                response = await axiosInstance.get(`/admin/transaction/plan-subscription`, { headers });
-                return response.data;
-            case "wallet-withdrawals":
-                response = await axiosInstance.get(`/admin/transaction/wallet-withdrawals`, { headers });
-                return response.data;
-            case "boosting":
-                response = await axiosInstance.get(`/admin/transaction/plan-subscription`, { headers });
-                return response.data;
-            case "services":
-                response = await axiosInstance.get(`/admin/transaction/plan-subscription`, { headers });
-                return response.data;
-            case "events":
-                response = await axiosInstance.get(`/admin/transaction/events`, { headers });
-                return response.data;
-            case "promotions":
-                response = await axiosInstance.get(`/admin/transaction/plan-subscription`, { headers });
-                return response.data;
-        }
+        const response = await transactionApi.getTransactionData(token, trxType);
+        return response?.data;
     } catch (err: any) {
         if (!err.response) {
             throw err;

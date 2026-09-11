@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {generalApi} from "@/redux/api";
 
 interface generalState {
     loading: boolean;
@@ -16,10 +16,7 @@ const initialState: generalState = {
 const verifyAccount = createAsyncThunk("general/verifyAccount", async ({ bank_code, account_number }: {bank_code: string, account_number: string}, { rejectWithValue }) => {
 
     try {
-        const response = await axiosInstance.post(`/verify-account`, {
-            bank_code,
-            account_number
-        });
+        const response = await generalApi.verifyAccount(bank_code, account_number);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

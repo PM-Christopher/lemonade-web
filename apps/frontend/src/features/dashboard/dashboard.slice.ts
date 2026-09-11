@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { dashboardApi } from "@/features/dashboard/api";
 import Cookies from "js-cookie";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {EventInterface} from "@/interfaces/EventInterface";
@@ -29,11 +29,7 @@ const initialState: dashboardState = {
 
 const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/dashboard/tribes`, {
-            cache: {
-                ttl: 1000 * 60
-            }
-        });
+        const response = await dashboardApi.getTribes();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -45,11 +41,7 @@ const getDashboardTribes = createAsyncThunk("dashboard/getDashboardTribes", asyn
 
 const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/dashboard/events`, {
-            cache: {
-                ttl: 1000 * 60
-            }
-        });
+        const response = await dashboardApi.getEvents();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -61,11 +53,7 @@ const getDashboardEvents = createAsyncThunk("dashboard/getDashboardEvents", asyn
 
 const getDashboardBusinesses = createAsyncThunk("dashboard/getDashboardBusinesses", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/dashboard/businesses`, {
-            cache: {
-                ttl: 1000 * 60
-            }
-        });
+        const response = await dashboardApi.getBusinesses();
         return response.data;
     } catch (err: any) {
         if (!err.response) {

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {dashboardApi} from "@/features/dashboard/api";
 import {PlatformStatistics} from "@/interfaces/SystemInterface";
 
 interface chatState {
@@ -17,14 +17,8 @@ const initialState: chatState = {
 };
 
 const getMetrics = createAsyncThunk("dashboard/getMetrics", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/dashboard`, { headers });
+        const response = await dashboardApi.getMetrics(token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

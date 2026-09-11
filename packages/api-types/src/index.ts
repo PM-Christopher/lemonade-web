@@ -64,4 +64,4 @@ export type TokenType =
   | "account_deletion"
   | "two_factor";
 
-export { userAuthRoutes, adminAuthRoutes } from "./routes";
+export * from "./routes";

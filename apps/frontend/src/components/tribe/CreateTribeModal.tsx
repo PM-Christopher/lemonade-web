@@ -11,7 +11,7 @@ import InfoIcon from "@/images/icons/infoIcon.svg";
 import PadlockIcon from "@/images/icons/padlock.svg";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {tribesApi} from "@/features/tribes/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {authFailure, loadStop} from "@/features/authentication/authSlice";
 import {useAppDispatch} from "@/redux/hook";
@@ -69,10 +69,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
         onSubmit: async (values) => {
             values.membership_fee = values.membership_fee ? values.membership_fee : 0;
             try {
-                const {data} = await axiosInstance.post(
-                    "/user/tribes/create-tribe",
-                    values,
-                );
+                const {data} = await tribesApi.createTribe(values);
                 if (data.status) {
                     dispatch(
                         updateToastifyReducer({
@@ -128,7 +125,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
             const formData = new FormData();
             formData.append("file", file);
             try {
-                const {data} = await axiosInstance.post("/shared/utilities/upload", formData, {
+                const {data} = await tribesApi.upload(formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },

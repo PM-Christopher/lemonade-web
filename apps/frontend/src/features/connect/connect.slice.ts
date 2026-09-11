@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {connectApi} from "@/features/connect/api";
 import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
 
 interface chatState {
@@ -48,14 +48,8 @@ const initialState: chatState = {
 };
 
 const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/getChat", async ({receiver_id, token}: GetChatParams, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/user/messages/chat?receiver_id=${receiver_id}`, { headers });
+        const response = await connectApi.getChat(receiver_id, token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -66,14 +60,8 @@ const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/
 });
 
 const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connect/sendChat", async ({message, media, token, receiver_id}: SendChatParams, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.post(`/user/messages?receiver_id=${receiver_id}`, { message, media }, { headers });
+        const response = await connectApi.sendChat(receiver_id, message, media, token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -84,14 +72,8 @@ const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connec
 });
 
 const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({token, id, data}: {token: string, id: number, data: {option: string}}, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.post(`/user/connect/invite-response/${id}`, data, { headers });
+        const response = await connectApi.inviteResponse(id, data, token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -102,14 +84,8 @@ const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({token,
 });
 
 const findUser = createAsyncThunk("connect/findUser", async ({token, search}: {token: string, search: string}, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/user/connect/find-user?search=${search}`, { headers });
+        const response = await connectApi.findUser(search, token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -120,14 +96,8 @@ const findUser = createAsyncThunk("connect/findUser", async ({token, search}: {t
 });
 
 const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: {token: string, data: any}, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.post(`/user/connect/send-invite`, data, { headers });
+        const response = await connectApi.sendInvite(data, token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -139,7 +109,7 @@ const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: 
 
 const getInvites = createAsyncThunk("connect/getInvites", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/connect/get-invites`);
+        const response = await connectApi.getInvites();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -151,7 +121,7 @@ const getInvites = createAsyncThunk("connect/getInvites", async (_, { rejectWith
 
 const getConnection = createAsyncThunk("connect/getConnection", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/connect`);
+        const response = await connectApi.getConnection();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -163,7 +133,7 @@ const getConnection = createAsyncThunk("connect/getConnection", async (_, { reje
 
 const getMessages = createAsyncThunk("connect/getMessages", async (_, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/user/messages`);
+        const response = await connectApi.getMessages();
         return response.data;
     } catch (err: any) {
         if (!err.response) {

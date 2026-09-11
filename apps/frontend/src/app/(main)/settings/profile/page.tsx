@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { formatString, splitLemonId } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { settingsApi } from "@/features/settings/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import {
@@ -50,7 +50,7 @@ const ProfileSettingsPage = ({}) => {
       formData.append("file", file);
       try {
         dispatch(setIsRouting(true));
-        const { data } = await axiosInstance.post("/shared/utilities/upload", formData, {
+        const { data } = await settingsApi.upload(formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

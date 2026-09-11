@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { promotionsApi } from "@/features/events/api";
 
 interface Promotion {
     id: number;
@@ -31,14 +31,8 @@ const initialState: PromotionState = {
 export const getPromotionData = createAsyncThunk(
     "promotion/getPromotions", 
     async ({ token }: { token: string }, { rejectWithValue }) => {
-        const headers = {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        };
-
         try {
-            let response = await axiosInstance.get(`/admin/promotions`, { headers });
+            let response = await promotionsApi.getPromotions(token);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -52,14 +46,8 @@ export const getPromotionData = createAsyncThunk(
 export const createPromotion = createAsyncThunk(
     "promotion/createPromotion", 
     async ({ token, data }: { token: string, data: any }, { rejectWithValue }) => {
-        const headers = {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        };
-
         try {
-            let response = await axiosInstance.post(`/admin/promotions`, data, { headers });
+            let response = await promotionsApi.createPromotion(token, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -73,14 +61,8 @@ export const createPromotion = createAsyncThunk(
 export const getPromotion = createAsyncThunk(
     "promotion/getPromotion",
     async ({ token, id }: { token: any, id: any }, { rejectWithValue }) => {
-        const headers = {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        };
-
         try {
-            let response = await axiosInstance.get(`/admin/promotions/${id}`, { headers });
+            let response = await promotionsApi.getPromotion(token, id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -94,14 +76,8 @@ export const getPromotion = createAsyncThunk(
 export const updatePromotion = createAsyncThunk(
     "promotion/updatePromotion",
     async ({ token, id, data }: { token: any, id: any, data: any }, { rejectWithValue }) => {
-        const headers = {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        };
-
         try {
-            let response = await axiosInstance.patch(`/admin/promotions/${id}`, data, { headers });
+            let response = await promotionsApi.updatePromotion(token, id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -115,14 +91,8 @@ export const updatePromotion = createAsyncThunk(
 export const deletePromotion = createAsyncThunk(
     "promotion/deletePromotion", 
     async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-        const headers = {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        };
-
         try {
-            let response = await axiosInstance.delete(`/admin/promotions/${id}`, { headers });
+            let response = await promotionsApi.deletePromotion(token, id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {

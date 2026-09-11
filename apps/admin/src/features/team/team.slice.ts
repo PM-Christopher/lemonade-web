@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { teamApi } from "@/features/team/api";
 
 interface TeamState {
   loading: boolean;
@@ -18,16 +18,8 @@ const initialState: TeamState = {
 export const getTeamData = createAsyncThunk(
   "team/getTeamData",
   async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      let response = await axiosInstance.get(`/admin/team-members`, {
-        headers,
-      });
+      let response = await teamApi.getTeamData(token);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -41,16 +33,8 @@ export const getTeamData = createAsyncThunk(
 export const getTeamDetail = createAsyncThunk(
   "team/getTeamDetail",
   async ({ token, id }: { token: string; id: number }, { rejectWithValue }) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      let response = await axiosInstance.get(`/admin/team-members/${id}`, {
-        headers,
-      });
+      let response = await teamApi.getTeamDetail(token, id);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -79,12 +63,6 @@ export const addTeamMember = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     const payload = {
       name: name,
       email: email,
@@ -93,9 +71,7 @@ export const addTeamMember = createAsyncThunk(
     };
 
     try {
-      let response = await axiosInstance.post(`/admin/team-members/`, payload, {
-        headers,
-      });
+      let response = await teamApi.addTeamMember(token, payload);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

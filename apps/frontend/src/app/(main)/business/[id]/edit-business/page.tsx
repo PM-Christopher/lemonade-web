@@ -5,7 +5,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {useRouter} from "next/navigation";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {businessApi} from "@/features/business/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import TopNav from "@/components/navigation/TopNav";
@@ -145,7 +145,7 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
         },
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
-            const {data} = await axiosInstance.patch(`/user/listing/${params.id}`, values, getHeader())
+            const {data} = await businessApi.updateListing(params.id, values, getHeader())
             if(data.status) {
                 dispatch(
                     updateToastifyReducer({

@@ -12,7 +12,7 @@ import {useSelector} from "react-redux";
 import {createThread} from "@/features/tribes/tribe.slice";
 import {useAppDispatch} from "@/redux/hook";
 import {useMediaQuery} from "react-responsive";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {tribesApi} from "@/features/tribes/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
@@ -105,7 +105,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
 
             if (formData.has("files[]")) {
                 try {
-                    const { data } = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
+                    const { data } = await tribesApi.uploadMultiple(formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -159,7 +159,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 formData.append(`files[]`, file); // Add each file to the `file[]` key
             });
             try {
-                const { data } = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
+                const { data } = await tribesApi.uploadMultiple(formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

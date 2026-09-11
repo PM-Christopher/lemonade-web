@@ -19,7 +19,7 @@ import {useSelector} from "react-redux";
 import CountryList from "country-list-with-dial-code-and-flag";
 import {FormikButton} from "@/components/global/FormikButton";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {businessApi} from "@/features/business/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
 import {checkError} from "@/lib/checkError";
@@ -145,7 +145,7 @@ const AddBusinessPage = () => {
         },
         validationSchema: createBusinessSchema,
         onSubmit: async (values) => {
-            const {data} = await axiosInstance.post(`/user/listing`, values, getHeader())
+            const {data} = await businessApi.createListing(values, getHeader())
             if(data.status) {
                 dispatch(
                     updateToastifyReducer({

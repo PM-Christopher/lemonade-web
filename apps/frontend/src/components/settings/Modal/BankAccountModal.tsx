@@ -18,7 +18,7 @@ import {useFormik} from "formik";
 import {createTickets} from "@/features/events/event.slice";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {settingsApi} from "@/features/settings/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type BankAccountInterface = {
@@ -89,7 +89,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
         account_number: formik.values.account_number,
         account_name: formik.values.account_name,
       }
-      const { data } = await axiosInstance.post("/user/profile/bank-account/create-account", formData, getHeader())
+      const { data } = await settingsApi.createBankAccount(formData, getHeader())
       if(data.status) {
         formik.resetForm()
         dispatch(

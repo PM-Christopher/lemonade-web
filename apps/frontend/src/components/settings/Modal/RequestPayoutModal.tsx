@@ -10,7 +10,7 @@ import {useRequest} from "@/hooks/useRequest";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {verifyAccount} from "@/redux/general.slice";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {settingsApi} from "@/features/settings/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {RootState} from "@/redux/store";
 import {getBanks} from "@/features/transaction/transaction.slice";
@@ -76,7 +76,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({isOpen, toggle}) 
                 account_name: formik.values.account_name,
                 amount: 100000
             }
-            const {data} = await axiosInstance.post("/user/profile/wallet/request-payout", formData)
+            const {data} = await settingsApi.requestPayout(formData)
             if (data.status) {
                 formik.resetForm()
                 dispatch(

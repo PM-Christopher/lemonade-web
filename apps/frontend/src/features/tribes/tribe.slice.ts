@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
+import {tribesApi} from "@/features/tribes/api";
 import {
     TribeInterface,
     TribeThreadInterface,
@@ -65,11 +66,7 @@ const getTribes = createAsyncThunk(
     async ({tribe_type}: {tribe_type: string}, {rejectWithValue}) => {
 
         try {
-            const response = await axiosInstance.get(`/user/tribes?type=${tribe_type}`, {
-                cache: {
-                    ttl: 1000 * 60
-                }
-            });
+            const response = await tribesApi.getTribes(tribe_type);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -86,11 +83,7 @@ const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
     async ({id, token}: JoinTribeParams, {rejectWithValue}) => {
 
         try {
-            const response = await axiosInstance.get(`/user/tribes/${id}`, {
-                cache: {
-                    ttl: 1000 * 60
-                }
-            });
+            const response = await tribesApi.getTribe(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -105,10 +98,7 @@ const joinTribe = createAsyncThunk(
     "tribe/joinTribe",
     async ({id, token, data}: { id: any, token: string, data: any }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/tribes/join-tribe/${id}`,
-                data,
-            );
+            const response = await tribesApi.joinTribe(id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -150,10 +140,7 @@ const createThread = createAsyncThunk<
     "tribe/createThread",
     async ({id, token, data}: CreateThreadParams, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/tribes/${id}/threads/create-thread`,
-                data,
-            );
+            const response = await tribesApi.createThread(id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -171,10 +158,7 @@ const likeThread = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/threads/${tribe_id}/${id}/post-like`,
-                {},
-            );
+            const response = await tribesApi.likeThread(tribe_id, id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -204,10 +188,7 @@ const submitVote = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/threads/${tribe_id}/${thread_id}/${poll_id}/poll-action`,
-                data,
-            );
+            const response = await tribesApi.submitVote(tribe_id, thread_id, poll_id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -222,11 +203,7 @@ const getThreads = createAsyncThunk(
     "tribe/getThreads",
     async ({id, token}: { id: string; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.get(`/user/tribes/${id}/threads/all`, {
-                cache: {
-                    ttl: 1000 * 60
-                }
-            });
+            const response = await tribesApi.getThreads(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -244,10 +221,7 @@ const filterThreads = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/tribes/${id}/threads/sort-thread`,
-                data,
-            );
+            const response = await tribesApi.filterThreads(id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -262,11 +236,7 @@ const viewProfile = createAsyncThunk(
     "tribe/viewProfile",
     async ({id, token}: { id: number; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.get(`/user/threads/view-profile/${id}`, {
-                cache: {
-                    ttl: 1000 * 60
-                }
-            });
+            const response = await tribesApi.viewProfile(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -281,10 +251,7 @@ const pinThread = createAsyncThunk(
     "tribe/pinThread",
     async ({id, token}: { id: number; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/threads/${id}/pin-thread`,
-                {},
-            );
+            const response = await tribesApi.pinThread(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -299,11 +266,7 @@ const getPinThreads = createAsyncThunk(
     "tribe/getPinThreads",
     async ({id, token}: { id: string; token: string }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.get(`/user/threads/${id}/pinned`, {
-                cache: {
-                    ttl: 1000 * 60
-                }
-            });
+            const response = await tribesApi.getPinThreads(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -321,10 +284,7 @@ const reportThread = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/threads/${id}/report-thread`,
-                data,
-            );
+            const response = await tribesApi.reportThread(id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -342,9 +302,7 @@ const deleteThread = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.delete(
-                `/user/threads/${id}/delete-thread`,
-            );
+            const response = await tribesApi.deleteThread(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -359,7 +317,7 @@ const searchTribe = createAsyncThunk(
     "tribe/searchTribe",
     async ({data}: { data: any }, {rejectWithValue}) => {
         try {
-            const response = await axiosInstance.post(`/user/tribes/search-tribe`, data);
+            const response = await tribesApi.searchTribe(data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -377,10 +335,7 @@ const addTribeMember = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/tribes/add-member/${id}`,
-                data,
-            );
+            const response = await tribesApi.addTribeMember(id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -403,10 +358,7 @@ const postComment = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.post(
-                `/user/threads/${tribe_id}/${thread_id}/post-comment`,
-                data,
-            );
+            const response = await tribesApi.postComment(tribe_id, thread_id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -428,13 +380,7 @@ const getComments = createAsyncThunk(
         {rejectWithValue}
     ) => {
         try {
-            const response = await axiosInstance.get(
-                `/user/threads/${tribe_id}/${thread_id}/comments`, {
-                    cache: {
-                        ttl: 1000 * 60
-                    }
-                }
-            );
+            const response = await tribesApi.getComments(tribe_id, thread_id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {

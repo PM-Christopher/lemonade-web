@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {profileApi} from "@/features/profile/api";
 
 interface userState {
     loading: boolean;
@@ -14,14 +14,8 @@ const initialState: userState = {
 };
 
 const getUserProfile = createAsyncThunk("user/getUserProfile", async ({ token }: { token: any }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        const response = await axiosInstance.get(`/admin/profile`, { headers });
+        const response = await profileApi.getProfile(token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

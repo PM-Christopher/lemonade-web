@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { walletApi } from "@/features/wallet/api";
 
 interface walletState {
   user: {} | null;
@@ -22,14 +22,8 @@ const initialState: walletState = {
 const getWalletData = createAsyncThunk(
   "wallet/getWalletData",
   async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      const response = await axiosInstance.get(`/admin/wallet`, { headers });
+      const response = await walletApi.getWalletData(token);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -43,17 +37,8 @@ const getWalletData = createAsyncThunk(
 const getWithdrawalRequest = createAsyncThunk(
   "wallet/getWithdrawalRequest",
   async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      const response = await axiosInstance.get(
-        `/admin/transaction/wallet-withdrawals`,
-        { headers }
-      );
+      const response = await walletApi.getWithdrawalRequests(token);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -67,17 +52,8 @@ const getWithdrawalRequest = createAsyncThunk(
 const getWalletDetail = createAsyncThunk(
   "wallet/getWalletDetail",
   async ({ token, id }: { token: string; id: number }, { rejectWithValue }) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
     try {
-      const response = await axiosInstance.get(
-        `/admin/transaction/wallet-withdrawal/${id}`,
-        { headers }
-      );
+      const response = await walletApi.getWalletDetail(token, id);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -100,24 +76,8 @@ const updateWithdrawalThreshold = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const payload = {
-      threshold: parseInt(threshold),
-    };
-
     try {
-      let response = await axiosInstance.patch(
-        `/admin/wallet/update-withdrawal-threshold`,
-        payload,
-        {
-          headers,
-        }
-      );
+      let response = await walletApi.updateWithdrawalThreshold(token, parseInt(threshold));
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -142,24 +102,8 @@ const withdrawalRequestDecison = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const payload = {
-      type: type,
-    };
-
     try {
-      let response = await axiosInstance.patch(
-        `/admin/wallet/user/${id}/withdrawal-request`,
-        payload,
-        {
-          headers,
-        }
-      );
+      let response = await walletApi.withdrawalRequestDecision(token, id, type);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -184,24 +128,8 @@ const withdrawaladdition = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const payload = {
-      amount: amount,
-    };
-
     try {
-      let response = await axiosInstance.patch(
-        `/admin/wallet/user/${id}/add`,
-        payload,
-        {
-          headers,
-        }
-      );
+      let response = await walletApi.addToWallet(token, id, amount);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -228,24 +156,8 @@ const withdrawaldeduction = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    const payload = {
-      amount: amount,
-    };
-
     try {
-      let response = await axiosInstance.patch(
-        `/admin/wallet/user/${id}/deduct`,
-        payload,
-        {
-          headers,
-        }
-      );
+      let response = await walletApi.deductFromWallet(token, id, amount);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {reportingApi} from "@/features/reporting/api";
 
 
 interface reportState {
@@ -17,14 +17,8 @@ const initialState: reportState = {
 };
 
 const getReportData = createAsyncThunk("report/getReportData", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response = await axiosInstance.get(`admin/reports`, { headers });
+        let response = await reportingApi.getReportData(token);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -35,14 +29,8 @@ const getReportData = createAsyncThunk("report/getReportData", async ({ token }:
 });
 
 const getReportDetail = createAsyncThunk("report/getReportDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response = await axiosInstance.get(`/admin/reports/${id}`, { headers });
+        let response = await reportingApi.getReportDetail(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -54,14 +42,8 @@ const getReportDetail = createAsyncThunk("report/getReportDetail", async ({ toke
 
 
 const resolveReport = createAsyncThunk("report/markReport", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response = await axiosInstance.patch(`/admin/reports/${id}`, { headers });
+        let response = await reportingApi.resolveReport(token, id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -74,14 +56,8 @@ const resolveReport = createAsyncThunk("report/markReport", async ({ token, id }
 
 
 const deleteReport = createAsyncThunk("report/getReportDetail", async ({ token, id, data }: { token: string, id: number, data: any }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
     try {
-        let response = await axiosInstance.patch(`/admin/reports/${id}/delete-content`, data, { headers });
+        let response = await reportingApi.deleteReportContent(token, id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

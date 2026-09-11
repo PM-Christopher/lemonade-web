@@ -12,7 +12,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {businessApi} from "@/features/business/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import {FormikButton} from "@/components/global/FormikButton";
@@ -73,7 +73,7 @@ const BoostBusinessPage = ({params}: { params: { id: number } }) => {
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
             const formData = {...values, callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${params.id}`}
-            const {data} = await axiosInstance.post(`/user/listing/boost-business/${params.id}`, formData, getHeader())
+            const {data} = await businessApi.boostListing(params.id, formData, getHeader())
             if (data.status) {
                 dispatch(
                     updateToastifyReducer({
