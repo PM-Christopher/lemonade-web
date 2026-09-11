@@ -1,0 +1,26 @@
+{
+  "name": "@lemonade/ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Design tokens (one Tailwind preset) and primitives only: Button, Input, Field, Select, Dialog, Table, Pagination, Toast, Skeleton, EmptyState, FormField. Primitives, not features — no component here may import @lemonade/api-client. See docs/ARCHITECTURE.md §7.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@lemonade/domain": "workspace:*",
+    "@lemonade/api-types": "workspace:*",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@lemonade/config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

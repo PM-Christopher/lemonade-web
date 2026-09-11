@@ -1,0 +1,319 @@
+---
+alwaysApply: true
+---
+
+# Lemonade Web — Cursor Development Rules
+
+## Role
+
+You are a senior Next.js/TypeScript engineer working in the `lemonade-web` monorepo.
+
+Your responsibility is to deliver production-quality code that is simple, maintainable, tested, and aligned with `docs/ARCHITECTURE.md`.
+
+Always prefer simplicity over cleverness. Avoid over-engineering.
+
+---
+
+## Project Context
+
+`lemonade-web` is a pnpm + Turborepo monorepo containing two Next.js apps:
+
+- **`apps/admin`** — internal operations console (money, moderation, platform config). Small, authenticated, trained, desktop audience. Client-heavy is acceptable.
+- **`apps/frontend`** — the public, mobile-first creator platform (tribes, threads, events, ticketing, business listings, jobs, Connect messaging, wallet, subscriptions). Public + authenticated, at scale. Server-rendered wherever the page is readable — first paint and SEO matter.
+
+Both apps consume `lemonade-backend` (Laravel 13, separate repo, 288 routes under `/v1`). The backend is the **source of truth** for business behaviour — not any document, including this one.
+
+The full rationale, current-state findings, and phased plan live in `docs/ARCHITECTURE.md`. Read it before making structural changes. If implementation details conflict with it, either follow it or update it — never silently diverge.
+
+---
+
+## The governing principle
+
+**The backend owns business logic. The frontends own presentation and interaction.**
+
+Every rule that decides what is true — whether a tribe join is paid, what a creator earns, whether an escrow can release, whether a plan grants a feature — lives in a Laravel action and is enforced by a policy. The frontends may *mirror* a rule for responsiveness (disable a button, show a validation hint) but may never be the only place it exists.
+
+The backend works in minor units with a double-entry ledger. **Money is formatted and displayed, never computed.** No client-side fee arithmetic, no client-side balance derivation, no client-side proration.
+
+Hiding a control in the UI is a courtesy, not a security boundary. Every mutation is independently authorized server-side by a Laravel policy — the frontend is never the reason an action is safe.
+
+---
+
+## Core Engineering Principles
+
+### Simplicity First
+
+Prefer: simpler architecture, fewer dependencies, smaller components, readable code.
+
+Avoid: over-engineering, premature optimization, unnecessary abstractions, enterprise-style ceremony for simple features.
+
+### Two real consumers, today
+
+A thing goes into a shared package only when both apps genuinely need it *now* — not "both apps will need this eventually." Promotion from app-local to shared is cheap; demotion never happens.
+
+### No app-shaped branching inside a package
+
+A parameter named `isAdmin`, `app`, or `variant: "admin" | "user"` inside `packages/*` is a boundary violation, not a feature. If a shared primitive needs that, the abstraction is wrong — split it or leave it app-local.
+
+---
+
+## Architecture Layers
+
+Four layers, one direction of dependency. Nothing below a layer imports from above it. Neither app imports from the other.
+
+```
+ROUTE LAYER      app/**                Server Components first
+                 Segment layouts · loading.tsx · error.tsx · Route Handlers (BFF)
+                 Owns: URL shape, auth gating, data orchestration, streaming
+                            │
+FEATURE LAYER    features/{domain}/    App-local, not shared
+                 queries.ts · mutations.ts · schema.ts · components/ · types.ts
+                 Owns: one bounded context's UI + server-state policy
+                            │
+SHARED LAYER     packages/*            Two real consumers only
+                 api-client · api-types · domain · ui · config
+                 Owns: transport, contract types, money/date rules, primitives
+                            │  HTTP · /v1 · Bearer (server-side)
+BACKEND          lemonade-backend      Separate repo · authority
+                 Controllers → Actions → Services → Eloquent · Policies · Ledger
+```
+
+---
+
+## Monorepo Structure
+
+```
+lemonade-web/
+├─ apps/
+│  ├─ admin/
+│  │  ├─ src/app/                  routes only — thin
+│  │  │  ├─ (auth)/ (console)/ (money)/
+│  │  │  └─ api/                   BFF Route Handlers
+│  │  ├─ src/features/<domain>/    the unit of ownership
+│  │  │  ├─ queries.ts             useQuery hooks + key factory
+│  │  │  ├─ mutations.ts           useMutation + invalidation
+│  │  │  ├─ schema.ts              Zod, mirrors backend FormRequest
+│  │  │  ├─ columns.tsx            table columns (admin only)
+│  │  │  ├─ components/            feature-local UI
+│  │  │  └─ index.ts               public surface of the feature
+│  │  ├─ src/components/           app-wide, cross-feature only
+│  │  ├─ src/lib/                  app-local glue
+│  │  └─ middleware.ts             auth gate
+│  └─ frontend/                    same shape; (public) (auth) (app)
+│
+├─ packages/
+│  ├─ api-types/     generated · envelope, ErrorCode, resources
+│  ├─ api-client/    transport, refresh, error normalization
+│  ├─ domain/        money · dates · statuses · error copy · predicates
+│  ├─ ui/             tokens + primitives (no domain knowledge)
+│  └─ config/         eslint · tsconfig · tailwind · prettier · vitest
+│
+├─ tooling/generate-api-types/      reads backend contract → api-types
+├─ turbo.json · pnpm-workspace.yaml · .github/workflows/
+└─ docs/ARCHITECTURE.md · CONTRACT.md · adr/
+```
+
+**Feature test:** deleting a feature directory removes the feature and breaks nothing else. If deleting `features/events` would break an unrelated file, that file's import is wrong.
+
+### Import rules (enforced by `eslint-plugin-boundaries` in CI)
+
+| From | May import | May not |
+|---|---|---|
+| `app/**` | features, components, ui, domain, api-types | another feature's internals; api-client directly |
+| `features/x/**` | ui, domain, api-client, api-types, its own internals | `features/y/**` internals — go through `y`'s index |
+| `packages/ui` | domain, api-types | api-client, any app, any feature |
+| `packages/api-client` | api-types | React, ui, domain, any app |
+| `packages/domain` | api-types | everything else — it is pure |
+
+### What must *not* be shared
+
+Endpoint hooks (`useEvents`, `useWallet`) · feature components · Redux slices / client state · route definitions & copy · full-page layouts · anything with one consumer "for now."
+
+---
+
+## Coding Patterns
+
+1. **The feature module is the unit of ownership.** One domain, one folder, one public surface via `index.ts`. Cross-feature reads go through the index, never internals.
+2. **Server state and client state are different things.** If the server is the source of truth, it belongs in TanStack Query. If it only exists in this browser tab (modal open, wizard step, unsent draft), it's local state or Redux when genuinely global. Server data is never copied into Redux "so components can read it."
+3. **The API contract is generated, never hand-written.** No hand-written response interfaces, no `as any`, no `as { x: any }` casts. Types come from `@lemonade/api-types`.
+4. **Components receive data; they do not fetch it.** Fetching lives in a Server Component, a feature query hook, or a container.
+5. **Errors are typed values, not strings.** Every failure normalizes to `ApiError { status, errorCode, message, fieldErrors, kind }`. Components branch on `errorCode` / `kind`, never on message text.
+6. **URL state for anything shareable.** Pagination, sorting, filters, tabs, search live in `searchParams`, not `useState`.
+7. **Money is displayed, never computed.** Format via `@lemonade/domain`; render server-computed figures only.
+
+### `"use client"` placement
+
+Goes on the smallest component that needs it — a filter bar, a row-action menu, a modal — never on a page or layout. A page needing `"use client"` is a signal that data orchestration hasn't been lifted out of it.
+
+### Data fetching layers — one job each
+
+| Layer | Lives in | Must not |
+|---|---|---|
+| Transport | `@lemonade/api-client` | Know any endpoint or domain |
+| Endpoints | `features/x/api.ts` | Contain React or caching policy |
+| Query policy | `features/x/queries.ts` | Build URLs or handle HTTP |
+| Consumption | Components | Call the transport directly |
+
+Query keys are hierarchical factories (`eventKeys.detail(id)`), never inline arrays.
+
+### Staleness policy, by data class
+
+| Data class | staleTime | Examples |
+|---|---:|---|
+| Money & availability | 0 | Wallet balance, ledger, ticket stock, escrow, payout status |
+| Operational queues | 30s | Moderation reports, withdrawal requests, admin dashboards |
+| User-owned content | 60s | My events, my tribes, my listings, profile |
+| Discovery content | 5m | Public event lists, tribe browse, search |
+| Reference data | 1h | Countries, timezones, banks, categories, plans |
+
+**Never optimistic for money or state machines** — payments, payouts, refunds, escrow, subscription changes. Invalidate and refetch instead; the ledger is authoritative.
+
+---
+
+## Authentication & Authorization
+
+- Bearer tokens live in **httpOnly cookies**, set by Next Route Handlers acting as a BFF. Browser JavaScript never holds a token.
+- Two Sanctum guards, two token namespaces — `auth:user` and `auth:admin`. Separate cookie names, separate Route Handler namespaces, separate refresh endpoints. Never send an admin token to a user route or vice versa.
+- **Refresh on 401, not 403.** The backend returns 401 for expired/absent credentials, 403 for policy denial. Refresh once, then fail — queue concurrent requests behind the in-flight refresh.
+- Refresh sends the token in the **JSON body**, not an auth header.
+- Three authorization layers, one real authority: edge middleware (UX redirect only) → Server Component render (never ship markup the user can't use) → Laravel Policies (**the only real authority**).
+
+---
+
+## State Taxonomy
+
+| Kind | Owner | Notes |
+|---|---|---|
+| Server state | TanStack Query | Everything from `/v1/*`. Never persisted to disk. |
+| URL state | `searchParams` | Page, sort, filters, tab, search |
+| Form state | React Hook Form | Uncontrolled by default |
+| Ephemeral UI state | `useState` | Colocated with the component |
+| Global client state | Redux (or Context) | Small enough to audit at a glance |
+
+Forms use **React Hook Form + Zod**. Zod schemas mirror backend `FormRequest` rules and carry a comment naming which one. Server `errors` map onto fields via `setError` — a server rejection lands on the field that caused it, not a toast. Where a rule can't be mirrored (uniqueness, entitlements, balance), don't guess — submit and render the server's answer.
+
+---
+
+## Naming Conventions
+
+| Thing | Convention | Example |
+|---|---|---|
+| Components | PascalCase, one per file, named export | `TicketSummary.tsx` |
+| Hooks | `use` + camelCase | `useEventQuery.ts` |
+| Query hooks | `use<Entity>Query` / `use<Entity>ListQuery` | `useWalletQuery` |
+| Mutation hooks | `use<Verb><Entity>Mutation` | `useApprovePayoutMutation` |
+| Zod schemas | `<action>Schema` + inferred type | `createEventSchema` → `CreateEventInput` |
+| Query keys | Factory per feature, never inline arrays | `eventKeys.detail(id)` |
+| Route Handlers | `app/api/<domain>/<action>/route.ts` | `app/api/auth/login/route.ts` |
+| Booleans | `is` / `has` / `can` prefix | `canApprovePayout` |
+| Files that must never reach the client | Import `server-only` at the top | `lib/session.ts` |
+
+---
+
+## TypeScript & Type Safety
+
+- Strict mode is required. Never use `any` — use `unknown` when necessary.
+- Domain/contract types come from `@lemonade/api-types` (generated). No hand-written response interfaces.
+- Prefer interfaces, type aliases, discriminated unions.
+
+---
+
+## Error Handling
+
+One normalized shape from the transport — nothing above it inspects raw axios errors:
+
+```ts
+type ApiError = {
+  status: number;
+  errorCode: ErrorCode;        // backend's 18-case enum
+  message: string;
+  fieldErrors?: Record<string, string[]>;
+  correlationId?: string;
+  kind: 'validation' | 'auth' | 'permission' | 'notFound'
+      | 'conflict' | 'rateLimit' | 'server' | 'network' | 'timeout';
+};
+```
+
+Every route group gets `error.tsx`, `not-found.tsx`, `loading.tsx`; plus a root `global-error.tsx`. Blast radius of a failure is one segment, not the app.
+
+Timeouts on every request. Disable-on-submit everywhere. Idempotency keys on every money mutation. Never retry non-idempotent mutations automatically.
+
+---
+
+## Testing Requirements
+
+| Layer | Tool | Target |
+|---|---|---|
+| Unit — shared packages | Vitest | ≥ 90% — highest bar in the repo |
+| Contract | Vitest + MSW | Every `ErrorCode`, 422 field mapping, 401 refresh, pagination |
+| Component | Vitest + Testing Library | Every form and money surface |
+| Integration | Testing Library + MSW | Each migrated/new domain |
+| End-to-end | Playwright | Critical money/auth journeys |
+| Accessibility | `axe-core` in component tests | Forms, dialogs, tables, navigation |
+
+Write a characterization test for existing behaviour immediately *before* migrating or materially changing a feature — not after.
+
+No snapshot tests of large component trees. No coverage threshold on app code as a merge gate — thresholds matter on `packages/*`, where they mean something.
+
+---
+
+## Code Quality Rules
+
+Before completing any feature, run:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+All commands must pass. Never consider a feature complete if any command fails.
+
+### Lint rules that must not regress
+
+| Rule | Prevents |
+|---|---|
+| `@typescript-eslint/no-explicit-any` | Untyped `any` creeping back in |
+| `react-hooks/exhaustive-deps` | Stale-closure effects |
+| `boundaries/element-types` | Cross-feature / package-boundary violations |
+| `no-restricted-imports`: axios outside `api-client` | A second HTTP client appearing |
+| `no-console` (allow `warn`/`error`) | Stray debug logs in shipped code |
+| `no-restricted-syntax`: `localStorage.setItem` with token keys | Tokens returning to JS-readable storage |
+| `@next/next/no-img-element` | Unoptimized images |
+
+Format with Prettier before completion. Remove dead code, unused imports, unused variables.
+
+---
+
+## Git Rules
+
+After every completed feature, bug fix, refactor, or milestone: create a git commit using **Conventional Commits** (matches the backend's existing convention).
+
+```text
+feat(events): add server-side pagination to admin table
+fix(auth): refresh on 401 instead of 403
+test(wallet): add characterization tests before query migration
+refactor(tribes): split tribe.slice.ts into queries/mutations
+docs(architecture): record ADR for BFF auth flow
+```
+
+Never use: `update`, `changes`, `misc fixes`, `stuff`, `work in progress`.
+
+When a change spans this repo and the backend, deploy **backend first, additively** — add the new field/endpoint while the old one still works, deploy, update the frontend, deploy, remove the old surface later. Never remove a backend surface before its consumers have moved.
+
+---
+
+## Definition of Done
+
+A task is complete only when:
+
+✓ Feature implemented, matching `docs/ARCHITECTURE.md` (or the doc is updated with an ADR explaining the departure)
+✓ Types come from `@lemonade/api-types` — no hand-written response shapes
+✓ Tests written and passing
+✓ Lint, typecheck, build all passing
+✓ No `any`, no stray `console.log`, no manual `Authorization` header
+✓ No feature exists in both the old pattern and the new pattern when the phase ends
+✓ Commit created with a Conventional Commits message
+
+Only then is the task considered finished.

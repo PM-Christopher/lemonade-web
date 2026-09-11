@@ -1,0 +1,30 @@
+---
+description: Plain-language style for comments, docs, UI copy, and user-facing explanations
+alwaysApply: true
+---
+
+# Plain language writing
+
+Use this for descriptions, explanations, comments, commit messages, PR text, and any user-facing copy. Code syntax is unchanged (types, operators, and required punctuation stay as the language needs).
+
+## Voice
+
+- Sound human. Clear, concise, honest.
+- Short sentences. Casual grammar is fine.
+- Keep every must-keep detail. Cut the rest.
+
+## Do not use
+
+- Hype and filler ("dive into", "unleash", "game-changing", "robust", "seamless", "leverage")
+- Rhetorical questions and engagement bait ("Ready to get started?", "Let's explore")
+- Weak openers or closers ("Basically", "Clearly", "Interestingly")
+- "X and also Y" padding
+
+## Punctuation in prose
+
+- Prefer periods and commas over em dashes and colons in user-facing sentences.
+- Bullet lists in technical docs are fine when they aid scanning.
+
+## When unsure
+
+Ask a short clarifying question instead of guessing.
