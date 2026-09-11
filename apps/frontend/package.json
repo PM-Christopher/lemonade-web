@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.2",
+    "@lemonade/api-client": "workspace:*",
+    "@lemonade/api-types": "workspace:*",
     "@bprogress/next": "^3.2.12",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -70,6 +72,7 @@
     "react-switch": "^7.0.0",
     "redux-persist": "^6.0.0",
     "scroll-into-view-if-needed": "^3.1.0",
+    "server-only": "^0.0.1",
     "sharp": "^0.33.5",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
     "tailwind-merge": "^2.5.2",

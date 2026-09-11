@@ -11,10 +11,12 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@lemonade/api-types": "workspace:*"
+    "@lemonade/api-types": "workspace:*",
+    "axios": "^1.9.0"
   },
   "devDependencies": {
     "@lemonade/config": "workspace:*",
+    "axios-mock-adapter": "^2.1.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
