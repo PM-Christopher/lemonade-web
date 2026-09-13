@@ -10,7 +10,8 @@
 // guessed into a constant that might be wrong — already flagged earlier
 // this session, unresolved.
 import { axiosInstance } from "@/lib/axiosInstane";
-import { userTribeRoutes, sharedUtilityRoutes } from "@lemonade/api-types";
+import { userTribeRoutes } from "@lemonade/api-types";
+import { sharedApi } from "@/features/shared/api";
 
 // The per-call `{ cache: { ttl } }` option these used to pass only did
 // anything while axiosInstance was wrapped in axios-cache-interceptor —
@@ -55,8 +56,9 @@ export const tribesApi = {
 
     createTribe: (values: unknown) => axiosInstance.post(userTribeRoutes.CREATE, values),
 
-    upload: (formData: unknown, config: Record<string, unknown>) => axiosInstance.post(sharedUtilityRoutes.UPLOAD, formData, config),
+    // Delegates to the one real implementation in features/shared/api.ts —
+    // this domain doesn't own the upload endpoint, it just needs it too.
+    upload: (formData: FormData) => sharedApi.uploadFile(formData),
 
-    uploadMultiple: (formData: unknown, config: Record<string, unknown>) =>
-        axiosInstance.post(sharedUtilityRoutes.UPLOAD_MULTIPLE, formData, config),
+    uploadMultiple: (formData: FormData) => sharedApi.uploadMultipleFiles(formData),
 };

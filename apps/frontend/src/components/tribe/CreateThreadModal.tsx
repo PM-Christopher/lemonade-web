@@ -105,11 +105,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
 
             if (formData.has("files[]")) {
                 try {
-                    const { data } = await tribesApi.uploadMultiple(formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    });
+                    const { data } = await tribesApi.uploadMultiple(formData);
 
                     if (data.status) {
                         setMediaFiles((prev) => [...prev, ...data.data.images]);
@@ -159,11 +155,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 formData.append(`files[]`, file); // Add each file to the `file[]` key
             });
             try {
-                const { data } = await tribesApi.uploadMultiple(formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
+                const { data } = await tribesApi.uploadMultiple(formData)
                 if(data.status) {
                     setVideoFiles((prev) => [...prev, ...data.data.images]);
                     await formik.setFieldValue("videos", data.data.images)

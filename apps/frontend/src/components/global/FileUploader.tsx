@@ -2,7 +2,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import Dropzone from 'react-dropzone'
 import Image from "next/image";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {sharedApi} from "@/features/shared/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 
@@ -29,11 +29,7 @@ export const SingleFileUploader = ({ setField, image, title, type, length="singl
             const formData = new FormData()
             formData.append("file", files[0])
             try {
-                const { data } = await axiosInstance.post("/shared/utilities/upload", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
+                const { data } = await sharedApi.uploadFile(formData)
                 if(data.status) {
                     if (type === "event") {
                         await setField.setFieldValue("event_image", data.data.image)

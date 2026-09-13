@@ -1,7 +1,7 @@
 "use client"
 import React, {useEffect, useState} from 'react';
 import {useAppDispatch} from "@/redux/hook";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {sharedApi} from "@/features/shared/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
@@ -32,11 +32,7 @@ const MultipleFileUploader = ({ setField, images, title, type, length="single" }
                 formData.append("files[]", file)
             })
             try {
-                const { data } = await axiosInstance.post("/shared/utilities/upload-multiple", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
+                const { data } = await sharedApi.uploadMultipleFiles(formData)
                 if(data.status) {
                     setLoading(false)
                     if (type === "business") {

@@ -125,11 +125,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
             const formData = new FormData();
             formData.append("file", file);
             try {
-                const {data} = await tribesApi.upload(formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+                const {data} = await tribesApi.upload(formData);
                 if (data.status) {
                     setImage(data.data.image);
                     await formik.setFieldValue("image", data.data.image);

@@ -4,8 +4,11 @@
 // from the httpOnly cookie (see ../../../lib/server-api.ts). The browser
 // never sees or sends the token itself.
 //
-// Scope: JSON request/response bodies only — see the frontend equivalent of
-// this file for why multipart isn't handled here yet.
+// Multipart (file upload) bodies are forwarded byte-for-byte with the
+// original Content-Type (boundary included) rather than parsed — this
+// proxy doesn't need to know what's inside an upload, only pass it through.
+// This matters now that lib/axiosInstane.ts routes everything through this
+// proxy, uploads included.
 //
 // Next 15 (this app): route handler `params` are async. Next 14
 // (apps/frontend): sync — see the frontend equivalent of this file.
@@ -20,15 +23,22 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
     const correlationId = req.headers.get("x-correlation-id") ?? undefined;
 
     let data: unknown;
+    let bodyContentType: string | undefined;
+
     if (JSON_METHODS.has(method)) {
         const contentType = req.headers.get("content-type") ?? "";
-        if (contentType && !contentType.includes("application/json")) {
+
+        if (contentType.includes("multipart/form-data")) {
+            data = Buffer.from(await req.arrayBuffer());
+            bodyContentType = contentType; // carries the boundary — must be forwarded verbatim
+        } else if (!contentType || contentType.includes("application/json")) {
+            data = await req.json().catch(() => undefined);
+        } else {
             return NextResponse.json(
-                { success: false, message: "Unsupported content type for the BFF proxy — JSON only.", error_code: "not-specified" },
+                { success: false, message: "Unsupported content type for the BFF proxy.", error_code: "not-specified" },
                 { status: 415 },
             );
         }
-        data = await req.json().catch(() => undefined);
     }
 
     try {
@@ -36,7 +46,10 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
             url: targetUrl,
             method,
             data,
-            ...(correlationId ? { headers: { "X-Correlation-Id": correlationId } } : {}),
+            headers: {
+                ...(correlationId ? { "X-Correlation-Id": correlationId } : {}),
+                ...(bodyContentType ? { "Content-Type": bodyContentType } : {}),
+            },
         });
         return NextResponse.json({ success: true, message: "OK", data: result });
     } catch (err) {
