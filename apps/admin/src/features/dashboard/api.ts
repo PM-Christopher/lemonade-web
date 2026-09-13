@@ -1,13 +1,11 @@
-// Endpoint layer for the dashboard domain — one typed function per route,
-// calling the transport with a named constant instead of a path literal.
-// Still on the pre-BFF axiosInstance transport deliberately — this only
-// cleans up how routes are referenced, it doesn't move the transport
-// migration up from Phase 5.
-import { axiosInstance } from "@/lib/axiosInstane";
+// Endpoint layer for the dashboard domain — see
+// features/authentication/api.ts for the pattern this follows: the BFF
+// proxy transport (browserApi), not the pre-BFF axiosInstance. First
+// non-auth domain moved onto this transport + TanStack Query (Phase 5).
+import { browserApi } from "@/lib/browser-api";
 import { adminAccountRoutes } from "@lemonade/api-types";
+import type { PlatformStatistics } from "@/interfaces/SystemInterface";
 
-// Was calling /admin/dashboard — fixed to the real route while migrating,
-// see the comment on adminAccountRoutes in @lemonade/api-types.
 export const dashboardApi = {
-    getMetrics: () => axiosInstance.get(adminAccountRoutes.DASHBOARD),
+    getMetrics: () => browserApi.get<PlatformStatistics>(adminAccountRoutes.DASHBOARD),
 };

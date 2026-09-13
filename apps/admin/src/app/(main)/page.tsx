@@ -1,24 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import DataCard from "@/components/global/DataCard";
-import { CalendarIcon, ChevronDown } from "lucide-react";
-import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
-import { getMetrics } from "@/features/dashboard/dashboard.slice";
-import { RootState, AppDispatch } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { useDashboardMetricsQuery } from "@/features/dashboard/queries";
+import { RootState } from "@/redux/store";
 
 export default function Home() {
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { metrics } = useSelector((state: RootState) => state.dashboard);
-
-  console.log({ metrics });
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getMetrics());
-    }
-  }, []);
+  const { data: metrics } = useDashboardMetricsQuery({ enabled: isLoggedIn });
 
   const data = [
     { title: "Total Users", value: metrics?.total_users || 0, isPrice: false },
