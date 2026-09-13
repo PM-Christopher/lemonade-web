@@ -10,7 +10,7 @@ import {capitalizeWords} from "@/utils/helper";
 function AnnouncementDetailsPage({}) {
     const params = useParams()
     const dispatch = useDispatch<AppDispatch>()
-    const { authToken } = useSelector((state: RootState) => state.auth)
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const id = params.id ? (Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id)) : undefined;
     const { loading, announcement } = useSelector((state: RootState) => state.announcement) as { announcement: any, loading: boolean };
     
@@ -23,10 +23,10 @@ function AnnouncementDetailsPage({}) {
     }, []);
 
     useEffect(() => {
-        if (id && authToken && isHydrated) {
-            dispatch(getAnnouncementDetail({token: authToken, id}))
+        if (id && isLoggedIn && isHydrated) {
+            dispatch(getAnnouncementDetail({id}))
         }
-    }, [id, authToken, isHydrated, dispatch])
+    }, [id, isLoggedIn, isHydrated, dispatch])
 
     // Don't render dynamic content until hydrated
     if (!isHydrated) {

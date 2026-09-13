@@ -31,7 +31,6 @@ const ProfileSettingsPage = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileType, setProfileType] = useState("");
   const dispatch = useAppDispatch();
-  const { authToken: token } = useSelector((state: any) => state.auth);
   const { user } = useSelector((state: any) => state.auth);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toggleModal = () => {
@@ -89,7 +88,7 @@ const ProfileSettingsPage = ({}) => {
   };
 
   const updateImageFunc = async (data: any) => {
-    dispatch(updateUserImage({ token, data: { profile_image: data } }))
+    dispatch(updateUserImage({ data: { profile_image: data } }))
       .then((res) => {
         if (res.payload.status) {
           dispatch(loadStop());

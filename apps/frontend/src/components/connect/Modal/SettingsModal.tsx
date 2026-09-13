@@ -17,17 +17,10 @@ type SettingsInterface = {
 const SettingsModal: React.FC<SettingsInterface>= ({toggle, isOpen, user_connect}) => {
     const dispatch = useAppDispatch()
     const [checked, setChecked] = useState(user_connect?.user?.visibility ?? false)
-    const {authToken, user} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
+    const {user} = useSelector((state: any) => state.auth)
 
     const handleChange = async () => {
-        const { data } = await connectApi.updateVisibility(!checked, getHeader());
+        const { data } = await connectApi.updateVisibility(!checked);
         if (data.status) {
             dispatch(
                 updateToastifyReducer({

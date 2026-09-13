@@ -57,8 +57,6 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
 
     const { business, loading } = useSelector((state: RootState) => state.business)
 
-    const {authToken} = useSelector((state: any) => state.auth)
-
     const toggleMenu = () => {
         setIsOpen(!isOpen)
     }
@@ -433,7 +431,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                 </section>
                 <VerifyBoost boost={boost} isOpen={isVerifyBoost} toggleMenu={toggleVerifyBoost}/>
                 <ReviewModal isOpen={isOpen} toggleMenu={toggleMenu}/>
-                <RequestServiceModal id={params.id} token={authToken} isOpen={isRequestOpen}
+                <RequestServiceModal id={params.id} isOpen={isRequestOpen}
                                      toggleMenu={toggleRequestModal} services={business?.services}/>
                 <BoostDetailsModal boost={business?.boost} isOpen={boostDetails} toggleMenu={toggleBoostDetails}/>
                 <DisputeJobModal isOpen={isDisputeOpen} toggle={toggleDisputeModal} job={business} toggleSubmit={toggleSubmitDisputeModal} />

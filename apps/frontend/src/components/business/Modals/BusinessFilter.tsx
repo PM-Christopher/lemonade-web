@@ -3,7 +3,6 @@ import {Label} from "@/components/ui/label";
 import LocationIcon from "@/images/icons/location.svg";
 import React, {useState} from "react";
 import {useRequest} from "@/hooks/useRequest";
-import {useSelector} from "react-redux";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import NairaIcon from "@/images/icons/nairaIcon.svg";
 import {resetFilter} from "@/features/events/event.slice";
@@ -21,15 +20,7 @@ type FilterBusinessInterface = {
 }
 
 const BusinessFilter = ({toggle, isOpen}: FilterBusinessInterface) => {
-    const {authToken} = useSelector((state: any) => state.auth)
     const dispatch = useAppDispatch()
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
     const { data, loading } = useRequest(`/shared/utilities/business-categories`, "GET")
 
     const [category, setCategory] = useState("");
@@ -60,7 +51,7 @@ const BusinessFilter = ({toggle, isOpen}: FilterBusinessInterface) => {
         },
         validationSchema: businessFilterSchema,
         onSubmit: async (values) => {
-            dispatch(filterBusiness({token: authToken, value: values})).then((res:any) => {})
+            dispatch(filterBusiness({value: values})).then((res:any) => {})
             toggle()
         },
     })

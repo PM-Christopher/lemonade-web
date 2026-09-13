@@ -2,7 +2,6 @@ import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
-import {axiosInstance} from "@/lib/axiosInstane";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
@@ -12,16 +11,8 @@ import {makeJobPayment} from "@/features/business/business.slice";
 
 const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: () => void, job: any}) => {
     const dispatch = useAppDispatch();
-    const {authToken} = useSelector((state: any) => state.auth)
     const { payLoading } = useSelector((state: RootState) => state.business)
     const router = useRouter()
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
 
     const handlePayNow = async () => {
         const { payload } = await dispatch(makeJobPayment({id: job.id, data: {redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`}}))

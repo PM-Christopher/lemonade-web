@@ -16,7 +16,7 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
   const [selectedOption, setSelectedOption] =
     useState<string>("policy-violation");
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { userAction: actionStatus } = useSelector(
     (state: RootState) => state.user
   ) as { userAction: any };
@@ -27,10 +27,10 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
   };
 
   const SubmitAction = () => {
-    if (authToken && id) {
+    if (isLoggedIn && id) {
       setLoading(true);
       dispatch(
-        userAction({ token: authToken, id, actionType: "suspend" })
+        userAction({ id, actionType: "suspend" })
       ).then((res: any) => {
         console.log("res", res);
         // if (res.paylod.status === true) {

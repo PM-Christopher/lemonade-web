@@ -13,7 +13,6 @@ import {
 import ImageCarousel from "@/components/global/ImageCarousel";
 import CommentsSection from "./CommentSection";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
 import {
     postComment,
     likeThread,
@@ -49,7 +48,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                                                    toggleDeleteThread,
                                                }) => {
     const dispatch = useAppDispatch();
-    const {authToken} = useSelector((state: any) => state.auth);
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [comment, setComment] = useState("");
@@ -96,7 +94,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         try {
             const res = await dispatch(
                 postComment({
-                    token: authToken,
                     thread_id: thread.id,
                     tribe_id,
                     data: {body: comment},
@@ -135,7 +132,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
 
         try {
             const {payload} = await dispatch(
-                likeThread({id: thread.id, tribe_id, token: authToken})
+                likeThread({id: thread.id, tribe_id})
             );
             if (!payload?.status) throw new Error();
         } catch {
@@ -149,7 +146,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 })
             );
         }
-    }, [hasLiked, likeCount, thread.id, tribe_id, authToken, dispatch]);
+    }, [hasLiked, likeCount, thread.id, tribe_id, dispatch]);
 
     // --- Poll vote
     const pollVote = (option_id: number) =>
@@ -159,7 +156,6 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 thread_id: thread.id,
                 poll_id: thread.thread_polls.id,
                 data: {option_id},
-                token: authToken,
             })
         ).then((res: any) =>
             dispatch(

@@ -9,14 +9,14 @@ import { RootState, AppDispatch } from "@/redux/store";
 
 export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { metrics } = useSelector((state: RootState) => state.dashboard);
 
   console.log({ metrics });
 
   useEffect(() => {
-    if (authToken) {
-      dispatch(getMetrics({ token: authToken }));
+    if (isLoggedIn) {
+      dispatch(getMetrics());
     }
   }, []);
 

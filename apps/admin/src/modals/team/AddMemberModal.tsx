@@ -4,8 +4,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 import { addTeamMember } from "@/features/team/team.slice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -16,7 +16,6 @@ interface BalanceModalProps {
 
 const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
   const [isLoading, setLoading] = useState(false);
-  const { authToken } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const prodSchema = yup.object({
     email: yup
@@ -51,7 +50,6 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
       setLoading(true);
       dispatch(
         addTeamMember({
-          token: authToken || "",
           email: values.email,
           name: `${values.first_name} ${values.last_name}`,
           password: values.password,

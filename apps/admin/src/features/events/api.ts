@@ -4,58 +4,44 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminEventRoutes, adminPromotionRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const eventsApi = {
-    getEventData: (token: string, trxType: string) => {
-        const headers = authHeaders(token);
+    getEventData: (trxType: string) => {
         switch (trxType) {
             case "affiliates":
-                return axiosInstance.get(adminEventRoutes.AFFILIATES, { headers });
+                return axiosInstance.get(adminEventRoutes.AFFILIATES);
             case "promotions":
-                return axiosInstance.get(adminEventRoutes.PROMOTIONS_QUEUE, { headers });
+                return axiosInstance.get(adminEventRoutes.PROMOTIONS_QUEUE);
             case "events":
             default:
-                return axiosInstance.get(adminEventRoutes.BASE, { headers });
+                return axiosInstance.get(adminEventRoutes.BASE);
         }
     },
 
-    getEventDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminEventRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    getEventDetail: (id: number) => axiosInstance.get(`${adminEventRoutes.BASE}/${id}`),
 
-    eventAction: (token: string, id: number, actionType: string) => {
-        const headers = authHeaders(token);
+    eventAction: (id: number, actionType: string) => {
         switch (actionType) {
             case "activate":
-                return axiosInstance.patch(`${adminEventRoutes.BASE}/${id}/activate-event`, {}, { headers });
+                return axiosInstance.patch(`${adminEventRoutes.BASE}/${id}/activate-event`, {});
             case "delete":
-                return axiosInstance.delete(`${adminEventRoutes.BASE}/${id}/delete-event`, { headers });
+                return axiosInstance.delete(`${adminEventRoutes.BASE}/${id}/delete-event`);
             case "suspend":
             default:
-                return axiosInstance.patch(`${adminEventRoutes.BASE}/${id}/suspend-event`, {}, { headers });
+                return axiosInstance.patch(`${adminEventRoutes.BASE}/${id}/suspend-event`, {});
         }
     },
 
-    updateCommissionCharge: (token: string, data: unknown) =>
-        axiosInstance.patch(adminEventRoutes.UPDATE_COMMISSION_CHARGE, data, { headers: authHeaders(token) }),
+    updateCommissionCharge: (data: unknown) => axiosInstance.patch(adminEventRoutes.UPDATE_COMMISSION_CHARGE, data),
 };
 
 export const promotionsApi = {
-    getPromotions: (token: string) => axiosInstance.get(adminPromotionRoutes.BASE, { headers: authHeaders(token) }),
+    getPromotions: () => axiosInstance.get(adminPromotionRoutes.BASE),
 
-    createPromotion: (token: string, data: unknown) =>
-        axiosInstance.post(adminPromotionRoutes.BASE, data, { headers: authHeaders(token) }),
+    createPromotion: (data: unknown) => axiosInstance.post(adminPromotionRoutes.BASE, data),
 
-    getPromotion: (token: string, id: unknown) =>
-        axiosInstance.get(`${adminPromotionRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    getPromotion: (id: unknown) => axiosInstance.get(`${adminPromotionRoutes.BASE}/${id}`),
 
-    updatePromotion: (token: string, id: unknown, data: unknown) =>
-        axiosInstance.patch(`${adminPromotionRoutes.BASE}/${id}`, data, { headers: authHeaders(token) }),
+    updatePromotion: (id: unknown, data: unknown) => axiosInstance.patch(`${adminPromotionRoutes.BASE}/${id}`, data),
 
-    deletePromotion: (token: string, id: number) =>
-        axiosInstance.delete(`${adminPromotionRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    deletePromotion: (id: number) => axiosInstance.delete(`${adminPromotionRoutes.BASE}/${id}`),
 };

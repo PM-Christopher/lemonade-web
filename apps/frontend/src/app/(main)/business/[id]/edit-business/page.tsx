@@ -1,6 +1,5 @@
 "use client"
 import React, {useEffect, useState} from 'react';
-import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {useRouter} from "next/navigation";
 import * as yup from "yup";
@@ -53,15 +52,6 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
     const [inputValue, setInputValue] = useState('');
     const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
     const [frameworksList, setFrameworksList] = useState<businessCategories[]>([]);
-
-    const {authToken} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
 
     const { data, loading } = useRequest(`/user/business/${params.id}`)
     const { data: categories, loading: categoryLoading } = useRequest(`/shared/utilities/business-categories`)
@@ -145,7 +135,7 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
         },
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
-            const {data} = await businessApi.updateListing(params.id, values, getHeader())
+            const {data} = await businessApi.updateListing(params.id, values)
             if(data.status) {
                 dispatch(
                     updateToastifyReducer({

@@ -15,7 +15,6 @@ import {useFormik} from "formik";
 import {useAppDispatch} from "@/redux/hook";
 import {MultiSelect} from "@/components/ui/multi-select";
 import {useRequest} from "@/hooks/useRequest";
-import {useSelector} from "react-redux";
 import CountryList from "country-list-with-dial-code-and-flag";
 import {FormikButton} from "@/components/global/FormikButton";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
@@ -48,15 +47,6 @@ interface FormValues {
 const AddBusinessPage = () => {
     const router =  useRouter()
     const dispatch = useAppDispatch()
-    const {authToken} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`
-            },
-        };
-    }
-
     const [inputValue, setInputValue] = useState('');
 
     const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -145,7 +135,7 @@ const AddBusinessPage = () => {
         },
         validationSchema: createBusinessSchema,
         onSubmit: async (values) => {
-            const {data} = await businessApi.createListing(values, getHeader())
+            const {data} = await businessApi.createListing(values)
             if(data.status) {
                 dispatch(
                     updateToastifyReducer({

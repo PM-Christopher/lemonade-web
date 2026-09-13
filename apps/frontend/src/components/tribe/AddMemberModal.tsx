@@ -6,7 +6,6 @@ import {Input} from "@/components/ui/input";
 import {PlusIcon, XIcon} from "lucide-react";
 import {useAppDispatch} from "@/redux/hook";
 import {addTribeMember} from "@/features/tribes/tribe.slice";
-import {useSelector} from "react-redux";
 import {isIfStatement} from "@babel/types";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
@@ -22,7 +21,6 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
     // State to hold the list of usernames
     const [usernames, setUsernames] = useState<string[]>([]);
     const dispatch = useAppDispatch()
-    const {authToken} = useSelector((state: any) => state.auth)
 
     // Adds the current input value to the usernames array
     const handleAddUsername = () => {
@@ -39,7 +37,7 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
 
     const handleAddTribeMember = () => {
         const data = {usernames}
-        dispatch(addTribeMember({token: authToken, id, data})).then((res: any) => {
+        dispatch(addTribeMember({id, data})).then((res: any) => {
             if (res.payload.status) {
                 dispatch(
                     updateToastifyReducer({

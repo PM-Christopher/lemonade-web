@@ -36,7 +36,7 @@ function UsersPage({}) {
 
   const [isLoading, setLoading] = useState(false);
 
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { userData } = useSelector((state: RootState) => state.user) as {
     userData: any;
   };
@@ -55,8 +55,8 @@ function UsersPage({}) {
   };
 
   useEffect(() => {
-    if (authToken && menuOption) {
-      dispatch(getUserData({ token: authToken, trxType: menuOption }));
+    if (isLoggedIn && menuOption) {
+      dispatch(getUserData({ trxType: menuOption }));
     }
   }, [menuOption]);
 
@@ -64,7 +64,6 @@ function UsersPage({}) {
     setLoading(true);
     dispatch(
       getCSV({
-        token: authToken || "",
         table: `${menuOption === "users" ? "users" : "affiliates"}`,
       })
     )

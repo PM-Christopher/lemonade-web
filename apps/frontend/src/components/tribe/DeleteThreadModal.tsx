@@ -2,7 +2,6 @@ import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {deleteThread} from "@/features/tribes/tribe.slice";
 
@@ -15,10 +14,9 @@ interface DeleteThreadIF {
 
 const DeleteThreadModal: React.FC<DeleteThreadIF> = ({isOpen, threadId, toggle, setThreadId}) => {
     const dispatch = useAppDispatch();
-    const {authToken} = useSelector((state: any) => state.auth)
 
     const handleDeleteThread = () => {
-        dispatch(deleteThread({id: threadId, token: authToken}))
+        dispatch(deleteThread({id: threadId}))
         dispatch(
             updateToastifyReducer({
                 show: true,

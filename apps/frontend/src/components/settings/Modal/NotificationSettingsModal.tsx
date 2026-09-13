@@ -4,7 +4,6 @@ import CloseIcon from "@/images/icons/close.svg";
 import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
 import { updateAppSettings } from "@/features/authentication/authSlice";
-import { useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { motion, AnimatePresence } from "framer-motion";
 type NotificationSettingsInterface = {
@@ -23,7 +22,6 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
   type,
 }) => {
   const dispatch = useAppDispatch();
-  const { authToken } = useSelector((state: any) => state.auth);
   const [emailChecked, setEmailChecked] = useState(false);
   const [inAppChecked, setInAppChecked] = useState(false);
 
@@ -46,7 +44,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
         in_app_notification: s_type === "in-app" ? !inAppChecked : inAppChecked,
       },
     };
-    dispatch(updateAppSettings({ token: authToken, data })).then((res) => {
+    dispatch(updateAppSettings({ data })).then((res) => {
       if (res.payload.status) {
         dispatch(
           updateToastifyReducer({

@@ -18,7 +18,6 @@ type FilterEventInterface = {
 }
 
 const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
-    const {authToken} = useSelector((state: any) => state.auth)
     const [clickedCategory , setClickedCategory] = useState("")
     const [timeOptions, setTimeOption] = useState(['This week', 'This Month'])
     const [timeType , setTimeType] = useState("")
@@ -34,13 +33,6 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
         setLocation(value);
     };
 
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
     const { data, loading } = useRequest(`/shared/utilities/event-categories`)
 
     const handleCategoryClick = (category: string) => {
@@ -67,7 +59,7 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
             end_date: to,
             location: location,
         }
-        dispatch(filterEvent({token: authToken, data})).then((res: any) => {
+        dispatch(filterEvent({data})).then((res: any) => {
             toggle()
         })
     }

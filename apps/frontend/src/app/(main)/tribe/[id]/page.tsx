@@ -61,7 +61,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     const searchParams = useSearchParams();
     const {setSearchParams, nxtSearchParams} = useNxtSearchParams();
 
-    const {authToken} = useSelector((state: any) => state.auth)
+    const {isLoggedIn} = useSelector((state: any) => state.auth)
 
     const query = nxtSearchParams?.get("search");
     const [searchValue, setSearchValue] = useState("");
@@ -100,7 +100,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
 
     useEffect(() => {
         if (trxref) {
-            dispatch(verifyTribePayment({reference: trxref, token: authToken}))
+            dispatch(verifyTribePayment({reference: trxref}))
                 .unwrap()
                 .then(() => {
                     // Remove trxref from URL
@@ -125,8 +125,8 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     }, [trxref, dispatch, searchParams, router]);
 
     useEffect(() => {
-        if (authToken && params?.id) {
-            dispatch(getTribe({token: authToken, id: params.id}))
+        if (isLoggedIn && params?.id) {
+            dispatch(getTribe({id: params.id}))
         }
     }, []);
 
@@ -140,12 +140,12 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
 
     const switchUserId = (id: number) => {
         setUserId(id)
-        dispatch(viewProfile({id: id, token: authToken}))
+        dispatch(viewProfile({id: id}))
         activateUserInfoModal()
     }
 
     const setPinThread = (id: number) => {
-        dispatch(pinThread({id, token: authToken}))
+        dispatch(pinThread({id}))
     }
 
     const activateJoinTribeModal = () => {
@@ -170,7 +170,6 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
         dispatch(
             filterThreads({
                 id: tribe.id, // safe, guaranteed number
-                token: authToken,
                 data: { filter: value },
             })
         );
@@ -191,9 +190,9 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     }
 
     useEffect(() => {
-        dispatch(getThreads({id: params.id, token: authToken}))
+        dispatch(getThreads({id: params.id}))
 
-        dispatch(getPinThreads({id: params.id, token: authToken}))
+        dispatch(getPinThreads({id: params.id}))
     }, [])
 
     const handleScroll = (id: number) => {

@@ -12,41 +12,30 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminTransactionRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const transactionApi = {
-    getPlanSubscriptions: (token: string) =>
-        axiosInstance.get(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/`, { headers: authHeaders(token) }),
+    getPlanSubscriptions: () => axiosInstance.get(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/`),
 
-    getPlanSubscription: (token: string, id: number) =>
-        axiosInstance.get(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`, { headers: authHeaders(token) }),
+    getPlanSubscription: (id: number) => axiosInstance.get(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`),
 
-    getWalletWithdrawal: (token: string, id: number) =>
-        axiosInstance.get(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`, { headers: authHeaders(token) }),
+    getWalletWithdrawal: (id: number) => axiosInstance.get(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`),
 
-    getEventDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminTransactionRoutes.EVENT}/${id}`, { headers: authHeaders(token) }),
+    getEventDetail: (id: number) => axiosInstance.get(`${adminTransactionRoutes.EVENT}/${id}`),
 
     // See the NOTE above for the boosting/services/promotions fallthrough.
-    getTransactionData: (token: string, trxType: string) => {
-        const headers = authHeaders(token);
+    getTransactionData: (trxType: string) => {
         switch (trxType) {
             case "plan-subscriptions":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION, { headers });
+                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             case "wallet-withdrawals":
-                return axiosInstance.get(adminTransactionRoutes.WALLET_WITHDRAWALS, { headers });
+                return axiosInstance.get(adminTransactionRoutes.WALLET_WITHDRAWALS);
             case "boosting":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION, { headers });
+                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             case "services":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION, { headers });
+                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             case "events":
-                return axiosInstance.get(adminTransactionRoutes.EVENTS, { headers });
+                return axiosInstance.get(adminTransactionRoutes.EVENTS);
             case "promotions":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION, { headers });
+                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             default:
                 return undefined;
         }

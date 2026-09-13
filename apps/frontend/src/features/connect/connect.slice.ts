@@ -16,12 +16,10 @@ interface chatState {
 
 interface GetChatParams {
     receiver_id: number;
-    token: string;
 }
 
 interface SendChatParams {
     message: string|null;
-    token: string;
     receiver_id: number|null;
     media: string[]
 }
@@ -47,9 +45,9 @@ const initialState: chatState = {
     connection_info: null
 };
 
-const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/getChat", async ({receiver_id, token}: GetChatParams, { rejectWithValue }) => {
+const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/getChat", async ({receiver_id}: GetChatParams, { rejectWithValue }) => {
     try {
-        const response = await connectApi.getChat(receiver_id, token);
+        const response = await connectApi.getChat(receiver_id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -59,9 +57,9 @@ const getChat = createAsyncThunk<GetChatSuccessPayload, GetChatParams>("connect/
     }
 });
 
-const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connect/sendChat", async ({message, media, token, receiver_id}: SendChatParams, { rejectWithValue }) => {
+const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connect/sendChat", async ({message, media, receiver_id}: SendChatParams, { rejectWithValue }) => {
     try {
-        const response = await connectApi.sendChat(receiver_id, message, media, token);
+        const response = await connectApi.sendChat(receiver_id, message, media);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -71,9 +69,9 @@ const sendChat = createAsyncThunk<GetChatSuccessPayload, SendChatParams>("connec
     }
 });
 
-const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({token, id, data}: {token: string, id: number, data: {option: string}}, { rejectWithValue }) => {
+const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({id, data}: {id: number, data: {option: string}}, { rejectWithValue }) => {
     try {
-        const response = await connectApi.inviteResponse(id, data, token);
+        const response = await connectApi.inviteResponse(id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -83,9 +81,9 @@ const inviteResponse = createAsyncThunk("connect/inviteResponse", async ({token,
     }
 });
 
-const findUser = createAsyncThunk("connect/findUser", async ({token, search}: {token: string, search: string}, { rejectWithValue }) => {
+const findUser = createAsyncThunk("connect/findUser", async ({search}: {search: string}, { rejectWithValue }) => {
     try {
-        const response = await connectApi.findUser(search, token);
+        const response = await connectApi.findUser(search);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -95,9 +93,9 @@ const findUser = createAsyncThunk("connect/findUser", async ({token, search}: {t
     }
 });
 
-const sendInvite = createAsyncThunk("connect/sendInvite", async ({token, data}: {token: string, data: any}, { rejectWithValue }) => {
+const sendInvite = createAsyncThunk("connect/sendInvite", async ({data}: {data: any}, { rejectWithValue }) => {
     try {
-        const response = await connectApi.sendInvite(data, token);
+        const response = await connectApi.sendInvite(data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

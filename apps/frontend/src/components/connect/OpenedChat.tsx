@@ -36,7 +36,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
     const dispatch = useAppDispatch();
     const [text, setText] = useState<string>("");
     const [mediaFiles, setMediaFiles] = useState<string[]>([])
-    const {authToken: token, user: authUser} = useSelector((state: any) => state.auth);
+    const {user: authUser} = useSelector((state: any) => state.auth);
     const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
     const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver
     const receiver_id = authUser.id === chat?.sender?.id ? chat?.receiver?.id : chat?.sender.id
@@ -72,7 +72,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
             ? (user_id === chat.sender.id ? chat.receiver.id : chat.sender.id)
             : null;
         setText("");
-        dispatch(sendChat({receiver_id, token, message: text.trim(), media: mediaFiles})).then((res: any) => {
+        dispatch(sendChat({receiver_id, message: text.trim(), media: mediaFiles})).then((res: any) => {
             setMediaFiles([])
             dispatch(addToMessages({message: res.payload.data.new_message, user: authUser}))
         });
@@ -126,11 +126,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
             if (formData.has("files[]")) {
                 try {
-                    const {data} = await connectApi.uploadMultiple(formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    });
+                    const {data} = await connectApi.uploadMultiple(formData);
 
                     if (data.status) {
                         setMediaLoading(false);

@@ -8,57 +8,46 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminUserRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const userApi = {
-    getUserData: (token: string, trxType: string) => {
-        const headers = authHeaders(token);
+    getUserData: (trxType: string) => {
         switch (trxType) {
             case "affiliates":
-                return axiosInstance.get(adminUserRoutes.AFFILIATES_LOG, { headers });
+                return axiosInstance.get(adminUserRoutes.AFFILIATES_LOG);
             case "users":
             default:
-                return axiosInstance.get(adminUserRoutes.BASE, { headers });
+                return axiosInstance.get(adminUserRoutes.BASE);
         }
     },
 
-    getUserDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminUserRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    getUserDetail: (id: number) => axiosInstance.get(`${adminUserRoutes.BASE}/${id}`),
 
-    getAffiliateDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminUserRoutes.AFFILIATES_DETAIL}/${id}/detail`, { headers: authHeaders(token) }),
+    getAffiliateDetail: (id: number) => axiosInstance.get(`${adminUserRoutes.AFFILIATES_DETAIL}/${id}/detail`),
 
     // See the NOTE above for the "business" case.
-    getAccountInfo: (token: string, id: number, infoType: string) => {
-        const headers = authHeaders(token);
+    getAccountInfo: (id: number, infoType: string) => {
         switch (infoType) {
             case "tribes":
-                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-tribes`, { headers });
+                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-tribes`);
             case "events":
-                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-events`, { headers });
+                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-events`);
             case "wallet":
-                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-wallet`, { headers });
+                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-wallet`);
             case "activities-log":
             case "business":
             default:
-                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-logs`, { headers });
+                return axiosInstance.get(`${adminUserRoutes.BASE}/${id}/user-logs`);
         }
     },
 
-    userAction: (token: string, id: number, actionType: string) => {
-        const headers = authHeaders(token);
+    userAction: (id: number, actionType: string) => {
         switch (actionType) {
             case "deactivate":
-                return axiosInstance.patch(`${adminUserRoutes.BASE}/${id}/deactivate-user`, {}, { headers });
+                return axiosInstance.patch(`${adminUserRoutes.BASE}/${id}/deactivate-user`, {});
             case "reactivate":
-                return axiosInstance.patch(`${adminUserRoutes.BASE}/${id}/reactivate-user`, {}, { headers });
+                return axiosInstance.patch(`${adminUserRoutes.BASE}/${id}/reactivate-user`, {});
             case "suspend":
             default:
-                return axiosInstance.patch(`${adminUserRoutes.BASE}/${id}/suspend-user`, {}, { headers });
+                return axiosInstance.patch(`${adminUserRoutes.BASE}/${id}/suspend-user`, {});
         }
     },
 };

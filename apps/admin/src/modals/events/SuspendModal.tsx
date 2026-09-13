@@ -14,7 +14,7 @@ interface DeactivateModalProps {
 function SuspendModal({isOpen, toggle, id}: DeactivateModalProps) {
     const [selectedOption, setSelectedOption] = useState<string>('policy-violation');
     const dispatch  = useDispatch<AppDispatch>()
-    const { authToken } = useSelector((state: RootState) => state.auth)
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     // const { userAction: actionStatus } = useSelector((state: RootState) => state.user) as { userAction: any }
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -23,8 +23,8 @@ function SuspendModal({isOpen, toggle, id}: DeactivateModalProps) {
 
 
     const SubmitAction = () => {
-        if (authToken && id) {
-            dispatch(eventAction({token: authToken, id, actionType: "suspend"})).then((res: any) => {
+        if (isLoggedIn && id) {
+            dispatch(eventAction({id, actionType: "suspend"})).then((res: any) => {
                 console.log({res})
                 if (res.payload.status === true) {
                     toggle();

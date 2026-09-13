@@ -15,7 +15,7 @@ function DeactivateModal({ isOpen, toggle, id, reload }: DeactivateModalProps) {
   const [selectedOption, setSelectedOption] =
     useState<string>("policy-violation");
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { userAction: actionStatus } = useSelector(
     (state: RootState) => state.user
   ) as { userAction: any };
@@ -25,9 +25,9 @@ function DeactivateModal({ isOpen, toggle, id, reload }: DeactivateModalProps) {
   };
 
   const SubmitAction = () => {
-    if (authToken && id) {
+    if (isLoggedIn && id) {
       dispatch(
-        userAction({ token: authToken, id, actionType: "deactivate" })
+        userAction({ id, actionType: "deactivate" })
       ).then((res: any) => {
         // if (res.paylod.status === 200) {
         toggle();

@@ -39,8 +39,6 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
     const {event, newTickets} = useSelector((state: RootState) => state.event);
     const { banks, loading } = useSelector((state: RootState) => state.transaction);
 
-    const {authToken} = useSelector((state: any) => state.auth);
-
     useEffect(() => {
         dispatch(getBanks())
     }, []);

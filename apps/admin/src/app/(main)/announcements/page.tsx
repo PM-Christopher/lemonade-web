@@ -24,7 +24,7 @@ const Page = ({}) => {
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const { authToken } = useSelector((state: RootState) => state.auth)
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const { announcementData } = useSelector((state: RootState) => state.announcement) as {announcementData: any}
 
     // Calculate total pages based on the data length and perPage value
@@ -35,8 +35,8 @@ const Page = ({}) => {
     const paginatedData = announcementData?.announcements?.slice(startIndex, startIndex + perPage)
 
     useEffect(() => {
-        if (authToken) {
-            dispatch(getAnnouncementData({token: authToken}))
+        if (isLoggedIn) {
+            dispatch(getAnnouncementData())
         }
     }, [])
     return (

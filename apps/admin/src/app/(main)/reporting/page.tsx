@@ -23,7 +23,7 @@ function ReportingPage({}) {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { reportData } = useSelector((state: RootState) => state.report) as {
     reportData: any;
   };
@@ -39,8 +39,8 @@ function ReportingPage({}) {
   );
 
   useEffect(() => {
-    if (authToken) {
-      dispatch(getReportData({ token: authToken }));
+    if (isLoggedIn) {
+      dispatch(getReportData());
     }
   }, []);
   return (

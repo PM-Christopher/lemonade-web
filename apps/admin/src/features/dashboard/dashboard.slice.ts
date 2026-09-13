@@ -16,9 +16,9 @@ const initialState: chatState = {
     metrics: null
 };
 
-const getMetrics = createAsyncThunk("dashboard/getMetrics", async ({ token }: { token: string }, { rejectWithValue }) => {
+const getMetrics = createAsyncThunk("dashboard/getMetrics", async (_: void, { rejectWithValue }) => {
     try {
-        const response = await dashboardApi.getMetrics(token);
+        const response = await dashboardApi.getMetrics();
         return response.data;
     } catch (err: any) {
         if (!err.response) {

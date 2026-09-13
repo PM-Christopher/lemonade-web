@@ -7,7 +7,6 @@ import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg"
 import FeaturedImage from "@/images/featured.png"
 import Image from "next/image";
-import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import * as yup from "yup";
@@ -30,16 +29,8 @@ interface BoostPackages {
 
 const BoostBusinessPage = ({params}: { params: { id: number } }) => {
     const dispatch = useAppDispatch()
-    const {authToken} = useSelector((state: any) => state.auth)
     const searchParams = useSearchParams();
     const {setSearchParams, nxtSearchParams} = useNxtSearchParams();
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
     const [packageTitle, setPackageTitle] = useState("")
     const [selectedPackage, setSelectedPackage] = useState({price: 0, duration: 0})
     const [pkgIndex, setPkgIndex] = useState<number | null>(null)
@@ -73,7 +64,7 @@ const BoostBusinessPage = ({params}: { params: { id: number } }) => {
         validationSchema: editBusinessSchema,
         onSubmit: async (values) => {
             const formData = {...values, callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${params.id}`}
-            const {data} = await businessApi.boostListing(params.id, formData, getHeader())
+            const {data} = await businessApi.boostListing(params.id, formData)
             if (data.status) {
                 dispatch(
                     updateToastifyReducer({

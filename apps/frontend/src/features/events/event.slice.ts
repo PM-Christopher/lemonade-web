@@ -211,11 +211,9 @@ const searchEvent = createAsyncThunk("event/searchEvent", async ({data}: { data:
     }
 });
 
-const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async ({token}: {
-    token: string
-}, {rejectWithValue}) => {
+const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async (_: void, {rejectWithValue}) => {
     try {
-        const response = await eventsApi.getPaymentSetting(token);
+        const response = await eventsApi.getPaymentSetting();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -225,12 +223,11 @@ const getPaymentSetting = createAsyncThunk("event/getPaymentSetting", async ({to
     }
 });
 
-const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", async ({token, data}: {
-    token: string,
+const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", async ({data}: {
     data: any
 }, {rejectWithValue}) => {
     try {
-        const response = await eventsApi.updatePaymentSetting(token, data);
+        const response = await eventsApi.updatePaymentSetting(data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -240,12 +237,11 @@ const updatePaymentSetting = createAsyncThunk("event/updatePaymentSetting", asyn
     }
 });
 
-const filterEvent = createAsyncThunk("event/filterEvent", async ({token, data}: {
-    token: string,
+const filterEvent = createAsyncThunk("event/filterEvent", async ({data}: {
     data: any
 }, {rejectWithValue}) => {
     try {
-        const response = await eventsApi.filterEvent(token, data);
+        const response = await eventsApi.filterEvent(data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

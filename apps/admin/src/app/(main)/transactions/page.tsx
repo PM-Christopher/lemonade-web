@@ -27,7 +27,7 @@ function TransactionsPage({}) {
   const [menuOption, setMenuOption] = useState("plan-subscriptions");
   const dispatch = useDispatch<AppDispatch>();
 
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   type TrxDataType = {
     history?: any[];
     subscribers?: number;
@@ -43,8 +43,8 @@ function TransactionsPage({}) {
   };
 
   useEffect(() => {
-    if (menuOption && authToken) {
-      dispatch(getTransactionData({ token: authToken, trxType: menuOption }));
+    if (menuOption && isLoggedIn) {
+      dispatch(getTransactionData({ trxType: menuOption }));
     }
   }, [menuOption]);
 

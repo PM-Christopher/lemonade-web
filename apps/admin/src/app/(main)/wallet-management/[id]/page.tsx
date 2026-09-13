@@ -25,7 +25,7 @@ function WalletDetailsPage({}) {
 
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { walletDetail, loading: walletLoading } = useSelector(
     (state: RootState) => state.wallet
   ) as {
@@ -40,14 +40,14 @@ function WalletDetailsPage({}) {
     : undefined;
 
   useEffect(() => {
-    if (id && authToken) {
-      dispatch(getWalletDetail({ token: authToken, id }));
+    if (id && isLoggedIn) {
+      dispatch(getWalletDetail({ id }));
     }
   }, [id]);
 
   const reloadFunc = () => {
-    if (id && authToken) {
-      dispatch(getWalletDetail({ token: authToken, id }));
+    if (id && isLoggedIn) {
+      dispatch(getWalletDetail({ id }));
     }
   };
 

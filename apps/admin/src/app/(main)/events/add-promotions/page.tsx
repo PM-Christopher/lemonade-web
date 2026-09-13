@@ -15,7 +15,7 @@ function AddPromotionPage() {
     const dispatch = useDispatch<AppDispatch>();
     const [promotionId, setPromotionId] = useState(0);
 
-    const { authToken } = useSelector((state: RootState) => state.auth)
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const { promotionData } = useSelector((state: RootState) => state.promotion) as {promotionData: any}
 
     const togglePromotionModal = () => {
@@ -27,8 +27,8 @@ function AddPromotionPage() {
     }
 
     useEffect(() => {
-        if (authToken) {
-            dispatch(getPromotionData({token: authToken}))
+        if (isLoggedIn) {
+            dispatch(getPromotionData())
         }
     }, [])
 

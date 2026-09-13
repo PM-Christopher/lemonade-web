@@ -41,7 +41,7 @@ function UserDetailsPage({}) {
       : parseInt(params.id)
     : undefined;
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { loading, user, userDetail } = useSelector(
     (state: RootState) => state.user
   ) as { user: any; loading: boolean; userDetail: any };
@@ -74,14 +74,14 @@ function UserDetailsPage({}) {
   }, []);
 
   useEffect(() => {
-    if (authToken && id) {
-      dispatch(getUserDetail({ token: authToken, id }));
+    if (isLoggedIn && id) {
+      dispatch(getUserDetail({ id }));
     }
   }, []);
 
   const reloadFunc = () => {
-    // if (authToken && id) {
-    //   dispatch(getUserDetail({ token: authToken, id }));
+    // if (isLoggedIn && id) {
+    //   dispatch(getUserDetail({ id }));
     // }
     // router.refresh();
     window.location.reload();
@@ -129,16 +129,16 @@ function UserDetailsPage({}) {
   };
 
   useEffect(() => {
-    if (authToken && id && menuOption) {
-      dispatch(getAccountInfo({ token: authToken, id, infoType: menuOption }));
+    if (isLoggedIn && id && menuOption) {
+      dispatch(getAccountInfo({ id, infoType: menuOption }));
     }
   }, [menuOption]);
 
   const reactivateUser = () => {
-    if (authToken && id) {
+    if (isLoggedIn && id) {
       setReactivatingUser(true);
       dispatch(
-        userAction({ token: authToken, id, actionType: "reactivate" })
+        userAction({ id, actionType: "reactivate" })
       ).then(() => {
         reloadFunc();
         setReactivatingUser(false);

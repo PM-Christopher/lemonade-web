@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { XIcon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 import { withdrawalRequestDecison } from "@/features/wallet/wallet.slice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useParams } from "next/navigation";
@@ -20,7 +20,6 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
   if (!isOpen) return null;
   const params = useParams();
   const [isLoading, setLoading] = useState(false);
-  const { authToken } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
   const id = params.id
@@ -31,7 +30,6 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
   const isReject = () => {
     dispatch(
       withdrawalRequestDecison({
-        token: authToken || "",
         id: id,
         type: "reject",
       })

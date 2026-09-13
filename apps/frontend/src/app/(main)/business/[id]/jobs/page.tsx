@@ -4,7 +4,6 @@ import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import JobsCard from "@/components/business/JobsCard";
 import {useRouter} from "next/navigation";
-import {useSelector} from "react-redux";
 import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -12,14 +11,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 const JobsPage = ({params}: { params: { id: number } }) => {
     const router = useRouter()
     const [jobType, setJobType] = useState("in-progress")
-    const {authToken} = useSelector((state: any) => state.auth)
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
 
     const renderCards = () => {
         switch (jobType) {

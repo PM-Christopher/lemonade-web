@@ -19,9 +19,9 @@ const initialState: userState = {
     userAction: null
 };
 
-const getUserData = createAsyncThunk("user/getUserData", async ({ token, trxType }: { token: string, trxType: string }, { rejectWithValue }) => {
+const getUserData = createAsyncThunk("user/getUserData", async ({ trxType }: { trxType: string }, { rejectWithValue }) => {
     try {
-        const response = await userApi.getUserData(token, trxType);
+        const response = await userApi.getUserData(trxType);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -31,24 +31,9 @@ const getUserData = createAsyncThunk("user/getUserData", async ({ token, trxType
     }
 });
 
-const getUserDetail = createAsyncThunk("user/getUserDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getUserDetail = createAsyncThunk("user/getUserDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await userApi.getUserDetail(token, id);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-
-
-
-const getAffiliateDetail = createAsyncThunk("user/getAffiliateDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    try {
-        const response = await userApi.getAffiliateDetail(token, id);
+        const response = await userApi.getUserDetail(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -59,9 +44,11 @@ const getAffiliateDetail = createAsyncThunk("user/getAffiliateDetail", async ({ 
 });
 
 
-const getAccountInfo = createAsyncThunk("user/getAccountInfo", async ({ token, id, infoType }: { token: string, id: number, infoType: string }, { rejectWithValue }) => {
+
+
+const getAffiliateDetail = createAsyncThunk("user/getAffiliateDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await userApi.getAccountInfo(token, id, infoType);
+        const response = await userApi.getAffiliateDetail(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -71,9 +58,22 @@ const getAccountInfo = createAsyncThunk("user/getAccountInfo", async ({ token, i
     }
 });
 
-const userAction = createAsyncThunk("user/userAction", async ({ token, id, actionType }: { token: string, id: number, actionType: string }, { rejectWithValue }) => {
+
+const getAccountInfo = createAsyncThunk("user/getAccountInfo", async ({ id, infoType }: { id: number, infoType: string }, { rejectWithValue }) => {
     try {
-        const response = await userApi.userAction(token, id, actionType);
+        const response = await userApi.getAccountInfo(id, infoType);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+const userAction = createAsyncThunk("user/userAction", async ({ id, actionType }: { id: number, actionType: string }, { rejectWithValue }) => {
+    try {
+        const response = await userApi.userAction(id, actionType);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

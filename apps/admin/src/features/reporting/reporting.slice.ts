@@ -16,9 +16,9 @@ const initialState: reportState = {
     report: null
 };
 
-const getReportData = createAsyncThunk("report/getReportData", async ({ token }: { token: string }, { rejectWithValue }) => {
+const getReportData = createAsyncThunk("report/getReportData", async (_: void, { rejectWithValue }) => {
     try {
-        let response = await reportingApi.getReportData(token);
+        let response = await reportingApi.getReportData();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -28,22 +28,9 @@ const getReportData = createAsyncThunk("report/getReportData", async ({ token }:
     }
 });
 
-const getReportDetail = createAsyncThunk("report/getReportDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getReportDetail = createAsyncThunk("report/getReportDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        let response = await reportingApi.getReportDetail(token, id);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-
-const resolveReport = createAsyncThunk("report/markReport", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
-    try {
-        let response = await reportingApi.resolveReport(token, id);
+        let response = await reportingApi.getReportDetail(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -54,10 +41,23 @@ const resolveReport = createAsyncThunk("report/markReport", async ({ token, id }
 });
 
 
-
-const deleteReport = createAsyncThunk("report/getReportDetail", async ({ token, id, data }: { token: string, id: number, data: any }, { rejectWithValue }) => {
+const resolveReport = createAsyncThunk("report/markReport", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        let response = await reportingApi.deleteReportContent(token, id, data);
+        let response = await reportingApi.resolveReport(id);
+        return response.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data);
+    }
+});
+
+
+
+const deleteReport = createAsyncThunk("report/getReportDetail", async ({ id, data }: { id: number, data: any }, { rejectWithValue }) => {
+    try {
+        let response = await reportingApi.deleteReportContent(id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

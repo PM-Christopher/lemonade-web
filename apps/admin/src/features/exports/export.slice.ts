@@ -17,11 +17,11 @@ const initialState: ExportState = {
 const getCSV = createAsyncThunk(
   "utils/getCSV",
   async (
-    { token, table }: { token: string; table: string },
+    { table }: { table: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await exportsApi.getCSV(token, table);
+      const response = await exportsApi.getCSV(table);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

@@ -29,7 +29,7 @@ const EventsPage = () => {
   const query = searchParams?.get("search");
   const [searchValue, setSearchValue] = useState("");
 
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { eventData } = useSelector((state: RootState) => state.event) as {
     eventData: any;
   };
@@ -58,14 +58,14 @@ const EventsPage = () => {
   }, [debouncedValue]);
 
   useEffect(() => {
-    if (authToken && menuOption) {
-      dispatch(getEventData({ token: authToken, trxType: menuOption }));
+    if (isLoggedIn && menuOption) {
+      dispatch(getEventData({ trxType: menuOption }));
     }
   }, [menuOption]);
 
   const exportFunc = () => {
     setLoading(true);
-    dispatch(getCSV({ token: authToken || "", table: "events" }))
+    dispatch(getCSV({ table: "events" }))
       .then((res) => {
         if (res.meta.requestStatus) {
           setLoading(false);

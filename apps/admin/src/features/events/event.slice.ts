@@ -18,9 +18,9 @@ const initialState: eventState = {
     eventAction: null,
 };
 
-const getEventData = createAsyncThunk("event/getEventData", async ({ token, trxType }: { token: string, trxType: string }, { rejectWithValue }) => {
+const getEventData = createAsyncThunk("event/getEventData", async ({ trxType }: { trxType: string }, { rejectWithValue }) => {
     try {
-        const response = await eventsApi.getEventData(token, trxType);
+        const response = await eventsApi.getEventData(trxType);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -30,9 +30,9 @@ const getEventData = createAsyncThunk("event/getEventData", async ({ token, trxT
     }
 });
 
-const getEventDetail = createAsyncThunk("event/getEventDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getEventDetail = createAsyncThunk("event/getEventDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await eventsApi.getEventDetail(token, id);
+        const response = await eventsApi.getEventDetail(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -42,9 +42,9 @@ const getEventDetail = createAsyncThunk("event/getEventDetail", async ({ token, 
     }
 });
 
-const eventAction = createAsyncThunk("event/eventAction", async ({ token, id, actionType }: { token: string, id: number, actionType: string }, { rejectWithValue }) => {
+const eventAction = createAsyncThunk("event/eventAction", async ({ id, actionType }: { id: number, actionType: string }, { rejectWithValue }) => {
     try {
-        const response = await eventsApi.eventAction(token, id, actionType);
+        const response = await eventsApi.eventAction(id, actionType);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -54,9 +54,9 @@ const eventAction = createAsyncThunk("event/eventAction", async ({ token, id, ac
     }
 });
 
-const updateCommissionCharge = createAsyncThunk("event/updateCommissionCharge", async ({ token, data }: { token: any, data: any }, { rejectWithValue }) => {
+const updateCommissionCharge = createAsyncThunk("event/updateCommissionCharge", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await eventsApi.updateCommissionCharge(token, data);
+        const response = await eventsApi.updateCommissionCharge(data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

@@ -16,12 +16,12 @@ function SubscriptionDetailsPage({}) {
 
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { loading, subscription } = useSelector(
     (state: RootState) => state.transaction
   ) as { subscription: any; loading: boolean };
 
- 
+
 
   const id = params.id
     ? Array.isArray(params.id)
@@ -30,8 +30,8 @@ function SubscriptionDetailsPage({}) {
     : undefined;
 
   useEffect(() => {
-    if (authToken && id) {
-      dispatch(getPlanSubscription({ token: authToken, id }));
+    if (isLoggedIn && id) {
+      dispatch(getPlanSubscription({ id }));
     }
   }, []);
 

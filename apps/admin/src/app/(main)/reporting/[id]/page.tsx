@@ -16,7 +16,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 function ReportDetailsPage() {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const id = params.id
     ? Array.isArray(params.id)
       ? parseInt(params.id[0])
@@ -27,8 +27,8 @@ function ReportDetailsPage() {
   ) as { report: any; loading: boolean };
 
   useEffect(() => {
-    if (id && authToken) {
-      dispatch(getReportDetail({ token: authToken, id }));
+    if (id && isLoggedIn) {
+      dispatch(getReportDetail({ id }));
     }
   }, [id]);
 
@@ -42,8 +42,8 @@ function ReportDetailsPage() {
   }
 
   const resolve = () => {
-    if (id && authToken) {
-      dispatch(resolveReport({ token: authToken, id: id })).then((res) => {
+    if (id && isLoggedIn) {
+      dispatch(resolveReport({ id: id })).then((res) => {
         if (res.payload.status === true) {
           dispatch(
             updateToastifyReducer({
@@ -53,7 +53,7 @@ function ReportDetailsPage() {
             })
           );
 
-            dispatch(getReportDetail({ token: authToken, id }));
+            dispatch(getReportDetail({ id }));
         } else {
           dispatch(
             updateToastifyReducer({
@@ -67,12 +67,12 @@ function ReportDetailsPage() {
     }
   };
   const handleDelete = () => {
-    if (id && authToken) {
+    if (id && isLoggedIn) {
       const data = {
         category: report?.category,
         category_id: report?.content?.id
       };
-      dispatch(deleteReport({ token: authToken, id: id, data: data })).then((res) => {
+      dispatch(deleteReport({ id: id, data: data })).then((res) => {
 
          if (res.payload.status === true) {
           dispatch(
@@ -82,7 +82,7 @@ function ReportDetailsPage() {
               type: "success",
             })
           );
-            dispatch(getReportDetail({ token: authToken, id }));
+            dispatch(getReportDetail({ id }));
         } else {
           dispatch(
             updateToastifyReducer({

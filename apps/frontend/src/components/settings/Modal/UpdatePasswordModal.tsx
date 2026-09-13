@@ -3,7 +3,6 @@ import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import {Label} from "@/components/ui/label";
 import EyeIcon from "@/images/icons/eyeIcon.svg"
-import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import * as yup from "yup";
 import {useFormik} from "formik";
@@ -18,7 +17,6 @@ type UpdatePasswordInterface = {
 }
 
 const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({toggle, isOpen, user}) => {
-    const { authToken: token } = useSelector((state: any) => state.auth)
     const dispatch = useAppDispatch()
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -56,7 +54,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({toggle, isOpen,
         validationSchema: passwordSchema,
         enableReinitialize: true,
         onSubmit: async (values) => {
-            dispatch(changePassword({token, data: values})).then((res) => {
+            dispatch(changePassword({data: values})).then((res) => {
                 if (res.payload.status) {
                     dispatch(
                         updateToastifyReducer({

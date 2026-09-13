@@ -13,11 +13,11 @@ function PromotionsCard({promotion, promotionId, setPromotionId, toggle,}: {
   toggle: () => void;
 }) {
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   const handleDeletePromotion = (id: number) => {
-    if (authToken && id) {
-      dispatch(deletePromotion({ token: authToken, id })).then((res: any) => {
+    if (isLoggedIn && id) {
+      dispatch(deletePromotion({ id })).then((res: any) => {
         if (res.payload.status) {
           dispatch(
               updateToastifyReducer({

@@ -21,9 +21,9 @@ const initialState: walletState = {
 
 const getWalletData = createAsyncThunk(
   "wallet/getWalletData",
-  async ({ token }: { token: string }, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
-      const response = await walletApi.getWalletData(token);
+      const response = await walletApi.getWalletData();
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -36,9 +36,9 @@ const getWalletData = createAsyncThunk(
 
 const getWithdrawalRequest = createAsyncThunk(
   "wallet/getWithdrawalRequest",
-  async ({ token }: { token: string }, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
-      const response = await walletApi.getWithdrawalRequests(token);
+      const response = await walletApi.getWithdrawalRequests();
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -51,9 +51,9 @@ const getWithdrawalRequest = createAsyncThunk(
 
 const getWalletDetail = createAsyncThunk(
   "wallet/getWalletDetail",
-  async ({ token, id }: { token: string; id: number }, { rejectWithValue }) => {
+  async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-      const response = await walletApi.getWalletDetail(token, id);
+      const response = await walletApi.getWalletDetail(id);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -68,16 +68,14 @@ const updateWithdrawalThreshold = createAsyncThunk(
   "wallet/updateThreshold",
   async (
     {
-      token,
       threshold,
     }: {
-      token: string;
       threshold: string;
     },
     { rejectWithValue }
   ) => {
     try {
-      let response = await walletApi.updateWithdrawalThreshold(token, parseInt(threshold));
+      let response = await walletApi.updateWithdrawalThreshold(parseInt(threshold));
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -92,18 +90,16 @@ const withdrawalRequestDecison = createAsyncThunk(
   "wallet/requestDecision",
   async (
     {
-      token,
       type,
       id,
     }: {
-      token: string;
       type: string;
       id: any;
     },
     { rejectWithValue }
   ) => {
     try {
-      let response = await walletApi.withdrawalRequestDecision(token, id, type);
+      let response = await walletApi.withdrawalRequestDecision(id, type);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -118,18 +114,16 @@ const withdrawaladdition = createAsyncThunk(
   "wallet/add",
   async (
     {
-      token,
       amount,
       id,
     }: {
-      token: string;
       amount: string;
       id: any;
     },
     { rejectWithValue }
   ) => {
     try {
-      let response = await walletApi.addToWallet(token, id, amount);
+      let response = await walletApi.addToWallet(id, amount);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -146,18 +140,16 @@ const withdrawaldeduction = createAsyncThunk(
   "wallet/deduct",
   async (
     {
-      token,
       amount,
       id,
     }: {
-      token: string;
       amount: string;
       id: any;
     },
     { rejectWithValue }
   ) => {
     try {
-      let response = await walletApi.deductFromWallet(token, id, amount);
+      let response = await walletApi.deductFromWallet(id, amount);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

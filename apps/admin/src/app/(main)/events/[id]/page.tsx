@@ -25,7 +25,7 @@ const Page = ({}) => {
       : parseInt(params.id)
     : undefined;
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { loading, event } = useSelector((state: RootState) => state.event) as {
     loading: boolean;
     event: any;
@@ -60,8 +60,8 @@ const Page = ({}) => {
   }, []);
 
   useEffect(() => {
-    if (authToken && id) {
-      dispatch(getEventDetail({ token: authToken, id }));
+    if (isLoggedIn && id) {
+      dispatch(getEventDetail({ id }));
     }
   }, []);
 
@@ -74,8 +74,8 @@ const Page = ({}) => {
   };
 
   const unsuspendEvent = () => {
-    if (authToken && id) {
-      dispatch(eventAction({ token: authToken, id, actionType: "activate" }));
+    if (isLoggedIn && id) {
+      dispatch(eventAction({ id, actionType: "activate" }));
     }
   };
 

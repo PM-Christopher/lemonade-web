@@ -8,11 +8,11 @@ import {getUserProfile} from "@/features/profile/profile.slice";
 function ProfilePage({}) {
 
     const dispatch = useDispatch<AppDispatch>();
-    const { authToken, user } = useSelector((state: RootState) => state.auth);
+    const { user } = useSelector((state: RootState) => state.auth);
     const { profile } = useSelector((state: RootState) => state.profile);
 
     useEffect(() => {
-        dispatch(getUserProfile({token: authToken}));
+        dispatch(getUserProfile());
     }, []);
 
 

@@ -22,14 +22,14 @@ function EventDetailsPage({}) {
       : parseInt(params.id)
     : undefined;
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { loading, event } = useSelector(
     (state: RootState) => state.transaction
   ) as { event: any; loading: boolean };
 
   useEffect(() => {
-    if (authToken && id) {
-      dispatch(getEventDetail({ token: authToken, id }));
+    if (isLoggedIn && id) {
+      dispatch(getEventDetail({ id }));
     }
   }, []);
 

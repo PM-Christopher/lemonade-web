@@ -15,10 +15,10 @@ function Page() {
     const totalPages: number = 10;
     const params = useParams()
     const dispatch = useDispatch<AppDispatch>()
-    const { authToken } = useSelector((state: RootState) => state.auth)
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const id = params.id ? (Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id)) : undefined;
     const { loading, team } = useSelector((state: RootState) => state.team) as { team: any, loading: boolean };
-    
+
     // Add hydration protection
     const [isHydrated, setIsHydrated] = useState(false);
 
@@ -28,10 +28,10 @@ function Page() {
     }, []);
 
     useEffect(() => {
-        if (id && authToken && isHydrated) {
-            dispatch(getTeamDetail({token: authToken, id}))
+        if (id && isLoggedIn && isHydrated) {
+            dispatch(getTeamDetail({id}))
         }
-    }, [id, authToken, isHydrated, dispatch])
+    }, [id, isLoggedIn, isHydrated, dispatch])
 
     // Don't render dynamic content until hydrated
     if (!isHydrated) {

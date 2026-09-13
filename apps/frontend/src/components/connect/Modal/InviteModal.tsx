@@ -18,10 +18,10 @@ type InviteInterface = {
 
 const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadFunc}) => {
     const dispatch = useAppDispatch()
-    const {authToken, user} = useSelector((state: any) => state.auth)
+    const {user} = useSelector((state: any) => state.auth)
 
     const requestAction = (action: string) => {
-        dispatch(inviteResponse({token: authToken, data: {option: action}, id: invite.id})).then((res) => {
+        dispatch(inviteResponse({data: {option: action}, id: invite.id})).then((res) => {
             if (res.payload.status) {
                 dispatch(
                     updateToastifyReducer({

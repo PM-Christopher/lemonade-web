@@ -38,7 +38,6 @@ const AddTicketPage = () => {
     const activateModal = () => {
         setToggleModal(!toggleModal);
     };
-    const {authToken} = useSelector((state: RootState) => state.auth);
     const {event} = useSelector((state: RootState) => state.event);
 
     const ticketSchema = yup.object().shape({

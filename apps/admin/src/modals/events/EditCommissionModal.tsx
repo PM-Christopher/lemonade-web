@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {XIcon} from "lucide-react";
 import {Input} from "@/components/ui/input";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "@/redux/store";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {updateWithdrawalThreshold} from "@/features/wallet/wallet.slice";
@@ -21,7 +21,6 @@ function EditCommissionModal({isOpen, toggle, id, commissionCharge}: EditCommiss
 
     const [isLoading, setLoading] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
-    const { authToken } = useSelector((state: RootState) => state.auth);
     const commSchema = yup.object({
         percentage: yup.string().required("Commission percentage is required"),
     });
@@ -36,7 +35,7 @@ function EditCommissionModal({isOpen, toggle, id, commissionCharge}: EditCommiss
             const data = {
                 commission_charge: values.percentage,
             }
-            dispatch(updateCommissionCharge({data: data, token: authToken})).then((res) => {
+            dispatch(updateCommissionCharge({data: data})).then((res) => {
                 if (res.payload.status) {
                     setLoading(false);
                     dispatch(

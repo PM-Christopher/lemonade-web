@@ -15,7 +15,6 @@ type RequestServiceInterface = {
     toggleMenu: () => void,
     services: [],
     id: number,
-    token: string
 }
 
 type FormValues = {
@@ -24,7 +23,7 @@ type FormValues = {
     additional_information: string,
 }
 
-const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleMenu, services, id, token}) => {
+const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleMenu, services, id}) => {
     const dispatch = useAppDispatch()
 
     const handleServicesClick = (item: string) => {
@@ -63,7 +62,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
         },
         validationSchema: requestServiceSchema,
         onSubmit: async (values) => {
-            dispatch(requestService({token, id, data: values})).then((res) => {
+            dispatch(requestService({id, data: values})).then((res) => {
                 if (res.payload.status) {
                     toggleMenu()
                     dispatch(

@@ -29,12 +29,10 @@ interface tribeState {
 
 interface JoinTribeParams {
     id: string;
-    token: string;
 }
 
 interface CreateThreadParams {
     id: number;
-    token: string;
     data: {};
 }
 
@@ -80,7 +78,7 @@ const getTribes = createAsyncThunk(
 
 const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
     "tribe/getTribe",
-    async ({id, token}: JoinTribeParams, {rejectWithValue}) => {
+    async ({id}: JoinTribeParams, {rejectWithValue}) => {
 
         try {
             const response = await tribesApi.getTribe(id);
@@ -96,7 +94,7 @@ const getTribe = createAsyncThunk<JoinTribeSuccessPayload, JoinTribeParams>(
 
 const joinTribe = createAsyncThunk(
     "tribe/joinTribe",
-    async ({id, token, data}: { id: any, token: string, data: any }, {rejectWithValue}) => {
+    async ({id, data}: { id: any, data: any }, {rejectWithValue}) => {
         try {
             const response = await tribesApi.joinTribe(id, data);
             return response.data;
@@ -112,7 +110,7 @@ const joinTribe = createAsyncThunk(
 const verifyTribePayment = createAsyncThunk(
     "tribe/verifyTribePayment",
     async (
-        {reference, token}: { reference: string; token: string },
+        {reference}: { reference: string },
         {rejectWithValue}
     ) => {
         try {
@@ -134,7 +132,7 @@ const createThread = createAsyncThunk<
     CreateThreadParams
 >(
     "tribe/createThread",
-    async ({id, token, data}: CreateThreadParams, {rejectWithValue}) => {
+    async ({id, data}: CreateThreadParams, {rejectWithValue}) => {
         try {
             const response = await tribesApi.createThread(id, data);
             return response.data;
@@ -150,7 +148,7 @@ const createThread = createAsyncThunk<
 const likeThread = createAsyncThunk(
     "tribe/likeThread",
     async (
-        {id, tribe_id, token}: { id: number; tribe_id: number; token: string },
+        {id, tribe_id}: { id: number; tribe_id: number },
         {rejectWithValue}
     ) => {
         try {
@@ -173,13 +171,11 @@ const submitVote = createAsyncThunk(
             thread_id,
             poll_id,
             data,
-            token,
         }: {
             tribe_id: number;
             thread_id: number;
             poll_id: number;
             data: any;
-            token: string;
         },
         {rejectWithValue}
     ) => {
@@ -197,7 +193,7 @@ const submitVote = createAsyncThunk(
 
 const getThreads = createAsyncThunk(
     "tribe/getThreads",
-    async ({id, token}: { id: string; token: string }, {rejectWithValue}) => {
+    async ({id}: { id: string }, {rejectWithValue}) => {
         try {
             const response = await tribesApi.getThreads(id);
             return response.data;
@@ -213,7 +209,7 @@ const getThreads = createAsyncThunk(
 const filterThreads = createAsyncThunk(
     "tribe/filterThreads",
     async (
-        {id, token, data}: { id: number; token: string; data: any },
+        {id, data}: { id: number; data: any },
         {rejectWithValue}
     ) => {
         try {
@@ -230,7 +226,7 @@ const filterThreads = createAsyncThunk(
 
 const viewProfile = createAsyncThunk(
     "tribe/viewProfile",
-    async ({id, token}: { id: number; token: string }, {rejectWithValue}) => {
+    async ({id}: { id: number }, {rejectWithValue}) => {
         try {
             const response = await tribesApi.viewProfile(id);
             return response.data;
@@ -245,7 +241,7 @@ const viewProfile = createAsyncThunk(
 
 const pinThread = createAsyncThunk(
     "tribe/pinThread",
-    async ({id, token}: { id: number; token: string }, {rejectWithValue}) => {
+    async ({id}: { id: number }, {rejectWithValue}) => {
         try {
             const response = await tribesApi.pinThread(id);
             return response.data;
@@ -260,7 +256,7 @@ const pinThread = createAsyncThunk(
 
 const getPinThreads = createAsyncThunk(
     "tribe/getPinThreads",
-    async ({id, token}: { id: string; token: string }, {rejectWithValue}) => {
+    async ({id}: { id: string }, {rejectWithValue}) => {
         try {
             const response = await tribesApi.getPinThreads(id);
             return response.data;
@@ -276,7 +272,7 @@ const getPinThreads = createAsyncThunk(
 const reportThread = createAsyncThunk(
     "tribe/reportThread",
     async (
-        {id, token, data}: { id: number | null; token: string; data: any },
+        {id, data}: { id: number | null; data: any },
         {rejectWithValue}
     ) => {
         try {
@@ -294,7 +290,7 @@ const reportThread = createAsyncThunk(
 const deleteThread = createAsyncThunk(
     "tribe/deleteThread",
     async (
-        {id, token}: { id: number | null; token: string },
+        {id}: { id: number | null },
         {rejectWithValue}
     ) => {
         try {
@@ -327,7 +323,7 @@ const searchTribe = createAsyncThunk(
 const addTribeMember = createAsyncThunk(
     "tribe/addTribeMember",
     async (
-        {data, id, token}: { data: any; id: any; token: string },
+        {data, id}: { data: any; id: any },
         {rejectWithValue}
     ) => {
         try {
@@ -349,8 +345,7 @@ const postComment = createAsyncThunk(
             data,
             tribe_id,
             thread_id,
-            token,
-        }: { data: any; tribe_id: number; thread_id: number; token: string },
+        }: { data: any; tribe_id: number; thread_id: number },
         {rejectWithValue}
     ) => {
         try {
@@ -371,8 +366,7 @@ const getComments = createAsyncThunk(
         {
             tribe_id,
             thread_id,
-            token,
-        }: { tribe_id: number; thread_id: number; token: string },
+        }: { tribe_id: number; thread_id: number },
         {rejectWithValue}
     ) => {
         try {

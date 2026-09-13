@@ -29,10 +29,10 @@ const initialState: PromotionState = {
 };
 
 export const getPromotionData = createAsyncThunk(
-    "promotion/getPromotions", 
-    async ({ token }: { token: string }, { rejectWithValue }) => {
+    "promotion/getPromotions",
+    async (_: void, { rejectWithValue }) => {
         try {
-            let response = await promotionsApi.getPromotions(token);
+            let response = await promotionsApi.getPromotions();
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -44,10 +44,10 @@ export const getPromotionData = createAsyncThunk(
 );
 
 export const createPromotion = createAsyncThunk(
-    "promotion/createPromotion", 
-    async ({ token, data }: { token: string, data: any }, { rejectWithValue }) => {
+    "promotion/createPromotion",
+    async ({ data }: { data: any }, { rejectWithValue }) => {
         try {
-            let response = await promotionsApi.createPromotion(token, data);
+            let response = await promotionsApi.createPromotion(data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -60,9 +60,9 @@ export const createPromotion = createAsyncThunk(
 
 export const getPromotion = createAsyncThunk(
     "promotion/getPromotion",
-    async ({ token, id }: { token: any, id: any }, { rejectWithValue }) => {
+    async ({ id }: { id: any }, { rejectWithValue }) => {
         try {
-            let response = await promotionsApi.getPromotion(token, id);
+            let response = await promotionsApi.getPromotion(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -75,9 +75,9 @@ export const getPromotion = createAsyncThunk(
 
 export const updatePromotion = createAsyncThunk(
     "promotion/updatePromotion",
-    async ({ token, id, data }: { token: any, id: any, data: any }, { rejectWithValue }) => {
+    async ({ id, data }: { id: any, data: any }, { rejectWithValue }) => {
         try {
-            let response = await promotionsApi.updatePromotion(token, id, data);
+            let response = await promotionsApi.updatePromotion(id, data);
             return response.data;
         } catch (err: any) {
             if (!err.response) {
@@ -89,10 +89,10 @@ export const updatePromotion = createAsyncThunk(
 );
 
 export const deletePromotion = createAsyncThunk(
-    "promotion/deletePromotion", 
-    async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+    "promotion/deletePromotion",
+    async ({ id }: { id: number }, { rejectWithValue }) => {
         try {
-            let response = await promotionsApi.deletePromotion(token, id);
+            let response = await promotionsApi.deletePromotion(id);
             return response.data;
         } catch (err: any) {
             if (!err.response) {

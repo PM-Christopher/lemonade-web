@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
-import { AppDispatch, RootState } from "@/redux/store";
+import { AppDispatch } from "@/redux/store";
 import { useFormik } from "formik";
 import {
   withdrawaladdition,
@@ -33,7 +33,6 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
 
   const params = useParams();
   const [isLoading, setLoading] = useState(false);
-  const { authToken } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const id = params.id
     ? Array.isArray(params.id)
@@ -58,7 +57,6 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
       if (updateType === "add" || updateType === "") {
         dispatch(
           withdrawaladdition({
-            token: authToken || "",
             id: id,
             amount: values.amount,
           })
@@ -105,7 +103,6 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
       } else {
         dispatch(
           withdrawaldeduction({
-            token: authToken || "",
             id: id,
             amount: values.amount,
           })

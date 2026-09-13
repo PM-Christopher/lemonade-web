@@ -17,15 +17,15 @@ const WalletView = ({ userDetail }: any) => {
     : undefined;
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isUpdateOpen, setIsUpdateOpen] = React.useState<boolean>(false);
 
   const [updateType, setUpdateType] = React.useState<string>("add");
 
   const reloadFunc = () => {
-    if (id && authToken) {
-      dispatch(getAccountInfo({ token: authToken, id, infoType: "wallet" }));
+    if (id && isLoggedIn) {
+      dispatch(getAccountInfo({ id, infoType: "wallet" }));
     }
   };
   const handleToggleDropdown = () => {

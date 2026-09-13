@@ -102,9 +102,9 @@ const getBusiness = createAsyncThunk("business/getBusiness", async ({id}: {id: n
     }
 });
 
-const requestService = createAsyncThunk("business/requestService", async ({ id, token, data}: {id: number, token: string, data: any}, { rejectWithValue }) => {
+const requestService = createAsyncThunk("business/requestService", async ({ id, data}: {id: number, data: any}, { rejectWithValue }) => {
     try {
-        const response = await businessApi.requestService(id, data, token);
+        const response = await businessApi.requestService(id, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -126,9 +126,9 @@ const getJob = createAsyncThunk("business/getJob", async ({ id, type}: {id: numb
     }
 });
 
-const filterBusiness = createAsyncThunk("business/filterBusiness", async ({ token, value}: {token: string, value: { location: string, category: string, service_type: string, start_range: string, end_range: string } }, { rejectWithValue }) => {
+const filterBusiness = createAsyncThunk("business/filterBusiness", async ({ value}: {value: { location: string, category: string, service_type: string, start_range: string, end_range: string } }, { rejectWithValue }) => {
     try {
-        const response = await businessApi.filterBusiness(token, value);
+        const response = await businessApi.filterBusiness(value);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

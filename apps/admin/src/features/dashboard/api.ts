@@ -6,14 +6,8 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminAccountRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 // Was calling /admin/dashboard — fixed to the real route while migrating,
 // see the comment on adminAccountRoutes in @lemonade/api-types.
 export const dashboardApi = {
-    getMetrics: (token: string) => axiosInstance.get(adminAccountRoutes.DASHBOARD, { headers: authHeaders(token) }),
+    getMetrics: () => axiosInstance.get(adminAccountRoutes.DASHBOARD),
 };

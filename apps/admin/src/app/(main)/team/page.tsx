@@ -36,15 +36,15 @@ function TeamMembersPage({}) {
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { teamData } = useSelector((state: RootState) => state.team) as {
     teamData: any;
   };
 
   const [data, setData] = useState<any>(teamData?.admins || []);
   useEffect(() => {
-    if (authToken) {
-      dispatch(getTeamData({ token: authToken }));
+    if (isLoggedIn) {
+      dispatch(getTeamData());
     }
   }, []);
 

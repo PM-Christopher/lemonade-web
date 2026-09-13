@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { updateWithdrawalThreshold } from "@/features/wallet/wallet.slice";
 
@@ -24,7 +24,6 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
   if (!isOpen) return null;
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
   const prodSchema = yup.object({
     threshold: yup.string().required("threshold is required"),
   });
@@ -38,7 +37,6 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
       setLoading(true);
       dispatch(
         updateWithdrawalThreshold({
-          token: authToken || "",
           threshold: values.threshold,
         })
       )

@@ -30,7 +30,7 @@ const ConnectPage = () => {
     const [messages, setMessages] = useState<MessageInterface[]>([])
     const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
     const [chatOpened, setChatOpened] = useState(false)
-    const {authToken, user} = useSelector((state: any) => state.auth)
+    const {user} = useSelector((state: any) => state.auth)
     usePusher(`chat.${user?.id}`, "message.sent");
 
     const {
@@ -55,7 +55,7 @@ const ConnectPage = () => {
     }
 
     const toggleSelectedChat: (receiver_id: number, chat_id: number) => void = (receiver_id: number, chat_id: number) => {
-        dispatch(getChat({receiver_id, token: authToken}))
+        dispatch(getChat({receiver_id}))
         setSelectedChatId(chat_id);
         setChatOpened(true)
     };

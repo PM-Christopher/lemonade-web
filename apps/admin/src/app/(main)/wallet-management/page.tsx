@@ -28,7 +28,7 @@ function WalletMgtPage({}) {
   const [itemsPerPage] = useState(5); // Number of items per page
   
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { withdrawalRequests } = useSelector(
     (state: RootState) => state.wallet as any
   );
@@ -38,9 +38,9 @@ function WalletMgtPage({}) {
 
 
   useEffect(() => {
-    if (authToken) {
-      dispatch(getWalletData({ token: authToken }));
-      dispatch(getWithdrawalRequest({ token: authToken }));
+    if (isLoggedIn) {
+      dispatch(getWalletData());
+      dispatch(getWithdrawalRequest());
     }
   }, []);
 
@@ -49,9 +49,9 @@ function WalletMgtPage({}) {
 
   const refetchFunc =()=>{
 
-     if (authToken) {
-      dispatch(getWalletData({ token: authToken }));
-      dispatch(getWithdrawalRequest({ token: authToken }));
+     if (isLoggedIn) {
+      dispatch(getWalletData());
+      dispatch(getWithdrawalRequest());
     }
   }
 

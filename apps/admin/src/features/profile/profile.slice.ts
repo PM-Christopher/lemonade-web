@@ -13,9 +13,9 @@ const initialState: userState = {
     profile: null
 };
 
-const getUserProfile = createAsyncThunk("user/getUserProfile", async ({ token }: { token: any }, { rejectWithValue }) => {
+const getUserProfile = createAsyncThunk("user/getUserProfile", async (_: void, { rejectWithValue }) => {
     try {
-        const response = await profileApi.getProfile(token);
+        const response = await profileApi.getProfile();
         return response.data;
     } catch (err: any) {
         if (!err.response) {

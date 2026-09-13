@@ -21,14 +21,14 @@ function WalletDetailsPage({}) {
       : parseInt(params.id)
     : undefined;
   const dispatch = useDispatch<AppDispatch>();
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { loading, wallet } = useSelector(
     (state: RootState) => state.transaction
   ) as { wallet: any; loading: boolean };
 
   useEffect(() => {
-    if (authToken && id) {
-      dispatch(getWalletDetail({ token: authToken, id }));
+    if (isLoggedIn && id) {
+      dispatch(getWalletDetail({ id }));
     }
   }, []);
 

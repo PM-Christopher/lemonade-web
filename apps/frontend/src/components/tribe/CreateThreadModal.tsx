@@ -8,7 +8,6 @@ import PollIcon from "@/images/icons/votes.svg";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {FormikButton} from "@/components/global/FormikButton";
-import {useSelector} from "react-redux";
 import {createThread} from "@/features/tribes/tribe.slice";
 import {useAppDispatch} from "@/redux/hook";
 import {useMediaQuery} from "react-responsive";
@@ -25,7 +24,6 @@ type CreateThreadInterface = {
 }
 
 const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tribe_id}) => {
-    const {authToken} = useSelector((state: any) => state.auth)
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const dispatch = useAppDispatch()
     const [mediaFiles, setMediaFiles] = useState<string[]>([])
@@ -203,7 +201,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
             }
         }
         const data = {...values, polls: hasPolls, thread_polls}
-        dispatch(createThread({token: authToken, id: tribe_id, data })).then((res:any) => {
+        dispatch(createThread({id: tribe_id, data })).then((res:any) => {
             if (res.payload.status) {
                 dispatch(
                     updateToastifyReducer({

@@ -3,30 +3,21 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminWalletRoutes, adminTransactionRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const walletApi = {
-    getWalletData: (token: string) => axiosInstance.get(adminWalletRoutes.BASE, { headers: authHeaders(token) }),
+    getWalletData: () => axiosInstance.get(adminWalletRoutes.BASE),
 
-    getWithdrawalRequests: (token: string) =>
-        axiosInstance.get(adminTransactionRoutes.WALLET_WITHDRAWALS, { headers: authHeaders(token) }),
+    getWithdrawalRequests: () => axiosInstance.get(adminTransactionRoutes.WALLET_WITHDRAWALS),
 
-    getWalletDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`, { headers: authHeaders(token) }),
+    getWalletDetail: (id: number) => axiosInstance.get(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`),
 
-    updateWithdrawalThreshold: (token: string, threshold: number) =>
-        axiosInstance.patch(adminWalletRoutes.UPDATE_WITHDRAWAL_THRESHOLD, { threshold }, { headers: authHeaders(token) }),
+    updateWithdrawalThreshold: (threshold: number) =>
+        axiosInstance.patch(adminWalletRoutes.UPDATE_WITHDRAWAL_THRESHOLD, { threshold }),
 
-    withdrawalRequestDecision: (token: string, id: unknown, type: string) =>
-        axiosInstance.patch(`${adminWalletRoutes.USER}/${id}/withdrawal-request`, { type }, { headers: authHeaders(token) }),
+    withdrawalRequestDecision: (id: unknown, type: string) =>
+        axiosInstance.patch(`${adminWalletRoutes.USER}/${id}/withdrawal-request`, { type }),
 
-    addToWallet: (token: string, id: unknown, amount: string) =>
-        axiosInstance.patch(`${adminWalletRoutes.USER}/${id}/add`, { amount }, { headers: authHeaders(token) }),
+    addToWallet: (id: unknown, amount: string) => axiosInstance.patch(`${adminWalletRoutes.USER}/${id}/add`, { amount }),
 
-    deductFromWallet: (token: string, id: unknown, amount: string) =>
-        axiosInstance.patch(`${adminWalletRoutes.USER}/${id}/deduct`, { amount }, { headers: authHeaders(token) }),
+    deductFromWallet: (id: unknown, amount: string) =>
+        axiosInstance.patch(`${adminWalletRoutes.USER}/${id}/deduct`, { amount }),
 };

@@ -25,19 +25,10 @@ type UserInfoInterface = {
 const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe}) => {
     console.log({user})
     const dispatch = useAppDispatch()
-    const {authToken} = useSelector((state: any) => state.auth)
-
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    }
 
     const sendConnect = ()  => {
         let data = {message: "I want to connect with you.", invitee_id: user?.id}
-        dispatch(sendInvite({token: authToken, data})).then(res => {
+        dispatch(sendInvite({data})).then(res => {
             if (res.payload.status) {
                 dispatch(
                     updateToastifyReducer({

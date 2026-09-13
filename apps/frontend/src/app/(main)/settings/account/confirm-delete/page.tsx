@@ -17,7 +17,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 
 const ConfirmDeletePage = () => {
   const router = useRouter();
-  const { authToken: token } = useSelector((state: any) => state.auth);
   const dispatch = useAppDispatch();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const toggleCurrentPasswordVisibility = () => {
@@ -35,7 +34,7 @@ const ConfirmDeletePage = () => {
     validationSchema: passwordSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
-      dispatch(deleteAccount({ token, data: values }))
+      dispatch(deleteAccount({ data: values }))
         .then((res) => {
           if (res.payload.status) {
             dispatch(

@@ -16,9 +16,9 @@ const initialState: announcementState = {
     announcement: null
 };
 
-const getAnnouncementData = createAsyncThunk("announcement/getAnnouncementData", async ({ token }: { token: string }, { rejectWithValue }) => {
+const getAnnouncementData = createAsyncThunk("announcement/getAnnouncementData", async (_: void, { rejectWithValue }) => {
     try {
-        let response = await announcementsApi.getAnnouncements(token);
+        let response = await announcementsApi.getAnnouncements();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -28,9 +28,9 @@ const getAnnouncementData = createAsyncThunk("announcement/getAnnouncementData",
     }
 });
 
-const getAnnouncementDetail = createAsyncThunk("announcement/getAnnouncementDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getAnnouncementDetail = createAsyncThunk("announcement/getAnnouncementDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        let response = await announcementsApi.getAnnouncement(token, id);
+        let response = await announcementsApi.getAnnouncement(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

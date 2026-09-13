@@ -4,22 +4,12 @@ import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import NotificationSettingsModal from "@/components/settings/Modal/NotificationSettingsModal";
-import { useSelector } from "react-redux";
 import { useRequest } from "@/hooks/useRequest";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const NotificationSettingsPage = () => {
   const router = useRouter();
-  const { authToken } = useSelector((state: any) => state.auth);
-  const getHeader = () => {
-    return {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-  };
-
   const { data, loading } = useRequest(
     `user/profile/notification-settings`,
   );

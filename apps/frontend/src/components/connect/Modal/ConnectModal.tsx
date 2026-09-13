@@ -6,8 +6,6 @@ import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {login} from "@/features/authentication/authApi";
-import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import {sendInvite} from "@/features/connect/connect.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -25,7 +23,6 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reload
     const dispatch = useAppDispatch()
     const [currentIndex, setCurrentIndex] = useState(0);
     const user = users[currentIndex];
-    const { authToken } = useSelector((state: any) => state.auth)
     const connectSchema = yup.object({
         message: yup
             .string()
@@ -43,7 +40,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reload
 
     const sendConnect = (values: {message: string})  => {
         let data = {...values, invitee_id: user?.id}
-        dispatch(sendInvite({token: authToken, data})).then(res => {
+        dispatch(sendInvite({data})).then(res => {
             if (res.payload.status) {
                 dispatch(
                     updateToastifyReducer({

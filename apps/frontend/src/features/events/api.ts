@@ -8,12 +8,6 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { userEventRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const eventsApi = {
     buyTicket: (eventId: number, data: unknown) =>
         axiosInstance.post(`${userEventRoutes.ATTENDEES}/${eventId}/assign-tickets`, data),
@@ -38,19 +32,16 @@ export const eventsApi = {
             headers: { "Content-Type": "application/json", Accept: "application/json" },
         }),
 
-    getPaymentSetting: (token: string) =>
-        axiosInstance.get(userEventRoutes.GET_PAYMENT_SETTING, { headers: authHeaders(token) }),
+    getPaymentSetting: () => axiosInstance.get(userEventRoutes.GET_PAYMENT_SETTING),
 
-    updatePaymentSetting: (token: string, data: unknown) =>
-        axiosInstance.patch(userEventRoutes.UPDATE_PAYMENT_SETTING, data, { headers: authHeaders(token) }),
+    updatePaymentSetting: (data: unknown) =>
+        axiosInstance.patch(userEventRoutes.UPDATE_PAYMENT_SETTING, data),
 
     filterEvent: (
-        token: string,
         data: { category: string; period: string; start_date: string; end_date: string; location: string },
     ) =>
         axiosInstance.get(
             `${userEventRoutes.FILTER}?category=${data.category}&period=${data.period}&start_date=${data.start_date}&end_date=${data.end_date}&location=${data.location}`,
-            { headers: authHeaders(token) },
         ),
 
     getOrganizerEvents: () => axiosInstance.get(userEventRoutes.BASE),

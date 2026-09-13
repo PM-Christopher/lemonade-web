@@ -3,7 +3,6 @@ import CloseIcon from "@/images/icons/close.svg";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
 import { useRequest } from "@/hooks/useRequest";
 import {
   Select,
@@ -34,15 +33,6 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
   const [accountNumber, setAccountNumber] = useState("");
    const [error, setError] = useState("");
   const dispatch = useAppDispatch();
-
-  const { authToken } = useSelector((state: any) => state.auth);
-  const getHeader = () => {
-    return {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-  };
 
   const { data, loading } = useRequest(
     `/shared/utilities/get-all-banks`,
@@ -89,7 +79,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
         account_number: formik.values.account_number,
         account_name: formik.values.account_name,
       }
-      const { data } = await settingsApi.createBankAccount(formData, getHeader())
+      const { data } = await settingsApi.createBankAccount(formData)
       if(data.status) {
         formik.resetForm()
         dispatch(

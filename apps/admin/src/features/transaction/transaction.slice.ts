@@ -19,9 +19,9 @@ const initialState: transactionState = {
     event: null,
 };
 
-const getPlanSubscriptions = createAsyncThunk("transaction/getPlanSubscriptions", async ({ token }: { token: string }, { rejectWithValue }) => {
+const getPlanSubscriptions = createAsyncThunk("transaction/getPlanSubscriptions", async (_: void, { rejectWithValue }) => {
     try {
-        const response = await transactionApi.getPlanSubscriptions(token);
+        const response = await transactionApi.getPlanSubscriptions();
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -31,9 +31,9 @@ const getPlanSubscriptions = createAsyncThunk("transaction/getPlanSubscriptions"
     }
 });
 
-const getPlanSubscription = createAsyncThunk("transaction/getPlanSubscription", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getPlanSubscription = createAsyncThunk("transaction/getPlanSubscription", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await transactionApi.getPlanSubscription(token, id);
+        const response = await transactionApi.getPlanSubscription(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -43,9 +43,9 @@ const getPlanSubscription = createAsyncThunk("transaction/getPlanSubscription", 
     }
 });
 
-const getWalletDetail = createAsyncThunk("transaction/getWalletDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getWalletDetail = createAsyncThunk("transaction/getWalletDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await transactionApi.getWalletWithdrawal(token, id);
+        const response = await transactionApi.getWalletWithdrawal(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -55,9 +55,9 @@ const getWalletDetail = createAsyncThunk("transaction/getWalletDetail", async ({
     }
 });
 
-const getEventDetail = createAsyncThunk("transaction/getEventDetail", async ({ token, id }: { token: string, id: number }, { rejectWithValue }) => {
+const getEventDetail = createAsyncThunk("transaction/getEventDetail", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-        const response = await transactionApi.getEventDetail(token, id);
+        const response = await transactionApi.getEventDetail(id);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -67,9 +67,9 @@ const getEventDetail = createAsyncThunk("transaction/getEventDetail", async ({ t
     }
 });
 
-const getTransactionData = createAsyncThunk("transaction/getTransactionData", async ({ token, trxType }: { token: string, trxType: string }, { rejectWithValue }) => {
+const getTransactionData = createAsyncThunk("transaction/getTransactionData", async ({ trxType }: { trxType: string }, { rejectWithValue }) => {
     try {
-        const response = await transactionApi.getTransactionData(token, trxType);
+        const response = await transactionApi.getTransactionData(trxType);
         return response?.data;
     } catch (err: any) {
         if (!err.response) {

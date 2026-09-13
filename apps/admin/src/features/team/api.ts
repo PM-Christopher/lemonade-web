@@ -3,20 +3,13 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminTeamRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const teamApi = {
-    getTeamData: (token: string) => axiosInstance.get(adminTeamRoutes.BASE, { headers: authHeaders(token) }),
+    getTeamData: () => axiosInstance.get(adminTeamRoutes.BASE),
 
-    getTeamDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminTeamRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    getTeamDetail: (id: number) =>
+        axiosInstance.get(`${adminTeamRoutes.BASE}/${id}`),
 
     addTeamMember: (
-        token: string,
         payload: { name: string; email: string; password: string; role: string },
-    ) => axiosInstance.post(`${adminTeamRoutes.BASE}/`, payload, { headers: authHeaders(token) }),
+    ) => axiosInstance.post(`${adminTeamRoutes.BASE}/`, payload),
 };

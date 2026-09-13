@@ -6,7 +6,6 @@ import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {Label} from "@/components/ui/label";
 import {useAppDispatch} from "@/redux/hook";
 import {reportThread} from "@/features/tribes/tribe.slice";
-import {useSelector} from "react-redux";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type ReportThreadIF = {
@@ -16,13 +15,12 @@ type ReportThreadIF = {
 }
 
 const ReportThreadModal: React.FC<ReportThreadIF> = ({toggle, isOpen, threadId}) => {
-    const {authToken} = useSelector((state: any) => state.auth)
     const dispatch = useAppDispatch()
 
     const [selectedReport, setSelectedReport] = useState("Inappropriate content");
 
     const submitThread = () =>{
-        dispatch(reportThread({id: threadId, token: authToken, data: {report: selectedReport}}))
+        dispatch(reportThread({id: threadId, data: {report: selectedReport}}))
         dispatch(
             updateToastifyReducer({
                 show: true,

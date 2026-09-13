@@ -4,25 +4,17 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { userBusinessRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const businessApi = {
     getListings: () => axiosInstance.get(userBusinessRoutes.LISTING),
 
     getListing: (id: number) => axiosInstance.get(`${userBusinessRoutes.LISTING}/${id}`),
 
-    createListing: (values: unknown, config: { headers: Record<string, string> }) =>
-        axiosInstance.post(userBusinessRoutes.LISTING, values, config),
+    createListing: (values: unknown) => axiosInstance.post(userBusinessRoutes.LISTING, values),
 
-    updateListing: (id: number | string, values: unknown, config: { headers: Record<string, string> }) =>
-        axiosInstance.patch(`${userBusinessRoutes.LISTING}/${id}`, values, config),
+    updateListing: (id: number | string, values: unknown) => axiosInstance.patch(`${userBusinessRoutes.LISTING}/${id}`, values),
 
-    boostListing: (id: number | string, formData: unknown, config: { headers: Record<string, string> }) =>
-        axiosInstance.post(`${userBusinessRoutes.LISTING}/boost-business/${id}`, formData, config),
+    boostListing: (id: number | string, formData: unknown) =>
+        axiosInstance.post(`${userBusinessRoutes.LISTING}/boost-business/${id}`, formData),
 
     getJobsData: () => axiosInstance.get(userBusinessRoutes.JOBS_ALL),
 
@@ -30,8 +22,8 @@ export const businessApi = {
 
     getBusiness: (id: number) => axiosInstance.get(`${userBusinessRoutes.BASE}/${id}`),
 
-    requestService: (id: number, data: unknown, token: string) =>
-        axiosInstance.post(`${userBusinessRoutes.BASE}/${id}/request-service`, data, { headers: authHeaders(token) }),
+    requestService: (id: number, data: unknown) =>
+        axiosInstance.post(`${userBusinessRoutes.BASE}/${id}/request-service`, data),
 
     // `type` is always "business" or "listing" — a real dynamic path
     // segment, not a suffix on a fixed prefix, so it isn't threaded through
@@ -39,12 +31,10 @@ export const businessApi = {
     getJob: (type: string, id: number) => axiosInstance.get(`/user/${type}/jobs/job/${id}`),
 
     filterBusiness: (
-        token: string,
         value: { location: string; category: string; service_type: string; start_range: string; end_range: string },
     ) =>
         axiosInstance.get(
             `${userBusinessRoutes.FILTER}?location=${value.location}&category=${value.category}&service_type=${value.service_type}&start_range=${value.start_range}&end_range=${value.end_range}`,
-            { headers: authHeaders(token) },
         ),
 
     markJobRequest: (id: number, data: unknown) => axiosInstance.post(`${userBusinessRoutes.LISTING}/jobs/${id}/mark-job`, data),

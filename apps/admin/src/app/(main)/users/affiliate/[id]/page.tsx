@@ -26,11 +26,11 @@ const AffiliateUser = () => {
     setRefHistoryOpen(!refHistoryOpen);
   };
 
-  const { authToken } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (authToken && id) {
-      dispatch(getAffiliateDetail({ token: authToken, id })).then((res) => {
+    if (isLoggedIn && id) {
+      dispatch(getAffiliateDetail({ id })).then((res) => {
         console.log("isaff", res.payload.data);
 
         setData(res.payload.data);

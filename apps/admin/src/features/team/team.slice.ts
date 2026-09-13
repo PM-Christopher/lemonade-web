@@ -17,9 +17,9 @@ const initialState: TeamState = {
 
 export const getTeamData = createAsyncThunk(
   "team/getTeamData",
-  async ({ token }: { token: string }, { rejectWithValue }) => {
+  async (_: void, { rejectWithValue }) => {
     try {
-      let response = await teamApi.getTeamData(token);
+      let response = await teamApi.getTeamData();
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -32,9 +32,9 @@ export const getTeamData = createAsyncThunk(
 
 export const getTeamDetail = createAsyncThunk(
   "team/getTeamDetail",
-  async ({ token, id }: { token: string; id: number }, { rejectWithValue }) => {
+  async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
-      let response = await teamApi.getTeamDetail(token, id);
+      let response = await teamApi.getTeamDetail(id);
       return response.data;
     } catch (err: any) {
       if (!err.response) {
@@ -49,13 +49,11 @@ export const addTeamMember = createAsyncThunk(
   "team/addTeamMember",
   async (
     {
-      token,
       name,
       email,
       password,
       role,
     }: {
-      token: string;
       name: string;
       email: string;
       password: string;
@@ -71,7 +69,7 @@ export const addTeamMember = createAsyncThunk(
     };
 
     try {
-      let response = await teamApi.addTeamMember(token, payload);
+      let response = await teamApi.addTeamMember(payload);
       return response.data;
     } catch (err: any) {
       if (!err.response) {

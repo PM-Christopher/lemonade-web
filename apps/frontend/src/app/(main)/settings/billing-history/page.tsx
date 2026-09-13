@@ -11,16 +11,9 @@ import {BillingHistorySkeleton} from "@/components/Skeletons";
 
 const BillingHistoryPage = () => {
     const router = useRouter();
-    const {authToken, user, subscription} = useSelector(
+    const {subscription} = useSelector(
         (state: any) => state.auth
     );
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    };
 
     const {data, loading} = useRequest(
         `user/profile/subscription/billing-history`,

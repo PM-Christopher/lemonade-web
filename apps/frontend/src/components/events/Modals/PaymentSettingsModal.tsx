@@ -17,16 +17,7 @@ type PaymentSettingsInterface = {
 const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({toggle, option}) => {
     const dispatch = useAppDispatch();
     const { payment_setting } = useSelector((state: RootState) => state.event);
-    const { authToken } = useSelector((state: any) => state.auth);
     const [paymentType, setPaymentType] = useState(payment_setting?.type || "")
-
-    const getHeader = () => {
-        return {
-            headers: {
-                Authorization: `Bearer ${authToken}`,
-            },
-        };
-    };
 
     const handleUpdate = () => {
         if (paymentType === null) {
@@ -38,7 +29,7 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({toggle, optio
                 })
             );
         }
-        dispatch(updatePaymentSetting({token: authToken, data: {type: paymentType}})).then((res: any) => {
+        dispatch(updatePaymentSetting({data: {type: paymentType}})).then((res: any) => {
             dispatch(
                 updateToastifyReducer({
                     show: true,
@@ -50,7 +41,7 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({toggle, optio
     }
 
     useEffect(() => {
-        dispatch(getPaymentSetting({token: authToken}))
+        dispatch(getPaymentSetting())
     }, []);
 
     return (

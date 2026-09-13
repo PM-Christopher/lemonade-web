@@ -2,29 +2,21 @@
 // the pattern this follows. Still on the pre-BFF axiosInstance transport
 // deliberately (Phase 5 concern, not this refactor).
 import { axiosInstance } from "@/lib/axiosInstane";
-import { userConnectRoutes, sharedUtilityRoutes } from "@lemonade/api-types";
-
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
+import { userConnectRoutes } from "@lemonade/api-types";
+import { sharedApi } from "@/features/shared/api";
 
 export const connectApi = {
-    getChat: (receiverId: number, token: string) =>
-        axiosInstance.get(`${userConnectRoutes.MESSAGES}/chat?receiver_id=${receiverId}`, { headers: authHeaders(token) }),
+    getChat: (receiverId: number) => axiosInstance.get(`${userConnectRoutes.MESSAGES}/chat?receiver_id=${receiverId}`),
 
-    sendChat: (receiverId: number | null, message: string | null, media: string[], token: string) =>
-        axiosInstance.post(`${userConnectRoutes.MESSAGES}?receiver_id=${receiverId}`, { message, media }, { headers: authHeaders(token) }),
+    sendChat: (receiverId: number | null, message: string | null, media: string[]) =>
+        axiosInstance.post(`${userConnectRoutes.MESSAGES}?receiver_id=${receiverId}`, { message, media }),
 
-    inviteResponse: (id: number, data: { option: string }, token: string) =>
-        axiosInstance.post(`${userConnectRoutes.BASE}/invite-response/${id}`, data, { headers: authHeaders(token) }),
+    inviteResponse: (id: number, data: { option: string }) =>
+        axiosInstance.post(`${userConnectRoutes.BASE}/invite-response/${id}`, data),
 
-    findUser: (search: string, token: string) =>
-        axiosInstance.get(`${userConnectRoutes.FIND_USER}?search=${search}`, { headers: authHeaders(token) }),
+    findUser: (search: string) => axiosInstance.get(`${userConnectRoutes.FIND_USER}?search=${search}`),
 
-    sendInvite: (data: unknown, token: string) =>
-        axiosInstance.post(userConnectRoutes.SEND_INVITE, data, { headers: authHeaders(token) }),
+    sendInvite: (data: unknown) => axiosInstance.post(userConnectRoutes.SEND_INVITE, data),
 
     getInvites: () => axiosInstance.get(userConnectRoutes.GET_INVITES),
 
@@ -32,9 +24,9 @@ export const connectApi = {
 
     getMessages: () => axiosInstance.get(userConnectRoutes.MESSAGES),
 
-    updateVisibility: (visible: boolean, config: { headers: Record<string, string> }) =>
-        axiosInstance.patch(userConnectRoutes.UPDATE_VISIBILITY, { visibility: visible }, config),
+    updateVisibility: (visible: boolean) => axiosInstance.patch(userConnectRoutes.UPDATE_VISIBILITY, { visibility: visible }),
 
-    uploadMultiple: (formData: unknown, config: Record<string, unknown>) =>
-        axiosInstance.post(sharedUtilityRoutes.UPLOAD_MULTIPLE, formData, config),
+    // Delegates to the one real implementation in features/shared/api.ts —
+    // this domain doesn't own the upload endpoint, it just needs it too.
+    uploadMultiple: (formData: FormData) => sharedApi.uploadMultipleFiles(formData),
 };

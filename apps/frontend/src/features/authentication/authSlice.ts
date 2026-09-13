@@ -113,15 +113,9 @@ const resetPassword = createAsyncThunk("auth/resetPassword", async ({ data, toke
     }
 });
 
-const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, token, url }: { data: any, token: string, url: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, url }: { data: any, url: string }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.patch(`${url}`, data, { headers });
+        const response = await axiosInstance.patch(`${url}`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -131,15 +125,9 @@ const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, token,
     }
 });
 
-const changePassword = createAsyncThunk("auth/changePassword", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const changePassword = createAsyncThunk("auth/changePassword", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.patch(`/user/profile/settings/change-password`, data, { headers });
+        const response = await axiosInstance.patch(`/user/profile/settings/change-password`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -149,15 +137,9 @@ const changePassword = createAsyncThunk("auth/changePassword", async ({ data, to
     }
 });
 
-const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.patch(`/user/profile/settings/change-profile-image`, data, { headers });
+        const response = await axiosInstance.patch(`/user/profile/settings/change-profile-image`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -167,15 +149,9 @@ const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data, toke
     }
 });
 
-const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
+const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/user/profile/settings/delete-account`, data, { headers });
+        const response = await axiosInstance.post(`/user/profile/settings/delete-account`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {
@@ -185,14 +161,9 @@ const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data, toke
     }
 });
 
-const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ data, token }: { data: any, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
+const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ data }: { data: any }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.patch(`/user/profile/notification-settings/update-all-notification`, data, { headers });
+        const response = await axiosInstance.patch(`/user/profile/notification-settings/update-all-notification`, data);
         return response.data;
     } catch (err: any) {
         if (!err.response) {

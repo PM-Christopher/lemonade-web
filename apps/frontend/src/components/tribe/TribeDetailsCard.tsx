@@ -35,12 +35,11 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                                                                threads
                                                            }) => {
     const dispatch = useAppDispatch()
-    const {authToken} = useSelector((state: any) => state.auth)
     const {loading: tribeLoading} = useSelector((state: any) => state.tribe);
 
     const handleJoinTribe = (id: string) => {
         const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${id}`;
-        dispatch(joinTribe({token: authToken, id, data: {redirect_url}})).then((res: any) => {
+        dispatch(joinTribe({id, data: {redirect_url}})).then((res: any) => {
             if (res.payload.data.authorization_url) {
                 window.location.href = res.payload.data.authorization_url;
             } else {

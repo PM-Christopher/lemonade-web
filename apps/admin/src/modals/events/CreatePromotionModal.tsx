@@ -17,7 +17,7 @@ interface CreatePromotionModalProps {
 const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, toggle, promotionId}) => {
     const [eventType, setEventType] = React.useState('');
     const dispatch = useDispatch<AppDispatch>();
-    const { authToken } = useSelector((state: RootState) => state.auth)
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const { promotion } = useSelector((state: RootState) => state.promotion);
     const [promotionTitle, setPromotionTitle] = useState('Create Promotion');
 
@@ -58,10 +58,10 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
         },
         validationSchema: createPromotionSchema,
         onSubmit: async (values) => {
-            if (authToken) {
+            if (isLoggedIn) {
                 const data = {...values, breakdown: breakdowns}
                 if (promotionId !== 0) {
-                    dispatch(updatePromotion({data:data, token: authToken, id: promotionId })).then((res: any) => {
+                    dispatch(updatePromotion({data:data, id: promotionId })).then((res: any) => {
                         if (res.payload.status) {
                             dispatch(
                                 updateToastifyReducer({
@@ -75,7 +75,7 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
                         }
                     })
                 } else {
-                    dispatch(createPromotion({ token: authToken, data })).then((res: any) => {
+                    dispatch(createPromotion({ data })).then((res: any) => {
                         if (res.payload.status) {
                             dispatch(
                                 updateToastifyReducer({
@@ -94,7 +94,7 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
 
     useEffect(() => {
         if (promotionId !== 0) {
-            dispatch(getPromotion({token: authToken, id: promotionId})).then((res) => {
+            dispatch(getPromotion({id: promotionId})).then((res) => {
                 if (res.payload.status) {
                     const data = res.payload.data.promotion
                     setEventType(data.price_option)

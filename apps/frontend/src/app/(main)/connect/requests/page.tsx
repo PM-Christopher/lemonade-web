@@ -24,7 +24,7 @@ const ConnectRequestPage = () => {
     const dispatch = useAppDispatch();
     const {user: connUser, invites, loading} = useSelector((state: RootState) => state.chat);
 
-    const {authToken, user} = useSelector((state: any) => state.auth);
+    const {user} = useSelector((state: any) => state.auth);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -56,7 +56,7 @@ const ConnectRequestPage = () => {
                 );
                 // find user
                 dispatch(
-                    findUser({token: authToken, search: e.currentTarget.value})
+                    findUser({search: e.currentTarget.value})
                 ).then((res) => {
                     if (res.payload.status) {
                         dispatch(

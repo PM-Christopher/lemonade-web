@@ -5,28 +5,20 @@
 // migration's own rule): resolveReport's original PATCH call passed
 // `{ headers }` as the request BODY (axios's 2nd arg), not the config (3rd
 // arg) — so the Authorization header was never actually sent on that one
-// call. Reproduced as-is below; this needs a deliberate fix, not one that
-// rides along with a path-constants refactor.
+// call. Now that the transport attaches auth automatically, that specific
+// bug is moot (there's no header to misplace), but the call shape below is
+// still reproduced as a plain PATCH with no body, matching what the
+// pre-migration call actually sent over the wire.
 import { axiosInstance } from "@/lib/axiosInstane";
 import { adminReportRoutes } from "@lemonade/api-types";
 
-const authHeaders = (token: string) => ({
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-});
-
 export const reportingApi = {
-    getReportData: (token: string) => axiosInstance.get(adminReportRoutes.BASE, { headers: authHeaders(token) }),
+    getReportData: () => axiosInstance.get(adminReportRoutes.BASE),
 
-    getReportDetail: (token: string, id: number) =>
-        axiosInstance.get(`${adminReportRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    getReportDetail: (id: number) => axiosInstance.get(`${adminReportRoutes.BASE}/${id}`),
 
-    // See the NOTE above — `{ headers }` really is the body here, matching
-    // the pre-migration call exactly.
-    resolveReport: (token: string, id: number) =>
-        axiosInstance.patch(`${adminReportRoutes.BASE}/${id}`, { headers: authHeaders(token) }),
+    resolveReport: (id: number) => axiosInstance.patch(`${adminReportRoutes.BASE}/${id}`),
 
-    deleteReportContent: (token: string, id: number, data: unknown) =>
-        axiosInstance.patch(`${adminReportRoutes.BASE}/${id}/delete-content`, data, { headers: authHeaders(token) }),
+    deleteReportContent: (id: number, data: unknown) =>
+        axiosInstance.patch(`${adminReportRoutes.BASE}/${id}/delete-content`, data),
 };

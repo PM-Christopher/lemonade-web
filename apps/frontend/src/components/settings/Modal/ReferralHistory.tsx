@@ -3,7 +3,6 @@ import CloseIcon from "@/images/icons/close.svg";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRequest } from "@/hooks/useRequest";
-import { useSelector } from "react-redux";
 
 type ReferralHistoryInterface = {
   toggle: () => void;
@@ -15,14 +14,6 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({
   toggle,
 }) => {
   const router = useRouter();
-  const { authToken } = useSelector((state: any) => state.auth);
-  const getHeader = () => {
-    return {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-  };
   const { data } = useRequest(
     `/user/wallet/referral-history`,
   );

@@ -10,8 +10,8 @@ export const settingsApi = {
 
     requestPayout: (data: unknown) => axiosInstance.post(userSettingsRoutes.REQUEST_PAYOUT, data),
 
-    createBankAccount: (formData: unknown, config: { headers: Record<string, string> }) =>
-        axiosInstance.post(userSettingsRoutes.BANK_ACCOUNT_CREATE, formData, config),
+    createBankAccount: (formData: unknown) =>
+        axiosInstance.post(userSettingsRoutes.BANK_ACCOUNT_CREATE, formData),
 
     upload: (formData: unknown, config: Record<string, unknown>) => axiosInstance.post(sharedUtilityRoutes.UPLOAD, formData, config),
 };
