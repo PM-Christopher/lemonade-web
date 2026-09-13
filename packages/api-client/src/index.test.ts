@@ -48,6 +48,32 @@ describe("createApiClient", () => {
     expect(seenAuth).toBe("Bearer real-token");
   });
 
+  it("prefers an explicit bearerTokenOverride over getToken", async () => {
+    let seenAuth: string | undefined;
+    mock.onGet("http://api.test/otp/verify").reply((cfg) => {
+      seenAuth = cfg.headers?.Authorization as string | undefined;
+      return [200, { success: true, message: "ok", data: {} }];
+    });
+
+    const client = createApiClient({ baseURL: "http://api.test", getToken: () => "main-session-token" });
+    await client.request({ url: "/otp/verify", method: "get", bearerTokenOverride: "scoped-verification-token" });
+
+    expect(seenAuth).toBe("Bearer scoped-verification-token");
+  });
+
+  it("falls back to getToken when no bearerTokenOverride is given", async () => {
+    let seenAuth: string | undefined;
+    mock.onGet("http://api.test/wallet").reply((cfg) => {
+      seenAuth = cfg.headers?.Authorization as string | undefined;
+      return [200, { success: true, message: "ok", data: {} }];
+    });
+
+    const client = createApiClient({ baseURL: "http://api.test", getToken: () => "main-session-token" });
+    await client.request({ url: "/wallet", method: "get" });
+
+    expect(seenAuth).toBe("Bearer main-session-token");
+  });
+
   it("normalizes a 422 into a validation ApiError with fieldErrors", async () => {
     mock.onPost("http://api.test/events/create-event").reply(422, {
       success: false,

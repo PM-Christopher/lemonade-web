@@ -90,6 +90,19 @@ export interface ApiClientConfig {
   onUnauthorized?: () => void | Promise<void>;
 }
 
+export interface RequestConfig extends AxiosRequestConfig {
+  /**
+   * Use this exact bearer token for this call instead of `getToken()`.
+   * For a caller (the BFF proxy) that already read a token server-side from
+   * its own trusted source — e.g. a distinct, ability-scoped pre-login
+   * cookie for a signup/verification flow that predates any main session —
+   * not the main session cookie `getToken()` reads. Still never populated
+   * from an inbound Authorization header verbatim; the interceptor below
+   * strips that unconditionally regardless of this field.
+   */
+  bearerTokenOverride?: string;
+}
+
 export interface ApiClient {
   get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
   post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T>;
@@ -97,7 +110,7 @@ export interface ApiClient {
   put<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T>;
   delete<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
   /** Generic escape hatch for the BFF proxy, which forwards an arbitrary method/path pair. */
-  request<T = unknown>(config: AxiosRequestConfig): Promise<T>;
+  request<T = unknown>(config: RequestConfig): Promise<T>;
 }
 
 function mapKind(status: number): ApiErrorKind {
@@ -167,7 +180,10 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
     // server-derived token, if any, is the only one that may go out.
     delete requestConfig.headers.Authorization;
 
-    if (config.getToken) {
+    const override = (requestConfig as RequestConfig).bearerTokenOverride;
+    if (override) {
+      requestConfig.headers.Authorization = `Bearer ${override}`;
+    } else if (config.getToken) {
       const token = await config.getToken();
       if (token) requestConfig.headers.Authorization = `Bearer ${token}`;
     }
