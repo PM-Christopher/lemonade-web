@@ -2,11 +2,11 @@
 import {ReactNode, useEffect} from "react";
 import SideNav from "@/components/global/SideNav";
 import TopNav from "@/components/global/TopNav";
-import {useAppDispatch} from "@/redux/hook";
-import {redirect, useRouter} from "next/navigation";
-import {useCookies} from "react-cookie";
+import {useAppDispatch, useAppSelector} from "@/redux/hook";
+import {useRouter} from "next/navigation";
 import {setIsRouting} from "@/redux/tempSlice";
-import {resetAuth} from "@/features/authentication/authSlice";
+import {authSuccess} from "@/features/authentication/authSlice";
+import {useCurrentAdminQuery} from "@/features/authentication/queries";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "../global/BottomNav";
 
@@ -14,33 +14,38 @@ interface DashboardLayoutProps {
     children: ReactNode;
 }
 
+// Non-secret placeholder — see features/authentication/mutations.ts for why
+// this exists instead of a real token.
+const SESSION_MARKER = "session";
+
 const MainLayout = ({ children }: DashboardLayoutProps) => {
     const dispatch = useAppDispatch();
     const router = useRouter();
-        const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
-    const [cookies, setCookie, removeCookie] = useCookies([
-        "token",
-        "adminAuthToken",
-    ]);
-    const token = cookies.token;
+    const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+    const { user } = useAppSelector((state) => state.auth);
 
     useEffect(() => {
         dispatch(setIsRouting(false));
     }, []);
 
-    
+    // The single source of truth for "who is logged in" — replaces a
+    // client-side check of the OLD, JS-readable "token" cookie. Route
+    // protection at the edge already happens in middleware.ts against the
+    // real httpOnly cookie; this is the belt-and-suspenders client-side
+    // check plus the source for `state.auth.user`.
+    const { isSuccess, isError, data: currentAdmin } = useCurrentAdminQuery({ enabled: !user });
+
     useEffect(() => {
-        if (!token) {
-            router.push("/login");
-            removeCookie("token");
-            dispatch(resetAuth());
+        if (isSuccess && currentAdmin) {
+            dispatch(authSuccess({ admin: currentAdmin, token: SESSION_MARKER }));
         }
-    }, [token]);
-    if (!token) {
-        removeCookie("token");
-        dispatch(resetAuth());
-        redirect("/login");
-    }
+    }, [isSuccess, currentAdmin, dispatch]);
+
+    useEffect(() => {
+        if (isError && !user) {
+            router.push("/login");
+        }
+    }, [isError, user, router]);
 
     return (
         <div className="min-h-screen flex">

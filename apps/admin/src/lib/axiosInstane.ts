@@ -1,66 +1,35 @@
-import { baseUrl } from "@/config/url";
 import axios from "axios";
 
+// Points at this app's own BFF proxy (same-origin, /api/v1/*), not Laravel
+// directly — the httpOnly session cookie rides along automatically on any
+// same-origin request, so no token is ever read or attached here. See
+// src/app/api/v1/[...path]/route.ts and src/lib/server-api.ts. Every
+// domain's api.ts still builds an Authorization header from a
+// Redux-stored `token` argument (leftover from before this cutover) —
+// harmless: the proxy ignores it and always injects the real one
+// server-side. Removing that dead parameter everywhere is separate,
+// larger follow-up work.
 export const axiosInstance = axios.create({
-    baseURL: baseUrl,
+    baseURL: "/api/v1",
     headers: { "Content-Type": "application/json" },
 });
 
-function clearAllCookies() {
-    const cookies = document.cookie.split(";");
-
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i];
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-    }
+function clearLegacyCookies() {
+    ["token"].forEach((name) => {
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
 }
 
+// Refresh-on-401 is handled server-side, inside the BFF proxy's own
+// backendApi instance (see src/lib/server-api.ts's `refresh` config). A
+// 401 here means that already happened and failed.
 axiosInstance.interceptors.response.use(
-    (response) => {
-        // If the response is successful, just return it
-        return response;
-    },
+    (response) => response,
     (error) => {
-        if (error.response) {
-            const { status } = error.response;
-            console.log(status, "status error");
-
-            // Handle different status codes
-            if (status === 401) {
-                clearAllCookies();
-                window.location.href = "/login";
-                //router.push("/login"); // Redirect to 403 page
-            } else if (status === 403) {
-                clearAllCookies();
-                //store.dispatch(resetAuth());
-                //window.location.href = "/login";
-                //router.push("/login"); // Redirect to 403 page
-            }
-            // else if (status === 500) {
-            //   window.location.href = "/error?type=500"; // Redirect to 500 page
-            // }
-            // else {
-            //   console.error("Error:", error);
-            // }
-        } else if (error.request) {
-            if (
-                error.code === "ECONNABORTED" ||
-                error.code === "ETIMEDOUT" ||
-                error.code === "ENETWORKUNREACHABLE" ||
-                error.code === "ERR_NETWORK"
-            ) {
-                // window.location.href = "/error";
-                throw error;
-            }
+        if (error.response?.status === 401) {
+            clearLegacyCookies();
+            if (typeof window !== "undefined") window.location.href = "/login";
         }
-        // else if (error.request) {
-        //   // Handle no response from server
-        //   window.location.href = "/error?type===500";
-        // }
-
-        // Optionally return a rejected promise if needed
         return Promise.reject(error);
-    }
+    },
 );

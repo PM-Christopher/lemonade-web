@@ -1,60 +1,37 @@
 "use client";
 import React, { useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import Image from "next/image";
 import { setIsRouting } from "@/redux/tempSlice";
 import {useAppDispatch, useAppSelector} from "@/redux/hook";
-import {redirect, useRouter} from "next/navigation";
-import {authSuccess, resetAuth} from "@/features/authentication/authSlice";
-import {axiosInstance} from "@/lib/axiosInstane";
+import {authSuccess} from "@/features/authentication/authSlice";
+import {useCurrentUserQuery} from "@/features/authentication/queries";
 import TopNav from "@/components/navigation/TopNav";
 import {useMediaQuery} from "react-responsive";
 import BottomNav from "@/components/navigation/BottomNav";
-import {useRefreshToken} from "@/hooks/useRefreshToken";
+
+// Non-secret placeholder — see features/authentication/mutations.ts for why
+// this exists instead of a real token.
+const SESSION_MARKER = "session";
 
 const MainLayout = ({children}: {children: React.ReactNode}) => {
     const isMobile = useMediaQuery({ query: "(max-width: 766px)" });
-    const { admin } = useAppSelector((state) => state.auth);
+    const { user } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
-    const router = useRouter();
-    const [cookies, setCookie, removeCookie] = useCookies([
-        "token",
-        "adminAuthToken",
-    ]);
-    const token = cookies.token;
 
     useEffect(() => {
         dispatch(setIsRouting(false));
     }, []);
 
-    // useEffect(() => {
-    //     if (!token) {
-    //         router.push("/login");
-    //         removeCookie("token");
-    //         dispatch(resetAuth());
-    //     }
-    // }, [token]);
-    // if (!token) {
-    //     removeCookie("token");
-    //     dispatch(resetAuth());
-    //     redirect("/login");
-    // }
+    // The single source of truth for "who is logged in" — replaces a
+    // verifyUserToken function that used to sit here unused (no effect
+    // ever called it). This one actually runs, and the httpOnly cookie
+    // rides along automatically; there's no token to read or attach here.
+    const { data: currentUser, isSuccess } = useCurrentUserQuery({ enabled: !user });
 
-    // console.log(cookies)
-    const verifyUserToken = async () => {
-        try {
-            const { data } = await axiosInstance.get(`/user/profile/user`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const userDetails = data.data;
-            dispatch(authSuccess(userDetails));
-        } catch (error) {
-            console.error("Error verifying user token:", error);
-            console.log("working userdata  error>>>>>>");
+    useEffect(() => {
+        if (isSuccess && currentUser) {
+            dispatch(authSuccess({ user: currentUser, token: SESSION_MARKER }));
         }
-    };
+    }, [isSuccess, currentUser, dispatch]);
 
     return (
         <div className="bg-light_grey pb-10 min-h-screen h-full overflow-hidden w-full">

@@ -10,7 +10,7 @@ import UpdatePasswordModal from "@/components/settings/Modal/UpdatePasswordModal
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
-import { logout } from "@/features/authentication/authSlice";
+import { useLogoutMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
 
@@ -18,15 +18,19 @@ const AccountSettingsPage = () => {
   const dispatch = useAppDispatch();
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const router = useRouter();
-  const { user, authToken: token } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: any) => state.auth);
+  const logoutMutation = useLogoutMutation();
 
   const toggleSettingsModal = () => {
     setPasswordModalOpen(!isPasswordModalOpen);
   };
 
   const handleLogout = () => {
-    dispatch(logout({ token })).then((res) => {
-      if (res.payload.status) {
+    // Redux/query-cache cleanup happens in useLogoutMutation's onSettled
+    // regardless of whether the backend call itself succeeds — see
+    // features/authentication/mutations.ts.
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -34,17 +38,10 @@ const AccountSettingsPage = () => {
             type: "success",
           })
         );
-        // redirect user to login
+      },
+      onSettled: () => {
         router.push("/login");
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: res.payload.message || `Something went wrong`,
-            type: "error",
-          })
-        );
-      }
+      },
     });
   };
 

@@ -12,7 +12,7 @@ import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
 import {useCookies} from "react-cookie";
-import {login} from "@/features/authentication/authApi";
+import {useLoginMutation} from "@/features/authentication/mutations";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {setIsRouting} from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -35,8 +35,11 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const dispatch = useAppDispatch();
-    const [cookie, setCookie] = useCookies(["token", "newToken"]);
+    // "token" here is only for the Google OAuth flow below (handleLoginSuccess),
+    // which isn't covered by this cutover — see its own comment.
+    const [cookie, setCookie] = useCookies(["newToken", "token"]);
     const {fcmToken, notification} = useFcm()
+    const loginMutation = useLoginMutation();
 
     const loginSchema = yup.object({
         email: yup
@@ -75,10 +78,53 @@ export default function LoginPage() {
         },
         validationSchema: loginSchema,
         onSubmit: async (values) => {
-            await login({...values}, dispatch, router, setCookie, next);
+            try {
+                const result = await loginMutation.mutateAsync(values);
+                dispatch(setIsRouting(true));
+
+                if (result.needsOnboarding) {
+                    // Pre-verification / profile-incomplete state — this
+                    // narrower flow keeps its own short-lived, JS-readable
+                    // token, unchanged from before the httpOnly cutover.
+                    // See app/api/auth/login/route.ts.
+                    setCookie("newToken", result.token, {
+                        path: "/",
+                        maxAge: 3600 * 6, // Expires after 6hrs
+                        sameSite: false,
+                    });
+                    router.push(result.user.status == 0 ? "/verify-email" : "/profile-setup");
+                    return;
+                }
+
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "successful",
+                        type: "success",
+                    })
+                );
+
+                setTimeout(() => {
+                    router.push(next || "/");
+                }, 500);
+            } catch (error: any) {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message || "Error trying to login",
+                        type: "error",
+                    })
+                );
+            }
         },
     });
 
+    // Google OAuth flow — deliberately NOT covered by the httpOnly cutover.
+    // It still calls the backend directly and sets a JS-readable "token"
+    // cookie, same as every path did before this cutover. Bringing it onto
+    // the same secure flow as email/password login needs its own BFF route
+    // (a /api/auth/google mirroring app/api/auth/login/route.ts) — real,
+    // separate follow-up work, not something to fold in here silently.
     const handleLoginSuccess = async (res: any) => {
         try {
             if (res.status) {

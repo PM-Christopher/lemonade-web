@@ -12,6 +12,7 @@
     "@ant-design/nextjs-registry": "^1.0.2",
     "@lemonade/api-client": "workspace:*",
     "@lemonade/api-types": "workspace:*",
+    "@tanstack/react-query": "^5.75.7",
     "@bprogress/next": "^3.2.12",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",

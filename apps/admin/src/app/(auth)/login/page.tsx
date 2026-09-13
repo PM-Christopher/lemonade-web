@@ -13,15 +13,16 @@ import { Label } from "@/components/ui/label"
 import {FormikButton} from "@/components/global/FormikButton";
 import {useFormik} from "formik";
 import * as yup from "yup";
-import {login} from "@/features/authentication/authApi";
+import {useLoginMutation} from "@/features/authentication/mutations";
 import {useAppDispatch} from "@/redux/hook";
 import {useCookies} from "react-cookie";
+import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 function LoginPage({}) {
     const router  = useRouter()
     const dispatch = useAppDispatch();
-    const [cookie, setCookie] = useCookies(["token", "newToken"]);
-
+    const [cookie, setCookie] = useCookies(["newToken"]);
+    const loginMutation = useLoginMutation();
 
     const loginSchema = yup.object({
         email: yup
@@ -41,7 +42,43 @@ function LoginPage({}) {
         },
         validationSchema: loginSchema,
         onSubmit: async (values) => {
-            await login({...values}, dispatch, router, setCookie)
+            try {
+                const result = await loginMutation.mutateAsync(values);
+
+                if (result.needsOnboarding) {
+                    // Profile-incomplete admin — narrower flow keeps its
+                    // own short-lived, JS-readable token, unchanged from
+                    // before the httpOnly cutover. See
+                    // app/api/auth/login/route.ts.
+                    setCookie("newToken", result.token, {
+                        path: "/",
+                        maxAge: 3600 * 6,
+                        sameSite: false,
+                    });
+                    router.push("/profile-setup");
+                    return;
+                }
+
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "successful",
+                        type: "success",
+                    })
+                );
+
+                setTimeout(() => {
+                    router.push("/");
+                }, 500);
+            } catch (error: any) {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message || "Something went wrong. Please try again.",
+                        type: "error",
+                    })
+                );
+            }
         },
     })
     return (

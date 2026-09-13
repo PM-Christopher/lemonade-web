@@ -6,9 +6,11 @@ import { PersistGate } from "redux-persist/integration/react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import { ProgressProvider } from "@bprogress/next/app";
+import { QueryProvider } from "./QueryProvider";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
+    <QueryProvider>
     <Provider store={store}>
       <AntdRegistry>
         <ProgressProvider
@@ -34,6 +36,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
         </ConfigProvider>
       </AntdRegistry>
     </Provider>
+    </QueryProvider>
   );
 };
 

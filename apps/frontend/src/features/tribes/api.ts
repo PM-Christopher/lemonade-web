@@ -12,12 +12,13 @@
 import { axiosInstance } from "@/lib/axiosInstane";
 import { userTribeRoutes, sharedUtilityRoutes } from "@lemonade/api-types";
 
-const oneMinuteCache = { cache: { ttl: 1000 * 60 } };
-
+// The per-call `{ cache: { ttl } }` option these used to pass only did
+// anything while axiosInstance was wrapped in axios-cache-interceptor —
+// removed along with that wrapper (see lib/axiosInstane.ts).
 export const tribesApi = {
-    getTribes: (tribeType: string) => axiosInstance.get(`${userTribeRoutes.BASE}?type=${tribeType}`, oneMinuteCache),
+    getTribes: (tribeType: string) => axiosInstance.get(`${userTribeRoutes.BASE}?type=${tribeType}`),
 
-    getTribe: (id: string) => axiosInstance.get(`${userTribeRoutes.BASE}/${id}`, oneMinuteCache),
+    getTribe: (id: string) => axiosInstance.get(`${userTribeRoutes.BASE}/${id}`),
 
     joinTribe: (id: unknown, data: unknown) => axiosInstance.post(`${userTribeRoutes.BASE}/join-tribe/${id}`, data),
 
@@ -28,15 +29,15 @@ export const tribesApi = {
     submitVote: (tribeId: number, threadId: number, pollId: number, data: unknown) =>
         axiosInstance.post(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/${pollId}/poll-action`, data),
 
-    getThreads: (id: string) => axiosInstance.get(`${userTribeRoutes.BASE}/${id}/threads/all`, oneMinuteCache),
+    getThreads: (id: string) => axiosInstance.get(`${userTribeRoutes.BASE}/${id}/threads/all`),
 
     filterThreads: (id: number, data: unknown) => axiosInstance.post(`${userTribeRoutes.BASE}/${id}/threads/sort-thread`, data),
 
-    viewProfile: (id: number) => axiosInstance.get(`${userTribeRoutes.THREADS_VIEW_PROFILE}/${id}`, oneMinuteCache),
+    viewProfile: (id: number) => axiosInstance.get(`${userTribeRoutes.THREADS_VIEW_PROFILE}/${id}`),
 
     pinThread: (id: number) => axiosInstance.post(`${userTribeRoutes.THREADS_PINNED}/${id}/pin-thread`, {}),
 
-    getPinThreads: (id: string) => axiosInstance.get(`${userTribeRoutes.THREADS_PINNED}/${id}/pinned`, oneMinuteCache),
+    getPinThreads: (id: string) => axiosInstance.get(`${userTribeRoutes.THREADS_PINNED}/${id}/pinned`),
 
     reportThread: (id: number | null, data: unknown) => axiosInstance.post(`${userTribeRoutes.THREADS_PINNED}/${id}/report-thread`, data),
 
@@ -50,7 +51,7 @@ export const tribesApi = {
         axiosInstance.post(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/post-comment`, data),
 
     getComments: (tribeId: number, threadId: number) =>
-        axiosInstance.get(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/comments`, oneMinuteCache),
+        axiosInstance.get(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/comments`),
 
     createTribe: (values: unknown) => axiosInstance.post(userTribeRoutes.CREATE, values),
 

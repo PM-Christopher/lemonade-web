@@ -4,7 +4,7 @@ import {pageLinks} from "@/utils/pageLinks";
 import Image from "next/image";
 import {usePathname, useRouter} from "next/navigation";
 import { useAppDispatch } from '@/redux/hook';
-import { logout } from '@/features/authentication/authSlice';
+import { useLogoutMutation } from '@/features/authentication/mutations';
 import { useSelector } from 'react-redux';
 import { updateToastifyReducer } from '@/redux/toastifySlice';
 
@@ -12,12 +12,14 @@ function SideNav({}) {
     const pathname = usePathname();
     const profileActive = pathname === "/profile" || (pathname.startsWith("/profile"));
     const dispatch = useAppDispatch()
-    const { user, authToken: token } = useSelector((state: any) => state.auth)
+    const { user } = useSelector((state: any) => state.auth)
     const router = useRouter()
-    const handleLogout =()=>{
-
-        dispatch(logout({token})).then(res => {
-            if (res.payload.status) {
+    const logoutMutation = useLogoutMutation();
+    const handleLogout = () => {
+        // Redux/query-cache cleanup happens in useLogoutMutation's
+        // onSettled regardless of whether the backend call succeeds.
+        logoutMutation.mutate(undefined, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -25,19 +27,11 @@ function SideNav({}) {
                         type: "success",
                     })
                 );
-                // redirect user to login
-                router.push("/login")
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: res.payload.message || `Something went wrong`,
-                        type: "error",
-                    })
-                );
-            }
-        })
-
+            },
+            onSettled: () => {
+                router.push("/login");
+            },
+        });
     }
     return (
         <aside className="flex flex-col gap-[20px] w-64 bg-gray-20 p-4 border-r-[1px] border-r-grey-20 bg-white">

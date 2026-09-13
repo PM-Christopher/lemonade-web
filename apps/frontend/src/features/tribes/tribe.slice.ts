@@ -117,11 +117,7 @@ const verifyTribePayment = createAsyncThunk(
     ) => {
         try {
             const response = await axiosInstance.get(
-                `/tribes/payment/verify?reference=${reference}`, {
-                    cache: {
-                        ttl: 1000 * 60
-                    }
-                }
+                `/tribes/payment/verify?reference=${reference}`
             );
             return response.data;
         } catch (err: any) {

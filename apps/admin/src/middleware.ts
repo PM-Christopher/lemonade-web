@@ -9,14 +9,6 @@ import { ADMIN_TOKEN_COOKIE } from "@/lib/cookie-names";
 // redirecting after the page had already shelled out and rendered.
 const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password"];
 
-// LEGACY_TOKEN_COOKIE is the JS-readable cookie the current (unmigrated)
-// login flow sets — src/features/authentication/authApi.ts, `setCookie("token", ...)`.
-// Checked alongside the new httpOnly ADMIN_TOKEN_COOKIE so shipping this
-// middleware doesn't lock out every session that logged in before the login
-// route itself is cut over to the new BFF flow. Drop this once that cutover
-// lands — Phase 5 work.
-const LEGACY_TOKEN_COOKIE = "token";
-
 function isPublic(pathname: string) {
     return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
@@ -26,7 +18,10 @@ export function middleware(req: NextRequest) {
 
     if (isPublic(pathname)) return NextResponse.next();
 
-    const token = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value ?? req.cookies.get(LEGACY_TOKEN_COOKIE)?.value;
+    // Login is now cut over to the httpOnly cookie (see
+    // src/lib/server-api.ts) — a session created before this cutover won't
+    // carry it and will be redirected to log in again once.
+    const token = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
     if (token) return NextResponse.next();
 
     const loginUrl = req.nextUrl.clone();

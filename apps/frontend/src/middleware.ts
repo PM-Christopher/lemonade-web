@@ -1,15 +1,14 @@
 // middleware.ts (project root)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { USER_TOKEN_COOKIE } from "@/lib/cookie-names";
 
 // UX redirect only — Laravel Policies remain the only real authorization
-// authority. This intentionally still reads the OLD, JS-readable "token"
-// cookie set by the current login flow (src/features/authentication/authApi.ts,
-// via `setCookie("token", ...)` from react-cookie) — NOT the new httpOnly
-// `lemonade_user_token` cookie from src/lib/server-api.ts / cookie-names.ts.
-// Swapping this before login itself is cut over to the new BFF flow would
-// log every current session out immediately, since nothing sets the new
-// cookie yet. Swap this the same PR that cuts login over — Phase 5 work.
+// authority. Now checks the httpOnly lemonade_user_token cookie set by
+// app/api/auth/login/route.ts, now that login is cut over to it — see
+// src/lib/server-api.ts. The old JS-readable "token" cookie is no longer
+// set by anything; a session created before this cutover won't carry the
+// new cookie and will be redirected to log in again once.
 
 const PUBLIC_PATHS = [
     "/login",
@@ -36,7 +35,7 @@ export function middleware(req: NextRequest) {
     if (isPublic(pathname)) return NextResponse.next();
     if (!isProtected(pathname)) return NextResponse.next();
 
-    const token = req.cookies.get("token")?.value; // ✅ your real auth cookie
+    const token = req.cookies.get(USER_TOKEN_COOKIE)?.value;
     if (token) return NextResponse.next();
 
     const loginUrl = req.nextUrl.clone();

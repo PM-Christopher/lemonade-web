@@ -97,22 +97,11 @@ const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ da
     }
 });
 
-const logout = createAsyncThunk("auth/logout", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-    try {
-        const response = await axiosInstance.post(`/profile/logout`, {}, { headers });
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
+// logout used to live here as a createAsyncThunk, calling `/profile/logout`
+// — missing the `/admin/` prefix, a route that never existed. Replaced by
+// useLogoutMutation() in features/authentication/mutations.ts (TanStack
+// Query), which calls the now-real /api/auth/logout -> POST
+// /v1/admin/auth/logout.
 
 const authSlice = createSlice({
     name: "auth",
@@ -141,7 +130,7 @@ const authSlice = createSlice({
             state.error = false;
             state.user = null;
             state.authToken = null;
-            state.isLoggedIn = true;
+            state.isLoggedIn = false;
             state.admin = null;
         },
         authUser: (state, action) => {
@@ -213,19 +202,6 @@ const authSlice = createSlice({
             state.loading = false;
         });
 
-        builder.addCase(logout.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(logout.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.error = false;
-            state.user = null;
-            state.authToken = null;
-            state.isLoggedIn = false;
-        });
-        builder.addCase(logout.rejected, (state) => {
-            state.loading = false;
-        });
     }
 });
 
@@ -244,6 +220,6 @@ export const {
     setSubscriptionId
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings }
 
 export default authSlice.reducer;

@@ -214,22 +214,10 @@ const changePlan = createAsyncThunk("auth/changePlan", async ({ data }: { data: 
     }
 });
 
-const logout = createAsyncThunk("auth/logout", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-    try {
-        const response = await axiosInstance.post(`/user/profile/logout`, {}, { headers });
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
+// logout used to live here as a createAsyncThunk — replaced by
+// useLogoutMutation() in features/authentication/mutations.ts (TanStack
+// Query), which calls the httpOnly-cookie-aware /api/auth/logout route
+// instead of building an Authorization header from a Redux-stored token.
 
 const getSubscription = createAsyncThunk("auth/getSubscription", async ({ id }: { id: number }, { rejectWithValue }) => {
     try {
@@ -272,7 +260,7 @@ const authSlice = createSlice({
             state.error = false;
             state.user = null;
             state.authToken = null;
-            state.isLoggedIn = true;
+            state.isLoggedIn = false;
             state.admin = null;
         },
         authUser: (state, action) => {
@@ -429,21 +417,6 @@ const authSlice = createSlice({
             state.loading = false;
         });
 
-        builder.addCase(logout.pending, (state) => {
-            state.loading = true;
-        });
-
-        builder.addCase(logout.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.error = false;
-            state.user = null;
-            state.authToken = null;
-            state.isLoggedIn = false;
-            state.subscription = null
-        });
-        builder.addCase(logout.rejected, (state) => {
-            state.loading = false;
-        });
 
         builder.addCase(changePlan.pending, (state) => {
             state.upgradeLoading = true;
@@ -488,6 +461,6 @@ export const {
     updateHasBankAccount
 } = authSlice.actions;
 
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, logout, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan, getSubscription }
+export { updateUserData, changePassword, deleteAccount, updateAppSettings, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan, getSubscription }
 
 export default authSlice.reducer;
