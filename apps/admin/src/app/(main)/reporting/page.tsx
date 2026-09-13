@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { CalendarIcon, ChevronDown, SearchIcon } from "lucide-react";
 import { reportHeaders } from "@/data/tableData";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { getReportData } from "@/features/reporting/reporting.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useReportsQuery } from "@/features/reporting/queries";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
@@ -21,15 +21,11 @@ function ReportingPage({}) {
     setCurrentPage(page);
   };
 
-  const dispatch = useDispatch<AppDispatch>();
-
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { reportData } = useSelector((state: RootState) => state.report) as {
-    reportData: any;
-  };
+  const { data: reportData } = useReportsQuery({ enabled: isLoggedIn });
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(reportData?.reports?.length / perPage);
+  const totalPages = Math.ceil((reportData?.reports?.length ?? 0) / perPage);
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
@@ -38,11 +34,6 @@ function ReportingPage({}) {
     startIndex + perPage
   );
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getReportData());
-    }
-  }, []);
   return (
     <MainLayout>
       <section className="flex flex-col gap-[20px] mt-[24px]">

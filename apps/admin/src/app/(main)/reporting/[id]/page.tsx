@@ -1,15 +1,12 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import {
-  deleteReport,
-  getReportDetail,
-  resolveReport,
-} from "@/features/reporting/reporting.slice";
-import { capitalizeWords, GetStatusClass } from "@/utils/helper";
+import { useReportDetailQuery } from "@/features/reporting/queries";
+import { useDeleteReportContentMutation, useResolveReportMutation } from "@/features/reporting/mutations";
+import { capitalizeWords } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 function ReportDetailsPage() {
@@ -21,15 +18,12 @@ function ReportDetailsPage() {
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
-  const { loading, report } = useSelector(
-    (state: RootState) => state.report
-  ) as { report: any; loading: boolean };
 
-  useEffect(() => {
-    if (id && isLoggedIn) {
-      dispatch(getReportDetail({ id }));
-    }
-  }, [id]);
+  const { data: detail } = useReportDetailQuery(id, { enabled: isLoggedIn });
+  const report = detail?.report;
+
+  const resolveMutation = useResolveReportMutation(id);
+  const deleteMutation = useDeleteReportContentMutation(id);
 
   let event = null;
 
@@ -41,62 +35,53 @@ function ReportDetailsPage() {
   }
 
   const resolve = () => {
-    if (id && isLoggedIn) {
-      dispatch(resolveReport({ id: id })).then((res) => {
-        if (res.payload.status === true) {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || "Report marked as resolved",
-              type: "success",
-            })
-          );
-
-            dispatch(getReportDetail({ id }));
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || "error",
-              type: "error",
-            })
-          );
-        }
-      });
-    }
+    resolveMutation.mutate(undefined, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Report marked as resolved",
+            type: "success",
+          })
+        );
+      },
+      onError: (error) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || "error",
+            type: "error",
+          })
+        );
+      },
+    });
   };
   const handleDelete = () => {
-    if (id && isLoggedIn) {
-      const data = {
-        category: report?.category,
-        category_id: report?.content?.id
-      };
-      dispatch(deleteReport({ id: id, data: data })).then((res) => {
-
-         if (res.payload.status === true) {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || "Report deleted successfully",
-              type: "success",
-            })
-          );
-            dispatch(getReportDetail({ id }));
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || "error",
-              type: "error",
-            })
-          );
-        }
-      
-      });
-    }
+    const data = {
+      category: report?.category,
+      category_id: (report?.content as any)?.id,
+    };
+    deleteMutation.mutate(data, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Report deleted successfully",
+            type: "success",
+          })
+        );
+      },
+      onError: (error) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || "error",
+            type: "error",
+          })
+        );
+      },
+    });
   };
-
-  console.log({report})
 
   return (
     <MainLayout>

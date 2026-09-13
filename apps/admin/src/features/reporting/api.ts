@@ -1,26 +1,43 @@
-// Endpoint layer for the reporting domain — see
-// apps/frontend/src/features/events/api.ts for the pattern this follows.
+// Endpoint layer for the reporting domain — see features/dashboard/api.ts
+// for the pattern this follows: the BFF proxy transport (browserApi), not
+// the pre-BFF axiosInstance.
 //
-// resolveReport's pre-migration call passed `{ headers }` as the request
-// BODY (axios's 2nd arg), not the config (3rd arg), so the Authorization
-// header it tried to build was never actually sent. That's resolved now,
-// as a side effect of the httpOnly-cookie cutover (this transport attaches
-// auth automatically, server-side — there's no header left for a caller to
-// misplace). markCompleted takes no request body on the backend either
-// (see lemonade-backend's ReportController::markCompleted), so the plain,
-// argument-free PATCH below is correct, not a placeholder. Live-verified:
-// PATCH through the BFF proxy with a real admin session flips a report's
-// status to "completed"; the same call with no session correctly 401s.
-import { axiosInstance } from "@/lib/axiosInstane";
+// markCompleted takes no request body on the backend (see
+// lemonade-backend's ReportController::markCompleted) — the argument-free
+// PATCH below is correct, not a placeholder.
+import { browserApi } from "@/lib/browser-api";
 import { adminReportRoutes } from "@lemonade/api-types";
 
+export interface ReportRow {
+    id: number;
+    unique_id: string;
+    reported_by: { name: string; image: string | null };
+    category: string;
+    case: string;
+    date_submitted: string;
+    status: string;
+}
+
+export interface ReportListResponse {
+    reports: ReportRow[];
+}
+
+export interface ReportDetail extends ReportRow {
+    content: string;
+    meta: unknown;
+}
+
+export interface ReportDetailResponse {
+    report: ReportDetail;
+}
+
 export const reportingApi = {
-    getReportData: () => axiosInstance.get(adminReportRoutes.BASE),
+    getReportData: () => browserApi.get<ReportListResponse>(adminReportRoutes.BASE),
 
-    getReportDetail: (id: number) => axiosInstance.get(`${adminReportRoutes.BASE}/${id}`),
+    getReportDetail: (id: number) => browserApi.get<ReportDetailResponse>(`${adminReportRoutes.BASE}/${id}`),
 
-    resolveReport: (id: number) => axiosInstance.patch(`${adminReportRoutes.BASE}/${id}`),
+    resolveReport: (id: number) => browserApi.patch<{ completed: boolean }>(`${adminReportRoutes.BASE}/${id}`),
 
     deleteReportContent: (id: number, data: unknown) =>
-        axiosInstance.patch(`${adminReportRoutes.BASE}/${id}/delete-content`, data),
+        browserApi.patch(`${adminReportRoutes.BASE}/${id}/delete-content`, data),
 };
