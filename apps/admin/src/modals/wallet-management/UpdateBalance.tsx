@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
@@ -6,9 +6,9 @@ import { useParams } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
 import { useFormik } from "formik";
 import {
-  withdrawaladdition,
-  withdrawaldeduction,
-} from "@/features/wallet/wallet.slice";
+  useAddToWalletMutation,
+  useDeductFromWalletMutation,
+} from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 
@@ -17,8 +17,12 @@ type UpdateBalanceInterface = {
   toggle: () => void;
   updateType: string;
   userDetails?: any;
-  reload?: any;
   balance?: any;
+  // Optional: a consumer outside the wallet-management domain (e.g. the
+  // user detail page's WalletView, refreshing its own Redux-backed account
+  // info) that needs its own refresh on top of this mutation's own query
+  // invalidation.
+  reload?: () => void;
 };
 
 const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
@@ -26,19 +30,22 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
   toggle,
   updateType,
   userDetails,
-  reload,
   balance,
+  reload,
 }) => {
   if (!isOpen) return null;
 
   const params = useParams();
-  const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const id = params.id
     ? Array.isArray(params.id)
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
+
+  const addToWallet = useAddToWalletMutation(id);
+  const deductFromWallet = useDeductFromWalletMutation(id);
+
   const renderType = () => {
     switch (updateType) {
       case "add":
@@ -49,103 +56,40 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
         return "Add to balance";
     }
   };
+
+  const onMutationSettled = {
+    onSuccess: () => {
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: `Success `,
+          type: "success",
+        })
+      );
+      toggle();
+      reload?.();
+    },
+    onError: (error: Error) => {
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: error?.message || `Something went wrong`,
+          type: "error",
+        })
+      );
+    },
+  };
+
   const formik = useFormik({
     initialValues: {
       amount: "",
     },
     onSubmit: (values) => {
+      const amount = parseFloat(values.amount);
       if (updateType === "add" || updateType === "") {
-        dispatch(
-          withdrawaladdition({
-            id: id,
-            amount: values.amount,
-          })
-        )
-          .then((res) => {
-            setLoading(false);
-
-            if (res.payload.status) {
-              setLoading(false);
-
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: `Success `,
-                  type: "success",
-                })
-              );
-              toggle();
-
-              if (reload) {
-                reload();
-              }
-            } else {
-              setLoading(false);
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: res.payload.message || `Something went wrong`,
-                  type: "error",
-                })
-              );
-            }
-          })
-          .catch((res) => {
-            setLoading(false);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: res.payload.message || `Something went wrong`,
-                type: "error",
-              })
-            );
-          });
+        addToWallet.mutate(amount, onMutationSettled);
       } else {
-        dispatch(
-          withdrawaldeduction({
-            id: id,
-            amount: values.amount,
-          })
-        )
-          .then((res) => {
-            setLoading(false);
-
-            if (res.payload.status) {
-              setLoading(false);
-
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: `Success `,
-                  type: "success",
-                })
-              );
-              toggle();
-
-              if (reload) {
-                reload();
-              }
-            } else {
-              setLoading(false);
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: res.payload.message || `Something went wrong`,
-                  type: "error",
-                })
-              );
-            }
-          })
-          .catch((res) => {
-            setLoading(false);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: res.payload.message || `Something went wrong`,
-                type: "error",
-              })
-            );
-          });
+        deductFromWallet.mutate(amount, onMutationSettled);
       }
     },
     enableReinitialize: true,

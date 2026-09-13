@@ -1,27 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import { XIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { useParams } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
-import { withdrawalRequestDecison } from "@/features/wallet/wallet.slice";
+import { useWithdrawalRequestDecisionMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 type WithdrawalActionInterface = {
   isOpen: boolean;
   toggle: () => void;
-  reload?: any
 };
 
 const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
   isOpen,
   toggle,
-  reload
 }) => {
   if (!isOpen) return null;
 
   const params = useParams();
-  const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const id = params.id
@@ -29,51 +25,31 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
+
+  const decision = useWithdrawalRequestDecisionMutation(id);
+
   const isReject = () => {
-    dispatch(
-      withdrawalRequestDecison({
-        id: id,
-        type: "approve",
-      })
-    )
-      .then((res) => {
-        setLoading(false);
-
-        if (res.payload.status) {
-          setLoading(false);
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Success `,
-              type: "success",
-            })
-          );
-          toggle();
-           if (reload) {
-              reload();
-            }
-        } else {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || `Something went wrong`,
-              type: "error",
-            })
-          );
-        }
-      })
-      .catch((res) => {
-        setLoading(false);
+    decision.mutate("approve", {
+      onSuccess: () => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: res.payload.message || `Something went wrong`,
+            message: `Success `,
+            type: "success",
+          })
+        );
+        toggle();
+      },
+      onError: (error) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || `Something went wrong`,
             type: "error",
           })
         );
-      });
+      },
+    });
   };
   return (
     <div

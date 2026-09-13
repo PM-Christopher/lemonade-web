@@ -1,25 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { XIcon } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { withdrawalRequestDecison } from "@/features/wallet/wallet.slice";
+import { useWithdrawalRequestDecisionMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useParams } from "next/navigation";
 
 type WithdrawalRejectInterface = {
   isOpen: boolean;
   toggle: () => void;
-   reload?: any
 };
 
 const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
   isOpen,
   toggle,
-  reload
 }) => {
   if (!isOpen) return null;
   const params = useParams();
-  const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const id = params.id
@@ -27,51 +24,31 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
+
+  const decision = useWithdrawalRequestDecisionMutation(id);
+
   const isReject = () => {
-    dispatch(
-      withdrawalRequestDecison({
-        id: id,
-        type: "reject",
-      })
-    )
-      .then((res) => {
-        setLoading(false);
-
-        if (res.payload.status) {
-          setLoading(false);
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Success `,
-              type: "success",
-            })
-          );
-          toggle();
-            if (reload) {
-              reload();
-            }
-        } else {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || `Something went wrong`,
-              type: "error",
-            })
-          );
-        }
-      })
-      .catch((res) => {
-        setLoading(false);
+    decision.mutate("reject", {
+      onSuccess: () => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: res.payload.message || `Something went wrong`,
+            message: `Success `,
+            type: "success",
+          })
+        );
+        toggle();
+      },
+      onError: (error) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || `Something went wrong`,
             type: "error",
           })
         );
-      });
+      },
+    });
   };
 
   return (

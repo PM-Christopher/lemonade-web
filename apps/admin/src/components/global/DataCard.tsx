@@ -16,7 +16,7 @@ function DataCard({
 }: {
   styles?: string;
   title: string;
-  count: number;
+  count: number | string;
   isPrice?: boolean;
   isPercentage?: boolean;
   isEditable?: boolean;

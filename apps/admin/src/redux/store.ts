@@ -6,7 +6,6 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "@/features/authentication/authSlice";
 import tempReducer from "./tempSlice";
 import toastifyReducer from "./toastifySlice"
-import walletReducer from "@/features/wallet/wallet.slice"
 import transactionReducer from "@/features/transaction/transaction.slice"
 import userReducer from "@/features/user/user.slice"
 import eventReducer from "@/features/events/event.slice"
@@ -26,7 +25,6 @@ const reducers = combineReducers({
     auth: authReducer,
     temp: tempReducer,
     toast: toastifyReducer,
-    wallet: walletReducer,
     transaction: transactionReducer,
     user: userReducer,
     event: eventReducer,

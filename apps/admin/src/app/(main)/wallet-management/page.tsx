@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import {
   CalendarIcon,
@@ -13,12 +13,9 @@ import {
   walletHeaders,
 } from "@/data/tableData";
 import WalletThresholdModal from "@/modals/wallet-management/WalletThresholdModal";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getWalletData,
-  getWithdrawalRequest,
-} from "@/features/wallet/wallet.slice";
-import { AppDispatch, RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { useWalletDataQuery, useWithdrawalRequestsQuery } from "@/features/wallet/queries";
+import { RootState } from "@/redux/store";
 import dayjs from "dayjs";
 
 function WalletMgtPage({}) {
@@ -26,35 +23,10 @@ function WalletMgtPage({}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [itemsPerPage] = useState(5); // Number of items per page
-  
-  const dispatch = useDispatch<AppDispatch>();
+
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { withdrawalRequests } = useSelector(
-    (state: RootState) => state.wallet as any
-  );
-
-  const { walletData } = useSelector((state: RootState) => state.wallet as any);
-
-
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getWalletData());
-      dispatch(getWithdrawalRequest());
-    }
-  }, []);
-
-
-
-
-  const refetchFunc =()=>{
-
-     if (isLoggedIn) {
-      dispatch(getWalletData());
-      dispatch(getWithdrawalRequest());
-    }
-  }
-
+  const { data: withdrawalRequests } = useWithdrawalRequestsQuery({ enabled: isLoggedIn });
+  const { data: walletData } = useWalletDataQuery({ enabled: isLoggedIn });
 
   // Handle searching
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,12 +163,12 @@ function WalletMgtPage({}) {
             >
               <DataCard
                 title={"Wallet Revenue"}
-                count={walletData?.wallet_revenue?.toLocaleString() || 0}
+                count={walletData?.wallet_revenue || 0}
                 isPrice={true}
               />
               <DataCard
                 title={"Total Wallets"}
-                count={walletData?.total_wallets?.toLocaleString() || 0}
+                count={walletData?.total_wallets || 0}
               />
               <DataCard
                 title={"Withdrawal Threshold"}
@@ -300,7 +272,6 @@ function WalletMgtPage({}) {
         </div>
       </section>
       <WalletThresholdModal
-      refetchFunc={refetchFunc}
         isOpen={editThreshold}
         toggle={toggleEditThreshold}
       />

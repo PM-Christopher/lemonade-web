@@ -1,29 +1,25 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React from "react";
 import { XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { AppDispatch } from "@/redux/store";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { updateWithdrawalThreshold } from "@/features/wallet/wallet.slice";
+import { useUpdateWithdrawalThresholdMutation } from "@/features/wallet/mutations";
 
 type WalletMgtInterface = {
   isOpen: boolean;
   toggle: () => void;
-  refetchFunc: ()=> void
 };
 
 const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
   isOpen,
   toggle,
-  refetchFunc
 }) => {
   if (!isOpen) return null;
-  const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const updateThreshold = useUpdateWithdrawalThresholdMutation();
   const prodSchema = yup.object({
     threshold: yup.string().required("threshold is required"),
   });
@@ -34,50 +30,27 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
     },
     validationSchema: prodSchema,
     onSubmit: (values) => {
-      setLoading(true);
-      dispatch(
-        updateWithdrawalThreshold({
-          threshold: values.threshold,
-        })
-      )
-        .then((res) => {
-          setLoading(false);
-
-          if (res.payload.status) {
-            setLoading(false);
-
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: `Success `,
-                type: "success",
-              })
-            );
-
-            toggle()
-            refetchFunc()
-            
-          } else {
-            setLoading(false);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: res.payload.message || `Something went wrong`,
-                type: "error",
-              })
-            );
-          }
-        })
-        .catch((res) => {
-          setLoading(false);
+      updateThreshold.mutate(parseInt(values.threshold), {
+        onSuccess: () => {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: res.payload.message || `Something went wrong`,
+              message: `Success `,
+              type: "success",
+            })
+          );
+          toggle();
+        },
+        onError: (error) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: error?.message || `Something went wrong`,
               type: "error",
             })
           );
-        });
+        },
+      });
     },
   });
 
@@ -131,7 +104,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
                 }
               >
                 <p className={"text-[16px] font-medium text-white"}>
-                  {isLoading ? "Loading..." : "Submit"}
+                  {updateThreshold.isPending ? "Loading..." : "Submit"}
                 </p>
               </button>
             </div>

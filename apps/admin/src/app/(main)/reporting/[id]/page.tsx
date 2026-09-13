@@ -4,7 +4,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { getWalletDetail } from "@/features/wallet/wallet.slice";
 import {
   deleteReport,
   getReportDetail,

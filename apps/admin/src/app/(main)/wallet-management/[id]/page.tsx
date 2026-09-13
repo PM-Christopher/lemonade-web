@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import WithdrawalApproval from "@/modals/wallet-management/WithdrawalApproval";
@@ -9,9 +9,9 @@ import PayoutHistory from "@/modals/wallet-management/PayoutHistory";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
 import AffiliateHistory from "@/modals/wallet-management/AffiliateHistory";
 import { useParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { getWalletDetail } from "@/features/wallet/wallet.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useWalletDetailQuery } from "@/features/wallet/queries";
 import SkeletonLoader from "@/components/global/SkeletonLoader";
 import { capitalizeWords } from "@/utils/helper";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -24,14 +24,7 @@ function WalletDetailsPage({}) {
   const [updateType, setUpdateType] = React.useState<string>("add");
 
   const params = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { walletDetail, loading: walletLoading } = useSelector(
-    (state: RootState) => state.wallet
-  ) as {
-    walletDetail: { status?: string; info: any; history?: any } | null;
-    loading: boolean;
-  };
 
   const id = params.id
     ? Array.isArray(params.id)
@@ -39,17 +32,9 @@ function WalletDetailsPage({}) {
       : parseInt(params.id)
     : undefined;
 
-  useEffect(() => {
-    if (id && isLoggedIn) {
-      dispatch(getWalletDetail({ id }));
-    }
-  }, [id]);
-
-  const reloadFunc = () => {
-    if (id && isLoggedIn) {
-      dispatch(getWalletDetail({ id }));
-    }
-  };
+  const { data: walletDetail, isLoading: walletLoading } = useWalletDetailQuery(id, {
+    enabled: isLoggedIn,
+  });
 
   // side menu state
   const [isPayoutOpen, setIsPayoutOpen] = React.useState(false);
@@ -250,19 +235,16 @@ function WalletDetailsPage({}) {
       <WithdrawalApproval
         isOpen={isOpen}
         toggle={toggleWithdrawalAction}
-        reload={reloadFunc}
       />
       <WithdrawalReject
         isOpen={isRejectOpen}
         toggle={toggleWithdrawalReject}
-        reload={reloadFunc}
       />
       <UpdateBalance
         isOpen={isUpdateOpen}
         toggle={toggleUpdateBalance}
         updateType={updateType}
         userDetails={walletDetail}
-        reload={reloadFunc}
         balance={walletDetail?.history[0]?.wallet?.balance}
       />
 

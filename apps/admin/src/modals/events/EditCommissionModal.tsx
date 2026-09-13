@@ -5,7 +5,6 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/redux/store";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {updateWithdrawalThreshold} from "@/features/wallet/wallet.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {updateCommissionCharge} from "@/features/events/event.slice";
 import {FormikButton} from "@/components/global/FormikButton";
