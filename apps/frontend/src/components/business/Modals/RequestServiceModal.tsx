@@ -7,13 +7,16 @@ import * as yup from "yup";
 import {useFormik} from "formik";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
-import {requestService} from "@/features/business/business.slice";
+import {useRequestServiceMutation} from "@/features/business/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type RequestServiceInterface = {
     isOpen: boolean,
     toggleMenu: () => void,
-    services: [],
+    // Was typed `[]` (the empty-tuple type) — a pre-existing typo only
+    // surfaced now that `business?.services` is properly typed instead of
+    // `any`.
+    services: string[] | undefined,
     id: number,
 }
 
@@ -25,6 +28,7 @@ type FormValues = {
 
 const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleMenu, services, id}) => {
     const dispatch = useAppDispatch()
+    const requestServiceMutation = useRequestServiceMutation(id)
 
     const handleServicesClick = (item: string) => {
         const currentServices = formik?.values?.services;
@@ -62,8 +66,8 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
         },
         validationSchema: requestServiceSchema,
         onSubmit: async (values) => {
-            dispatch(requestService({id, data: values})).then((res) => {
-                if (res.payload.status) {
+            requestServiceMutation.mutate(values, {
+                onSuccess: () => {
                     toggleMenu()
                     dispatch(
                         updateToastifyReducer({
@@ -72,7 +76,8 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
                             type: "success",
                         })
                     );
-                } else {
+                },
+                onError: () => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -80,7 +85,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({isOpen, toggleM
                             type: "error",
                         })
                     );
-                }
+                },
             })
         },
     })

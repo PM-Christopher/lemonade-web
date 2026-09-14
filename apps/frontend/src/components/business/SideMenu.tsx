@@ -1,12 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import JobsCard from "@/components/business/JobsCard";
-import {useSelector} from "react-redux";
-import {useAppDispatch} from "@/redux/hook";
-import {useRequest} from "@/hooks/useRequest";
-import {RootState} from "@/redux/store";
+import {useJobsDataQuery} from "@/features/business/queries";
 import {JobListSkeleton} from "@/components/Skeletons";
-import {getJobsData} from "@/features/business/business.slice";
 
 type SideMenuInterface = {
     toggleMenu: () => void,
@@ -14,13 +10,8 @@ type SideMenuInterface = {
     detailsToggle: () => void
 }
 const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, detailsToggle}) => {
-    const dispatch = useAppDispatch()
     const [jobType, setJobType] = useState("in-progress")
-    const { jobData, jobDataLoading:loading } = useSelector((state: RootState) => state.business)
-
-    useEffect(() => {
-        dispatch(getJobsData())
-    }, []);
+    const { data: jobData, isLoading: loading } = useJobsDataQuery({enabled: isOpen})
 
     const renderCards = () => {
         switch (jobType) {

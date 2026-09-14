@@ -5,14 +5,10 @@ import React, {useState} from "react";
 import {useRequest} from "@/hooks/useRequest";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import NairaIcon from "@/images/icons/nairaIcon.svg";
-import {resetFilter} from "@/features/events/event.slice";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {axiosInstance} from "@/lib/axiosInstane";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
-import {useAppDispatch} from "@/redux/hook";
-import {filterBusiness} from "@/features/business/business.slice";
+import {useFilterBusinessMutation} from "@/features/business/mutations";
 
 type FilterBusinessInterface = {
     toggle: () => void,
@@ -20,7 +16,11 @@ type FilterBusinessInterface = {
 }
 
 const BusinessFilter = ({toggle, isOpen}: FilterBusinessInterface) => {
-    const dispatch = useAppDispatch()
+    const filterBusinessMutation = useFilterBusinessMutation()
+    // NOTE: business-categories is a /shared/utilities/* endpoint not wired
+    // to business.slice.ts at all — out of scope for this migration, same
+    // as several other useRequest calls in this domain (see
+    // docs/ARCHITECTURE.md's business domain note).
     const { data, loading } = useRequest(`/shared/utilities/business-categories`, "GET")
 
     const [category, setCategory] = useState("");
@@ -51,7 +51,7 @@ const BusinessFilter = ({toggle, isOpen}: FilterBusinessInterface) => {
         },
         validationSchema: businessFilterSchema,
         onSubmit: async (values) => {
-            dispatch(filterBusiness({value: values})).then((res:any) => {})
+            filterBusinessMutation.mutate(values)
             toggle()
         },
     })

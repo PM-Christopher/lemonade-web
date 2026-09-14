@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import BusinessCarousel from "@/components/global/BusinessCarousel";
 import AllBusinessCard from "@/components/business/AllBusinessCard";
 import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {Spinner} from "evergreen-ui";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import Link from "next/link";
@@ -11,7 +10,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {axiosInstance} from "@/lib/axiosInstane";
 import PaymentConfirmModal from "@/components/business/Modals/PaymentConfirmModal";
 import {useAppDispatch} from "@/redux/hook";
-import {addJob, getBusinesses} from "@/features/business/business.slice";
+import {setSelectedJob} from "@/redux/tempSlice";
 import {RootState} from "@/redux/store";
 import {AllBusinessSkeleton, BusinessCarouselSkeleton} from "@/components/Skeletons";
 
@@ -28,7 +27,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, featured, 
     const trxref = searchParams.get("trxref")
     const [verifyLoading, setVerifyLoading] = useState(false)
     const [isVerifyJob, setIsVerifyJob] = useState(false)
-    const {job} = useSelector((state: RootState) => state.business)
+    const {selectedJob: job} = useSelector((state: RootState) => state.temp)
 
     const toggleVerifyJob = () => {
         setIsVerifyJob(!isVerifyJob)
@@ -47,7 +46,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, featured, 
                             params.delete('trxref');
                             params.delete('reference');
                             setIsVerifyJob(true)
-                            dispatch(addJob({job: data.data.job}))
+                            dispatch(setSelectedJob(data.data.job))
                             // Update the URL without reloading
                             router.replace(`?${params.toString()}`);
                         }

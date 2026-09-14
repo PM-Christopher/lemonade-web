@@ -4,9 +4,8 @@ import CloseIcon from "@/images/icons/close.svg";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {Button} from "@/components/ui/button";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
-import {addJob, markJobCompleted} from "@/features/business/business.slice";
+import {useMarkJobCompletedMutation} from "@/features/business/mutations";
+import {setSelectedJob} from "@/redux/tempSlice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 interface ConfirmCompletionModalProps {
@@ -16,25 +15,28 @@ interface ConfirmCompletionModalProps {
 }
 const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({isOpen, toggle, job}) => {
     const dispatch = useAppDispatch()
-    const { completedLoading } = useSelector((state: RootState) => state.business)
+    const markJobCompletedMutation = useMarkJobCompletedMutation(job?.id)
+    const completedLoading = markJobCompletedMutation.isPending
 
-    const markCompleted = async () => {
-        const { payload } = await dispatch(markJobCompleted({id: job?.id}))
-        if (payload?.status) {
-            dispatch(addJob({job: payload?.data?.job}))
-            dispatch(updateToastifyReducer({
-                show: true,
-                message: payload?.message,
-                type: "success",
-            }))
-            toggle()
-        } else {
-            dispatch(updateToastifyReducer({
-                show: true,
-                message: 'Something went wrong. Please try again',
-                type: "error",
-            }))
-        }
+    const markCompleted = () => {
+        markJobCompletedMutation.mutate(undefined, {
+            onSuccess: (result) => {
+                dispatch(setSelectedJob(result.job))
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: result?.message,
+                    type: "success",
+                }))
+                toggle()
+            },
+            onError: () => {
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: 'Something went wrong. Please try again',
+                    type: "error",
+                }))
+            },
+        })
     }
 
     return (

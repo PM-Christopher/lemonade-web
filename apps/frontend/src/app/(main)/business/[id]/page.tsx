@@ -33,7 +33,7 @@ import {useRouter} from "next/navigation";
 import {businessButtons} from "@/lib/constant";
 import {useAppDispatch} from "@/redux/hook";
 import {RootState} from "@/redux/store";
-import {getBusiness} from "@/features/business/business.slice";
+import {useBusinessQuery} from "@/features/business/queries";
 import {BusinessDetailSkeleton} from "@/components/Skeletons";
 import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
 import SubmitDisputeModal from "@/components/business/Modals/SubmitDisputeModal";
@@ -55,7 +55,8 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const [isSubmitDisputeOpen, setIsSubmitDisputeOpen] = useState(false)
     const pathname = usePathname()
 
-    const { business, loading } = useSelector((state: RootState) => state.business)
+    const { data: businessData, isLoading: loading } = useBusinessQuery(params.id);
+    const business = businessData?.business;
 
     const toggleMenu = () => {
         setIsOpen(!isOpen)
@@ -80,10 +81,6 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
     const toggleSubmitDisputeModal = () => {
         setIsSubmitDisputeOpen(!isSubmitDisputeOpen)
     }
-
-    useEffect(() => {
-        dispatch(getBusiness({ id: params.id }))
-    }, []);
 
     useEffect(() => {
         const shouldOpen = searchParams.get("modal");
@@ -194,7 +191,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                                 </div>
                                                 <div>
                                                     <p className="font-sans font-semi-normal text-[14px] leading-[21px] text-primary-black">
-                                                        {formatDecimal(business?.rating, 1)}
+                                                        {formatDecimal(business?.rating ?? 0, 1)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -292,20 +289,20 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                         </div>
                                     ) : (
                                         <div className="flex justify-center items-center mt-[24px] gap-8">
-                                            <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.call, business?.phone_number)}>
+                                            <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.call, business?.phone_number ?? "")}>
                                                 <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px] bg-white">
                                                     <PhoneIcon/>
                                                 </div>
                                                 <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Call</p>
                                             </div>
-                                            <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.email, business?.email)}>
+                                            <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.email, business?.email ?? "")}>
                                                 <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px] bg-white">
                                                     <MessageIcon/>
                                                 </div>
                                                 <p className="font-sans font-semi-normal text-[12px] text-text-grey leading-[14.4px]">Send
                                                     email</p>
                                             </div>
-                                            <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.web, business?.website_url)}>
+                                            <div className="flex flex-col items-center gap-[8px] cursor-pointer" onClick={() => handleButtonsClick(businessButtons.web, business?.website_url ?? "")}>
                                                 <div className="p-[16px] border-[1px] border-grey-20 rounded-[16px] bg-white">
                                                     <WebIcon/>
                                                 </div>
@@ -384,7 +381,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
                                                     </div>
                                                     <div>
                                                         <p className="text-center text-[20px] font-bold">
-                                                            {formatDecimal(business?.rating, 1)}/<span
+                                                            {formatDecimal(business?.rating ?? 0, 1)}/<span
                                                             className="font-semi-normal">5</span>
                                                         </p>
                                                     </div>

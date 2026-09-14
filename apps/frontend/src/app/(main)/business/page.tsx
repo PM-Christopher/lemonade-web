@@ -10,12 +10,10 @@ import {useSelector} from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import BusinessFilter from "@/components/business/Modals/BusinessFilter";
 import {RootState} from "@/redux/store";
-import {getBusinesses, getListings} from "@/features/business/business.slice";
-import {useAppDispatch} from "@/redux/hook";
+import {useBusinessesQuery, useListingsQuery} from "@/features/business/queries";
 import {usePersistentMenuState} from "@/context/MenuStateProvider";
 
 const BusinessPage = () => {
-    const dispatch = useAppDispatch()
     const {setActive, getActive, selectedMenu} = usePersistentMenuState()
     const persistedMenuOption = getActive("business") ?? "business";
 
@@ -29,17 +27,14 @@ const BusinessPage = () => {
     const [isServiceOpen, setItServiceOpen] = useState(false)
     const [businessFilter, setBusinessFilter] = useState(false)
 
-    // load items from redux store
-    const {job, businesses, featured, listings, loading, jobLoading} = useSelector((state: RootState) => state.business)
-
-    useEffect(() => {
-        if (menuOption === "business") {
-            dispatch(getBusinesses())
-        } else if (menuOption === "listings") {
-            dispatch(getListings())
-        }
-    }, [menuOption]);
-
+    const {selectedJob: job} = useSelector((state: RootState) => state.temp)
+    const {data: businessesData, isLoading: businessesLoading} = useBusinessesQuery({enabled: menuOption === "business"});
+    const {data: listingsData, isLoading: listingsLoading} = useListingsQuery({enabled: menuOption === "listings"});
+    const businesses = businessesData?.businesses ?? [];
+    const featured = businessesData?.featured ?? [];
+    const listings = listingsData?.listings ?? [];
+    const loading = menuOption === "business" ? businessesLoading : listingsLoading;
+    const jobLoading = false;
 
     const switchOption = (option: string) => {
         setMenuOption(option)
@@ -128,7 +123,7 @@ const BusinessPage = () => {
                     {renderSubMenu()}
                 </div>
                 {renderView()}
-                {job && (
+                {Boolean(job) && (
                     <ServiceDetailsModal
                         job={job}
                         isOpen={isServiceOpen}

@@ -7,8 +7,6 @@ import ClockIconOrange from "@/images/icons/clockIconOrange.svg"
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatDecimal, formatStringUCFirst, getInitials} from "@/lib/helper";
-import {axiosInstance} from "@/lib/axiosInstane";
-import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
@@ -17,10 +15,9 @@ import CheckGIcon from "@/images/icons/checkGreenIcon.svg"
 import CheckPIcon from "@/images/icons/checkPurpleIcon.svg"
 import CloseRedIcon from "@/images/icons/closeRedIcon.svg"
 import PayNowModal from "@/components/business/Modals/PayNowModal";
-import {addJob, markJobCompleted, markJobRequest} from "@/features/business/business.slice";
+import {useMarkJobRequestMutation} from "@/features/business/mutations";
 import {formatCountry} from "@/lib/formatCountry";
 import LoadingSvg from "@/components/svgs/loading.svg"
-import {RootState} from "@/redux/store";
 import ConfirmCompletionModal from "@/components/business/Modals/ConfirmCompletionModal";
 
 type ServiceDetailsInterface = {
@@ -37,7 +34,8 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
     const [isCompletionOpen, setIsCompletionOpen] = useState(false)
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const {markLoading} = useSelector((state: RootState) => state.business)
+    const markJobRequestMutation = useMarkJobRequestMutation(job?.id)
+    const markLoading = markJobRequestMutation.isPending
 
     const toggleConfirmPayment = () => {
         setIsConfirmOpen(!isConfirmOpen)
@@ -51,24 +49,25 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({isOpen, toggleM
         setIsCompletionOpen(!isCompletionOpen)
     }
 
-    const markJob = async (option: string) => {
-        const {payload} = await dispatch(markJobRequest({id: job?.id, data: {status: option, remark}}))
-
-        if (payload.status) {
-            dispatch(updateToastifyReducer({
-                show: true,
-                message: payload?.message,
-                type: "success",
-            }))
-            toggleMenu()
-            router.push(`/business/${job?.business_id}/jobs`)
-        } else {
-            dispatch(updateToastifyReducer({
-                show: true,
-                message: 'Something went wrong. Please try again',
-                type: "error",
-            }))
-        }
+    const markJob = (option: string) => {
+        markJobRequestMutation.mutate({status: option, remark}, {
+            onSuccess: (result) => {
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: result?.message,
+                    type: "success",
+                }))
+                toggleMenu()
+                router.push(`/business/${job?.business_id}/jobs`)
+            },
+            onError: () => {
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: 'Something went wrong. Please try again',
+                    type: "error",
+                }))
+            },
+        })
     }
 
     const markCompleted = async () => {

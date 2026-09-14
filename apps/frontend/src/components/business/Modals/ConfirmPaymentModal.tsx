@@ -1,42 +1,41 @@
 "use client"
 import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
-import {axiosInstance} from "@/lib/axiosInstane";
-import {useSelector} from "react-redux";
 import {Button} from "@/components/ui/button";
 import {useAppDispatch} from "@/redux/hook";
 import {useRouter} from "next/navigation";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {requestJobPayment} from "@/features/business/business.slice";
-import {RootState} from "@/redux/store";
+import {useRequestJobPaymentMutation} from "@/features/business/mutations";
 const ConfirmPaymentModal = ({isOpen, toggleMenu, job, sMenu}: {isOpen: boolean, toggleMenu: () => void, sMenu: () => void, job: any}) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
-    const { requestPLoading } = useSelector((state: RootState) => state.business)
+    const requestJobPaymentMutation = useRequestJobPaymentMutation(job?.id)
+    const requestPLoading = requestJobPaymentMutation.isPending
 
-    const handleRequestPayment = async () => {
-        const { payload } = await dispatch(requestJobPayment({id: job?.id}))
-        console.log({payload})
-        if (payload.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: payload?.message,
-                    type: "success",
-                })
-            )
-            toggleMenu()
-            sMenu()
-            router.push(`/business/${job?.business_id}/jobs`)
-        } else {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Something went wrong",
-                    type: "error",
-                })
-            )
-        }
+    const handleRequestPayment = () => {
+        requestJobPaymentMutation.mutate(undefined, {
+            onSuccess: (result) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: result?.message,
+                        type: "success",
+                    })
+                )
+                toggleMenu()
+                sMenu()
+                router.push(`/business/${job?.business_id}/jobs`)
+            },
+            onError: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Something went wrong",
+                        type: "error",
+                    })
+                )
+            },
+        })
     }
 
     return (

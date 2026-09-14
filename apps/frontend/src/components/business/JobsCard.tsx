@@ -8,7 +8,8 @@ import {formatNumberWithCommas} from "@/lib/formatNumber";
 import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
-import {getJob} from "@/features/business/business.slice";
+import {useGetJobMutation} from "@/features/business/mutations";
+import {setSelectedJob} from "@/redux/tempSlice";
 import JobEmpty from "@/image/JobEmpty.png"
 import {RootState} from "@/redux/store";
 
@@ -21,25 +22,28 @@ type JobCardInterface = {
 const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
     const dispatch = useAppDispatch()
     const [isOpen, setIsOpen] = useState(false)
-    const { job, jobLoading } = useSelector((state: RootState) => state.business)
-
+    const { selectedJob: job } = useSelector((state: RootState) => state.temp)
+    const getJobMutation = useGetJobMutation()
+    const jobLoading = getJobMutation.isPending
 
     const detailsToggle = () => {
         setIsOpen(!isOpen)
     }
 
-    const fetchJob = async (id: number, job: any) => {
+    const fetchJob = (id: number, job: any) => {
         const businessType = job?.isOwner ? "listing" : "business"
-        const { payload } = await dispatch(getJob({id, type: businessType}))
-        if (payload.status) {
-            if (type === "listing") {
-                detailsToggle()
-            } else {
-                if (toggleMenu) {
-                    toggleMenu()
+        getJobMutation.mutate({id, type: businessType}, {
+            onSuccess: (payload) => {
+                dispatch(setSelectedJob(payload.job))
+                if (type === "listing") {
+                    detailsToggle()
+                } else {
+                    if (toggleMenu) {
+                        toggleMenu()
+                    }
                 }
-            }
-        }
+            },
+        })
     }
 
     return (

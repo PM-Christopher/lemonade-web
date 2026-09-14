@@ -18,7 +18,7 @@ import {useRequest} from "@/hooks/useRequest";
 import CountryList from "country-list-with-dial-code-and-flag";
 import {FormikButton} from "@/components/global/FormikButton";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
-import {businessApi} from "@/features/business/api";
+import {useCreateListingMutation} from "@/features/business/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
 import {checkError} from "@/lib/checkError";
@@ -47,6 +47,7 @@ interface FormValues {
 const AddBusinessPage = () => {
     const router =  useRouter()
     const dispatch = useAppDispatch()
+    const createListingMutation = useCreateListingMutation()
     const [inputValue, setInputValue] = useState('');
 
     const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -134,26 +135,28 @@ const AddBusinessPage = () => {
             website_url: ""
         },
         validationSchema: createBusinessSchema,
-        onSubmit: async (values) => {
-            const {data} = await businessApi.createListing(values)
-            if(data.status) {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "business uploaded",
-                        type: "success",
-                    })
-                );
-                router.push("/business")
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Error adding business",
-                        type: "error",
-                    })
-                );
-            }
+        onSubmit: (values) => {
+            createListingMutation.mutate(values, {
+                onSuccess: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "business uploaded",
+                            type: "success",
+                        })
+                    );
+                    router.push("/business")
+                },
+                onError: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Error adding business",
+                            type: "error",
+                        })
+                    );
+                },
+            })
         },
     })
 

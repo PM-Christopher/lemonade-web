@@ -10,7 +10,7 @@ import {FormikButton} from "@/components/global/FormikButton";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
-import {disputeJob} from "@/features/business/business.slice";
+import {useDisputeJobMutation} from "@/features/business/mutations";
 
 interface SubmitDisputeModalProps {
     isOpen: boolean;
@@ -18,7 +18,9 @@ interface SubmitDisputeModalProps {
 }
 
 const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({isOpen, toggle}) => {
-    const {job, disputeLoading} = useSelector((state: RootState) => state.business)
+    const {selectedJob: job} = useSelector((state: RootState) => state.temp) as {selectedJob: any}
+    const disputeJobMutation = useDisputeJobMutation(job?.id)
+    const disputeLoading = disputeJobMutation.isPending
     const disputeJobSchema = yup.object({
         dispute: yup
             .string()
@@ -37,26 +39,28 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({isOpen, toggle})
         },
         validationSchema: disputeJobSchema,
         onSubmit: async (values) => {
-            await handleDispute(values)
+            handleDispute(values)
         },
     })
 
-    const handleDispute = async (values: any) => {
-        const {payload} = await dispatch(disputeJob({id: job.id, data: values}))
-        if (payload.status) {
-            toggle()
-            dispatch(updateToastifyReducer({
-                show: true,
-                message: payload?.message,
-                type: "success",
-            }))
-        } else {
-            dispatch(updateToastifyReducer({
-                show: true,
-                message: 'Something went wrong. Please try again',
-                type: "error",
-            }))
-        }
+    const handleDispute = (values: any) => {
+        disputeJobMutation.mutate(values, {
+            onSuccess: (result) => {
+                toggle()
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: result?.message,
+                    type: "success",
+                }))
+            },
+            onError: () => {
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: 'Something went wrong. Please try again',
+                    type: "error",
+                }))
+            },
+        })
     }
 
     return (

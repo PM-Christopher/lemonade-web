@@ -8,6 +8,12 @@ const initialState = {
     isLoading: false,
     isRouting: false,
     showSideNav: false,
+    // The "currently relevant" business job — set from several independent
+    // places (a job lookup, a payment-verification redirect, a completion
+    // action), read from others (dispute submission). Genuinely global UI
+    // state, not server data — see features/business/mutations.ts's
+    // useGetJobMutation and docs/ARCHITECTURE.md's business domain note.
+    selectedJob: null as unknown,
 };
 
 const tempSlice = createSlice({
@@ -31,6 +37,9 @@ const tempSlice = createSlice({
         setIsRouting(state, action) {
             state.isRouting = action.payload;
         },
+        setSelectedJob(state, action) {
+            state.selectedJob = action.payload;
+        },
     },
 });
 
@@ -40,6 +49,7 @@ export const {
     setTempLoading,
     setShowSideNav,
     setIsRouting,
+    setSelectedJob,
 } = tempSlice.actions;
 
 export default tempSlice.reducer;

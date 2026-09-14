@@ -1,12 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import empty_business from "@/image/business_empty.png"
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import {useRouter} from "next/navigation";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
-import {useAppDispatch} from "@/redux/hook";
-import {getListings} from "@/features/business/business.slice";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import {AllBusinessSkeleton} from "@/components/Skeletons";
 import Link from "next/link";

@@ -4,7 +4,8 @@ import {useRequest} from "@/hooks/useRequest";
 import {useRouter} from "next/navigation";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {businessApi} from "@/features/business/api";
+import {useBusinessQuery} from "@/features/business/queries";
+import {useUpdateListingMutation} from "@/features/business/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import TopNav from "@/components/navigation/TopNav";
@@ -53,7 +54,12 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
     const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
     const [frameworksList, setFrameworksList] = useState<businessCategories[]>([]);
 
-    const { data, loading } = useRequest(`/user/business/${params.id}`)
+    const { data } = useBusinessQuery(params.id)
+    const updateListingMutation = useUpdateListingMutation(params.id)
+    // NOTE: business-categories is a /shared/utilities/* endpoint not wired
+    // to business.slice.ts at all — out of scope for this migration, same
+    // as BusinessFilter.tsx's identical call (see
+    // docs/ARCHITECTURE.md's business domain note).
     const { data: categories, loading: categoryLoading } = useRequest(`/shared/utilities/business-categories`)
 
     const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -134,26 +140,28 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
             website_url: ""
         },
         validationSchema: editBusinessSchema,
-        onSubmit: async (values) => {
-            const {data} = await businessApi.updateListing(params.id, values)
-            if(data.status) {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "business updated",
-                        type: "success",
-                    })
-                );
-                router.push("/business")
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Error adding business",
-                        type: "error",
-                    })
-                );
-            }
+        onSubmit: (values) => {
+            updateListingMutation.mutate(values, {
+                onSuccess: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "business updated",
+                            type: "success",
+                        })
+                    );
+                    router.push("/business")
+                },
+                onError: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Error adding business",
+                            type: "error",
+                        })
+                    );
+                },
+            })
         },
     })
 

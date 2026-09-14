@@ -11,7 +11,7 @@ import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {businessApi} from "@/features/business/api";
+import {useBoostListingMutation} from "@/features/business/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useAppDispatch} from "@/redux/hook";
 import {FormikButton} from "@/components/global/FormikButton";
@@ -36,7 +36,11 @@ const BoostBusinessPage = ({params}: { params: { id: number } }) => {
     const [pkgIndex, setPkgIndex] = useState<number | null>(null)
     const [selectedPackages, setSelectedPackages] = useState<BoostPackages[]>([])
     const [pkgPrice, setPkgPrice] = useState<number | null>(null);
+    const boostListingMutation = useBoostListingMutation(params.id)
 
+    // NOTE: /user/listing/boosts is not wired to business.slice.ts at all —
+    // out of scope for this migration (see docs/ARCHITECTURE.md's business
+    // domain note).
     const {data, loading} = useRequest(`/user/listing/boosts`)
 
     const editBusinessSchema = yup.object({
@@ -62,27 +66,29 @@ const BoostBusinessPage = ({params}: { params: { id: number } }) => {
             start_date: "",
         },
         validationSchema: editBusinessSchema,
-        onSubmit: async (values) => {
+        onSubmit: (values) => {
             const formData = {...values, callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${params.id}`}
-            const {data} = await businessApi.boostListing(params.id, formData)
-            if (data.status) {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Redirecting to payment",
-                        type: "success",
-                    })
-                );
-                window.location.href = data.data.payment
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Error adding business",
-                        type: "error",
-                    })
-                );
-            }
+            boostListingMutation.mutate(formData, {
+                onSuccess: (result) => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Redirecting to payment",
+                            type: "success",
+                        })
+                    );
+                    window.location.href = result.payment
+                },
+                onError: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Error adding business",
+                            type: "error",
+                        })
+                    );
+                },
+            })
         },
     })
 

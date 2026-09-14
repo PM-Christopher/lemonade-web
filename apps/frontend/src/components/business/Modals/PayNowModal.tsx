@@ -3,39 +3,37 @@ import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {useRouter} from "next/navigation";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
-import {makeJobPayment} from "@/features/business/business.slice";
+import {useMakeJobPaymentMutation} from "@/features/business/mutations";
 
 const PayNowModal = ({isOpen, toggleMenu, job}: {isOpen: boolean, toggleMenu: () => void, job: any}) => {
     const dispatch = useAppDispatch();
-    const { payLoading } = useSelector((state: RootState) => state.business)
-    const router = useRouter()
+    const makeJobPaymentMutation = useMakeJobPaymentMutation(job?.id)
+    const payLoading = makeJobPaymentMutation.isPending
 
-    const handlePayNow = async () => {
-        const { payload } = await dispatch(makeJobPayment({id: job.id, data: {redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`}}))
-
-        if (payload.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Redirecting to payment link",
-                    type: "success",
-                })
-            )
-            toggleMenu()
-            window.location.href = payload.data.payment
-        } else {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Something went wrong",
-                    type: "error",
-                })
-            )
-        }
+    const handlePayNow = () => {
+        makeJobPaymentMutation.mutate({redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/business`}, {
+            onSuccess: (result) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Redirecting to payment link",
+                        type: "success",
+                    })
+                )
+                toggleMenu()
+                window.location.href = result.payment
+            },
+            onError: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Something went wrong",
+                        type: "error",
+                    })
+                )
+            },
+        })
     }
     return (
         <div
