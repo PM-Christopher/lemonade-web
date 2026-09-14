@@ -18,7 +18,7 @@ import {resetFreeEventState, searchEvent} from "@/features/events/event.slice";
 import {useRouter, useSearchParams} from "next/navigation";
 import {verifyTribePayment} from "@/features/tribes/tribe.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {verifyTransaction} from "@/features/transaction/transaction.slice";
+import {useVerifyTransactionMutation} from "@/features/transaction/mutations";
 import VerifyPaymentModal from "@/components/events/Modals/VerifyPaymentModal";
 import {usePersistentMenuState} from "@/context/MenuStateProvider";
 
@@ -43,7 +43,8 @@ const EventPage: React.FC = () => {
     const router = useRouter()
     const searchParams = useSearchParams();
     const trxref = searchParams.get('trxref');
-    const {transaction_data, loading: transaction_loading} = useSelector((state: RootState) => state.transaction);
+    const verifyTransactionMutation = useVerifyTransactionMutation();
+    const transaction_data = verifyTransactionMutation.data;
 
     useEffect(() => {
         if (free_event) {
@@ -63,9 +64,8 @@ const EventPage: React.FC = () => {
 
     useEffect(() => {
         if (trxref) {
-            dispatch(verifyTransaction({data: {trx_ref: trxref}}))
-                .unwrap()
-                .then((res) => {
+            verifyTransactionMutation.mutate({trx_ref: trxref}, {
+                onSuccess: () => {
                     // Remove trxref from URL
                     const params = new URLSearchParams(searchParams);
                     params.delete('trxref');
@@ -80,12 +80,14 @@ const EventPage: React.FC = () => {
                     setToggleVPaymentModel(true)
                     // Update the URL without reloading
                     router.replace(`?${params.toString()}`);
-                })
-                .catch((err) => {
+                },
+                onError: (err) => {
                     console.error('Payment verification failed:', err);
-                });
+                },
+            });
         }
-    }, [trxref, dispatch, searchParams, router]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [trxref]);
 
 
     const handleEventSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 13 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 14 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1690,8 +1690,19 @@ and left alone**, same class as admin's promotion-image gap: `settings/profile/p
 checked `data.status` instead of `data.success` (the real envelope key), so a successful upload always
 showed an error toast — this one-line check was fixed (it doesn't touch transport), but the upload call
 itself stays on `axiosInstance`/`sharedApi.uploadFile`, not migrated to `browserApi`, since there's no
-Cloudinary credential locally to live-verify a multipart transport change against. **Not started at
-all:** the remaining ~13 `apps/frontend` domains (business, connect, events, transaction, tribes, and the
+Cloudinary credential locally to live-verify a multipart transport change against. **transaction** is
+migrated too (1 mutation — `verifyTransaction`, a one-shot Paystack-redirect confirmation triggered by a
+`trxref` query param, not cacheable server state, same shape as admin's exports domain) — its `getBanks`
+thunk was a straight duplicate of `features/shared`'s `useBanksQuery` (same endpoint) and was dropped
+rather than migrated twice; both real consumers (the settings and events domains' separate
+`BankAccountModal.tsx` components) now share the one shared query. Found and fixed a real backend bug
+along the way, same class as the two above: `VerifyTransaction`'s success check only recognized
+`Transaction::status` values `'completed'`/`'pending'`, but different payment paths write different
+affirmative strings — `FinalizePayment` writes `'success'`, `PaystackService` writes `'successful'` — so
+a transaction finalized through either Paystack path always reported as unsuccessful to the frontend
+regardless of the real outcome; fixed in `lemonade-backend` to recognize all four strings, a
+characterization test added, confirmed live pre- and post-fix against a real transaction row. **Not
+started at all:** the remaining ~12 `apps/frontend` domains (business, connect, events, tribes, and the
 non-login/logout authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides
 the same proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup
 below), but not migrated. redux-persist still holds far more than client preferences.

@@ -15,7 +15,7 @@ import {FormikButton} from "@/components/global/FormikButton";
 import {createEvent, resetEventState} from "@/features/events/event.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {RootState} from "@/redux/store";
-import {getBanks} from "@/features/transaction/transaction.slice";
+import {useBanksQuery} from "@/features/shared/queries";
 
 type BankAccountInterface = {
     toggle: () => void;
@@ -37,12 +37,8 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
         (state: any) => state.general
     );
     const {event, newTickets} = useSelector((state: RootState) => state.event);
-    const { banks, loading } = useSelector((state: RootState) => state.transaction);
-
-    useEffect(() => {
-        dispatch(getBanks())
-    }, []);
-
+    const { data: banksData, isLoading: loading } = useBanksQuery({enabled: option});
+    const banks = banksData?.banks ?? [];
 
     const createEventSchema = yup.object({
         bank_name: yup.string().required(),
@@ -60,8 +56,12 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
         onSubmit: async (values) => {
             // Find the selected bank by matching the code
             const selectedBank = banks.find(
-                (bank: any) => bank.code === values.bank_name
+                (bank) => bank.code === values.bank_name
             );
+            if (!selectedBank) {
+                setError("Select a bank");
+                return;
+            }
             const data = {
                 event,
                 tickets: newTickets,

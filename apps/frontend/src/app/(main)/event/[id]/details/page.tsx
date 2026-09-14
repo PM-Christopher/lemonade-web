@@ -24,7 +24,7 @@ import {getEvent, getEventPromotion} from "@/features/events/event.slice";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatLongDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
 import {EventProgramDetailSkeleton} from "@/components/Skeletons";
-import {verifyTransaction} from "@/features/transaction/transaction.slice";
+import {useVerifyTransactionMutation} from "@/features/transaction/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {PromotionInterface} from "@/interfaces/EventInterface";
 
@@ -38,6 +38,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
     const trxref = searchParams.get('trxref');
     const [promotionData, setPromotionData] = useState<PromotionInterface | null>(null)
     const [eventPromotion, setEventPromotion] = useState(null)
+    const verifyTransactionMutation = useVerifyTransactionMutation();
 
     const activateModal = () => {
         setIsOpen(!isOpen);
@@ -55,9 +56,8 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
 
     useEffect(() => {
         if (trxref) {
-            dispatch(verifyTransaction({data: {trx_ref: trxref}}))
-                .unwrap()
-                .then((res) => {
+            verifyTransactionMutation.mutate({trx_ref: trxref}, {
+                onSuccess: (res: any) => {
                     // Remove trxref from URL
                     const params = new URLSearchParams(searchParams);
                     params.delete('trxref');
@@ -65,17 +65,19 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                     // Update the URL without reloading
                     router.replace(`?${params.toString()}`);
                     const promotion_data = {
-                        ...res?.data?.data?.promo,
-                        promotion_date: res?.data?.data?.promotion?.promotion_date
+                        ...res?.data?.promo,
+                        promotion_date: res?.data?.promotion?.promotion_date
                     }
                     setPromotionData(promotion_data)
                     activateModal()
-                })
-                .catch((err) => {
+                },
+                onError: (err) => {
                     console.error('Payment verification failed:', err);
-                });
+                },
+            });
         }
-    }, [trxref, dispatch, searchParams, router]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [trxref]);
 
     const handleGetEventPromotion = async () => {
         const res = await dispatch(getEventPromotion({id: params.id, promotion_id: event?.promotion[0]?.id}))

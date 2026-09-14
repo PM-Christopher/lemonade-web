@@ -11,7 +11,6 @@ import tempReducer from "./tempSlice";
 import toastifyReducer from "./toastifySlice"
 import generalReducer from "./general.slice"
 import businessReducer from "@/features/business/business.slice"
-import transactionReducer from "@/features/transaction/transaction.slice"
 
 const persistConfig = {
     key: "root",
@@ -28,7 +27,6 @@ const reducers = combineReducers({
     event: eventReducer,
     general: generalReducer,
     business: businessReducer,
-    transaction: transactionReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
