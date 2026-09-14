@@ -1569,10 +1569,27 @@ Whether the original `git subtree`-with-history step is how it got there wasn't 
 PHP enums) — **but it's hand-maintained, not generated from the backend contract**; there is no
 `tooling/generate-api-types` pipeline and no contract-drift CI check, despite the doc's original intent
 in §7. `@lemonade/api-client` (the transport package, not `@lemonade/domain`) is built and is the one
-genuinely new, tested shared package. Not done: extracting the 9 byte-identical files into
-`@lemonade/domain`, `eslint-plugin-boundaries`, archiving the old `lemonade/{admin,frontend}` repos —
-they still exist, untouched, now stale relative to this monorepo (see the canonical-location note at
-the top of this document).
+genuinely new, tested shared package. `eslint-plugin-boundaries` is wired up in both apps' ESLint
+configs (Phase 1) — its cross-feature-family check, specifically; two other rules it was tried for
+(app/\*\* must not import `@lemonade/api-client` directly, a feature may only be entered through its
+own `index.ts`) didn't work as expected against known real cases and were dropped rather than shipped
+silently broken. The 9 byte-identical files: re-measured this phase rather than trusted from the
+original table above (membership had shifted, though the count still lands on 9) — `checkError.ts` and
+`formatCountry.ts` moved into `@lemonade/domain` with characterization tests; `redux/hook.ts` and
+`redux/toastifySlice.ts` deliberately did not move (Redux/client state is explicitly excluded from
+anything shared, per this doc's own package rules, and `hook.ts` is typed against each app's own
+store besides); `components/ui/label.tsx`, `lib/utils.ts`'s `cn()`, and `hooks/useDebounce.ts` are
+`@lemonade/ui` candidates, not `@lemonade/domain`, but `packages/ui` is already pinned to React 19
+while both apps are still on React 18 (Phase 3), and Phase 7 is explicitly where the two apps'
+diverged shadcn styles (admin: `new-york`, frontend: `default`) get reconciled — moving one primitive
+there now, unconsumed by either app, would be a half-migration; `favicon.ico` is a binary asset, not
+extractable the same way. Not done: the `tooling/generate-api-types` pipeline and contract-drift CI
+check (a real build — the backend repo is available locally to build it against, but it's substantial
+enough, and touches the actual contract between both apps and the backend closely enough, that it
+wasn't started without checking in first), and archiving the old `lemonade/{admin,frontend}` repos
+(a destructive action on repos outside this one — needs explicit authorization, not something to do
+autonomously). They still exist, untouched, now stale relative to this monorepo (see the
+canonical-location note at the top of this document).
 
 ### Phase 3 — Version alignment **[MUST]** **[NOT STARTED]**
 
