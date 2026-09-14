@@ -1,17 +1,21 @@
 # Lemonade Admin & Frontend — Technical Architecture & Modernization Plan
 
-**Revision:** A · 10 September 2026
+**Revision:** B · 14 September 2026 (see [§21](#21-phased-implementation-roadmap) for live status)
 **Scope:** `lemonade-admin` and `lemonade-frontend` (two Next.js apps) + a proposed shared layer
 **Source of truth:** `lemonade-backend` (Laravel 13) — its running behaviour, not this document
-**Status:** For review. Analysis and standards only; no implementation in this phase.
+**Status:** In progress. Phases 0 and 4 substantially shipped and live-verified; Phase 5 underway
+(auth + 3 admin domains done). Every phase heading in §21 below now carries a status tag — that
+section is the current "what's left" answer; the rest of this document is still the target-state
+plan and hasn't been rewritten to match.
 
-> **Canonical location.** This file is currently duplicated into both Next.js repos so each is
-> self-contained and version-controlled. At **Phase 2** it consolidates into a single copy at
-> `lemonade-web/docs/ARCHITECTURE.md` and these two are deleted. Until then, edit both or neither —
-> the irony of duplicating the document that argues against duplication is noted and temporary.
+> **Canonical location.** This file was originally duplicated into both Next.js repos; this copy,
+> at `lemonade-web/docs/ARCHITECTURE.md`, is the one being kept current as of Revision B. The two
+> per-app copies (`lemonade/{admin,frontend}/docs/ARCHITECTURE.md`, outside this monorepo) were not
+> touched by this revision and are now stale — treat this file as the only canonical one going
+> forward, and delete or archive the other two rather than trying to keep three in sync.
 >
-> A rendered version of this document is published at
-> <https://claude.ai/code/artifact/60740609-3946-4c13-a3d2-b2989ac68b41>
+> A rendered version of Revision A is published at
+> <https://claude.ai/code/artifact/60740609-3946-4c13-a3d2-b2989ac68b41> (predates this revision).
 
 ---
 
@@ -1464,7 +1468,15 @@ build on different asset pipelines.
 Nine phases. Each ends in a shippable state; none requires a freeze. Effort is indicative for a small
 team and should be re-estimated against actual capacity.
 
-### Phase 0 — Restore working software **[MUST]**
+> **How to read the status tags below.** Each phase heading now carries one of: **[DONE]**
+> (verified, either live against the real backend or via the test suite — not just typechecked),
+> **[IN PROGRESS]** (some of the phase shipped, see its own status note for exactly what), or
+> **[NOT STARTED]**. The original bullet list under each phase is left exactly as written — the
+> plan as designed — with a **Status:** paragraph appended describing what actually happened,
+> including where reality diverged from the plan. Where something diverged, that's named, not
+> smoothed over.
+
+### Phase 0 — Restore working software **[MUST]** **[DONE]**
 
 Nothing else can be verified until the apps can reach the backend. Days, not weeks — and it ends with a
 system a new developer can actually run.
@@ -1477,7 +1489,18 @@ system a new developer can actually run.
 - Fix or remove the Turbopack/SVGR mismatch in admin
 - Manual smoke pass over the ten critical journeys; write down what is broken
 
-### Phase 1 — Quality gates **[MUST]**
+**Status:** `baseUrl` fixed to `/v1` in both apps; ~130 frontend call sites (and admin's, which were
+already correct) rewritten to the real `/v1/{admin|user|shared}/...` paths, cross-checked against the
+backend's own generated Postman collection rather than guessed. `job-pay`'s `callback_url` →
+`redirect_url` rename applied. `.env.local` now exists in both apps (`LARAVEL_API_URL`, gitignored) —
+local dev works with a plain `next dev`. Stale lockfiles removed (`yarn.lock`, `package-lock.json`,
+the leftover `packageManager: yarn` field) — one `pnpm-lock.yaml` at the root is the real one now. Not
+done: `.env.example` / README setup docs, and the Turbopack/SVGR mismatch was not investigated. **Three
+endpoints remain genuinely broken** and need a product/backend decision, not a guess: `tribe.slice.ts`'s
+`verifyTribePayment`, business-boost verify, and business verify-payment all reference routes that
+don't exist in the current backend contract.
+
+### Phase 1 — Quality gates **[MUST]** **[NOT STARTED]**
 
 Put a signal in place before changing anything structural.
 
@@ -1487,7 +1510,16 @@ Put a signal in place before changing anything structural.
 - Dependabot and `pnpm audit` in CI
 - Zod-validated env module in both apps
 
-### Phase 2 — Monorepo consolidation **[MUST]**
+**Status:** None of this shipped. Vitest exists and is used for `packages/api-client`'s own unit tests
+(15 passing, including regression coverage added this phase for the pre-login onboarding-token fix),
+but that's package-level, not the CI-gate infrastructure this phase describes — there's no GitHub
+Actions workflow, no flat ESLint config change, no Zod env validation. `pnpm typecheck`/`pnpm build`
+work locally per-app and have been the actual verification method used throughout Phases 0, 4 and 5
+(run manually, not gated in CI). One recurring local-only friction, not a CI problem: any command that
+triggers `pnpm install`'s dependency-status check fails here with `[ERR_PNPM_IGNORED_BUILDS]` — bypass
+by running `next dev` directly from `node_modules/.bin` rather than through `pnpm`/`turbo`.
+
+### Phase 2 — Monorepo consolidation **[MUST]** **[PARTIAL]**
 
 Mechanical and low-risk. No behaviour changes in this phase — that is the point.
 
@@ -1498,7 +1530,20 @@ Mechanical and low-risk. No behaviour changes in this phase — that is the poin
 - Add `eslint-plugin-boundaries` with the §9 import rules
 - Archive the old repos read-only
 
-### Phase 3 — Version alignment **[MUST]**
+**Status:** `lemonade-web` exists and is the actively developed monorepo — pnpm workspaces and
+Turborepo are real and in use (`turbo.json`, `packages/{api-client,api-types,domain,ui,config}`).
+Whether the original `git subtree`-with-history step is how it got there wasn't verified this phase.
+`@lemonade/api-types` exists and is genuinely load-bearing (every domain's route constants live there,
+~20 route-constant objects, plus the shared `ErrorCode`/`TokenType` enums mirrored from the backend's
+PHP enums) — **but it's hand-maintained, not generated from the backend contract**; there is no
+`tooling/generate-api-types` pipeline and no contract-drift CI check, despite the doc's original intent
+in §7. `@lemonade/api-client` (the transport package, not `@lemonade/domain`) is built and is the one
+genuinely new, tested shared package. Not done: extracting the 9 byte-identical files into
+`@lemonade/domain`, `eslint-plugin-boundaries`, archiving the old `lemonade/{admin,frontend}` repos —
+they still exist, untouched, now stale relative to this monorepo (see the canonical-location note at
+the top of this document).
+
+### Phase 3 — Version alignment **[MUST]** **[NOT STARTED]**
 
 Once, in one dependency graph, before the refactors that would otherwise be written twice.
 
@@ -1508,7 +1553,13 @@ Once, in one dependency graph, before the refactors that would otherwise be writ
 - `images.domains` → `remotePatterns`, restricted to Cloudinary and DO Spaces
 - Tighten `tsconfig`; `no-explicit-any` as a warning with a declining budget
 
-### Phase 4 — Transport & authentication **[MUST]**
+**Status:** Not started. The Next 14/15 asymmetry this phase would remove is real and current, and has
+already required care in Phase 4/5 work: `apps/frontend` is Next 14.2.7 (`cookies()` and Route Handler
+`params` are synchronous), `apps/admin` is Next 15.1.11 (both are async/a Promise). The two apps'
+`server-api.ts` and `app/api/v1/[...path]/route.ts` are deliberately not identical because of this —
+don't "fix" one to match the other without checking which Next major it's actually on.
+
+### Phase 4 — Transport & authentication **[MUST]** **[DONE, with named deviations]**
 
 The keystone phase. Everything after it depends on the token being server-side.
 
@@ -1520,7 +1571,32 @@ The keystone phase. Everything after it depends on the token being server-side.
 - Delete the global axios GET cache and `hooks/useRequest.tsx`
 - Ship behind a feature flag; flip per environment
 
-### Phase 5 — Server state, domain by domain **[MUST]**
+**Status:** The core cutover is done and live-verified end to end against the real backend, in both
+apps: `@lemonade/api-client` built (envelope unwrap, typed `ApiError`, refresh-once-with-coalescing on
+401, correlation-id propagation); `app/api/auth/{login,logout}/route.ts` + `app/api/v1/[...path]/route.ts`
+BFF proxy; httpOnly cookies with distinct names per guard (`lemonade_user_token`/`_refresh`,
+`lemonade_admin_token`/`_refresh`); `middleware.ts` added to admin (had none) and repointed in frontend
+to check the real cookie. Verified live: login sets the httpOnly cookie with no token in the JSON body,
+an authenticated proxy call succeeds on the cookie alone, logout revokes the token server-side (a reused
+old cookie correctly 401s afterward). The ~87 manual `Authorization` headers were removed from ~100
+files across both apps in a dedicated later pass (the "Tier 2" cleanup below) — not in the same push as
+the cutover itself, and with one deliberate, load-bearing exception: the pre-login signup/email-
+verification/password-reset flow authenticates with a distinct, narrowly-scoped Sanctum token (not the
+main session) via a `newToken` cookie, which is a real, still-functional mechanism, not dead weight —
+see the BFF proxy's `bearerTokenOverride` support, added specifically for this. **Named deviations from
+the plan:** shipped as a direct cutover, not behind a feature flag (the whole point of a flag —
+comparing old vs. new behaviour side-by-side under real traffic — wasn't available in an
+agent-driven single-environment workflow); `hooks/useRequest.tsx` was not deleted, only the blanket
+5-minute cache wrapper on `axiosInstance` that it and everything else rode on was removed, so the hook
+itself still exists and is used by several still-unmigrated Phase 5 domains. Two live regressions
+introduced by the cutover itself were found and fixed in the same phase: multipart/file-upload bodies
+initially 415'd through the JSON-only proxy (fixed — raw `Buffer` forwarding); the pre-login onboarding
+token flow initially 401'd through the proxy (fixed — see `bearerTokenOverride` above). Two unrelated
+live Redux bugs found and fixed while in this code: both apps' `resetAuth` reducer set
+`isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
+whenever the *old* token cookie was absent — which post-cutover is always true.
+
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 4 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1533,7 +1609,40 @@ The largest phase. Migrate in this order — lowest risk first, money last, once
 - Retire `Skeletons.tsx` and `tableData.ts` incrementally as their features migrate
 - Ends with redux-persist holding nothing but small client preferences
 
-### Phase 6 — Server Components & performance **[SHOULD]**
+**Status:** Started, both apps have `QueryClientProvider` wired (`redux/QueryProvider.tsx`, wrapping
+the existing Redux `Provider`, not replacing it — Redux keeps everything not yet migrated). Domains
+done so far, each with a hierarchical key factory and live-verified against the real backend through
+the actual BFF proxy (not just typechecked): **auth/session** (both apps — `useCurrentUserQuery`/
+`useCurrentAdminQuery`, `useLoginMutation`, `useLogoutMutation`), then, **admin only**: **dashboard**
+(1 query), **wallet** (3 queries, 4 mutations — the first money domain), **reporting** (2 queries, 2
+mutations). Each migration deleted its old `*.slice.ts` outright and removed the reducer from
+`store.ts`, per this phase's own rule that a feature never exists in both patterns at once.
+**Named deviations from the plan:** the prescribed migration order (reference data → discovery → ...
+→ wallet/transactions/subscriptions/payouts *last*) was not followed — auth went first (reasonable,
+everything else depends on it), then dashboard and reporting (small, low-risk, matching the plan's
+spirit), but **wallet went third**, ahead of most non-money domains, because it was the next domain
+picked without re-consulting this ordering. It was treated with the care the plan asks of money
+domains regardless (staleTime 0, invalidate-not-optimistic on every mutation), and its live-testing
+paid for itself: it surfaced two real backend bugs meaning the admin wallet credit/debit feature had
+*never actually worked* from this UI (fixed in `lemonade-backend`, tests added). Forms were **not**
+migrated to React Hook Form + Zod in the same pass as their domain, contra the plan — every migrated
+domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
+`Skeletons.tsx`/`tableData.ts` retirement hasn't started. **Not started at all:** the other ~15
+frontend domains (business, connect, events, settings, transaction, tribes, and the non-login/logout
+authSlice thunks) and ~8 more admin domains (transaction, user, events, promotion, announcements,
+team, profile, exports) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same
+proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but
+not migrated. redux-persist still holds far more than client preferences.
+
+**The "Tier 2" dead-weight cleanup** (not one of this document's original bullets, but directly serves
+this phase's "no feature in both patterns" rule): every non-auth domain's Redux thunks and
+`features/x/api.ts` services threaded a `token`/`authToken` parameter left over from before the
+httpOnly cutover, used to build a manual `Authorization` header the BFF transport now ignores and
+replaces server-side. Removed across ~100 files in both apps, done and committed, with one deliberate
+exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
+above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
+
+### Phase 6 — Server Components & performance **[SHOULD]** **[NOT STARTED]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -1543,7 +1652,7 @@ Now possible, because auth is server-readable and data fetching is query-shaped.
 - Server-side pagination as backend endpoints land it; move page/sort/filter state into `searchParams`
 - Lazy-load heavy leaves; add bundle budgets and Lighthouse CI to the PR pipeline
 
-### Phase 7 — Design system **[SHOULD]**
+### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -1552,7 +1661,7 @@ Deferred deliberately: visible, but not structural. Safe to run in parallel with
 - Remove MUI, antd and Evergreen; add the import ban
 - Accessibility pass: focus management, dialog semantics, table headers, contrast
 
-### Phase 8 — Observability & hardening **[SHOULD]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[NOT STARTED]**
 
 Closes the loop with the backend, which already reports to Sentry.
 
@@ -1613,6 +1722,16 @@ backend work.
   correlation id; verify throttle keys resolve to the end user, not the proxy. Test this in staging
   under load — it is the single most likely BFF surprise, and it fails in a way that looks like an
   outage.
+- **Status — this conflict is now live; one side is ready, the other isn't.** The BFF shipped in Phase 4
+  (§21) without the flag this section assumes. The backend side is actually fine: `TrustProxies` already
+  trusts `X-Forwarded-For`/`-Host`/`-Port`/`-Proto` from any proxy (`$proxies = '*'`), so it would
+  resolve the real client IP correctly if it received the header. It doesn't: `app/api/v1/[...path]/route.ts`
+  in both apps forwards only `X-Correlation-Id` and, for multipart bodies, `Content-Type` — no
+  `X-Forwarded-For` or user-agent. This hasn't caused a known problem yet (local/dev traffic only so
+  far), but per-IP throttling (`throttle:auth`, `throttle:otp`) is currently keyed on the Next server's
+  own IP for every real request, exactly the failure mode this section warns about. The fix is entirely
+  on the frontend side — add the header to the proxy's outbound request — and is small; worth doing
+  before this reaches real user traffic, not discovered later.
 
 ### Risk register
 
@@ -1644,28 +1763,39 @@ backend work.
 
 > Every criterion below is measurable against a baseline captured on 10 September 2026. A phase is done
 > when its numbers move, not when its pull requests merge.
+>
+> **Current column added 14 September 2026** — re-measured with the same method as the baseline
+> where practical (`grep`, file counts). Rows without a fresh count are marked "not re-measured this
+> revision" rather than guessed; don't read a blank as zero.
 
 ### Measurable targets
 
-| Metric | Baseline | Target | Phase | How verified |
-|---|---:|---:|---|---|
-| Endpoints reachable against `/v1` | 0 | All | P0 | Smoke pass over the ten journeys |
-| `: any` annotations | 574 | < 50 | P3–P5 | `grep`, tracked per PR |
-| `createAsyncThunk` | 151 | 0 | P5 | Burn-down; slices deleted, not just bypassed |
-| Manual `Authorization` headers | 87 | 0 | P4 | Lint rule, then `grep` |
-| Tokens reachable from JavaScript | 3 stores | 0 | P4 | DevTools inspection + lint rule |
-| Client-side pagination sites | 7 | 0 | P6 | Requires Conflict 1 resolved |
-| Effects with wrong deps | 32 | 0 | P1 | `exhaustive-deps` as error |
-| `console.log` in shipped code | 62 | 0 | P1 | `no-console` as error |
-| Duplicated / diverged files | 41 | 0 | P2 | Cross-app path diff in CI |
-| Unimported runtime deps | 50 | 0 | P0, P7 | `knip` in CI |
-| UI component systems | 4 | 1 | P7 | Import ban lint rule |
-| Test files | 0 | ≥ 90% on `packages/*` | P1–P8 | Vitest coverage gate |
-| Apps with CI | 0 | 2 | P1 | Required checks on `main` |
-| Apps with lint config | 0 | 2 | P1 | CI fails on warnings |
-| Apps with route protection | 1 (weak) | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
-| Public routes server-rendered | 0 | All in `(public)` | P6 | View source shows content pre-hydration |
-| Hardcoded pixel classes | 7,041 | Declining, no new | P7 | Lint warning; ratchet on the count |
+| Metric | Baseline | Current | Target | Phase | How verified |
+|---|---:|---:|---:|---|---|
+| Endpoints reachable against `/v1` | 0 | All except 3 (flagged, need a product decision) | All | P0 | Smoke pass over the ten journeys |
+| `: any` annotations | 574 | 499 | < 50 | P3–P5 | `grep`, tracked per PR |
+| `createAsyncThunk` | 151 | 136 (4 domains' slices deleted so far) | 0 | P5 | Burn-down; slices deleted, not just bypassed |
+| Manual `Authorization` headers | 87 | 17 | 0 | P4 | Lint rule, then `grep` |
+| Tokens reachable from JavaScript | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed | 0 | P4 | DevTools inspection + lint rule |
+| Client-side pagination sites | 7 | not re-measured this revision | 0 | P6 | Requires Conflict 1 resolved |
+| Effects with wrong deps | 32 | not re-measured this revision | 0 | P1 | `exhaustive-deps` as error |
+| `console.log` in shipped code | 62 | 57 | 0 | P1 | `no-console` as error |
+| Duplicated / diverged files | 41 | not re-measured this revision | 0 | P2 | Cross-app path diff in CI |
+| Unimported runtime deps | 50 | not re-measured this revision | 0 | P0, P7 | `knip` in CI |
+| UI component systems | 4 | not re-measured this revision | 1 | P7 | Import ban lint rule |
+| Test files | 0 | 1 (`packages/api-client`, 15 tests) | ≥ 90% on `packages/*` | P1–P8 | Vitest coverage gate |
+| Apps with CI | 0 | 0 | 2 | P1 | Required checks on `main` |
+| Apps with lint config | 0 | 0 | 2 | P1 | CI fails on warnings |
+| Apps with route protection | 1 (weak) | 2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
+| Public routes server-rendered | 0 | 0 | All in `(public)` | P6 | View source shows content pre-hydration |
+| Hardcoded pixel classes | 7,041 | not re-measured this revision | Declining, no new | P7 | Lint warning; ratchet on the count |
+
+**A newly-flagged, unaudited risk surfaced while re-measuring the `Authorization` header count:** 2 of
+the 17 remaining files aren't the known onboarding exception — `config/pusherConfig.ts` and
+`hooks/usePusher.ts`, in both apps, build a Bearer header from a `token` variable for Pusher's private/
+presence channel authorization. This wasn't examined this session; whether it's reading a now-always-
+empty Redux value (the same class of bug the onboarding-token fix addressed) or something else that
+still works is unknown. Worth checking before relying on realtime features.
 
 ### Acceptance criteria by phase
 
