@@ -5,7 +5,7 @@ import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import {Button} from "@/components/ui/button";
 import {formatStringUCFirst, getDistanceFromLatLonInKm} from "@/lib/helper";
 import {useAppDispatch} from "@/redux/hook";
-import {inviteResponse} from "@/features/connect/connect.slice";
+import {useInviteResponseMutation} from "@/features/connect/mutations";
 import {useSelector} from "react-redux";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
@@ -13,35 +13,34 @@ type InviteInterface = {
     toggle: () => void,
     isOpen: boolean,
     invite: any
-    reloadFunc: any,
 }
 
-const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite, reloadFunc}) => {
+const InviteModal: React.FC<InviteInterface> = ({toggle, isOpen, invite}) => {
     const dispatch = useAppDispatch()
     const {user} = useSelector((state: any) => state.auth)
+    const inviteResponseMutation = useInviteResponseMutation();
 
-    const requestAction = (action: string) => {
-        dispatch(inviteResponse({data: {option: action}, id: invite.id})).then((res) => {
-            if (res.payload.status) {
+    const requestAction = (action: "accepted" | "rejected") => {
+        inviteResponseMutation.mutate({id: invite.id, option: action}, {
+            onSuccess: (res) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: res.payload.message,
+                        message: res.message,
                         type: "success",
                     })
                 );
                 toggle()
-
-                reloadFunc()
-            } else {
+            },
+            onError: (err: any) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: res.payload.message || "Something went wrong",
+                        message: err?.message || "Something went wrong",
                         type: "error",
                     })
                 );
-            }
+            },
         })
     }
 

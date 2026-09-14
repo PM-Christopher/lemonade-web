@@ -7,7 +7,9 @@ import ImageIcon from "@/images/icons/imageIcon.svg";
 import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
 import SendIcon from "@/images/icons/sendIcon.svg";
 import {useAppDispatch} from "@/redux/hook";
-import {addToMessages, sendChat} from "@/features/connect/connect.slice";
+import {useQueryClient} from "@tanstack/react-query";
+import {useSendChatMutation} from "@/features/connect/mutations";
+import {appendIncomingChatMessage} from "@/features/connect/queries";
 import {useSelector} from "react-redux";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {useMediaQuery} from "react-responsive";
@@ -34,6 +36,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                                                  toggleOpenedChat,
                                              }) => {
     const dispatch = useAppDispatch();
+    const queryClient = useQueryClient();
+    const sendChatMutation = useSendChatMutation();
     const [text, setText] = useState<string>("");
     const [mediaFiles, setMediaFiles] = useState<string[]>([])
     const {user: authUser} = useSelector((state: any) => state.auth);
@@ -67,14 +71,18 @@ const OpenedChat: React.FC<OpenChatProps> = ({
     const sendMessage = () => {
         if (!text.trim() && mediaFiles.length < 1) return; // Don't send empty messages
 
-        // const receiver_id = user_id === chat?.sender.id ? chat.receiver.id : chat?.sender.id;
         const receiver_id: number | null = chat
             ? (user_id === chat.sender.id ? chat.receiver.id : chat.sender.id)
             : null;
         setText("");
-        dispatch(sendChat({receiver_id, message: text.trim(), media: mediaFiles})).then((res: any) => {
-            setMediaFiles([])
-            dispatch(addToMessages({message: res.payload.data.new_message, user: authUser}))
+        sendChatMutation.mutate({receiverId: receiver_id, message: text.trim(), media: mediaFiles}, {
+            onSuccess: (res) => {
+                setMediaFiles([]);
+                // Same shape/target as a Pusher-pushed message (both are the
+                // raw OutgoingChatMessage), so this reuses the same append
+                // logic rather than duplicating the viewer-relative mapping.
+                appendIncomingChatMessage(queryClient, authUser.id, res.new_message);
+            },
         });
     };
 
@@ -128,7 +136,10 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 try {
                     const {data} = await connectApi.uploadMultiple(formData);
 
-                    if (data.status) {
+                    // Found live: the envelope key is `success`, not `status`
+                    // — this was always false, so a successful upload always
+                    // showed the "error" toast below.
+                    if (data.success) {
                         setMediaLoading(false);
                         setMediaFiles((prev) => [...prev, ...data.data.images]);
                         dispatch(

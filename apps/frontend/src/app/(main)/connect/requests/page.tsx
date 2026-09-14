@@ -1,19 +1,18 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import RequestCard from "@/components/connect/RequestCard";
 import InviteModal from "@/components/connect/Modal/InviteModal";
 import ConnectModal from "@/components/connect/Modal/ConnectModal";
-import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
-import {findUser, getInvites} from "@/features/connect/connect.slice";
+import {useInvitesQuery} from "@/features/connect/queries";
+import {useFindUserMutation} from "@/features/connect/mutations";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {RootState} from "@/redux/store";
 import {InviteSkeleton} from "@/components/Skeletons";
 
 const ConnectRequestPage = () => {
@@ -22,9 +21,11 @@ const ConnectRequestPage = () => {
     const [isConnectOpen, setIsConnectOpen] = useState(false);
     const [inviteIndex, setInviteIndex] = useState<number | null>(null);
     const dispatch = useAppDispatch();
-    const {user: connUser, invites, loading} = useSelector((state: RootState) => state.chat);
-
     const {user} = useSelector((state: any) => state.auth);
+    const {data: invitesData, isLoading: loading} = useInvitesQuery({enabled: Boolean(user?.id)});
+    const invites = invitesData?.invites ?? [];
+    const findUserMutation = useFindUserMutation();
+    const connUser = findUserMutation.data;
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -38,27 +39,11 @@ const ConnectRequestPage = () => {
         setInviteIndex(index);
     };
 
-    const {getData} = useRequest(
-        "/user/connect/get-invites",
-    );
-
-    useEffect(() => {
-        dispatch(getInvites())
-    }, [])
-
     const handleSearch = (e: any) => {
         if (e.key === "Enter") {
             if (e.currentTarget.value !== "") {
-                // Trigger your desired function here
-                console.log(
-                    "Enter key pressed, search triggered",
-                    e.currentTarget.value
-                );
-                // find user
-                dispatch(
-                    findUser({search: e.currentTarget.value})
-                ).then((res) => {
-                    if (res.payload.status) {
+                findUserMutation.mutate(e.currentTarget.value, {
+                    onSuccess: () => {
                         dispatch(
                             updateToastifyReducer({
                                 show: true,
@@ -68,15 +53,16 @@ const ConnectRequestPage = () => {
                         );
                         e.target.value = "";
                         toggleConnectModal();
-                    } else {
+                    },
+                    onError: (err: any) => {
                         dispatch(
                             updateToastifyReducer({
                                 show: true,
-                                message: res.payload.message,
+                                message: err?.message || "User not found",
                                 type: "error",
                             })
                         );
-                    }
+                    },
                 });
             } else {
                 dispatch(
@@ -187,7 +173,6 @@ const ConnectRequestPage = () => {
                         invite={invites[inviteIndex]}
                         toggle={toggleMenu}
                         isOpen={isOpen}
-                        reloadFunc={getData}
                     />
                 )}
                 {connUser && (
@@ -195,7 +180,6 @@ const ConnectRequestPage = () => {
                         users={connUser}
                         toggle={toggleConnectModal}
                         isOpen={isConnectOpen}
-                        reloadFunc={getData}
                         authUser={user}
                     />
                 )}

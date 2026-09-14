@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 14 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 15 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1701,11 +1701,40 @@ along the way, same class as the two above: `VerifyTransaction`'s success check 
 affirmative strings — `FinalizePayment` writes `'success'`, `PaystackService` writes `'successful'` — so
 a transaction finalized through either Paystack path always reported as unsuccessful to the frontend
 regardless of the real outcome; fixed in `lemonade-backend` to recognize all four strings, a
-characterization test added, confirmed live pre- and post-fix against a real transaction row. **Not
-started at all:** the remaining ~12 `apps/frontend` domains (business, connect, events, tribes, and the
-non-login/logout authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides
-the same proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup
-below), but not migrated. redux-persist still holds far more than client preferences.
+characterization test added, confirmed live pre- and post-fix against a real transaction row.
+**connect** (chat/connections) is migrated too — the most architecturally involved domain so far:
+4 queries (chat history, one open chat keyed by receiver, invites, connection info) and 5 mutations
+(send-chat, invite-response, find-user, send-invite, update-visibility). The domain mixes ordinary
+request/response data with a Pusher-pushed live-append behavior (new chat messages arrive over a private
+channel, not just through polling) — the old Redux reducer appended every incoming message to whatever
+chat happened to be open, which was only ever correct because the UI shows one conversation at a time; a
+push for a *different* conversation while chat A was open would have landed in chat A's list. The
+TanStack version (`features/connect/queries.ts`'s `appendIncomingChatMessage`, called from
+`hooks/usePusher.ts`) computes the actual other party from the message itself and writes into that
+specific chat's query cache — correct regardless of what's open, and a no-op if that chat isn't
+currently cached. Tracing the real-time path required reading through the backend to find that the
+"chat" feature (`ChatController`/`ChatList`/`ChatMessage`) and a same-shaped, same-channel, seemingly
+unrelated "connect messages" feature (`ConnectController`/`SendConnectMessage`/the `MessageSent`
+broadcast event, which broadcasts a *different* model, `UserMessage`) both exist in the backend — only
+the former is what the frontend actually calls; confirmed via `SendChatMessage`, which triggers Pusher
+directly (bypassing Laravel's event system) with `OutgoingChatMessageResource`, matching what the old
+reducer expected. Not investigated further — a second parallel messaging system, dead or not from this
+domain's perspective, is out of scope for a frontend transport migration. Reused the existing
+`ChatInterface`/`MessageInterface` from `src/interfaces/ChatInterface.ts`, narrowing `MessageInterface.media`
+from a stale `string | null` to the real `string[] | null` (safe — every consumer of that interface lives
+inside this same domain, unlike dashboard's `TribeInterface`). Found and fixed the same envelope-key
+`data.status`-vs-`data.success` bug in two more places (`OpenedChat.tsx`'s image upload,
+`SettingsModal.tsx`'s visibility toggle) — same class as settings' fix, not touching the underlying
+upload transport. **Not fully live-testable**: `sendChat`'s POST always 500s locally — `PusherService`
+constructs a real `Pusher\Pusher` client and calls `->trigger()` unconditionally on every send,
+regardless of `BROADCAST_DRIVER`, and local Pusher credentials are empty — same class of gap as file
+upload's missing Cloudinary credential. Verified its response shape via source instead
+(`OutgoingChatMessageResource`) and live-verified the other 8 endpoints end-to-end, including creating a
+real accepted connection and a real pending invite through the API and exercising accept. **Not started
+at all:** the remaining ~11 `apps/frontend` domains (business, events, tribes, and the non-login/logout
+authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same proxied
+transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but not
+migrated. redux-persist still holds far more than client preferences.
 
 **The "Tier 2" dead-weight cleanup** (not one of this document's original bullets, but directly serves
 this phase's "no feature in both patterns" rule): every non-auth domain's Redux thunks and

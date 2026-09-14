@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import RequestIcon from "@/images/icons/requestIcon.svg";
 import SettingsIcon from "@/images/icons/gear.svg"
@@ -8,43 +8,33 @@ import ChatListCard from "@/components/Jobs/ChatListCard";
 import UserInfoModal from "@/components/connect/Modal/UserInfoModal";
 import SettingsModal from "@/components/connect/Modal/SettingsModal";
 import Link from "next/link";
-import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
-import {ChatInterface, MessageInterface} from "@/interfaces/ChatInterface";
-import {getChat, getConnection, getMessages, removeChat} from "@/features/connect/connect.slice";
+import {ChatInterface} from "@/interfaces/ChatInterface";
+import {useChatHistoryQuery, useChatQuery, useConnectionQuery} from "@/features/connect/queries";
 import OpenedChat from "@/components/connect/OpenedChat";
 import EmptyChat from "@/components/connect/EmptyChat";
-import Pusher from "pusher-js";
 import {usePusher} from "@/hooks/usePusher";
-import {useAppDispatch} from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useMediaQuery} from "react-responsive";
-import {RootState} from "@/redux/store";
 import {ChatListCardSkeleton} from "@/components/Skeletons";
 
 const ConnectPage = () => {
-    const dispatch = useAppDispatch()
     const [isOpen, setIsOpen] = useState(false)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [selectedChatId, setSelectedChatId] = useState(0)
-    const [messages, setMessages] = useState<MessageInterface[]>([])
+    const [selectedReceiverId, setSelectedReceiverId] = useState<number | undefined>(undefined)
     const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
     const [chatOpened, setChatOpened] = useState(false)
     const {user} = useSelector((state: any) => state.auth)
     usePusher(`chat.${user?.id}`, "message.sent");
 
-    const {
-        messages: messagesData,
-        chat: chatData,
-        loading,
-        chats,
-        connection_info
-    } = useSelector((state: RootState) => state.chat)
-
-    useEffect(() => {
-        dispatch(getMessages())
-        dispatch(getConnection())
-    }, [dispatch]);
+    const {data: chatHistory, isLoading: loadingChat} = useChatHistoryQuery({enabled: Boolean(user?.id)});
+    const {data: connectionData} = useConnectionQuery({enabled: Boolean(user?.id)});
+    const {data: openedChat} = useChatQuery(selectedReceiverId, {enabled: chatOpened});
+    const chats = chatHistory?.chats ?? [];
+    const connection_info = connectionData;
+    const chatData = openedChat?.chat ?? null;
+    const messagesData = openedChat?.messages ?? [];
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
@@ -55,7 +45,7 @@ const ConnectPage = () => {
     }
 
     const toggleSelectedChat: (receiver_id: number, chat_id: number) => void = (receiver_id: number, chat_id: number) => {
-        dispatch(getChat({receiver_id}))
+        setSelectedReceiverId(receiver_id);
         setSelectedChatId(chat_id);
         setChatOpened(true)
     };
@@ -63,10 +53,8 @@ const ConnectPage = () => {
     const toggleChatOpened = () => {
         setChatOpened(!chatOpened)
         setSelectedChatId(0)
-        dispatch(removeChat())
+        setSelectedReceiverId(undefined)
     }
-
-    const loadingChat = false
     return (
         <MainLayout>
             <section className="bg-white laptop:bg-light_grey pb-10">

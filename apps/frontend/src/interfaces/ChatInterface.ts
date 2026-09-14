@@ -25,6 +25,6 @@ export interface MessageInterface {
     message: string;
     sender: boolean;
     receiver: boolean;
-    media: string | null;
+    media: string[] | null;
     created_at: string;
 }

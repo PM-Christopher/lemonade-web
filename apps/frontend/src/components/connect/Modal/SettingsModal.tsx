@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import Switch from "react-switch";
-import {connectApi} from "@/features/connect/api";
+import {useUpdateVisibilityMutation} from "@/features/connect/mutations";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -18,28 +18,31 @@ const SettingsModal: React.FC<SettingsInterface>= ({toggle, isOpen, user_connect
     const dispatch = useAppDispatch()
     const [checked, setChecked] = useState(user_connect?.user?.visibility ?? false)
     const {user} = useSelector((state: any) => state.auth)
+    const updateVisibilityMutation = useUpdateVisibilityMutation();
 
-    const handleChange = async () => {
-        const { data } = await connectApi.updateVisibility(!checked);
-        if (data.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: data.message || "Visibility Updated",
-                    type: "success",
-                })
-            );
-            setChecked(!checked)
-            toggle()
-        } else {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Something went wrong",
-                    type: "error",
-                })
-            );
-        }
+    const handleChange = () => {
+        updateVisibilityMutation.mutate(!checked, {
+            onSuccess: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Visibility updated",
+                        type: "success",
+                    })
+                );
+                setChecked(!checked)
+                toggle()
+            },
+            onError: (err: any) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: err?.message || "Something went wrong",
+                        type: "error",
+                    })
+                );
+            },
+        })
     }
 
     return (

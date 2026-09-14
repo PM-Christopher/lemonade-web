@@ -7,7 +7,7 @@ import {Label} from "@/components/ui/label";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {useAppDispatch} from "@/redux/hook";
-import {sendInvite} from "@/features/connect/connect.slice";
+import {useSendInviteMutation} from "@/features/connect/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {getDistanceFromLatLonInKm} from "@/lib/helper";
 
@@ -15,12 +15,12 @@ type ConnectInterface = {
     toggle: () => void,
     isOpen: boolean,
     users: any
-    reloadFunc: any,
     authUser: any
 }
 
-const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reloadFunc, authUser}) => {
+const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, authUser}) => {
     const dispatch = useAppDispatch()
+    const sendInviteMutation = useSendInviteMutation();
     const [currentIndex, setCurrentIndex] = useState(0);
     const user = users[currentIndex];
     const connectSchema = yup.object({
@@ -39,29 +39,28 @@ const ConnectModal: React.FC<ConnectInterface> = ({toggle, isOpen, users, reload
     })
 
     const sendConnect = (values: {message: string})  => {
-        let data = {...values, invitee_id: user?.id}
-        dispatch(sendInvite({data})).then(res => {
-            if (res.payload.status) {
+        sendInviteMutation.mutate({...values, invitee_id: user?.id}, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: res.payload.message || "Invite sent Successfully",
+                        message: "Invite sent successfully",
                         type: "success",
                     })
                 );
                 formik.resetForm()
                 toggle()
-                reloadFunc()
-            } else {
+            },
+            onError: (err: any) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: res.payload.message,
+                        message: err?.message || "Something went wrong",
                         type: "error",
                     })
                 );
                 formik.resetForm()
-            }
+            },
         })
     }
 

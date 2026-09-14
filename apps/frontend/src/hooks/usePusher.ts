@@ -2,13 +2,15 @@
 import { pusherCon, pusherConfig } from "@/config/pusherConfig";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
-import { addToMessages } from "@/features/connect/connect.slice";
+import { useQueryClient } from "@tanstack/react-query";
+import { appendIncomingChatMessage } from "@/features/connect/queries";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 export const usePusher = (channelName: string, eventName: string) => {
     const [data, setData] = useState<any>(null);
     const { user } = useAppSelector((state: any) => state.auth);
     const dispatch = useAppDispatch();
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         const isUserChannel = channelName === "user";
@@ -21,8 +23,8 @@ export const usePusher = (channelName: string, eventName: string) => {
         const eventHandler = (receivedData: any) => {
             setData(receivedData);
 
-            if (channelName === `chat.${user?.id}`) {
-                dispatch(addToMessages({ message: receivedData.message, user }));
+            if (channelName === `chat.${user?.id}` && user?.id) {
+                appendIncomingChatMessage(queryClient, user.id, receivedData.message);
             } else if (channelName === `request.${user?.id}` && eventName === 'request.service') {
                 dispatch(
                     updateToastifyReducer({

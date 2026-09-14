@@ -11,7 +11,7 @@ import {formatString, getInitials} from "@/lib/helper";
 import {TribeInterface} from "@/interfaces/TribeInterface";
 import {useAppDispatch} from "@/redux/hook";
 import {useSelector} from "react-redux";
-import {sendInvite} from "@/features/connect/connect.slice";
+import {useSendInviteMutation} from "@/features/connect/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import Link from "next/link";
 
@@ -23,13 +23,12 @@ type UserInfoInterface = {
 }
 
 const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe}) => {
-    console.log({user})
     const dispatch = useAppDispatch()
+    const sendInviteMutation = useSendInviteMutation();
 
     const sendConnect = ()  => {
-        let data = {message: "I want to connect with you.", invitee_id: user?.id}
-        dispatch(sendInvite({data})).then(res => {
-            if (res.payload.status) {
+        sendInviteMutation.mutate({message: "I want to connect with you.", invitee_id: user?.id}, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -38,15 +37,16 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({toggle, isOpen, user, tribe
                     })
                 );
                 toggle()
-            } else {
+            },
+            onError: (err: any) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: res.payload.message,
+                        message: err?.message || "Something went wrong",
                         type: "error",
                     })
                 );
-            }
+            },
         })
     }
 
