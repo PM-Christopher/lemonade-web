@@ -11,10 +11,7 @@ type WithdrawalActionInterface = {
   toggle: () => void;
 };
 
-const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
-  isOpen,
-  toggle,
-}) => {
+const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({ isOpen, toggle }) => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -34,7 +31,7 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
             show: true,
             message: `Success `,
             type: "success",
-          })
+          }),
         );
         toggle();
       },
@@ -44,7 +41,7 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
             show: true,
             message: error?.message || `Something went wrong`,
             type: "error",
-          })
+          }),
         );
       },
     });
@@ -54,29 +51,23 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div
-        className="bg-white rounded-lg shadow-lg p-6"
-        style={{ width: "480px" }}
-      >
-        <div className="flex justify-between items-center">
+      <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
+        <div className="flex items-center justify-between">
           <p className={"text-[18px] font-semiBold"}>Approve withdrawal</p>
           <div className="cursor-pointer" onClick={toggle}>
             <XIcon />
           </div>
         </div>
-        <div
-          className={"flex flex-col"}
-          style={{ marginTop: "20px", gap: "16px" }}
-        >
+        <div className={"flex flex-col"} style={{ marginTop: "20px", gap: "16px" }}>
           <p className={"text-[14px] font-normal"}>
             Are you sure you want to approve this wallet balance withdrawal?
           </p>
           <div
-            className={"p-[16px] rounded-[12px] bg-mid-grey flex flex-col"}
+            className={"flex flex-col rounded-[12px] bg-mid-grey p-[16px]"}
             style={{ gap: "17px" }}
           >
             {/* Hardcoded placeholder data (amount/account holder/bank/account
@@ -98,45 +89,36 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
                 borderRadius: "8px",
               }}
             >
-              <p className={"font-medium text-text-grey text-[12px]"}>Amount</p>
-              <p
-                className={"text-[24px] font-semiBold"}
-                style={{ color: "#5B8601" }}
-              >
+              <p className={"text-[12px] font-medium text-text-grey"}>Amount</p>
+              <p className={"text-[24px] font-semiBold"} style={{ color: "#5B8601" }}>
                 N120,000
               </p>
             </div>
             <div className={"flex flex-col"}>
-              <p className={"text-text-grey font-medium text-[12px]"}>
-                Account holder
-              </p>
-              <p className={"font-semiBold text-[14px]"}>Funmilayo Johnson</p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Account holder</p>
+              <p className={"text-[14px] font-semiBold"}>Funmilayo Johnson</p>
             </div>
             <div className={"flex flex-col"}>
-              <p className={"text-text-grey font-medium text-[12px]"}>
-                Bank name
-              </p>
-              <p className={"font-semiBold text-[14px]"}>GTB</p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Bank name</p>
+              <p className={"text-[14px] font-semiBold"}>GTB</p>
             </div>
             <div className={"flex flex-col"}>
-              <p className={"text-text-grey font-medium text-[12px]"}>
-                Account number
-              </p>
-              <p className={"font-semiBold text-[14px]"}>0123456789</p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Account number</p>
+              <p className={"text-[14px] font-semiBold"}>0123456789</p>
             </div>
           </div>
           <div className={"flex justify-between gap-[16px]"}>
             <button
               className={
-                "border-[1px] border-light-grey-50 px-[48px] py-[11px] rounded-[12px] bg-white w-full"
+                "w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[11px]"
               }
               onClick={toggle}
             >
-              <p className={"text-black text-[16px] font-medium"}>Cancel</p>
+              <p className={"text-[16px] font-medium text-black"}>Cancel</p>
             </button>
             <button
               className={
-                "border-[1px] border-step-color px-[48px] py-[11px] rounded-[12px] bg-gradient-green w-full"
+                "w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[11px]"
               }
               onClick={isReject}
             >

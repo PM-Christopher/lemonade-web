@@ -19,91 +19,88 @@ import { browserApi } from "@/lib/browser-api";
 import { adminTransactionRoutes } from "@lemonade/api-types";
 
 export interface TransactionHistoryRow {
-    id?: number;
-    unique_id?: string;
-    txn_id?: string;
-    user_id?: string;
-    amount?: number | string;
-    fullname?: string;
-    plan?: string;
-    status?: string;
-    created_at?: string;
-    date_paid?: string;
-    wallet_id?: string;
-    subscription_type?: string;
-    user?: { fullname?: string };
-    wallet?: { wallet_id?: string };
-    [key: string]: unknown;
+  id?: number;
+  unique_id?: string;
+  txn_id?: string;
+  user_id?: string;
+  amount?: number | string;
+  fullname?: string;
+  plan?: string;
+  status?: string;
+  created_at?: string;
+  date_paid?: string;
+  wallet_id?: string;
+  subscription_type?: string;
+  user?: { fullname?: string };
+  wallet?: { wallet_id?: string };
+  [key: string]: unknown;
 }
 
 export interface TransactionListResponse {
-    history?: TransactionHistoryRow[];
-    subscribers?: number;
-    revenue?: string;
-    revenue_minor?: number;
-    total_revenue?: string;
-    total_revenue_minor?: number;
-    tickets_sold?: number;
-    total_events?: number;
-    churn_rate?: number;
-    [key: string]: unknown;
+  history?: TransactionHistoryRow[];
+  subscribers?: number;
+  revenue?: string;
+  revenue_minor?: number;
+  total_revenue?: string;
+  total_revenue_minor?: number;
+  tickets_sold?: number;
+  total_events?: number;
+  churn_rate?: number;
+  [key: string]: unknown;
 }
 
 export interface PlanSubscriptionDetailResponse {
-    info: Record<string, unknown> & {
-        fullname?: string;
-        txn_id?: string;
-        plan?: string;
-        amount?: number;
-        status?: string;
-        user_id?: string;
-    };
-    plan: { cost: string; renews: string };
-    history: TransactionHistoryRow[];
+  info: Record<string, unknown> & {
+    fullname?: string;
+    txn_id?: string;
+    plan?: string;
+    amount?: number;
+    status?: string;
+    user_id?: string;
+  };
+  plan: { cost: string; renews: string };
+  history: TransactionHistoryRow[];
 }
 
 export interface TransactionEventDetailResponse {
-    info: Record<string, unknown> & {
-        event_name?: string;
-        organizer?: string;
-        transaction_id?: string;
-        tickets_sold?: number;
-        created_at?: string;
-        status?: string;
-        user_id?: string;
-    };
-    history: TransactionHistoryRow[];
+  info: Record<string, unknown> & {
+    event_name?: string;
+    organizer?: string;
+    transaction_id?: string;
+    tickets_sold?: number;
+    created_at?: string;
+    status?: string;
+    user_id?: string;
+  };
+  history: TransactionHistoryRow[];
 }
 
 export type TransactionListType =
-    | "plan-subscriptions"
-    | "wallet-withdrawals"
-    | "boosting"
-    | "services"
-    | "events"
-    | "promotions";
+  "plan-subscriptions" | "wallet-withdrawals" | "boosting" | "services" | "events" | "promotions";
 
 export const transactionApi = {
-    getTransactionData: (trxType: TransactionListType) => {
-        switch (trxType) {
-            case "plan-subscriptions":
-                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
-            case "wallet-withdrawals":
-                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS);
-            case "boosting":
-                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
-            case "services":
-                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
-            case "events":
-                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS);
-            case "promotions":
-                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
-        }
-    },
+  getTransactionData: (trxType: TransactionListType) => {
+    switch (trxType) {
+      case "plan-subscriptions":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+      case "wallet-withdrawals":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS);
+      case "boosting":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+      case "services":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+      case "events":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS);
+      case "promotions":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+    }
+  },
 
-    getPlanSubscription: (id: number) =>
-        browserApi.get<PlanSubscriptionDetailResponse>(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`),
+  getPlanSubscription: (id: number) =>
+    browserApi.get<PlanSubscriptionDetailResponse>(
+      `${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`,
+    ),
 
-    getEventDetail: (id: number) =>
-        browserApi.get<TransactionEventDetailResponse>(`${adminTransactionRoutes.EVENT}/${id}`),
+  getEventDetail: (id: number) =>
+    browserApi.get<TransactionEventDetailResponse>(`${adminTransactionRoutes.EVENT}/${id}`),
 };

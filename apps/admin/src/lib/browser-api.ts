@@ -6,8 +6,8 @@
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
 
 export const browserApi: ApiClient = createApiClient({
-    baseURL: "/api/v1",
-    onUnauthorized: () => {
-        if (typeof window !== "undefined") window.location.href = "/login";
-    },
+  baseURL: "/api/v1",
+  onUnauthorized: () => {
+    if (typeof window !== "undefined") window.location.href = "/login";
+  },
 });

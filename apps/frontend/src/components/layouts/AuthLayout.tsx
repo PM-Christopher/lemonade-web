@@ -1,49 +1,47 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import {redirect, usePathname, useRouter} from "next/navigation";
-import {useAppDispatch} from "@/redux/hook";
+import React, { useEffect, useLayoutEffect } from "react";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hook";
 import { useMediaQuery } from "react-responsive";
 import { useCookies } from "react-cookie";
-import {setIsRouting} from "@/redux/tempSlice";
-import {useSelector} from "react-redux";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { setIsRouting } from "@/redux/tempSlice";
+import { useSelector } from "react-redux";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-    const isMobile = useMediaQuery({ query: "(max-width: 576px)" });
-    const pathname = usePathname();
-    const dispatch = useAppDispatch();
-    const router = useRouter();
-    const [cookies, setCookie, removeCookie] = useCookies(["newToken", "token"]);
-    const newToken = cookies.newToken;
-    const token = cookies.token;
+  const isMobile = useMediaQuery({ query: "(max-width: 576px)" });
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [cookies, setCookie, removeCookie] = useCookies(["newToken", "token"]);
+  const newToken = cookies.newToken;
+  const token = cookies.token;
 
-    useLayoutEffect(() => {
-        if (token) {
-            redirect("/");
-            return;
-        }
-        if (!newToken) {
-            const isAuthRoute =
-                pathname === "/signup" ||
-                pathname === "/login" ||
-                pathname === "/forgot-password" ||
-                pathname === "/reset-password";
-            if (!isAuthRoute) {
-                redirect("/login");
-            }
-        }
-    }, [pathname, newToken, token]);
+  useLayoutEffect(() => {
+    if (token) {
+      redirect("/");
+      return;
+    }
+    if (!newToken) {
+      const isAuthRoute =
+        pathname === "/signup" ||
+        pathname === "/login" ||
+        pathname === "/forgot-password" ||
+        pathname === "/reset-password";
+      if (!isAuthRoute) {
+        redirect("/login");
+      }
+    }
+  }, [pathname, newToken, token]);
 
-    useEffect(() => {
-        dispatch(setIsRouting(false));
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(setIsRouting(false));
+  }, [dispatch]);
 
-    return (
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-            <div>
-                {children}
-            </div>
-        </GoogleOAuthProvider>
-    );
-}
+  return (
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+      <div>{children}</div>
+    </GoogleOAuthProvider>
+  );
+};
 
 export default AuthLayout;

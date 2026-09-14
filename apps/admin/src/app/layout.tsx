@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "@/redux/Provider";
-import {AlertMessage} from "@/components/global/AlertMessage";
+import { AlertMessage } from "@/components/global/AlertMessage";
 
 // export const dynamic = 'force-dynamic';
 const geistSans = Geist({
@@ -30,12 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <body className={inter.className}>
+      <body className={inter.className}>
         <Providers>
-            {children}
-            <AlertMessage />
+          {children}
+          <AlertMessage />
         </Providers>
-    </body>
+      </body>
     </html>
   );
 }

@@ -13,10 +13,7 @@ type WalletMgtInterface = {
   toggle: () => void;
 };
 
-const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
-  isOpen,
-  toggle,
-}) => {
+const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) => {
   const dispatch = useDispatch<AppDispatch>();
   const updateThreshold = useUpdateWithdrawalThresholdMutation();
   const prodSchema = yup.object({
@@ -36,7 +33,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
               show: true,
               message: `Success `,
               type: "success",
-            })
+            }),
           );
           toggle();
         },
@@ -46,7 +43,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
               show: true,
               message: error?.message || `Something went wrong`,
               type: "error",
-            })
+            }),
           );
         },
       });
@@ -57,15 +54,12 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div
-        className="bg-white rounded-lg shadow-lg p-6"
-        style={{ width: "480px" }}
-      >
-        <div className="flex justify-between items-center">
+      <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
+        <div className="flex items-center justify-between">
           <p className={"text-[18px] font-semiBold"}>Withdrawal Threshold</p>
           <div className="cursor-pointer" onClick={toggle}>
             <XIcon />
@@ -74,16 +68,13 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
         <div style={{ marginTop: "20px" }}>
           <div className={"flex flex-col gap-[16px]"}>
             <div style={{ maxWidth: "328px" }}>
-              <p className={"text-text-grey text-[14px] font-normal"}>
-                Set the minimum amount that can be withdrawn from wallet
-                balance.
+              <p className={"text-[14px] font-normal text-text-grey"}>
+                Set the minimum amount that can be withdrawn from wallet balance.
               </p>
             </div>
-            <p className={"font-normal text-text-grey text-[14px]"}>Amount</p>
+            <p className={"text-[14px] font-normal text-text-grey"}>Amount</p>
             <Input
-              className={
-                "bg-light-grey h-[48px] rounded-[12px] py-[12px] px-[12px] border-none"
-              }
+              className={"h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"}
               placeholder={"Amount"}
               value={formik.values.threshold}
               onChange={formik.handleChange("threshold")}
@@ -93,15 +84,15 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
               <button
                 onClick={toggle}
                 className={
-                  "h-[48px] border-[1px] border-light-grey-50 px-[48px] py-[14px] rounded-[12px] bg-white w-full"
+                  "h-[48px] w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[14px]"
                 }
               >
-                <p className={"text-black text-[16px] font-medium"}>Cancel</p>
+                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
               <button
                 onClick={() => formik.handleSubmit()}
                 className={
-                  "h-[48px] border-[1px] border-step-color px-[48px] py-[14px] rounded-[12px] bg-gradient-green w-full"
+                  "h-[48px] w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[14px]"
                 }
               >
                 <p className={"text-[16px] font-medium text-white"}>

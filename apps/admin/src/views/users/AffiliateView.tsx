@@ -58,11 +58,7 @@ const AffiliateView = ({ userData, menuOption }: any) => {
 
   return (
     <>
-      <div
-        className={
-          "flex justify-between gap-[24px] pt-[8px] px-[12px] pb-[16px]"
-        }
-      >
+      <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
         <DataCard
           styles={"w-full"}
           title={"Total Referral Earnings"}
@@ -80,7 +76,7 @@ const AffiliateView = ({ userData, menuOption }: any) => {
           count={userData?.total_referrals || 0}
         />
       </div>
-      <div className={"flex justify-between gap-[24px] w-full"}>
+      <div className={"flex w-full justify-between gap-[24px]"}>
         <div className="flex-1 bg-white">
           {/* <GlobalTable
             headers={affiliateHeaders}
@@ -91,10 +87,7 @@ const AffiliateView = ({ userData, menuOption }: any) => {
             <thead>
               <tr className="bg-mid-grey">
                 {affiliateHeaders.map((header, idx) => (
-                  <th
-                    className="p-4 text-left text-[12px] text-text-grey font-semiBold"
-                    key={idx}
-                  >
+                  <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
                     {header}
                   </th>
                 ))}
@@ -105,22 +98,16 @@ const AffiliateView = ({ userData, menuOption }: any) => {
                 paginatedData.map((row: any, index: any) => (
                   <tr
                     key={index}
-                    className="border-b border-grey-20 h-[72px] cursor-pointer"
+                    className="h-[72px] cursor-pointer border-b border-grey-20"
                     onClick={() => router.push(`/users/affiliate/${row.id}`)}
                   >
-                    <td className={"p-4 font-medium text-sm font-sans"}>
-                      {row.unique_id}
-                    </td>
-                    <td className={"p-4 font-medium text-sm font-sans"}>
-                      {row.name}
-                    </td>
-                    <td className={"p-4 font-medium text-sm font-sans"}>
-                      {row.total_referrals}
-                    </td>
-                    <td className={"p-4 font-medium text-sm font-sans"}>
+                    <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>{row.name}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>{row.total_referrals}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
                       {row.subscribed_referrals}
                     </td>
-                    <td className={"p-4 font-medium text-sm font-sans"}>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
                       ₦{Number(row.earnings).toLocaleString()}
                     </td>
                   </tr>
@@ -145,19 +132,17 @@ const AffiliateView = ({ userData, menuOption }: any) => {
             perPage={perPage}
           />
         </div>
-        <div className="flex flex-col border-[1px] border-yellow-accent-3 rounded-[12px] h-fit">
-          <div className="w-[326px] h-[48px] bg-yellow-accent-1 rounded-tl-[12px] rounded-tr-[12px]">
+        <div className="flex h-fit flex-col rounded-[12px] border-[1px] border-yellow-accent-3">
+          <div className="h-[48px] w-[326px] rounded-tl-[12px] rounded-tr-[12px] bg-yellow-accent-1">
             <div className="flex items-center px-[24px] py-[16px]">
-              <p className="font-semibold text-[12px] text-light-black">
-                Top Referrers
-              </p>
+              <p className="text-[12px] font-semibold text-light-black">Top Referrers</p>
             </div>
           </div>
-          <div className="flex flex-col bg-yellow-accent-2 rounded-bl-[12px] rounded-br-[12px]">
+          <div className="flex flex-col rounded-bl-[12px] rounded-br-[12px] bg-yellow-accent-2">
             {userData?.top_referrers?.map((item: any, index: number) => (
               <div key={index} className="flex">
-                <div className="w-[221px] h-[72px] p-[24px] px-[16px] flex gap-[8px] items-center">
-                  <div className="w-[24px] h-[24px] bg-gray-600 rounded-full"></div>
+                <div className="flex h-[72px] w-[221px] items-center gap-[8px] p-[24px] px-[16px]">
+                  <div className="h-[24px] w-[24px] rounded-full bg-gray-600"></div>
                   <p>{item?.name}</p>
                 </div>
                 <div className="w-[105px] p-[24px] px-[16px]">

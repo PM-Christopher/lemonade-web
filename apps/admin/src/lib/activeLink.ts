@@ -4,5 +4,5 @@
 // (BottomNav.tsx), which is a real react-hooks/rules-of-hooks violation
 // (hooks can't be called from a loop/callback).
 export const isActiveLink = (pathname: string, path: string, exact: boolean = false) => {
-    return exact ? pathname === path : pathname.includes(path);
+  return exact ? pathname === path : pathname.includes(path);
 };

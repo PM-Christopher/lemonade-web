@@ -11,29 +11,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppDispatch } from "@/redux/hook";
-import {useFormik} from "formik";
+import { useFormik } from "formik";
 import * as yup from "yup";
-import {FormikButton} from "@/components/global/FormikButton";
-import {useBanksQuery} from "@/features/shared/queries";
-import {useVerifyAccountMutation} from "@/features/shared/mutations";
-import {useCreateBankAccountMutation} from "@/features/settings/mutations";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
+import { FormikButton } from "@/components/global/FormikButton";
+import { useBanksQuery } from "@/features/shared/queries";
+import { useVerifyAccountMutation } from "@/features/shared/mutations";
+import { useCreateBankAccountMutation } from "@/features/settings/mutations";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 type BankAccountInterface = {
   isOpen: boolean;
   toggle: () => void;
 };
 
-const BankAccountModal: React.FC<BankAccountInterface> = ({
-  isOpen,
-  toggle,
-}) => {
+const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) => {
   const [bankCode, setBankCode] = useState<string>("");
   const [accountNumber, setAccountNumber] = useState("");
-   const [error, setError] = useState("");
+  const [error, setError] = useState("");
   const dispatch = useAppDispatch();
 
-  const { data: banksData, isLoading: loading } = useBanksQuery({enabled: isOpen});
+  const { data: banksData, isLoading: loading } = useBanksQuery({ enabled: isOpen });
   const data = banksData?.banks ?? [];
   const verifyAccountMutation = useVerifyAccountMutation();
   const createBankAccountMutation = useCreateBankAccountMutation();
@@ -48,47 +45,50 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
     initialValues: {
       bank_name: "",
       account_number: "",
-      account_name: ""
+      account_name: "",
     },
     validationSchema: bankAccountSchema,
     onSubmit: async (values) => {
       createBankAccountMutation.mutate(values, {
         onSuccess: () => {
-          formik.resetForm()
+          formik.resetForm();
           dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Account created successfully",
-                type: "success",
-              })
+            updateToastifyReducer({
+              show: true,
+              message: "Account created successfully",
+              type: "success",
+            }),
           );
-          toggle()
+          toggle();
         },
         onError: (err: any) => {
           dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: err?.message || "Error creating account",
-                type: "error",
-              })
+            updateToastifyReducer({
+              show: true,
+              message: err?.message || "Error creating account",
+              type: "error",
+            }),
           );
         },
       });
     },
   });
 
-  const getAccount =  () => {
+  const getAccount = () => {
     formik.setFieldValue("account_name", "");
-    verifyAccountMutation.mutate({bankCode, accountNumber}, {
-      onSuccess: (res) => {
-        setError('')
-        formik.setFieldValue("account_name", res.account_name);
+    verifyAccountMutation.mutate(
+      { bankCode, accountNumber },
+      {
+        onSuccess: (res) => {
+          setError("");
+          formik.setFieldValue("account_name", res.account_name);
+        },
+        onError: () => {
+          setError("Invalid account details");
+          formik.setFieldValue("account_name", "");
+        },
       },
-      onError: () => {
-        setError("Invalid account details");
-        formik.setFieldValue("account_name", "");
-      },
-    });
+    );
   };
 
   useEffect(() => {
@@ -104,88 +104,86 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${
+      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
       <form onSubmit={formik.handleSubmit}>
-        <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
-          <div className="flex justify-between items-center">
+        <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans font-semibold text-[18p] leading-[27px] tracking-custom">
+              <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
                 Bank Account
               </p>
             </div>
             <div>
-              <FormikButton loading={formik.isSubmitting} title="Submit" error={formik.isValid}/>
+              <FormikButton loading={formik.isSubmitting} title="Submit" error={formik.isValid} />
             </div>
           </div>
           <div className="mt-10">
-            <div className="grid gap-2 mt-[24px]">
+            <div className="mt-[24px] grid gap-2">
               <Label
-                  htmlFor="fullname"
-                  className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey"
+                htmlFor="fullname"
+                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
               >
                 Bank Name
               </Label>
               <Select
-                  onValueChange={(value) => {
-                    const selectedItem = JSON.parse(value);
-                    setBankCode(selectedItem.code);
-                    formik.setFieldValue('bank_name', selectedItem.name);
-                  }}
+                onValueChange={(value) => {
+                  const selectedItem = JSON.parse(value);
+                  setBankCode(selectedItem.code);
+                  formik.setFieldValue("bank_name", selectedItem.name);
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Bank" />
                 </SelectTrigger>
                 <SelectContent className="form-font">
                   {data?.map((item: any, index: number) => (
-                      <SelectItem value={JSON.stringify(item)} key={index}>{item?.name}</SelectItem>
+                    <SelectItem value={JSON.stringify(item)} key={index}>
+                      {item?.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2 mt-[24px]">
+            <div className="mt-[24px] grid gap-2">
               <Label
-                  htmlFor="fullname"
-                  className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey"
+                htmlFor="fullname"
+                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
               >
                 Account number
               </Label>
               <Input
-                  id="fullname"
-                  type="number"
-                  placeholder=""
-                  className="h-12 rounded-xl bg-light_grey form-font border-0"
-                  onChange={(e) => {
-                    setAccountNumber(e.target.value);
-                    formik.setFieldValue("account_number", e.target.value);
-                  }}
+                id="fullname"
+                type="number"
+                placeholder=""
+                className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                onChange={(e) => {
+                  setAccountNumber(e.target.value);
+                  formik.setFieldValue("account_number", e.target.value);
+                }}
               />
             </div>
-            <div className="grid gap-2 mt-[24px]">
+            <div className="mt-[24px] grid gap-2">
               <Label
-                  htmlFor="fullname"
-                  className="font-sans font-normal text-[14px] leading-[16.8px] text-text-grey"
+                htmlFor="fullname"
+                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
               >
                 Account name
               </Label>
               <Input
-                  id="fullname"
-                  type="text"
-                  placeholder=""
-                  className="h-12 rounded-xl bg-light_grey form-font border-0"
-                  readOnly={true}
-                  value={formik.values.account_name}
+                id="fullname"
+                type="text"
+                placeholder=""
+                className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                readOnly={true}
+                value={formik.values.account_name}
               />
-              {
-                  error && (
-                      <p className={'text-[13px] text-red-2'}>{error}</p>
-                  )
-              }
+              {error && <p className={"text-[13px] text-red-2"}>{error}</p>}
             </div>
           </div>
         </div>

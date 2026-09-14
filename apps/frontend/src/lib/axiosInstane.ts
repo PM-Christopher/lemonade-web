@@ -14,16 +14,16 @@ import axios from "axios";
 // invalidation after a mutation; per-query staleness now belongs to
 // TanStack Query as each domain migrates (see docs/ARCHITECTURE.md §11).
 export const axiosInstance = axios.create({
-    baseURL: "/api/v1",
-    headers: { "Content-Type": "application/json" },
+  baseURL: "/api/v1",
+  headers: { "Content-Type": "application/json" },
 });
 
 function clearLegacyCookies() {
-    // Best-effort cleanup of cookies from the pre-BFF auth flow
-    // ("token"/"refresh_token", both js-readable) — harmless if absent.
-    ["token", "refresh_token"].forEach((name) => {
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-    });
+  // Best-effort cleanup of cookies from the pre-BFF auth flow
+  // ("token"/"refresh_token", both js-readable) — harmless if absent.
+  ["token", "refresh_token"].forEach((name) => {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+  });
 }
 
 /* ---------------- Global Error Handling ---------------- */
@@ -32,12 +32,12 @@ function clearLegacyCookies() {
 // the time the browser sees a 401 here, that refresh already happened and
 // failed — the session is genuinely over, not just stale.
 axiosInstance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            clearLegacyCookies();
-            if (typeof window !== "undefined") window.location.href = "/login";
-        }
-        return Promise.reject(error);
-    },
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      clearLegacyCookies();
+      if (typeof window !== "undefined") window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
 );

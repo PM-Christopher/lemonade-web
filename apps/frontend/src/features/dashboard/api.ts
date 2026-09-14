@@ -8,19 +8,19 @@ import type { EventInterface } from "@/interfaces/EventInterface";
 import type { BusinessInterface } from "@/interfaces/BusinessInterface";
 
 export interface DashboardTribesResponse {
-    tribes: TribeInterface[];
+  tribes: TribeInterface[];
 }
 
 export interface DashboardEventsResponse {
-    events: EventInterface[];
+  events: EventInterface[];
 }
 
 export interface DashboardBusinessesResponse {
-    businesses: BusinessInterface[];
+  businesses: BusinessInterface[];
 }
 
 export const dashboardApi = {
-    getTribes: () => browserApi.get<DashboardTribesResponse>(userDashboardRoutes.TRIBES),
-    getEvents: () => browserApi.get<DashboardEventsResponse>(userDashboardRoutes.EVENTS),
-    getBusinesses: () => browserApi.get<DashboardBusinessesResponse>(userDashboardRoutes.BUSINESSES),
+  getTribes: () => browserApi.get<DashboardTribesResponse>(userDashboardRoutes.TRIBES),
+  getEvents: () => browserApi.get<DashboardEventsResponse>(userDashboardRoutes.EVENTS),
+  getBusinesses: () => browserApi.get<DashboardBusinessesResponse>(userDashboardRoutes.BUSINESSES),
 };

@@ -10,27 +10,27 @@ import { ADMIN_TOKEN_COOKIE } from "@/lib/cookie-names";
 const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password"];
 
 function isPublic(pathname: string) {
-    return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 export function middleware(req: NextRequest) {
-    const { pathname, search } = req.nextUrl;
+  const { pathname, search } = req.nextUrl;
 
-    if (isPublic(pathname)) return NextResponse.next();
+  if (isPublic(pathname)) return NextResponse.next();
 
-    // Login is now cut over to the httpOnly cookie (see
-    // src/lib/server-api.ts) — a session created before this cutover won't
-    // carry it and will be redirected to log in again once.
-    const token = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
-    if (token) return NextResponse.next();
+  // Login is now cut over to the httpOnly cookie (see
+  // src/lib/server-api.ts) — a session created before this cutover won't
+  // carry it and will be redirected to log in again once.
+  const token = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
+  if (token) return NextResponse.next();
 
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
+  const loginUrl = req.nextUrl.clone();
+  loginUrl.pathname = "/login";
+  loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
 
-    return NextResponse.redirect(loginUrl);
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-    matcher: ["/((?!api|_next|.*\\..*).*)"],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

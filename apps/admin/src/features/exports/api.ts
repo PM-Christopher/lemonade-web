@@ -4,15 +4,15 @@
 // unwraps — see app/api/exports/csv/route.ts for why this goes through its
 // own dedicated proxy instead.
 export const exportsApi = {
-    getCSV: async (table: string): Promise<string> => {
-        const response = await fetch(`/api/exports/csv?table=${encodeURIComponent(table)}`);
-        const contentType = response.headers.get("content-type") ?? "";
+  getCSV: async (table: string): Promise<string> => {
+    const response = await fetch(`/api/exports/csv?table=${encodeURIComponent(table)}`);
+    const contentType = response.headers.get("content-type") ?? "";
 
-        if (!response.ok || contentType.includes("application/json")) {
-            const body = await response.json().catch(() => ({}));
-            throw new Error(body?.message || "Failed to export CSV");
-        }
+    if (!response.ok || contentType.includes("application/json")) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body?.message || "Failed to export CSV");
+    }
 
-        return response.text();
-    },
+    return response.text();
+  },
 };

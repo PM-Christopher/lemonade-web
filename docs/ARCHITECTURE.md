@@ -67,23 +67,23 @@ code, have no tests, no lint configuration, no CI, and — critically — both b
 
 ### The seven decisions in this document
 
-| # | Decision | Replaces | Priority |
-|---|---|---|---|
-| 1 | Consolidate both apps into one pnpm + Turborepo monorepo; backend stays in its own repo | Three independent repos | **MUST** |
-| 2 | Five narrow shared packages with enforced boundaries, not one `@lemonade/shared` | 32 diverged copy-paste files | **MUST** |
-| 3 | TanStack Query owns server state; Redux keeps only real client state | 151 hand-written `createAsyncThunk`s | **MUST** |
-| 4 | Move the bearer token into an httpOnly cookie brokered by Next Route Handlers | Token in localStorage + 87 manual `Authorization` headers | **MUST** |
-| 5 | Generate TypeScript types from the backend contract; stop hand-writing them | 574 `any` annotations | **MUST** |
-| 6 | React Hook Form + Zod, with schemas mirroring backend `FormRequest` rules | Formik + Yup across 45 files | **SHOULD** |
-| 7 | One UI primitive library and one token set; delete MUI, antd, Evergreen | Four overlapping component systems | **SHOULD** |
+| #   | Decision                                                                                | Replaces                                                  | Priority   |
+| --- | --------------------------------------------------------------------------------------- | --------------------------------------------------------- | ---------- |
+| 1   | Consolidate both apps into one pnpm + Turborepo monorepo; backend stays in its own repo | Three independent repos                                   | **MUST**   |
+| 2   | Five narrow shared packages with enforced boundaries, not one `@lemonade/shared`        | 32 diverged copy-paste files                              | **MUST**   |
+| 3   | TanStack Query owns server state; Redux keeps only real client state                    | 151 hand-written `createAsyncThunk`s                      | **MUST**   |
+| 4   | Move the bearer token into an httpOnly cookie brokered by Next Route Handlers           | Token in localStorage + 87 manual `Authorization` headers | **MUST**   |
+| 5   | Generate TypeScript types from the backend contract; stop hand-writing them             | 574 `any` annotations                                     | **MUST**   |
+| 6   | React Hook Form + Zod, with schemas mirroring backend `FormRequest` rules               | Formik + Yup across 45 files                              | **SHOULD** |
+| 7   | One UI primitive library and one token set; delete MUI, antd, Evergreen                 | Four overlapping component systems                        | **SHOULD** |
 
 ### Sequencing, in one line
 
 **Make it work → put gates around it → consolidate → upgrade once → refactor behind the gates.**
 
 Repairing the API contract and standing up CI comes first because every later phase depends on being
-able to tell whether a change broke something. Version upgrades land *after* monorepo consolidation
-so they are done once instead of twice, and *before* the large refactors so the refactors are not
+able to tell whether a change broke something. Version upgrades land _after_ monorepo consolidation
+so they are done once instead of twice, and _before_ the large refactors so the refactors are not
 written twice.
 
 **Effort shape.** Phase 0 is days, not weeks, and restores a working system. Phases 1–2 are
@@ -99,40 +99,40 @@ All figures were measured against the working trees on 10 September 2026 (backen
 
 ### Repositories
 
-| Repo | Stack | src LOC | .tsx | Router | Tests | CI |
-|---|---|---:|---:|---|---|---|
-| `lemonade-backend` | Laravel 13 · PHP 8.3 | — | — | 288 routes `/v1/*` | PHPUnit 12 + Architecture suite | `DO_DEV.yml` |
-| `lemonade-admin` | Next 15.1.11 · React 18 | 14,667 | 102 | App Router | None | None |
-| `lemonade-frontend` | Next 14.2.7 · React 18 | 35,018 | 177 | App Router | None | None |
+| Repo                | Stack                   | src LOC | .tsx | Router             | Tests                           | CI           |
+| ------------------- | ----------------------- | ------: | ---: | ------------------ | ------------------------------- | ------------ |
+| `lemonade-backend`  | Laravel 13 · PHP 8.3    |       — |    — | 288 routes `/v1/*` | PHPUnit 12 + Architecture suite | `DO_DEV.yml` |
+| `lemonade-admin`    | Next 15.1.11 · React 18 |  14,667 |  102 | App Router         | None                            | None         |
+| `lemonade-frontend` | Next 14.2.7 · React 18  |  35,018 |  177 | App Router         | None                            | None         |
 
 ### Measured debt
 
-| Metric | Count |
-|---|---:|
-| `: any` annotations | 574 |
-| `createAsyncThunk` | 151 |
-| Manual bearer headers | 87 |
-| Hardcoded `[Npx]` classes | 7,041 |
-| `console.log` left in | 62 |
-| Tests / lint configs / CI pipelines | 0 |
+| Metric                              | Count |
+| ----------------------------------- | ----: |
+| `: any` annotations                 |   574 |
+| `createAsyncThunk`                  |   151 |
+| Manual bearer headers               |    87 |
+| Hardcoded `[Npx]` classes           | 7,041 |
+| `console.log` left in               |    62 |
+| Tests / lint configs / CI pipelines |     0 |
 
 ### What the backend actually guarantees
 
 This is the contract the frontends must be written against. It is stable and well-defined — the
 frontends simply do not currently honour it.
 
-| Concern | Backend contract |
-|---|---|
-| Base path | `apiPrefix: ''` in `bootstrap/app.php:44` → routes live at `/v1/{admin\|user\|shared}/…`, auto-discovered per directory by `routes/api.php` |
-| Success envelope | `{ success: true, message: string, data?: unknown }` — `data` is omitted entirely when null |
-| Error envelope | `{ success: false, message: string, error_code: string, errors?: Record<string,string[]> }` |
-| Error codes | 18-case `App\Enums\Shared\ErrorCode` — `validation-failed`, `credentials-not-valid`, `account-suspended`, `subscription-required`, `plan-feature-required`, … |
-| Validation failures | HTTP 422, `error_code: validation-failed`, `message` = first error, `errors` = full Laravel bag |
-| Auth | Two Sanctum guards — `auth:user` (User model) and `auth:admin` (Admin model). Separate token namespaces. |
-| Token abilities | `TokenType` enum gates routes via `ability:` middleware — `access_token`, `refresh_token`, `password_reset`, `password_reset_verification`, `two_factor`, … |
-| Refresh | `POST /v1/user/auth/refresh` — token in the JSON **body**, no auth header read |
-| Money | `App\Support\Money` — minor units throughout; never floats |
-| Pagination | **Only 10 `paginate()` call sites across ~280 actions.** Most list endpoints return unbounded collections. |
+| Concern             | Backend contract                                                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base path           | `apiPrefix: ''` in `bootstrap/app.php:44` → routes live at `/v1/{admin\|user\|shared}/…`, auto-discovered per directory by `routes/api.php`                   |
+| Success envelope    | `{ success: true, message: string, data?: unknown }` — `data` is omitted entirely when null                                                                   |
+| Error envelope      | `{ success: false, message: string, error_code: string, errors?: Record<string,string[]> }`                                                                   |
+| Error codes         | 18-case `App\Enums\Shared\ErrorCode` — `validation-failed`, `credentials-not-valid`, `account-suspended`, `subscription-required`, `plan-feature-required`, … |
+| Validation failures | HTTP 422, `error_code: validation-failed`, `message` = first error, `errors` = full Laravel bag                                                               |
+| Auth                | Two Sanctum guards — `auth:user` (User model) and `auth:admin` (Admin model). Separate token namespaces.                                                      |
+| Token abilities     | `TokenType` enum gates routes via `ability:` middleware — `access_token`, `refresh_token`, `password_reset`, `password_reset_verification`, `two_factor`, …   |
+| Refresh             | `POST /v1/user/auth/refresh` — token in the JSON **body**, no auth header read                                                                                |
+| Money               | `App\Support\Money` — minor units throughout; never floats                                                                                                    |
+| Pagination          | **Only 10 `paginate()` call sites across ~280 actions.** Most list endpoints return unbounded collections.                                                    |
 
 ### How the frontends are built today
 
@@ -150,7 +150,7 @@ const { authToken } = useSelector((s: RootState) => s.auth);
 const { reportData } = useSelector((s: RootState) => s.report) as { reportData: any };
 
 // client-side pagination over the whole dataset
-const totalPages    = Math.ceil(reportData?.reports?.length / perPage);
+const totalPages = Math.ceil(reportData?.reports?.length / perPage);
 const paginatedData = reportData?.reports?.slice(startIndex, startIndex + perPage);
 
 useEffect(() => {
@@ -164,14 +164,14 @@ useEffect(() => {
 clearest single argument for a shared package: the code was already meant to be shared, and was
 copied instead.
 
-| File | Admin | Frontend | State |
-|---|---|---|---|
-| `lib/axiosInstane.ts` | No auth interceptor; 401 → wipe cookies + `location.href` | Auth interceptor; refresh-on-403 with request queue; 5-min cache on all GETs | Deeply diverged |
-| `lib/helper.ts` | 33 lines | 146 lines | 117 differing lines |
-| `hooks/useRequest.tsx` | 50 lines | 60 lines | 58 differing lines |
-| `lib/dateTimeFormatter.ts` | 66 lines | 68 lines | 81 differing lines |
-| `components/ui/button.tsx` | shadcn `new-york` | shadcn `default` | Different design systems |
-| `lib/checkError.ts`, `lib/utils.ts`, `redux/hook.ts`, +6 | Byte-identical duplicates | | Pure duplication |
+| File                                                     | Admin                                                     | Frontend                                                                     | State                    |
+| -------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------ |
+| `lib/axiosInstane.ts`                                    | No auth interceptor; 401 → wipe cookies + `location.href` | Auth interceptor; refresh-on-403 with request queue; 5-min cache on all GETs | Deeply diverged          |
+| `lib/helper.ts`                                          | 33 lines                                                  | 146 lines                                                                    | 117 differing lines      |
+| `hooks/useRequest.tsx`                                   | 50 lines                                                  | 60 lines                                                                     | 58 differing lines       |
+| `lib/dateTimeFormatter.ts`                               | 66 lines                                                  | 68 lines                                                                     | 81 differing lines       |
+| `components/ui/button.tsx`                               | shadcn `new-york`                                         | shadcn `default`                                                             | Different design systems |
+| `lib/checkError.ts`, `lib/utils.ts`, `redux/hook.ts`, +6 | Byte-identical duplicates                                 |                                                                              | Pure duplication         |
 
 ---
 
@@ -195,7 +195,7 @@ Ordered by severity. Each is a verified finding with a file reference, not a sty
 - **Evidence** — `API-BREAKING-CHANGES.md` documents changes the frontends never adopted: the
   refresh token moved from the `Authorization` header into the JSON body; `callback_url` was renamed
   to `redirect_url` on tribe-join and job-pay.
-- **Impact** — These fail *after* the prefix is corrected, and two of them fail silently rather than
+- **Impact** — These fail _after_ the prefix is corrected, and two of them fail silently rather than
   loudly — a renamed field is simply absent.
 - **Fix** — Work through `API-MIGRATION-AUDIT.md` endpoint by endpoint. This is the single
   highest-value document in the backend repo for this phase.
@@ -225,7 +225,7 @@ Ordered by severity. Each is a verified finding with a file reference, not a sty
 #### 3.5 Admin has no route protection at all **[MUST]**
 
 - **Evidence** — No `middleware.ts` anywhere in `lemonade-admin`. The user app has one, but it only
-  checks that a `token` cookie is *present*, never that it is valid.
+  checks that a `token` cookie is _present_, never that it is valid.
 - **Impact** — Admin route protection is entirely incidental — it depends on an API call failing and
   an axios interceptor redirecting. Every admin page shells out, renders, and only then bounces.
   Server-rendered admin content is not gated.
@@ -286,20 +286,20 @@ Ordered by severity. Each is a verified finding with a file reference, not a sty
 
 ### P2 — maintainability and developer experience
 
-| Finding | Evidence | Priority |
-|---|---|---|
-| `strict: true` is defeated by 574 `any` annotations | 190 admin, 384 frontend; plus `as { reportData: any }` casts on selectors | **MUST** |
-| No ESLint config in either app, despite a `next lint` script | No `.eslintrc*` / `eslint.config.*` in either repo | **MUST** |
-| No Prettier, no formatting convention | Tabs and spaces, 2- and 4-space indents, mixed quote styles within single files | **SHOULD** |
-| Zero test files in either app | Backend has PHPUnit + an Architecture suite; frontends have nothing | **MUST** |
-| No CI for either app | Backend has `.github/workflows/DO_DEV.yml`; neither Next app has `.github/` | **MUST** |
-| SVGR configured for webpack, but admin dev runs Turbopack | `dev: "next dev --turbopack"` with an SVGR loader in `webpack(config)`, which Turbopack does not read. 116 SVGs are imported as components (`import FlameIcon from "@/icons/flameIcon.svg"`), typed `any` via `svg.d.ts`. | **MUST** |
-| Four overlapping component systems | MUI, antd, Evergreen and Radix/shadcn all installed; MUI is imported in **1** admin file and **0** frontend files, antd in 1–2, Evergreen in 3–4 | **SHOULD** |
-| Dead dependencies | 31 of 58 admin and 19 of 66 frontend runtime deps have no direct import. Confirmed dead: `react-quill`, `draft-js`, `react-draft-wysiwyg` (zero references anywhere), `zod` and `zustand` in admin, two date pickers, two scroll-into-view libraries. | **SHOULD** |
-| 7,041 hardcoded pixel classes | `w-[285px]`, `text-[12px]`, `rounded-[12px]` — no scale, no tokens, no responsive story | **NICE** |
-| Decorative controls | Reporting page ships a search input with no handler and two filter dropdowns that are static `<div>`s | **SHOULD** |
-| 62 `console.log` calls in shipped code | Includes `console.log(status, "status error")` in the admin interceptor | **SHOULD** |
-| Deprecated Next image config | Both apps use `images.domains`, superseded by `images.remotePatterns` | **SHOULD** |
+| Finding                                                      | Evidence                                                                                                                                                                                                                                              | Priority   |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `strict: true` is defeated by 574 `any` annotations          | 190 admin, 384 frontend; plus `as { reportData: any }` casts on selectors                                                                                                                                                                             | **MUST**   |
+| No ESLint config in either app, despite a `next lint` script | No `.eslintrc*` / `eslint.config.*` in either repo                                                                                                                                                                                                    | **MUST**   |
+| No Prettier, no formatting convention                        | Tabs and spaces, 2- and 4-space indents, mixed quote styles within single files                                                                                                                                                                       | **SHOULD** |
+| Zero test files in either app                                | Backend has PHPUnit + an Architecture suite; frontends have nothing                                                                                                                                                                                   | **MUST**   |
+| No CI for either app                                         | Backend has `.github/workflows/DO_DEV.yml`; neither Next app has `.github/`                                                                                                                                                                           | **MUST**   |
+| SVGR configured for webpack, but admin dev runs Turbopack    | `dev: "next dev --turbopack"` with an SVGR loader in `webpack(config)`, which Turbopack does not read. 116 SVGs are imported as components (`import FlameIcon from "@/icons/flameIcon.svg"`), typed `any` via `svg.d.ts`.                             | **MUST**   |
+| Four overlapping component systems                           | MUI, antd, Evergreen and Radix/shadcn all installed; MUI is imported in **1** admin file and **0** frontend files, antd in 1–2, Evergreen in 3–4                                                                                                      | **SHOULD** |
+| Dead dependencies                                            | 31 of 58 admin and 19 of 66 frontend runtime deps have no direct import. Confirmed dead: `react-quill`, `draft-js`, `react-draft-wysiwyg` (zero references anywhere), `zod` and `zustand` in admin, two date pickers, two scroll-into-view libraries. | **SHOULD** |
+| 7,041 hardcoded pixel classes                                | `w-[285px]`, `text-[12px]`, `rounded-[12px]` — no scale, no tokens, no responsive story                                                                                                                                                               | **NICE**   |
+| Decorative controls                                          | Reporting page ships a search input with no handler and two filter dropdowns that are static `<div>`s                                                                                                                                                 | **SHOULD** |
+| 62 `console.log` calls in shipped code                       | Includes `console.log(status, "status error")` in the admin interceptor                                                                                                                                                                               | **SHOULD** |
+| Deprecated Next image config                                 | Both apps use `images.domains`, superseded by `images.remotePatterns`                                                                                                                                                                                 | **SHOULD** |
 
 > **Backend observation, out of scope.** `app/Exceptions/Handler.php` defines `isApiRoute()` as
 > `str_starts_with($request->path(), 'api/')`, with a comment asserting routes are served under
@@ -346,7 +346,7 @@ Ordered by severity. Each is a verified finding with a file reference, not a sty
 **The backend owns business logic. The frontends own presentation and interaction.** Every rule that
 decides what is true — whether a tribe join is paid, what a creator earns, whether an escrow can
 release, whether a plan grants a feature — lives in a Laravel action and is enforced by a policy. The
-frontends may *mirror* a rule for responsiveness (disable a button, show a validation hint) but may
+frontends may _mirror_ a rule for responsiveness (disable a button, show a validation hint) but may
 never be the only place it exists.
 
 This matters concretely: `app/Support/Money.php` works in minor units and the backend has a
@@ -355,29 +355,29 @@ fee arithmetic, no client-side balance derivation, no client-side proration.
 
 ### Responsibility boundaries
 
-| Concern | Backend | Shared pkg | App |
-|---|---|---|---|
-| Business rules, money arithmetic, ledger | **Owns** | — | — |
-| Authorization decisions | **Owns** (8 Policies) | Predicate helpers reading server-sent flags | Renders / hides accordingly |
-| Validation | **Authority** (FormRequest) | Zod schemas mirroring it | Binds schema to form |
-| Contract types | **Source** (routes + Resources) | **Generated**, published | Consumes only |
-| HTTP transport, refresh, error normalization | — | **Owns** | Consumes only |
-| Query keys, staleness, invalidation | — | Factory helpers | **Owns** per feature |
-| Routing, layout, copy, navigation | — | — | **Owns** |
-| UI primitives & design tokens | — | **Owns** | Composes |
-| Feature components (EventCard, TribeHeader) | — | — | **Owns** |
+| Concern                                      | Backend                         | Shared pkg                                  | App                         |
+| -------------------------------------------- | ------------------------------- | ------------------------------------------- | --------------------------- |
+| Business rules, money arithmetic, ledger     | **Owns**                        | —                                           | —                           |
+| Authorization decisions                      | **Owns** (8 Policies)           | Predicate helpers reading server-sent flags | Renders / hides accordingly |
+| Validation                                   | **Authority** (FormRequest)     | Zod schemas mirroring it                    | Binds schema to form        |
+| Contract types                               | **Source** (routes + Resources) | **Generated**, published                    | Consumes only               |
+| HTTP transport, refresh, error normalization | —                               | **Owns**                                    | Consumes only               |
+| Query keys, staleness, invalidation          | —                               | Factory helpers                             | **Owns** per feature        |
+| Routing, layout, copy, navigation            | —                               | —                                           | **Owns**                    |
+| UI primitives & design tokens                | —                               | **Owns**                                    | Composes                    |
+| Feature components (EventCard, TribeHeader)  | —                               | —                                           | **Owns**                    |
 
 ### Common architecture, different postures
 
-| | Admin | Frontend (user app) |
-|---|---|---|
-| Audience | Small, authenticated, trained, desktop | Public + authenticated, mobile-first, at scale |
-| Guard | `auth:admin` | `auth:user` |
-| Dominant surface | Dense tables, detail panes, bulk actions | Feeds, media, forms, checkout, chat |
-| Rendering bias | Client-heavy is acceptable; interactivity dominates | Server Components wherever the page is readable — SEO and first paint matter |
-| Caching bias | Short `staleTime`; operators need current state | Longer for discovery content, zero for wallet/tickets/escrow |
-| Bundle budget | Relaxed | Strict — mobile network is the constraint |
-| Realtime | Pusher for moderation queues | Pusher for chat + FCM for push |
+|                  | Admin                                               | Frontend (user app)                                                          |
+| ---------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Audience         | Small, authenticated, trained, desktop              | Public + authenticated, mobile-first, at scale                               |
+| Guard            | `auth:admin`                                        | `auth:user`                                                                  |
+| Dominant surface | Dense tables, detail panes, bulk actions            | Feeds, media, forms, checkout, chat                                          |
+| Rendering bias   | Client-heavy is acceptable; interactivity dominates | Server Components wherever the page is readable — SEO and first paint matter |
+| Caching bias     | Short `staleTime`; operators need current state     | Longer for discovery content, zero for wallet/tickets/escrow                 |
+| Bundle budget    | Relaxed                                             | Strict — mobile network is the constraint                                    |
+| Realtime         | Pusher for moderation queues                        | Pusher for chat + FCM for push                                               |
 
 ---
 
@@ -493,12 +493,12 @@ before hydration.
 Four files carry a disproportionate share of the complexity and should be treated as named work items
 rather than absorbed into a general refactor:
 
-| File | Lines | Problem | Target |
-|---|---:|---|---|
-| `components/Skeletons.tsx` | 1,394 | Every loading state in the app in one file; guarantees merge conflicts | Colocate each skeleton with its feature; use route-level `loading.tsx` for page-level states |
-| `features/events/event.slice.ts` | 937 | Server cache, request state and UI state in one reducer | Split into `queries.ts` / `mutations.ts`; slice disappears |
-| `app/(main)/event/create-event/page.tsx` | 893 | Multi-step form, validation, uploads and submission in one client component | Step components + one Zod schema per step + a typed wizard hook |
-| `features/tribes/tribe.slice.ts` | 752 | Same as events | Same as events |
+| File                                     | Lines | Problem                                                                     | Target                                                                                       |
+| ---------------------------------------- | ----: | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `components/Skeletons.tsx`               | 1,394 | Every loading state in the app in one file; guarantees merge conflicts      | Colocate each skeleton with its feature; use route-level `loading.tsx` for page-level states |
+| `features/events/event.slice.ts`         |   937 | Server cache, request state and UI state in one reducer                     | Split into `queries.ts` / `mutations.ts`; slice disappears                                   |
+| `app/(main)/event/create-event/page.tsx` |   893 | Multi-step form, validation, uploads and submission in one client component | Step components + one Zod schema per step + a typed wizard hook                              |
+| `features/tribes/tribe.slice.ts`         |   752 | Same as events                                                              | Same as events                                                                               |
 
 ### Multi-step forms deserve a named pattern
 
@@ -588,18 +588,18 @@ is safe to touch. Instead, **five packages with distinct rules for what may ente
 - **Why** — Neither app has any lint config today. Standing one up once and extending it twice is the
   cheapest quality win available.
 
-### What must *not* be shared
+### What must _not_ be shared
 
 This list is as important as the one above, and should be enforced in review.
 
-| Not shared | Why |
-|---|---|
-| Endpoint hooks (`useEvents`, `useWallet`) | Admin and user surfaces hit different routes with different shapes and different caching needs, even for the same domain |
-| Feature components | An admin EventRow and a user EventCard share a type, not markup. Forcing one component creates a prop-matrix nobody can reason about |
-| Redux slices / client state | Client state is app-local by definition |
-| Route definitions, navigation, copy | Different information architecture, different voice |
-| Full-page layouts | Different shells; sharing them couples navigation changes across apps |
-| Anything with one consumer "for now" | The two-consumer rule below |
+| Not shared                                | Why                                                                                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Endpoint hooks (`useEvents`, `useWallet`) | Admin and user surfaces hit different routes with different shapes and different caching needs, even for the same domain             |
+| Feature components                        | An admin EventRow and a user EventCard share a type, not markup. Forcing one component creates a prop-matrix nobody can reason about |
+| Redux slices / client state               | Client state is app-local by definition                                                                                              |
+| Route definitions, navigation, copy       | Different information architecture, different voice                                                                                  |
+| Full-page layouts                         | Different shells; sharing them couples navigation changes across apps                                                                |
+| Anything with one consumer "for now"      | The two-consumer rule below                                                                                                          |
 
 ### Four rules that keep the boundary honest
 
@@ -655,12 +655,12 @@ This is a deliberate exception, and worth stating plainly because "monorepo" oft
 
 ### Alternatives considered
 
-| Option | Assessment |
-|---|---|
-| Keep three repos, publish shared packages to a private registry | **Rejected.** Publish-and-bump friction on every shared change. With a small team this reliably degrades back into copy-paste — which is exactly how the current 32 diverged files came about. |
-| Keep three repos, use git submodules for shared code | **Rejected.** Submodules are a well-known source of "works on my machine"; contributors routinely commit stale pointers. Worse ergonomics than a registry with none of the versioning benefits. |
-| Merge admin into the user app as a route group | **Rejected.** Different auth guards (`auth:admin` vs `auth:user`), different audiences, different deploy and access requirements. It would ship admin code to public browsers. |
-| One monorepo including the backend | **Rejected** for the reasons above. Revisit only if the team adopts a unified deploy pipeline. |
+| Option                                                          | Assessment                                                                                                                                                                                      |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Keep three repos, publish shared packages to a private registry | **Rejected.** Publish-and-bump friction on every shared change. With a small team this reliably degrades back into copy-paste — which is exactly how the current 32 diverged files came about.  |
+| Keep three repos, use git submodules for shared code            | **Rejected.** Submodules are a well-known source of "works on my machine"; contributors routinely commit stale pointers. Worse ergonomics than a registry with none of the versioning benefits. |
+| Merge admin into the user app as a route group                  | **Rejected.** Different auth guards (`auth:admin` vs `auth:user`), different audiences, different deploy and access requirements. It would ship admin code to public browsers.                  |
+| One monorepo including the backend                              | **Rejected** for the reasons above. Revisit only if the team adopts a unified deploy pipeline.                                                                                                  |
 
 ### Migration mechanics
 
@@ -729,13 +729,13 @@ pages.
 
 ### Import rules
 
-| From | May import | May not |
-|---|---|---|
-| `app/**` | features, components, ui, domain, api-types | another feature's internals; api-client directly |
-| `features/x/**` | ui, domain, api-client, api-types, its own internals | `features/y/**` internals — go through `features/y`'s index, or lift to shared |
-| `packages/ui` | domain, api-types | api-client, any app, any feature |
-| `packages/api-client` | api-types | React, ui, domain, any app |
-| `packages/domain` | api-types | everything else — it is pure |
+| From                  | May import                                           | May not                                                                        |
+| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `app/**`              | features, components, ui, domain, api-types          | another feature's internals; api-client directly                               |
+| `features/x/**`       | ui, domain, api-client, api-types, its own internals | `features/y/**` internals — go through `features/y`'s index, or lift to shared |
+| `packages/ui`         | domain, api-types                                    | api-client, any app, any feature                                               |
+| `packages/api-client` | api-types                                            | React, ui, domain, any app                                                     |
+| `packages/domain`     | api-types                                            | everything else — it is pure                                                   |
 
 Enforced with `eslint-plugin-boundaries` and failing CI. A rule that is only written down is a rule
 that erodes.
@@ -749,23 +749,23 @@ that erodes.
 
 ### Keep · Refactor · Remove
 
-| Existing practice | Verdict | Reasoning |
-|---|---|---|
-| Feature-folder organization under `src/features/` | **Keep** | Already aligns with the backend's `app/Actions/{Domain}/` layout. Extend it; don't replace it. |
-| App Router with `(group)` route groups | **Keep** | Correct choice; needs more groups and far fewer client components. |
-| `@/*` path aliases | **Keep** | Consistent across both apps; extend with workspace package names. |
-| Radix / shadcn primitives | **Keep** | The most-used system in both apps. Consolidate on one style and lift to `@lemonade/ui`. |
-| Middleware auth gate (user app) | **Keep** | Right idea. Port to admin; upgrade from cookie-presence to token validity. |
-| Redux Toolkit slices as server cache | Refactor | 151 thunks reimplement caching, deduplication and invalidation by hand. TanStack Query does it correctly. Redux stays for genuine client state. |
-| Formik + Yup | Refactor | Formik is in maintenance; RHF re-renders less and Zod gives inferred types plus a schema that mirrors backend `FormRequest` rules. |
-| Per-call manual `Authorization` headers | **Remove** | 87 occurrences. The transport attaches auth; call sites never see a token. |
-| Token threaded through component props and thunk args | **Remove** | Disappears entirely once the token is httpOnly and server-attached. |
-| `hooks/useRequest.tsx` | **Remove** | Diverged in both apps and checks the wrong envelope key (§3.3). Superseded by TanStack Query. |
-| `src/data/tableData.ts` (931 lines) | **Remove** | Central column registry; colocate columns with features. |
-| `components/Skeletons.tsx` (1,394 lines) | **Remove** | Colocate skeletons; use route-level `loading.tsx`. |
-| Global axios GET cache | **Remove** | Serves stale money data (§3.7). |
-| MUI, antd, Evergreen | **Remove** | 1–4 files each. Three component systems' worth of bundle for a handful of components. |
-| `react-quill`, `draft-js`, `react-draft-wysiwyg` | **Remove** | Zero references in either codebase. Also the main React 19 blockers. |
+| Existing practice                                     | Verdict    | Reasoning                                                                                                                                       |
+| ----------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Feature-folder organization under `src/features/`     | **Keep**   | Already aligns with the backend's `app/Actions/{Domain}/` layout. Extend it; don't replace it.                                                  |
+| App Router with `(group)` route groups                | **Keep**   | Correct choice; needs more groups and far fewer client components.                                                                              |
+| `@/*` path aliases                                    | **Keep**   | Consistent across both apps; extend with workspace package names.                                                                               |
+| Radix / shadcn primitives                             | **Keep**   | The most-used system in both apps. Consolidate on one style and lift to `@lemonade/ui`.                                                         |
+| Middleware auth gate (user app)                       | **Keep**   | Right idea. Port to admin; upgrade from cookie-presence to token validity.                                                                      |
+| Redux Toolkit slices as server cache                  | Refactor   | 151 thunks reimplement caching, deduplication and invalidation by hand. TanStack Query does it correctly. Redux stays for genuine client state. |
+| Formik + Yup                                          | Refactor   | Formik is in maintenance; RHF re-renders less and Zod gives inferred types plus a schema that mirrors backend `FormRequest` rules.              |
+| Per-call manual `Authorization` headers               | **Remove** | 87 occurrences. The transport attaches auth; call sites never see a token.                                                                      |
+| Token threaded through component props and thunk args | **Remove** | Disappears entirely once the token is httpOnly and server-attached.                                                                             |
+| `hooks/useRequest.tsx`                                | **Remove** | Diverged in both apps and checks the wrong envelope key (§3.3). Superseded by TanStack Query.                                                   |
+| `src/data/tableData.ts` (931 lines)                   | **Remove** | Central column registry; colocate columns with features.                                                                                        |
+| `components/Skeletons.tsx` (1,394 lines)              | **Remove** | Colocate skeletons; use route-level `loading.tsx`.                                                                                              |
+| Global axios GET cache                                | **Remove** | Serves stale money data (§3.7).                                                                                                                 |
+| MUI, antd, Evergreen                                  | **Remove** | 1–4 files each. Three component systems' worth of bundle for a handful of components.                                                           |
+| `react-quill`, `draft-js`, `react-draft-wysiwyg`      | **Remove** | Zero references in either codebase. Also the main React 19 blockers.                                                                            |
 
 ### Pattern 1 — the feature module is the unit of ownership
 
@@ -813,17 +813,17 @@ balance arithmetic — a rounding disagreement between client and ledger is a su
 
 ### Naming and file conventions
 
-| Thing | Convention | Example |
-|---|---|---|
-| Components | PascalCase, one per file, named export | `TicketSummary.tsx` |
-| Hooks | `use` + camelCase | `useEventQuery.ts` |
-| Query hooks | `use<Entity>Query` / `use<Entity>ListQuery` | `useWalletQuery` |
-| Mutation hooks | `use<Verb><Entity>Mutation` | `useApprovePayoutMutation` |
-| Zod schemas | `<action>Schema` + inferred type | `createEventSchema` → `CreateEventInput` |
-| Query keys | Factory per feature, never inline arrays | `eventKeys.detail(id)` |
-| Route Handlers | `app/api/<domain>/<action>/route.ts` | `app/api/auth/login/route.ts` |
-| Booleans | `is` / `has` / `can` prefix | `canApprovePayout` |
-| Files that must never reach the client | Import `server-only` at the top | `lib/session.ts` |
+| Thing                                  | Convention                                  | Example                                  |
+| -------------------------------------- | ------------------------------------------- | ---------------------------------------- |
+| Components                             | PascalCase, one per file, named export      | `TicketSummary.tsx`                      |
+| Hooks                                  | `use` + camelCase                           | `useEventQuery.ts`                       |
+| Query hooks                            | `use<Entity>Query` / `use<Entity>ListQuery` | `useWalletQuery`                         |
+| Mutation hooks                         | `use<Verb><Entity>Mutation`                 | `useApprovePayoutMutation`               |
+| Zod schemas                            | `<action>Schema` + inferred type            | `createEventSchema` → `CreateEventInput` |
+| Query keys                             | Factory per feature, never inline arrays    | `eventKeys.detail(id)`                   |
+| Route Handlers                         | `app/api/<domain>/<action>/route.ts`        | `app/api/auth/login/route.ts`            |
+| Booleans                               | `is` / `has` / `can` prefix                 | `canApprovePayout`                       |
+| Files that must never reach the client | Import `server-only` at the top             | `lib/session.ts`                         |
 
 > **Also.** Fix `lib/axiosInstane.ts` → `lib/api.ts` during the transport migration. A typo
 > replicated across two repos is a small thing, but it is the kind of small thing that tells a new
@@ -850,12 +850,12 @@ balance arithmetic — a rounding disagreement between client and ledger is a su
 
 ### Four layers, each with one job
 
-| Layer | Lives in | Responsibility | Must not |
-|---|---|---|---|
-| Transport | `@lemonade/api-client` | HTTP, auth attach, refresh, envelope unwrap, error normalization, correlation id, timeouts | Know any endpoint or domain |
-| Endpoints | `features/x/api.ts` | Typed functions, one per route: `listEvents(params): Promise<Event[]>` | Contain React or caching policy |
-| Query policy | `features/x/queries.ts` | Hooks, key factory, `staleTime`, retry, `select` | Build URLs or handle HTTP |
-| Consumption | Components / Server Components | Render data and states | Call the transport directly |
+| Layer        | Lives in                       | Responsibility                                                                             | Must not                        |
+| ------------ | ------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------- |
+| Transport    | `@lemonade/api-client`         | HTTP, auth attach, refresh, envelope unwrap, error normalization, correlation id, timeouts | Know any endpoint or domain     |
+| Endpoints    | `features/x/api.ts`            | Typed functions, one per route: `listEvents(params): Promise<Event[]>`                     | Contain React or caching policy |
+| Query policy | `features/x/queries.ts`        | Hooks, key factory, `staleTime`, retry, `select`                                           | Build URLs or handle HTTP       |
+| Consumption  | Components / Server Components | Render data and states                                                                     | Call the transport directly     |
 
 ### Envelope handling belongs in exactly one place
 
@@ -867,25 +867,25 @@ is repeated inside all 151 thunks, and `useRequest` gets it wrong.
 
 This replaces the current blanket 5-minute cache on every GET.
 
-| Data class | staleTime | Refetch on focus | Examples |
-|---|---:|---|---|
-| Money & availability | 0 | Yes | Wallet balance, ledger, ticket stock, escrow state, payout status |
-| Operational queues | 30s | Yes | Moderation reports, withdrawal requests, admin dashboards |
-| User-owned content | 60s | Yes | My events, my tribes, my business listings, profile |
-| Discovery content | 5m | No | Public event lists, tribe browse, search results |
-| Reference data | 1h | No | Countries, timezones, banks, categories, plans |
+| Data class           | staleTime | Refetch on focus | Examples                                                          |
+| -------------------- | --------: | ---------------- | ----------------------------------------------------------------- |
+| Money & availability |         0 | Yes              | Wallet balance, ledger, ticket stock, escrow state, payout status |
+| Operational queues   |       30s | Yes              | Moderation reports, withdrawal requests, admin dashboards         |
+| User-owned content   |       60s | Yes              | My events, my tribes, my business listings, profile               |
+| Discovery content    |        5m | No               | Public event lists, tribe browse, search results                  |
+| Reference data       |        1h | No               | Countries, timezones, banks, categories, plans                    |
 
 ### Query keys are hierarchical and produced by factories
 
 ```ts
 // features/events/queries.ts
 export const eventKeys = {
-  all:     ()               => ['events'] as const,
-  lists:   ()               => [...eventKeys.all(), 'list'] as const,
-  list:    (p: EventQuery)  => [...eventKeys.lists(), p] as const,
-  details: ()               => [...eventKeys.all(), 'detail'] as const,
-  detail:  (id: string)     => [...eventKeys.details(), id] as const,
-  tickets: (id: string)     => [...eventKeys.detail(id), 'tickets'] as const,
+  all: () => ["events"] as const,
+  lists: () => [...eventKeys.all(), "list"] as const,
+  list: (p: EventQuery) => [...eventKeys.lists(), p] as const,
+  details: () => [...eventKeys.all(), "detail"] as const,
+  detail: (id: string) => [...eventKeys.details(), id] as const,
+  tickets: (id: string) => [...eventKeys.detail(id), "tickets"] as const,
 };
 ```
 
@@ -924,12 +924,12 @@ See §22, Conflict 1.
 
 ### State taxonomy
 
-| Kind | Owner | Examples | Notes |
-|---|---|---|---|
-| Server state | TanStack Query | Everything from `/v1/*` | Never persisted to disk |
-| URL state | `searchParams` | Page, sort, filters, tab, search | Shareable, back-button correct |
-| Form state | React Hook Form | Field values, touched, errors | Uncontrolled by default |
-| Ephemeral UI state | `useState` | Modal open, dropdown, hover | Colocated with the component |
+| Kind                | Owner              | Examples                                              | Notes                             |
+| ------------------- | ------------------ | ----------------------------------------------------- | --------------------------------- |
+| Server state        | TanStack Query     | Everything from `/v1/*`                               | Never persisted to disk           |
+| URL state           | `searchParams`     | Page, sort, filters, tab, search                      | Shareable, back-button correct    |
+| Form state          | React Hook Form    | Field values, touched, errors                         | Uncontrolled by default           |
+| Ephemeral UI state  | `useState`         | Modal open, dropdown, hover                           | Colocated with the component      |
 | Global client state | Redux (or Context) | Session summary, toasts, feature flags, unsent drafts | Small enough to audit at a glance |
 
 > **Persistence.** Today redux-persist whitelists `["auth"]` in admin and `["auth", "event"]` in the
@@ -1049,11 +1049,11 @@ short-lived session states, not as "logged in."
 
 ### Authorization: three layers, one authority
 
-| Layer | Mechanism | Purpose |
-|---|---|---|
-| Edge | `middleware.ts` — cookie present and unexpired | Redirect before render. UX only. |
+| Layer  | Mechanism                                            | Purpose                               |
+| ------ | ---------------------------------------------------- | ------------------------------------- |
+| Edge   | `middleware.ts` — cookie present and unexpired       | Redirect before render. UX only.      |
 | Render | Server Component reads session, renders permitted UI | Never ship markup the user cannot use |
-| API | Laravel Policies (8 domains) + guards + abilities | **The only real authority** |
+| API    | Laravel Policies (8 domains) + guards + abilities    | **The only real authority**           |
 
 > **Non-negotiable.** Hiding a control in the UI is a courtesy, not a security boundary. Every mutation
 > must be independently authorized server-side, and it already is — the backend has policies for
@@ -1071,13 +1071,21 @@ one shape, so nothing above it inspects raw axios errors:
 
 ```ts
 type ApiError = {
-  status:       number;              // HTTP status
-  errorCode:    ErrorCode;           // backend enum, 18 cases
-  message:      string;              // backend message, safe to show
-  fieldErrors?: Record<string, string[]>;  // Laravel bag, 422 only
-  correlationId?: string;            // from CorrelationId middleware
-  kind: 'validation' | 'auth' | 'permission' | 'notFound'
-      | 'conflict' | 'rateLimit' | 'server' | 'network' | 'timeout';
+  status: number; // HTTP status
+  errorCode: ErrorCode; // backend enum, 18 cases
+  message: string; // backend message, safe to show
+  fieldErrors?: Record<string, string[]>; // Laravel bag, 422 only
+  correlationId?: string; // from CorrelationId middleware
+  kind:
+    | "validation"
+    | "auth"
+    | "permission"
+    | "notFound"
+    | "conflict"
+    | "rateLimit"
+    | "server"
+    | "network"
+    | "timeout";
 };
 ```
 
@@ -1086,16 +1094,16 @@ and never on message text.
 
 ### Handling by kind
 
-| Kind | Status | Retry | Presentation |
-|---|---:|---|---|
-| validation | 422 | No | Map `fieldErrors` onto form fields via `setError` |
-| auth | 401 | Refresh once, then no | On refresh failure: clear session, redirect to login with `?next=` |
-| permission | 403 | No | Inline "not available to your account" — never a redirect loop |
-| notFound | 404 | No | Route-level `not-found.tsx` |
-| conflict | 409 | No | Refetch and show current state — common on escrow and payout transitions |
-| rateLimit | 429 | Backoff | Backend uses `throttle:auth` on auth routes; surface a wait, disable submit |
-| server | 5xx | 3× exponential | Error boundary with retry; report with correlation id |
-| network / timeout | — | 3× exponential | Offline-aware banner; queue nothing that moves money |
+| Kind              | Status | Retry                 | Presentation                                                                |
+| ----------------- | -----: | --------------------- | --------------------------------------------------------------------------- |
+| validation        |    422 | No                    | Map `fieldErrors` onto form fields via `setError`                           |
+| auth              |    401 | Refresh once, then no | On refresh failure: clear session, redirect to login with `?next=`          |
+| permission        |    403 | No                    | Inline "not available to your account" — never a redirect loop              |
+| notFound          |    404 | No                    | Route-level `not-found.tsx`                                                 |
+| conflict          |    409 | No                    | Refetch and show current state — common on escrow and payout transitions    |
+| rateLimit         |    429 | Backoff               | Backend uses `throttle:auth` on auth routes; surface a wait, disable submit |
+| server            |    5xx | 3× exponential        | Error boundary with retry; report with correlation id                       |
+| network / timeout |      — | 3× exponential        | Offline-aware banner; queue nothing that moves money                        |
 
 ### Error boundaries per route segment
 
@@ -1129,18 +1137,18 @@ fallback, never the design.
 Ordered by expected impact on the user app, which is mobile-first and where performance is a business
 concern rather than a nicety.
 
-| # | Action | Impact | Priority |
-|---|---|---|---|
-| 1 | Server-render public pages (event, tribe, business, discover) instead of shipping empty client shells | First contentful paint on mobile; crawlable content for the first time | **MUST** |
-| 2 | Remove MUI, antd, Evergreen — 1–4 files each | Three component libraries plus Emotion out of the graph | **SHOULD** |
-| 3 | Remove confirmed-dead deps (`react-quill`, `draft-js`, `react-draft-wysiwyg`, duplicate date pickers and scroll libraries, `zustand`, `firebase-admin`) | Smaller install, faster CI, fewer React 19 blockers | **MUST** |
-| 4 | Server-side pagination for admin tables | Payload stops scaling with platform size | **MUST** |
-| 5 | Replace 151 thunks with query hooks | Deduplication and background refetch remove redundant in-flight requests | **MUST** |
-| 6 | Split the 1,394-line `Skeletons.tsx` and the 931-line `tableData.ts` | These are imported broadly, so they land in many bundles | **SHOULD** |
-| 7 | Lazy-load heavy leaf UI: chart panels, image croppers, wizards, modals | Off the initial bundle | **SHOULD** |
-| 8 | `next/image` with `remotePatterns`, explicit sizes, and priority only above the fold | Cloudinary and DO Spaces assets stop shipping unoptimized | **SHOULD** |
-| 9 | `next/font` with subsetting; drop unused faces | Admin loads Geist, Geist Mono and Inter but applies only Inter | **NICE** |
-| 10 | Virtualize tables past ~200 rows | Only after server pagination; may prove unnecessary | **NICE** |
+| #   | Action                                                                                                                                                  | Impact                                                                   | Priority   |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------- |
+| 1   | Server-render public pages (event, tribe, business, discover) instead of shipping empty client shells                                                   | First contentful paint on mobile; crawlable content for the first time   | **MUST**   |
+| 2   | Remove MUI, antd, Evergreen — 1–4 files each                                                                                                            | Three component libraries plus Emotion out of the graph                  | **SHOULD** |
+| 3   | Remove confirmed-dead deps (`react-quill`, `draft-js`, `react-draft-wysiwyg`, duplicate date pickers and scroll libraries, `zustand`, `firebase-admin`) | Smaller install, faster CI, fewer React 19 blockers                      | **MUST**   |
+| 4   | Server-side pagination for admin tables                                                                                                                 | Payload stops scaling with platform size                                 | **MUST**   |
+| 5   | Replace 151 thunks with query hooks                                                                                                                     | Deduplication and background refetch remove redundant in-flight requests | **MUST**   |
+| 6   | Split the 1,394-line `Skeletons.tsx` and the 931-line `tableData.ts`                                                                                    | These are imported broadly, so they land in many bundles                 | **SHOULD** |
+| 7   | Lazy-load heavy leaf UI: chart panels, image croppers, wizards, modals                                                                                  | Off the initial bundle                                                   | **SHOULD** |
+| 8   | `next/image` with `remotePatterns`, explicit sizes, and priority only above the fold                                                                    | Cloudinary and DO Spaces assets stop shipping unoptimized                | **SHOULD** |
+| 9   | `next/font` with subsetting; drop unused faces                                                                                                          | Admin loads Geist, Geist Mono and Inter but applies only Inter           | **NICE**   |
+| 10  | Virtualize tables past ~200 rows                                                                                                                        | Only after server pagination; may prove unnecessary                      | **NICE**   |
 
 > **Not a performance tool.** The user app's global 5-minute GET cache reads as a performance
 > optimization and is really a correctness bug (§3.7). Removing it may increase request volume; that is
@@ -1166,19 +1174,19 @@ The backend has had a security hardening pass — policies on all eight domains,
 `SecurityHeaders` middleware, secrets kept out of flashed input. The frontends have not had an
 equivalent pass. These are the gaps.
 
-| Risk | Present state | Target | Priority |
-|---|---|---|---|
-| Token theft via XSS | Tokens in `localStorage` and JS-readable cookies | httpOnly cookies via BFF (§13) | **MUST** |
-| Privileged SDK in a browser app | `firebase-admin` in frontend `dependencies` | Removed; server-only code guarded with `server-only` | **MUST** |
-| Unprotected admin routes | No middleware in admin at all | Middleware gate in both apps | **MUST** |
-| Incomplete logout | Iterates `document.cookie` and blanks keys; cannot clear httpOnly or other paths | Server-side session clear + backend token revocation | **MUST** |
-| No Content-Security-Policy | Absent in both apps | CSP with nonces via middleware; start report-only | **SHOULD** |
-| No dependency scanning | None. The one security fix in admin's history was an externally-reported RSC CVE. | Dependabot + `pnpm audit` in CI | **MUST** |
-| Unvalidated env at boot | `process.env.NEXT_PUBLIC_BASE_URL` read raw; undefined yields the string `"undefined"` in URLs | Zod-validated env module, fails at build | **MUST** |
-| CSRF once auth is cookie-based | Not applicable today | `SameSite=Lax` + origin check in Route Handlers | **MUST** |
-| Data leakage via logs | 62 `console.log` calls, including in the auth interceptor | No `console` in production; structured logger with redaction | **SHOULD** |
-| Open image host allowlist | Includes `images.unsplash.com` and `encrypted-tbn0.gstatic.com` — placeholders in production config | `remotePatterns` limited to Cloudinary + DO Spaces | **SHOULD** |
-| Client-trusted authorization | UI hides controls; correctness depends on backend policies holding | Unchanged — but stated and tested, never assumed | **MUST** |
+| Risk                            | Present state                                                                                       | Target                                                       | Priority   |
+| ------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ---------- |
+| Token theft via XSS             | Tokens in `localStorage` and JS-readable cookies                                                    | httpOnly cookies via BFF (§13)                               | **MUST**   |
+| Privileged SDK in a browser app | `firebase-admin` in frontend `dependencies`                                                         | Removed; server-only code guarded with `server-only`         | **MUST**   |
+| Unprotected admin routes        | No middleware in admin at all                                                                       | Middleware gate in both apps                                 | **MUST**   |
+| Incomplete logout               | Iterates `document.cookie` and blanks keys; cannot clear httpOnly or other paths                    | Server-side session clear + backend token revocation         | **MUST**   |
+| No Content-Security-Policy      | Absent in both apps                                                                                 | CSP with nonces via middleware; start report-only            | **SHOULD** |
+| No dependency scanning          | None. The one security fix in admin's history was an externally-reported RSC CVE.                   | Dependabot + `pnpm audit` in CI                              | **MUST**   |
+| Unvalidated env at boot         | `process.env.NEXT_PUBLIC_BASE_URL` read raw; undefined yields the string `"undefined"` in URLs      | Zod-validated env module, fails at build                     | **MUST**   |
+| CSRF once auth is cookie-based  | Not applicable today                                                                                | `SameSite=Lax` + origin check in Route Handlers              | **MUST**   |
+| Data leakage via logs           | 62 `console.log` calls, including in the auth interceptor                                           | No `console` in production; structured logger with redaction | **SHOULD** |
+| Open image host allowlist       | Includes `images.unsplash.com` and `encrypted-tbn0.gstatic.com` — placeholders in production config | `remotePatterns` limited to Cloudinary + DO Spaces           | **SHOULD** |
+| Client-trusted authorization    | UI hides controls; correctness depends on backend policies holding                                  | Unchanged — but stated and tested, never assumed             | **MUST**   |
 
 ### Environment variables
 
@@ -1207,15 +1215,15 @@ The ordering matters more than the tooling. A characterization test written agai
 even imperfect behaviour — is what lets a domain be moved from thunks to queries without silently
 changing what users see. Write the test for a feature immediately before migrating that feature.
 
-| Layer | Tool | Scope | Target | Priority |
-|---|---|---|---|---|
-| Unit — shared packages | Vitest | Money formatting, dates, error mapping, transport, refresh queue, schemas | **≥ 90%** — highest bar in the repo; a bug here hits both apps | **MUST** |
-| Contract | Vitest + MSW | Envelope unwrap, all 18 `ErrorCode`s, 422 field mapping, 401 refresh, pagination | Every case | **MUST** |
-| Component | Vitest + Testing Library | Forms (validation, server-error mapping), tables (empty/loading/error), money confirmations | Every form and money surface | **MUST** |
-| Integration | Testing Library + MSW | Feature flows against a mocked `/v1` | Each migrated domain | **SHOULD** |
-| End-to-end | Playwright | Critical journeys against a real backend | ~10 journeys, on merge | **SHOULD** |
-| Visual regression | Playwright snapshots | `@lemonade/ui` primitives, both themes | Primitives only | **NICE** |
-| Accessibility | `axe-core` in component tests | Forms, dialogs, tables, navigation | No serious/critical violations | **SHOULD** |
+| Layer                  | Tool                          | Scope                                                                                       | Target                                                         | Priority   |
+| ---------------------- | ----------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------- |
+| Unit — shared packages | Vitest                        | Money formatting, dates, error mapping, transport, refresh queue, schemas                   | **≥ 90%** — highest bar in the repo; a bug here hits both apps | **MUST**   |
+| Contract               | Vitest + MSW                  | Envelope unwrap, all 18 `ErrorCode`s, 422 field mapping, 401 refresh, pagination            | Every case                                                     | **MUST**   |
+| Component              | Vitest + Testing Library      | Forms (validation, server-error mapping), tables (empty/loading/error), money confirmations | Every form and money surface                                   | **MUST**   |
+| Integration            | Testing Library + MSW         | Feature flows against a mocked `/v1`                                                        | Each migrated domain                                           | **SHOULD** |
+| End-to-end             | Playwright                    | Critical journeys against a real backend                                                    | ~10 journeys, on merge                                         | **SHOULD** |
+| Visual regression      | Playwright snapshots          | `@lemonade/ui` primitives, both themes                                                      | Primitives only                                                | **NICE**   |
+| Accessibility          | `axe-core` in component tests | Forms, dialogs, tables, navigation                                                          | No serious/critical violations                                 | **SHOULD** |
 
 ### The ten end-to-end journeys
 
@@ -1259,31 +1267,31 @@ once the variable is set. **Phase 0 should end with "clone, install, copy env, r
 
 ### Toolchain
 
-| Concern | Tool | Configuration | Priority |
-|---|---|---|---|
-| Package manager | pnpm | Workspaces; single lockfile. Replaces the current mix — both apps carry *both* `yarn.lock` and `package-lock.json`, so nobody knows which is authoritative | **MUST** |
-| Task orchestration | Turborepo | Affected-graph builds, remote cache | **MUST** |
-| Linting | ESLint 9 flat config | Shared in `@lemonade/config`; `next`, `react-hooks`, `@typescript-eslint`, `boundaries` | **MUST** |
-| Formatting | Prettier | One config; one formatting commit; add it to `.git-blame-ignore-revs` | **MUST** |
-| Types | TypeScript strict+ | Add `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride` | **SHOULD** |
-| Pre-commit | husky + lint-staged | Format and lint changed files only | **SHOULD** |
-| Commits | Conventional Commits | Backend already follows this (`feat(payouts): …`) — match it | **SHOULD** |
-| Dependency hygiene | knip + Dependabot | Catch the 50 unimported deps and keep them from returning | **SHOULD** |
+| Concern            | Tool                 | Configuration                                                                                                                                              | Priority   |
+| ------------------ | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Package manager    | pnpm                 | Workspaces; single lockfile. Replaces the current mix — both apps carry _both_ `yarn.lock` and `package-lock.json`, so nobody knows which is authoritative | **MUST**   |
+| Task orchestration | Turborepo            | Affected-graph builds, remote cache                                                                                                                        | **MUST**   |
+| Linting            | ESLint 9 flat config | Shared in `@lemonade/config`; `next`, `react-hooks`, `@typescript-eslint`, `boundaries`                                                                    | **MUST**   |
+| Formatting         | Prettier             | One config; one formatting commit; add it to `.git-blame-ignore-revs`                                                                                      | **MUST**   |
+| Types              | TypeScript strict+   | Add `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`                                                                         | **SHOULD** |
+| Pre-commit         | husky + lint-staged  | Format and lint changed files only                                                                                                                         | **SHOULD** |
+| Commits            | Conventional Commits | Backend already follows this (`feat(payouts): …`) — match it                                                                                               | **SHOULD** |
+| Dependency hygiene | knip + Dependabot    | Catch the 50 unimported deps and keep them from returning                                                                                                  | **SHOULD** |
 
 ### Lint rules that encode this document
 
 Each of these prevents a specific measured problem from recurring:
 
-| Rule | Level | Prevents |
-|---|---|---|
-| `@typescript-eslint/no-explicit-any` | error (warn during migration) | Return of the 574 `any`s |
-| `react-hooks/exhaustive-deps` | error | The 32 stale-closure effects |
-| `boundaries/element-types` | error | Cross-feature and package-boundary violations (§9) |
-| `no-restricted-imports`: axios outside `api-client` | error | A third HTTP client appearing |
-| `no-restricted-imports`: MUI, antd, Evergreen | error | Removed libraries creeping back |
-| `no-console` (allow `warn`/`error`) | error | The 62 stray logs |
-| `no-restricted-syntax`: `localStorage.setItem` with token keys | error | Tokens returning to JS-readable storage |
-| `@next/next/no-img-element` | error | Unoptimized images |
+| Rule                                                           | Level                         | Prevents                                           |
+| -------------------------------------------------------------- | ----------------------------- | -------------------------------------------------- |
+| `@typescript-eslint/no-explicit-any`                           | error (warn during migration) | Return of the 574 `any`s                           |
+| `react-hooks/exhaustive-deps`                                  | error                         | The 32 stale-closure effects                       |
+| `boundaries/element-types`                                     | error                         | Cross-feature and package-boundary violations (§9) |
+| `no-restricted-imports`: axios outside `api-client`            | error                         | A third HTTP client appearing                      |
+| `no-restricted-imports`: MUI, antd, Evergreen                  | error                         | Removed libraries creeping back                    |
+| `no-console` (allow `warn`/`error`)                            | error                         | The 62 stray logs                                  |
+| `no-restricted-syntax`: `localStorage.setItem` with token keys | error                         | Tokens returning to JS-readable storage            |
+| `@next/next/no-img-element`                                    | error                         | Unoptimized images                                 |
 
 ### Design tokens retire the 7,041 hardcoded pixels
 
@@ -1338,11 +1346,11 @@ on: pull_request
 
 ### Environments
 
-| Environment | Trigger | Backend | Purpose |
-|---|---|---|---|
-| Preview | Every PR | Dev API | Review with a real URL; run e2e against it |
-| Staging | Merge to `main` | Staging API | Contract verification before release |
-| Production | Tagged release | Production API | Manual approval |
+| Environment | Trigger         | Backend        | Purpose                                    |
+| ----------- | --------------- | -------------- | ------------------------------------------ |
+| Preview     | Every PR        | Dev API        | Review with a real URL; run e2e against it |
+| Staging     | Merge to `main` | Staging API    | Contract verification before release       |
+| Production  | Tagged release  | Production API | Manual approval                            |
 
 ### Versioning and release
 
@@ -1376,36 +1384,36 @@ surface was removed before its consumers moved. Never again in one step.
 
 > **Verify at execution time.** Version numbers below reflect what is installed today and what was
 > current as of this analysis. Confirm the latest stable Next and React majors and re-read their upgrade
-> guides before starting Phase 3 — the *sequence* and the risks are what this section is for; the exact
+> guides before starting Phase 3 — the _sequence_ and the risks are what this section is for; the exact
 > numbers should be checked.
 
 ### Target versions
 
-| Package | Admin | Frontend | Target | Risk |
-|---|---|---|---|---|
-| next | 15.1.11 | 14.2.7 | Same latest stable major, both apps | High |
-| react / react-dom | ^18 | ^18 | 19.x | High |
-| typescript | ^5 | ^5 | Latest 5.x, pinned | Low |
-| eslint | none | none | 9.x flat config | Medium |
-| tailwindcss | ^3.4.1 | ^3.4.1 | Stay on 3.x through Phase 6; evaluate 4 separately | Medium |
-| @reduxjs/toolkit | ^2.5.0 | ^2.2.8 | Shrinking, then possibly removed | Low |
-| formik + yup | ^2.4.6 / ^1.6.1 | ^2.4.6 / ^1.4.0 | Replaced by RHF + Zod | Medium |
-| axios | ^1.7.9 | ^1.9.0 | Single version in `api-client`, or native fetch | Low |
-| axios-cache-interceptor | — | ^1.8.3 | **Removed** | Low |
-| @mui/material + @emotion | ^6.3.0 | ^6.1.3 | **Removed** | Low |
-| antd | ^5.25.3 | ^5.24.8 | **Removed** | Medium |
-| evergreen-ui | ^7.1.9 | ^7.1.9 | **Removed** | Low |
-| react-quill / draft-js / react-draft-wysiwyg | installed | installed | **Removed** — zero references | Low |
-| firebase-admin | — | ^13.5.0 | **Removed** — server SDK in a client app | Low |
-| moment | — | ^2.30.1 | Replaced by `dayjs`, already present in both | Low |
+| Package                                      | Admin           | Frontend        | Target                                             | Risk   |
+| -------------------------------------------- | --------------- | --------------- | -------------------------------------------------- | ------ |
+| next                                         | 15.1.11         | 14.2.7          | Same latest stable major, both apps                | High   |
+| react / react-dom                            | ^18             | ^18             | 19.x                                               | High   |
+| typescript                                   | ^5              | ^5              | Latest 5.x, pinned                                 | Low    |
+| eslint                                       | none            | none            | 9.x flat config                                    | Medium |
+| tailwindcss                                  | ^3.4.1          | ^3.4.1          | Stay on 3.x through Phase 6; evaluate 4 separately | Medium |
+| @reduxjs/toolkit                             | ^2.5.0          | ^2.2.8          | Shrinking, then possibly removed                   | Low    |
+| formik + yup                                 | ^2.4.6 / ^1.6.1 | ^2.4.6 / ^1.4.0 | Replaced by RHF + Zod                              | Medium |
+| axios                                        | ^1.7.9          | ^1.9.0          | Single version in `api-client`, or native fetch    | Low    |
+| axios-cache-interceptor                      | —               | ^1.8.3          | **Removed**                                        | Low    |
+| @mui/material + @emotion                     | ^6.3.0          | ^6.1.3          | **Removed**                                        | Low    |
+| antd                                         | ^5.25.3         | ^5.24.8         | **Removed**                                        | Medium |
+| evergreen-ui                                 | ^7.1.9          | ^7.1.9          | **Removed**                                        | Low    |
+| react-quill / draft-js / react-draft-wysiwyg | installed       | installed       | **Removed** — zero references                      | Low    |
+| firebase-admin                               | —               | ^13.5.0         | **Removed** — server SDK in a client app           | Low    |
+| moment                                       | —               | ^2.30.1         | Replaced by `dayjs`, already present in both       | Low    |
 
 ### Breaking changes to plan for
 
 #### Next 14 → 15 (frontend app only; admin is already on 15)
 
 - **Async request APIs.** `params`, `searchParams`, `cookies()`, `headers()` and `draftMode()` became
-  asynchronous. A codemod covers most of it; every dynamic route needs review. *Lower impact here than
-  usual* — 45 of 46 route files are client components today and do not use these. That flips as Server
+  asynchronous. A codemod covers most of it; every dynamic route needs review. _Lower impact here than
+  usual_ — 45 of 46 route files are client components today and do not use these. That flips as Server
   Components are adopted, so getting the upgrade in first is the cheaper order.
 - **Caching defaults inverted.** `fetch` requests, GET Route Handlers and client-side router navigation
   are no longer cached by default. Anything relying on implicit caching must opt in explicitly.
@@ -1422,7 +1430,7 @@ surface was removed before its consumers moved. Never again in one step.
 - **Stricter hydration errors** — previously tolerated mismatches now surface loudly. Expect noise on
   first run; it is finding real bugs.
 - **Peer-dependency friction** is the main practical risk. Audit every UI dependency for React 19
-  support *before* upgrading. Two known blockers, `react-quill` and `draft-js`, are already dead code —
+  support _before_ upgrading. Two known blockers, `react-quill` and `draft-js`, are already dead code —
   removing them in Phase 0 clears the path. Verify `react-slideshow-image`, `react-spinner-overlay`,
   `react-switch`, `react-otp-input` and `evergreen-ui`; replace any that are unmaintained rather than
   pinning React 18 for them.
@@ -1436,17 +1444,17 @@ build on different asset pipelines.
 
 ### Migration order, and why
 
-| Order | Work | Rationale |
-|---|---|---|
-| 1 | Repair the API contract; add env files; delete dead deps | Nothing can be verified while the apps cannot talk to the backend. Removing dead deps first shrinks the surface every later step must upgrade. |
-| 2 | ESLint, Prettier, TypeScript strictness, CI, smoke tests | Gates before changes. Every subsequent step needs a signal that it broke something. |
-| 3 | Monorepo consolidation | Mechanical, no behaviour change. Do it before upgrades so upgrades happen once. |
-| 4 | Next alignment + React 19 | Once, in one dependency graph, before large refactors so refactors target the final framework. |
-| 5 | Transport + auth (BFF, httpOnly cookies) | Unblocks Server Components and removes 87 manual headers. Everything downstream assumes it. |
-| 6 | Server-state migration, domain by domain | The bulk of the work; each domain is independently shippable. |
-| 7 | Forms, per feature, alongside step 6 | Same files are already open. Migrating forms separately means touching them twice. |
-| 8 | Server Components + performance | Needs 5 and 6 in place; premature otherwise. |
-| 9 | Design system consolidation | Safe to defer — visible, not structural. |
+| Order | Work                                                     | Rationale                                                                                                                                      |
+| ----- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | Repair the API contract; add env files; delete dead deps | Nothing can be verified while the apps cannot talk to the backend. Removing dead deps first shrinks the surface every later step must upgrade. |
+| 2     | ESLint, Prettier, TypeScript strictness, CI, smoke tests | Gates before changes. Every subsequent step needs a signal that it broke something.                                                            |
+| 3     | Monorepo consolidation                                   | Mechanical, no behaviour change. Do it before upgrades so upgrades happen once.                                                                |
+| 4     | Next alignment + React 19                                | Once, in one dependency graph, before large refactors so refactors target the final framework.                                                 |
+| 5     | Transport + auth (BFF, httpOnly cookies)                 | Unblocks Server Components and removes 87 manual headers. Everything downstream assumes it.                                                    |
+| 6     | Server-state migration, domain by domain                 | The bulk of the work; each domain is independently shippable.                                                                                  |
+| 7     | Forms, per feature, alongside step 6                     | Same files are already open. Migrating forms separately means touching them twice.                                                             |
+| 8     | Server Components + performance                          | Needs 5 and 6 in place; premature otherwise.                                                                                                   |
+| 9     | Design system consolidation                              | Safe to defer — visible, not structural.                                                                                                       |
 
 ### Keeping the applications working throughout
 
@@ -1594,7 +1602,7 @@ initially 415'd through the JSON-only proxy (fixed — raw `Buffer` forwarding);
 token flow initially 401'd through the proxy (fixed — see `bearerTokenOverride` above). Two unrelated
 live Redux bugs found and fixed while in this code: both apps' `resetAuth` reducer set
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
-whenever the *old* token cookie was absent — which post-cutover is always true.
+whenever the _old_ token cookie was absent — which post-cutover is always true.
 
 ### Phase 5 — Server state, domain by domain **[MUST]** **[COMPLETE — 19 of ~19 domains]**
 
@@ -1643,13 +1651,13 @@ confirmed live; fixing it means adding real image-upload UI, out of scope for a 
 Each migration deleted its old `*.slice.ts` outright and removed the reducer from
 `store.ts`, per this phase's own rule that a feature never exists in both patterns at once.
 **Named deviations from the plan:** the prescribed migration order (reference data → discovery → ...
-→ wallet/transactions/subscriptions/payouts *last*) was not followed — auth went first (reasonable,
+→ wallet/transactions/subscriptions/payouts _last_) was not followed — auth went first (reasonable,
 everything else depends on it), then dashboard and reporting (small, low-risk, matching the plan's
 spirit), but **wallet went third**, ahead of most non-money domains, because it was the next domain
 picked without re-consulting this ordering. It was treated with the care the plan asks of money
 domains regardless (staleTime 0, invalidate-not-optimistic on every mutation), and its live-testing
 paid for itself: it surfaced two real backend bugs meaning the admin wallet credit/debit feature had
-*never actually worked* from this UI (fixed in `lemonade-backend`, tests added). Forms were **not**
+_never actually worked_ from this UI (fixed in `lemonade-backend`, tests added). Forms were **not**
 migrated to React Hook Form + Zod in the same pass as their domain, contra the plan — every migrated
 domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
 `Skeletons.tsx`/`tableData.ts` retirement hasn't started. **All of `apps/admin`'s tracked Phase 5
@@ -1708,14 +1716,14 @@ characterization test added, confirmed live pre- and post-fix against a real tra
 request/response data with a Pusher-pushed live-append behavior (new chat messages arrive over a private
 channel, not just through polling) — the old Redux reducer appended every incoming message to whatever
 chat happened to be open, which was only ever correct because the UI shows one conversation at a time; a
-push for a *different* conversation while chat A was open would have landed in chat A's list. The
+push for a _different_ conversation while chat A was open would have landed in chat A's list. The
 TanStack version (`features/connect/queries.ts`'s `appendIncomingChatMessage`, called from
 `hooks/usePusher.ts`) computes the actual other party from the message itself and writes into that
 specific chat's query cache — correct regardless of what's open, and a no-op if that chat isn't
 currently cached. Tracing the real-time path required reading through the backend to find that the
 "chat" feature (`ChatController`/`ChatList`/`ChatMessage`) and a same-shaped, same-channel, seemingly
 unrelated "connect messages" feature (`ConnectController`/`SendConnectMessage`/the `MessageSent`
-broadcast event, which broadcasts a *different* model, `UserMessage`) both exist in the backend — only
+broadcast event, which broadcasts a _different_ model, `UserMessage`) both exist in the backend — only
 the former is what the frontend actually calls; confirmed via `SendChatMessage`, which triggers Pusher
 directly (bypassing Laravel's event system) with `OutgoingChatMessageResource`, matching what the old
 reducer expected. Not investigated further — a second parallel messaging system, dead or not from this
@@ -1746,6 +1754,7 @@ the legacy path — none are wired to `business.slice.ts`, same scoping rule as 
 `ProfileController` routes.
 
 This domain surfaced more real bugs than any other this session, of increasing depth:
+
 1. **Fixed**: `BoostBusiness` (backend) returned the whole Paystack payment-init array under `payment`,
    but the frontend does `window.location.href = result.payment` expecting a URL string — `PayForJob`
    (the sibling action for job payments) already extracts `authorization_url` correctly; `BoostBusiness`
@@ -1786,7 +1795,7 @@ same tribe two different ways depending on the endpoint**, and nothing in the ro
 app makes that visible. `GetTribe`/`ProcessTribeJoin`/`ListTribeThreads`/`GetPinnedTribeThreads`/
 `AddTribeMember` all resolve their `{id}`/`{forum}` route param as a **slug** (`findTribeOrFail`/
 `findTribeBySlugOrFail`), but `CreateTribeThread` (`Tribe::query()->find($tribeId)`) and
-`SortTribeThreads` (`findTribeByIdOrFail`) resolve the *same-shaped* `{forum}` param as the tribe's
+`SortTribeThreads` (`findTribeByIdOrFail`) resolve the _same-shaped_ `{forum}` param as the tribe's
 **raw id** — confirmed live: `POST .../threads/create-thread` 400s "Tribe not found" against the slug
 and 200s against the id. `ThreadController`'s routes (`post-like`, `post-comment`, `poll-action`) are
 raw-id-only too. Since `useThreadsQuery`/`usePinnedThreadsQuery` are (correctly) keyed by the slug —
@@ -1797,11 +1806,11 @@ creation time (for its cache-key writes) and the raw id separately, at call time
 documented inline in `features/tribes/mutations.ts`. Getting this wrong doesn't 4xx (the request itself
 still succeeds off the id) — it silently writes the mutation's cache update into a query key nothing
 is reading, so the UI never reflects the change until an unrelated refetch. A second, smaller backend
-oddity in the same family: `ThreadController::pinThread` puts the *thread object* under the data key
+oddity in the same family: `ThreadController::pinThread` puts the _thread object_ under the data key
 `'message'` and uses the pinned/unpinned wording as the envelope's top-level `message` instead — which
 `browserApi`'s `unwrap()` discards, keeping only `data`. So the response the frontend receives carries
 the thread but no signal of which way the toggle went; `usePinThreadMutation` works around it by having
-the caller pass in the thread's `pinned` state from *before* the call and flipping it, rather than
+the caller pass in the thread's `pinned` state from _before_ the call and flipping it, rather than
 trying to read the direction back from the response (confirmed live via a real pin/unpin round-trip).
 **One real bug found and fixed in `lemonade-backend`, not just noted**: the frontend's tribe-join
 payment verification called `axiosInstance.get('/tribes/payment/verify?reference=...')` — a route that
@@ -1919,8 +1928,9 @@ envelope bug (present in essentially every handler in this domain — forgot-pas
 resend/verify OTP, delete-account, update-app-settings, update-profile-field, change-password,
 change-profile-image, generate-affiliate-link-shaped upgrade-plan flow — all silently no-op'd on real
 success before this pass, same as every other domain's version of this bug):
+
 1. **Token rotation on password reset, found live-testing, not by inspection.** `check-otp`
-   (`VerifyForgotPasswordAction`) deletes the very token it was called with and issues a *new* one
+   (`VerifyForgotPasswordAction`) deletes the very token it was called with and issues a _new_ one
    scoped to a different ability (`password_reset`, not `password_reset_verification`) — confirmed live:
    calling `reset-password` with the original `newToken` cookie value 403s "Invalid Token" even though
    `check-otp` itself just succeeded with that same token. `verify-code/page.tsx` never carried the new
@@ -1936,7 +1946,7 @@ success before this pass, same as every other domain's version of this bug):
    free-plan switch applies immediately server-side and genuinely has no payment step — fixed to show a
    real success toast instead of a false error.
 4. `PricingCard.tsx` dispatching a per-click subscription-detail fetch that fed a modal rendered by the
-   *parent* page was structurally awkward under Redux (write to `state.auth.pricing`, read it back in a
+   _parent_ page was structurally awkward under Redux (write to `state.auth.pricing`, read it back in a
    sibling) — the mutation now lives in `settings/plan/page.tsx` and is passed down as a callback, which
    is what surfaced (and let disprove) an initial false alarm: `SubscriptionResource` nests a real
    `pricing` array inside the single `subscription` object it returns, and the parent already unwraps
@@ -1945,6 +1955,7 @@ success before this pass, same as every other domain's version of this bug):
    codebase.
 
 **Two bugs found and deliberately left alone**, needing a product/security decision, not a transport fix:
+
 1. Account deletion cannot work from this UI at all, for two independent reasons: `DeleteAccountRequest`
    requires a `confirmation` field (exact string "DELETE") that `ConfirmDeletePage`'s form never
    collects (it only sends `password`, which the backend doesn't even validate); and even with that
@@ -2074,27 +2085,27 @@ backend work.
 
 ### Risk register
 
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| Refactor stalls half-migrated; both patterns live forever | High | High | Migrate per domain with a definition of done that includes *deleting* the old slice. Track remaining thunks as a burn-down; a domain is not done while both paths exist. |
-| Contract drift recurs after the current break is fixed | Medium | High | Generated types + contract-drift CI check. This is the specific failure that caused today's outage. |
-| Shared package becomes the everything-package | Medium | Medium | Five packages with the four rules in §7, enforced by `eslint-plugin-boundaries`. Review rejects app-shaped parameters. |
-| React 19 blocked by an unmaintained dependency | Medium | Medium | Audit before upgrading; the two known blockers are already dead code. Replace rather than pin. |
-| BFF proxy breaks rate limiting or geo logic | Medium | High | Conflict 3 above. Staging load test before the production flag flip. |
-| Team unfamiliar with Server Components / TanStack Query | Medium | Medium | Phase 5 starts with low-risk domains so the pattern is learned on reference data, not on wallets. Document the first migrated domain as the worked example. |
-| Removing the global cache visibly increases request volume | High | Low | Expected and correct. Per-query `staleTime` recovers most of it; the backend gains observability into real traffic it currently cannot see. |
-| Feature work competes with migration for the same files | High | Medium | Sequence by domain and agree the order with product. A domain being migrated is frozen for feature work for that sprint only. |
+| Risk                                                       | Likelihood | Impact | Mitigation                                                                                                                                                               |
+| ---------------------------------------------------------- | ---------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Refactor stalls half-migrated; both patterns live forever  | High       | High   | Migrate per domain with a definition of done that includes _deleting_ the old slice. Track remaining thunks as a burn-down; a domain is not done while both paths exist. |
+| Contract drift recurs after the current break is fixed     | Medium     | High   | Generated types + contract-drift CI check. This is the specific failure that caused today's outage.                                                                      |
+| Shared package becomes the everything-package              | Medium     | Medium | Five packages with the four rules in §7, enforced by `eslint-plugin-boundaries`. Review rejects app-shaped parameters.                                                   |
+| React 19 blocked by an unmaintained dependency             | Medium     | Medium | Audit before upgrading; the two known blockers are already dead code. Replace rather than pin.                                                                           |
+| BFF proxy breaks rate limiting or geo logic                | Medium     | High   | Conflict 3 above. Staging load test before the production flag flip.                                                                                                     |
+| Team unfamiliar with Server Components / TanStack Query    | Medium     | Medium | Phase 5 starts with low-risk domains so the pattern is learned on reference data, not on wallets. Document the first migrated domain as the worked example.              |
+| Removing the global cache visibly increases request volume | High       | Low    | Expected and correct. Per-query `staleTime` recovers most of it; the backend gains observability into real traffic it currently cannot see.                              |
+| Feature work competes with migration for the same files    | High       | Medium | Sequence by domain and agree the order with product. A domain being migrated is frozen for feature work for that sprint only.                                            |
 
 ### Alternatives considered and rejected
 
-| Alternative | Why rejected |
-|---|---|
-| **Rewrite both apps from scratch** | 50k LOC encoding years of product behaviour, much of it undocumented outside the code. The backend team explicitly withdrew a greenfield rewrite for the same reason (architecture guide §0) and the same logic applies here. Incremental migration keeps the product shippable throughout. |
-| **RTK Query instead of TanStack Query** | Defensible — it would reuse existing Redux knowledge and is a smaller conceptual jump. Rejected because it keeps server state inside the store the plan is trying to shrink, and has weaker Server Component and streaming-hydration support, which §6 depends on. If the team strongly prefers staying in Redux, this is the one substitution in this document that would not undermine the rest. |
-| **Keep Formik, add types** | Cheaper short term. Rejected because Formik is in maintenance, the re-render cost is already visible on the large wizards, and Yup schemas cannot serve as the type source — leaving the `any` problem partly unsolved. |
-| **Keep tokens in JS, skip the BFF** | Saves the largest single piece of work. Rejected because it leaves a live-token XSS exposure on a platform handling wallets and payouts, and it forecloses Server Components — which means forfeiting most of §15 as well. |
-| **Merge admin into the user app** | Different auth guards, different audiences, different deployment posture. Would ship admin code to public browsers. |
-| **Do nothing structural; just fix the API contract** | A legitimate option if the priority is purely to restore service. It restores the apps in days. It leaves every finding in §3 in place, and each subsequent feature makes the eventual migration more expensive. Reasonable as a stopping point after Phase 0 *only* if the security items in §16 are still completed. |
+| Alternative                                          | Why rejected                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Rewrite both apps from scratch**                   | 50k LOC encoding years of product behaviour, much of it undocumented outside the code. The backend team explicitly withdrew a greenfield rewrite for the same reason (architecture guide §0) and the same logic applies here. Incremental migration keeps the product shippable throughout.                                                                                                        |
+| **RTK Query instead of TanStack Query**              | Defensible — it would reuse existing Redux knowledge and is a smaller conceptual jump. Rejected because it keeps server state inside the store the plan is trying to shrink, and has weaker Server Component and streaming-hydration support, which §6 depends on. If the team strongly prefers staying in Redux, this is the one substitution in this document that would not undermine the rest. |
+| **Keep Formik, add types**                           | Cheaper short term. Rejected because Formik is in maintenance, the re-render cost is already visible on the large wizards, and Yup schemas cannot serve as the type source — leaving the `any` problem partly unsolved.                                                                                                                                                                            |
+| **Keep tokens in JS, skip the BFF**                  | Saves the largest single piece of work. Rejected because it leaves a live-token XSS exposure on a platform handling wallets and payouts, and it forecloses Server Components — which means forfeiting most of §15 as well.                                                                                                                                                                         |
+| **Merge admin into the user app**                    | Different auth guards, different audiences, different deployment posture. Would ship admin code to public browsers.                                                                                                                                                                                                                                                                                |
+| **Do nothing structural; just fix the API contract** | A legitimate option if the priority is purely to restore service. It restores the apps in days. It leaves every finding in §3 in place, and each subsequent feature makes the eventual migration more expensive. Reasonable as a stopping point after Phase 0 _only_ if the security items in §16 are still completed.                                                                             |
 
 ---
 
@@ -2109,25 +2120,25 @@ backend work.
 
 ### Measurable targets
 
-| Metric | Baseline | Current | Target | Phase | How verified |
-|---|---:|---:|---:|---|---|
-| Endpoints reachable against `/v1` | 0 | All except 3 (flagged, need a product decision) | All | P0 | Smoke pass over the ten journeys |
-| `: any` annotations | 574 | 499 | < 50 | P3–P5 | `grep`, tracked per PR |
-| `createAsyncThunk` | 151 | 136 (4 domains' slices deleted so far) | 0 | P5 | Burn-down; slices deleted, not just bypassed |
-| Manual `Authorization` headers | 87 | 15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) | 0 | P4 | Lint rule, then `grep` |
-| Tokens reachable from JavaScript | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed | 0 | P4 | DevTools inspection + lint rule |
-| Client-side pagination sites | 7 | not re-measured this revision | 0 | P6 | Requires Conflict 1 resolved |
-| Effects with wrong deps | 32 | not re-measured this revision | 0 | P1 | `exhaustive-deps` as error |
-| `console.log` in shipped code | 62 | 57 | 0 | P1 | `no-console` as error |
-| Duplicated / diverged files | 41 | not re-measured this revision | 0 | P2 | Cross-app path diff in CI |
-| Unimported runtime deps | 50 | not re-measured this revision | 0 | P0, P7 | `knip` in CI |
-| UI component systems | 4 | not re-measured this revision | 1 | P7 | Import ban lint rule |
-| Test files | 0 | 1 (`packages/api-client`, 15 tests) | ≥ 90% on `packages/*` | P1–P8 | Vitest coverage gate |
-| Apps with CI | 0 | 0 | 2 | P1 | Required checks on `main` |
-| Apps with lint config | 0 | 0 | 2 | P1 | CI fails on warnings |
-| Apps with route protection | 1 (weak) | 2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
-| Public routes server-rendered | 0 | 0 | All in `(public)` | P6 | View source shows content pre-hydration |
-| Hardcoded pixel classes | 7,041 | not re-measured this revision | Declining, no new | P7 | Lint warning; ratchet on the count |
+| Metric                            | Baseline |                                                                                                                                                                      Current |                Target | Phase  | How verified                                 |
+| --------------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------: | ------ | -------------------------------------------- |
+| Endpoints reachable against `/v1` |        0 |                                                                                                                              All except 3 (flagged, need a product decision) |                   All | P0     | Smoke pass over the ten journeys             |
+| `: any` annotations               |      574 |                                                                                                                                                                          499 |                  < 50 | P3–P5  | `grep`, tracked per PR                       |
+| `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed |
+| Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                       |
+| Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule              |
+| Client-side pagination sites      |        7 |                                                                                                                                                not re-measured this revision |                     0 | P6     | Requires Conflict 1 resolved                 |
+| Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                   |
+| `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                        |
+| Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                    |
+| Unimported runtime deps           |       50 |                                                                                                                                                not re-measured this revision |                     0 | P0, P7 | `knip` in CI                                 |
+| UI component systems              |        4 |                                                                                                                                                not re-measured this revision |                     1 | P7     | Import ban lint rule                         |
+| Test files                        |        0 |                                                                                                                                          1 (`packages/api-client`, 15 tests) | ≥ 90% on `packages/*` | P1–P8  | Vitest coverage gate                         |
+| Apps with CI                      |        0 |                                                                                                                                                                            0 |                     2 | P1     | Required checks on `main`                    |
+| Apps with lint config             |        0 |                                                                                                                                                                            0 |                     2 | P1     | CI fails on warnings                         |
+| Apps with route protection        | 1 (weak) |                                                                           2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated |         2 (validated) | P4     | e2e: unauthenticated deep link redirects     |
+| Public routes server-rendered     |        0 |                                                                                                                                                                            0 |     All in `(public)` | P6     | View source shows content pre-hydration      |
+| Hardcoded pixel classes           |    7,041 |                                                                                                                                                not re-measured this revision |     Declining, no new | P7     | Lint warning; ratchet on the count           |
 
 **Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
 remaining `Authorization`-header files) was real on both sides. Frontend read a `token` cookie that
@@ -2146,17 +2157,17 @@ built, only that the plumbing that would carry it is no longer broken.
 
 ### Acceptance criteria by phase
 
-| Phase | Done when |
-|---|---|
-| **P0** | Both apps run against the live backend and all ten journeys complete manually. A new developer can clone, install, copy `.env.example`, run, and log in — with no tribal knowledge. Dead dependencies removed. Admin dev and build use the same asset pipeline. |
-| **P1** | CI runs lint, typecheck and build on every PR and blocks merge. Zero lint warnings. Env validation fails the build on a missing variable. Characterization tests exist for the first domain to be migrated. |
-| **P2** | One repo builds both apps with Turborepo affected-graph CI. `@lemonade/config`, `@lemonade/domain` and generated `@lemonade/api-types` are consumed by both. Boundary lint rules pass. Contract-drift check is green and demonstrably fails when the backend changes. Old repos archived. |
-| **P3** | Both apps on the same Next major and React 19. No hydration warnings in development. No dependency pinned to React 18. Full smoke pass green. |
+| Phase  | Done when                                                                                                                                                                                                                                                                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **P0** | Both apps run against the live backend and all ten journeys complete manually. A new developer can clone, install, copy `.env.example`, run, and log in — with no tribal knowledge. Dead dependencies removed. Admin dev and build use the same asset pipeline.                                                                                        |
+| **P1** | CI runs lint, typecheck and build on every PR and blocks merge. Zero lint warnings. Env validation fails the build on a missing variable. Characterization tests exist for the first domain to be migrated.                                                                                                                                            |
+| **P2** | One repo builds both apps with Turborepo affected-graph CI. `@lemonade/config`, `@lemonade/domain` and generated `@lemonade/api-types` are consumed by both. Boundary lint rules pass. Contract-drift check is green and demonstrably fails when the backend changes. Old repos archived.                                                              |
+| **P3** | Both apps on the same Next major and React 19. No hydration warnings in development. No dependency pinned to React 18. Full smoke pass green.                                                                                                                                                                                                          |
 | **P4** | No token is reachable from browser JavaScript. Zero manual `Authorization` headers. Refresh triggers on 401, sends the token in the body, coalesces concurrent requests, and fails cleanly once. Both apps gate routes in middleware. The global GET cache and `useRequest` are deleted. Rate limiting verified correct behind the proxy (Conflict 3). |
-| **P5** | Zero `createAsyncThunk`. Every domain's slice is deleted, not merely unused. redux-persist holds no server data. Every form uses RHF + Zod with server 422s mapped onto fields. `checkError.ts`, `Skeletons.tsx` and `tableData.ts` are gone. |
-| **P6** | Public user-app routes render meaningful HTML before hydration and carry correct metadata. Table state lives in `searchParams`. Bundle budgets enforced in CI and met. LCP under 2.5s on a throttled mobile profile for public pages. |
-| **P7** | One component system, one token set, one shadcn style. MUI, antd and Evergreen removed and import-banned. No serious or critical axe violations on forms, dialogs, tables and navigation. |
-| **P8** | Frontend errors reach Sentry with a correlation id that joins the backend's log for the same request. CSP enforced. Ten Playwright journeys green in the merge queue. `docs/` complete, including a root `CLAUDE.md` an agent can follow. |
+| **P5** | Zero `createAsyncThunk`. Every domain's slice is deleted, not merely unused. redux-persist holds no server data. Every form uses RHF + Zod with server 422s mapped onto fields. `checkError.ts`, `Skeletons.tsx` and `tableData.ts` are gone.                                                                                                          |
+| **P6** | Public user-app routes render meaningful HTML before hydration and carry correct metadata. Table state lives in `searchParams`. Bundle budgets enforced in CI and met. LCP under 2.5s on a throttled mobile profile for public pages.                                                                                                                  |
+| **P7** | One component system, one token set, one shadcn style. MUI, antd and Evergreen removed and import-banned. No serious or critical axe violations on forms, dialogs, tables and navigation.                                                                                                                                                              |
+| **P8** | Frontend errors reach Sentry with a correlation id that joins the backend's log for the same request. CSP enforced. Ten Playwright journeys green in the merge queue. `docs/` complete, including a root `CLAUDE.md` an agent can follow.                                                                                                              |
 
 ### Standing rules — true at the end of every phase
 

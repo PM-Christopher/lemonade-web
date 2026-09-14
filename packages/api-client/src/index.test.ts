@@ -55,8 +55,15 @@ describe("createApiClient", () => {
       return [200, { success: true, message: "ok", data: {} }];
     });
 
-    const client = createApiClient({ baseURL: "http://api.test", getToken: () => "main-session-token" });
-    await client.request({ url: "/otp/verify", method: "get", bearerTokenOverride: "scoped-verification-token" });
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      getToken: () => "main-session-token",
+    });
+    await client.request({
+      url: "/otp/verify",
+      method: "get",
+      bearerTokenOverride: "scoped-verification-token",
+    });
 
     expect(seenAuth).toBe("Bearer scoped-verification-token");
   });
@@ -68,7 +75,10 @@ describe("createApiClient", () => {
       return [200, { success: true, message: "ok", data: {} }];
     });
 
-    const client = createApiClient({ baseURL: "http://api.test", getToken: () => "main-session-token" });
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      getToken: () => "main-session-token",
+    });
     await client.request({ url: "/wallet", method: "get" });
 
     expect(seenAuth).toBe("Bearer main-session-token");
@@ -200,9 +210,16 @@ describe("createApiClient", () => {
       error_code: "unauthorized",
     });
 
-    const client = createApiClient({ baseURL: "http://api.test", getToken: () => "token", onUnauthorized });
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      getToken: () => "token",
+      onUnauthorized,
+    });
 
-    await expect(client.get("/admin/dashboard")).rejects.toMatchObject({ kind: "auth", status: 401 });
+    await expect(client.get("/admin/dashboard")).rejects.toMatchObject({
+      kind: "auth",
+      status: 401,
+    });
     expect(onUnauthorized).toHaveBeenCalledOnce();
   });
 });

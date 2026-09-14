@@ -65,15 +65,12 @@ function UsersViews({ userData, menuOption }: any) {
 
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg">
+      <div className="rounded-lg bg-white shadow-md">
         <table className="min-w-full table-auto border-collapse">
           <thead>
             <tr className="bg-mid-grey">
               {usersHeaders.map((header, idx) => (
-                <th
-                  className="p-4 text-left text-[12px] text-text-grey font-semiBold"
-                  key={idx}
-                >
+                <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
                   {header}
                 </th>
               ))}
@@ -84,42 +81,25 @@ function UsersViews({ userData, menuOption }: any) {
               paginatedData.map((row: any, index: any) => (
                 <tr
                   key={index}
-                  className="border-b border-grey-20 h-[72px] cursor-pointer"
+                  className="h-[72px] cursor-pointer border-b border-grey-20"
                   onClick={() => router.push(`/users/${row.id}`)}
                 >
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.unique_id}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.fullname}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.email}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>
                     {capitalizeWords(row.account_plan)}
                   </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.location}
-                  </td>
-                  <td className={`p-4 font-medium text-sm font-sans`}>
-                    {row.date_joined}
-                  </td>
-                  <td
-                    className={`p-4 font-medium text-sm font-sans ${GetStatusClass(
-                      row.status
-                    )}`}
-                  >
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.location}</td>
+                  <td className={`p-4 font-sans text-sm font-medium`}>{row.date_joined}</td>
+                  <td className={`p-4 font-sans text-sm font-medium ${GetStatusClass(row.status)}`}>
                     {capitalizeWords(row.status)}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan={usersHeaders.length}
-                  className="p-4 text-center text-sm text-gray-500"
-                >
+                <td colSpan={usersHeaders.length} className="p-4 text-center text-sm text-gray-500">
                   No data available
                 </td>
               </tr>

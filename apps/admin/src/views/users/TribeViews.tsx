@@ -3,7 +3,7 @@ import TribeCard from "@/components/tribes/TribeCard";
 
 const TribeViews = ({ userDetail }: any) => {
   return (
-    <div className={"flex flex-col  py-[20px]"}>
+    <div className={"flex flex-col py-[20px]"}>
       {userDetail?.tribes?.map((item: any) => (
         <TribeCard
           date={item?.created_at}

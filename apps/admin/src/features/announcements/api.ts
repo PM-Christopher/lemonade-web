@@ -5,28 +5,28 @@ import { browserApi } from "@/lib/browser-api";
 import { adminAnnouncementRoutes } from "@lemonade/api-types";
 
 export interface AnnouncementRow {
-    id: number;
-    unique_id: string;
-    title: string;
-    created_by: { name: string; image: string | null };
-    content: string;
-    created_at: string;
-    scheduled_date: string;
-    status: string;
+  id: number;
+  unique_id: string;
+  title: string;
+  created_by: { name: string; image: string | null };
+  content: string;
+  created_at: string;
+  scheduled_date: string;
+  status: string;
 }
 
 export interface AnnouncementListResponse {
-    announcements: AnnouncementRow[];
-    count: number;
+  announcements: AnnouncementRow[];
+  count: number;
 }
 
 export interface AnnouncementDetailResponse {
-    announcement: AnnouncementRow;
+  announcement: AnnouncementRow;
 }
 
 export const announcementsApi = {
-    getAnnouncements: () => browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.BASE),
+  getAnnouncements: () => browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.BASE),
 
-    getAnnouncement: (id: number) =>
-        browserApi.get<AnnouncementDetailResponse>(`${adminAnnouncementRoutes.BASE}/${id}`),
+  getAnnouncement: (id: number) =>
+    browserApi.get<AnnouncementDetailResponse>(`${adminAnnouncementRoutes.BASE}/${id}`),
 };

@@ -36,7 +36,7 @@ const AccountSettingsPage = () => {
             show: true,
             message: `Logged out`,
             type: "success",
-          })
+          }),
         );
       },
       onSettled: () => {
@@ -45,65 +45,59 @@ const AccountSettingsPage = () => {
     });
   };
 
-
   const settingsItems = [
-  {
-    id: 'update-password',
-    icon: <PadlockIcon />,
-    label: 'Update Password',
-    onClick: toggleSettingsModal,
-    textColor: 'text-black' // or your default text color
-  },
-  {
-    id: 'delete-account',
-    icon: <TrashIcon />,
-    label: 'Delete account',
-    onClick: () => router.push("/settings/account/delete-account"),
-    textColor: 'text-black'
-  },
-  {
-    id: 'logout',
-    icon: <LogoutIcon />,
-    label: 'Log out',
-    onClick: handleLogout,
-    textColor: 'text-red-1'
-  }
-];
-
+    {
+      id: "update-password",
+      icon: <PadlockIcon />,
+      label: "Update Password",
+      onClick: toggleSettingsModal,
+      textColor: "text-black", // or your default text color
+    },
+    {
+      id: "delete-account",
+      icon: <TrashIcon />,
+      label: "Delete account",
+      onClick: () => router.push("/settings/account/delete-account"),
+      textColor: "text-black",
+    },
+    {
+      id: "logout",
+      icon: <LogoutIcon />,
+      label: "Log out",
+      onClick: handleLogout,
+      textColor: "text-red-1",
+    },
+  ];
 
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[64px]">
           <div
-            className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans font-semibold text-[16px] tracking-custom">
-              Account settings
-            </p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">Account settings</p>
           </div>
         </div>
-       <section className="mt-4 flex flex-col px-5 items-center">
-  <div className="w-full laptop:w-[640px] rounded-[12px] p-[16px] flex flex-col bg-white gap-4">
-    {settingsItems.map((item, index) => (
-      <div 
-        key={item.id}
-        className="flex justify-between items-center cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors duration-200"
-        onClick={item.onClick}
-      >
-        <div className="flex gap-[8px] items-center">
-          {item.icon}
-          <p className={`font-normal text-[16px] ${item.textColor}`}>
-            {item.label}
-          </p>
-        </div>
-        <ChevronRight className="text-gray-400" />
-      </div>
-    ))}
-  </div>
-</section>
+        <section className="mt-4 flex flex-col items-center px-5">
+          <div className="flex w-full flex-col gap-4 rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
+            {settingsItems.map((item, index) => (
+              <div
+                key={item.id}
+                className="-m-2 flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors duration-200 hover:bg-gray-50"
+                onClick={item.onClick}
+              >
+                <div className="flex items-center gap-[8px]">
+                  {item.icon}
+                  <p className={`text-[16px] font-normal ${item.textColor}`}>{item.label}</p>
+                </div>
+                <ChevronRight className="text-gray-400" />
+              </div>
+            ))}
+          </div>
+        </section>
         <UpdatePasswordModal
           user={user}
           toggle={toggleSettingsModal}

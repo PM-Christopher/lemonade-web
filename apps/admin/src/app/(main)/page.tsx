@@ -83,7 +83,7 @@ export default function Home() {
 
   return (
     <MainLayout>
-      <div className="px-[40px] gap-[20px] flex flex-col mt-[20px]">
+      <div className="mt-[20px] flex flex-col gap-[20px] px-[40px]">
         {/* <div
           className={
             "flex border-[1px] border-grey-20 bg-none w-fit px-[16px] py-[10px] rounded-[12px] gap-[30px]"

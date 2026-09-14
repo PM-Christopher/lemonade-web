@@ -8,45 +8,45 @@ import { browserApi } from "@/lib/browser-api";
 import { adminAccountRoutes } from "@lemonade/api-types";
 
 export interface CurrentAdmin {
-    id: string | number;
-    email: string;
-    name: string;
-    [key: string]: unknown;
+  id: string | number;
+  email: string;
+  name: string;
+  [key: string]: unknown;
 }
 
 export interface LoginPayload {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginResult {
-    admin: CurrentAdmin;
-    needsOnboarding?: boolean;
-    token?: string; // only present when needsOnboarding — see app/api/auth/login/route.ts
+  admin: CurrentAdmin;
+  needsOnboarding?: boolean;
+  token?: string; // only present when needsOnboarding — see app/api/auth/login/route.ts
 }
 
 async function postJson<T>(path: string, body?: unknown): Promise<T> {
-    const response = await fetch(path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: body !== undefined ? JSON.stringify(body) : undefined,
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+  const envelope = await response.json();
+
+  if (!response.ok) {
+    throw Object.assign(new Error(envelope?.message ?? "Request failed"), {
+      status: response.status,
+      errorCode: envelope?.error_code,
+      fieldErrors: envelope?.errors,
     });
+  }
 
-    const envelope = await response.json();
-
-    if (!response.ok) {
-        throw Object.assign(new Error(envelope?.message ?? "Request failed"), {
-            status: response.status,
-            errorCode: envelope?.error_code,
-            fieldErrors: envelope?.errors,
-        });
-    }
-
-    return envelope.data as T;
+  return envelope.data as T;
 }
 
 export const authApi = {
-    login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
-    logout: () => postJson<void>("/api/auth/logout"),
-    getCurrentAdmin: () => browserApi.get<CurrentAdmin>(adminAccountRoutes.PROFILE),
+  login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
+  logout: () => postJson<void>("/api/auth/logout"),
+  getCurrentAdmin: () => browserApi.get<CurrentAdmin>(adminAccountRoutes.PROFILE),
 };

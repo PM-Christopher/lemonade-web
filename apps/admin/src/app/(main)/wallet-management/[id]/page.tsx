@@ -76,14 +76,11 @@ function WalletDetailsPage({}) {
     return capitalizeWords(String(value || "N/A"));
   };
 
-  
   return (
     <MainLayout>
-      <section className="p-4 md:p-5 flex lg:flex-col flex-row gap-4 md:gap-5 w-full overflow-x-hidden max-w-full">
+      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
         <div
-          className={
-            "w-[600px] h-fit bg-white p-[24px] flex flex-col gap-[20px] rounded-[12px]"
-          }
+          className={"flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"}
         >
           {/* <div
             className={"w-[64px] h-[64px] rounded-full bg-light-black"}
@@ -93,9 +90,9 @@ function WalletDetailsPage({}) {
             Object.entries(walletDetail?.info)
               .filter(([key]) => key !== "amount") // Exclude 'amount'
               .map(([key, value]) => (
-                <div key={key} className="flex gap-[24px] items-center">
+                <div key={key} className="flex items-center gap-[24px]">
                   <div className="w-[115px]">
-                    <p className="text-text-grey text-[12px] font-medium">
+                    <p className="text-[12px] font-medium text-text-grey">
                       {capitalizeWords(key.replace(/_/g, " "))}:
                     </p>
                   </div>
@@ -113,7 +110,7 @@ function WalletDetailsPage({}) {
           ) : (
             <>
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="flex gap-[50px] items-center">
+                <div key={index} className="flex items-center gap-[50px]">
                   <div className="w-[115px]">
                     {/* Skeleton for the label */}
                     <SkeletonLoader />
@@ -126,104 +123,76 @@ function WalletDetailsPage({}) {
           )}
 
           {/* && walletDetail.status === "pending"  */}
-          {walletDetail &&
-            walletDetail?.info?.status?.toLowerCase() !== "approved" && (
-              <div className={"flex justify-between gap-[16px]"}>
-                <button
-                  className={
-                    "border-[1px] border-light-grey-50 px-[48px] py-[11px] rounded-[12px] bg-white w-full"
-                  }
-                  onClick={toggleWithdrawalReject}
-                >
-                  <p className={"text-black text-[16px] font-medium"}>
-                    Reject withdrawal
-                  </p>
-                </button>
-                <button
-                  className={
-                    "border-[1px] border-step-color px-[48px] py-[11px] rounded-[12px] bg-gradient-green w-full"
-                  }
-                  onClick={toggleWithdrawalAction}
-                >
-                  <p className={"text-[16px] font-medium text-white"}>
-                    Approve Withdrawal
-                  </p>
-                </button>
-              </div>
-            )}
+          {walletDetail && walletDetail?.info?.status?.toLowerCase() !== "approved" && (
+            <div className={"flex justify-between gap-[16px]"}>
+              <button
+                className={
+                  "w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[11px]"
+                }
+                onClick={toggleWithdrawalReject}
+              >
+                <p className={"text-[16px] font-medium text-black"}>Reject withdrawal</p>
+              </button>
+              <button
+                className={
+                  "w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[11px]"
+                }
+                onClick={toggleWithdrawalAction}
+              >
+                <p className={"text-[16px] font-medium text-white"}>Approve Withdrawal</p>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* details */}
-        <div
-          className={
-            "h-[762px] bg-white rounded-[12px] w-full lg:w-2/3 flex flex-col"
-          }
-        >
-          <div className={"p-[24px] border-b-[1px] border-b-grey-20"}>
+        <div className={"lg:w-2/3 flex h-[762px] w-full flex-col rounded-[12px] bg-white"}>
+          <div className={"border-b-[1px] border-b-grey-20 p-[24px]"}>
             <p className={"text-[16px] font-semiBold"}>Wallet summary</p>
           </div>
-          <div className={"pt-[24px] px-[24px] pb-[12px]"}>
+          <div className={"px-[24px] pb-[12px] pt-[24px]"}>
             <div
               className={
-                "flex border-[1px] border-light-grey-50 bg-none w-fit h-[44px] px-[14px] py-[12px] rounded-[12px] gap-[8px] items-center cursor-pointer"
+                "flex h-[44px] w-fit cursor-pointer items-center gap-[8px] rounded-[12px] border-[1px] border-light-grey-50 bg-none px-[14px] py-[12px]"
               }
               onClick={toggleUpdateBalance}
             >
-              <div className={"flex justify-between items-center"}>
+              <div className={"flex items-center justify-between"}>
                 <p className={"text-[14px] font-medium"}>Update Balance</p>
               </div>
               <ChevronDown className={"w-[20px]"} />
             </div>
           </div>
           <div className={"px-[24px] pb-[24px]"}>
-            <div
-              className={
-                "p-[16px] border-[2px] border-mid-grey flex flex-col rounded-[12px]"
-              }
-            >
+            <div className={"flex flex-col rounded-[12px] border-[2px] border-mid-grey p-[16px]"}>
               <div
                 className={
-                  "p-[16px] border-b-[1px] border-b-grey-20 flex justify-between cursor-pointer"
+                  "flex cursor-pointer justify-between border-b-[1px] border-b-grey-20 p-[16px]"
                 }
               >
                 <div className={"flex flex-col gap-[8px]"}>
-                  <p className={"font-normal text-text-grey text-[14px]"}>
-                    Total amount earned
-                  </p>
+                  <p className={"text-[14px] font-normal text-text-grey"}>Total amount earned</p>
                   <p className={"text-[18px] font-semiBold"}>
-                    ₦{" "}
-                    {formatNumberWithCommas(
-                      walletDetail?.history[0]?.wallet?.balance || 0
-                    )}
+                    ₦ {formatNumberWithCommas(walletDetail?.history[0]?.wallet?.balance || 0)}
                   </p>
                 </div>
                 <ChevronRight className={"cursor-pointer"} />
               </div>
               <div
                 className={
-                  "p-[16px] border-b-[1px] border-b-grey-20 flex justify-between cursor-pointer"
+                  "flex cursor-pointer justify-between border-b-[1px] border-b-grey-20 p-[16px]"
                 }
               >
                 <div className={"flex flex-col gap-[8px]"}>
-                  <p className={"font-normal text-text-grey text-[14px]"}>
-                    Referral earning
-                  </p>
-                  <p className={"text-[18px] font-semiBold"}>
-                    {" "}
-                    ₦ {formatNumberWithCommas(0)}
-                  </p>
+                  <p className={"text-[14px] font-normal text-text-grey"}>Referral earning</p>
+                  <p className={"text-[18px] font-semiBold"}> ₦ {formatNumberWithCommas(0)}</p>
                 </div>
                 <ChevronRight className={"cursor-pointer"} />
               </div>
-              <div className={"p-[16px] flex justify-between cursor-pointer"}>
+              <div className={"flex cursor-pointer justify-between p-[16px]"}>
                 <div className={"flex flex-col gap-[8px]"}>
-                  <p className={"font-normal text-text-grey text-[14px]"}>
-                    Affiliate earning
-                  </p>
-                  <p className={"text-[18px] font-semiBold"}>
-                    {" "}
-                    ₦ {formatNumberWithCommas(0)}
-                  </p>
+                  <p className={"text-[14px] font-normal text-text-grey"}>Affiliate earning</p>
+                  <p className={"text-[18px] font-semiBold"}> ₦ {formatNumberWithCommas(0)}</p>
                 </div>
                 <ChevronRight className={"cursor-pointer"} />
               </div>
@@ -231,14 +200,8 @@ function WalletDetailsPage({}) {
           </div>
         </div>
       </section>
-      <WithdrawalApproval
-        isOpen={isOpen}
-        toggle={toggleWithdrawalAction}
-      />
-      <WithdrawalReject
-        isOpen={isRejectOpen}
-        toggle={toggleWithdrawalReject}
-      />
+      <WithdrawalApproval isOpen={isOpen} toggle={toggleWithdrawalAction} />
+      <WithdrawalReject isOpen={isRejectOpen} toggle={toggleWithdrawalReject} />
       <UpdateBalance
         isOpen={isUpdateOpen}
         toggle={toggleUpdateBalance}
@@ -247,21 +210,9 @@ function WalletDetailsPage({}) {
         balance={walletDetail?.history[0]?.wallet?.balance}
       />
 
-      <PayoutHistory
-        isOpen={isPayoutOpen}
-        toggle={togglePayoutHistory}
-        data={[]}
-      />
-      <ReferralHistory
-        isOpen={isReferralOpen}
-        toggle={toggleReferralHistory}
-        data={[]}
-      />
-      <AffiliateHistory
-        isOpen={isAffiliateOpen}
-        toggle={toggleAffiliateHistory}
-        data={[]}
-      />
+      <PayoutHistory isOpen={isPayoutOpen} toggle={togglePayoutHistory} data={[]} />
+      <ReferralHistory isOpen={isReferralOpen} toggle={toggleReferralHistory} data={[]} />
+      <AffiliateHistory isOpen={isAffiliateOpen} toggle={toggleAffiliateHistory} data={[]} />
     </MainLayout>
   );
 }

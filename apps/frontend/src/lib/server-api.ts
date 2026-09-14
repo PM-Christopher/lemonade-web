@@ -19,7 +19,7 @@ export { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE };
 const LARAVEL_API_URL = process.env.LARAVEL_API_URL;
 
 if (!LARAVEL_API_URL) {
-    throw new Error("LARAVEL_API_URL is not set — see .env.example");
+  throw new Error("LARAVEL_API_URL is not set — see .env.example");
 }
 
 // Fallback only — real callers always have a concrete `expires_in` from the
@@ -29,11 +29,11 @@ const DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS = 60 * 60;
 const REFRESH_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // sanctum.rf_expiration's current default (30 days)
 
 function getToken(): string | undefined {
-    return cookies().get(USER_TOKEN_COOKIE)?.value;
+  return cookies().get(USER_TOKEN_COOKIE)?.value;
 }
 
 function getRefreshToken(): string | undefined {
-    return cookies().get(USER_REFRESH_COOKIE)?.value;
+  return cookies().get(USER_REFRESH_COOKIE)?.value;
 }
 
 // Cookie writes only succeed inside a Route Handler or Server Action. If a
@@ -43,57 +43,61 @@ function getRefreshToken(): string | undefined {
 // doesn't stick, so the next request refreshes again. Better than crashing
 // the render.
 function persistAccessToken(token: string, maxAgeSeconds: number): void {
-    try {
-        cookies().set(USER_TOKEN_COOKIE, token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: maxAgeSeconds,
-        });
-    } catch {
-        // Not in a writable context — see comment above.
-    }
+  try {
+    cookies().set(USER_TOKEN_COOKIE, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: maxAgeSeconds,
+    });
+  } catch {
+    // Not in a writable context — see comment above.
+  }
 }
 
 function persistRefreshToken(token: string): void {
-    try {
-        cookies().set(USER_REFRESH_COOKIE, token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
-        });
-    } catch {
-        // Not in a writable context.
-    }
+  try {
+    cookies().set(USER_REFRESH_COOKIE, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: REFRESH_TOKEN_MAX_AGE_SECONDS,
+    });
+  } catch {
+    // Not in a writable context.
+  }
 }
 
 export function clearUserSession(): void {
-    try {
-        cookies().delete(USER_TOKEN_COOKIE);
-        cookies().delete(USER_REFRESH_COOKIE);
-    } catch {
-        // Not in a writable context.
-    }
+  try {
+    cookies().delete(USER_TOKEN_COOKIE);
+    cookies().delete(USER_REFRESH_COOKIE);
+  } catch {
+    // Not in a writable context.
+  }
 }
 
 export const backendApi: ApiClient = createApiClient({
-    baseURL: `${LARAVEL_API_URL}/v1`,
-    getToken,
-    refresh: {
-        refreshPath: userAuthRoutes.REFRESH,
-        getRefreshToken,
-        onRefreshed: (accessToken, refreshToken, expiresIn) => {
-            persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
-            if (refreshToken) persistRefreshToken(refreshToken);
-        },
+  baseURL: `${LARAVEL_API_URL}/v1`,
+  getToken,
+  refresh: {
+    refreshPath: userAuthRoutes.REFRESH,
+    getRefreshToken,
+    onRefreshed: (accessToken, refreshToken, expiresIn) => {
+      persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
+      if (refreshToken) persistRefreshToken(refreshToken);
     },
-    onUnauthorized: clearUserSession,
+  },
+  onUnauthorized: clearUserSession,
 });
 
-export function persistUserSession(accessToken: string, refreshToken?: string, expiresIn?: number): void {
-    persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
-    if (refreshToken) persistRefreshToken(refreshToken);
+export function persistUserSession(
+  accessToken: string,
+  refreshToken?: string,
+  expiresIn?: number,
+): void {
+  persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
+  if (refreshToken) persistRefreshToken(refreshToken);
 }

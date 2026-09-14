@@ -19,10 +19,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
   const dispatch = useDispatch<AppDispatch>();
   const addTeamMember = useAddTeamMemberMutation();
   const prodSchema = yup.object({
-    email: yup
-      .string()
-      .email("Please enter a valid email")
-      .required("Email is required"),
+    email: yup.string().email("Please enter a valid email").required("Email is required"),
     first_name: yup
       .string()
 
@@ -64,7 +61,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 show: true,
                 message: `Success `,
                 type: "success",
-              })
+              }),
             );
           },
           onError: (error) => {
@@ -74,35 +71,33 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 show: true,
                 message: error?.message || `Something went wrong`,
                 type: "error",
-              })
+              }),
             );
           },
-        }
+        },
       );
     },
   });
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${
+      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div className="w-[360px] bg-white pt-[16px] pb-[4px] rounded-[12px]">
-        <div className={"py-[4px] px-[16px]"}>
-          <div className="flex justify-between items-center">
-            <p className="font-sans font-semibold text-[18px] leading-[27px]">
-              Add Admin
-            </p>
+      <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+        <div className={"px-[16px] py-[4px]"}>
+          <div className="flex items-center justify-between">
+            <p className="font-sans text-[18px] font-semibold leading-[27px]">Add Admin</p>
             <div className="cursor-pointer" onClick={toggle}>
               <XIcon />
             </div>
           </div>
         </div>
-        <div className={"py-[16px] flex flex-col gap-[16px] px-[16px]"}>
+        <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
           <div className="grid gap-2">
             <Label
               htmlFor="first_name"
-              className="font-sans text-text-grey font-normal text-[14px]"
+              className="font-sans text-[14px] font-normal text-text-grey"
             >
               First name
             </Label>
@@ -110,7 +105,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
               id="first_name"
               type="text"
               placeholder=""
-              className="h-12 rounded-xl bg-light-grey form-font border-0"
+              className="form-font h-12 rounded-xl border-0 bg-light-grey"
               value={formik.values.first_name}
               onChange={formik.handleChange("first_name")}
               onBlur={formik.handleBlur}
@@ -118,17 +113,14 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
           </div>
 
           <div className="grid gap-2">
-            <Label
-              htmlFor="last_name"
-              className="font-sans text-text-grey font-normal text-[14px]"
-            >
+            <Label htmlFor="last_name" className="font-sans text-[14px] font-normal text-text-grey">
               Last name
             </Label>
             <Input
               id="last_name"
               type="text"
               placeholder=""
-              className="h-12 rounded-xl bg-light-grey form-font border-0"
+              className="form-font h-12 rounded-xl border-0 bg-light-grey"
               value={formik.values.last_name}
               onChange={formik.handleChange("last_name")}
               onBlur={formik.handleBlur}
@@ -136,17 +128,14 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
           </div>
 
           <div className="grid gap-2">
-            <Label
-              htmlFor="email"
-              className="font-sans text-text-grey font-normal text-[14px]"
-            >
+            <Label htmlFor="email" className="font-sans text-[14px] font-normal text-text-grey">
               Email address
             </Label>
             <Input
               id="email"
               type="email"
               placeholder="e.g. Janedoe@example.com"
-              className="h-12 rounded-xl bg-light-grey form-font border-0"
+              className="form-font h-12 rounded-xl border-0 bg-light-grey"
               value={formik.values.email}
               onChange={formik.handleChange("email")}
               onBlur={formik.handleBlur}
@@ -154,16 +143,13 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
           </div>
 
           <div className="grid gap-2">
-            <Label
-              htmlFor="password"
-              className="font-sans text-text-grey font-normal text-[14px]"
-            >
+            <Label htmlFor="password" className="font-sans text-[14px] font-normal text-text-grey">
               Password
             </Label>
             <Input
               id="password"
               type="password"
-              className="h-12 rounded-xl bg-light-grey form-font border-0"
+              className="form-font h-12 rounded-xl border-0 bg-light-grey"
               value={formik.values.password}
               onChange={formik.handleChange("password")}
               onBlur={formik.handleBlur}
@@ -171,16 +157,13 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
           </div>
 
           <div className="grid gap-2">
-            <Label
-              htmlFor="role"
-              className="font-sans text-text-grey font-normal text-[14px]"
-            >
+            <Label htmlFor="role" className="font-sans text-[14px] font-normal text-text-grey">
               Role
             </Label>
             <Input
               id="role"
               type="text"
-              className="h-12 rounded-xl bg-light-grey form-font border-0"
+              className="form-font h-12 rounded-xl border-0 bg-light-grey"
               value={formik.values.role}
               onChange={formik.handleChange("role")}
               onBlur={formik.handleBlur}
@@ -191,15 +174,15 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
           <button
             onClick={toggle}
             className={
-              "border-[1px] border-light-grey-50 px-[48px] py-[11px] rounded-[12px] bg-white w-full"
+              "w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[11px]"
             }
           >
-            <p className={"text-black text-[16px] font-medium"}>Cancel</p>
+            <p className={"text-[16px] font-medium text-black"}>Cancel</p>
           </button>
           <button
             onClick={() => formik.handleSubmit()}
             className={
-              "border-[1px] border-step-color px-[48px] py-[11px] rounded-[12px] bg-gradient-green w-full"
+              "w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[11px]"
             }
           >
             <p className={"text-[16px] font-medium text-white"}>Confirm</p>

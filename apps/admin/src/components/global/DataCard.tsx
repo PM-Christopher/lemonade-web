@@ -12,7 +12,7 @@ function DataCard({
   isLink = false,
   pageLink = "",
   handleChange,
-    toggle
+  toggle,
 }: {
   styles?: string;
   title: string;
@@ -28,10 +28,10 @@ function DataCard({
   const router = useRouter();
   return (
     <div
-      className={`p-4 bg-white shadow-card-shadow flex justify-between rounded-[12px] ${styles}`}
+      className={`shadow-card-shadow flex justify-between rounded-[12px] bg-white p-4 ${styles}`}
     >
       <div className={"flex flex-col gap-[16px]"}>
-        <p className="text-text-grey font-normal text-[14px]">{title}</p>
+        <p className="text-[14px] font-normal text-text-grey">{title}</p>
         <p className="text-[24px] font-semiBold">
           {isPrice && "₦"}
           {Number(count)?.toLocaleString()}
@@ -40,7 +40,7 @@ function DataCard({
       </div>
       {isEditable && (
         <p
-          className={"font-medium text-[14px] text-light-green cursor-pointer"}
+          className={"cursor-pointer text-[14px] font-medium text-light-green"}
           onClick={handleChange}
         >
           Edit
@@ -48,7 +48,7 @@ function DataCard({
       )}
       {isLink && pageLink && (
         <p
-          className={"font-medium text-[14px] text-light-green cursor-pointer"}
+          className={"cursor-pointer text-[14px] font-medium text-light-green"}
           onClick={() => router.push(pageLink)}
         >
           View

@@ -1,12 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
-import {
-  CalendarIcon,
-  ChevronDown,
-  SearchIcon,
-  UploadIcon,
-} from "lucide-react";
+import { CalendarIcon, ChevronDown, SearchIcon, UploadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usersPageViews } from "@/utils/pageViews";
 import UsersViews from "@/views/users/UsersView";
@@ -22,13 +17,7 @@ import useSearchParams from "@/hooks/useSearchParams";
 import { Select } from "antd";
 
 function UsersPage({}) {
-  const statusOptions = [
-    "Clear selection",
-    "Active",
-    "Inactive",
-    "Suspended",
-    "Deactivated",
-  ];
+  const statusOptions = ["Clear selection", "Active", "Inactive", "Suspended", "Deactivated"];
   const [menuOption, setMenuOption] = useState("users");
   const [searchValue, setSearchValue] = useState("");
   const [status, setStatus] = useState<string>("");
@@ -65,7 +54,7 @@ function UsersPage({}) {
             show: true,
             message: `Downloaded `,
             type: "success",
-          })
+          }),
         );
       },
       onError: (error) => {
@@ -75,7 +64,7 @@ function UsersPage({}) {
             show: true,
             message: error?.message || `Something went wrong`,
             type: "error",
-          })
+          }),
         );
       },
     });
@@ -105,21 +94,21 @@ function UsersPage({}) {
 
   return (
     <MainLayout>
-      <section className="flex flex-col gap-[20px] mt-[20px]">
-        <div className={"px-[20px] flex justify-between"}>
+      <section className="mt-[20px] flex flex-col gap-[20px]">
+        <div className={"flex justify-between px-[20px]"}>
           <p className={"text-[16px] font-semiBold"}>
             {(userData && "users" in userData ? userData.users.length : 0) || 0} users
           </p>
           <div className={"flex justify-between gap-[12px]"}>
-            <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] h-[40px] w-[285px] rounded-[12px] border-[1px] border-grey-20">
+            <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
               <div>
-                <SearchIcon className={"w-[12px] h-[12px] text-grey-40"} />
+                <SearchIcon className={"h-[12px] w-[12px] text-grey-40"} />
               </div>
               <div className="w-full">
                 <input
                   id="search"
                   type="text"
-                  className="rounded-xl text-[14px] bg-light-grey focus:outline-none focus:ring-0 focus:border-transparent w-full py-4"
+                  className="w-full rounded-xl bg-light-grey py-4 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
                   placeholder="Search user, email, ID, location..."
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -127,9 +116,9 @@ function UsersPage({}) {
             </div>
             {menuOption === "users" && (
               <Select
-                suffixIcon={<ChevronDown className="text-text-grey w-[20px]" />}
+                suffixIcon={<ChevronDown className="w-[20px] text-text-grey" />}
                 defaultValue="Status"
-                className="w-[193px] h-[40px] text-[12px] font-semiBold text-text-grey rounded-[12px] focus:!border-light-green-50"
+                className="h-[40px] w-[193px] rounded-[12px] text-[12px] font-semiBold text-text-grey focus:!border-light-green-50"
                 options={statusOptions.map((status) => ({
                   label: status,
                   value: status.toLowerCase(),
@@ -141,48 +130,36 @@ function UsersPage({}) {
             )}
             <div
               className={
-                "flex border-[1px] border-grey-20 bg-none w-[193px] h-[40px] px-[16px] py-[10px] rounded-[12px] justify-between items-center"
+                "flex h-[40px] w-[193px] items-center justify-between rounded-[12px] border-[1px] border-grey-20 bg-none px-[16px] py-[10px]"
               }
             >
-              <div className={"flex gap-2 items-center"}>
-                <CalendarIcon className={"text-text-grey w-[15px] h-[15px]"} />
-                <p className={"text-[12px] font-semiBold text-text-grey"}>
-                  ALL TIME
-                </p>
+              <div className={"flex items-center gap-2"}>
+                <CalendarIcon className={"h-[15px] w-[15px] text-text-grey"} />
+                <p className={"text-[12px] font-semiBold text-text-grey"}>ALL TIME</p>
               </div>
-              <ChevronDown className={"text-text-grey w-[20px]"} />
+              <ChevronDown className={"w-[20px] text-text-grey"} />
             </div>
             <div>
               <Button
                 onClick={exportUser}
-                className={
-                  "flex h-[40px] rounded-[12px] bg-gradient-green border-step-color"
-                }
+                className={"flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"}
               >
-                <UploadIcon className={"text-white w-[15px] h-[15px]"} />
-                <p className={"text-white font-medium text-[16px]"}>
+                <UploadIcon className={"h-[15px] w-[15px] text-white"} />
+                <p className={"text-[16px] font-medium text-white"}>
                   {isLoading ? "Exporting..." : "Export"}
                 </p>
               </Button>
             </div>
           </div>
         </div>
-        <div className={"px-[20px] flex flex-col "}>
-          <div
-            className={
-              "border-[1px] border-grey-20 rounded-[12px] flex flex-col"
-            }
-          >
-            <div className={"px-[12px] pt-[8px] w-fit"}>
-              <div
-                className={
-                  "flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"
-                }
-              >
+        <div className={"flex flex-col px-[20px]"}>
+          <div className={"flex flex-col rounded-[12px] border-[1px] border-grey-20"}>
+            <div className={"w-fit px-[12px] pt-[8px]"}>
+              <div className={"flex items-center gap-6 rounded-[12px] bg-mid-grey p-[4px]"}>
                 {usersPageViews.map((item, index) => (
                   <div
-                    className={`px-[8px] p-[4px] cursor-pointer ${
-                      menuOption === item.key && "bg-white rounded-[10px]"
+                    className={`cursor-pointer p-[4px] px-[8px] ${
+                      menuOption === item.key && "rounded-[10px] bg-white"
                     }`}
                     onClick={() => switchOption(item.key)}
                     key={index}
@@ -190,7 +167,7 @@ function UsersPage({}) {
                     <p
                       className={`font-sans leading-[24px] ${
                         menuOption === item.key
-                          ? "font-semibold text-[16px]"
+                          ? "text-[16px] font-semibold"
                           : "font-semi-normal text-[16px] text-text-grey"
                       }`}
                     >

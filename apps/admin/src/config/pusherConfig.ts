@@ -9,17 +9,17 @@ import Pusher from "pusher-js";
 // comment) but fixed for consistency with the frontend app's equivalent.
 const app_key: any = process.env.NEXT_PUBLIC_PUSHER_KEY;
 export const pusherConfig = () => {
-    return new Pusher(app_key, {
-        cluster: "eu",
-        channelAuthorization: {
-            transport: "ajax",
-            endpoint: "/api/broadcasting/auth",
-        },
-    });
+  return new Pusher(app_key, {
+    cluster: "eu",
+    channelAuthorization: {
+      transport: "ajax",
+      endpoint: "/api/broadcasting/auth",
+    },
+  });
 };
 
 export const pusherCon = () => {
-    return new Pusher(app_key, {
-        cluster: "eu",
-    });
+  return new Pusher(app_key, {
+    cluster: "eu",
+  });
 };

@@ -16,59 +16,67 @@ import { userAuthRoutes } from "@lemonade/api-types";
 import { backendApi, persistUserSession } from "@/lib/server-api";
 
 interface LoginUser {
-    id: string | number;
-    email: string;
-    fullname: string;
-    username: string | null;
-    status?: number;
+  id: string | number;
+  email: string;
+  fullname: string;
+  username: string | null;
+  status?: number;
 }
 
 interface LoginResponse {
-    user: LoginUser;
-    token: string;
-    token_type: string;
-    refresh_token?: string;
-    expires_in?: number;
+  user: LoginUser;
+  token: string;
+  token_type: string;
+  refresh_token?: string;
+  expires_in?: number;
 }
 
 export async function POST(req: Request) {
-    const body = await req.json().catch(() => undefined);
+  const body = await req.json().catch(() => undefined);
 
-    if (!body?.email || !body?.password) {
-        return NextResponse.json(
-            { success: false, message: "Email and password are required.", error_code: "validation-failed" },
-            { status: 422 },
-        );
+  if (!body?.email || !body?.password) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Email and password are required.",
+        error_code: "validation-failed",
+      },
+      { status: 422 },
+    );
+  }
+
+  try {
+    const result = await backendApi.post<LoginResponse>(userAuthRoutes.LOGIN, body);
+
+    const needsOnboarding = result.user.status === 0 || result.user.username === null;
+
+    if (needsOnboarding) {
+      return NextResponse.json({
+        success: true,
+        message: "Login successful",
+        data: { user: result.user, token: result.token, needsOnboarding: true },
+      });
     }
 
-    try {
-        const result = await backendApi.post<LoginResponse>(userAuthRoutes.LOGIN, body);
+    persistUserSession(result.token, result.refresh_token, result.expires_in);
 
-        const needsOnboarding = result.user.status === 0 || result.user.username === null;
-
-        if (needsOnboarding) {
-            return NextResponse.json({
-                success: true,
-                message: "Login successful",
-                data: { user: result.user, token: result.token, needsOnboarding: true },
-            });
-        }
-
-        persistUserSession(result.token, result.refresh_token, result.expires_in);
-
-        return NextResponse.json({ success: true, message: "Login successful", data: { user: result.user } });
-    } catch (err) {
-        if (err instanceof ApiError) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: err.message,
-                    error_code: err.errorCode,
-                    ...(err.fieldErrors ? { errors: err.fieldErrors } : {}),
-                },
-                { status: err.status || 502 },
-            );
-        }
-        return NextResponse.json({ success: false, message: "Unexpected error." }, { status: 500 });
+    return NextResponse.json({
+      success: true,
+      message: "Login successful",
+      data: { user: result.user },
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err.message,
+          error_code: err.errorCode,
+          ...(err.fieldErrors ? { errors: err.fieldErrors } : {}),
+        },
+        { status: err.status || 502 },
+      );
     }
+    return NextResponse.json({ success: false, message: "Unexpected error." }, { status: 500 });
+  }
 }

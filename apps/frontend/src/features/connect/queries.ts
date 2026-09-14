@@ -2,52 +2,52 @@ import { useQuery, type QueryClient } from "@tanstack/react-query";
 import { connectApi, type ChatDetailResponse, type OutgoingChatMessage } from "./api";
 
 export const connectKeys = {
-    all: () => ["connect"] as const,
-    chats: () => [...connectKeys.all(), "chats"] as const,
-    chat: (receiverId: number) => [...connectKeys.all(), "chat", receiverId] as const,
-    invites: () => [...connectKeys.all(), "invites"] as const,
-    connection: () => [...connectKeys.all(), "connection"] as const,
+  all: () => ["connect"] as const,
+  chats: () => [...connectKeys.all(), "chats"] as const,
+  chat: (receiverId: number) => [...connectKeys.all(), "chat", receiverId] as const,
+  invites: () => [...connectKeys.all(), "invites"] as const,
+  connection: () => [...connectKeys.all(), "connection"] as const,
 };
 
 // Message history (sidebar) and an open chat — not money, but live/social
 // data; CLAUDE.md's "user-owned content" bucket (60s) governs background
 // refetch, real-time updates arrive separately via appendIncomingChatMessage.
 export function useChatHistoryQuery(options?: { enabled?: boolean }) {
-    return useQuery({
-        queryKey: connectKeys.chats(),
-        queryFn: connectApi.getMessages,
-        staleTime: 60_000,
-        enabled: options?.enabled,
-    });
+  return useQuery({
+    queryKey: connectKeys.chats(),
+    queryFn: connectApi.getMessages,
+    staleTime: 60_000,
+    enabled: options?.enabled,
+  });
 }
 
 export function useChatQuery(receiverId: number | undefined, options?: { enabled?: boolean }) {
-    return useQuery({
-        queryKey: connectKeys.chat(receiverId ?? 0),
-        queryFn: () => connectApi.getChat(receiverId as number),
-        staleTime: 60_000,
-        enabled: Boolean(receiverId) && options?.enabled !== false,
-    });
+  return useQuery({
+    queryKey: connectKeys.chat(receiverId ?? 0),
+    queryFn: () => connectApi.getChat(receiverId as number),
+    staleTime: 60_000,
+    enabled: Boolean(receiverId) && options?.enabled !== false,
+  });
 }
 
 // Pending connection requests — an actionable queue, closer to CLAUDE.md's
 // "operational queues" bucket (30s) than plain user content.
 export function useInvitesQuery(options?: { enabled?: boolean }) {
-    return useQuery({
-        queryKey: connectKeys.invites(),
-        queryFn: connectApi.getInvites,
-        staleTime: 30_000,
-        enabled: options?.enabled,
-    });
+  return useQuery({
+    queryKey: connectKeys.invites(),
+    queryFn: connectApi.getInvites,
+    staleTime: 30_000,
+    enabled: options?.enabled,
+  });
 }
 
 export function useConnectionQuery(options?: { enabled?: boolean }) {
-    return useQuery({
-        queryKey: connectKeys.connection(),
-        queryFn: connectApi.getConnection,
-        staleTime: 60_000,
-        enabled: options?.enabled,
-    });
+  return useQuery({
+    queryKey: connectKeys.connection(),
+    queryFn: connectApi.getConnection,
+    staleTime: 60_000,
+    enabled: options?.enabled,
+  });
 }
 
 /**
@@ -62,25 +62,29 @@ export function useConnectionQuery(options?: { enabled?: boolean }) {
  * (a no-op if that chat isn't currently cached), so it's correct regardless
  * of what's open.
  */
-export function appendIncomingChatMessage(queryClient: QueryClient, currentUserId: number, raw: OutgoingChatMessage): void {
-    const otherPartyId = raw.sender === currentUserId ? raw.receiver : raw.sender;
+export function appendIncomingChatMessage(
+  queryClient: QueryClient,
+  currentUserId: number,
+  raw: OutgoingChatMessage,
+): void {
+  const otherPartyId = raw.sender === currentUserId ? raw.receiver : raw.sender;
 
-    queryClient.setQueryData<ChatDetailResponse>(connectKeys.chat(otherPartyId), (old) => {
-        if (!old) return old;
+  queryClient.setQueryData<ChatDetailResponse>(connectKeys.chat(otherPartyId), (old) => {
+    if (!old) return old;
 
-        return {
-            ...old,
-            messages: [
-                ...old.messages,
-                {
-                    id: raw.id,
-                    message: raw.message,
-                    sender: raw.sender === currentUserId,
-                    receiver: raw.receiver === currentUserId,
-                    media: raw.media,
-                    created_at: raw.created_at,
-                },
-            ],
-        };
-    });
+    return {
+      ...old,
+      messages: [
+        ...old.messages,
+        {
+          id: raw.id,
+          message: raw.message,
+          sender: raw.sender === currentUserId,
+          receiver: raw.receiver === currentUserId,
+          media: raw.media,
+          created_at: raw.created_at,
+        },
+      ],
+    };
+  });
 }

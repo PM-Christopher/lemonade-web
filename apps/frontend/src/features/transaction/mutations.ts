@@ -5,7 +5,7 @@ import { transactionApi, type VerifyTransactionPayload } from "./api";
 // redirect just told us" call triggered by a trxref query param, same
 // pattern as admin's exports domain. A mutation, not a query.
 export function useVerifyTransactionMutation() {
-    return useMutation({
-        mutationFn: (data: VerifyTransactionPayload) => transactionApi.verifyTransaction(data),
-    });
+  return useMutation({
+    mutationFn: (data: VerifyTransactionPayload) => transactionApi.verifyTransaction(data),
+  });
 }

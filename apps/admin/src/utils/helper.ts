@@ -1,6 +1,4 @@
-export function getFirstLetterCapitalized(
-  str: string | null | undefined
-): string {
+export function getFirstLetterCapitalized(str: string | null | undefined): string {
   if (!str) return ""; // Handle empty string case
   return str.charAt(0).toUpperCase();
 }
@@ -60,10 +58,7 @@ export const formatThousandSeparator = (num: number | string): string => {
   return Number(num).toLocaleString();
 };
 
-export const downloadCSV = (
-  csvString: string,
-  filename: string = "data.csv"
-) => {
+export const downloadCSV = (csvString: string, filename: string = "data.csv") => {
   if (!csvString) {
     console.error("CSV data is empty");
     return;
@@ -105,15 +100,7 @@ export const manualTransactionsExport = (data: any, type: any) => {
       "Created At",
     ];
   } else if (type === "wallet-withdrawals") {
-    headers = [
-      "ID",
-      "Transaction ID",
-      "Full Name",
-      "Amount",
-      "Image",
-      "Status",
-      "Created At",
-    ];
+    headers = ["ID", "Transaction ID", "Full Name", "Amount", "Image", "Status", "Created At"];
   } else if (type === "events") {
     headers = [
       "ID",
@@ -177,11 +164,7 @@ export const manualTransactionsExport = (data: any, type: any) => {
     const processedRow = row.map((value) => {
       // Convert to string and check if it needs quotes
       const stringValue = String(value);
-      if (
-        stringValue.includes(",") ||
-        stringValue.includes('"') ||
-        stringValue.includes("\n")
-      ) {
+      if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
         // Escape quotes and wrap in quotes
         return `"${stringValue.replace(/"/g, '""')}"`;
       }

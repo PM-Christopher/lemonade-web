@@ -31,79 +31,86 @@ import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
 
 async function handle(req: NextRequest, path: string[], method: string): Promise<NextResponse> {
-    const targetUrl = `/${path.join("/")}${req.nextUrl.search}`;
-    const correlationId = req.headers.get("x-correlation-id") ?? undefined;
+  const targetUrl = `/${path.join("/")}${req.nextUrl.search}`;
+  const correlationId = req.headers.get("x-correlation-id") ?? undefined;
 
-    let data: unknown;
-    let bodyContentType: string | undefined;
+  let data: unknown;
+  let bodyContentType: string | undefined;
 
-    if (JSON_METHODS.has(method)) {
-        const contentType = req.headers.get("content-type") ?? "";
+  if (JSON_METHODS.has(method)) {
+    const contentType = req.headers.get("content-type") ?? "";
 
-        if (contentType.includes("multipart/form-data")) {
-            data = Buffer.from(await req.arrayBuffer());
-            bodyContentType = contentType; // carries the boundary — must be forwarded verbatim
-        } else if (!contentType || contentType.includes("application/json")) {
-            data = await req.json().catch(() => undefined);
-        } else {
-            return NextResponse.json(
-                { success: false, message: "Unsupported content type for the BFF proxy.", error_code: "not-specified" },
-                { status: 415 },
-            );
-        }
+    if (contentType.includes("multipart/form-data")) {
+      data = Buffer.from(await req.arrayBuffer());
+      bodyContentType = contentType; // carries the boundary — must be forwarded verbatim
+    } else if (!contentType || contentType.includes("application/json")) {
+      data = await req.json().catch(() => undefined);
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unsupported content type for the BFF proxy.",
+          error_code: "not-specified",
+        },
+        { status: 415 },
+      );
     }
+  }
 
-    const hasSession = Boolean(req.cookies.get(USER_TOKEN_COOKIE)?.value);
-    const onboardingToken = hasSession ? undefined : req.cookies.get(ONBOARDING_TOKEN_COOKIE)?.value;
+  const hasSession = Boolean(req.cookies.get(USER_TOKEN_COOKIE)?.value);
+  const onboardingToken = hasSession ? undefined : req.cookies.get(ONBOARDING_TOKEN_COOKIE)?.value;
 
-    try {
-        const result = await backendApi.request({
-            url: targetUrl,
-            method,
-            data,
-            headers: {
-                ...(correlationId ? { "X-Correlation-Id": correlationId } : {}),
-                ...(bodyContentType ? { "Content-Type": bodyContentType } : {}),
-            },
-            ...(onboardingToken ? { bearerTokenOverride: onboardingToken } : {}),
-        });
-        return NextResponse.json({ success: true, message: "OK", data: result });
-    } catch (err) {
-        if (err instanceof ApiError) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: err.message,
-                    error_code: err.errorCode,
-                    ...(err.fieldErrors ? { errors: err.fieldErrors } : {}),
-                },
-                { status: err.status || 502 },
-            );
-        }
-        return NextResponse.json({ success: false, message: "Unexpected proxy error.", error_code: "not-specified" }, { status: 500 });
+  try {
+    const result = await backendApi.request({
+      url: targetUrl,
+      method,
+      data,
+      headers: {
+        ...(correlationId ? { "X-Correlation-Id": correlationId } : {}),
+        ...(bodyContentType ? { "Content-Type": bodyContentType } : {}),
+      },
+      ...(onboardingToken ? { bearerTokenOverride: onboardingToken } : {}),
+    });
+    return NextResponse.json({ success: true, message: "OK", data: result });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: err.message,
+          error_code: err.errorCode,
+          ...(err.fieldErrors ? { errors: err.fieldErrors } : {}),
+        },
+        { status: err.status || 502 },
+      );
     }
+    return NextResponse.json(
+      { success: false, message: "Unexpected proxy error.", error_code: "not-specified" },
+      { status: 500 },
+    );
+  }
 }
 
 interface RouteParams {
-    params: { path: string[] };
+  params: { path: string[] };
 }
 
 export function GET(req: NextRequest, { params }: RouteParams) {
-    return handle(req, params.path, "GET");
+  return handle(req, params.path, "GET");
 }
 
 export function POST(req: NextRequest, { params }: RouteParams) {
-    return handle(req, params.path, "POST");
+  return handle(req, params.path, "POST");
 }
 
 export function PATCH(req: NextRequest, { params }: RouteParams) {
-    return handle(req, params.path, "PATCH");
+  return handle(req, params.path, "PATCH");
 }
 
 export function PUT(req: NextRequest, { params }: RouteParams) {
-    return handle(req, params.path, "PUT");
+  return handle(req, params.path, "PUT");
 }
 
 export function DELETE(req: NextRequest, { params }: RouteParams) {
-    return handle(req, params.path, "DELETE");
+  return handle(req, params.path, "DELETE");
 }

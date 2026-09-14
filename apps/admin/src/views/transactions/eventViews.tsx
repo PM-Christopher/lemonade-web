@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import GlobalTable from "@/components/global/GlobalTable";
-import {
-  eventMainHeaders,
-  eventsHeaders,
-  walletData,
-  walletHeaders,
-} from "@/data/tableData";
+import { eventMainHeaders, eventsHeaders, walletData, walletHeaders } from "@/data/tableData";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
@@ -47,18 +42,11 @@ function EventViews({ trx_data }: EventIF) {
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = trx_data?.history?.slice(
-    startIndex,
-    startIndex + perPage
-  );
+  const paginatedData = trx_data?.history?.slice(startIndex, startIndex + perPage);
 
-    return (
+  return (
     <>
-      <div
-        className={
-          "flex justify-between gap-[24px] pt-[8px] px-[12px] pb-[16px]"
-        }
-      >
+      <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
         <DataCard
           styles={"w-full"}
           title={"Total Ticket Revenue"}
@@ -70,21 +58,14 @@ function EventViews({ trx_data }: EventIF) {
           title={"Total Tickets Sold"}
           count={trx_data?.tickets_sold || 0}
         />
-        <DataCard
-          styles={"w-full"}
-          title={"Total Events"}
-          count={trx_data?.total_events || 0}
-        />
+        <DataCard styles={"w-full"} title={"Total Events"} count={trx_data?.total_events || 0} />
       </div>
-      <div className="bg-white shadow-md rounded-lg">
+      <div className="rounded-lg bg-white shadow-md">
         <table className="min-w-full table-auto border-collapse">
           <thead>
             <tr className="bg-mid-grey">
               {eventsHeaders.map((header, idx) => (
-                <th
-                  className="p-4 text-left text-[12px] text-text-grey font-semiBold"
-                  key={idx}
-                >
+                <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
                   {header}
                 </th>
               ))}
@@ -95,32 +76,18 @@ function EventViews({ trx_data }: EventIF) {
               paginatedData.map((row: Event, index: number) => (
                 <tr
                   key={index}
-                  className="border-b border-grey-20 h-[72px] cursor-pointer"
-                  onClick={() =>
-                    router.push(`/transactions/${row.id}/event-details`)
-                  }
+                  className="h-[72px] cursor-pointer border-b border-grey-20"
+                  onClick={() => router.push(`/transactions/${row.id}/event-details`)}
                 >
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.id}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.event_name}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.organizer}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.tickets_sold}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.tickets_sold}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.event_name}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.organizer}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.tickets_sold}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.tickets_sold}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>
                     {dayjs(row.created_at).format("DD MMM, YYYY hh:mmA")}
                   </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.status}
-                  </td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.status}</td>
                 </tr>
               ))
             ) : (

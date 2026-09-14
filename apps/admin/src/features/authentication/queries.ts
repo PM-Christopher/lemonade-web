@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { authApi } from "./api";
 
 export const authKeys = {
-    all: () => ["auth"] as const,
-    currentAdmin: () => [...authKeys.all(), "currentAdmin"] as const,
+  all: () => ["auth"] as const,
+  currentAdmin: () => [...authKeys.all(), "currentAdmin"] as const,
 };
 
 /**
@@ -15,11 +15,11 @@ export const authKeys = {
  * that's an expected, not-logged-in state, not worth retrying.
  */
 export function useCurrentAdminQuery(options?: { enabled?: boolean }) {
-    return useQuery({
-        queryKey: authKeys.currentAdmin(),
-        queryFn: authApi.getCurrentAdmin,
-        staleTime: 30_000,
-        retry: false,
-        enabled: options?.enabled,
-    });
+  return useQuery({
+    queryKey: authKeys.currentAdmin(),
+    queryFn: authApi.getCurrentAdmin,
+    staleTime: 30_000,
+    retry: false,
+    enabled: options?.enabled,
+  });
 }

@@ -1,51 +1,51 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 import BusinessCard from "@/components/dashboard/BusinessCard";
-import {BusinessInterface} from "@/interfaces/BusinessInterface";
+import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import FeaturedBusiness from "@/components/business/FeaturedBusiness";
 
 interface ImageSlider {
-    businesses: BusinessInterface[],
-    showArrows: boolean,
-    showDots: boolean
+  businesses: BusinessInterface[];
+  showArrows: boolean;
+  showDots: boolean;
 }
 
-const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDots}) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
+const BusinessCarousel: React.FC<ImageSlider> = ({ businesses, showArrows, showDots }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    const nextSlide = useCallback(() => {
-        const isLastSlide = currentIndex === businesses?.length - 1;
-        const newIndex = isLastSlide ? 0 : currentIndex + 1;
-        setCurrentIndex(newIndex);
-    }, [currentIndex, businesses?.length]);
+  const nextSlide = useCallback(() => {
+    const isLastSlide = currentIndex === businesses?.length - 1;
+    const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+  }, [currentIndex, businesses?.length]);
 
-    // Auto-slide functionality
-    useEffect(() => {
-        const slideInterval = setInterval(() => {
-            nextSlide();
-        }, 3000); // Slide every 3 seconds
+  // Auto-slide functionality
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      nextSlide();
+    }, 3000); // Slide every 3 seconds
 
-        return () => clearInterval(slideInterval); // Clean up on unmount
-    }, [nextSlide]);
+    return () => clearInterval(slideInterval); // Clean up on unmount
+  }, [nextSlide]);
 
-    const prevSlide = () => {
-        const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? businesses?.length - 1 : currentIndex - 1;
-        setCurrentIndex(newIndex);
-    };
+  const prevSlide = () => {
+    const isFirstSlide = currentIndex === 0;
+    const newIndex = isFirstSlide ? businesses?.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+  };
 
-    const goToSlide = (slideIndex: number) => {
-        setCurrentIndex(slideIndex);
-    };
+  const goToSlide = (slideIndex: number) => {
+    setCurrentIndex(slideIndex);
+  };
 
-    return (
-        <div className="w-full">
-            <div className="mt-3 grid gap-3 grid-cols-4">
-                {businesses?.map((business: BusinessInterface) => (
-                    <FeaturedBusiness business={business} key={business.id} />
-                ))}
-            </div>
-        </div>
-    );
-}
+  return (
+    <div className="w-full">
+      <div className="mt-3 grid grid-cols-4 gap-3">
+        {businesses?.map((business: BusinessInterface) => (
+          <FeaturedBusiness business={business} key={business.id} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default BusinessCarousel;

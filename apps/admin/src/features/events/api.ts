@@ -13,181 +13,189 @@ import { browserApi } from "@/lib/browser-api";
 import { adminEventRoutes, adminPromotionRoutes } from "@lemonade/api-types";
 
 export interface EventOrganiser {
-    id: number;
-    name: string;
-    username: string;
-    image: string | null;
+  id: number;
+  name: string;
+  username: string;
+  image: string | null;
 }
 
 export interface AdminEventListItem {
-    id: number;
-    unique_id: string;
-    event_name: string;
-    event_image: string | null;
-    event_type: string;
-    category: string;
-    date_created_at: string;
-    status: string;
-    start_date: string;
-    end_date: string;
-    rejection_reason: string | null;
-    reviewed_at: string | null;
-    organiser?: EventOrganiser;
+  id: number;
+  unique_id: string;
+  event_name: string;
+  event_image: string | null;
+  event_type: string;
+  category: string;
+  date_created_at: string;
+  status: string;
+  start_date: string;
+  end_date: string;
+  rejection_reason: string | null;
+  reviewed_at: string | null;
+  organiser?: EventOrganiser;
 }
 
 export interface EventListResponse {
-    events: AdminEventListItem[];
-    total_events: number;
-    tickets_commission: number;
-    commission_charge: number;
+  events: AdminEventListItem[];
+  total_events: number;
+  tickets_commission: number;
+  commission_charge: number;
 }
 
 export interface EventAffiliateListItem {
-    id: number;
-    unique_id: string;
-    name: string;
-    image: string | null;
-    programs: number;
-    date_joined: string;
+  id: number;
+  unique_id: string;
+  name: string;
+  image: string | null;
+  programs: number;
+  date_joined: string;
 }
 
 export interface EventAffiliatesResponse {
-    affiliates: EventAffiliateListItem[];
-    total_affiliate_earning: number;
-    total_affiliates: number;
+  affiliates: EventAffiliateListItem[];
+  total_affiliate_earning: number;
+  total_affiliates: number;
 }
 
 export interface EventPromotionQueueItem {
-    id: number;
-    event_name: string;
-    event_image: string | null;
-    promotion_name: string;
-    promotion_price: number;
-    date_paid: string;
-    status: string;
+  id: number;
+  event_name: string;
+  event_image: string | null;
+  promotion_name: string;
+  promotion_price: number;
+  date_paid: string;
+  status: string;
 }
 
 export interface EventPromotionsQueueResponse {
-    promotions_revenue: number;
-    total_promotions: number;
-    offered_promotions: number;
-    history: EventPromotionQueueItem[];
+  promotions_revenue: number;
+  total_promotions: number;
+  offered_promotions: number;
+  history: EventPromotionQueueItem[];
 }
 
 export interface EventTicket {
-    id: number;
-    ticket_type: string;
-    description: string;
-    stock_type: string;
-    price: number;
-    purchase_limit: number;
-    tickets_sold: number;
-    sales_revenue: number;
-    check_ins: number;
+  id: number;
+  ticket_type: string;
+  description: string;
+  stock_type: string;
+  price: number;
+  purchase_limit: number;
+  tickets_sold: number;
+  sales_revenue: number;
+  check_ins: number;
 }
 
 export interface EventDetail {
-    id: number;
-    owner: { fullname: string; image: string | null };
-    event_name: string;
-    event_image: string | null;
-    event_date: string;
-    event_time: string;
-    status: string;
-    location: string;
-    created_at: string;
-    category: string;
-    socials: unknown;
-    description: string;
-    promotions: unknown[];
-    account: { name: string | null; bank: string | null; account_number: string | null };
+  id: number;
+  owner: { fullname: string; image: string | null };
+  event_name: string;
+  event_image: string | null;
+  event_date: string;
+  event_time: string;
+  status: string;
+  location: string;
+  created_at: string;
+  category: string;
+  socials: unknown;
+  description: string;
+  promotions: unknown[];
+  account: { name: string | null; bank: string | null; account_number: string | null };
 }
 
 export interface EventDetailResponse {
-    event: EventDetail;
-    tickets: EventTicket[];
+  event: EventDetail;
+  tickets: EventTicket[];
 }
 
 export const eventsApi = {
-    getEventData: (
-        trxType: string,
-    ): Promise<EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse> => {
-        switch (trxType) {
-            case "affiliates":
-                return browserApi.get<EventAffiliatesResponse>(adminEventRoutes.AFFILIATES);
-            case "promotions":
-                return browserApi.get<EventPromotionsQueueResponse>(adminEventRoutes.PROMOTIONS_QUEUE);
-            case "events":
-            default:
-                return browserApi.get<EventListResponse>(adminEventRoutes.BASE);
-        }
-    },
+  getEventData: (
+    trxType: string,
+  ): Promise<EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse> => {
+    switch (trxType) {
+      case "affiliates":
+        return browserApi.get<EventAffiliatesResponse>(adminEventRoutes.AFFILIATES);
+      case "promotions":
+        return browserApi.get<EventPromotionsQueueResponse>(adminEventRoutes.PROMOTIONS_QUEUE);
+      case "events":
+      default:
+        return browserApi.get<EventListResponse>(adminEventRoutes.BASE);
+    }
+  },
 
-    getEventDetail: (id: number) => browserApi.get<EventDetailResponse>(`${adminEventRoutes.BASE}/${id}`),
+  getEventDetail: (id: number) =>
+    browserApi.get<EventDetailResponse>(`${adminEventRoutes.BASE}/${id}`),
 
-    suspendEvent: (id: number) =>
-        browserApi.patch<{ suspended: boolean }>(`${adminEventRoutes.BASE}/${id}/suspend-event`, {}),
+  suspendEvent: (id: number) =>
+    browserApi.patch<{ suspended: boolean }>(`${adminEventRoutes.BASE}/${id}/suspend-event`, {}),
 
-    activateEvent: (id: number) =>
-        browserApi.patch<{ activated: boolean }>(`${adminEventRoutes.BASE}/${id}/activate-event`, {}),
+  activateEvent: (id: number) =>
+    browserApi.patch<{ activated: boolean }>(`${adminEventRoutes.BASE}/${id}/activate-event`, {}),
 
-    deleteEvent: (id: number) => browserApi.delete<{ deleted: boolean }>(`${adminEventRoutes.BASE}/${id}/delete-event`),
+  deleteEvent: (id: number) =>
+    browserApi.delete<{ deleted: boolean }>(`${adminEventRoutes.BASE}/${id}/delete-event`),
 
-    updateCommissionCharge: (commissionCharge: number) =>
-        browserApi.patch<{ setting: { commission_charge: number } }>(adminEventRoutes.UPDATE_COMMISSION_CHARGE, {
-            commission_charge: commissionCharge,
-        }),
+  updateCommissionCharge: (commissionCharge: number) =>
+    browserApi.patch<{ setting: { commission_charge: number } }>(
+      adminEventRoutes.UPDATE_COMMISSION_CHARGE,
+      {
+        commission_charge: commissionCharge,
+      },
+    ),
 };
 
 export interface Promotion {
-    id: number;
-    name: string;
-    price: number;
-    price_option: string;
-    breakdown: string[];
-    image: string | null;
+  id: number;
+  name: string;
+  price: number;
+  price_option: string;
+  breakdown: string[];
+  image: string | null;
 }
 
 export interface PromotionListResponse {
-    promotions: Promotion[];
+  promotions: Promotion[];
 }
 
 export interface PromotionDetailResponse {
-    promotion: Promotion;
+  promotion: Promotion;
 }
 
 export interface PromotionPayload {
-    name: string;
-    price_option: string;
-    // Must be a JSON number, not a numeric string — found live-testing:
-    // Money::fromUnits() (called from CreatePromotion/UpdatePromotion
-    // actions) only accepts int|float and 500s on a string, even though the
-    // FormRequest's `numeric` rule accepts either. The old thunk sent
-    // formik's raw string value, so this was silently broken before too.
-    price: number;
-    breakdown: string[];
-    // Required by the backend (CreatePromotionRequest/UpdatePromotionRequest)
-    // but never collected by CreatePromotionModal.tsx's form — found, not
-    // fixed, see the NOTE on promotionsApi below.
-    image: string;
+  name: string;
+  price_option: string;
+  // Must be a JSON number, not a numeric string — found live-testing:
+  // Money::fromUnits() (called from CreatePromotion/UpdatePromotion
+  // actions) only accepts int|float and 500s on a string, even though the
+  // FormRequest's `numeric` rule accepts either. The old thunk sent
+  // formik's raw string value, so this was silently broken before too.
+  price: number;
+  breakdown: string[];
+  // Required by the backend (CreatePromotionRequest/UpdatePromotionRequest)
+  // but never collected by CreatePromotionModal.tsx's form — found, not
+  // fixed, see the NOTE on promotionsApi below.
+  image: string;
 }
 
 export const promotionsApi = {
-    getPromotions: () => browserApi.get<PromotionListResponse>(adminPromotionRoutes.BASE),
+  getPromotions: () => browserApi.get<PromotionListResponse>(adminPromotionRoutes.BASE),
 
-    // NOTE (found live-testing, not fixed — pre-existing broken feature, not
-    // introduced by this migration): the backend requires an `image` field
-    // on create/update (CreatePromotionRequest/UpdatePromotionRequest both
-    // mark it `required|string`), but CreatePromotionModal.tsx's form never
-    // collects or sends one. Every create/update submission 422s. Needs an
-    // image-upload UI, which is a real feature addition, not a transport
-    // migration — out of scope here.
-    createPromotion: (data: PromotionPayload) => browserApi.post<PromotionDetailResponse>(adminPromotionRoutes.BASE, data),
+  // NOTE (found live-testing, not fixed — pre-existing broken feature, not
+  // introduced by this migration): the backend requires an `image` field
+  // on create/update (CreatePromotionRequest/UpdatePromotionRequest both
+  // mark it `required|string`), but CreatePromotionModal.tsx's form never
+  // collects or sends one. Every create/update submission 422s. Needs an
+  // image-upload UI, which is a real feature addition, not a transport
+  // migration — out of scope here.
+  createPromotion: (data: PromotionPayload) =>
+    browserApi.post<PromotionDetailResponse>(adminPromotionRoutes.BASE, data),
 
-    getPromotion: (id: number) => browserApi.get<PromotionDetailResponse>(`${adminPromotionRoutes.BASE}/${id}`),
+  getPromotion: (id: number) =>
+    browserApi.get<PromotionDetailResponse>(`${adminPromotionRoutes.BASE}/${id}`),
 
-    updatePromotion: (id: number, data: PromotionPayload) =>
-        browserApi.patch<PromotionDetailResponse>(`${adminPromotionRoutes.BASE}/${id}`, data),
+  updatePromotion: (id: number, data: PromotionPayload) =>
+    browserApi.patch<PromotionDetailResponse>(`${adminPromotionRoutes.BASE}/${id}`, data),
 
-    deletePromotion: (id: number) => browserApi.delete<{ deleted: boolean }>(`${adminPromotionRoutes.BASE}/${id}`),
+  deletePromotion: (id: number) =>
+    browserApi.delete<{ deleted: boolean }>(`${adminPromotionRoutes.BASE}/${id}`),
 };

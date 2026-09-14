@@ -50,7 +50,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
             show: true,
             message: "App settings Updated",
             type: "success",
-          })
+          }),
         );
         toggle();
       },
@@ -60,7 +60,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
             show: true,
             message: "Something went wrong",
             type: "error",
-          })
+          }),
         );
       },
     });
@@ -73,7 +73,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${
+      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
@@ -81,23 +81,21 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
         {isOpen && (
           <motion.div
             key="modal"
-            className="bg-white rounded-none laptop:rounded-lg shadow-lg w-full laptop:w-[640px] p-6"
+            className="w-full rounded-none bg-white p-6 shadow-lg laptop:w-[640px] laptop:rounded-lg"
             initial={{ y: "50%" }}
             animate={{ y: 0 }}
             exit={{ y: "50%" }}
             transition={{ type: "spring", stiffness: 50, damping: 30 }}
           >
             <div className="">
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                   <div className="cursor-pointer" onClick={toggle}>
                     <CloseIcon className="w-[11.25px]" />
                   </div>
                   <div className="flex flex-col">
-                    <p className="font-semibold text-[16px]">
-                      {renderHeader()?.title}
-                    </p>
-                    <p className="text-text-grey font-normal text-[14px]">
+                    <p className="text-[16px] font-semibold">{renderHeader()?.title}</p>
+                    <p className="text-[14px] font-normal text-text-grey">
                       {renderHeader()?.description}
                     </p>
                   </div>
@@ -105,10 +103,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
               </div>
               <div className="mt-[24px]">
                 <div className="flex flex-col gap-[12px]">
-                  <div className="flex justify-between items-center">
-                    <p className="font-normal text-[16px]">
-                      In-app notification
-                    </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[16px] font-normal">In-app notification</p>
                     <Switch
                       onChange={(change) => {
                         handleChange("in-app");
@@ -119,8 +115,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
                       onColor="#9BE303"
                     />
                   </div>
-                  <div className="flex justify-between items-center">
-                    <p className="font-normal text-[16px]">Email</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[16px] font-normal">Email</p>
                     <Switch
                       onChange={(change) => {
                         handleChange("email");

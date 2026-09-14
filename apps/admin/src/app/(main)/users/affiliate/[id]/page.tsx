@@ -28,11 +28,9 @@ const AffiliateUser = () => {
 
   return (
     <MainLayout>
-      <section className="p-4 md:p-5 flex lg:flex-col flex-row gap-4 md:gap-5 w-full overflow-x-hidden max-w-full">
+      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
         <div
-          className={
-            "w-[600px] h-fit bg-white p-[24px] flex flex-col gap-[20px] rounded-[12px]"
-          }
+          className={"flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"}
         >
           <div className={"flex justify-between"}>
             {/* <div
@@ -45,59 +43,41 @@ const AffiliateUser = () => {
                 alt="image"
                 width={89}
                 height={83}
-                className={"w-[64px] h-[64px] bg-light-black rounded-full"}
+                className={"h-[64px] w-[64px] rounded-full bg-light-black"}
               />
             ) : (
               // null
-              <div
-                className={"w-[64px] h-[64px] bg-light-black rounded-full"}
-              ></div>
+              <div className={"h-[64px] w-[64px] rounded-full bg-light-black"}></div>
             )}
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Full name:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Full name:</p>
             </div>
             <div className={"flex gap-[4px]"}>
-              <p className={"text-[14px] font-medium"}>
-                {isData?.detail?.name}
-              </p>
+              <p className={"text-[14px] font-medium"}>{isData?.detail?.name}</p>
             </div>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                User ID:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>User ID:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
-              {" "}
-              {isData?.detail?.unique_id}
-            </p>
+            <p className={"text-[14px] font-medium"}> {isData?.detail?.unique_id}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Status:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Status:</p>
             </div>
             <p className={"text-[14px] font-medium text-light-green-70"}>
               {isData?.detail?.status}
             </p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Referral Code:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Referral Code:</p>
             </div>
             <div className={"flex gap-[4px]"}>
-              <p className={"text-[14px] font-medium"}>
-                {" "}
-                {isData?.detail?.referral_code}
-              </p>
+              <p className={"text-[14px] font-medium"}> {isData?.detail?.referral_code}</p>
               {/* <p
                 className={
                   "cursor-pointer font-medium text-[14px] text-light-green"
@@ -128,86 +108,63 @@ const AffiliateUser = () => {
           </div> */}
         </div>
 
-        <div className="w-full lg:w-2/3 flex flex-col">
-          <div
-            className={
-              "h-[700px] bg-white rounded-tr-[12px] rounded-tl-[12px] flex flex-col"
-            }
-          >
-            <div className="flex justify-between mt-[10px] border-b-[1px] border-b-grey-20 h-10 py-[8px] px-[16px]">
-              <p className="font-semibold text-[16px]">Referral activity</p>
+        <div className="lg:w-2/3 flex w-full flex-col">
+          <div className={"flex h-[700px] flex-col rounded-tl-[12px] rounded-tr-[12px] bg-white"}>
+            <div className="mt-[10px] flex h-10 justify-between border-b-[1px] border-b-grey-20 px-[16px] py-[8px]">
+              <p className="text-[16px] font-semibold">Referral activity</p>
             </div>
 
             <div className="flex flex-col">
-              <div className={"flex flex-col p-[24px] gap-[8px]"}>
+              <div className={"flex flex-col gap-[8px] p-[24px]"}>
                 <div
-                  className={
-                    "border-mid-grey p-[16px] border-[1px] rounded-[12px] flex flex-col"
-                  }
+                  className={"flex flex-col rounded-[12px] border-[1px] border-mid-grey p-[16px]"}
                 >
                   <div
                     className={
-                      "p-[16px] flex justify-between border-b-[1px] border-b-grey-20 cursor-pointer"
+                      "flex cursor-pointer justify-between border-b-[1px] border-b-grey-20 p-[16px]"
                     }
                   >
                     <div className={"flex flex-col gap-[8px]"}>
                       <p className={"text-[14px] font-normal text-text-grey"}>
                         Total Amount Earned
                       </p>
-                      <p
-                        className={"font-semiBold text-[18px] text-black-light"}
-                      >
-                        ₦{" "}
-                        {formatNumberWithCommas(
-                          isData?.total_amount_earned || 0
-                        )}
+                      <p className={"text-[18px] font-semiBold text-black-light"}>
+                        ₦ {formatNumberWithCommas(isData?.total_amount_earned || 0)}
                       </p>
                     </div>
                     <ChevronRight className={"text-text-grey"} />
                   </div>
                   <div
                     className={
-                      "p-[16px] flex justify-between border-b-[1px] border-b-grey-20 cursor-pointer"
+                      "flex cursor-pointer justify-between border-b-[1px] border-b-grey-20 p-[16px]"
                     }
                   >
                     <div className={"flex flex-col gap-[8px]"}>
-                      <p className={"text-[14px] font-normal text-text-grey"}>
-                        Total Referrals
-                      </p>
-                      <p
-                        className={"font-semiBold text-[18px] text-black-light"}
-                      >
+                      <p className={"text-[14px] font-normal text-text-grey"}>Total Referrals</p>
+                      <p className={"text-[18px] font-semiBold text-black-light"}>
                         {formatNumberWithCommas(isData?.total_referrals || 0)}
                       </p>
                     </div>
                     <ChevronRight className={"text-text-grey"} />
                   </div>
-                  <div
-                    className={"p-[16px] flex justify-between cursor-pointer"}
-                  >
+                  <div className={"flex cursor-pointer justify-between p-[16px]"}>
                     <div className={"flex flex-col gap-[8px]"}>
                       <p className={"text-[14px] font-normal text-text-grey"}>
                         Total Subscribed Referrals
                       </p>
-                      <p
-                        className={"font-semiBold text-[18px] text-black-light"}
-                      >
+                      <p className={"text-[18px] font-semiBold text-black-light"}>
                         {" "}
-                        {formatNumberWithCommas(
-                          isData?.total_subscribed_referrals || 0
-                        )}
+                        {formatNumberWithCommas(isData?.total_subscribed_referrals || 0)}
                       </p>
                     </div>
                     <ChevronRight className={"text-text-grey"} />
                   </div>
                 </div>
                 <div
-                  className="flex gap-[8px] items-center p-[12px] px-[16px] cursor-pointer"
+                  className="flex cursor-pointer items-center gap-[8px] p-[12px] px-[16px]"
                   onClick={toggleHistoryOpen}
                 >
-                  <p className="text-[16px] font-medium text-light-green">
-                    View history
-                  </p>
+                  <p className="text-[16px] font-medium text-light-green">View history</p>
                   <ChevronRight className="text-light-green" />
                 </div>
               </div>
@@ -215,11 +172,7 @@ const AffiliateUser = () => {
           </div>
         </div>
       </section>
-      <ReferralHistory
-        toggle={toggleHistoryOpen}
-        isOpen={refHistoryOpen}
-        data={[]}
-      />
+      <ReferralHistory toggle={toggleHistoryOpen} isOpen={refHistoryOpen} data={[]} />
     </MainLayout>
   );
 };

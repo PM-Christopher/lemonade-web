@@ -12,42 +12,42 @@ import { browserApi } from "@/lib/browser-api";
 import { userSettingsRoutes } from "@lemonade/api-types";
 
 export interface CurrentUser {
-    id: string | number;
-    email: string;
-    fullname: string;
-    username: string | null;
-    [key: string]: unknown;
+  id: string | number;
+  email: string;
+  fullname: string;
+  username: string | null;
+  [key: string]: unknown;
 }
 
 export interface LoginPayload {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginResult {
-    user: CurrentUser;
-    needsOnboarding?: boolean;
-    token?: string; // only present when needsOnboarding — see app/api/auth/login/route.ts
+  user: CurrentUser;
+  needsOnboarding?: boolean;
+  token?: string; // only present when needsOnboarding — see app/api/auth/login/route.ts
 }
 
 async function postJson<T>(path: string, body?: unknown): Promise<T> {
-    const response = await fetch(path, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: body !== undefined ? JSON.stringify(body) : undefined,
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+  const envelope = await response.json();
+
+  if (!response.ok) {
+    throw Object.assign(new Error(envelope?.message ?? "Request failed"), {
+      status: response.status,
+      errorCode: envelope?.error_code,
+      fieldErrors: envelope?.errors,
     });
+  }
 
-    const envelope = await response.json();
-
-    if (!response.ok) {
-        throw Object.assign(new Error(envelope?.message ?? "Request failed"), {
-            status: response.status,
-            errorCode: envelope?.error_code,
-            fieldErrors: envelope?.errors,
-        });
-    }
-
-    return envelope.data as T;
+  return envelope.data as T;
 }
 
 // Pre-login onboarding endpoints (email verification, password reset).
@@ -60,35 +60,35 @@ async function postJson<T>(path: string, body?: unknown): Promise<T> {
 // this isn't a corner cut, it's the fix that already shipped for
 // getUserProfile applied consistently here.
 export interface VerifyOtpPayload {
-    code: string;
+  code: string;
 }
 
 export interface VerifyPasswordResetOtpResult {
-    token: string;
+  token: string;
 }
 
 export interface ForgotPasswordPayload {
-    email: string;
+  email: string;
 }
 
 export interface ForgotPasswordResult {
-    token: string;
-    email: string;
+  token: string;
+  email: string;
 }
 
 export interface ResetPasswordPayload {
-    password: string;
-    confirm_password: string;
+  password: string;
+  confirm_password: string;
 }
 
 export interface UpdateProfileFieldResult {
-    user: CurrentUser;
+  user: CurrentUser;
 }
 
 export interface ChangePasswordPayload {
-    password: string;
-    new_password: string;
-    new_password_confirmation?: string;
+  password: string;
+  new_password: string;
+  new_password_confirmation?: string;
 }
 
 // NOTE: this call is deeper than a field mismatch — two independent
@@ -111,24 +111,24 @@ export interface ChangePasswordPayload {
 // (the OTP-confirmation step and its UI), not a one-line correction.
 // Documented in docs/ARCHITECTURE.md.
 export interface DeleteAccountPayload {
-    password?: string;
-    confirmation?: string;
+  password?: string;
+  confirmation?: string;
 }
 
 export interface NotificationSettingsPayload {
-    type: string;
-    settings: {
-        email: boolean;
-        in_app_notification: boolean;
-    };
+  type: string;
+  settings: {
+    email: boolean;
+    in_app_notification: boolean;
+  };
 }
 
 export interface ChangePlanPayload {
-    reason?: string;
-    subscription_id: number | string | null | undefined;
-    type: string | null;
-    mode: string | null;
-    redirect_url: string;
+  reason?: string;
+  subscription_id: number | string | null | undefined;
+  type: string | null;
+  mode: string | null;
+  redirect_url: string;
 }
 
 // change-plan's response shape genuinely varies by branch: switching to (or
@@ -137,94 +137,100 @@ export interface ChangePlanPayload {
 // ChangeUserSubscriptionPlan — fixed earlier this session to return a real
 // URL under `payment`, not the whole Paystack init array).
 export interface ChangePlanResult {
-    subscription?: unknown;
-    payment?: string;
-    reference?: string;
-    credit_applied_minor?: number;
-    amount_due_minor?: number;
-    amount_due?: string;
+  subscription?: unknown;
+  payment?: string;
+  reference?: string;
+  credit_applied_minor?: number;
+  amount_due_minor?: number;
+  amount_due?: string;
 }
 
 export const authApi = {
-    login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
-    logout: () => postJson<void>("/api/auth/logout"),
-    getCurrentUser: () => browserApi.get<CurrentUser>(userSettingsRoutes.PROFILE),
+  login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
+  logout: () => postJson<void>("/api/auth/logout"),
+  getCurrentUser: () => browserApi.get<CurrentUser>(userSettingsRoutes.PROFILE),
 
-    // Post-signup email verification — the "verify-email" page's flow.
-    verifyAccountOtp: (data: VerifyOtpPayload) => browserApi.post<void>("/user/otp/verify", data),
+  // Post-signup email verification — the "verify-email" page's flow.
+  verifyAccountOtp: (data: VerifyOtpPayload) => browserApi.post<void>("/user/otp/verify", data),
 
-    // Password-reset OTP check — the "verify-code" page's flow.
-    // VerifyForgotPasswordAction (backend) deletes the forgot-password
-    // token this call authenticates with and issues a NEW, differently-
-    // scoped one (ability "password_reset", not
-    // "password_reset_verification") in the response — reset-password only
-    // accepts that new token. Confirmed live: reusing the old cookie value
-    // 403s "Invalid Token" even though this call itself succeeds. The
-    // caller (verify-code/page.tsx) must overwrite its `newToken` cookie
-    // with `result.token` before navigating to /reset-password.
-    verifyPasswordResetOtp: (data: VerifyOtpPayload) =>
-        browserApi.post<VerifyPasswordResetOtpResult>("/user/auth/check-otp", data),
+  // Password-reset OTP check — the "verify-code" page's flow.
+  // VerifyForgotPasswordAction (backend) deletes the forgot-password
+  // token this call authenticates with and issues a NEW, differently-
+  // scoped one (ability "password_reset", not
+  // "password_reset_verification") in the response — reset-password only
+  // accepts that new token. Confirmed live: reusing the old cookie value
+  // 403s "Invalid Token" even though this call itself succeeds. The
+  // caller (verify-code/page.tsx) must overwrite its `newToken` cookie
+  // with `result.token` before navigating to /reset-password.
+  verifyPasswordResetOtp: (data: VerifyOtpPayload) =>
+    browserApi.post<VerifyPasswordResetOtpResult>("/user/auth/check-otp", data),
 
-    // Resends an EMAIL_VERIFICATION-type OTP (ResendAccountOtp, backend) —
-    // the only resend endpoint that exists. The password-reset ("verify-code")
-    // flow calls this same one; ResendAccountOtp hardcodes
-    // OtpType::EMAIL_VERIFICATION, not a password-reset type, which is
-    // likely wrong for that flow — found, not fixed, since it's a backend
-    // action/routing decision, not a transport-migration fix. Documented in
-    // docs/ARCHITECTURE.md.
-    resendOtp: () => browserApi.post<void>("/user/otp/resend"),
+  // Resends an EMAIL_VERIFICATION-type OTP (ResendAccountOtp, backend) —
+  // the only resend endpoint that exists. The password-reset ("verify-code")
+  // flow calls this same one; ResendAccountOtp hardcodes
+  // OtpType::EMAIL_VERIFICATION, not a password-reset type, which is
+  // likely wrong for that flow — found, not fixed, since it's a backend
+  // action/routing decision, not a transport-migration fix. Documented in
+  // docs/ARCHITECTURE.md.
+  resendOtp: () => browserApi.post<void>("/user/otp/resend"),
 
-    forgotPassword: (data: ForgotPasswordPayload) =>
-        browserApi.post<ForgotPasswordResult>("/user/auth/forgot-password", data),
+  forgotPassword: (data: ForgotPasswordPayload) =>
+    browserApi.post<ForgotPasswordResult>("/user/auth/forgot-password", data),
 
-    resetPassword: (data: ResetPasswordPayload) => browserApi.post<void>("/user/auth/reset-password", data),
+  resetPassword: (data: ResetPasswordPayload) =>
+    browserApi.post<void>("/user/auth/reset-password", data),
 
-    // Generic profile-field editor — one function backing the 6
-    // /user/profile/settings/change-* endpoints UpdateModal.tsx already
-    // dispatches by url; kept generic rather than 6 near-identical
-    // functions since the frontend genuinely treats these as one flow.
-    updateProfileField: (url: string, data: unknown) => browserApi.patch<UpdateProfileFieldResult>(url, data),
+  // Generic profile-field editor — one function backing the 6
+  // /user/profile/settings/change-* endpoints UpdateModal.tsx already
+  // dispatches by url; kept generic rather than 6 near-identical
+  // functions since the frontend genuinely treats these as one flow.
+  updateProfileField: (url: string, data: unknown) =>
+    browserApi.patch<UpdateProfileFieldResult>(url, data),
 
-    changePassword: (data: ChangePasswordPayload) =>
-        browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-password", data),
+  changePassword: (data: ChangePasswordPayload) =>
+    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-password", data),
 
-    changeProfileImage: (data: { profile_image: string }) =>
-        browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-profile-image", data),
+  changeProfileImage: (data: { profile_image: string }) =>
+    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-profile-image", data),
 
-    deleteAccount: (data: DeleteAccountPayload) =>
-        browserApi.post<{ user: null }>("/user/profile/settings/delete-account", data),
+  deleteAccount: (data: DeleteAccountPayload) =>
+    browserApi.post<{ user: null }>("/user/profile/settings/delete-account", data),
 
-    updateNotificationSettings: (data: NotificationSettingsPayload) =>
-        browserApi.patch<{ app_settings: unknown }>("/user/profile/notification-settings/update-all-notification", data),
+  updateNotificationSettings: (data: NotificationSettingsPayload) =>
+    browserApi.patch<{ app_settings: unknown }>(
+      "/user/profile/notification-settings/update-all-notification",
+      data,
+    ),
 
-    changePlan: (data: ChangePlanPayload) => browserApi.post<ChangePlanResult>("/user/profile/subscription/change-plan", data),
+  changePlan: (data: ChangePlanPayload) =>
+    browserApi.post<ChangePlanResult>("/user/profile/subscription/change-plan", data),
 
-    // A single subscription plan's fresh details, fetched by id
-    // (PricingCard's "Subscribe" click). SubscriptionResource nests a real
-    // `pricing` array inside `subscription` (fixed monthly/yearly entries)
-    // plus `has_charge` — settings/plan/page.tsx unwraps
-    // `result.subscription.pricing` before handing it to UpgradePlanModal
-    // as the `pricing` prop it maps over, so this isn't the single-object-
-    // vs-array mismatch it looks like at first glance.
-    getSubscriptionPlan: (id: number | string) =>
-        browserApi.get<{ subscription: SubscriptionDetail }>(`/user/subscription/${id}`),
+  // A single subscription plan's fresh details, fetched by id
+  // (PricingCard's "Subscribe" click). SubscriptionResource nests a real
+  // `pricing` array inside `subscription` (fixed monthly/yearly entries)
+  // plus `has_charge` — settings/plan/page.tsx unwraps
+  // `result.subscription.pricing` before handing it to UpgradePlanModal
+  // as the `pricing` prop it maps over, so this isn't the single-object-
+  // vs-array mismatch it looks like at first glance.
+  getSubscriptionPlan: (id: number | string) =>
+    browserApi.get<{ subscription: SubscriptionDetail }>(`/user/subscription/${id}`),
 };
 
 export interface SubscriptionDetail {
-    id: number | string;
+  id: number | string;
+  title: string;
+  access_type: string;
+  monthly_charge: string;
+  yearly_charge: string;
+  has_charge: boolean;
+  recommended: boolean;
+  pricing: {
+    type: "monthly" | "yearly";
+    amount_minor: number;
+    amount: string;
     title: string;
-    access_type: string;
-    monthly_charge: string;
-    yearly_charge: string;
-    has_charge: boolean;
-    recommended: boolean;
-    pricing: {
-        type: "monthly" | "yearly";
-        amount_minor: number;
-        amount: string;
-        title: string;
-        pay_by: string;
-        id: number;
-    }[];
-    [key: string]: unknown;
+    pay_by: string;
+    id: number;
+  }[];
+  [key: string]: unknown;
 }

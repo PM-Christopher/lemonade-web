@@ -5,7 +5,10 @@ import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useReportDetailQuery } from "@/features/reporting/queries";
-import { useDeleteReportContentMutation, useResolveReportMutation } from "@/features/reporting/mutations";
+import {
+  useDeleteReportContentMutation,
+  useResolveReportMutation,
+} from "@/features/reporting/mutations";
 import { capitalizeWords } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -42,7 +45,7 @@ function ReportDetailsPage() {
             show: true,
             message: "Report marked as resolved",
             type: "success",
-          })
+          }),
         );
       },
       onError: (error) => {
@@ -51,7 +54,7 @@ function ReportDetailsPage() {
             show: true,
             message: error?.message || "error",
             type: "error",
-          })
+          }),
         );
       },
     });
@@ -68,7 +71,7 @@ function ReportDetailsPage() {
             show: true,
             message: "Report deleted successfully",
             type: "success",
-          })
+          }),
         );
       },
       onError: (error) => {
@@ -77,7 +80,7 @@ function ReportDetailsPage() {
             show: true,
             message: error?.message || "error",
             type: "error",
-          })
+          }),
         );
       },
     });
@@ -85,70 +88,46 @@ function ReportDetailsPage() {
 
   return (
     <MainLayout>
-      <section className="p-4 md:p-5 flex lg:flex-col flex-row gap-4 md:gap-5 w-full overflow-x-hidden max-w-full">
-        <div
-          className={"w-[800px] h-fit bg-white flex flex-col rounded-[12px]"}
-        >
-          <div
-            className={
-              "flex flex-col p-[24px] gap-[20px] border-b-[1px] border-b-grey-20"
-            }
-          >
-            <div className={"flex gap-[24px] items-center-center"}>
+      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
+        <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
+          <div className={"flex flex-col gap-[20px] border-b-[1px] border-b-grey-20 p-[24px]"}>
+            <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>
-                  Reported By:
-                </p>
+                <p className={"text-[12px] font-medium text-text-grey"}>Reported By:</p>
               </div>
               <div className={"flex gap-[4px]"}>
-                <p className={"text-[14px] font-medium"}>
-                  {report?.reported_by?.name}
-                </p>
+                <p className={"text-[14px] font-medium"}>{report?.reported_by?.name}</p>
               </div>
             </div>
-            <div className={"flex gap-[24px] items-center-center"}>
+            <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>
-                  Report ID:
-                </p>
+                <p className={"text-[12px] font-medium text-text-grey"}>Report ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>RE112332</p>
             </div>
-            <div className={"flex gap-[24px] items-center-center"}>
+            <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>
-                  Category:
-                </p>
+                <p className={"text-[12px] font-medium text-text-grey"}>Category:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {capitalizeWords(report?.category)}
-              </p>
+              <p className={"text-[14px] font-medium"}>{capitalizeWords(report?.category)}</p>
             </div>
-            <div className={"flex gap-[24px] items-center-center"}>
+            <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>
-                  Case:
-                </p>
+                <p className={"text-[12px] font-medium text-text-grey"}>Case:</p>
               </div>
               <div className={"flex gap-[4px]"}>
                 <p className={"text-[14px] font-medium"}>{report?.case}</p>
               </div>
             </div>
-            <div className={"flex gap-[24px] items-center-center"}>
+            <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>
-                  Date Submitted:
-                </p>
+                <p className={"text-[12px] font-medium text-text-grey"}>Date Submitted:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {report?.date_submitted}
-              </p>
+              <p className={"text-[14px] font-medium"}>{report?.date_submitted}</p>
             </div>
-            <div className={"flex gap-[24px] items-center-center"}>
+            <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>
-                  Status:
-                </p>
+                <p className={"text-[12px] font-medium text-text-grey"}>Status:</p>
               </div>
               <p className={"text-[14px] font-medium text-warning-bold"}>
                 {capitalizeWords(report?.status)}
@@ -157,9 +136,9 @@ function ReportDetailsPage() {
           </div>
           <div className={"p-[24px]"}>
             <button
-            onClick={resolve}
+              onClick={resolve}
               className={
-                "px-[48px] py-[11px] bg-gradient-green text-white font-medium text-[16px] rounded-[12px] w-full border-step-color border-[1px] font-sans"
+                "w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[11px] font-sans text-[16px] font-medium text-white"
               }
               type={"button"}
             >
@@ -167,37 +146,32 @@ function ReportDetailsPage() {
             </button>
           </div>
         </div>
-        <div
-          className={
-            "h-[762px] bg-white rounded-[12px] w-full lg:w-2/3 flex flex-col"
-          }
-        >
+        <div className={"lg:w-2/3 flex h-[762px] w-full flex-col rounded-[12px] bg-white"}>
           <div
-            className={
-              "flex justify-between items-center p-[18px] border-b-[1px] border-b-grey-20"
-            }
+            className={"flex items-center justify-between border-b-[1px] border-b-grey-20 p-[18px]"}
           >
-            <p className={"font-semiBold text-[16px]"}>Content</p>
-            <div className={"p-[10px] px-[14px] border-[1px] rounded-[12px] cursor-pointer"} onClick={handleDelete}>
-              <p className={"font-medium text-[14px]"} >Delete</p>
+            <p className={"text-[16px] font-semiBold"}>Content</p>
+            <div
+              className={"cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"}
+              onClick={handleDelete}
+            >
+              <p className={"text-[14px] font-medium"}>Delete</p>
             </div>
           </div>
 
-          <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-2xl">
+          <div className="mx-auto max-w-2xl rounded-2xl bg-white p-6 shadow-lg">
             {event ? (
               <div className="space-y-4">
                 {/* Event Image */}
                 <img
                   src={event.event_image}
                   alt={event.event_name}
-                  className="w-full h-64 object-cover rounded-xl"
+                  className="h-64 w-full rounded-xl object-cover"
                 />
 
                 {/* Event Info */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {event.event_name}
-                  </h2>
+                  <h2 className="text-2xl font-bold text-gray-800">{event.event_name}</h2>
                   <p className="text-sm text-gray-500">
                     {event.category} • {event.location}
                   </p>
@@ -208,15 +182,13 @@ function ReportDetailsPage() {
                   <img
                     src={event.owner.image}
                     alt={event.owner.fullname}
-                    className="w-10 h-10 rounded-full object-cover"
+                    className="h-10 w-10 rounded-full object-cover"
                   />
-                  <p className="text-gray-700 font-medium">
-                    {event.owner.fullname}
-                  </p>
+                  <p className="font-medium text-gray-700">{event.owner.fullname}</p>
                 </div>
 
                 {/* Date and Time */}
-                <div className="text-sm text-gray-600 space-y-1">
+                <div className="space-y-1 text-sm text-gray-600">
                   <p>
                     <strong>Date:</strong> {event.event_date}
                   </p>
@@ -224,8 +196,7 @@ function ReportDetailsPage() {
                     <strong>Time:</strong> {event.event_time}
                   </p>
                   <p>
-                    <strong>Created At:</strong>{" "}
-                    {new Date(event.created_at).toLocaleString()}
+                    <strong>Created At:</strong> {new Date(event.created_at).toLocaleString()}
                   </p>
                 </div>
 

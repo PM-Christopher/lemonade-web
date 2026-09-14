@@ -1,12 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
-import {
-  CalendarIcon,
-  ChevronDown,
-  SearchIcon,
-  UploadIcon,
-} from "lucide-react";
+import { CalendarIcon, ChevronDown, SearchIcon, UploadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { transactionPageViews } from "@/utils/pageViews";
 import PlansViews from "@/views/transactions/PlansViews";
@@ -68,11 +63,10 @@ function TransactionsPage({}) {
     }
   };
 
-  
   return (
     <MainLayout>
-      <section className="flex flex-col gap-[20px] mt-[20px]">
-        <div className={"px-[20px] flex justify-between"}>
+      <section className="mt-[20px] flex flex-col gap-[20px]">
+        <div className={"flex justify-between px-[20px]"}>
           <p className={"text-[16px] font-semiBold"}>
             {trxData?.subscribers || trxData?.history?.length || 0} Transactions
           </p>
@@ -111,32 +105,22 @@ function TransactionsPage({}) {
             <div>
               <Button
                 onClick={exportCSV}
-                className={
-                  "flex h-[40px] rounded-[12px] bg-gradient-green border-step-color"
-                }
+                className={"flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"}
               >
-                <UploadIcon className={"text-white w-[15px] h-[15px]"} />
-                <p className={"text-white font-medium text-[16px]"}>Export</p>
+                <UploadIcon className={"h-[15px] w-[15px] text-white"} />
+                <p className={"text-[16px] font-medium text-white"}>Export</p>
               </Button>
             </div>
           </div>
         </div>
-        <div className={"px-[20px] flex flex-col "}>
-          <div
-            className={
-              "border-[1px] border-grey-20 rounded-[12px] flex flex-col"
-            }
-          >
-            <div className={"px-[12px] pt-[8px] w-fit"}>
-              <div
-                className={
-                  "flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"
-                }
-              >
+        <div className={"flex flex-col px-[20px]"}>
+          <div className={"flex flex-col rounded-[12px] border-[1px] border-grey-20"}>
+            <div className={"w-fit px-[12px] pt-[8px]"}>
+              <div className={"flex items-center gap-6 rounded-[12px] bg-mid-grey p-[4px]"}>
                 {transactionPageViews.map((item, index) => (
                   <div
-                    className={`px-[8px] p-[4px] cursor-pointer ${
-                      menuOption === item.key && "bg-white rounded-[10px]"
+                    className={`cursor-pointer p-[4px] px-[8px] ${
+                      menuOption === item.key && "rounded-[10px] bg-white"
                     }`}
                     onClick={() => switchOption(item.key)}
                     key={index}
@@ -144,7 +128,7 @@ function TransactionsPage({}) {
                     <p
                       className={`font-sans leading-[24px] ${
                         menuOption === item.key
-                          ? "font-semibold text-[16px]"
+                          ? "text-[16px] font-semibold"
                           : "font-semi-normal text-[16px] text-text-grey"
                       }`}
                     >

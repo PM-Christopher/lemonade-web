@@ -25,128 +25,148 @@ import { userBusinessRoutes } from "@lemonade/api-types";
 import type { BusinessInterface } from "@/interfaces/BusinessInterface";
 
 export interface BusinessListResponse {
-    businesses: BusinessInterface[];
-    featured: BusinessInterface[];
+  businesses: BusinessInterface[];
+  featured: BusinessInterface[];
 }
 
 export interface BusinessDetailResponse {
-    business: BusinessInterface;
+  business: BusinessInterface;
 }
 
 export interface ListingsResponse {
-    listings: BusinessInterface[];
+  listings: BusinessInterface[];
 }
 
 export interface CreateOrUpdateBusinessPayload {
-    name: string;
-    image: string;
-    categories: string[];
-    description: string;
-    city: string;
-    country: string;
-    services: string[];
-    service_rate?: number | null;
-    gallery: string[];
-    email: string;
-    phone_number: string;
-    website_url: string;
+  name: string;
+  image: string;
+  categories: string[];
+  description: string;
+  city: string;
+  country: string;
+  services: string[];
+  service_rate?: number | null;
+  gallery: string[];
+  email: string;
+  phone_number: string;
+  website_url: string;
 }
 
 export interface BoostBusinessPayload {
-    package: string;
-    option: string;
-    start_date: string;
-    start_time: string;
-    callback_url: string;
+  package: string;
+  option: string;
+  start_date: string;
+  start_time: string;
+  callback_url: string;
 }
 
 export interface BoostBusinessResponse {
-    payment: string;
+  payment: string;
 }
 
 export interface JobsDataResponse {
-    count: { in_progress: number; completed: number; sent_offers: number; revenue: number };
-    in_progress: unknown[];
-    completed: unknown[];
-    sent_offers: unknown[];
+  count: { in_progress: number; completed: number; sent_offers: number; revenue: number };
+  in_progress: unknown[];
+  completed: unknown[];
+  sent_offers: unknown[];
 }
 
 export interface RequestServiceResponse {
-    message: string;
+  message: string;
 }
 
 export interface GetJobResponse {
-    job: unknown;
+  job: unknown;
 }
 
 export interface FilterBusinessResponse {
-    businesses: BusinessInterface[];
+  businesses: BusinessInterface[];
 }
 
 export interface MarkJobRequestResponse {
-    message: string;
+  message: string;
 }
 
 export interface RequestJobPaymentResponse {
-    message: string;
-    job: unknown;
+  message: string;
+  job: unknown;
 }
 
 export interface MakeJobPaymentResponse {
-    payment: string;
-    reference: string;
+  payment: string;
+  reference: string;
 }
 
 export interface MarkJobCompletedResponse {
-    message: string;
-    job: unknown;
+  message: string;
+  job: unknown;
 }
 
 export interface DisputeJobResponse {
-    message: string;
+  message: string;
 }
 
 export const businessApi = {
-    getListings: () => browserApi.get<ListingsResponse>(userBusinessRoutes.LISTING),
+  getListings: () => browserApi.get<ListingsResponse>(userBusinessRoutes.LISTING),
 
-    createListing: (values: CreateOrUpdateBusinessPayload) =>
-        browserApi.post<BusinessDetailResponse>(userBusinessRoutes.LISTING, values),
+  createListing: (values: CreateOrUpdateBusinessPayload) =>
+    browserApi.post<BusinessDetailResponse>(userBusinessRoutes.LISTING, values),
 
-    updateListing: (id: number | string, values: CreateOrUpdateBusinessPayload) =>
-        browserApi.patch<BusinessDetailResponse>(`${userBusinessRoutes.LISTING}/${id}`, values),
+  updateListing: (id: number | string, values: CreateOrUpdateBusinessPayload) =>
+    browserApi.patch<BusinessDetailResponse>(`${userBusinessRoutes.LISTING}/${id}`, values),
 
-    boostListing: (id: number | string, data: BoostBusinessPayload) =>
-        browserApi.post<BoostBusinessResponse>(`${userBusinessRoutes.LISTING}/boost-business/${id}`, data),
+  boostListing: (id: number | string, data: BoostBusinessPayload) =>
+    browserApi.post<BoostBusinessResponse>(
+      `${userBusinessRoutes.LISTING}/boost-business/${id}`,
+      data,
+    ),
 
-    getJobsData: () => browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_ALL),
+  getJobsData: () => browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_ALL),
 
-    getBusinesses: () => browserApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
+  getBusinesses: () => browserApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
 
-    getBusiness: (id: number | string) => browserApi.get<BusinessDetailResponse>(`${userBusinessRoutes.BASE}/${id}`),
+  getBusiness: (id: number | string) =>
+    browserApi.get<BusinessDetailResponse>(`${userBusinessRoutes.BASE}/${id}`),
 
-    requestService: (id: number, data: unknown) =>
-        browserApi.post<RequestServiceResponse>(`${userBusinessRoutes.BASE}/${id}/request-service`, data),
+  requestService: (id: number, data: unknown) =>
+    browserApi.post<RequestServiceResponse>(
+      `${userBusinessRoutes.BASE}/${id}/request-service`,
+      data,
+    ),
 
-    // `type` is always "business" or "listing" — a real dynamic path
-    // segment, not a suffix on a fixed prefix, so it isn't threaded through
-    // a named constant the way the rest of this file is.
-    getJob: (type: string, id: number) => browserApi.get<GetJobResponse>(`/user/${type}/jobs/job/${id}`),
+  // `type` is always "business" or "listing" — a real dynamic path
+  // segment, not a suffix on a fixed prefix, so it isn't threaded through
+  // a named constant the way the rest of this file is.
+  getJob: (type: string, id: number) =>
+    browserApi.get<GetJobResponse>(`/user/${type}/jobs/job/${id}`),
 
-    filterBusiness: (value: { location: string; category: string; service_type: string; start_range: string; end_range: string }) =>
-        browserApi.get<FilterBusinessResponse>(userBusinessRoutes.FILTER, { params: value }),
+  filterBusiness: (value: {
+    location: string;
+    category: string;
+    service_type: string;
+    start_range: string;
+    end_range: string;
+  }) => browserApi.get<FilterBusinessResponse>(userBusinessRoutes.FILTER, { params: value }),
 
-    markJobRequest: (id: number, data: unknown) =>
-        browserApi.post<MarkJobRequestResponse>(`${userBusinessRoutes.LISTING}/jobs/${id}/mark-job`, data),
+  markJobRequest: (id: number, data: unknown) =>
+    browserApi.post<MarkJobRequestResponse>(
+      `${userBusinessRoutes.LISTING}/jobs/${id}/mark-job`,
+      data,
+    ),
 
-    requestJobPayment: (id: number) =>
-        browserApi.patch<RequestJobPaymentResponse>(`${userBusinessRoutes.LISTING}/jobs/${id}/request-payment`),
+  requestJobPayment: (id: number) =>
+    browserApi.patch<RequestJobPaymentResponse>(
+      `${userBusinessRoutes.LISTING}/jobs/${id}/request-payment`,
+    ),
 
-    makeJobPayment: (id: number, data: unknown) =>
-        browserApi.post<MakeJobPaymentResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/pay`, data),
+  makeJobPayment: (id: number, data: unknown) =>
+    browserApi.post<MakeJobPaymentResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/pay`, data),
 
-    markJobCompleted: (id: number) =>
-        browserApi.post<MarkJobCompletedResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/mark-completed`),
+  markJobCompleted: (id: number) =>
+    browserApi.post<MarkJobCompletedResponse>(
+      `${userBusinessRoutes.BASE}/jobs/${id}/mark-completed`,
+    ),
 
-    disputeJob: (id: number, data: unknown) =>
-        browserApi.post<DisputeJobResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/dispute`, data),
+  disputeJob: (id: number, data: unknown) =>
+    browserApi.post<DisputeJobResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/dispute`, data),
 };

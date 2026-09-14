@@ -36,9 +36,7 @@ const ProfileSettingsPage = ({}) => {
   const [avatar, setAvatar] = useState(null);
 
   // Handle file input change (when a file is selected)
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const formData = new FormData();
@@ -68,7 +66,7 @@ const ProfileSettingsPage = ({}) => {
               show: true,
               message: "Error uploading image",
               type: "error",
-            })
+            }),
           );
         }
       } catch (err: any) {
@@ -77,33 +75,36 @@ const ProfileSettingsPage = ({}) => {
             show: true,
             message: err?.response?.data?.message || "error",
             type: "error",
-          })
+          }),
         );
       }
     }
   };
 
   const updateImageFunc = (data: any) => {
-    changeProfileImageMutation.mutate({ profile_image: data }, {
-      onSuccess: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: `Profile image updated successfully`,
-            type: "success",
-          })
-        );
+    changeProfileImageMutation.mutate(
+      { profile_image: data },
+      {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: `Profile image updated successfully`,
+              type: "success",
+            }),
+          );
+        },
+        onError: (error: any) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: error?.message || `Something went wrong`,
+              type: "error",
+            }),
+          );
+        },
       },
-      onError: (error: any) => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error?.message || `Something went wrong`,
-            type: "error",
-          })
-        );
-      },
-    });
+    );
   };
 
   const handleImageClick = () => {
@@ -115,15 +116,13 @@ const ProfileSettingsPage = ({}) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="bg-white flex justify-between p-[8px] px-[16px] laptop:px-[64px] border-t-[1px] border-b-[1px] items-center">
+        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
           <div
-            className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans font-semibold text-[16px] tracking-custom">
-              Profile settings
-            </p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">Profile settings</p>
           </div>
         </div>
 
@@ -135,7 +134,7 @@ const ProfileSettingsPage = ({}) => {
                 alt="avatar"
                 width={84}
                 height={84}
-                className="rounded-[24px] border-[1px] border-grey-90 w-[84px] h-[84px]"
+                className="h-[84px] w-[84px] rounded-[24px] border-[1px] border-grey-90"
               />
 
               <input
@@ -146,45 +145,31 @@ const ProfileSettingsPage = ({}) => {
               />
 
               <div onClick={handleImageClick} className="hover:cursor-pointer">
-                <UploadCamIcon className="absolute bottom-0 right-[-14px] w-8 h-8" />
+                <UploadCamIcon className="absolute bottom-0 right-[-14px] h-8 w-8" />
               </div>
             </div>
-            <div className="w-[343px] laptop:w-[640px] rounded-[12px] mt-[45.5px] p-[16px] flex flex-col bg-white gap-[8px]">
+            <div className="mt-[45.5px] flex w-[343px] flex-col gap-[8px] rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
               <div className="flex justify-between">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Full name
-                </p>
-                <p className="font-semi-normal text-[14px]  text-black-light">
-                  {user?.fullname}
-                </p>
+                <p className="text-[14px] font-normal text-text-grey">Full name</p>
+                <p className="text-[14px] font-semi-normal text-black-light">{user?.fullname}</p>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Email address
-                </p>
-                <p className="font-semi-normal text-[14px]  text-black-light">
-                  {user?.email}
-                </p>
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Email address</p>
+                <p className="text-[14px] font-semi-normal text-black-light">{user?.email}</p>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Lemonade tag
-                </p>
-                <p className="font-semi-normal text-[14px]  text-black-light">
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Lemonade tag</p>
+                <p className="text-[14px] font-semi-normal text-black-light">
                   Lemon {splitLemonId(user?.lemon_id)} (L
                   {splitLemonId(user?.lemon_id)})
                 </p>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Username
-                </p>
-                <div className="flex gap-2 items-center">
-                  <p className="font-semi-normal text-[14px]  text-black-light">
-                    {user?.username}
-                  </p>
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Username</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[14px] font-semi-normal text-black-light">{user?.username}</p>
                   <PencilIcon
-                    className="w-[16px] h-[16px] cursor-pointer"
+                    className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
                       setProfileType("username");
                       toggleModal();
@@ -192,14 +177,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">Bio</p>
-                <div className="flex gap-2 items-center">
-                  <p className="font-semi-normal text-[14px] max-w-[163px] truncate text-black-light">
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Bio</p>
+                <div className="flex items-center gap-2">
+                  <p className="max-w-[163px] truncate text-[14px] font-semi-normal text-black-light">
                     {user?.bio}
                   </p>
                   <PencilIcon
-                    className="w-[16px] h-[16px] cursor-pointer"
+                    className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
                       setProfileType("bio");
                       toggleModal();
@@ -207,16 +192,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Profession
-                </p>
-                <div className="flex gap-2 items-center">
-                  <p className="font-semi-normal text-[14px] text-black-light">
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Profession</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[14px] font-semi-normal text-black-light">
                     {formatString(user?.industry)}
                   </p>
                   <PencilIcon
-                    className="w-[16px] h-[16px] cursor-pointer"
+                    className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
                       setProfileType("industry");
                       toggleModal();
@@ -224,17 +207,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Address
-                </p>
-                <div className="flex gap-2 items-center">
-                  <p className="font-semi-normal text-[14px] max-w-[130px] truncate text-black-light">
-                    {user?.address?.address}, {user?.address?.city},{" "}
-                    {user?.address?.state}
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Address</p>
+                <div className="flex items-center gap-2">
+                  <p className="max-w-[130px] truncate text-[14px] font-semi-normal text-black-light">
+                    {user?.address?.address}, {user?.address?.city}, {user?.address?.state}
                   </p>
                   <PencilIcon
-                    className="w-[16px] h-[16px] cursor-pointer"
+                    className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
                       setProfileType("addresses");
                       toggleModal();
@@ -242,16 +222,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Skills & interests
-                </p>
-                <div className="flex gap-2 items-center">
-                  <p className="font-semi-normal text-[14px] text-black-light">
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Skills & interests</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[14px] font-semi-normal text-black-light">
                     {user?.skills.length + user?.interests.length}
                   </p>
                   <PencilIcon
-                    className="w-[16px] h-[16px] cursor-pointer"
+                    className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
                       setProfileType("skills-interest");
                       toggleModal();
@@ -259,12 +237,10 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center my-[8px]">
-                <p className="font-normal text-[14px]  text-text-grey">
-                  Socials
-                </p>
+              <div className="my-[8px] flex items-center justify-between">
+                <p className="text-[14px] font-normal text-text-grey">Socials</p>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-[8px] bg-light_grey p-[4px] rounded-[18px]">
+                  <div className="flex items-center gap-[8px] rounded-[18px] bg-light_grey p-[4px]">
                     {user?.socials.map((link: any) => (
                       <a
                         href={link.value}
@@ -272,26 +248,18 @@ const ProfileSettingsPage = ({}) => {
                         rel="noopener noreferrer"
                         key={link.name}
                       >
-                        {link.name === "facebook" && (
-                          <FacebookIcon className="w-[20px] h-[20px]" />
-                        )}
+                        {link.name === "facebook" && <FacebookIcon className="h-[20px] w-[20px]" />}
                         {link.name === "instagram" && (
-                          <InstagramIcon className="w-[20px] h-[20px]" />
+                          <InstagramIcon className="h-[20px] w-[20px]" />
                         )}
-                        {link.name === "linkedin" && (
-                          <LinkedInIcon className="w-[20px] h-[20px]" />
-                        )}
-                        {link.name === "twitter" && (
-                          <TwitterIcon className="w-[20px] h-[20px]" />
-                        )}
-                        {link.name === "website" && (
-                          <WebIcon className="w-[20px] h-[20px]" />
-                        )}
+                        {link.name === "linkedin" && <LinkedInIcon className="h-[20px] w-[20px]" />}
+                        {link.name === "twitter" && <TwitterIcon className="h-[20px] w-[20px]" />}
+                        {link.name === "website" && <WebIcon className="h-[20px] w-[20px]" />}
                       </a>
                     ))}
                   </div>
                   <PencilIcon
-                    className="w-[16px] h-[16px] cursor-pointer"
+                    className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
                       setProfileType("socials");
                       toggleModal();
@@ -302,12 +270,7 @@ const ProfileSettingsPage = ({}) => {
             </div>
           </div>
         </section>
-        <UpdateModal
-          user={user}
-          type={profileType}
-          toggle={toggleModal}
-          isOpen={isOpen}
-        />
+        <UpdateModal user={user} type={profileType} toggle={toggleModal} isOpen={isOpen} />
       </section>
     </MainLayout>
   );

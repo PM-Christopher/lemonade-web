@@ -1,26 +1,41 @@
 import React from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Image from "next/image";
-import { ChevronLeft, DotIcon, HeartIcon, MessageSquare, MoreVerticalIcon, SearchIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  DotIcon,
+  HeartIcon,
+  MessageSquare,
+  MoreVerticalIcon,
+  SearchIcon,
+} from "lucide-react";
 
 const MainTribeCard = () => {
   return (
     <>
-      <div className="flex flex-col  gap-[8px]">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-[8px] items-center">
-            <div className="w-[48px] h-[48px] rounded-[10px] bg-gray-600"></div>
+      <div className="flex flex-col gap-[8px]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-[8px]">
+            <div className="h-[48px] w-[48px] rounded-[10px] bg-gray-600"></div>
             <div className="flex items-center gap-[8px]">
               <p className="text-[14px] font-normal">Christjoe</p>
               <Image src={"/images/verified.png"} alt="verified" width={13} height={13} />
-              <DotIcon className="text-light-grey-50 px-[0px]" />
-              <p className="font-normal text-[12px] text-text-grey">2s</p>
+              <DotIcon className="px-[0px] text-light-grey-50" />
+              <p className="text-[12px] font-normal text-text-grey">2s</p>
             </div>
           </div>
-          <MoreVerticalIcon className="text-text-grey cursor-pointer" />
+          <MoreVerticalIcon className="cursor-pointer text-text-grey" />
         </div>
-        <p className="font-medium text-[14px]">Why are architectural structures not as good as before</p>
-        <p className="font-sans font-normal leading-[21px] text-[14px] text-light-black mt-[30px]">
+        <p className="text-[14px] font-medium">
+          Why are architectural structures not as good as before
+        </p>
+        <p className="mt-[30px] font-sans text-[14px] font-normal leading-[21px] text-light-black">
           This is the detail of the thread.
           {/* {isExpanded || !thread?.thoughts || thread.thoughts.length <= charLimit ? thread?.thoughts : `${thread.thoughts.slice(0, charLimit)}...`} */}
         </p>
@@ -29,8 +44,8 @@ const MainTribeCard = () => {
               {isExpanded ? "see less" : "see more"}
             </p>
           )} */}
-        <div className="flex gap-4 mt-2">
-          <div className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center cursor-pointer bg-light-grey">
+        <div className="mt-2 flex gap-4">
+          <div className="bg-light_grey flex h-[30px] w-[64px] cursor-pointer items-center justify-center rounded-[12px] bg-light-grey p-[4px] px-[8px]">
             <HeartIcon className="w-[14px] text-text-grey" />
             {/* {
                         thread?.hasLiked ? (
@@ -40,7 +55,7 @@ const MainTribeCard = () => {
                         )
                     } */}
           </div>
-          <div className="rounded-[12px] bg-light_grey p-[4px] px-[8px] w-[64px] h-[30px] flex justify-center items-center cursor-pointer bg-light-grey">
+          <div className="bg-light_grey flex h-[30px] w-[64px] cursor-pointer items-center justify-center rounded-[12px] bg-light-grey p-[4px] px-[8px]">
             <MessageSquare className="w-[14px] text-text-grey" />
           </div>
         </div>

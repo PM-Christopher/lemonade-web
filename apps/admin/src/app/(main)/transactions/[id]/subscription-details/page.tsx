@@ -12,7 +12,7 @@ import PaginationComp from "@/components/global/Pagination";
 function SubscriptionDetailsPage({}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-      const router = useRouter()
+  const router = useRouter();
 
   const params = useParams();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -30,10 +30,7 @@ function SubscriptionDetailsPage({}) {
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = subscription?.history?.slice(
-    startIndex,
-    startIndex + perPage
-  );
+  const paginatedData = subscription?.history?.slice(startIndex, startIndex + perPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -84,10 +81,7 @@ function SubscriptionDetailsPage({}) {
 
     // Set up download link
     link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `payment_history_${new Date().toISOString().split("T")[0]}.csv`
-    );
+    link.setAttribute("download", `payment_history_${new Date().toISOString().split("T")[0]}.csv`);
     link.style.visibility = "hidden";
 
     // Append to document, trigger download and clean up
@@ -96,70 +90,60 @@ function SubscriptionDetailsPage({}) {
     document.body.removeChild(link);
   };
 
-
-    return (
+  return (
     <MainLayout>
-      <section className="p-4 md:p-5 flex lg:flex-col flex-row gap-4 md:gap-5 w-full overflow-x-hidden max-w-full">
+      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
         {/* User Info Card */}
-        <div className="w-full lg:w-1/3 bg-white p-4 md:p-6 flex flex-col gap-4 md:gap-5 rounded-xl h-fit">
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">Full name:</p>
+        <div className="lg:w-1/3 md:p-6 md:gap-5 flex h-fit w-full flex-col gap-4 rounded-xl bg-white p-4">
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Full name:</p>
             </div>
             <div className="flex flex-wrap gap-1">
-              <p className="text-sm font-medium">
-                {subscription?.info?.fullname}
-              </p>
-              <p className="cursor-pointer font-medium text-sm text-light-green" 
-              onClick={() => router.push(`/users/${subscription?.info?.user_id}`)}
+              <p className="text-sm font-medium">{subscription?.info?.fullname}</p>
+              <p
+                className="cursor-pointer text-sm font-medium text-light-green"
+                onClick={() => router.push(`/users/${subscription?.info?.user_id}`)}
               >
                 View profile
               </p>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">
-                Transaction Id:
-              </p>
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Transaction Id:</p>
             </div>
-            <p className="text-sm font-medium break-all">
-              {subscription?.info?.txn_id}
-            </p>
+            <p className="break-all text-sm font-medium">{subscription?.info?.txn_id}</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">
-                Account Plan:
-              </p>
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Account Plan:</p>
             </div>
             <p className="text-sm font-medium">{subscription?.info?.plan}</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">Amount:</p>
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Amount:</p>
             </div>
             <p className="text-sm font-medium">N{subscription?.info?.amount}</p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">
-                Subscription Type: 
-              </p>
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Subscription Type:</p>
             </div>
-            <p className="text-sm font-medium capitalize">{subscription?.history[0].subscription_type}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">Date Paid:</p>
-            </div>
-            <p className="text-sm font-medium">
-              {subscription?.history[0]?.date_paid || null}
+            <p className="text-sm font-medium capitalize">
+              {subscription?.history[0].subscription_type}
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-            <div className="min-w-20 sm:w-28">
-              <p className="text-text-grey text-xs font-medium">Status:</p>
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Date Paid:</p>
+            </div>
+            <p className="text-sm font-medium">{subscription?.history[0]?.date_paid || null}</p>
+          </div>
+          <div className="sm:flex-row sm:gap-6 flex flex-col gap-2">
+            <div className="sm:w-28 min-w-20">
+              <p className="text-xs font-medium text-text-grey">Status:</p>
             </div>
             <p className="text-sm font-medium text-light-green-70">
               {capitalizeWords(subscription?.info?.status)}
@@ -168,54 +152,50 @@ function SubscriptionDetailsPage({}) {
         </div>
 
         {/* Account Plan and Payment History */}
-        <div className="w-full lg:w-2/3 flex flex-col">
-          <div className="bg-white rounded-t-xl overflow-hidden">
-            <div className="p-4 md:p-6 border-b border-b-grey-20 flex justify-between items-center">
+        <div className="lg:w-2/3 flex w-full flex-col">
+          <div className="overflow-hidden rounded-t-xl bg-white">
+            <div className="md:p-6 flex items-center justify-between border-b border-b-grey-20 p-4">
               <p className="text-base font-semibold">Account plan</p>
               <div
-                className="flex gap-2 items-center border border-light-grey-50 px-2 md:px-3 py-2 rounded-xl cursor-pointer"
+                className="md:px-3 flex cursor-pointer items-center gap-2 rounded-xl border border-light-grey-50 px-2 py-2"
                 onClick={printCSV}
               >
-                <PrinterIcon className="w-4 md:w-5" />
-                <p className="font-medium text-sm md:text-base text-black-light">
-                  Print
-                </p>
+                <PrinterIcon className="md:w-5 w-4" />
+                <p className="md:text-base text-sm font-medium text-black-light">Print</p>
               </div>
             </div>
 
-            <div className="p-4 md:p-6 flex flex-col gap-6 md:gap-10">
+            <div className="md:p-6 md:gap-10 flex flex-col gap-6 p-4">
               {/* Premium Plan Card */}
-              <div className="flex flex-col px-4 md:px-6 py-6 md:py-8 gap-2 border-b-4 border-b-step-color bg-green-tint rounded-xl">
-                <p className="text-mid-green font-semibold text-base">
+              <div className="md:px-6 md:py-8 flex flex-col gap-2 rounded-xl border-b-4 border-b-step-color bg-green-tint px-4 py-6">
+                <p className="text-base font-semibold text-mid-green">
                   {/* PREMIUM */}
                   {subscription?.info?.plan}
                 </p>
-                <p className="font-bold text-xl md:text-2xl">
-                  ₦{subscription?.plan?.cost}
-                </p>
-                <p className="p-2 rounded-lg bg-light-green-50 text-xs md:text-sm w-fit">
+                <p className="md:text-2xl text-xl font-bold">₦{subscription?.plan?.cost}</p>
+                <p className="md:text-sm w-fit rounded-lg bg-light-green-50 p-2 text-xs">
                   Renews {subscription?.plan?.renews}
                 </p>
               </div>
 
               {/* Payment History */}
               <div className="w-full">
-                <p className="font-semibold text-sm mb-3">Payment history</p>
-                <div className="overflow-x-auto w-full pb-2">
+                <p className="mb-3 text-sm font-semibold">Payment history</p>
+                <div className="w-full overflow-x-auto pb-2">
                   <table className="w-full min-w-max">
                     <tbody>
                       {subscription?.history.map((item: any, index: any) => (
                         <tr key={index} className="border-b border-gray-100">
-                          <td className="py-3 md:py-4 px-2 md:px-3 text-xs md:text-sm font-normal text-light-black whitespace-nowrap">
+                          <td className="md:py-4 md:px-3 md:text-sm whitespace-nowrap px-2 py-3 text-xs font-normal text-light-black">
                             {item.txn_id}
                           </td>
-                          <td className="py-3 md:py-4 px-2 md:px-3 text-xs md:text-sm font-semibold text-light-black whitespace-nowrap">
+                          <td className="md:py-4 md:px-3 md:text-sm whitespace-nowrap px-2 py-3 text-xs font-semibold text-light-black">
                             {item.plan}
                           </td>
-                          <td className="py-3 md:py-4 px-2 md:px-3 text-xs md:text-sm font-normal text-light-black whitespace-nowrap">
+                          <td className="md:py-4 md:px-3 md:text-sm whitespace-nowrap px-2 py-3 text-xs font-normal text-light-black">
                             {item?.created_at}
                           </td>
-                          <td className="py-3 md:py-4 px-2 md:px-3 text-xs md:text-sm font-normal text-light-black whitespace-nowrap">
+                          <td className="md:py-4 md:px-3 md:text-sm whitespace-nowrap px-2 py-3 text-xs font-normal text-light-black">
                             N {item?.amount}
                           </td>
                         </tr>

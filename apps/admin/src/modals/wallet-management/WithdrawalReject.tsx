@@ -11,10 +11,7 @@ type WithdrawalRejectInterface = {
   toggle: () => void;
 };
 
-const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
-  isOpen,
-  toggle,
-}) => {
+const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({ isOpen, toggle }) => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -34,7 +31,7 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
             show: true,
             message: `Success `,
             type: "success",
-          })
+          }),
         );
         toggle();
       },
@@ -44,7 +41,7 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
             show: true,
             message: error?.message || `Something went wrong`,
             type: "error",
-          })
+          }),
         );
       },
     });
@@ -54,24 +51,18 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div
-        className="bg-white rounded-lg shadow-lg p-6"
-        style={{ width: "480px" }}
-      >
-        <div className="flex justify-between items-center">
+      <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
+        <div className="flex items-center justify-between">
           <p className={"text-[18px] font-semiBold"}>Reject withdrawal</p>
           <div className="cursor-pointer" onClick={toggle}>
             <XIcon />
           </div>
         </div>
-        <div
-          className={"flex flex-col"}
-          style={{ marginTop: "20px", gap: "16px" }}
-        >
+        <div className={"flex flex-col"} style={{ marginTop: "20px", gap: "16px" }}>
           <p className={"text-[14px] font-normal"}>
             Are you sure you want to reject this wallet balance withdrawal?
           </p>
@@ -79,16 +70,14 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
           <div className={"flex justify-between gap-[16px]"}>
             <button
               className={
-                "border-[1px] border-light-grey-50 px-[48px] py-[11px] rounded-[12px] bg-white w-full"
+                "w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[11px]"
               }
               onClick={toggle}
             >
-              <p className={"text-black text-[16px] font-medium"}>Cancel</p>
+              <p className={"text-[16px] font-medium text-black"}>Cancel</p>
             </button>
             <button
-              className={
-                "border-[1px] px-[48px] py-[11px] rounded-[12px] w-full"
-              }
+              className={"w-full rounded-[12px] border-[1px] px-[48px] py-[11px]"}
               style={{ background: "#DB0000" }}
               onClick={isReject}
             >

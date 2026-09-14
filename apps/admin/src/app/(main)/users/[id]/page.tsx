@@ -1,11 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  ChevronDown,
-  MessageCircle,
-  MessageCircleMore,
-  PrinterIcon,
-} from "lucide-react";
+import { ChevronDown, MessageCircle, MessageCircleMore, PrinterIcon } from "lucide-react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { usersDetailPageViews } from "@/utils/pageViews";
 import ActivitiesViews from "@/views/users/ActivitiesViews";
@@ -49,10 +44,7 @@ function UserDetailsPage({}) {
   };
 
   const handleClickOutside = (event: Event) => {
-    if (
-      containerRef.current &&
-      !containerRef.current.contains(event.target as Node)
-    ) {
+    if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
       setDropdownOpen(false);
     }
   };
@@ -60,10 +52,7 @@ function UserDetailsPage({}) {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside as EventListener);
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside as EventListener
-      );
+      document.removeEventListener("mousedown", handleClickOutside as EventListener);
     };
   }, []);
 
@@ -135,11 +124,9 @@ function UserDetailsPage({}) {
   return (
     <MainLayout>
       <TribeModal toggle={toggleTribeModal} isOpen={tribeOpen} />
-      <section className="p-4 md:p-5 flex lg:flex-col flex-row gap-4 md:gap-5 w-full overflow-x-hidden max-w-full">
+      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
         <div
-          className={
-            "w-[600px] h-fit bg-white p-[24px] flex flex-col gap-[20px] rounded-[12px]"
-          }
+          className={"flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"}
         >
           <div className={"flex justify-between"}>
             {user?.profile_image ? (
@@ -148,74 +135,64 @@ function UserDetailsPage({}) {
                 alt="image"
                 width={89}
                 height={83}
-                className={"w-[64px] h-[64px] bg-light-black rounded-full"}
+                className={"h-[64px] w-[64px] rounded-full bg-light-black"}
               />
             ) : (
               // null
-              <div
-                className={"w-[64px] h-[64px] bg-light-black rounded-full"}
-              ></div>
+              <div className={"h-[64px] w-[64px] rounded-full bg-light-black"}></div>
             )}
 
             <div className={"flex gap-[4px]"}>
               <div
                 className={
-                  "border-[1px] border-light-grey-50 rounded-[12px] h-[44px] px-[14px] py-[12px] gap-[8px] flex items-center"
+                  "flex h-[44px] items-center gap-[8px] rounded-[12px] border-[1px] border-light-grey-50 px-[14px] py-[12px]"
                 }
               >
                 <MessageCircleMore className="w-[15px]" />
-                <p className={"font-medium text-[14px]"}>Chat</p>
+                <p className={"text-[14px] font-medium"}>Chat</p>
               </div>
               {user?.status !== "ACTIVE" ? (
                 <button
                   className={
-                    "h-[44px] border-[1px] bg-gradient-green rounded-[12px] w-[156px] text-center"
+                    "h-[44px] w-[156px] rounded-[12px] border-[1px] bg-gradient-green text-center"
                   }
                   onClick={reactivateUser}
                 >
                   {isReactivatingUser ? (
-                    <div className="flex justify-center items-center">
-                      <FaSpinner size={20} className="text-white animate-spin" />
+                    <div className="flex items-center justify-center">
+                      <FaSpinner size={20} className="animate-spin text-white" />
                     </div>
                   ) : (
-                    <p className={"text-[16px] font-medium text-white"}>
-                      Reactivate user
-                    </p>
+                    <p className={"text-[16px] font-medium text-white"}>Reactivate user</p>
                   )}
                 </button>
               ) : (
                 <div className="relative inline-block">
                   <div
                     className={
-                      "flex border-[1px] border-light-grey-50 bg-none w-[149px] h-[44px] px-[16px] py-[10px] rounded-[12px] justify-between items-center cursor-pointer"
+                      "flex h-[44px] w-[149px] cursor-pointer items-center justify-between rounded-[12px] border-[1px] border-light-grey-50 bg-none px-[16px] py-[10px]"
                     }
                     onClick={handleToggleDropdown}
                   >
-                    <div className={"flex justify-between items-center"}>
-                      <p className={"text-[14px] font-medium text-black-light"}>
-                        Actions
-                      </p>
+                    <div className={"flex items-center justify-between"}>
+                      <p className={"text-[14px] font-medium text-black-light"}>Actions</p>
                     </div>
-                    <ChevronDown className={"text-text-grey w-[20px]"} />
+                    <ChevronDown className={"w-[20px] text-text-grey"} />
                   </div>
                   {dropdownOpen && (
-                    <div className="absolute left-0 top-full w-[207px] bg-white rounded-[12px] shadow z-50">
+                    <div className="absolute left-0 top-full z-50 w-[207px] rounded-[12px] bg-white shadow">
                       <ul>
                         <li
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                           onClick={toggleSuspendModalOpen}
                         >
-                          <p className={"font-normal text-[16px]"}>
-                            Suspend User
-                          </p>
+                          <p className={"text-[16px] font-normal"}>Suspend User</p>
                         </li>
                         <li
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                           onClick={toggleDeactivateModalOpen}
                         >
-                          <p className={"font-normal text-[16px]"}>
-                            Deactivate User
-                          </p>
+                          <p className={"text-[16px] font-normal"}>Deactivate User</p>
                         </li>
                       </ul>
                     </div>
@@ -224,104 +201,76 @@ function UserDetailsPage({}) {
               )}
             </div>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Full name:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Full name:</p>
             </div>
             <div className={"flex gap-[4px]"}>
               <p className={"text-[14px] font-medium"}>{user?.fullname}</p>
             </div>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                User ID:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>User ID:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.unique_id}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Account Plan:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Account Plan:</p>
             </div>
             <div className={"flex gap-[4px]"}>
               <p className={"text-[14px] font-medium"}>{user?.account_plan}</p>
-              <p
-                className={
-                  "cursor-pointer font-medium text-[14px] text-light-green"
-                }
-              >
+              <p className={"cursor-pointer text-[14px] font-medium text-light-green"}>
                 View history
               </p>
             </div>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Status:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Status:</p>
             </div>
-            <p className={"text-[14px] font-medium text-light-green-70"}>
-              {user?.status}
-            </p>
+            <p className={"text-[14px] font-medium text-light-green-70"}>{user?.status}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Email Address:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Email Address:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.email}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Username:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Username:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.username}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Lemonade Tag:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Lemonade Tag:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.unique_id}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Date Joined:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Date Joined:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.date_joined}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Location:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Location:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.location}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Social Links:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Social Links:</p>
             </div>
 
             {user?.social_links?.map((item: any, index: number) => (
               <a
                 key={index}
-                className={
-                  "text-[14px] font-medium capitalize underline text-green-400"
-                }
+                className={"text-[14px] font-medium capitalize text-green-400 underline"}
                 href={item?.value}
                 target="_blank"
               >
@@ -329,71 +278,57 @@ function UserDetailsPage({}) {
               </a>
             ))}
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Referrals:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Referrals:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.referrals}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Tribes Joined:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Tribes Joined:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.tribes_joined}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Tribes created:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Tribes created:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.tribes_created}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Threads Created:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Threads Created:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.threads_created}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Business:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Business:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.business}</p>
           </div>
-          <div className={"flex gap-[24px] items-center-center"}>
+          <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>
-                Event Created:
-              </p>
+              <p className={"text-[12px] font-medium text-text-grey"}>Event Created:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{user?.events_created}</p>
           </div>
         </div>
 
         {/*  */}
-        <div className="w-full lg:w-2/3 flex flex-col">
-          <div
-            className={"h-[700px] bg-white rounded-tr-[12px] rounded-tl-[12px]"}
-          >
-            <div className="flex justify-between mt-[10px] border-b-[1px] border-b-light-grey-50">
+        <div className="lg:w-2/3 flex w-full flex-col">
+          <div className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}>
+            <div className="mt-[10px] flex justify-between border-b-[1px] border-b-light-grey-50">
               {usersDetailPageViews.map((view, idx) => (
                 <div
                   onClick={() => switchOption(view.key)}
-                  className={`h-10 py-[8px] px-[16px] cursor-pointer ${
-                    menuOption === view.key && "border-b-step-color border-b-2"
+                  className={`h-10 cursor-pointer px-[16px] py-[8px] ${
+                    menuOption === view.key && "border-b-2 border-b-step-color"
                   }`}
                   key={idx}
                 >
-                  <p className="text-center font-sans font-medium text-[14px] leading-[21px] tracking-custom">
+                  <p className="tracking-custom text-center font-sans text-[14px] font-medium leading-[21px]">
                     {view.title}
                   </p>
                 </div>

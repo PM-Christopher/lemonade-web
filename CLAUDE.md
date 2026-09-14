@@ -27,7 +27,7 @@ The full rationale, current-state findings, and phased plan live in `docs/ARCHIT
 
 **The backend owns business logic. The frontends own presentation and interaction.**
 
-Every rule that decides what is true — whether a tribe join is paid, what a creator earns, whether an escrow can release, whether a plan grants a feature — lives in a Laravel action and is enforced by a policy. The frontends may *mirror* a rule for responsiveness (disable a button, show a validation hint) but may never be the only place it exists.
+Every rule that decides what is true — whether a tribe join is paid, what a creator earns, whether an escrow can release, whether a plan grants a feature — lives in a Laravel action and is enforced by a policy. The frontends may _mirror_ a rule for responsiveness (disable a button, show a validation hint) but may never be the only place it exists.
 
 The backend works in minor units with a double-entry ledger. **Money is formatted and displayed, never computed.** No client-side fee arithmetic, no client-side balance derivation, no client-side proration.
 
@@ -45,7 +45,7 @@ Avoid: over-engineering, premature optimization, unnecessary abstractions, enter
 
 ### Two real consumers, today
 
-A thing goes into a shared package only when both apps genuinely need it *now* — not "both apps will need this eventually." Promotion from app-local to shared is cheap; demotion never happens.
+A thing goes into a shared package only when both apps genuinely need it _now_ — not "both apps will need this eventually." Promotion from app-local to shared is cheap; demotion never happens.
 
 ### No app-shaped branching inside a package
 
@@ -113,15 +113,15 @@ lemonade-web/
 
 ### Import rules (enforced by `eslint-plugin-boundaries` in CI)
 
-| From | May import | May not |
-|---|---|---|
-| `app/**` | features, components, ui, domain, api-types | another feature's internals; api-client directly |
-| `features/x/**` | ui, domain, api-client, api-types, its own internals | `features/y/**` internals — go through `y`'s index |
-| `packages/ui` | domain, api-types | api-client, any app, any feature |
-| `packages/api-client` | api-types | React, ui, domain, any app |
-| `packages/domain` | api-types | everything else — it is pure |
+| From                  | May import                                           | May not                                            |
+| --------------------- | ---------------------------------------------------- | -------------------------------------------------- |
+| `app/**`              | features, components, ui, domain, api-types          | another feature's internals; api-client directly   |
+| `features/x/**`       | ui, domain, api-client, api-types, its own internals | `features/y/**` internals — go through `y`'s index |
+| `packages/ui`         | domain, api-types                                    | api-client, any app, any feature                   |
+| `packages/api-client` | api-types                                            | React, ui, domain, any app                         |
+| `packages/domain`     | api-types                                            | everything else — it is pure                       |
 
-### What must *not* be shared
+### What must _not_ be shared
 
 Endpoint hooks (`useEvents`, `useWallet`) · feature components · Redux slices / client state · route definitions & copy · full-page layouts · anything with one consumer "for now."
 
@@ -145,24 +145,24 @@ Goes on the smallest component that needs it — a filter bar, a row-action menu
 
 ### Data fetching layers — one job each
 
-| Layer | Lives in | Must not |
-|---|---|---|
-| Transport | `@lemonade/api-client` | Know any endpoint or domain |
-| Endpoints | `features/x/api.ts` | Contain React or caching policy |
-| Query policy | `features/x/queries.ts` | Build URLs or handle HTTP |
-| Consumption | Components | Call the transport directly |
+| Layer        | Lives in                | Must not                        |
+| ------------ | ----------------------- | ------------------------------- |
+| Transport    | `@lemonade/api-client`  | Know any endpoint or domain     |
+| Endpoints    | `features/x/api.ts`     | Contain React or caching policy |
+| Query policy | `features/x/queries.ts` | Build URLs or handle HTTP       |
+| Consumption  | Components              | Call the transport directly     |
 
 Query keys are hierarchical factories (`eventKeys.detail(id)`), never inline arrays.
 
 ### Staleness policy, by data class
 
-| Data class | staleTime | Examples |
-|---|---:|---|
-| Money & availability | 0 | Wallet balance, ledger, ticket stock, escrow, payout status |
-| Operational queues | 30s | Moderation reports, withdrawal requests, admin dashboards |
-| User-owned content | 60s | My events, my tribes, my listings, profile |
-| Discovery content | 5m | Public event lists, tribe browse, search |
-| Reference data | 1h | Countries, timezones, banks, categories, plans |
+| Data class           | staleTime | Examples                                                    |
+| -------------------- | --------: | ----------------------------------------------------------- |
+| Money & availability |         0 | Wallet balance, ledger, ticket stock, escrow, payout status |
+| Operational queues   |       30s | Moderation reports, withdrawal requests, admin dashboards   |
+| User-owned content   |       60s | My events, my tribes, my listings, profile                  |
+| Discovery content    |        5m | Public event lists, tribe browse, search                    |
+| Reference data       |        1h | Countries, timezones, banks, categories, plans              |
 
 **Never optimistic for money or state machines** — payments, payouts, refunds, escrow, subscription changes. Invalidate and refetch instead; the ledger is authoritative.
 
@@ -180,13 +180,13 @@ Query keys are hierarchical factories (`eventKeys.detail(id)`), never inline arr
 
 ## State Taxonomy
 
-| Kind | Owner | Notes |
-|---|---|---|
-| Server state | TanStack Query | Everything from `/v1/*`. Never persisted to disk. |
-| URL state | `searchParams` | Page, sort, filters, tab, search |
-| Form state | React Hook Form | Uncontrolled by default |
-| Ephemeral UI state | `useState` | Colocated with the component |
-| Global client state | Redux (or Context) | Small enough to audit at a glance |
+| Kind                | Owner              | Notes                                             |
+| ------------------- | ------------------ | ------------------------------------------------- |
+| Server state        | TanStack Query     | Everything from `/v1/*`. Never persisted to disk. |
+| URL state           | `searchParams`     | Page, sort, filters, tab, search                  |
+| Form state          | React Hook Form    | Uncontrolled by default                           |
+| Ephemeral UI state  | `useState`         | Colocated with the component                      |
+| Global client state | Redux (or Context) | Small enough to audit at a glance                 |
 
 Forms use **React Hook Form + Zod**. Zod schemas mirror backend `FormRequest` rules and carry a comment naming which one. Server `errors` map onto fields via `setError` — a server rejection lands on the field that caused it, not a toast. Where a rule can't be mirrored (uniqueness, entitlements, balance), don't guess — submit and render the server's answer.
 
@@ -194,17 +194,17 @@ Forms use **React Hook Form + Zod**. Zod schemas mirror backend `FormRequest` ru
 
 ## Naming Conventions
 
-| Thing | Convention | Example |
-|---|---|---|
-| Components | PascalCase, one per file, named export | `TicketSummary.tsx` |
-| Hooks | `use` + camelCase | `useEventQuery.ts` |
-| Query hooks | `use<Entity>Query` / `use<Entity>ListQuery` | `useWalletQuery` |
-| Mutation hooks | `use<Verb><Entity>Mutation` | `useApprovePayoutMutation` |
-| Zod schemas | `<action>Schema` + inferred type | `createEventSchema` → `CreateEventInput` |
-| Query keys | Factory per feature, never inline arrays | `eventKeys.detail(id)` |
-| Route Handlers | `app/api/<domain>/<action>/route.ts` | `app/api/auth/login/route.ts` |
-| Booleans | `is` / `has` / `can` prefix | `canApprovePayout` |
-| Files that must never reach the client | Import `server-only` at the top | `lib/session.ts` |
+| Thing                                  | Convention                                  | Example                                  |
+| -------------------------------------- | ------------------------------------------- | ---------------------------------------- |
+| Components                             | PascalCase, one per file, named export      | `TicketSummary.tsx`                      |
+| Hooks                                  | `use` + camelCase                           | `useEventQuery.ts`                       |
+| Query hooks                            | `use<Entity>Query` / `use<Entity>ListQuery` | `useWalletQuery`                         |
+| Mutation hooks                         | `use<Verb><Entity>Mutation`                 | `useApprovePayoutMutation`               |
+| Zod schemas                            | `<action>Schema` + inferred type            | `createEventSchema` → `CreateEventInput` |
+| Query keys                             | Factory per feature, never inline arrays    | `eventKeys.detail(id)`                   |
+| Route Handlers                         | `app/api/<domain>/<action>/route.ts`        | `app/api/auth/login/route.ts`            |
+| Booleans                               | `is` / `has` / `can` prefix                 | `canApprovePayout`                       |
+| Files that must never reach the client | Import `server-only` at the top             | `lib/session.ts`                         |
 
 ---
 
@@ -223,12 +223,20 @@ One normalized shape from the transport — nothing above it inspects raw axios 
 ```ts
 type ApiError = {
   status: number;
-  errorCode: ErrorCode;        // backend's 18-case enum
+  errorCode: ErrorCode; // backend's 18-case enum
   message: string;
   fieldErrors?: Record<string, string[]>;
   correlationId?: string;
-  kind: 'validation' | 'auth' | 'permission' | 'notFound'
-      | 'conflict' | 'rateLimit' | 'server' | 'network' | 'timeout';
+  kind:
+    | "validation"
+    | "auth"
+    | "permission"
+    | "notFound"
+    | "conflict"
+    | "rateLimit"
+    | "server"
+    | "network"
+    | "timeout";
 };
 ```
 
@@ -240,16 +248,16 @@ Timeouts on every request. Disable-on-submit everywhere. Idempotency keys on eve
 
 ## Testing Requirements
 
-| Layer | Tool | Target |
-|---|---|---|
-| Unit — shared packages | Vitest | ≥ 90% — highest bar in the repo |
-| Contract | Vitest + MSW | Every `ErrorCode`, 422 field mapping, 401 refresh, pagination |
-| Component | Vitest + Testing Library | Every form and money surface |
-| Integration | Testing Library + MSW | Each migrated/new domain |
-| End-to-end | Playwright | Critical money/auth journeys |
-| Accessibility | `axe-core` in component tests | Forms, dialogs, tables, navigation |
+| Layer                  | Tool                          | Target                                                        |
+| ---------------------- | ----------------------------- | ------------------------------------------------------------- |
+| Unit — shared packages | Vitest                        | ≥ 90% — highest bar in the repo                               |
+| Contract               | Vitest + MSW                  | Every `ErrorCode`, 422 field mapping, 401 refresh, pagination |
+| Component              | Vitest + Testing Library      | Every form and money surface                                  |
+| Integration            | Testing Library + MSW         | Each migrated/new domain                                      |
+| End-to-end             | Playwright                    | Critical money/auth journeys                                  |
+| Accessibility          | `axe-core` in component tests | Forms, dialogs, tables, navigation                            |
 
-Write a characterization test for existing behaviour immediately *before* migrating or materially changing a feature — not after.
+Write a characterization test for existing behaviour immediately _before_ migrating or materially changing a feature — not after.
 
 No snapshot tests of large component trees. No coverage threshold on app code as a merge gate — thresholds matter on `packages/*`, where they mean something.
 
@@ -270,15 +278,15 @@ All commands must pass. Never consider a feature complete if any command fails.
 
 ### Lint rules that must not regress
 
-| Rule | Prevents |
-|---|---|
-| `@typescript-eslint/no-explicit-any` | Untyped `any` creeping back in |
-| `react-hooks/exhaustive-deps` | Stale-closure effects |
-| `boundaries/element-types` | Cross-feature / package-boundary violations |
-| `no-restricted-imports`: axios outside `api-client` | A second HTTP client appearing |
-| `no-console` (allow `warn`/`error`) | Stray debug logs in shipped code |
-| `no-restricted-syntax`: `localStorage.setItem` with token keys | Tokens returning to JS-readable storage |
-| `@next/next/no-img-element` | Unoptimized images |
+| Rule                                                           | Prevents                                    |
+| -------------------------------------------------------------- | ------------------------------------------- |
+| `@typescript-eslint/no-explicit-any`                           | Untyped `any` creeping back in              |
+| `react-hooks/exhaustive-deps`                                  | Stale-closure effects                       |
+| `boundaries/element-types`                                     | Cross-feature / package-boundary violations |
+| `no-restricted-imports`: axios outside `api-client`            | A second HTTP client appearing              |
+| `no-console` (allow `warn`/`error`)                            | Stray debug logs in shipped code            |
+| `no-restricted-syntax`: `localStorage.setItem` with token keys | Tokens returning to JS-readable storage     |
+| `@next/next/no-img-element`                                    | Unoptimized images                          |
 
 Format with Prettier before completion. Remove dead code, unused imports, unused variables.
 

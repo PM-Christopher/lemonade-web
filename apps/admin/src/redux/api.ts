@@ -10,9 +10,9 @@ import { axiosInstance } from "@/lib/axiosInstane";
 import { sharedUtilityRoutes } from "@lemonade/api-types";
 
 export const generalApi = {
-    verifyAccount: (bankCode: string, accountNumber: string) =>
-        axiosInstance.post(sharedUtilityRoutes.VERIFY_ACCOUNT, {
-            bank_code: bankCode,
-            account_number: accountNumber,
-        }),
+  verifyAccount: (bankCode: string, accountNumber: string) =>
+    axiosInstance.post(sharedUtilityRoutes.VERIFY_ACCOUNT, {
+      bank_code: bankCode,
+      account_number: accountNumber,
+    }),
 };

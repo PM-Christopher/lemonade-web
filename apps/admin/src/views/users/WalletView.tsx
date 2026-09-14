@@ -31,10 +31,7 @@ const WalletView = ({ userDetail }: any) => {
   };
 
   const handleClickOutside = (event: Event) => {
-    if (
-      containerRef.current &&
-      !containerRef.current.contains(event.target as Node)
-    ) {
+    if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
       setDropdownOpen(false);
     }
   };
@@ -42,10 +39,7 @@ const WalletView = ({ userDetail }: any) => {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside as EventListener);
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside as EventListener
-      );
+      document.removeEventListener("mousedown", handleClickOutside as EventListener);
     };
   }, []);
 
@@ -59,36 +53,32 @@ const WalletView = ({ userDetail }: any) => {
         <div className="relative inline-block">
           <button
             onClick={handleToggleDropdown}
-            className="flex gap-[8px] border-[1px] border-light-grey-50 w-fit h-[44px] rounded-[12px] justify-between items-center bg-transparent px-[14px] py-[12px]"
+            className="flex h-[44px] w-fit items-center justify-between gap-[8px] rounded-[12px] border-[1px] border-light-grey-50 bg-transparent px-[14px] py-[12px]"
           >
-            <p className="text-[12px] font-semiBold text-black-light">
-              Update balance
-            </p>
-            <ChevronDown className="text-black-light w-[20px]" />
+            <p className="text-[12px] font-semiBold text-black-light">Update balance</p>
+            <ChevronDown className="w-[20px] text-black-light" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-0 top-full mt-1 w-[207px] bg-white rounded-[12px] shadow z-50">
+            <div className="absolute left-0 top-full z-50 mt-1 w-[207px] rounded-[12px] bg-white shadow">
               <ul>
                 <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                   onClick={() => {
                     setUpdateType("add");
                     toggleUpdateBalance();
                   }}
                 >
-                  <p className={"font-normal text-[16px]"}>Add to balance</p>
+                  <p className={"text-[16px] font-normal"}>Add to balance</p>
                 </li>
                 <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                   onClick={() => {
                     setUpdateType("deduct");
                     toggleUpdateBalance();
                   }}
                 >
-                  <p className={"font-normal text-[16px]"}>
-                    Deduct from balance
-                  </p>
+                  <p className={"text-[16px] font-normal"}>Deduct from balance</p>
                 </li>
               </ul>
             </div>
@@ -97,21 +87,15 @@ const WalletView = ({ userDetail }: any) => {
       </div>
 
       <div className={"flex flex-col p-[24px]"}>
-        <div
-          className={
-            "border-mid-grey p-[16px] border-[1px] rounded-[12px] flex flex-col"
-          }
-        >
+        <div className={"flex flex-col rounded-[12px] border-[1px] border-mid-grey p-[16px]"}>
           <div
             className={
-              "p-[16px] flex justify-between border-b-[1px] border-b-grey-20 cursor-pointer"
+              "flex cursor-pointer justify-between border-b-[1px] border-b-grey-20 p-[16px]"
             }
           >
             <div className={"flex flex-col gap-[8px]"}>
-              <p className={"text-[14px] font-normal text-text-grey"}>
-                Total Amount Earned
-              </p>
-              <p className={"font-semiBold text-[18px] text-black-light"}>
+              <p className={"text-[14px] font-normal text-text-grey"}>Total Amount Earned</p>
+              <p className={"text-[18px] font-semiBold text-black-light"}>
                 ₦ {formatNumberWithCommas(userDetail?.total_amount || 0)}{" "}
               </p>
             </div>
@@ -119,25 +103,21 @@ const WalletView = ({ userDetail }: any) => {
           </div>
           <div
             className={
-              "p-[16px] flex justify-between border-b-[1px] border-b-grey-20 cursor-pointer"
+              "flex cursor-pointer justify-between border-b-[1px] border-b-grey-20 p-[16px]"
             }
           >
             <div className={"flex flex-col gap-[8px]"}>
-              <p className={"text-[14px] font-normal text-text-grey"}>
-                Referral Earning
-              </p>
-              <p className={"font-semiBold text-[18px] text-black-light"}>
+              <p className={"text-[14px] font-normal text-text-grey"}>Referral Earning</p>
+              <p className={"text-[18px] font-semiBold text-black-light"}>
                 ₦{formatNumberWithCommas(userDetail?.referral_earning || 0)}
               </p>
             </div>
             <ChevronRight className={"text-text-grey"} />
           </div>
-          <div className={"p-[16px] flex justify-between cursor-pointer"}>
+          <div className={"flex cursor-pointer justify-between p-[16px]"}>
             <div className={"flex flex-col gap-[8px]"}>
-              <p className={"text-[14px] font-normal text-text-grey"}>
-                Affiliate Earning
-              </p>
-              <p className={"font-semiBold text-[18px] text-black-light"}>
+              <p className={"text-[14px] font-normal text-text-grey"}>Affiliate Earning</p>
+              <p className={"text-[18px] font-semiBold text-black-light"}>
                 ₦{formatNumberWithCommas(userDetail.affiliate_earning || 0)}
               </p>
             </div>

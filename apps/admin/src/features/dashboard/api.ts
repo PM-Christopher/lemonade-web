@@ -7,5 +7,5 @@ import { adminAccountRoutes } from "@lemonade/api-types";
 import type { PlatformStatistics } from "@/interfaces/SystemInterface";
 
 export const dashboardApi = {
-    getMetrics: () => browserApi.get<PlatformStatistics>(adminAccountRoutes.DASHBOARD),
+  getMetrics: () => browserApi.get<PlatformStatistics>(adminAccountRoutes.DASHBOARD),
 };

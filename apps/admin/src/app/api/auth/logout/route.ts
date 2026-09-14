@@ -6,7 +6,7 @@ import { backendApi, clearAdminSession } from "@/lib/server-api";
 // to the admin (LogoutAdmin::execute) — previously AuthController::logout()
 // was a stub with no route at all, so this only cleared the local cookie.
 export async function POST() {
-    await backendApi.post(adminAuthRoutes.LOGOUT).catch(() => undefined);
-    await clearAdminSession();
-    return NextResponse.json({ success: true, message: "Logged out" });
+  await backendApi.post(adminAuthRoutes.LOGOUT).catch(() => undefined);
+  await clearAdminSession();
+  return NextResponse.json({ success: true, message: "Logged out" });
 }

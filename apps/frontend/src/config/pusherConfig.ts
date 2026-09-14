@@ -9,14 +9,14 @@ import Pusher from "pusher-js";
 const app_key: any = process.env.NEXT_PUBLIC_PUSHER_KEY;
 Pusher.logToConsole = false;
 export const pusherConfig = () => {
-    return new Pusher(app_key, {
-        cluster: "eu",
-        authEndpoint: "/api/broadcasting/auth",
-    });
+  return new Pusher(app_key, {
+    cluster: "eu",
+    authEndpoint: "/api/broadcasting/auth",
+  });
 };
 
 export const pusherCon = () => {
-    return new Pusher(app_key, {
-        cluster: "eu",
-    });
+  return new Pusher(app_key, {
+    cluster: "eu",
+  });
 };

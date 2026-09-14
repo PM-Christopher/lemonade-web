@@ -1,28 +1,23 @@
-import React from 'react';
+import React from "react";
 import Image from "next/image";
 import avatar from "@/image/avatar_3.png";
 import DotIcon from "@/image/icons/Dot.svg";
 import MoreIcon from "@/image/icons/MoreIcon.svg";
-import {Input} from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import ImageIcon from "@/image/icons/ImageIcon.svg";
 
 const EmptyChat = () => {
-    return (
-        <div
-            className="w-[560px] h-[648px] border-t-[1px] border-b-[1px] border-r-[1px] bg-white flex flex-col rounded-tr-[16px] rounded-br-[16px] relative">
+  return (
+    <div className="relative flex h-[648px] w-[560px] flex-col rounded-br-[16px] rounded-tr-[16px] border-b-[1px] border-r-[1px] border-t-[1px] bg-white">
+      <div className="absolute left-0 top-0 w-full rounded-tr-[16px] p-[8px] text-white"></div>
 
-            <div className="absolute top-0 left-0 w-full text-white p-[8px] rounded-tr-[16px]">
-            </div>
+      <div className="mb-16 flex h-screen items-center justify-center rounded-br-[16px] rounded-tr-[16px] bg-white p-[16px]">
+        <p className="font-ruso text-[20px] font-semibold">Open chat to begin messaging</p>
+      </div>
 
-            <div className="flex justify-center items-center h-screen bg-white rounded-tr-[16px] rounded-br-[16px] p-[16px] mb-16">
-                <p className="font-semibold text-[20px] font-ruso">Open chat to begin messaging</p>
-            </div>
-
-            <div className="absolute bottom-0 left-0 w-full text-white p-[16px] px-[13px] rounded-br-[16px]">
-
-            </div>
-        </div>
-    );
-}
+      <div className="absolute bottom-0 left-0 w-full rounded-br-[16px] p-[16px] px-[13px] text-white"></div>
+    </div>
+  );
+};
 
 export default EmptyChat;

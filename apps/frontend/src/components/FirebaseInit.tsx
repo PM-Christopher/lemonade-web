@@ -1,20 +1,21 @@
-"use client"
+"use client";
 
 import { useEffect } from "react";
-import {onMessageListener, requestNotificationPermission} from "@/lib/requestNotificationPermission";
+import {
+  onMessageListener,
+  requestNotificationPermission,
+} from "@/lib/requestNotificationPermission";
 
 const FirebaseInit = () => {
+  useEffect(() => {
+    const subscribeUser = async () => {
+      await requestNotificationPermission();
+    };
 
-    useEffect(() => {
-        const subscribeUser = async () => {
-            await requestNotificationPermission()
-        }
+    onMessageListener().then((payload) => {});
+    subscribeUser();
+  }, []);
+  return null;
+};
 
-        onMessageListener().then((payload) => {
-        })
-        subscribeUser()
-    }, []);
-    return null
-}
-
-export default FirebaseInit
+export default FirebaseInit;

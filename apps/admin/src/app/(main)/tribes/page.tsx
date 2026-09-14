@@ -33,40 +33,60 @@ const TribePage = () => {
   return (
     <MainLayout>
       <section className="flex flex-col gap-[20px]">
-        <div className={"px-[20px] flex justify-between"}>
+        <div className={"flex justify-between px-[20px]"}>
           <p className={"text-[16px] font-semiBold"}>10,000 Tribes</p>
           <div className={"flex justify-between gap-[12px]"}>
-            <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] h-[40px] w-[285px] rounded-[12px] border-[1px] border-grey-20">
+            <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
               <div>
-                <SearchIcon className={"w-[12px] h-[12px] text-grey-40"} />
+                <SearchIcon className={"h-[12px] w-[12px] text-grey-40"} />
               </div>
               <div className="w-full">
-                <input id="search" type="text" className="rounded-xl text-[14px] bg-light-grey focus:outline-none focus:ring-0 focus:border-transparent w-full py-4" placeholder="Search Tribe, ID..." />
+                <input
+                  id="search"
+                  type="text"
+                  className="w-full rounded-xl bg-light-grey py-4 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                  placeholder="Search Tribe, ID..."
+                />
               </div>
             </div>
 
-            <div className={"flex border-[1px] border-grey-20 bg-none w-[193px] h-[40px] px-[16px] py-[10px] rounded-[12px] justify-between items-center"}>
-              <div className={"flex gap-2 items-center"}>
-                <CalendarIcon className={"text-text-grey w-[15px] h-[15px]"} />
+            <div
+              className={
+                "flex h-[40px] w-[193px] items-center justify-between rounded-[12px] border-[1px] border-grey-20 bg-none px-[16px] py-[10px]"
+              }
+            >
+              <div className={"flex items-center gap-2"}>
+                <CalendarIcon className={"h-[15px] w-[15px] text-text-grey"} />
                 <p className={"text-[12px] font-semiBold text-text-grey"}>ALL TIME</p>
               </div>
-              <ChevronDown className={"text-text-grey w-[20px]"} />
+              <ChevronDown className={"w-[20px] text-text-grey"} />
             </div>
             <div>
-              <Button className={"flex h-[40px] rounded-[12px] bg-gradient-green border-step-color"} onClick={toggleCreateTribeModal}>
-                <PlusIcon className={"text-white w-[15px] h-[15px]"} />
-                <p className={"text-white font-medium text-[16px]"}>Create Tribe</p>
+              <Button
+                className={"flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"}
+                onClick={toggleCreateTribeModal}
+              >
+                <PlusIcon className={"h-[15px] w-[15px] text-white"} />
+                <p className={"text-[16px] font-medium text-white"}>Create Tribe</p>
               </Button>
             </div>
           </div>
         </div>
-        <div className={"px-[20px] flex flex-col gap-[8px]"}>
-          <div className={"border-[1px] border-grey-20 rounded-[12px] flex flex-col"}>
-            <div className={"px-[12px] pt-[8px] w-fit"}>
-              <div className={"flex gap-6 bg-mid-grey p-[4px] items-center rounded-[12px]"}>
+        <div className={"flex flex-col gap-[8px] px-[20px]"}>
+          <div className={"flex flex-col rounded-[12px] border-[1px] border-grey-20"}>
+            <div className={"w-fit px-[12px] pt-[8px]"}>
+              <div className={"flex items-center gap-6 rounded-[12px] bg-mid-grey p-[4px]"}>
                 {tribeViews.map((item, index) => (
-                  <div className={`px-[8px] p-[4px] cursor-pointer ${menuOption === item.key && "bg-white rounded-[10px]"}`} onClick={() => switchOption(item.key)} key={index}>
-                    <p className={`font-sans leading-[24px] ${menuOption === item.key ? "font-semibold text-[16px]" : "font-semi-normal text-[16px] text-text-grey"}`}>{item.title}</p>
+                  <div
+                    className={`cursor-pointer p-[4px] px-[8px] ${menuOption === item.key && "rounded-[10px] bg-white"}`}
+                    onClick={() => switchOption(item.key)}
+                    key={index}
+                  >
+                    <p
+                      className={`font-sans leading-[24px] ${menuOption === item.key ? "text-[16px] font-semibold" : "font-semi-normal text-[16px] text-text-grey"}`}
+                    >
+                      {item.title}
+                    </p>
                   </div>
                 ))}
               </div>

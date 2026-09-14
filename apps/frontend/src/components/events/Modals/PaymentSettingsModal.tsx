@@ -1,104 +1,119 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import {Button} from "@/components/ui/button";
-import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
-import {Label} from "@/components/ui/label";
-import {useAppDispatch} from "@/redux/hook";
-import {usePaymentSettingQuery} from "@/features/events/queries";
-import {useUpdatePaymentSettingMutation} from "@/features/events/mutations";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { useAppDispatch } from "@/redux/hook";
+import { usePaymentSettingQuery } from "@/features/events/queries";
+import { useUpdatePaymentSettingMutation } from "@/features/events/mutations";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 type PaymentSettingsInterface = {
-    toggle: () => void,
-    option: boolean
-}
+  toggle: () => void;
+  option: boolean;
+};
 
-const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({toggle, option}) => {
-    const dispatch = useAppDispatch();
-    const { data: paymentSettingData } = usePaymentSettingQuery({enabled: option});
-    const payment_setting = paymentSettingData?.payment_setting;
-    const updatePaymentSettingMutation = useUpdatePaymentSettingMutation();
-    const [paymentType, setPaymentType] = useState(payment_setting?.type || "")
+const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, option }) => {
+  const dispatch = useAppDispatch();
+  const { data: paymentSettingData } = usePaymentSettingQuery({ enabled: option });
+  const payment_setting = paymentSettingData?.payment_setting;
+  const updatePaymentSettingMutation = useUpdatePaymentSettingMutation();
+  const [paymentType, setPaymentType] = useState(payment_setting?.type || "");
 
-    const handleUpdate = () => {
-        if (paymentType === null) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Please select a payment type",
-                    type: "error",
-                })
-            );
-            return;
-        }
-        updatePaymentSettingMutation.mutate({type: paymentType}, {
-            onSuccess: () => {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Payment setting updated successfully",
-                        type: "success",
-                    })
-                );
-            },
-        })
+  const handleUpdate = () => {
+    if (paymentType === null) {
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Please select a payment type",
+          type: "error",
+        }),
+      );
+      return;
     }
-
-    return (
-        <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${option ? "flex" : "hidden"}`}>
-            <div className="bg-white rounded-lg shadow-lg w-[640px] p-6">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <div className="cursor-pointer" onClick={toggle}>
-                            <CloseIcon/>
-                        </div>
-                        <p className="font-sans font-semibold text-[18p] leading-[27px] tracking-custom">Payment
-                            settings</p>
-                    </div>
-                    <div>
-                        <Button
-                            className="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
-                            onClick={handleUpdate}
-                        >
-                            <p className="font-sans font-semi-normal text-[12px]">Save Changes</p>
-                        </Button>
-                    </div>
-                </div>
-                <div className="mt-10">
-                    <RadioGroup value={paymentType} onValueChange={(val) => setPaymentType(val)}>
-                        <div className="flex gap-2">
-                            <RadioGroupItem
-                                value="weekly"
-                                id="weekly"
-                                className="text-green-500 border-light-grey-60 border-[2.5px] checked:border-step-color checked:bg-gradient-green focus:border-step-color"
-                            />
-                            <div className="flex flex-col">
-                                <Label htmlFor="weekly"
-                                       className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-black-light">Weekly
-                                    payment</Label>
-                                <span
-                                    className="font-normal font-sans text-[12px] leading-[16.8px] text-text-grey">Ticket earnings will be transferred in batch to the account details every Friday</span>
-                            </div>
-                        </div>
-                        <div className="flex gap-2 mt-6">
-                            <RadioGroupItem
-                                value="monthly"
-                                id="monthly"
-                                className="text-green-500 border-light-grey-60 border-[2.5px] checked:border-step-color checked:bg-gradient-green focus:border-step-color"
-                            />
-                            <div className="flex flex-col">
-                                <Label htmlFor="monthly"
-                                       className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-black-light">Monthly
-                                    payment</Label>
-                                <span
-                                    className="font-normal font-sans text-[12px] leading-[16.8px] text-text-grey">Ticket earnings will be transferred in batch to the account details on the last Friday of the <br /> month</span>
-                            </div>
-                        </div>
-                    </RadioGroup>
-                </div>
-            </div>
-        </div>
+    updatePaymentSettingMutation.mutate(
+      { type: paymentType },
+      {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Payment setting updated successfully",
+              type: "success",
+            }),
+          );
+        },
+      },
     );
-}
+  };
+
+  return (
+    <div
+      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${option ? "flex" : "hidden"}`}
+    >
+      <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="cursor-pointer" onClick={toggle}>
+              <CloseIcon />
+            </div>
+            <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+              Payment settings
+            </p>
+          </div>
+          <div>
+            <Button
+              className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+              onClick={handleUpdate}
+            >
+              <p className="font-sans text-[12px] font-semi-normal">Save Changes</p>
+            </Button>
+          </div>
+        </div>
+        <div className="mt-10">
+          <RadioGroup value={paymentType} onValueChange={(val) => setPaymentType(val)}>
+            <div className="flex gap-2">
+              <RadioGroupItem
+                value="weekly"
+                id="weekly"
+                className="border-[2.5px] border-light-grey-60 text-green-500 checked:border-step-color checked:bg-gradient-green focus:border-step-color"
+              />
+              <div className="flex flex-col">
+                <Label
+                  htmlFor="weekly"
+                  className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-black-light"
+                >
+                  Weekly payment
+                </Label>
+                <span className="font-sans text-[12px] font-normal leading-[16.8px] text-text-grey">
+                  Ticket earnings will be transferred in batch to the account details every Friday
+                </span>
+              </div>
+            </div>
+            <div className="mt-6 flex gap-2">
+              <RadioGroupItem
+                value="monthly"
+                id="monthly"
+                className="border-[2.5px] border-light-grey-60 text-green-500 checked:border-step-color checked:bg-gradient-green focus:border-step-color"
+              />
+              <div className="flex flex-col">
+                <Label
+                  htmlFor="monthly"
+                  className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-black-light"
+                >
+                  Monthly payment
+                </Label>
+                <span className="font-sans text-[12px] font-normal leading-[16.8px] text-text-grey">
+                  Ticket earnings will be transferred in batch to the account details on the last
+                  Friday of the <br /> month
+                </span>
+              </div>
+            </div>
+          </RadioGroup>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default PaymentSettingsModal;

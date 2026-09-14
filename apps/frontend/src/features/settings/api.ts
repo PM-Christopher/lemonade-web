@@ -13,98 +13,98 @@ import { browserApi } from "@/lib/browser-api";
 import { userSettingsRoutes } from "@lemonade/api-types";
 
 export interface UserProfile {
-    id: number;
-    referred_by: string | null;
-    lemon_id: string;
-    fullname: string;
-    email: string;
-    username: string;
-    bio: string | null;
-    industry: string | null;
-    profile_image: string | null;
-    status: string;
-    verified: boolean;
-    skills: string[] | null;
-    address: { address: string; city: string; state: string; country: string } | null;
-    interests: string[] | null;
-    socials: Array<{ name: string; value: string }> | null;
-    referral_code: string;
-    subscriptions: {
-        title: string;
-        benefits: {
-            verification_badge: boolean;
-            tribe_creation: boolean;
-            lemon_id: boolean;
-            event_creation: boolean;
-            ticket_sales_commission: number;
-            service_commission: number;
-            connection_range: number;
-            offline_benefits: boolean;
-        };
-    } | null;
+  id: number;
+  referred_by: string | null;
+  lemon_id: string;
+  fullname: string;
+  email: string;
+  username: string;
+  bio: string | null;
+  industry: string | null;
+  profile_image: string | null;
+  status: string;
+  verified: boolean;
+  skills: string[] | null;
+  address: { address: string; city: string; state: string; country: string } | null;
+  interests: string[] | null;
+  socials: Array<{ name: string; value: string }> | null;
+  referral_code: string;
+  subscriptions: {
+    title: string;
+    benefits: {
+      verification_badge: boolean;
+      tribe_creation: boolean;
+      lemon_id: boolean;
+      event_creation: boolean;
+      ticket_sales_commission: number;
+      service_commission: number;
+      connection_range: number;
+      offline_benefits: boolean;
+    };
+  } | null;
 }
 
 export interface PayoutHistoryItem {
-    amount_minor: number;
-    amount: string;
-    status: string;
-    date: string;
+  amount_minor: number;
+  amount: string;
+  status: string;
+  date: string;
 }
 
 export interface WalletSettings {
-    total_amount_earned_minor: number;
-    total_amount_earned: string;
-    referral_earnings_minor: number;
-    referral_earnings: string;
-    affiliate_earnings_minor: number;
-    affiliate_earnings: string;
-    monetized_tribes_minor: number;
-    monetized_tribes: string;
-    payout_history: PayoutHistoryItem[];
-    withdrawal_threshold_minor: number;
-    withdrawal_threshold: string;
-    payout_request: boolean;
+  total_amount_earned_minor: number;
+  total_amount_earned: string;
+  referral_earnings_minor: number;
+  referral_earnings: string;
+  affiliate_earnings_minor: number;
+  affiliate_earnings: string;
+  monetized_tribes_minor: number;
+  monetized_tribes: string;
+  payout_history: PayoutHistoryItem[];
+  withdrawal_threshold_minor: number;
+  withdrawal_threshold: string;
+  payout_request: boolean;
 }
 
 export interface RequestPayoutPayload {
-    amount?: number;
-    bank_account_id?: string;
+  amount?: number;
+  bank_account_id?: string;
 }
 
 export interface RequestPayoutResponse {
-    message: string;
-    withdrawal_request_id: string;
-    amount_minor: number;
+  message: string;
+  withdrawal_request_id: string;
+  amount_minor: number;
 }
 
 export interface CreateBankAccountPayload {
-    bank_name: string;
-    account_name: string;
-    account_number: string;
-    bank_code?: string;
+  bank_name: string;
+  account_name: string;
+  account_number: string;
+  bank_code?: string;
 }
 
 export interface BankAccount {
-    id: string;
-    user_id: string;
-    account_name: string;
-    account_number: string;
-    bank_name: string;
-    bank_code: string | null;
+  id: string;
+  user_id: string;
+  account_name: string;
+  account_number: string;
+  bank_name: string;
+  bank_code: string | null;
 }
 
 export interface CreateBankAccountResponse {
-    bank_account: BankAccount;
+  bank_account: BankAccount;
 }
 
 export const settingsApi = {
-    getUserProfile: () => browserApi.get<UserProfile>(userSettingsRoutes.PROFILE),
+  getUserProfile: () => browserApi.get<UserProfile>(userSettingsRoutes.PROFILE),
 
-    getWallet: () => browserApi.get<WalletSettings>(userSettingsRoutes.WALLET),
+  getWallet: () => browserApi.get<WalletSettings>(userSettingsRoutes.WALLET),
 
-    requestPayout: (data: RequestPayoutPayload) =>
-        browserApi.post<RequestPayoutResponse>(userSettingsRoutes.REQUEST_PAYOUT, data),
+  requestPayout: (data: RequestPayoutPayload) =>
+    browserApi.post<RequestPayoutResponse>(userSettingsRoutes.REQUEST_PAYOUT, data),
 
-    createBankAccount: (data: CreateBankAccountPayload) =>
-        browserApi.post<CreateBankAccountResponse>(userSettingsRoutes.BANK_ACCOUNT_CREATE, data),
+  createBankAccount: (data: CreateBankAccountPayload) =>
+    browserApi.post<CreateBankAccountResponse>(userSettingsRoutes.BANK_ACCOUNT_CREATE, data),
 };

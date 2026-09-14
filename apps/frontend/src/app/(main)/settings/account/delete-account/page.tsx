@@ -17,79 +17,71 @@ const DeleteAccountPage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[64px]">
           <div
-            className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans font-semibold text-[16px] tracking-custom">
-              Delete account
-            </p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">Delete account</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <div className="w-full laptop:w-[640px] rounded-[12px] p-[24px] flex flex-col bg-none laptop:bg-white gap-4">
-            <p className="max-w-[592px] font-normal text-[14px] text-light-black">
-              Deleting your account permanently removes your data from our
-              system. You will have a{" "}
-              <span className="font-semibold">30-day</span> grace period to
-              change your mind. If you log in to your account within 30 days of
-              deletion, your account will be reactivated.
+          <div className="flex w-full flex-col gap-4 rounded-[12px] bg-none p-[24px] laptop:w-[640px] laptop:bg-white">
+            <p className="max-w-[592px] text-[14px] font-normal text-light-black">
+              Deleting your account permanently removes your data from our system. You will have a{" "}
+              <span className="font-semibold">30-day</span> grace period to change your mind. If you
+              log in to your account within 30 days of deletion, your account will be reactivated.
             </p>
-            <div className="mt-[24px] p-[16px] bg-light_grey flex flex-col gap-[16px]">
-              <p className="text-[14px] font-semibold">
-                Before you go, make sure
-              </p>
-              <div className="flex gap-2 items-center">
+            <div className="mt-[24px] flex flex-col gap-[16px] bg-light_grey p-[16px]">
+              <p className="text-[14px] font-semibold">Before you go, make sure</p>
+              <div className="flex items-center gap-2">
                 <ChatIcon />
-                <p className="font-normal text-[14px] text-black-light">
+                <p className="text-[14px] font-normal text-black-light">
                   You have deleted all Tribes you created
                 </p>
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex items-center gap-2">
                 <CalendarIcon />
-                <p className="font-normal text-[14px] text-black-light">
+                <p className="text-[14px] font-normal text-black-light">
                   You have no active events you created
                 </p>
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex items-center gap-2">
                 <BagIcon />
-                <p className="font-normal text-[14px] text-black-light">
+                <p className="text-[14px] font-normal text-black-light">
                   You have completed all pending jobs
                 </p>
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex items-center gap-2">
                 <BankIcon />
-                <p className="font-normal text-[14px] text-black-light ">
-                  You request wallet withdrawal from ticket sales, and completed
-                  jobs to your local bank
+                <p className="text-[14px] font-normal text-black-light">
+                  You request wallet withdrawal from ticket sales, and completed jobs to your local
+                  bank
                 </p>
               </div>
-              <p className="font-normal text-[14px] text-light-black">
+              <p className="text-[14px] font-normal text-light-black">
                 Your account cannot be deleted if these criteria are not met
               </p>
             </div>
-            <div className="flex justify-between items-center mt-[36px]">
-              <div className="flex gap-[8px] items-center">
+            <div className="mt-[36px] flex items-center justify-between">
+              <div className="flex items-center gap-[8px]">
                 <SuppprtIcon />
-                <p className="font-semi-normal text-[14px]">
+                <p className="text-[14px] font-semi-normal">
                   Reach out to support for any pending issues
                 </p>
               </div>
               <ChevronRight />
             </div>
-            <div className="flex justify-between gap-[16px] mt-[24px]">
+            <div className="mt-[24px] flex justify-between gap-[16px]">
               <Button
-                className="bg-red-1 h-[48px] shadow-none border-[1px] border-red-2 rounded-[12px] w-full"
+                className="h-[48px] w-full rounded-[12px] border-[1px] border-red-2 bg-red-1 shadow-none"
                 onClick={() => router.push("/settings/account/confirm-delete")}
               >
-                <p className="font-semi-normal text-[16px]">Delete account</p>
+                <p className="text-[16px] font-semi-normal">Delete account</p>
               </Button>
-              <Button className="bg-transparent shadow-none h-[48px] border-none w-full">
-                <p className="font-semi-normal text-[16px] text-light-green">
-                  Cancel
-                </p>
+              <Button className="h-[48px] w-full border-none bg-transparent shadow-none">
+                <p className="text-[16px] font-semi-normal text-light-green">Cancel</p>
               </Button>
             </div>
           </div>

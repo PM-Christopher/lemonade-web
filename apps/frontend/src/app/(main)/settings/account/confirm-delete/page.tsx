@@ -42,7 +42,7 @@ const ConfirmDeletePage = () => {
               show: true,
               message: `Account deleted successfully`,
               type: "success",
-            })
+            }),
           );
           // redirect user to login
           router.push("/login");
@@ -53,7 +53,7 @@ const ConfirmDeletePage = () => {
               show: true,
               message: error?.message || `Something went wrong`,
               type: "error",
-            })
+            }),
           );
         },
       });
@@ -62,37 +62,35 @@ const ConfirmDeletePage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="bg-white flex justify-between p-[8px] px-[64px] border-t-[1px] border-b-[1px] items-center">
+        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[64px]">
           <div
-            className="flex gap-2 p-[4px] pl-[4px] pr-[16px] items-center rounded-[12px] cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans font-semibold text-[16px] tracking-custom">
-              Delete account
-            </p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">Delete account</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
           <form onSubmit={formik.handleSubmit}>
-            <div className="w-full laptop:w-[640px] rounded-[12px] p-[24px] flex flex-col bg-white gap-4">
+            <div className="flex w-full flex-col gap-4 rounded-[12px] bg-white p-[24px] laptop:w-[640px]">
               <p className="text-[16px] font-semi-normal text-black-light">
                 Enter your password to delete your account
               </p>
 
-              <div className="grid gap-1 mt-[24px]">
+              <div className="mt-[24px] grid gap-1">
                 <Label
                   htmlFor="username"
-                  className="font-normal font-sans text-[14px] leading-[16.8px] text-text-grey"
+                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
                 >
                   Password
                 </Label>
-                <div className="flex justify-between items-center gap-3 bg-light_grey p-2 px-[12px] rounded-[12px] w-full h-[48px]">
+                <div className="flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
                   <div className="w-full">
                     <input
                       id="search"
                       type={showCurrentPassword ? "text" : "password"}
-                      className="rounded-xl h-[48px] text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent w-full"
+                      className="h-[48px] w-full rounded-xl border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
                       placeholder=""
                       value={formik.values.password}
                       onChange={(e) => {
@@ -100,14 +98,11 @@ const ConfirmDeletePage = () => {
                       }}
                     />
                   </div>
-                  <EyeIcon
-                    className="cursor-pointer"
-                    onClick={toggleCurrentPasswordVisibility}
-                  />
+                  <EyeIcon className="cursor-pointer" onClick={toggleCurrentPasswordVisibility} />
                 </div>
               </div>
 
-              <div className="flex justify-between gap-[16px] mt-[24px]">
+              <div className="mt-[24px] flex justify-between gap-[16px]">
                 <FormikButton
                   title="Delete account"
                   loading={formik.isSubmitting}
@@ -117,12 +112,10 @@ const ConfirmDeletePage = () => {
                   classes="h-[48px] shadow-none border-[1px] border-red-2 rounded-[12px] w-full"
                 />
                 <Button
-                  className="bg-transparent shadow-none h-[48px] border-none w-full"
+                  className="h-[48px] w-full border-none bg-transparent shadow-none"
                   onClick={() => router.push("/delete-account")}
                 >
-                  <p className="font-semi-normal text-[16px] text-light-green">
-                    Cancel
-                  </p>
+                  <p className="text-[16px] font-semi-normal text-light-green">Cancel</p>
                 </Button>
               </div>
             </div>

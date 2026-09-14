@@ -1,9 +1,7 @@
-import React from 'react';
+import React from "react";
 
 function SkeletonLoader() {
-    return (
-        <div className="w-[150px] h-[16px] bg-gray-200 animate-pulse rounded"></div>
-    );
+  return <div className="h-[16px] w-[150px] animate-pulse rounded bg-gray-200"></div>;
 }
 
 export default SkeletonLoader;

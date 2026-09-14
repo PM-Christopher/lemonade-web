@@ -15,24 +15,20 @@ type UserInfoInterface = {
   userInfo: any;
 };
 
-const UserInfoModal: React.FC<UserInfoInterface> = ({
-  toggle,
-  isOpen,
-  userInfo,
-}) => {
+const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }) => {
   return (
     <div
-      className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${
+      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div className="bg-white rounded-none laptop:rounded-lg shadow-lg w-screen laptop:w-[480px] h-screen laptop:h-auto laptop:max-h-[90vh] overflow-y-auto p-6">
-        <div className="flex justify-between items-center">
+      <div className="h-screen w-screen overflow-y-auto rounded-none bg-white p-6 shadow-lg laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:rounded-lg">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggle}>
               <CloseIcon className="w-[11.25px]" />
             </div>
-            <p className="font-semibold text-[16px]">User Info</p>
+            <p className="text-[16px] font-semibold">User Info</p>
           </div>
         </div>
         <div className="mt-[24px]">
@@ -42,60 +38,37 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({
               alt="check in"
               width={64}
               height={64}
-              className="w-[64px] h-[64px] rounded-[24px] border-[1px] border-grey-90"
+              className="h-[64px] w-[64px] rounded-[24px] border-[1px] border-grey-90"
             />
-            <p className="font-semibold text-[18px] mt-[16px]">
-              {userInfo?.receiver?.username}
-            </p>
-            <p className="font-semi-normal text-[14px] text-light-black">
+            <p className="mt-[16px] text-[18px] font-semibold">{userInfo?.receiver?.username}</p>
+            <p className="text-[14px] font-semi-normal text-light-black">
               Lemon {userInfo?.receiver?.lemon_id} (L
               {userInfo?.receiver?.lemon_id})
             </p>
-            <p className="font-normal text-[12px] text-text-grey">
+            <p className="text-[12px] font-normal text-text-grey">
               {formatString(userInfo?.receiver?.industry)}
             </p>
-            <div className="mt-[16px] flex gap-2 items-center">
+            <div className="mt-[16px] flex items-center gap-2">
               <LocationIcon />
-              <p className="font-semi-normal text-mid-green text-[12px]">
-                3kms away
-              </p>
+              <p className="text-[12px] font-semi-normal text-mid-green">3kms away</p>
               <p className="text-grey-80">|</p>
-              <div className="p-[4px] px-[8px] rounded-[8px] bg-light-green-10">
-                <p className="text-[12px] text-mid-green font-semi-normal">
-                  connected
-                </p>
+              <div className="rounded-[8px] bg-light-green-10 p-[4px] px-[8px]">
+                <p className="text-[12px] font-semi-normal text-mid-green">connected</p>
               </div>
             </div>
-            <p className="max-w-[416px] font-normal text-[14px] text-light-black text-center mt-[16px]">
+            <p className="mt-[16px] max-w-[416px] text-center text-[14px] font-normal text-light-black">
               {userInfo?.receiver?.bio}
             </p>
             <div className="mt-[16px]">
-              <p className="text-[14px] font-semibold text-center">
-                Social links
-              </p>
-              <div className="flex gap-[16px] mt-[12px] justify-center">
+              <p className="text-center text-[14px] font-semibold">Social links</p>
+              <div className="mt-[12px] flex justify-center gap-[16px]">
                 {userInfo?.receiver?.socials?.map((link: any) => (
-                  <a
-                    href={link.value}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key={link.name}
-                  >
-                    {link.name === "facebook" && (
-                      <FacebookIcon className="w-[24px]" />
-                    )}
-                    {link.name === "instagram" && (
-                      <InstagramIcon className="w-[24px]" />
-                    )}
-                    {link.name === "linkedin" && (
-                      <LinkedInIcon className="w-[24px]" />
-                    )}
-                    {link.name === "twitter" && (
-                      <TwitterIcon className="w-[24px]" />
-                    )}
-                    {link.name === "website" && (
-                      <WebIcon className="w-[24px]" />
-                    )}
+                  <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
+                    {link.name === "facebook" && <FacebookIcon className="w-[24px]" />}
+                    {link.name === "instagram" && <InstagramIcon className="w-[24px]" />}
+                    {link.name === "linkedin" && <LinkedInIcon className="w-[24px]" />}
+                    {link.name === "twitter" && <TwitterIcon className="w-[24px]" />}
+                    {link.name === "website" && <WebIcon className="w-[24px]" />}
                   </a>
                 ))}
               </div>

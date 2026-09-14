@@ -74,7 +74,11 @@ export interface RefreshConfig {
   refreshPath: string;
   getRefreshToken: () => string | undefined | Promise<string | undefined>;
   /** Persist the new token(s) — e.g. write the httpOnly cookie in the caller's Route Handler. `expiresIn` is seconds, from the backend's own `expires_in`. */
-  onRefreshed: (accessToken: string, refreshToken?: string, expiresIn?: number) => void | Promise<void>;
+  onRefreshed: (
+    accessToken: string,
+    refreshToken?: string,
+    expiresIn?: number,
+  ) => void | Promise<void>;
 }
 
 export interface ApiClientConfig {
@@ -172,7 +176,10 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
   });
 
   let isRefreshing = false;
-  let queue: Array<{ resolve: (token: string | undefined) => void; reject: (err: unknown) => void }> = [];
+  let queue: Array<{
+    resolve: (token: string | undefined) => void;
+    reject: (err: unknown) => void;
+  }> = [];
 
   instance.interceptors.request.use(async (requestConfig) => {
     // Never trust a caller-supplied Authorization header (e.g. one forwarded
@@ -222,15 +229,18 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
 
           // Plain axios, not `instance` — avoids recursively hitting this
           // same response interceptor on the refresh call itself.
-          const { data } = await axios.post<ApiSuccess<{ token: string; refresh_token?: string; expires_in?: number }>>(
-            `${config.baseURL}${config.refresh.refreshPath}`,
-            { refresh_token: refreshToken },
-          );
+          const { data } = await axios.post<
+            ApiSuccess<{ token: string; refresh_token?: string; expires_in?: number }>
+          >(`${config.baseURL}${config.refresh.refreshPath}`, { refresh_token: refreshToken });
 
           const newAccessToken = data.data?.token;
           if (!newAccessToken) throw toApiError(error);
 
-          await config.refresh.onRefreshed(newAccessToken, data.data?.refresh_token, data.data?.expires_in);
+          await config.refresh.onRefreshed(
+            newAccessToken,
+            data.data?.refresh_token,
+            data.data?.expires_in,
+          );
 
           queue.forEach((p) => p.resolve(newAccessToken));
           queue = [];
@@ -241,7 +251,9 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
           queue.forEach((p) => p.reject(refreshError));
           queue = [];
           await config.onUnauthorized?.();
-          return Promise.reject(refreshError instanceof ApiError ? refreshError : toApiError(error));
+          return Promise.reject(
+            refreshError instanceof ApiError ? refreshError : toApiError(error),
+          );
         } finally {
           isRefreshing = false;
         }

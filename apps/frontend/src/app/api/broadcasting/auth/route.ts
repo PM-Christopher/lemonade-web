@@ -13,29 +13,29 @@ import { USER_TOKEN_COOKIE } from "@/lib/cookie-names";
 const LARAVEL_API_URL = process.env.LARAVEL_API_URL;
 
 export async function POST(req: NextRequest) {
-    const token = cookies().get(USER_TOKEN_COOKIE)?.value;
+  const token = cookies().get(USER_TOKEN_COOKIE)?.value;
 
-    if (!token) {
-        return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
-    }
+  if (!token) {
+    return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
+  }
 
-    const contentType = req.headers.get("content-type") ?? "application/x-www-form-urlencoded";
-    const body = await req.arrayBuffer();
+  const contentType = req.headers.get("content-type") ?? "application/x-www-form-urlencoded";
+  const body = await req.arrayBuffer();
 
-    const upstream = await fetch(`${LARAVEL_API_URL}/broadcasting/auth`, {
-        method: "POST",
-        headers: {
-            "Content-Type": contentType,
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body,
-    });
+  const upstream = await fetch(`${LARAVEL_API_URL}/broadcasting/auth`, {
+    method: "POST",
+    headers: {
+      "Content-Type": contentType,
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body,
+  });
 
-    const data = await upstream.text();
+  const data = await upstream.text();
 
-    return new NextResponse(data, {
-        status: upstream.status,
-        headers: { "Content-Type": upstream.headers.get("content-type") ?? "application/json" },
-    });
+  return new NextResponse(data, {
+    status: upstream.status,
+    headers: { "Content-Type": upstream.headers.get("content-type") ?? "application/json" },
+  });
 }

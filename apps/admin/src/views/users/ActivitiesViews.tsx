@@ -20,16 +20,12 @@ function ActivitiesViews({ userDetail }: any) {
                     </div>
                 </div> */}
 
-        <div className="pt-[16px] pb-[24px]">
+        <div className="pb-[24px] pt-[16px]">
           <div className={"flex flex-col"}>
             {userDetail?.logs?.map((item: any) => (
               <div className="flex justify-between px-[24px] py-[16px]" key={item?.id}>
-                <p className={"font-medium text-[14px] text-light-black"}>
-               {item?.message}
-                </p>
-                <p className={"text-text-grey font-normal text-[14px]"}>
-                {item?.created_at}
-                </p>
+                <p className={"text-[14px] font-medium text-light-black"}>{item?.message}</p>
+                <p className={"text-[14px] font-normal text-text-grey"}>{item?.created_at}</p>
               </div>
             ))}
 

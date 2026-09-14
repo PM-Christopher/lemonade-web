@@ -12,19 +12,19 @@ import { browserApi } from "@/lib/browser-api";
 import { userTransactionRoutes } from "@lemonade/api-types";
 
 export interface VerifyTransactionPayload {
-    trx_ref: string;
+  trx_ref: string;
 }
 
 export interface VerifyTransactionResponse {
-    status: "successful" | "unsuccessful";
-    // Transaction.meta is a generic JSON column whose shape depends on what
-    // was purchased (event ticket, tribe membership, promotion, ...) — not
-    // narrowed further here, matching how existing consumers already read
-    // it defensively (event?.data?.event?.event_name, etc).
-    data: unknown;
+  status: "successful" | "unsuccessful";
+  // Transaction.meta is a generic JSON column whose shape depends on what
+  // was purchased (event ticket, tribe membership, promotion, ...) — not
+  // narrowed further here, matching how existing consumers already read
+  // it defensively (event?.data?.event?.event_name, etc).
+  data: unknown;
 }
 
 export const transactionApi = {
-    verifyTransaction: (data: VerifyTransactionPayload) =>
-        browserApi.post<VerifyTransactionResponse>(userTransactionRoutes.VERIFY, data),
+  verifyTransaction: (data: VerifyTransactionPayload) =>
+    browserApi.post<VerifyTransactionResponse>(userTransactionRoutes.VERIFY, data),
 };

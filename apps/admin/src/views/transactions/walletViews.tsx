@@ -25,36 +25,29 @@ function WalletViews({ trx_data }: WalletIF) {
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = trx_data?.history?.slice(
-    startIndex,
-    startIndex + perPage
-  );
-
+  const paginatedData = trx_data?.history?.slice(startIndex, startIndex + perPage);
 
   return (
     <>
-      <div
-        className={
-          "flex justify-between gap-[24px] pt-[8px] px-[12px] pb-[16px]"
-        }
-      >
+      <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
         <DataCard
           styles={"w-full"}
           title={"Wallet Revenue"}
           count={trx_data?.wallet_revenue || 0}
           isPrice={true}
         />
-        <DataCard styles={"w-full"} title={"Total Wallets"} count={trx_data?.history?.length || 0} />
+        <DataCard
+          styles={"w-full"}
+          title={"Total Wallets"}
+          count={trx_data?.history?.length || 0}
+        />
       </div>
-      <div className="bg-white shadow-md rounded-lg">
+      <div className="rounded-lg bg-white shadow-md">
         <table className="min-w-full table-auto border-collapse">
           <thead>
             <tr className="bg-mid-grey">
               {walletHeaders.map((header, idx) => (
-                <th
-                  className="p-4 text-left text-[12px] text-text-grey font-semiBold"
-                  key={idx}
-                >
+                <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
                   {header}
                 </th>
               ))}
@@ -65,26 +58,14 @@ function WalletViews({ trx_data }: WalletIF) {
               paginatedData.map((row: any, index: any) => (
                 <tr
                   key={index}
-                  className="border-b border-grey-20 h-[72px] cursor-pointer"
-                  onClick={() =>
-                    router.push(`/transactions/${row.id}/wallet-details`)
-                  }
+                  className="h-[72px] cursor-pointer border-b border-grey-20"
+                  onClick={() => router.push(`/transactions/${row.id}/wallet-details`)}
                 >
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.txn_id}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.fullname}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.amount}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.created_at}
-                  </td>
-                  <td className={"p-4 font-medium text-sm font-sans"}>
-                    {row.status}
-                  </td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.txn_id}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.amount}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.created_at}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.status}</td>
                 </tr>
               ))
             ) : (

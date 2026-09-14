@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-    authApi,
-    type ChangePasswordPayload,
-    type ChangePlanPayload,
-    type DeleteAccountPayload,
-    type ForgotPasswordPayload,
-    type LoginPayload,
-    type NotificationSettingsPayload,
-    type ResetPasswordPayload,
-    type VerifyOtpPayload,
+  authApi,
+  type ChangePasswordPayload,
+  type ChangePlanPayload,
+  type DeleteAccountPayload,
+  type ForgotPasswordPayload,
+  type LoginPayload,
+  type NotificationSettingsPayload,
+  type ResetPasswordPayload,
+  type VerifyOtpPayload,
 } from "./api";
 import { authKeys } from "./queries";
 import { useAppDispatch } from "@/redux/hook";
@@ -32,123 +32,131 @@ const SESSION_MARKER = "session";
  * before this cutover. See app/api/auth/login/route.ts for why.
  */
 export function useLoginMutation() {
-    const dispatch = useAppDispatch();
-    const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (payload: LoginPayload) => authApi.login(payload),
-        onSuccess: (result) => {
-            if (result.needsOnboarding) return;
-            dispatch(authSuccess({ user: result.user, token: SESSION_MARKER }));
-            queryClient.setQueryData(authKeys.currentUser(), result.user);
-        },
-    });
+  return useMutation({
+    mutationFn: (payload: LoginPayload) => authApi.login(payload),
+    onSuccess: (result) => {
+      if (result.needsOnboarding) return;
+      dispatch(authSuccess({ user: result.user, token: SESSION_MARKER }));
+      queryClient.setQueryData(authKeys.currentUser(), result.user);
+    },
+  });
 }
 
 export function useLogoutMutation() {
-    const dispatch = useAppDispatch();
-    const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: () => authApi.logout(),
-        onSettled: () => {
-            // Clear client state even if the backend call failed (already
-            // logged out, network blip) — see app/api/auth/logout/route.ts,
-            // which clears the cookie unconditionally on its side too.
-            dispatch(resetAuth());
-            queryClient.removeQueries({ queryKey: authKeys.all() });
-        },
-    });
+  return useMutation({
+    mutationFn: () => authApi.logout(),
+    onSettled: () => {
+      // Clear client state even if the backend call failed (already
+      // logged out, network blip) — see app/api/auth/logout/route.ts,
+      // which clears the cookie unconditionally on its side too.
+      dispatch(resetAuth());
+      queryClient.removeQueries({ queryKey: authKeys.all() });
+    },
+  });
 }
 
 // --- Pre-login onboarding (email verification / password reset) ---
 
 export function useVerifyAccountOtpMutation() {
-    return useMutation({
-        mutationFn: (data: VerifyOtpPayload) => authApi.verifyAccountOtp(data),
-    });
+  return useMutation({
+    mutationFn: (data: VerifyOtpPayload) => authApi.verifyAccountOtp(data),
+  });
 }
 
 export function useVerifyPasswordResetOtpMutation() {
-    return useMutation({
-        mutationFn: (data: VerifyOtpPayload) => authApi.verifyPasswordResetOtp(data),
-    });
+  return useMutation({
+    mutationFn: (data: VerifyOtpPayload) => authApi.verifyPasswordResetOtp(data),
+  });
 }
 
 export function useResendOtpMutation() {
-    return useMutation({
-        mutationFn: () => authApi.resendOtp(),
-    });
+  return useMutation({
+    mutationFn: () => authApi.resendOtp(),
+  });
 }
 
 export function useForgotPasswordMutation() {
-    return useMutation({
-        mutationFn: (data: ForgotPasswordPayload) => authApi.forgotPassword(data),
-    });
+  return useMutation({
+    mutationFn: (data: ForgotPasswordPayload) => authApi.forgotPassword(data),
+  });
 }
 
 export function useResetPasswordMutation() {
-    return useMutation({
-        mutationFn: (data: ResetPasswordPayload) => authApi.resetPassword(data),
-    });
+  return useMutation({
+    mutationFn: (data: ResetPasswordPayload) => authApi.resetPassword(data),
+  });
 }
 
 // --- Profile settings ---
 
-function syncUser(dispatch: ReturnType<typeof useAppDispatch>, queryClient: ReturnType<typeof useQueryClient>, user: unknown) {
-    dispatch(updateUser(user));
-    queryClient.setQueryData(authKeys.currentUser(), (old: unknown) => ({ ...(old as object), ...(user as object) }));
+function syncUser(
+  dispatch: ReturnType<typeof useAppDispatch>,
+  queryClient: ReturnType<typeof useQueryClient>,
+  user: unknown,
+) {
+  dispatch(updateUser(user));
+  queryClient.setQueryData(authKeys.currentUser(), (old: unknown) => ({
+    ...(old as object),
+    ...(user as object),
+  }));
 }
 
 export function useUpdateProfileFieldMutation() {
-    const dispatch = useAppDispatch();
-    const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: ({ url, data }: { url: string; data: unknown }) => authApi.updateProfileField(url, data),
-        onSuccess: (result) => syncUser(dispatch, queryClient, result.user),
-    });
+  return useMutation({
+    mutationFn: ({ url, data }: { url: string; data: unknown }) =>
+      authApi.updateProfileField(url, data),
+    onSuccess: (result) => syncUser(dispatch, queryClient, result.user),
+  });
 }
 
 export function useChangePasswordMutation() {
-    return useMutation({
-        mutationFn: (data: ChangePasswordPayload) => authApi.changePassword(data),
-    });
+  return useMutation({
+    mutationFn: (data: ChangePasswordPayload) => authApi.changePassword(data),
+  });
 }
 
 export function useChangeProfileImageMutation() {
-    const dispatch = useAppDispatch();
-    const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (data: { profile_image: string }) => authApi.changeProfileImage(data),
-        onSuccess: (result) => syncUser(dispatch, queryClient, result.user),
-    });
+  return useMutation({
+    mutationFn: (data: { profile_image: string }) => authApi.changeProfileImage(data),
+    onSuccess: (result) => syncUser(dispatch, queryClient, result.user),
+  });
 }
 
 export function useDeleteAccountMutation() {
-    const dispatch = useAppDispatch();
-    const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (data: DeleteAccountPayload) => authApi.deleteAccount(data),
-        onSuccess: () => {
-            dispatch(resetAuth());
-            queryClient.removeQueries({ queryKey: authKeys.all() });
-        },
-    });
+  return useMutation({
+    mutationFn: (data: DeleteAccountPayload) => authApi.deleteAccount(data),
+    onSuccess: () => {
+      dispatch(resetAuth());
+      queryClient.removeQueries({ queryKey: authKeys.all() });
+    },
+  });
 }
 
 export function useUpdateNotificationSettingsMutation() {
-    return useMutation({
-        mutationFn: (data: NotificationSettingsPayload) => authApi.updateNotificationSettings(data),
-    });
+  return useMutation({
+    mutationFn: (data: NotificationSettingsPayload) => authApi.updateNotificationSettings(data),
+  });
 }
 
 export function useChangePlanMutation() {
-    return useMutation({
-        mutationFn: (data: ChangePlanPayload) => authApi.changePlan(data),
-    });
+  return useMutation({
+    mutationFn: (data: ChangePlanPayload) => authApi.changePlan(data),
+  });
 }
 
 // A per-click lookup (PricingCard's "Subscribe" click) — not cacheable
@@ -156,7 +164,7 @@ export function useChangePlanMutation() {
 // in the parent page (settings/plan/page.tsx), not PricingCard itself,
 // since the fetched plan feeds a modal the parent renders once, not each card.
 export function useSubscriptionPlanMutation() {
-    return useMutation({
-        mutationFn: (id: number | string) => authApi.getSubscriptionPlan(id),
-    });
+  return useMutation({
+    mutationFn: (id: number | string) => authApi.getSubscriptionPlan(id),
+  });
 }

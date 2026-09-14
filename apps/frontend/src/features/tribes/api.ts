@@ -19,62 +19,62 @@ import { sharedApi } from "@/features/shared";
 import type { TribeInterface, Thread, ThreadComment } from "@/interfaces/TribeInterface";
 
 export interface TribesListResponse {
-    tribes: TribeInterface[];
+  tribes: TribeInterface[];
 }
 
 export interface TribeDetailResponse {
-    tribe: TribeInterface;
-    threads: Thread[];
+  tribe: TribeInterface;
+  threads: Thread[];
 }
 
 // Monetized tribes route through Paystack (authorization_url/reference);
 // free tribes join immediately (message/tribe) — one endpoint, two response
 // shapes, mirroring ProcessTribeJoin's actual branch.
 export interface JoinTribeResponse {
-    message?: string;
-    tribe?: TribeInterface;
-    authorization_url?: string;
-    reference?: string;
+  message?: string;
+  tribe?: TribeInterface;
+  authorization_url?: string;
+  reference?: string;
 }
 
 export interface CreateThreadPayload {
-    topic: string;
-    thoughts: string;
-    media?: string[];
-    videos?: string[];
-    tags?: string[];
-    polls?: boolean;
-    thread_polls?: {
-        title: string;
-        options: string[];
-        start_at: string;
-        end_at: string;
-    } | null;
+  topic: string;
+  thoughts: string;
+  media?: string[];
+  videos?: string[];
+  tags?: string[];
+  polls?: boolean;
+  thread_polls?: {
+    title: string;
+    options: string[];
+    start_at: string;
+    end_at: string;
+  } | null;
 }
 
 export interface CreateThreadResponse {
-    thread: Thread;
+  thread: Thread;
 }
 
 export interface LikeThreadResponse {
-    thread: Thread;
+  thread: Thread;
 }
 
 export interface SubmitVotePayload {
-    option_id: number;
+  option_id: number;
 }
 
 export interface SubmitVoteResponse {
-    message: string;
-    thread: Thread;
+  message: string;
+  thread: Thread;
 }
 
 export interface ThreadsResponse {
-    threads: Thread[];
+  threads: Thread[];
 }
 
 export interface ViewProfileResponse {
-    user: unknown;
+  user: unknown;
 }
 
 // ThreadController::pinThread puts the *thread object* under the data key
@@ -87,103 +87,133 @@ export interface ViewProfileResponse {
 // before the call and flipping it, rather than trying to read it back here.
 // Confirmed live via a real pin/unpin round-trip against the dev backend.
 export interface PinThreadResponse {
-    message: Thread;
+  message: Thread;
 }
 
 export interface ReportThreadPayload {
-    report: string;
+  report: string;
 }
 
 export interface DeleteThreadResponse {
-    thread_id: number;
+  thread_id: number;
 }
 
 export interface SearchTribeResponse {
-    tribes: TribeInterface[];
+  tribes: TribeInterface[];
 }
 
 export interface AddTribeMemberPayload {
-    usernames: string[];
+  usernames: string[];
 }
 
 export interface AddTribeMemberResponse {
-    members: unknown[];
-    tribe: TribeInterface;
+  members: unknown[];
+  tribe: TribeInterface;
 }
 
 export interface PostCommentPayload {
-    body: string;
+  body: string;
 }
 
 export interface PostCommentResponse {
-    comment: ThreadComment;
+  comment: ThreadComment;
 }
 
 export interface CreateTribePayload {
-    tribe_name: string;
-    category: string;
-    description: string;
-    image: string;
-    private: boolean;
-    monetized: boolean;
-    membership_fee?: number;
-    members?: string[];
+  tribe_name: string;
+  category: string;
+  description: string;
+  image: string;
+  private: boolean;
+  monetized: boolean;
+  membership_fee?: number;
+  members?: string[];
 }
 
 export interface CreateTribeResponse {
-    tribe: TribeInterface;
+  tribe: TribeInterface;
 }
 
 export interface TribeCategoriesResponse {
-    categories: { name: string }[];
+  categories: { name: string }[];
 }
 
 export const tribesApi = {
-    getTribes: (tribeType: string) => browserApi.get<TribesListResponse>(`${userTribeRoutes.BASE}?type=${tribeType}`),
+  getTribes: (tribeType: string) =>
+    browserApi.get<TribesListResponse>(`${userTribeRoutes.BASE}?type=${tribeType}`),
 
-    getTribe: (id: string) => browserApi.get<TribeDetailResponse>(`${userTribeRoutes.BASE}/${id}`),
+  getTribe: (id: string) => browserApi.get<TribeDetailResponse>(`${userTribeRoutes.BASE}/${id}`),
 
-    joinTribe: (id: string, data: { redirect_url?: string | null }) =>
-        browserApi.post<JoinTribeResponse>(`${userTribeRoutes.BASE}/join-tribe/${id}`, data),
+  joinTribe: (id: string, data: { redirect_url?: string | null }) =>
+    browserApi.post<JoinTribeResponse>(`${userTribeRoutes.BASE}/join-tribe/${id}`, data),
 
-    createThread: (id: number | string, data: CreateThreadPayload) =>
-        browserApi.post<CreateThreadResponse>(`${userTribeRoutes.BASE}/${id}/threads/create-thread`, data),
+  createThread: (id: number | string, data: CreateThreadPayload) =>
+    browserApi.post<CreateThreadResponse>(
+      `${userTribeRoutes.BASE}/${id}/threads/create-thread`,
+      data,
+    ),
 
-    likeThread: (tribeId: number | string, id: number | string) =>
-        browserApi.post<LikeThreadResponse>(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${id}/post-like`, {}),
+  likeThread: (tribeId: number | string, id: number | string) =>
+    browserApi.post<LikeThreadResponse>(
+      `${userTribeRoutes.THREADS_PINNED}/${tribeId}/${id}/post-like`,
+      {},
+    ),
 
-    submitVote: (tribeId: number | string, threadId: number | string, pollId: number | string, data: SubmitVotePayload) =>
-        browserApi.post<SubmitVoteResponse>(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/${pollId}/poll-action`, data),
+  submitVote: (
+    tribeId: number | string,
+    threadId: number | string,
+    pollId: number | string,
+    data: SubmitVotePayload,
+  ) =>
+    browserApi.post<SubmitVoteResponse>(
+      `${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/${pollId}/poll-action`,
+      data,
+    ),
 
-    getThreads: (id: string) => browserApi.get<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/all`),
+  getThreads: (id: string) =>
+    browserApi.get<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/all`),
 
-    filterThreads: (id: number | string, data: { filter: string }) =>
-        browserApi.post<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/sort-thread`, data),
+  filterThreads: (id: number | string, data: { filter: string }) =>
+    browserApi.post<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/sort-thread`, data),
 
-    viewProfile: (id: number | string) => browserApi.get<ViewProfileResponse>(`${userTribeRoutes.THREADS_VIEW_PROFILE}/${id}`),
+  viewProfile: (id: number | string) =>
+    browserApi.get<ViewProfileResponse>(`${userTribeRoutes.THREADS_VIEW_PROFILE}/${id}`),
 
-    pinThread: (id: number | string) => browserApi.post<PinThreadResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pin-thread`, {}),
+  pinThread: (id: number | string) =>
+    browserApi.post<PinThreadResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pin-thread`, {}),
 
-    getPinThreads: (id: string) => browserApi.get<ThreadsResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pinned`),
+  getPinThreads: (id: string) =>
+    browserApi.get<ThreadsResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pinned`),
 
-    reportThread: (id: number | string, data: ReportThreadPayload) =>
-        browserApi.post<{ report: unknown }>(`${userTribeRoutes.THREADS_PINNED}/${id}/report-thread`, data),
+  reportThread: (id: number | string, data: ReportThreadPayload) =>
+    browserApi.post<{ report: unknown }>(
+      `${userTribeRoutes.THREADS_PINNED}/${id}/report-thread`,
+      data,
+    ),
 
-    deleteThread: (id: number | string) =>
-        browserApi.delete<DeleteThreadResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/delete-thread`),
+  deleteThread: (id: number | string) =>
+    browserApi.delete<DeleteThreadResponse>(
+      `${userTribeRoutes.THREADS_PINNED}/${id}/delete-thread`,
+    ),
 
-    searchTribe: (data: { search: string }) => browserApi.post<SearchTribeResponse>(userTribeRoutes.SEARCH, data),
+  searchTribe: (data: { search: string }) =>
+    browserApi.post<SearchTribeResponse>(userTribeRoutes.SEARCH, data),
 
-    addTribeMember: (id: string, data: AddTribeMemberPayload) =>
-        browserApi.post<AddTribeMemberResponse>(`${userTribeRoutes.BASE}/add-member/${id}`, data),
+  addTribeMember: (id: string, data: AddTribeMemberPayload) =>
+    browserApi.post<AddTribeMemberResponse>(`${userTribeRoutes.BASE}/add-member/${id}`, data),
 
-    postComment: (tribeId: number | string, threadId: number | string, data: PostCommentPayload) =>
-        browserApi.post<PostCommentResponse>(`${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/post-comment`, data),
+  postComment: (tribeId: number | string, threadId: number | string, data: PostCommentPayload) =>
+    browserApi.post<PostCommentResponse>(
+      `${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/post-comment`,
+      data,
+    ),
 
-    createTribe: (values: CreateTribePayload) => browserApi.post<CreateTribeResponse>(userTribeRoutes.CREATE, values),
+  createTribe: (values: CreateTribePayload) =>
+    browserApi.post<CreateTribeResponse>(userTribeRoutes.CREATE, values),
 
-    getTribeCategories: () => browserApi.get<TribeCategoriesResponse>(sharedUtilityRoutes.TRIBES_CATEGORIES),
+  getTribeCategories: () =>
+    browserApi.get<TribeCategoriesResponse>(sharedUtilityRoutes.TRIBES_CATEGORIES),
 
-    upload: (formData: FormData) => sharedApi.uploadFile(formData),
-    uploadMultiple: (formData: FormData) => sharedApi.uploadMultipleFiles(formData),
+  upload: (formData: FormData) => sharedApi.uploadFile(formData),
+  uploadMultiple: (formData: FormData) => sharedApi.uploadMultipleFiles(formData),
 };

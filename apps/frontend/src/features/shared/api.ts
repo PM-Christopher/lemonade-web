@@ -12,40 +12,40 @@ import { browserApi } from "@/lib/browser-api";
 import { sharedUtilityRoutes } from "@lemonade/api-types";
 
 export interface Bank {
-    id: number;
-    name: string;
-    slug: string;
-    code: string;
+  id: number;
+  name: string;
+  slug: string;
+  code: string;
 }
 
 export interface GetAllBanksResponse {
-    banks: Bank[];
+  banks: Bank[];
 }
 
 export interface VerifyAccountResponse {
-    account_name: string;
+  account_name: string;
 }
 
 export interface UploadFileResponse {
-    image: string;
+  image: string;
 }
 
 export const sharedApi = {
-    getBanks: () => browserApi.get<GetAllBanksResponse>(sharedUtilityRoutes.GET_ALL_BANKS),
+  getBanks: () => browserApi.get<GetAllBanksResponse>(sharedUtilityRoutes.GET_ALL_BANKS),
 
-    verifyAccount: (bankCode: string, accountNumber: string) =>
-        browserApi.post<VerifyAccountResponse>(sharedUtilityRoutes.VERIFY_ACCOUNT, {
-            bank_code: bankCode,
-            account_number: accountNumber,
-        }),
+  verifyAccount: (bankCode: string, accountNumber: string) =>
+    browserApi.post<VerifyAccountResponse>(sharedUtilityRoutes.VERIFY_ACCOUNT, {
+      bank_code: bankCode,
+      account_number: accountNumber,
+    }),
 
-    uploadFile: (formData: FormData) =>
-        axiosInstance.post(sharedUtilityRoutes.UPLOAD, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
+  uploadFile: (formData: FormData) =>
+    axiosInstance.post(sharedUtilityRoutes.UPLOAD, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 
-    uploadMultipleFiles: (formData: FormData) =>
-        axiosInstance.post(sharedUtilityRoutes.UPLOAD_MULTIPLE, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
+  uploadMultipleFiles: (formData: FormData) =>
+    axiosInstance.post(sharedUtilityRoutes.UPLOAD_MULTIPLE, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };

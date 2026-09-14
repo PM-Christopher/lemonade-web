@@ -5,8 +5,8 @@ import { authApi } from "./api";
 // exists today (currentUser); this is still a factory, not an inline
 // array, so invalidation stays precise as the auth domain grows.
 export const authKeys = {
-    all: () => ["auth"] as const,
-    currentUser: () => [...authKeys.all(), "currentUser"] as const,
+  all: () => ["auth"] as const,
+  currentUser: () => [...authKeys.all(), "currentUser"] as const,
 };
 
 /**
@@ -18,11 +18,11 @@ export const authKeys = {
  * state, not a transient failure worth retrying.
  */
 export function useCurrentUserQuery(options?: { enabled?: boolean }) {
-    return useQuery({
-        queryKey: authKeys.currentUser(),
-        queryFn: authApi.getCurrentUser,
-        staleTime: 60_000,
-        retry: false,
-        enabled: options?.enabled,
-    });
+  return useQuery({
+    queryKey: authKeys.currentUser(),
+    queryFn: authApi.getCurrentUser,
+    staleTime: 60_000,
+    retry: false,
+    enabled: options?.enabled,
+  });
 }

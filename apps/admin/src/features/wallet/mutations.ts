@@ -7,49 +7,49 @@ import { walletKeys } from "./queries";
 // authoritative, rather than guessing the new balance/status client-side.
 
 export function useUpdateWithdrawalThresholdMutation() {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (threshold: number) => walletApi.updateWithdrawalThreshold(threshold),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: walletKeys.data() });
-        },
-    });
+  return useMutation({
+    mutationFn: (threshold: number) => walletApi.updateWithdrawalThreshold(threshold),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.data() });
+    },
+  });
 }
 
 export function useWithdrawalRequestDecisionMutation(id: number | undefined) {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (type: "approve" | "reject") => walletApi.withdrawalRequestDecision(id, type),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: walletKeys.withdrawalRequests() });
-            queryClient.invalidateQueries({ queryKey: walletKeys.data() });
-            if (id) queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
-        },
-    });
+  return useMutation({
+    mutationFn: (type: "approve" | "reject") => walletApi.withdrawalRequestDecision(id, type),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.withdrawalRequests() });
+      queryClient.invalidateQueries({ queryKey: walletKeys.data() });
+      if (id) queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
+    },
+  });
 }
 
 export function useAddToWalletMutation(id: number | undefined) {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (amount: number) => walletApi.addToWallet(id, amount),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: walletKeys.data() });
-            if (id) queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
-        },
-    });
+  return useMutation({
+    mutationFn: (amount: number) => walletApi.addToWallet(id, amount),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.data() });
+      if (id) queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
+    },
+  });
 }
 
 export function useDeductFromWalletMutation(id: number | undefined) {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (amount: number) => walletApi.deductFromWallet(id, amount),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: walletKeys.data() });
-            if (id) queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
-        },
-    });
+  return useMutation({
+    mutationFn: (amount: number) => walletApi.deductFromWallet(id, amount),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.data() });
+      if (id) queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
+    },
+  });
 }

@@ -1,11 +1,11 @@
 "use client";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { TicketDetails } from "@/interfaces/EventInterface";
-import {useFormikContext} from "formik";
+import { useFormikContext } from "formik";
 
-const MultipleTicketCard= ({ ticket, index, formik }: any) => {
+const MultipleTicketCard = ({ ticket, index, formik }: any) => {
   const namePrefix = `assigned_tickets[${index}]`;
 
   useEffect(() => {
@@ -17,66 +17,72 @@ const MultipleTicketCard= ({ ticket, index, formik }: any) => {
   }, []);
 
   return (
-    <div className="mt-[24px] bg-grey-20 p-[16px] rounded-[12px] gap-[16px]">
-      <p className="font-sans font-semi-normal text-[16px] leading-[24px] tracking-custom text-black-light">
+    <div className="mt-[24px] gap-[16px] rounded-[12px] bg-grey-20 p-[16px]">
+      <p className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-black-light">
         {ticket?.ticket_name ?? "N/A"}
       </p>
-      <div className="grid gap-2 mt-[24px]">
+      <div className="mt-[24px] grid gap-2">
         <Label
-            htmlFor={`fullname-${index}`}
-            className="text-text-grey font-sans font-normal text-[14px] leading-[16.8px]"
+          htmlFor={`fullname-${index}`}
+          className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
         >
           Full name
         </Label>
         <Input
-            id={`fullname-${index}`}
-            name={`${namePrefix}.fullname`}
-            type="text"
-            placeholder="e.g. Jano doe"
-            value={formik.values.assigned_tickets[index]?.fullname || ""}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+          id={`fullname-${index}`}
+          name={`${namePrefix}.fullname`}
+          type="text"
+          placeholder="e.g. Jano doe"
+          value={formik.values.assigned_tickets[index]?.fullname || ""}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
-        {formik.touched.assigned_tickets?.[index]?.fullname && formik.errors.assigned_tickets?.[index]?.fullname && (
-            <div className="text-red-500 text-sm">{formik.errors.assigned_tickets[index].fullname}</div>
-        )}
+        {formik.touched.assigned_tickets?.[index]?.fullname &&
+          formik.errors.assigned_tickets?.[index]?.fullname && (
+            <div className="text-sm text-red-500">
+              {formik.errors.assigned_tickets[index].fullname}
+            </div>
+          )}
       </div>
-      <div className="grid gap-2 mt-[16px]">
+      <div className="mt-[16px] grid gap-2">
         <Label
-            htmlFor={`email-${index}`}
-            className="text-text-grey font-sans font-normal text-[14px] leading-[16.8px]"
+          htmlFor={`email-${index}`}
+          className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
         >
           Email address
         </Label>
         <Input
-            id={`email-${index}`}
-            name={`${namePrefix}.email`}
-            type="email"
-            placeholder="e.g. Janodoe@email.com"
-            value={formik.values.assigned_tickets[index]?.email || ""}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
+          id={`email-${index}`}
+          name={`${namePrefix}.email`}
+          type="email"
+          placeholder="e.g. Janodoe@email.com"
+          value={formik.values.assigned_tickets[index]?.email || ""}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
         />
-        {formik.touched.assigned_tickets?.[index]?.email && formik.errors.assigned_tickets?.[index]?.email && (
-            <div className="text-red-500 text-sm">{formik.errors.assigned_tickets[index].email}</div>
-        )}
+        {formik.touched.assigned_tickets?.[index]?.email &&
+          formik.errors.assigned_tickets?.[index]?.email && (
+            <div className="text-sm text-red-500">
+              {formik.errors.assigned_tickets[index].email}
+            </div>
+          )}
       </div>
-      <div className="flex justify-between items-center bg-light_grey rounded-[12px] py-[10px] px-[12px] mt-[16px]">
+      <div className="mt-[16px] flex items-center justify-between rounded-[12px] bg-light_grey px-[12px] py-[10px]">
         <div>
-          <p className="font-sans font-semi-normal text-[14px] leading-[21px] tracking-custom">
+          <p className="font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom">
             Ticket quantity
           </p>
         </div>
-        <div className="flex gap-2 items-center">
-          <div className="p-3 rounded-[8px] bg-light-white w-[24px] h-[24px] flex items-center justify-center">
+        <div className="flex items-center gap-2">
+          <div className="flex h-[24px] w-[24px] items-center justify-center rounded-[8px] bg-light-white p-3">
             <p className="">-</p>
           </div>
-          <div className="p-4 rounded-[8px] bg-mid-grey w-[27.75px] h-[28px] flex items-center justify-center">
-            <p className="text-[16px] font-sans font-semi-normal leading-[24px] tracking-custom">
+          <div className="flex h-[28px] w-[27.75px] items-center justify-center rounded-[8px] bg-mid-grey p-4">
+            <p className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom">
               {ticket?.quantity}
             </p>
           </div>
-          <div className="p-3 rounded-[8px] bg-light-white w-[24px] h-[24px] flex items-center justify-center">
+          <div className="flex h-[24px] w-[24px] items-center justify-center rounded-[8px] bg-light-white p-3">
             <p className="">+</p>
           </div>
         </div>

@@ -6,8 +6,8 @@ import { DotIcon } from "lucide-react";
 function EventView({ event }: { event: any }) {
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2 items-center">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
           <div>
             {/*<Image src={thread?.created_by?.user?.avatar} alt="" width={48} height={48}*/}
             {/*       className="w-[48px] h-[48px] rounded-[16px] border-[1px] border-grey-90"/>*/}
@@ -23,7 +23,7 @@ function EventView({ event }: { event: any }) {
           {/*    )*/}
           {/*}*/}
           <div>
-            <DotIcon className="w-[3px] h-[3px]" />
+            <DotIcon className="h-[3px] w-[3px]" />
           </div>
           <div>
             {/*<p className="font-sans font-normal text-[12px] leading-[14.4px]">{thread?.created_at}</p>*/}
@@ -34,10 +34,8 @@ function EventView({ event }: { event: any }) {
         </div>
       </div>
       <div className="mt-[4px]">
-        <p className="font-sans font-semibold text-[14px] leading-[21px]">
-          {/*{thread?.topic}*/}
-        </p>
-        <p className="font-sans font-normal leading-[21px] text-[14px] text-light-black mt-[30px]">
+        <p className="font-sans text-[14px] font-semibold leading-[21px]">{/*{thread?.topic}*/}</p>
+        <p className="mt-[30px] font-sans text-[14px] font-normal leading-[21px] text-light-black">
           {/*{isExpanded || !thread?.thoughts || thread.thoughts.length <= charLimit*/}
           {/*    ? thread?.thoughts*/}
           {/*    : `${thread.thoughts.slice(0, charLimit)}...`}*/}

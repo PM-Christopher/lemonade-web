@@ -9,15 +9,10 @@ import {
 } from "@/data/tableData";
 
 const PromotionView = ({ pageData }: any) => {
-
   return (
     <>
       <>
-        <div
-          className={
-            "flex justify-between gap-[24px] pt-[8px] px-[12px] pb-[16px]"
-          }
-        >
+        <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
           <DataCard
             styles={"w-full"}
             title={"Promotions Revenue"}
@@ -37,10 +32,7 @@ const PromotionView = ({ pageData }: any) => {
             pageLink={"/events/add-promotions"}
           />
         </div>
-        <GlobalTable
-          headers={promotionMainHeaders}
-          content={pageData?.history}
-        />
+        <GlobalTable headers={promotionMainHeaders} content={pageData?.history} />
       </>
     </>
   );

@@ -13,27 +13,27 @@ import { ADMIN_TOKEN_COOKIE } from "@/lib/cookie-names";
 const LARAVEL_API_URL = process.env.LARAVEL_API_URL;
 
 export async function GET(req: NextRequest) {
-    const token = (await cookies()).get(ADMIN_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(ADMIN_TOKEN_COOKIE)?.value;
 
-    if (!token) {
-        return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
-    }
+  if (!token) {
+    return NextResponse.json({ message: "Unauthenticated." }, { status: 401 });
+  }
 
-    const table = req.nextUrl.searchParams.get("table");
+  const table = req.nextUrl.searchParams.get("table");
 
-    if (!table) {
-        return NextResponse.json({ message: "table is required" }, { status: 422 });
-    }
+  if (!table) {
+    return NextResponse.json({ message: "table is required" }, { status: 422 });
+  }
 
-    const upstream = await fetch(
-        `${LARAVEL_API_URL}/v1/admin/account/export?table=${encodeURIComponent(table)}&type=csv`,
-        { headers: { Authorization: `Bearer ${token}` } },
-    );
+  const upstream = await fetch(
+    `${LARAVEL_API_URL}/v1/admin/account/export?table=${encodeURIComponent(table)}&type=csv`,
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
 
-    const body = await upstream.arrayBuffer();
+  const body = await upstream.arrayBuffer();
 
-    return new NextResponse(body, {
-        status: upstream.status,
-        headers: { "Content-Type": upstream.headers.get("content-type") ?? "text/csv" },
-    });
+  return new NextResponse(body, {
+    status: upstream.status,
+    headers: { "Content-Type": upstream.headers.get("content-type") ?? "text/csv" },
+  });
 }
