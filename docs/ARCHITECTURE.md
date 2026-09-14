@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 11 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 12 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1657,7 +1657,15 @@ domains are now on TanStack Query** — no `features/*/*.slice.ts` files remain 
 (`redux/general.slice.ts` still exists but was never one of the tracked domains and turned out to be
 fully dead — no importers anywhere, not even wired into `store.ts` — found while checking for
 stragglers; left alone since deleting unrelated dead code wasn't asked for, worth a cleanup pass later.)
-**Not started at all:** all ~15
+`apps/frontend`'s **dashboard** domain is now migrated too (3 queries — tribes/events/businesses, no
+mutations, single consumer `app/(main)/page.tsx`; `staleTime: 5*60_000`, CLAUDE.md's "discovery content"
+bucket, since this is public trending/featured content rather than user-owned data). Reused the existing
+shared `TribeInterface`/`EventInterface`/`BusinessInterface` from `src/interfaces/` rather than
+hand-rolling new response types — those are pre-existing, widely-used types outside this domain (the
+still-unmigrated tribes/events/business domains own them), and live-testing surfaced they're already a
+bit stale against the real backend response (e.g. `monetized` comes back as a JSON boolean, the
+interface types it `number`) — not fixed here, since rewriting a shared interface is that domain's call
+when it migrates, not a side effect of migrating dashboard. **Not started at all:** the remaining ~14
 `apps/frontend` domains (business, connect, events, settings, transaction, tribes, and the non-login/
 logout authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same
 proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but

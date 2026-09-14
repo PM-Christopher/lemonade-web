@@ -1,16 +1,26 @@
-// Endpoint layer for the dashboard domain — see features/events/api.ts for
-// the pattern this follows. Still on the pre-BFF axiosInstance transport
-// deliberately (Phase 5 concern, not this refactor).
-import { axiosInstance } from "@/lib/axiosInstane";
+// Endpoint layer for the dashboard domain — see features/authentication/api.ts
+// for the pattern this follows: the BFF proxy transport (browserApi), not
+// the pre-BFF axiosInstance.
+import { browserApi } from "@/lib/browser-api";
 import { userDashboardRoutes } from "@lemonade/api-types";
+import type { TribeInterface } from "@/interfaces/TribeInterface";
+import type { EventInterface } from "@/interfaces/EventInterface";
+import type { BusinessInterface } from "@/interfaces/BusinessInterface";
 
-// The per-call `{ cache: { ttl } }` option this used to pass only did
-// anything while axiosInstance was wrapped in axios-cache-interceptor —
-// removed along with that wrapper (see lib/axiosInstane.ts). A real
-// per-query staleness policy is TanStack Query's job as this domain
-// migrates (Phase 5), not axios-level caching.
+export interface DashboardTribesResponse {
+    tribes: TribeInterface[];
+}
+
+export interface DashboardEventsResponse {
+    events: EventInterface[];
+}
+
+export interface DashboardBusinessesResponse {
+    businesses: BusinessInterface[];
+}
+
 export const dashboardApi = {
-    getTribes: () => axiosInstance.get(userDashboardRoutes.TRIBES),
-    getEvents: () => axiosInstance.get(userDashboardRoutes.EVENTS),
-    getBusinesses: () => axiosInstance.get(userDashboardRoutes.BUSINESSES),
+    getTribes: () => browserApi.get<DashboardTribesResponse>(userDashboardRoutes.TRIBES),
+    getEvents: () => browserApi.get<DashboardEventsResponse>(userDashboardRoutes.EVENTS),
+    getBusinesses: () => browserApi.get<DashboardBusinessesResponse>(userDashboardRoutes.BUSINESSES),
 };

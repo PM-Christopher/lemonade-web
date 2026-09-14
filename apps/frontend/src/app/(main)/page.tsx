@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect} from "react";
+import React from "react";
 import TribeCard from "@/components/dashboard/TribeCard";
 import EventCard from "@/components/dashboard/EventCard";
 import {useSelector} from "react-redux";
@@ -8,8 +8,7 @@ import {EventInterface} from "@/interfaces/EventInterface";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useMediaQuery} from "react-responsive";
 import {RootState} from "@/redux/store";
-import {useAppDispatch} from "@/redux/hook";
-import {getDashboardBusinesses, getDashboardEvents, getDashboardTribes} from "@/features/dashboard/dashboard.slice";
+import {useDashboardBusinessesQuery, useDashboardEventsQuery, useDashboardTribesQuery} from "@/features/dashboard/queries";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import BusinessCard from "@/components/dashboard/BusinessCard";
 import {BusinessesSkeleton, EventsSkeleton, TribesSkeleton} from "@/components/Skeletons";
@@ -19,23 +18,13 @@ import {useRouter} from "next/navigation";
 export default function DashboardPage() {
     const isMobile = useMediaQuery({query: "(max-width: 640px)"});
     const router = useRouter()
-    const {
-        tribes,
-        tribeLoading,
-        events,
-        eventLoading,
-        businesses,
-        businessLoading
-    } = useSelector((state: RootState) => state.dashboard)
-    const dispatch = useAppDispatch()
-
-    useEffect(() => {
-        if (!tribes?.length) dispatch(getDashboardTribes());
-        if (!events?.length) dispatch(getDashboardEvents());
-        if (!businesses?.length) dispatch(getDashboardBusinesses());
-    }, []);
-
-    // console.log({events})
+    const {isLoggedIn} = useSelector((state: RootState) => state.auth)
+    const {data: tribesData, isLoading: tribeLoading} = useDashboardTribesQuery({enabled: isLoggedIn});
+    const {data: eventsData, isLoading: eventLoading} = useDashboardEventsQuery({enabled: isLoggedIn});
+    const {data: businessesData, isLoading: businessLoading} = useDashboardBusinessesQuery({enabled: isLoggedIn});
+    const tribes = tribesData?.tribes ?? [];
+    const events = eventsData?.events ?? [];
+    const businesses = businessesData?.businesses ?? [];
 
     return (
         <MainLayout>
