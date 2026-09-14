@@ -11,14 +11,11 @@ import { cookies } from "next/headers";
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
 import { adminAuthRoutes } from "@lemonade/api-types";
 import { ADMIN_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE } from "@/lib/cookie-names";
+import { serverEnv } from "@/lib/env.server";
 
 export { ADMIN_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE };
 
-const LARAVEL_API_URL = process.env.LARAVEL_API_URL;
-
-if (!LARAVEL_API_URL) {
-  throw new Error("LARAVEL_API_URL is not set — see .env.example");
-}
+const LARAVEL_API_URL = serverEnv.LARAVEL_API_URL;
 
 // Fallback only — real callers always have a concrete `expires_in` from the
 // backend's login/refresh response. Matches sanctum.ac_expiration's current

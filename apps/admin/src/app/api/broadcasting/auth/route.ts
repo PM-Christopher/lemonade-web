@@ -12,8 +12,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_TOKEN_COOKIE } from "@/lib/cookie-names";
+import { serverEnv } from "@/lib/env.server";
 
-const LARAVEL_API_URL = process.env.LARAVEL_API_URL;
+const LARAVEL_API_URL = serverEnv.LARAVEL_API_URL;
 
 export async function POST(req: NextRequest) {
   const token = (await cookies()).get(ADMIN_TOKEN_COOKIE)?.value;

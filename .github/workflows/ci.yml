@@ -1,9 +1,10 @@
 name: CI
 
 # Mirrors the shape of lemonade-backend's `composer test:ci` gate, and the
-# pipeline documented in docs/ARCHITECTURE.md §19. Contract-drift, audit,
-# bundle-budget and e2e jobs are TODOs — they depend on pieces that don't
-# exist yet (packages/api-types generation, apps/* actually containing code).
+# pipeline documented in docs/ARCHITECTURE.md §19. Contract-drift,
+# bundle-budget and e2e jobs are still TODOs — they depend on pieces that
+# don't exist yet (packages/api-types generation, apps/* actually containing
+# code, a Playwright setup).
 
 on:
   pull_request:
@@ -42,8 +43,30 @@ jobs:
   # and fail if the committed output differs. See docs/ARCHITECTURE.md §19.
   # contract-drift:
 
-  # TODO: pnpm audit + Dependabot. See docs/ARCHITECTURE.md §16.
-  # audit:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Non-blocking for now: 74 pre-existing advisories (6 critical, 32
+      # high), almost all in transitive deps of antd/draft-js/sharp — making
+      # this a hard gate today would fail every PR on debt it didn't
+      # introduce. Dependabot (.github/dependabot.yml) is what actually
+      # burns this down over time; this job's job is to keep the count
+      # visible in every PR, not to block on it yet. Flip to blocking once
+      # the count is near zero.
+      - name: Audit (report only)
+        run: pnpm audit --audit-level=high || true
 
   # TODO(Phase 6): fail on bundle-size regression vs. base branch.
   # bundle-budget:

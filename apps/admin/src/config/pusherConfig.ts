@@ -1,4 +1,5 @@
 import Pusher from "pusher-js";
+import { clientEnv } from "@/lib/env.client";
 
 // Was: custom /pusher/auth/{user,channel} endpoints — never registered on
 // the backend (only the framework's default /broadcasting/auth exists) —
@@ -7,7 +8,10 @@ import Pusher from "pusher-js";
 // attaches the real token server-side from the httpOnly session cookie. See
 // app/api/broadcasting/auth/route.ts. Unused today (see that file's
 // comment) but fixed for consistency with the frontend app's equivalent.
-const app_key: any = process.env.NEXT_PUBLIC_PUSHER_KEY;
+// Falls back to "" rather than requiring the var — this whole file is
+// unused today (see comment above), and Pusher's constructor requires a
+// string key, not string | undefined.
+const app_key = clientEnv.NEXT_PUBLIC_PUSHER_KEY ?? "";
 export const pusherConfig = () => {
   return new Pusher(app_key, {
     cluster: "eu",
