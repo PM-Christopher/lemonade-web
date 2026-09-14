@@ -1,7 +1,6 @@
 'use client'
 import React, {useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 import {
     Card,
     CardContent,
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
-import {axiosInstance} from "@/lib/axiosInstane";
 import OtpInput from "react-otp-input";
 import {checkError} from "@/lib/checkError";
 import {useAppDispatch} from "@/redux/hook";
@@ -18,8 +16,7 @@ import {useCookies} from "react-cookie";
 import {useSelector} from "react-redux";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {authFailure, authStart, loadStop, resendOtp, verifyEmailOtp} from "@/features/authentication/authSlice";
-import {setIsRouting} from "@/redux/tempSlice";
+import {useResendOtpMutation, useVerifyPasswordResetOtpMutation} from "@/features/authentication/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
 import Link from "next/link";
@@ -30,24 +27,15 @@ export default function VerifyCodePage() {
     const STORAGE_KEY = process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY || "otp_timer_start";
     const router  = useRouter()
     const dispatch = useAppDispatch();
-    const [cookie, setCookie, removeCookie] = useCookies([
-        "token",
+    const [cookie, setCookie] = useCookies([
         "newToken",
         "email"
     ]);
     const { user } = useSelector((state: any) => state.auth)
     const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
     const [canResend, setCanResend] = useState<boolean>(false);
-
-
-    const getHeader = () => {
-        const token = cookie.newToken;
-        return {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    };
+    const resendOtpMutation = useResendOtpMutation();
+    const verifyPasswordResetOtpMutation = useVerifyPasswordResetOtpMutation();
 
     useEffect(() => {
         const savedStartTime = localStorage.getItem(STORAGE_KEY);
@@ -93,32 +81,33 @@ export default function VerifyCodePage() {
         }
     }, [seconds]);
 
-    const handleResend = async () => {
-        const { payload } = await dispatch(resendOtp({token: cookie.newToken}))
+    const handleResend = () => {
         formik.setFieldValue('code', null)
-        if (!payload.status) {
-            setCanResend(true)
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: payload?.message,
-                    type: "error",
-                })
-            );
-            return
-        } else {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: `A new code has been sent to ${user?.email}. Please try again`,
-                    type: "success",
-                })
-            );
-            const newStartTime = Date.now();
-            localStorage.setItem(STORAGE_KEY, newStartTime.toString());
-            setSeconds(COUNTDOWN_DURATION);
-            setCanResend(false);
-        }
+        resendOtpMutation.mutate(undefined, {
+            onSuccess: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: `A new code has been sent to ${user?.email}. Please try again`,
+                        type: "success",
+                    })
+                );
+                const newStartTime = Date.now();
+                localStorage.setItem(STORAGE_KEY, newStartTime.toString());
+                setSeconds(COUNTDOWN_DURATION);
+                setCanResend(false);
+            },
+            onError: (error: any) => {
+                setCanResend(true)
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message,
+                        type: "error",
+                    })
+                );
+            },
+        })
     };
 
     //form validation
@@ -142,31 +131,43 @@ export default function VerifyCodePage() {
 
     const [otp, setOtp] = useState(formik.values.code);
 
-    const verifyOtp = async (values: any) => {
-        const {payload} = await dispatch(verifyEmailOtp({data: values, url: "/user/auth/check-otp", token: cookie.newToken}))
-        if (!payload.status) {
-            setCanResend(true)
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: payload?.message,
-                    type: "error",
-                })
-            );
-            formik.setFieldValue('code', null)
-            return
-        } else if (payload.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Email verified",
-                    type: "success",
-                })
-            );
-            formik.resetForm();
-            router.push("/reset-password");
-            return false
-        }
+    const verifyOtp = (values: any) => {
+        verifyPasswordResetOtpMutation.mutate(values, {
+            onSuccess: (result) => {
+                // check-otp deletes the forgot-password token it was called
+                // with and issues a new, differently-scoped one (ability
+                // "password_reset", not "password_reset_verification") —
+                // reset-password only accepts that new token. Confirmed
+                // live: calling reset-password with the old cookie value
+                // 403s "Invalid Token" even though check-otp itself
+                // succeeded.
+                setCookie("newToken", result.token, {
+                    path: "/",
+                    maxAge: 3600 * 6,
+                    sameSite: false,
+                });
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Email verified",
+                        type: "success",
+                    })
+                );
+                formik.resetForm();
+                router.push("/reset-password");
+            },
+            onError: (error: any) => {
+                setCanResend(true)
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message,
+                        type: "error",
+                    })
+                );
+                formik.setFieldValue('code', null)
+            },
+        })
     }
 
     return (

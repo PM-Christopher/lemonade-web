@@ -12,7 +12,7 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "next/navigation";
 import CheckIcon from "@/images/icons/checkGreenIcon.svg"
 import {useAppDispatch} from "@/redux/hook";
-import {changeReason, getSubscription, setSubscriptionId} from "@/features/authentication/authSlice";
+import {changeReason, setSubscriptionId} from "@/features/authentication/authSlice";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 
@@ -22,16 +22,17 @@ type PricingInterface = {
     toggle: () => void
     setSubId: (id: number) => void
     toggleSubMode: (mode: string) => void
+    fetchPlan: (id: number) => void
 }
 
-const PricingCard: React.FC<PricingInterface> = ({active, subscription, toggle, setSubId, toggleSubMode}) => {
+const PricingCard: React.FC<PricingInterface> = ({active, subscription, toggle, setSubId, toggleSubMode, fetchPlan}) => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const { user, subscription: user_sub } = useSelector((state:RootState) => state.auth)
 
     const handleSubscribe = (id: number, subscription: any) => {
         setSubId(id)
-        dispatch(getSubscription({id}))
+        fetchPlan(id)
         if (user_sub) {
             if (user_sub.title === 'Pay-As-You-Go') {
                 toggle()

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
-import { updateAppSettings } from "@/features/authentication/authSlice";
+import { useUpdateNotificationSettingsMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { motion, AnimatePresence } from "framer-motion";
 type NotificationSettingsInterface = {
@@ -22,10 +22,9 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
   type,
 }) => {
   const dispatch = useAppDispatch();
+  const updateNotificationSettingsMutation = useUpdateNotificationSettingsMutation();
   const [emailChecked, setEmailChecked] = useState(false);
   const [inAppChecked, setInAppChecked] = useState(false);
-
-  console.log("settings", settings)
 
   const handleChange = (type: string) => {
     if (type === "email") {
@@ -44,8 +43,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
         in_app_notification: s_type === "in-app" ? !inAppChecked : inAppChecked,
       },
     };
-    dispatch(updateAppSettings({ data })).then((res) => {
-      if (res.payload.status) {
+    updateNotificationSettingsMutation.mutate(data, {
+      onSuccess: () => {
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -54,7 +53,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
           })
         );
         toggle();
-      } else {
+      },
+      onError: () => {
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -62,7 +62,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
             type: "error",
           })
         );
-      }
+      },
     });
   };
 

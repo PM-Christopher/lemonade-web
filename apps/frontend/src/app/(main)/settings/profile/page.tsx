@@ -18,12 +18,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import {
-  authStart,
-  authUser,
-  loadStop,
-  updateUserImage,
-} from "@/features/authentication/authSlice";
+import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
 import { setIsRouting } from "@/redux/tempSlice";
 
 const ProfileSettingsPage = ({}) => {
@@ -32,6 +27,7 @@ const ProfileSettingsPage = ({}) => {
   const [profileType, setProfileType] = useState("");
   const dispatch = useAppDispatch();
   const { user } = useSelector((state: any) => state.auth);
+  const changeProfileImageMutation = useChangeProfileImageMutation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -87,32 +83,27 @@ const ProfileSettingsPage = ({}) => {
     }
   };
 
-  const updateImageFunc = async (data: any) => {
-    dispatch(updateUserImage({ data: { profile_image: data } }))
-      .then((res) => {
-        if (res.payload.status) {
-          dispatch(loadStop());
-          dispatch(authUser(res?.payload?.user));
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Profile image updated successfully`,
-              type: "success",
-            })
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || `Something went wrong`,
-              type: "error",
-            })
-          );
-        }
-      })
-      .catch((error: any) => {
-        console.log({ error });
-      });
+  const updateImageFunc = (data: any) => {
+    changeProfileImageMutation.mutate({ profile_image: data }, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: `Profile image updated successfully`,
+            type: "success",
+          })
+        );
+      },
+      onError: (error: any) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || `Something went wrong`,
+            type: "error",
+          })
+        );
+      },
+    });
   };
 
   const handleImageClick = () => {

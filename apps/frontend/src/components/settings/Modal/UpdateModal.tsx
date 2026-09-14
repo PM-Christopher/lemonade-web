@@ -10,7 +10,7 @@ import {useFormik} from "formik";
 import {checkError} from "@/lib/checkError";
 import CountryList from "country-list-with-dial-code-and-flag";
 import {FormikButton} from "@/components/global/FormikButton";
-import {updateUserData} from "@/features/authentication/authSlice";
+import {useUpdateProfileFieldMutation} from "@/features/authentication/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type UpdateInterface = {
@@ -41,6 +41,7 @@ interface SocialMediaHandles {
 
 const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) => {
     const dispatch = useAppDispatch()
+    const updateProfileFieldMutation = useUpdateProfileFieldMutation()
     const [socials, setSocials] = useState<SocialMediaHandles>({
         instagram: '',
         linkedin: '',
@@ -206,8 +207,8 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
         validationSchema: profileTypeSchema(type).schema,
         enableReinitialize: true,
         onSubmit: async (values) => {
-            dispatch(updateUserData({data: values, url: profileTypeSchema(type).endpoint})).then((res) => {
-                if (res.payload.status) {
+            updateProfileFieldMutation.mutate({data: values, url: profileTypeSchema(type).endpoint}, {
+                onSuccess: () => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -216,7 +217,8 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                         })
                     );
                     toggle()
-                } else {
+                },
+                onError: () => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -224,7 +226,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                             type: "error",
                         })
                     );
-                }
+                },
             })
         },
     })

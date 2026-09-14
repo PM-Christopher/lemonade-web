@@ -3,15 +3,10 @@ import CloseIcon from "@/images/icons/close.svg";
 import {FormikButton} from "@/components/global/FormikButton";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import {membershipPlans} from "../../../../pageData";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {changePlan} from "@/features/authentication/authSlice";
-import {useFormik} from "formik";
-import {login} from "@/features/authentication/authApi";
+import {useChangePlanMutation} from "@/features/authentication/mutations";
 import * as yup from "yup";
 
 interface UpgradePlanProps {
@@ -26,7 +21,8 @@ const UpgradePlanModal = ({isOpen, toggle, sub_id, subMode, pricing}: UpgradePla
     const [selected, setSelected] = useState<number|null>(null);
     const dispatch = useAppDispatch()
     const [subType, setSubType] = useState<string|null>("")
-    const { upgradeLoading } = useSelector((state: RootState) => state.auth)
+    const changePlanMutation = useChangePlanMutation()
+    const upgradeLoading = changePlanMutation.isPending
 
     const handleSelectedPlan = (membership: { id: number; type: string }) => {
         setSelected(prevSelected =>
@@ -58,28 +54,41 @@ const UpgradePlanModal = ({isOpen, toggle, sub_id, subMode, pricing}: UpgradePla
             redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/plan`
         }
 
-        const { payload } = await dispatch(changePlan({ data }))
-        if (payload.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Redirecting to payment gateway",
-                    type: "success",
-                })
-            )
-            toggle()
-            if (payload.data.payment) {
-                window.location.href = payload.data.payment;
-            } else {
+        changePlanMutation.mutate(data, {
+            onSuccess: (result) => {
+                toggle()
+                if (result.payment) {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Redirecting to payment gateway",
+                            type: "success",
+                        })
+                    )
+                    window.location.href = result.payment;
+                } else {
+                    // A free-plan switch applies immediately server-side —
+                    // no payment redirect needed (the old code treated this
+                    // branch as an error even on a real success).
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Plan updated successfully",
+                            type: "success",
+                        })
+                    )
+                }
+            },
+            onError: (error: any) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
-                        message: "Something went wrong. Please try again!!!",
+                        message: error?.message || "Something went wrong. Please try again!!!",
                         type: "error",
                     })
                 )
-            }
-        }
+            },
+        })
     }
 
     return (

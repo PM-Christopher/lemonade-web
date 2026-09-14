@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 18 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[COMPLETE — 19 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1898,11 +1898,80 @@ tokens all cleaned up after. **Not live-tested**: `promote-event`'s actual payme
 the numeric/UUID validation bug above, same as the tickets_sold breakdown, description), consistent with
 this session's rule of not working around a bug it isn't this migration's place to fix.
 
-**This closes out Phase 5 for `apps/frontend`'s tracked domains.** The only remaining Phase 5 work is
-the non-login/logout `authSlice` thunks (not yet scoped) — everything else that reads/writes
-`/v1/user/*` server data now goes through TanStack Query + the BFF transport in both apps. redux-persist
-still holds more than client preferences in a few places (events' own wizard/cart state, deliberately,
-per the note above) but no feature exists in both the old and new pattern at once.
+The **non-login/logout `authSlice` thunks** (11 of them: OTP verification/resend, forgot/reset password,
+6 profile-field edits, change-password, change-profile-image, delete-account, notification settings,
+subscription change/lookup) are migrated too, into `features/authentication/{api,queries,mutations}.ts`
+alongside the existing login/logout/current-user hooks — **this closes out Phase 5 for every tracked
+domain in both apps.** `authSlice.ts` is slimmed to pure client state (the logged-in user snapshot
+mirrored from `useCurrentUserQuery`, a pending subscription-downgrade reason, which plan is mid-
+selection) — no thunks, no server data.
+
+The pre-login onboarding calls (OTP verify/resend, password reset) don't take a token param anymore —
+they used to build a manual `Authorization` header from a token threaded in as an argument, which
+`browserApi`'s interceptor would just strip (it unconditionally overwrites any caller-supplied
+Authorization header). Removing that param isn't a corner cut: the BFF proxy already reads the
+JS-readable `ONBOARDING_TOKEN_COOKIE` ("newToken") server-side as a fallback bearer token whenever
+there's no main session cookie (the fix that shipped for `getUserProfile` in an earlier Phase 5 pass,
+here applied consistently to the rest of the onboarding flow).
+
+**Four real bugs found and fixed**, on top of the recurring `payload.status`-vs-`payload.success`
+envelope bug (present in essentially every handler in this domain — forgot-password, reset-password,
+resend/verify OTP, delete-account, update-app-settings, update-profile-field, change-password,
+change-profile-image, generate-affiliate-link-shaped upgrade-plan flow — all silently no-op'd on real
+success before this pass, same as every other domain's version of this bug):
+1. **Token rotation on password reset, found live-testing, not by inspection.** `check-otp`
+   (`VerifyForgotPasswordAction`) deletes the very token it was called with and issues a *new* one
+   scoped to a different ability (`password_reset`, not `password_reset_verification`) — confirmed live:
+   calling `reset-password` with the original `newToken` cookie value 403s "Invalid Token" even though
+   `check-otp` itself just succeeded with that same token. `verify-code/page.tsx` never carried the new
+   token forward into the cookie. Fixed by overwriting `newToken` with the response's `token` in
+   `verifyOtp`'s success handler before navigating to `/reset-password` — confirmed live end-to-end
+   (forgot-password → check-otp → reset-password with a real OTP, using `MAIL_MAILER=log` locally per
+   the established local-testing workaround).
+2. `ChangeUserSubscriptionPlan`'s paid branch returned the whole Paystack init array under `payment`
+   instead of the URL `UpgradePlanModal.tsx` navigates to — same bug shape as `BoostBusiness`, fixed the
+   same way (extract `authorization_url`, surface `reference` alongside it). Confirmed live pre/post-fix;
+   existing test only asserted the key was present, not its shape, so it slipped through — tightened.
+3. `UpgradePlanModal`'s free-plan-switch branch treated "no `payment` field" as an error, even though a
+   free-plan switch applies immediately server-side and genuinely has no payment step — fixed to show a
+   real success toast instead of a false error.
+4. `PricingCard.tsx` dispatching a per-click subscription-detail fetch that fed a modal rendered by the
+   *parent* page was structurally awkward under Redux (write to `state.auth.pricing`, read it back in a
+   sibling) — the mutation now lives in `settings/plan/page.tsx` and is passed down as a callback, which
+   is what surfaced (and let disprove) an initial false alarm: `SubscriptionResource` nests a real
+   `pricing` array inside the single `subscription` object it returns, and the parent already unwraps
+   `result.subscription.pricing` before handing it to `UpgradePlanModal` — not the single-object-vs-array
+   crash it looked like from `api.ts` alone; corrected before it became a permanent wrong comment in the
+   codebase.
+
+**Two bugs found and deliberately left alone**, needing a product/security decision, not a transport fix:
+1. Account deletion cannot work from this UI at all, for two independent reasons: `DeleteAccountRequest`
+   requires a `confirmation` field (exact string "DELETE") that `ConfirmDeletePage`'s form never
+   collects (it only sends `password`, which the backend doesn't even validate); and even with that
+   fixed, the route requires a Sanctum token scoped to the `account_deletion` ability specifically —
+   confirmed live, the user's normal session token gets "Invalid ability provided" — which only exists
+   after a separate OTP-confirmation flow (`request-account-deletion` → `verify-account-deletion`) that
+   has no UI anywhere in this app. This is a missing feature, not a one-line fix.
+2. `ResendAccountOtp` (backend) hardcodes `OtpType::EMAIL_VERIFICATION` — the password-reset
+   ("verify-code") flow's "Send code again" calls this same endpoint, likely resending the wrong kind of
+   OTP for that flow. Not fixed — a backend action/routing decision, not a transport migration's call.
+
+Live-verified nearly every endpoint end-to-end through both the backend directly and the real frontend
+BFF proxy: change-username/bio (real field edits), change-password (correctly rejecting a wrong old
+password), forgot-password → check-otp → reset-password with a real generated OTP and the token-rotation
+fix, resend-otp and verify-otp for the email-verification flow (the exact `newToken`-cookie-only path,
+no manual header), update-app-notification-settings (confirmed the frontend already sends the right
+per-category `type` enum value — an initial assumption from reading the modal component in isolation,
+without its parent, was wrong and corrected before being documented as a bug), change-plan for both a
+real paid plan (Paystack authorization URL) and the free-plan-switch branch, and get-subscription-plan.
+Test users' state (password, username, bio, email-verification flag, tokens, OTPs, notification
+settings) restored after; `MAIL_MAILER` temporarily flipped `smtp` → `log` to test the OTP flows locally,
+same as previous sessions' documented workaround, then reverted.
+
+**This closes out Phase 5 for every tracked domain in both apps.** Everything that reads or writes
+`/v1/*` server data now goes through TanStack Query + the BFF transport. redux-persist still holds more
+than client preferences in a couple of deliberate places (events' own wizard/cart state, noted above) but
+no feature exists in both the old and new pattern at once — Phase 5's core rule holds project-wide.
 
 **The "Tier 2" dead-weight cleanup** (not one of this document's original bullets, but directly serves
 this phase's "no feature in both patterns" rule): every non-auth domain's Redux thunks and

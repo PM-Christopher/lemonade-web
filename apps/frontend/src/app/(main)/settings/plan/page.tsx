@@ -13,12 +13,15 @@ import {SubscriptionsSkeleton} from "@/components/Skeletons";
 import VerifiedSubscriptionModal from "@/components/settings/Modal/VerifiedSubscriptionModal";
 import {useAppDispatch} from "@/redux/hook";
 import {changeSubscription} from "@/features/authentication/authSlice";
+import {useSubscriptionPlanMutation} from "@/features/authentication/mutations";
 import {RootState} from "@/redux/store";
 
 const PricingPage = () => {
-    const { subscription, user, pricing } = useSelector((state: RootState) => state.auth)
+    const { subscription, user } = useSelector((state: RootState) => state.auth)
     const router = useRouter()
     const dispatch = useAppDispatch()
+    const subscriptionPlanMutation = useSubscriptionPlanMutation()
+    const pricing = subscriptionPlanMutation.data
     const searchParams = useSearchParams()
     const trxref = searchParams.get("trxref")
     const {data, loading} = useRequest(`user/subscription`)
@@ -89,6 +92,7 @@ const PricingPage = () => {
                                         active={subscription?.title === sub?.title}
                                         setSubId={toggleSubId}
                                         toggleSubMode={toggleSubMode}
+                                        fetchPlan={(id) => subscriptionPlanMutation.mutate(id)}
                                     />
                                 ))
                             )

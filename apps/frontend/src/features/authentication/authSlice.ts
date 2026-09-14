@@ -1,6 +1,13 @@
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {axiosInstance} from "@/lib/axiosInstane";
-import {headers} from "next/headers";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+
+// Session + small client-state slice. Server data that used to live here
+// (profile edits, OTP/password-reset, notification settings, subscription
+// changes) now goes through features/authentication/{api,queries,mutations}.ts
+// on TanStack Query — see docs/ARCHITECTURE.md's Phase 5 status. What's left
+// is genuinely client state: the logged-in user snapshot (mirrored from
+// useCurrentUserQuery so the ~70 existing `state.auth.user` reads keep
+// working), and small UI-only fields (a pending subscription-downgrade
+// reason, which plan is mid-selection) that don't belong in a query cache.
 
 interface authState {
     user: any | null;
@@ -21,12 +28,10 @@ interface authState {
     plan: {} | null,
     appSettings: {} | null
     code: string | null;
-    upgradeLoading: boolean;
     downgradeData: {
         reason?: string;
         sub_id?: number | null;
     }
-    pricing: any
 }
 
 const initialState: authState = {
@@ -42,165 +47,8 @@ const initialState: authState = {
     plan: null,
     appSettings: null,
     code: null,
-    upgradeLoading: false,
     downgradeData: {},
-    pricing: null
 };
-
-const verifyEmailOtp = createAsyncThunk("auth/verifyEmailOtp", async ({ data, url, token }: { data: any, url: string, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
-    try {
-        const response = await axiosInstance.post(`${url}`, data, { headers });
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const resendOtp = createAsyncThunk("auth/resendOtp", async ({ token }: { token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-
-    try {
-        const response = await axiosInstance.post(`/user/otp/resend`, {}, { headers });
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const forgotPassword = createAsyncThunk("auth/forgotPassword", async ({ data }: { data: { email: string } }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.post(`/user/auth/forgot-password`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const resetPassword = createAsyncThunk("auth/resetPassword", async ({ data, token }: { data: { password: string, confirm_password: string }, token: string }, { rejectWithValue }) => {
-    const headers = {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-    try {
-        const response = await axiosInstance.post(`/user/auth/reset-password`, data, { headers });
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const updateUserData = createAsyncThunk("auth/updateUser", async ({ data, url }: { data: any, url: string }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.patch(`${url}`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const changePassword = createAsyncThunk("auth/changePassword", async ({ data }: { data: any }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.patch(`/user/profile/settings/change-password`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const updateUserImage = createAsyncThunk("auth/updateImage", async ({ data }: { data: any }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.patch(`/user/profile/settings/change-profile-image`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const deleteAccount = createAsyncThunk("auth/deleteAccount", async ({ data }: { data: any }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.post(`/user/profile/settings/delete-account`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const updateAppSettings = createAsyncThunk("auth/updateAppSettings", async ({ data }: { data: any }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.patch(`/user/profile/notification-settings/update-all-notification`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-const changePlan = createAsyncThunk("auth/changePlan", async ({ data }: { data: any }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.post(`/user/profile/subscription/change-plan`, data);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
-// logout used to live here as a createAsyncThunk — replaced by
-// useLogoutMutation() in features/authentication/mutations.ts (TanStack
-// Query), which calls the httpOnly-cookie-aware /api/auth/logout route
-// instead of building an Authorization header from a Redux-stored token.
-
-const getSubscription = createAsyncThunk("auth/getSubscription", async ({ id }: { id: number }, { rejectWithValue }) => {
-    try {
-        const response = await axiosInstance.get(`/user/subscription/${id}`);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
-        }
-        return rejectWithValue(err.response.data);
-    }
-});
-
 
 const authSlice = createSlice({
     name: "auth",
@@ -281,135 +129,6 @@ const authSlice = createSlice({
             state.downgradeData = {};
         }
     },
-    extraReducers: (builder) => {
-        builder.addCase(updateUserData.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(updateUserData.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.user = payload.data.user
-        });
-        builder.addCase(updateUserData.rejected, (state) => {
-            state.loading = false;
-        });
-
-        builder.addCase(verifyEmailOtp.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(verifyEmailOtp.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.error = false
-        });
-        builder.addCase(verifyEmailOtp.rejected, (state) => {
-            state.loading = false;
-            state.error = true;
-        });
-
-        builder.addCase(resendOtp.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(resendOtp.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.error = false
-        });
-        builder.addCase(resendOtp.rejected, (state) => {
-            state.loading = false;
-            state.error = true;
-        });
-
-        builder.addCase(forgotPassword.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(forgotPassword.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.error = false
-        });
-        builder.addCase(forgotPassword.rejected, (state) => {
-            state.loading = false;
-            state.error = true;
-        });
-
-        builder.addCase(resetPassword.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(resetPassword.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.error = false
-        });
-        builder.addCase(resetPassword.rejected, (state) => {
-            state.loading = false;
-            state.error = true;
-        });
-
-
-        builder.addCase(changePassword.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(changePassword.fulfilled, (state, { payload }) => {
-            state.loading = false;
-        });
-        builder.addCase(changePassword.rejected, (state) => {
-            state.loading = false;
-        });
-
-        builder.addCase(deleteAccount.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(deleteAccount.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.user = null
-            state.authToken = null
-            state.isLoggedIn = false
-        });
-        builder.addCase(deleteAccount.rejected, (state) => {
-            state.loading = false;
-        });
-
-        builder.addCase(updateAppSettings.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(updateAppSettings.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.appSettings = payload.data.appSettings
-        });
-        builder.addCase(updateAppSettings.rejected, (state) => {
-            state.loading = false;
-        });
-
-        builder.addCase(updateUserImage.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(updateUserImage.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.user = payload.data.user
-        });
-        builder.addCase(updateUserImage.rejected, (state) => {
-            state.loading = false;
-        });
-
-
-        builder.addCase(changePlan.pending, (state) => {
-            state.upgradeLoading = true;
-        });
-        builder.addCase(changePlan.fulfilled, (state, { payload }) => {
-            state.upgradeLoading = false;
-            state.subscription = payload?.data?.subscription
-        });
-        builder.addCase(changePlan.rejected, (state) => {
-            state.upgradeLoading = false;
-        });
-
-        builder.addCase(getSubscription.pending, (state) => {
-            state.loading = true;
-        });
-        builder.addCase(getSubscription.fulfilled, (state, { payload }) => {
-            state.loading = false;
-            state.pricing = payload.data
-        });
-        builder.addCase(getSubscription.rejected, (state) => {
-            state.loading = false;
-        });
-    }
 });
 
 export const {
@@ -430,7 +149,5 @@ export const {
     clearReason,
     updateHasBankAccount
 } = authSlice.actions;
-
-export { updateUserData, changePassword, deleteAccount, updateAppSettings, updateUserImage, verifyEmailOtp, resendOtp, forgotPassword, resetPassword, changePlan, getSubscription }
 
 export default authSlice.reducer;

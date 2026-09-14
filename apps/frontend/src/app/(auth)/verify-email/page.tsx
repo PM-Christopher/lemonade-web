@@ -11,9 +11,8 @@ import {checkError} from "@/lib/checkError";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import { resendOtp, verifyEmailOtp } from "@/features/authentication/authSlice";
+import {useResendOtpMutation, useVerifyAccountOtpMutation} from "@/features/authentication/mutations";
 import {useAppDispatch} from "@/redux/hook";
-import {useCookies} from "react-cookie";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {useSelector} from "react-redux";
@@ -24,11 +23,9 @@ import {RootState} from "@/redux/store";
 export default function VerifyPage() {
     const router = useRouter()
     const dispatch = useAppDispatch();
-    const [cookie, setCookie, removeCookie] = useCookies([
-        "token",
-        "newToken",
-    ]);
     const {user, code} = useSelector((state: RootState) => state.auth)
+    const resendOtpMutation = useResendOtpMutation();
+    const verifyAccountOtpMutation = useVerifyAccountOtpMutation();
     const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
     const STORAGE_KEY = process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY || "otp_timer_start";
 
@@ -79,32 +76,33 @@ export default function VerifyPage() {
         }
     }, [seconds]);
 
-    const handleResend = async () => {
-        const { payload } = await dispatch(resendOtp({token: cookie.newToken}))
+    const handleResend = () => {
         formik.setFieldValue('code', null)
-        if (!payload.status) {
-            setCanResend(true)
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: payload?.message,
-                    type: "error",
-                })
-            );
-            return
-        } else {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: `A new code has been sent to ${user?.email}. Please try again`,
-                    type: "success",
-                })
-            );
-            const newStartTime = Date.now();
-            localStorage.setItem(STORAGE_KEY, newStartTime.toString());
-            setSeconds(COUNTDOWN_DURATION);
-            setCanResend(false);
-        }
+        resendOtpMutation.mutate(undefined, {
+            onSuccess: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: `A new code has been sent to ${user?.email}. Please try again`,
+                        type: "success",
+                    })
+                );
+                const newStartTime = Date.now();
+                localStorage.setItem(STORAGE_KEY, newStartTime.toString());
+                setSeconds(COUNTDOWN_DURATION);
+                setCanResend(false);
+            },
+            onError: (error: any) => {
+                setCanResend(true)
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message,
+                        type: "error",
+                    })
+                );
+            },
+        })
     };
 
     //form validation
@@ -128,32 +126,31 @@ export default function VerifyPage() {
 
     const [otp, setOtp] = useState(formik.values.code);
 
-    const verifyOtp = async (values: any) => {
-        const { payload } = await dispatch(verifyEmailOtp({data: values, url: "/user/otp/verify", token: cookie.newToken}))
-        console.log({payload})
-        if (!payload.status) {
-            setCanResend(true)
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: payload?.message,
-                    type: "error",
-                })
-            );
-            formik.setFieldValue('code', null)
-            return
-        } else if (payload.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Email verified",
-                    type: "success",
-                })
-            );
-            formik.resetForm();
-            router.push("/profile-setup");
-            return false
-        }
+    const verifyOtp = (values: any) => {
+        verifyAccountOtpMutation.mutate(values, {
+            onSuccess: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Email verified",
+                        type: "success",
+                    })
+                );
+                formik.resetForm();
+                router.push("/profile-setup");
+            },
+            onError: (error: any) => {
+                setCanResend(true)
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message,
+                        type: "error",
+                    })
+                );
+                formik.setFieldValue('code', null)
+            },
+        })
     }
     return (
         <AuthLayout>

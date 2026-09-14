@@ -6,7 +6,7 @@ import EyeIcon from "@/images/icons/eyeIcon.svg"
 import {useAppDispatch} from "@/redux/hook";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import { changePassword } from "@/features/authentication/authSlice";
+import { useChangePasswordMutation } from "@/features/authentication/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {FormikButton} from "@/components/global/FormikButton";
 
@@ -18,6 +18,7 @@ type UpdatePasswordInterface = {
 
 const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({toggle, isOpen, user}) => {
     const dispatch = useAppDispatch()
+    const changePasswordMutation = useChangePasswordMutation()
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -54,8 +55,8 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({toggle, isOpen,
         validationSchema: passwordSchema,
         enableReinitialize: true,
         onSubmit: async (values) => {
-            dispatch(changePassword({data: values})).then((res) => {
-                if (res.payload.status) {
+            changePasswordMutation.mutate(values, {
+                onSuccess: () => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -64,17 +65,16 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({toggle, isOpen,
                         })
                     );
                     toggle()
-                } else {
+                },
+                onError: (error: any) => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
-                            message: res.payload.message || `Something went wrong`,
+                            message: error?.message || `Something went wrong`,
                             type: "error",
                         })
                     );
-                }
-            }).catch((error: any) => {
-                console.log({error})
+                },
             })
         },
     })

@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 import {
     Card,
     CardContent,
@@ -12,14 +11,10 @@ import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
-import {axiosInstance} from "@/lib/axiosInstane";
 import {useAppDispatch} from "@/redux/hook";
-import {useCookies} from "react-cookie";
-import {useSelector} from "react-redux";
 import Link from "next/link";
-import {RootState} from "@/redux/store";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {resetPassword} from "@/features/authentication/authSlice";
+import {useResetPasswordMutation} from "@/features/authentication/mutations";
 import * as yup from "yup";
 import {useFormik} from "formik";
 
@@ -27,11 +22,8 @@ import {useFormik} from "formik";
 export default function ResetPasswordPage() {
     const router  = useRouter()
     const dispatch = useAppDispatch();
-    const { loading } = useSelector((state: RootState) => state.auth)
-    const [cookie, setCookie, removeCookie] = useCookies([
-        "token",
-        "newToken",
-    ]);
+    const resetPasswordMutation = useResetPasswordMutation();
+    const loading = resetPasswordMutation.isPending;
 
     const resetPasswordSchema = yup.object({
         password: yup
@@ -56,9 +48,8 @@ export default function ResetPasswordPage() {
     })
 
     const onSignup = async (values: any) => {
-        try {
-            const { payload } = await dispatch(resetPassword({token: cookie.newToken, data: {password: values.password, confirm_password: values.confirm_password}}))
-            if (payload.status) {
+        resetPasswordMutation.mutate({password: values.password, confirm_password: values.confirm_password}, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -67,16 +58,17 @@ export default function ResetPasswordPage() {
                     })
                 );
                 router.push("/login")
-            }
-        } catch (error: any) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: error.message,
-                    type: "error",
-                })
-            );
-        }
+            },
+            onError: (error: any) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error.message,
+                        type: "error",
+                    })
+                );
+            },
+        })
     }
 
 

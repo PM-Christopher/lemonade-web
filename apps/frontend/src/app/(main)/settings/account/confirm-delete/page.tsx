@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { deleteAccount } from "@/features/authentication/authSlice";
+import { useDeleteAccountMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { FormikButton } from "@/components/global/FormikButton";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -18,6 +18,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 const ConfirmDeletePage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const deleteAccountMutation = useDeleteAccountMutation();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const toggleCurrentPasswordVisibility = () => {
     setShowCurrentPassword(!showCurrentPassword);
@@ -34,31 +35,28 @@ const ConfirmDeletePage = () => {
     validationSchema: passwordSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
-      dispatch(deleteAccount({ data: values }))
-        .then((res) => {
-          if (res.payload.status) {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: `Account deleted successfully`,
-                type: "success",
-              })
-            );
-            // redirect user to login
-            router.push("/login");
-          } else {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: res.payload.message || `Something went wrong`,
-                type: "error",
-              })
-            );
-          }
-        })
-        .catch((error: any) => {
-          console.log({ error });
-        });
+      deleteAccountMutation.mutate(values, {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: `Account deleted successfully`,
+              type: "success",
+            })
+          );
+          // redirect user to login
+          router.push("/login");
+        },
+        onError: (error: any) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: error?.message || `Something went wrong`,
+              type: "error",
+            })
+          );
+        },
+      });
     },
   });
   return (

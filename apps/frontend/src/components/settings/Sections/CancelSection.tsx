@@ -4,7 +4,8 @@ import {useSelector} from "react-redux";
 import CheckIcon from "@/images/icons/checkGreenIcon.svg";
 import PadlockIcon from "@/images/icons/padlockFilledIcon.svg";
 import {RootState} from "@/redux/store";
-import {changePlan, clearReason} from "@/features/authentication/authSlice";
+import {clearReason} from "@/features/authentication/authSlice";
+import {useChangePlanMutation} from "@/features/authentication/mutations";
 import {useAppDispatch} from "@/redux/hook";
 import {cancelReason} from "../../../../pageData";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -13,7 +14,9 @@ import {useRouter} from "next/navigation";
 const CancelSection = ({}) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
-    const { plan, subscription, downgradeData, upgradeLoading } = useSelector((state: RootState) => state.auth)
+    const { plan, subscription, downgradeData } = useSelector((state: RootState) => state.auth)
+    const changePlanMutation = useChangePlanMutation()
+    const upgradeLoading = changePlanMutation.isPending
 
     const downgradePlan = async () => {
         const findReason = cancelReason.find(item => item.value === downgradeData?.reason);
@@ -28,26 +31,28 @@ const CancelSection = ({}) => {
             mode: "downgrade",
             redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/plan`
         };
-        const { payload } = await dispatch(changePlan({ data }))
-        if (!payload.status) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: payload.message || "An error occurred.",
-                    type: "error",
-                })
-            )
-            return
-        }
-        dispatch(
-            updateToastifyReducer({
-                show: true,
-                message: "Successful",
-                type: "success",
-            })
-        )
-        dispatch(clearReason())
-        router.push("/settings/plan")
+        changePlanMutation.mutate(data, {
+            onSuccess: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Successful",
+                        type: "success",
+                    })
+                )
+                dispatch(clearReason())
+                router.push("/settings/plan")
+            },
+            onError: (error: any) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error?.message || "An error occurred.",
+                        type: "error",
+                    })
+                )
+            },
+        })
     }
 
     return (

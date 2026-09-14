@@ -1,8 +1,6 @@
 'use client'
 import React, {useState} from "react"
 import {useRouter} from "next/navigation"
-import axios from "axios"
-import toast from "react-hot-toast"
 import {
     Card,
     CardContent,
@@ -13,13 +11,10 @@ import {Label} from "@/components/ui/label"
 import {Loader2} from "lucide-react"
 import Image from "next/image"
 import AuthLayout from "@/components/layouts/AuthLayout";
-import {axiosInstance} from "@/lib/axiosInstane";
 import {useCookies} from "react-cookie";
 import Link from "next/link";
 import {useAppDispatch} from "@/redux/hook";
-import {forgotPassword} from "@/features/authentication/authSlice";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
+import {useForgotPasswordMutation} from "@/features/authentication/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import * as yup from "yup";
 import {useFormik} from "formik";
@@ -30,7 +25,8 @@ export default function ForgotPasswordPage() {
     const dispatch = useAppDispatch()
     const [email, setEmail] = useState("")
     const [cookie, setCookie] = useCookies(["newToken", "email"]);
-    const {loading} = useSelector((state: RootState) => state.auth)
+    const forgotPasswordMutation = useForgotPasswordMutation();
+    const loading = forgotPasswordMutation.isPending;
 
     const forgotPasswordSchema = yup.object({
         email: yup
@@ -49,9 +45,8 @@ export default function ForgotPasswordPage() {
 
 
     const onSignup = async (values: any) => {
-        try {
-            const {payload} = await dispatch(forgotPassword({data: {email: values.email}}))
-            if (payload.status) {
+        forgotPasswordMutation.mutate({email: values.email}, {
+            onSuccess: (result) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -59,29 +54,30 @@ export default function ForgotPasswordPage() {
                         type: "success",
                     })
                 );
-                setCookie("newToken", payload?.data.token, {
+                setCookie("newToken", result.token, {
                     path: "/",
                     maxAge: 3600 * 6, // Expires after 6hrs
                     sameSite: false,
                     // domain: env === 'development' ? '' : ''
                 });
-                setCookie("email", payload?.data.email, {
+                setCookie("email", result.email, {
                     path: "/",
                     maxAge: 3600 * 6, // Expires after 6hrs
                     sameSite: false,
                     // domain: env === 'development' ? '' : ''
                 });
                 router.push("/verify-code")
-            }
-        } catch (error: any) {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: error.message,
-                    type: "error",
-                })
-            );
-        }
+            },
+            onError: (error: any) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: error.message,
+                        type: "error",
+                    })
+                );
+            },
+        })
     }
 
 
