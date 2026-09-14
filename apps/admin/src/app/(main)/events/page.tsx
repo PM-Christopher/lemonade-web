@@ -14,7 +14,7 @@ import PromotionView from "@/views/tribes/PromotionView";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { getEventData } from "@/features/events/event.slice";
-import { getCSV } from "@/features/exports/export.slice";
+import { useExportCsvMutation } from "@/features/exports/mutations";
 import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ const EventsPage = () => {
     eventData: any;
   };
   const [isLoading, setLoading] = useState(false);
+  const exportCsv = useExportCsvMutation();
   const switchOption = (option: string) => {
     setMenuOption(option);
   };
@@ -65,41 +66,29 @@ const EventsPage = () => {
 
   const exportFunc = () => {
     setLoading(true);
-    dispatch(getCSV({ table: "events" }))
-      .then((res) => {
-        if (res.meta.requestStatus) {
-          setLoading(false);
-
-          downloadCSV(res.payload, "events.csv");
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Downloaded `,
-              type: "success",
-            })
-          );
-        } else {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || `Something went wrong`,
-              type: "error",
-            })
-          );
-        }
-      })
-      .catch((res) => {
+    exportCsv.mutate("events", {
+      onSuccess: (csv) => {
+        setLoading(false);
+        downloadCSV(csv, "events.csv");
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: `Downloaded `,
+            type: "success",
+          })
+        );
+      },
+      onError: (error) => {
         setLoading(false);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: res.payload.message || `Something went wrong`,
+            message: error?.message || `Something went wrong`,
             type: "error",
           })
         );
-      });
+      },
+    });
   };
 
   return (

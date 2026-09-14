@@ -14,7 +14,7 @@ import AffiliateView from "@/views/users/AffiliateView";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { getUserData } from "@/features/user/user.slice";
-import { getCSV } from "@/features/exports/export.slice";
+import { useExportCsvMutation } from "@/features/exports/mutations";
 import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import useDebounce from "@/hooks/useDebounce";
@@ -35,6 +35,7 @@ function UsersPage({}) {
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setLoading] = useState(false);
+  const exportCsv = useExportCsvMutation();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { userData } = useSelector((state: RootState) => state.user) as {
@@ -62,44 +63,30 @@ function UsersPage({}) {
 
   const exportUser = () => {
     setLoading(true);
-    dispatch(
-      getCSV({
-        table: `${menuOption === "users" ? "users" : "affiliates"}`,
-      })
-    )
-      .then((res) => {
+    const table = menuOption === "users" ? "users" : "affiliates";
+    exportCsv.mutate(table, {
+      onSuccess: (csv) => {
         setLoading(false);
-        if (res.meta.requestStatus) {
-          downloadCSV(res.payload, `${menuOption === "users" ? "users.csv" : "affiliates.csv"}`);
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Downloaded `,
-              type: "success",
-            })
-          );
-        } else {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || `Something went wrong`,
-              type: "error",
-            })
-          );
-        }
-      })
-      .catch((res) => {
+        downloadCSV(csv, `${table}.csv`);
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: `Downloaded `,
+            type: "success",
+          })
+        );
+      },
+      onError: (error) => {
         setLoading(false);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: res.payload.message || `Something went wrong`,
+            message: error?.message || `Something went wrong`,
             type: "error",
           })
         );
-      });
+      },
+    });
   };
 
   const { debouncedValue } = useDebounce(searchValue, 500);
