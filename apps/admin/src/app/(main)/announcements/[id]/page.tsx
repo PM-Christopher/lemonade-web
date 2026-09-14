@@ -2,18 +2,18 @@
 import React, {useEffect, useState} from 'react';
 import MainLayout from "@/components/layouts/MainLayout";
 import {useParams} from "next/navigation";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
-import {getAnnouncementDetail} from "@/features/announcements/announcements.slice";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {useAnnouncementDetailQuery} from "@/features/announcements/queries";
 import {capitalizeWords} from "@/utils/helper";
 
 function AnnouncementDetailsPage({}) {
     const params = useParams()
-    const dispatch = useDispatch<AppDispatch>()
     const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const id = params.id ? (Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id)) : undefined;
-    const { loading, announcement } = useSelector((state: RootState) => state.announcement) as { announcement: any, loading: boolean };
-    
+    const { data: detail } = useAnnouncementDetailQuery(id, { enabled: isLoggedIn });
+    const announcement = detail?.announcement;
+
     // Add hydration protection
     const [isHydrated, setIsHydrated] = useState(false);
 
@@ -21,12 +21,6 @@ function AnnouncementDetailsPage({}) {
         // Set hydrated state after component mounts
         setIsHydrated(true);
     }, []);
-
-    useEffect(() => {
-        if (id && isLoggedIn && isHydrated) {
-            dispatch(getAnnouncementDetail({id}))
-        }
-    }, [id, isLoggedIn, isHydrated, dispatch])
 
     // Don't render dynamic content until hydrated
     if (!isHydrated) {

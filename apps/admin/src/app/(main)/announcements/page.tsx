@@ -1,16 +1,16 @@
 'use client'
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import MainLayout from "@/components/layouts/MainLayout";
 import {PlusIcon, SearchIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import { announcementHeaders} from "@/data/tableData";
 import DataInfoCard from "@/components/global/DataInfoCard";
 import {useRouter} from "next/navigation";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
 import {capitalizeWords} from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
-import {getAnnouncementData} from "@/features/announcements/announcements.slice";
+import {useAnnouncementsQuery} from "@/features/announcements/queries";
 
 const Page = ({}) => {
     const router = useRouter()
@@ -22,23 +22,16 @@ const Page = ({}) => {
         setCurrentPage(page);
     };
 
-    const dispatch = useDispatch<AppDispatch>();
-
     const { isLoggedIn } = useSelector((state: RootState) => state.auth)
-    const { announcementData } = useSelector((state: RootState) => state.announcement) as {announcementData: any}
+    const { data: announcementData } = useAnnouncementsQuery({ enabled: isLoggedIn })
 
     // Calculate total pages based on the data length and perPage value
-    const totalPages = Math.ceil(announcementData?.announcements?.length / perPage);
+    const totalPages = Math.ceil((announcementData?.announcements?.length ?? 0) / perPage);
 
     // Determine the start and end indices for slicing the data array
     const startIndex = (currentPage - 1) * perPage;
     const paginatedData = announcementData?.announcements?.slice(startIndex, startIndex + perPage)
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            dispatch(getAnnouncementData())
-        }
-    }, [])
     return (
         <MainLayout>
             <section className="flex flex-col gap-[20px] mt-[24px]">

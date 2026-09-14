@@ -6,7 +6,6 @@ import {CalendarIcon, ChevronDown} from "lucide-react";
 import {useParams} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@/redux/store";
-import {getAnnouncementDetail} from "@/features/announcements/announcements.slice";
 import {getTeamDetail} from "@/features/team/team.slice";
 import {capitalizeSpecial, capitalizeWords} from "@/utils/helper";
 
