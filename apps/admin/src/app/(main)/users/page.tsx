@@ -13,7 +13,7 @@ import UsersViews from "@/views/users/UsersView";
 import AffiliateView from "@/views/users/AffiliateView";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { getUserData } from "@/features/user/user.slice";
+import { useUserListQuery } from "@/features/user/queries";
 import { useExportCsvMutation } from "@/features/exports/mutations";
 import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -38,9 +38,7 @@ function UsersPage({}) {
   const exportCsv = useExportCsvMutation();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { userData } = useSelector((state: RootState) => state.user) as {
-    userData: any;
-  };
+  const { data: userData } = useUserListQuery(menuOption, { enabled: isLoggedIn });
 
   const switchOption = (option: string) => {
     setMenuOption(option);
@@ -54,12 +52,6 @@ function UsersPage({}) {
         return <AffiliateView userData={userData} menuOption={menuOption} />;
     }
   };
-
-  useEffect(() => {
-    if (isLoggedIn && menuOption) {
-      dispatch(getUserData({ trxType: menuOption }));
-    }
-  }, [menuOption]);
 
   const exportUser = () => {
     setLoading(true);
@@ -110,7 +102,7 @@ function UsersPage({}) {
       <section className="flex flex-col gap-[20px] mt-[20px]">
         <div className={"px-[20px] flex justify-between"}>
           <p className={"text-[16px] font-semiBold"}>
-            {userData?.users?.length || 0} users
+            {(userData && "users" in userData ? userData.users.length : 0) || 0} users
           </p>
           <div className={"flex justify-between gap-[12px]"}>
             <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] h-[40px] w-[285px] rounded-[12px] border-[1px] border-grey-20">

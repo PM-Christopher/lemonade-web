@@ -16,13 +16,10 @@ import EventView from "@/views/users/EventView";
 import WalletView from "@/views/users/WalletView";
 import BalanceModal from "@/modals/users/BalanceModal";
 import { useParams, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import {
-  getAccountInfo,
-  getUserDetail,
-  userAction,
-} from "@/features/user/user.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useAccountInfoQuery, useUserDetailQuery } from "@/features/user/queries";
+import { useReactivateUserMutation } from "@/features/user/mutations";
 import DeactivateModal from "@/modals/users/DeactivateModal";
 import SuspendModal from "@/modals/users/SuspendModal";
 import suspendModal from "@/modals/users/SuspendModal";
@@ -39,11 +36,9 @@ function UserDetailsPage({}) {
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { loading, user, userDetail } = useSelector(
-    (state: RootState) => state.user
-  ) as { user: any; loading: boolean; userDetail: any };
+  const { data: userDetailData } = useUserDetailQuery(id, { enabled: isLoggedIn });
+  const user = userDetailData?.user;
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -72,17 +67,7 @@ function UserDetailsPage({}) {
     };
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn && id) {
-      dispatch(getUserDetail({ id }));
-    }
-  }, []);
-
   const reloadFunc = () => {
-    // if (isLoggedIn && id) {
-    //   dispatch(getUserDetail({ id }));
-    // }
-    // router.refresh();
     window.location.reload();
   };
 
@@ -108,6 +93,8 @@ function UserDetailsPage({}) {
     setSuspendModalOpen(!suspendModalOpen);
   };
 
+  const { data: userDetail } = useAccountInfoQuery(id, menuOption, { enabled: isLoggedIn });
+
   const renderViews = () => {
     switch (menuOption) {
       case "activities-log":
@@ -127,20 +114,16 @@ function UserDetailsPage({}) {
     setTribeOpen(!tribeOpen);
   };
 
-  useEffect(() => {
-    if (isLoggedIn && id && menuOption) {
-      dispatch(getAccountInfo({ id, infoType: menuOption }));
-    }
-  }, [menuOption]);
+  const reactivateUserMutation = useReactivateUserMutation(id);
 
   const reactivateUser = () => {
     if (isLoggedIn && id) {
       setReactivatingUser(true);
-      dispatch(
-        userAction({ id, actionType: "reactivate" })
-      ).then(() => {
-        reloadFunc();
-        setReactivatingUser(false);
+      reactivateUserMutation.mutate(undefined, {
+        onSettled: () => {
+          reloadFunc();
+          setReactivatingUser(false);
+        },
       });
     }
   };

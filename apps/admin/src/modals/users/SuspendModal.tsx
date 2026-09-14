@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { XIcon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { userAction } from "@/features/user/user.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useSuspendUserMutation } from "@/features/user/mutations";
 import { FaSpinner } from "react-icons/fa6";
 
 interface SuspendModalProps {
@@ -15,12 +15,8 @@ interface SuspendModalProps {
 function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
   const [selectedOption, setSelectedOption] =
     useState<string>("policy-violation");
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { userAction: actionStatus } = useSelector(
-    (state: RootState) => state.user
-  ) as { userAction: any };
-  const [loading, setLoading] = useState<boolean>(false);
+  const suspendUserMutation = useSuspendUserMutation(id);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(e.target.value);
@@ -28,16 +24,11 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
 
   const SubmitAction = () => {
     if (isLoggedIn && id) {
-      setLoading(true);
-      dispatch(
-        userAction({ id, actionType: "suspend" })
-      ).then((res: any) => {
-        console.log("res", res);
-        // if (res.paylod.status === true) {
-        toggle();
-        reload();
-        setLoading(false);
-        // }
+      suspendUserMutation.mutate(undefined, {
+        onSuccess: () => {
+          toggle();
+          reload();
+        },
       });
     }
   };
@@ -90,7 +81,7 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
               }
               onClick={SubmitAction}
             >
-              {loading ? (
+              {suspendUserMutation.isPending ? (
                 <div className="flex justify-center items-center">
                   <FaSpinner size={20} className="animate-spin text-white" />
                 </div>

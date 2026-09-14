@@ -1,18 +1,17 @@
 "use client";
 import MainLayout from "@/components/layouts/MainLayout";
-import { getAffiliateDetail } from "@/features/user/user.slice";
+import { useAffiliateDetailQuery } from "@/features/user/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
-import { AppDispatch, RootState } from "@/redux/store";
+import { RootState } from "@/redux/store";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 const AffiliateUser = () => {
   const params = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const id = params.id
     ? Array.isArray(params.id)
       ? parseInt(params.id[0])
@@ -20,23 +19,13 @@ const AffiliateUser = () => {
     : undefined;
   const [refHistoryOpen, setRefHistoryOpen] = useState<boolean>(false);
 
-  const [isData, setData] = useState<any>({});
-
   const toggleHistoryOpen = () => {
     setRefHistoryOpen(!refHistoryOpen);
   };
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { data: isData } = useAffiliateDetailQuery(id, { enabled: isLoggedIn });
 
-  useEffect(() => {
-    if (isLoggedIn && id) {
-      dispatch(getAffiliateDetail({ id })).then((res) => {
-        console.log("isaff", res.payload.data);
-
-        setData(res.payload.data);
-      });
-    }
-  }, []);
   return (
     <MainLayout>
       <section className="p-4 md:p-5 flex lg:flex-col flex-row gap-4 md:gap-5 w-full overflow-x-hidden max-w-full">

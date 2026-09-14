@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { XIcon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { userAction } from "@/features/user/user.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useDeactivateUserMutation } from "@/features/user/mutations";
 
 interface DeactivateModalProps {
   isOpen: boolean;
@@ -14,11 +14,8 @@ interface DeactivateModalProps {
 function DeactivateModal({ isOpen, toggle, id, reload }: DeactivateModalProps) {
   const [selectedOption, setSelectedOption] =
     useState<string>("policy-violation");
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { userAction: actionStatus } = useSelector(
-    (state: RootState) => state.user
-  ) as { userAction: any };
+  const deactivateUserMutation = useDeactivateUserMutation(id);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(e.target.value);
@@ -26,13 +23,11 @@ function DeactivateModal({ isOpen, toggle, id, reload }: DeactivateModalProps) {
 
   const SubmitAction = () => {
     if (isLoggedIn && id) {
-      dispatch(
-        userAction({ id, actionType: "deactivate" })
-      ).then((res: any) => {
-        // if (res.paylod.status === 200) {
-        toggle();
-        reload();
-        // }
+      deactivateUserMutation.mutate(undefined, {
+        onSuccess: () => {
+          toggle();
+          reload();
+        },
       });
     }
   };

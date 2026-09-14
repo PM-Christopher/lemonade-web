@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 9 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 10 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1620,7 +1620,13 @@ server state, plus its own pass-through proxy route since the backend streams ra
 JSON envelope `browserApi` expects), **announcements** (2 queries, read-only — create/edit aren't wired
 to anything in the UI yet), **team** (2 queries, 1 mutation), **transaction** (3 queries, no mutations —
 a pure reporting domain; its wallet-detail query reuses the wallet domain's own hook instead of
-duplicating it, since it's the exact same backend endpoint). Each migration deleted its old `*.slice.ts` outright and removed the reducer from
+duplicating it, since it's the exact same backend endpoint), **user** (4 queries, 3 mutations —
+list/detail/affiliate-detail/account-info, plus suspend/deactivate/reactivate; two dead cross-domain
+`userAction` imports found in `modals/events/{Suspend,Delete}Modal.tsx` and removed — only referenced
+from a commented-out line in both; also surfaced a pre-existing backend bug, not fixed here — the
+affiliate list is built from the `Referrer` model but its detail endpoint looks the id up in the
+unrelated `Affiliate` table, so most row clicks 400 with "Affiliate not found," same as the old axios
+code — needs a backend/product decision, not a frontend fix). Each migration deleted its old `*.slice.ts` outright and removed the reducer from
 `store.ts`, per this phase's own rule that a feature never exists in both patterns at once.
 **Named deviations from the plan:** the prescribed migration order (reference data → discovery → ...
 → wallet/transactions/subscriptions/payouts *last*) was not followed — auth went first (reasonable,
@@ -1634,7 +1640,7 @@ migrated to React Hook Form + Zod in the same pass as their domain, contra the p
 domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
 `Skeletons.tsx`/`tableData.ts` retirement hasn't started. **Not started at all:** the other ~15
 frontend domains (business, connect, events, settings, transaction, tribes, and the non-login/logout
-authSlice thunks) and ~3 more admin domains (user, events, promotion) are still on Redux
+authSlice thunks) and ~2 more admin domains (events, promotion) are still on Redux
 thunks + the old `axiosInstance` — safe (it rides the same
 proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but
 not migrated. redux-persist still holds far more than client preferences.

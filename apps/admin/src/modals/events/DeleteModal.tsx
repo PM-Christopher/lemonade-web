@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {XIcon} from "lucide-react";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@/redux/store";
-import {userAction} from "@/features/user/user.slice";
 import {eventAction} from "@/features/events/event.slice";
 
 interface DeactivateModalProps {

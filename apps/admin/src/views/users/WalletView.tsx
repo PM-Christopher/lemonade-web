@@ -3,9 +3,8 @@ import { CalendarIcon, ChevronDown, ChevronRight } from "lucide-react";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
 import { useParams } from "next/navigation";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { getAccountInfo } from "@/features/user/user.slice";
+import { useQueryClient } from "@tanstack/react-query";
+import { userKeys } from "@/features/user/queries";
 
 const WalletView = ({ userDetail }: any) => {
   const params = useParams();
@@ -16,16 +15,15 @@ const WalletView = ({ userDetail }: any) => {
       : parseInt(params.id)
     : undefined;
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const dispatch = useDispatch<AppDispatch>();
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const queryClient = useQueryClient();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isUpdateOpen, setIsUpdateOpen] = React.useState<boolean>(false);
 
   const [updateType, setUpdateType] = React.useState<string>("add");
 
   const reloadFunc = () => {
-    if (id && isLoggedIn) {
-      dispatch(getAccountInfo({ id, infoType: "wallet" }));
+    if (id) {
+      queryClient.invalidateQueries({ queryKey: userKeys.accountInfo(id, "wallet") });
     }
   };
   const handleToggleDropdown = () => {
