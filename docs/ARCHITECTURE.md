@@ -1775,7 +1775,7 @@ backend work.
 | Endpoints reachable against `/v1` | 0 | All except 3 (flagged, need a product decision) | All | P0 | Smoke pass over the ten journeys |
 | `: any` annotations | 574 | 499 | < 50 | P3–P5 | `grep`, tracked per PR |
 | `createAsyncThunk` | 151 | 136 (4 domains' slices deleted so far) | 0 | P5 | Burn-down; slices deleted, not just bypassed |
-| Manual `Authorization` headers | 87 | 17 | 0 | P4 | Lint rule, then `grep` |
+| Manual `Authorization` headers | 87 | 15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) | 0 | P4 | Lint rule, then `grep` |
 | Tokens reachable from JavaScript | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed | 0 | P4 | DevTools inspection + lint rule |
 | Client-side pagination sites | 7 | not re-measured this revision | 0 | P6 | Requires Conflict 1 resolved |
 | Effects with wrong deps | 32 | not re-measured this revision | 0 | P1 | `exhaustive-deps` as error |
@@ -1790,12 +1790,20 @@ backend work.
 | Public routes server-rendered | 0 | 0 | All in `(public)` | P6 | View source shows content pre-hydration |
 | Hardcoded pixel classes | 7,041 | not re-measured this revision | Declining, no new | P7 | Lint warning; ratchet on the count |
 
-**A newly-flagged, unaudited risk surfaced while re-measuring the `Authorization` header count:** 2 of
-the 17 remaining files aren't the known onboarding exception — `config/pusherConfig.ts` and
-`hooks/usePusher.ts`, in both apps, build a Bearer header from a `token` variable for Pusher's private/
-presence channel authorization. This wasn't examined this session; whether it's reading a now-always-
-empty Redux value (the same class of bug the onboarding-token fix addressed) or something else that
-still works is unknown. Worth checking before relying on realtime features.
+**Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
+remaining `Authorization`-header files) was real on both sides. Frontend read a `token` cookie that
+hasn't existed since the httpOnly cutover; admin pointed at two custom endpoints
+(`/pusher/auth/{user,channel}`) that never existed as backend routes at all. Underneath that, the
+backend's own `/broadcasting/auth` route was registered under Laravel's default `web` middleware group
+(session-cookie auth) instead of the `auth:user` Sanctum guard this API actually uses — so even a
+correctly-sent Bearer token was never checked; `auth()->user()` was always null. A separate bug in
+`MessageSent::broadcastOn()` double-prefixed the channel name, so even fully-fixed auth would have
+listened on a channel nothing was ever broadcast to. All three fixed: `lemonade-backend` commit
+`b4ecd0d`, this repo's commit `092e4f9`. Live-verified end to end (real signing, no real Pusher account
+needed — channel-auth is a local HMAC computation): a user's own channel now authenticates correctly,
+someone else's 403s, no session 401s. Admin's side is fixed for consistency but still has zero live
+consumers and no backend-registered admin channel — don't take its presence as evidence the feature is
+built, only that the plumbing that would carry it is no longer broken.
 
 ### Acceptance criteria by phase
 
