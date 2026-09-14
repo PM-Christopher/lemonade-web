@@ -1,33 +1,20 @@
 "use client";
 import Link from "next/link";
 import React, {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import Image from "next/image";
 import SearchIcon from "@/images/icons/search.svg";
 import TribeCardList from "@/components/tribe/TribeCardList";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {TribeInterface} from "@/interfaces/TribeInterface";
-import {Spinner} from "evergreen-ui";
 import MainLayout from "@/components/layouts/MainLayout";
-import {tribesApi} from "@/features/tribes/api";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {useAppDispatch} from "@/redux/hook";
-import * as yup from "yup";
-import {useFormik} from "formik";
-import {authFailure, loadStop} from "@/features/authentication/authSlice";
 import {useMediaQuery} from "react-responsive";
-import {getTribes, searchTribe} from "@/features/tribes/tribe.slice";
+import {useTribesQuery} from "@/features/tribes/queries";
+import {useSearchTribeMutation} from "@/features/tribes/mutations";
 import CreateTribeModal from "@/components/tribe/CreateTribeModal";
 import {TribeListSkeleton} from "@/components/Skeletons";
-import {RootState} from "@/redux/store";
 import {usePersistentMenuState} from "@/context/MenuStateProvider";
 
 export default function TribePage() {
-    const router = useRouter();
-    const dispatch = useAppDispatch();
-    const {searchResults, tribes, loading, searchLoading} = useSelector((state: RootState) => state.tribe);
     const [showTooltip, setShowTooltip] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
     const {setActive, getActive} = usePersistentMenuState();
@@ -45,11 +32,17 @@ export default function TribePage() {
 
     const isMobile = useMediaQuery({query: "(max-width: 640px)"});
 
+    const {data: tribesData, isLoading: loading} = useTribesQuery(tribeType);
+    const tribes = tribesData?.tribes ?? [];
+
+    const searchTribeMutation = useSearchTribeMutation();
+    const searchResults = searchTribeMutation.data?.tribes ?? [];
+
     const handleTribeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setHasSearched(true);
         const value = e.target.value;
         setSearch(value);
-        dispatch(searchTribe({data: {search: value}}));
+        searchTribeMutation.mutate(value);
     };
 
     const [modalFlag, setModalFlag] = useState(false);
@@ -61,98 +54,6 @@ export default function TribePage() {
     const changeTribeType = (type: string) => {
         setTribeType(type);
     };
-
-    const createTribeSchema = yup.object({
-        tribe_name: yup.string().required("Tribe name is required"),
-        category: yup.string().required("Category is required"),
-        description: yup.string().required("Description is required"),
-        image: yup.string().required("Image is required"),
-        private: yup.boolean().required(),
-        monetized: yup.boolean().required(),
-        membership_fee: yup
-            .number()
-            .default(0)
-            .when("monetized", {
-                is: true,
-                then: (schema) => schema.required("Membership fee is required"),
-            }),
-        members: yup.array().when("private", {
-            is: true,
-            then: (schema) => schema.of(yup.string()),
-        }),
-    });
-
-    const formik = useFormik({
-        initialValues: {
-            tribe_name: "",
-            category: "",
-            description: "",
-            image: "",
-            private: false,
-            monetized: false,
-            membership_fee: 0,
-            members: [],
-        },
-        validationSchema: createTribeSchema,
-        onSubmit: async (values) => {
-            values.membership_fee = values.membership_fee ? values.membership_fee : 0;
-            try {
-                const {data} = await tribesApi.createTribe(values);
-                if (data.status) {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Tribe created",
-                            type: "success",
-                        })
-                    );
-                    activateModal();
-                    // redirect to the newly created tribe
-                    router.push(`/tribe/${data?.data?.tribe?.slug}`);
-                } else {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Something went wrong",
-                            type: "error",
-                        })
-                    );
-                }
-            } catch (err: any) {
-                dispatch(authFailure());
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: err?.response?.data?.message || "error",
-                        type: "error",
-                    })
-                );
-            } finally {
-                dispatch(loadStop());
-            }
-        },
-    });
-
-    const showError = (errorMessage: any) => {
-        dispatch(
-            updateToastifyReducer({
-                show: true,
-                message: errorMessage || "An error occurred",
-                type: "error",
-            })
-        );
-    };
-
-    useEffect(() => {
-        if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
-            const firstErrorMessage = Object.values(formik.errors)[0];
-            showError(firstErrorMessage);
-        }
-    }, [formik.errors, formik.submitCount]);
-
-    useEffect(() => {
-        dispatch(getTribes({tribe_type: tribeType}))
-    }, [dispatch, tribeType]);
 
     return (
         <MainLayout>

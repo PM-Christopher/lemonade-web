@@ -3,8 +3,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {joinTribe} from "@/features/tribes/tribe.slice";
+import {useJoinTribeMutation} from "@/features/tribes/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {ColorRing} from "react-loader-spinner";
@@ -18,22 +17,25 @@ type JoinTribeInterface = {
 const JoinTribeModal: React.FC<JoinTribeInterface> = ({toggle, isOpen, tribe}) => {
 
     const dispatch = useAppDispatch()
-    const {loading: tribeLoading} = useSelector((state: any) => state.tribe);
+    const joinTribeMutation = useJoinTribeMutation(tribe?.slug ?? "");
+    const tribeLoading = joinTribeMutation.isPending;
 
     const handleJoinTribe = (id: string) => {
         const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${id}`;
-        dispatch(joinTribe({id, data: {redirect_url}})).then((res:any) => {
-            if (res.payload.data.authorization_url) {
-                window.location.href = res.payload.data.authorization_url;
-            }
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Joined tribe successfully",
-                    type: "success",
-                })
-            );
-            toggle()
+        joinTribeMutation.mutate({redirect_url}, {
+            onSuccess: (result) => {
+                if (result.authorization_url) {
+                    window.location.href = result.authorization_url;
+                }
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Joined tribe successfully",
+                        type: "success",
+                    })
+                );
+                toggle()
+            },
         })
     }
 

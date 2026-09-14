@@ -72,6 +72,27 @@ interface ThreadPolls {
     total_votes: number
 }
 
+// Matches ThreadCommentResource (backend) — was typed as `string[]` on
+// Thread.all_comments, which never matched what postComment/getThreads
+// actually return (comment objects).
+export interface ThreadComment {
+    id: number;
+    thread_id: number;
+    owner: boolean;
+    body: string;
+    user_id: number;
+    user: {
+        fullname: string;
+        username: string;
+        avatar: string;
+        verified: boolean;
+    };
+    created_at: string;
+    likes: number;
+    hasLikedComment: boolean;
+    children: ThreadComment[];
+}
+
 export interface Thread {
     id: number;
     owner: boolean;
@@ -86,27 +107,9 @@ export interface Thread {
     hasLiked: boolean;
     likes: number;
     comments: number;
-    all_comments: string[];
+    all_comments: ThreadComment[];
     created_at: string;
     created_by: CreatedBy;
     thread_polls: ThreadPolls;
-}
-
-export interface TribeThreadInterface {
-    id: number
-    user: UserInterface
-    hasLiked: boolean;
-    hasCommented: boolean;
-    topic: string;
-    thoughts: string;
-    media: string[];
-    tags: string[];
-    polls: number;
-    created_at: string;
-    videos: string[];
-    pinned: boolean;
-    likes: number;
-    comments: number;
-    all_comments: any[];
 }
 

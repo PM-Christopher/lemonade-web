@@ -1,6 +1,5 @@
 "use client"
-import React, {useEffect, useRef, useState} from 'react';
-import TopNav from "@/components/navigation/TopNav";
+import React, {useEffect, useState} from 'react';
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import PinnedIcon from "@/images/icons/pinnedIcon.svg"
@@ -9,34 +8,26 @@ import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
 import CreateThreadModal from "@/components/tribe/CreateThreadModal";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
-import {Thread, TribeThreadInterface} from "@/interfaces/TribeInterface";
+import {Thread} from "@/interfaces/TribeInterface";
 import {useRouter, useSearchParams} from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import EditIcon from "@/images/icons/edit.svg"
 import {useMediaQuery} from "react-responsive";
 import ShareTribeModal from "@/components/tribe/ShareTribeModal";
-import shareTribeModal from "@/components/tribe/ShareTribeModal";
 import UserInfoModal from "@/components/tribe/UserInfoModal";
-import {useAppDispatch} from "@/redux/hook";
-import {
-    filterThreads,
-    getPinThreads,
-    getThreads,
-    getTribe,
-    pinThread, verifyTribePayment,
-    viewProfile
-} from "@/features/tribes/tribe.slice";
+import {useQueryClient} from "@tanstack/react-query";
+import {useTribeQuery, useThreadsQuery, usePinnedThreadsQuery, tribeKeys} from "@/features/tribes/queries";
+import {useFilterThreadsMutation, usePinThreadMutation, useViewProfileMutation} from "@/features/tribes/mutations";
+import {useVerifyTransactionMutation} from "@/features/transaction/mutations";
 import ReportThreadModal from "@/components/tribe/ReportThreadModal";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 import AddMemberModal from "@/components/tribe/AddMemberModal";
+import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import useDebounce from "@/hooks/useDebounce";
 import useNxtSearchParams from "@/hooks/useSearchParams";
 import PadlockIcon from "@/images/icons/padlockIconFilled.svg"
 import JoinedTribeModal from "@/components/tribe/JoinedTribeModal";
-import {RootState} from "@/redux/store";
 import {ThreadsSkeleton} from "@/components/Skeletons";
 
 
@@ -50,18 +41,27 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     const [addUserModal, setAddUserModal] = useState(false)
     const [joinedTribeModal, setJoinedTribeModal] = useState(false)
 
-    const [userId, setUserId] = useState<number | null>(null);
     const [threadId, setThreadId] = useState<number | null>(null);
     const dispatch = useAppDispatch()
+    const queryClient = useQueryClient()
 
-    const {user, threads, loading: dataLoading, pinnedThreads, tribe} = useSelector((state: RootState) => state.tribe)
+    const {data: tribeData, isLoading: tribeLoading} = useTribeQuery(params.id);
+    const tribe = tribeData?.tribe ?? null;
+    const {data: threadsData, isLoading: dataLoading} = useThreadsQuery(params.id);
+    const threads = threadsData?.threads ?? [];
+    const {data: pinnedThreadsData} = usePinnedThreadsQuery(params.id);
+    const pinnedThreads = pinnedThreadsData?.threads ?? [];
+
+    const viewProfileMutation = useViewProfileMutation();
+    const user = viewProfileMutation.data?.user;
+    const filterThreadsMutation = useFilterThreadsMutation(params.id);
+    const pinThreadMutation = usePinThreadMutation(params.id);
+    const verifyTransactionMutation = useVerifyTransactionMutation();
 
     const isMobile = useMediaQuery({query: "(max-width: 1024px)"});
     const router = useRouter()
     const searchParams = useSearchParams();
     const {setSearchParams, nxtSearchParams} = useNxtSearchParams();
-
-    const {isLoggedIn} = useSelector((state: any) => state.auth)
 
     const query = nxtSearchParams?.get("search");
     const [searchValue, setSearchValue] = useState("");
@@ -70,14 +70,10 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
         setSearchParams({search: debouncedValue});
     }, [debouncedValue]);
 
-    const [data, setData] = useState<any[] | undefined>(undefined);
+    const [data, setData] = useState<Thread[] | undefined>(undefined);
 
     useEffect(() => {
-        if (threads && threads.length > 0) {
-            setData(threads);
-        } else if (threads && threads.length === 0) {
-            setData([]);
-        }
+        setData(threads);
     }, [threads]);
 
     useEffect(() => {
@@ -85,7 +81,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
             setData(threads);
         } else {
             const q = query?.toLowerCase()?.trim();
-            const filtered = threads.filter((thread: any) => {
+            const filtered = threads.filter((thread: Thread) => {
                 return !q ||
                     thread?.topic?.toLowerCase().includes(q) ||
                     thread?.thoughts?.toLowerCase().includes(q);
@@ -93,20 +89,20 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
 
             setData(filtered);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query]);
 
     const trxref = searchParams.get('trxref');
-    const reference = searchParams.get('reference');
 
     useEffect(() => {
         if (trxref) {
-            dispatch(verifyTribePayment({reference: trxref}))
-                .unwrap()
-                .then(() => {
+            verifyTransactionMutation.mutate({trx_ref: trxref}, {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({queryKey: tribeKeys.detail(params.id)});
                     // Remove trxref from URL
-                    const params = new URLSearchParams(searchParams);
-                    params.delete('trxref');
-                    params.delete('reference');
+                    const params_ = new URLSearchParams(searchParams);
+                    params_.delete('trxref');
+                    params_.delete('reference');
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -116,19 +112,15 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                     );
                     setJoinedTribeModal(true)
                     // Update the URL without reloading
-                    router.replace(`?${params.toString()}`);
-                })
-                .catch((err) => {
+                    router.replace(`?${params_.toString()}`);
+                },
+                onError: (err) => {
                     console.error('Payment verification failed:', err);
-                });
+                },
+            });
         }
-    }, [trxref, dispatch, searchParams, router]);
-
-    useEffect(() => {
-        if (isLoggedIn && params?.id) {
-            dispatch(getTribe({id: params.id}))
-        }
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [trxref]);
 
     const toggleAddMember = () => {
         setAddUserModal(!addUserModal)
@@ -139,13 +131,13 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     }
 
     const switchUserId = (id: number) => {
-        setUserId(id)
-        dispatch(viewProfile({id: id}))
+        viewProfileMutation.mutate(id)
         activateUserInfoModal()
     }
 
     const setPinThread = (id: number) => {
-        dispatch(pinThread({id}))
+        const current = threads.find((t) => t.id === id);
+        pinThreadMutation.mutate({threadId: id, wasPinned: current?.pinned ?? false})
     }
 
     const activateJoinTribeModal = () => {
@@ -164,15 +156,9 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
         setReportThreadModal(!reportThreadModal)
     }
 
-    const sortThreads = (value: any) => {
-        if (!tribe) return; // do nothing if tribe is undefined
-
-        dispatch(
-            filterThreads({
-                id: tribe.id, // safe, guaranteed number
-                data: { filter: value },
-            })
-        );
+    const sortThreads = (value: string) => {
+        if (!tribe) return;
+        filterThreadsMutation.mutate({tribeId: tribe.id, filter: value});
     };
 
     const toggleThreadId = (id: number) => {
@@ -189,12 +175,6 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
         setDeleteThreadModal(!deleteThreadModal)
     }
 
-    useEffect(() => {
-        dispatch(getThreads({id: params.id}))
-
-        dispatch(getPinThreads({id: params.id}))
-    }, [])
-
     const handleScroll = (id: number) => {
         let itemId = `pinned-${id}`
         const element = document.getElementById(itemId);
@@ -206,8 +186,6 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     const toggleJoinedTribeModal = () => {
         setJoinedTribeModal(!joinedTribeModal)
     }
-
-    console.log({tribe})
 
     return (
         <MainLayout>
@@ -337,6 +315,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                                 toggleAddMember={toggleAddMember}
                                 toggleJoin={activateJoinTribeModal}
                                 threads={threads}
+                                loading={tribeLoading}
                             />
                         </aside>
                     )}
@@ -344,6 +323,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                     {/* Modals */}
                     <CreateThreadModal
                         tribe_id={tribe?.id}
+                        tribe_slug={params.id}
                         toggle={activateCreateThreadModal}
                         isOpen={createThreadModalOpen}
                     />
@@ -362,7 +342,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                         isOpen={shareTribeModalOpen}
                         tribe={tribe}
                     />
-                    {user && (
+                    {Boolean(user) && (
                         <UserInfoModal
                             toggle={activateUserInfoModal}
                             isOpen={userInfoModal}
@@ -380,6 +360,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
                         isOpen={deleteThreadModal}
                         threadId={threadId}
                         setThreadId={setThreadId}
+                        tribeId={params.id}
                     />
                     <AddMemberModal
                         isOpen={addUserModal}

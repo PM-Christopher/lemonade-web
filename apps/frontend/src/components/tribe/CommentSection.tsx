@@ -7,7 +7,7 @@ import moment from "moment";
 
 import { useAppDispatch } from "@/redux/hook";
 import {getInitials} from "@/lib/helper";
-import {Thread, TribeInterface, TribeThreadInterface} from "@/interfaces/TribeInterface";
+import {Thread} from "@/interfaces/TribeInterface";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 

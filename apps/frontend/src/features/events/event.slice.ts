@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {eventsApi} from "@/features/events/api";
 import {EventInterface, PromotionInterface, TicketDetails, TicketInterface} from "@/interfaces/EventInterface";
-import {likeThread} from "@/features/tribes/tribe.slice";
 import {RootState} from "@/redux/store";
 
 export type GuestListCardProps = {

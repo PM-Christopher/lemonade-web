@@ -3,20 +3,24 @@ import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {deleteThread} from "@/features/tribes/tribe.slice";
+import {useDeleteThreadMutation} from "@/features/tribes/mutations";
 
 interface DeleteThreadIF {
     toggle: () => void;
     isOpen: boolean;
     threadId: number|null;
     setThreadId: (threadId: number|null) => void;
+    tribeId: string;
 }
 
-const DeleteThreadModal: React.FC<DeleteThreadIF> = ({isOpen, threadId, toggle, setThreadId}) => {
+const DeleteThreadModal: React.FC<DeleteThreadIF> = ({isOpen, threadId, toggle, setThreadId, tribeId}) => {
     const dispatch = useAppDispatch();
+    const deleteThreadMutation = useDeleteThreadMutation(tribeId);
 
     const handleDeleteThread = () => {
-        dispatch(deleteThread({id: threadId}))
+        if (threadId !== null) {
+            deleteThreadMutation.mutate(threadId)
+        }
         dispatch(
             updateToastifyReducer({
                 show: true,

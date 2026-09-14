@@ -13,10 +13,10 @@ import * as yup from "yup";
 import {useFormik} from "formik";
 import {tribesApi} from "@/features/tribes/api";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {authFailure, loadStop} from "@/features/authentication/authSlice";
 import {useAppDispatch} from "@/redux/hook";
 import {useRouter} from "next/navigation";
-import {useRequest} from "@/hooks/useRequest";
+import {useTribeCategoriesQuery} from "@/features/tribes/queries";
+import {useCreateTribeMutation} from "@/features/tribes/mutations";
 import Switch from "react-switch";
 import {useMediaQuery} from "react-responsive";
 
@@ -28,6 +28,7 @@ interface CreateTribeModalProps {
 const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => {
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const createTribeMutation = useCreateTribeMutation();
     const [image, setImage] = useState(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [monetizedCheck, setMonetizedChecked] = useState(false);
@@ -68,9 +69,8 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
         validationSchema: createTribeSchema,
         onSubmit: async (values) => {
             values.membership_fee = values.membership_fee ? values.membership_fee : 0;
-            try {
-                const {data} = await tribesApi.createTribe(values);
-                if (data.status) {
+            createTribeMutation.mutate(values, {
+                onSuccess: (result) => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -80,34 +80,22 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
                     );
                     activateModal();
                     // redirect to the newly created tribe
-                    router.push(`/tribe/${data?.data?.tribe?.slug}`);
-                } else {
+                    router.push(`/tribe/${result.tribe.slug}`);
+                },
+                onError: (err: any) => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
-                            message: "Something went wrong",
+                            message: err?.message || "Something went wrong",
                             type: "error",
                         })
                     );
-                }
-            } catch (err: any) {
-                dispatch(authFailure());
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: err?.response?.data?.message || "error",
-                        type: "error",
-                    })
-                );
-            } finally {
-                dispatch(loadStop());
-            }
+                },
+            });
         },
     });
 
-    const {data: tribe_cat} = useRequest(
-        `/shared/utilities/tribes-categories`,
-    );
+    const {data: tribe_cat} = useTribeCategoriesQuery();
 
     const handleChange = (type: string) => {
         if (type === "monetized") {
@@ -126,7 +114,7 @@ const CreateTribeModal = ({modalFlag, activateModal}: CreateTribeModalProps) => 
             formData.append("file", file);
             try {
                 const {data} = await tribesApi.upload(formData);
-                if (data.status) {
+                if (data.success) {
                     setImage(data.data.image);
                     await formik.setFieldValue("image", data.data.image);
                     dispatch(

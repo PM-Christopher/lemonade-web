@@ -18,7 +18,6 @@ import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
 import {usePusher} from "@/hooks/usePusher";
-import {verifyTribePayment} from "@/features/tribes/tribe.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import useNxtSearchParams from "@/hooks/useSearchParams";
 import {useAppDispatch} from "@/redux/hook";

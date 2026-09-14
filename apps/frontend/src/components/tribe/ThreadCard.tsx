@@ -14,10 +14,10 @@ import ImageCarousel from "@/components/global/ImageCarousel";
 import CommentsSection from "./CommentSection";
 import {useAppDispatch} from "@/redux/hook";
 import {
-    postComment,
-    likeThread,
-    submitVote,
-} from "@/features/tribes/tribe.slice";
+    usePostCommentMutation,
+    useLikeThreadMutation,
+    useSubmitVoteMutation,
+} from "@/features/tribes/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import type {Thread, TribeInterface} from "@/interfaces/TribeInterface";
 import {getInitials} from "@/lib/helper";
@@ -48,6 +48,13 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                                                    toggleDeleteThread,
                                                }) => {
     const dispatch = useAppDispatch();
+    // tribe_id (the tribe's raw id) is what LikeTribeThread/VoteOnTribePoll/
+    // CommentOnTribeThread actually require in the URL; tribe?.slug is what
+    // useThreadsQuery/usePinnedThreadsQuery are keyed by — the two are
+    // different identifiers on the backend (see mutations.ts's comment).
+    const postCommentMutation = usePostCommentMutation(tribe?.slug ?? "");
+    const likeThreadMutation = useLikeThreadMutation();
+    const submitVoteMutation = useSubmitVoteMutation(tribe?.slug ?? "");
 
     const [isExpanded, setIsExpanded] = useState(false);
     const [comment, setComment] = useState("");
@@ -92,24 +99,20 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
 
         setSubmitting(true);
         try {
-            const res = await dispatch(
-                postComment({
-                    thread_id: thread.id,
-                    tribe_id,
-                    data: {body: comment},
+            await postCommentMutation.mutateAsync({
+                tribeId: tribe_id,
+                threadId: thread.id,
+                data: {body: comment},
+            });
+            setComment("");
+            setShowCommentForm(false);
+            dispatch(
+                updateToastifyReducer({
+                    show: true,
+                    message: "Posted comment successfully",
+                    type: "success",
                 })
             );
-            if (res.payload.status) {
-                setComment("");
-                setShowCommentForm(false);
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Posted comment successfully",
-                        type: "success",
-                    })
-                );
-            }
         } catch {
             dispatch(
                 updateToastifyReducer({
@@ -131,10 +134,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         setLikeCount(prevLiked ? prevCount - 1 : prevCount + 1);
 
         try {
-            const {payload} = await dispatch(
-                likeThread({id: thread.id, tribe_id})
-            );
-            if (!payload?.status) throw new Error();
+            await likeThreadMutation.mutateAsync({tribeId: tribe_id, threadId: thread.id});
         } catch {
             setHasLiked(prevLiked);
             setLikeCount(prevCount);
@@ -146,25 +146,22 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 })
             );
         }
-    }, [hasLiked, likeCount, thread.id, tribe_id, dispatch]);
+    }, [hasLiked, likeCount, thread.id, likeThreadMutation, dispatch]);
 
     // --- Poll vote
     const pollVote = (option_id: number) =>
-        dispatch(
-            submitVote({
-                tribe_id,
-                thread_id: thread.id,
-                poll_id: thread.thread_polls.id,
-                data: {option_id},
-            })
-        ).then((res: any) =>
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: res.payload.status ? "Vote submitted" : "Error submitting vote",
-                    type: res.payload.status ? "success" : "error",
-                })
-            )
+        submitVoteMutation.mutate(
+            {tribeId: tribe_id, threadId: thread.id, pollId: thread.thread_polls.id, data: {option_id}},
+            {
+                onSuccess: () =>
+                    dispatch(
+                        updateToastifyReducer({show: true, message: "Vote submitted", type: "success"})
+                    ),
+                onError: () =>
+                    dispatch(
+                        updateToastifyReducer({show: true, message: "Error submitting vote", type: "error"})
+                    ),
+            }
         );
 
     // --- Modal open positioning

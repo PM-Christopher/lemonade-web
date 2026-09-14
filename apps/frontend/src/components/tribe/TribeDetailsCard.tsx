@@ -9,11 +9,6 @@ import DeleteIcon from "@/images/icons/delete.svg";
 import {TribeInterface, TribeMemberInterface} from "@/interfaces/TribeInterface";
 import {formatLongDate} from "@/lib/dateTimeFormatter";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
-import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {joinTribe} from "@/features/tribes/tribe.slice";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {ColorRing} from "react-loader-spinner";
 import SkeletonLoader from "@/components/global/SkeletonLoader";
 import {getInitials} from "@/lib/helper";
 import {TribeDetailsSkeleton} from "@/components/Skeletons";
@@ -24,7 +19,8 @@ type TribeDetailsInterface = {
     tribe: TribeInterface | null,
     share: (tribe: TribeInterface | null) => void
     toggleAddMember: () => void,
-    threads: any
+    threads: any,
+    loading: boolean
 }
 const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                                                                toggle,
@@ -32,28 +28,9 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                                                                share,
                                                                toggleAddMember,
                                                                toggleJoin,
-                                                               threads
+                                                               threads,
+                                                               loading: tribeLoading
                                                            }) => {
-    const dispatch = useAppDispatch()
-    const {loading: tribeLoading} = useSelector((state: any) => state.tribe);
-
-    const handleJoinTribe = (id: string) => {
-        const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${id}`;
-        dispatch(joinTribe({id, data: {redirect_url}})).then((res: any) => {
-            if (res.payload.data.authorization_url) {
-                window.location.href = res.payload.data.authorization_url;
-            } else {
-                toggleJoin()
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Joined tribe successfully",
-                        type: "success",
-                    })
-                );
-            }
-        })
-    }
     const members = tribe?.member_list ?? [];
 
     return (

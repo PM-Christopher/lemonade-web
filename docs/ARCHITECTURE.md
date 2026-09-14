@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 16 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 17 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1777,11 +1777,67 @@ This domain surfaced more real bugs than any other this session, of increasing d
 
 Live-verified list/detail/listings/jobs-data/filter and a real create+update round-trip (the update
 round-trip needed a business created directly via tinker with `status: ACTIVE`, since the demo user
-owned no approved business — see finding #3) through the real frontend BFF proxy. **Not started at
-all:** the remaining ~10 `apps/frontend` domains (events, tribes, and the non-login/logout authSlice
-thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same proxied transport
-and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but not migrated.
-redux-persist still holds far more than client preferences.
+owned no approved business — see finding #3) through the real frontend BFF proxy.
+
+**tribes** (tribes/threads/comments/polls — the community forum domain) is migrated too — 5 queries
+(tribes-by-type, tribe detail + its threads, threads, pinned threads, tribe categories) and 13
+mutations. The single biggest thing this domain's live-testing surfaced: **the backend identifies the
+same tribe two different ways depending on the endpoint**, and nothing in the route list or either
+app makes that visible. `GetTribe`/`ProcessTribeJoin`/`ListTribeThreads`/`GetPinnedTribeThreads`/
+`AddTribeMember` all resolve their `{id}`/`{forum}` route param as a **slug** (`findTribeOrFail`/
+`findTribeBySlugOrFail`), but `CreateTribeThread` (`Tribe::query()->find($tribeId)`) and
+`SortTribeThreads` (`findTribeByIdOrFail`) resolve the *same-shaped* `{forum}` param as the tribe's
+**raw id** — confirmed live: `POST .../threads/create-thread` 400s "Tribe not found" against the slug
+and 200s against the id. `ThreadController`'s routes (`post-like`, `post-comment`, `poll-action`) are
+raw-id-only too. Since `useThreadsQuery`/`usePinnedThreadsQuery` are (correctly) keyed by the slug —
+it's the identifier the page URL and `getTribe`/`getThreads` actually use — every mutation that needs
+the raw id for its own request (`useCreateThreadMutation`, `useFilterThreadsMutation`,
+`useSubmitVoteMutation`, `usePostCommentMutation`, `useLikeThreadMutation`) takes the slug at hook
+creation time (for its cache-key writes) and the raw id separately, at call time (for the request) —
+documented inline in `features/tribes/mutations.ts`. Getting this wrong doesn't 4xx (the request itself
+still succeeds off the id) — it silently writes the mutation's cache update into a query key nothing
+is reading, so the UI never reflects the change until an unrelated refetch. A second, smaller backend
+oddity in the same family: `ThreadController::pinThread` puts the *thread object* under the data key
+`'message'` and uses the pinned/unpinned wording as the envelope's top-level `message` instead — which
+`browserApi`'s `unwrap()` discards, keeping only `data`. So the response the frontend receives carries
+the thread but no signal of which way the toggle went; `usePinThreadMutation` works around it by having
+the caller pass in the thread's `pinned` state from *before* the call and flipping it, rather than
+trying to read the direction back from the response (confirmed live via a real pin/unpin round-trip).
+**One real bug found and fixed in `lemonade-backend`, not just noted**: the frontend's tribe-join
+payment verification called `axiosInstance.get('/tribes/payment/verify?reference=...')` — a route that
+has never existed in the 290-route contract (flagged, unfixed, in three earlier Phase 5 passes, this
+one included at first). Tracing `ProcessTribeJoin`'s `PaymentService::initialize` showed it writes the
+exact same `Transaction` row (keyed by `trx_ref`) that every other payment path writes — the same one
+`VerifyTransaction` (already migrated as the `transaction` domain's `useVerifyTransactionMutation`,
+already used by `events` for its own payment-redirect confirmation) reads. So this was never a
+route the backend was missing; it was a frontend call to the wrong endpoint. `tribe/[id]/page.tsx`'s
+`trxref` handler now calls `useVerifyTransactionMutation` like `events` does — confirmed live end-to-end
+(a real Paystack `initialize` call through `join-tribe`, then a real `verify-transaction` call against
+the resulting `trx_ref`). Also found and fixed the recurring `data.status`-vs-`data.success` envelope-key
+bug in `CreateTribeModal.tsx`'s and `CreateThreadModal.tsx`'s upload handlers (same class as settings'
+and connect's fixes, transport untouched). Found and removed: three dead cross-domain imports
+(`verifyTribePayment` imported but never called in both `event/page.tsx` and `event/[id]/page.tsx` —
+`events` already gets its own payment verification from `useVerifyTransactionMutation`; `likeThread`
+imported but never called in `event.slice.ts`), a dead `handleJoinTribe` function in
+`TribeDetailsCard.tsx` (the tribe-details "Join tribe" button actually opens `JoinTribeModal`, which has
+its own working copy), a dead lowercase `shareTribeModal` duplicate import and a stray debug
+`console.log({tribe})` in `tribe/[id]/page.tsx`, a stray `@babel/types` import in `AddMemberModal.tsx`,
+and a large dead inline formik create-tribe form in `tribe/page.tsx` (the real one lives in
+`CreateTribeModal.tsx`; this one was never wired to any rendered `<form>`). `getComments`/`GetTribeThreadComments`
+had zero real consumers — thread comments arrive embedded in `ThreadResource.all_comments` already —
+dropped rather than migrated, same rule as every other dead-code find this session. `Thread.all_comments`
+was typed `string[]`; retyped to a proper `ThreadComment` interface matching `ThreadCommentResource`
+(safe — every consumer of `Thread` lives inside this domain). Live-verified every endpoint (list by
+type, detail, threads, pinned, categories, create-tribe, create-thread, like, comment, pin/unpin, sort,
+search, add-member, delete-thread, join-tribe + verify-transaction) through the real BFF proxy, not just
+against the backend directly.
+
+**Not started at all:** the remaining ~9 `apps/frontend` domains (events — the largest slice in the
+codebase at 897 lines, already known to cross-import from `tribe.slice.ts` before this pass removed
+that coupling — and the non-login/logout authSlice thunks) are still on Redux thunks + the old
+`axiosInstance` — safe (it rides the same proxied transport and had its dead `token`/`authToken` params
+removed in the Tier 2 cleanup below), but not migrated. redux-persist still holds far more than client
+preferences.
 
 **The "Tier 2" dead-weight cleanup** (not one of this document's original bullets, but directly serves
 this phase's "no feature in both patterns" rule): every non-auth domain's Redux thunks and

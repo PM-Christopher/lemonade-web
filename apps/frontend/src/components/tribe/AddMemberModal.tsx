@@ -5,8 +5,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {PlusIcon, XIcon} from "lucide-react";
 import {useAppDispatch} from "@/redux/hook";
-import {addTribeMember} from "@/features/tribes/tribe.slice";
-import {isIfStatement} from "@babel/types";
+import {useAddTribeMemberMutation} from "@/features/tribes/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 interface AddMemberIF {
@@ -21,6 +20,7 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
     // State to hold the list of usernames
     const [usernames, setUsernames] = useState<string[]>([]);
     const dispatch = useAppDispatch()
+    const addTribeMemberMutation = useAddTribeMemberMutation(id)
 
     // Adds the current input value to the usernames array
     const handleAddUsername = () => {
@@ -36,9 +36,8 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
     };
 
     const handleAddTribeMember = () => {
-        const data = {usernames}
-        dispatch(addTribeMember({id, data})).then((res: any) => {
-            if (res.payload.status) {
+        addTribeMemberMutation.mutate({usernames}, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -47,7 +46,8 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
                     })
                 );
                 toggle()
-            } else {
+            },
+            onError: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -55,9 +55,7 @@ const AddMemberModal: React.FC<AddMemberIF> = ({isOpen, toggle, id}) => {
                         type: "error",
                     })
                 );
-            }
-        }).catch(err => {
-            console.log({err})
+            },
         })
     }
 

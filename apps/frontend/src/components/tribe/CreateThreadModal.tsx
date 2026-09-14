@@ -8,7 +8,7 @@ import PollIcon from "@/images/icons/votes.svg";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {FormikButton} from "@/components/global/FormikButton";
-import {createThread} from "@/features/tribes/tribe.slice";
+import {useCreateThreadMutation} from "@/features/tribes/mutations";
 import {useAppDispatch} from "@/redux/hook";
 import {useMediaQuery} from "react-responsive";
 import {tribesApi} from "@/features/tribes/api";
@@ -20,12 +20,18 @@ import DatePicker from "react-datepicker";
 type CreateThreadInterface = {
     toggle: () => void,
     isOpen: boolean,
-    tribe_id: any
+    tribe_id: any,
+    // CreateTribeThread (backend) looks the tribe up by its raw id, not its
+    // slug — unlike the threads/pinnedThreads queries, which are slug-keyed.
+    // Both identifiers are needed here for that reason (see
+    // features/tribes/mutations.ts's useCreateThreadMutation comment).
+    tribe_slug: string
 }
 
-const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tribe_id}) => {
+const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tribe_id, tribe_slug}) => {
     const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
     const dispatch = useAppDispatch()
+    const createThreadMutation = useCreateThreadMutation(tribe_slug)
     const [mediaFiles, setMediaFiles] = useState<string[]>([])
     const [videoFiles, setVideoFiles] = useState<string[]>([])
     const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -105,7 +111,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 try {
                     const { data } = await tribesApi.uploadMultiple(formData);
 
-                    if (data.status) {
+                    if (data.success) {
                         setMediaFiles((prev) => [...prev, ...data.data.images]);
                         await formik.setFieldValue("media", data.data.images);
                         dispatch(
@@ -154,7 +160,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
             });
             try {
                 const { data } = await tribesApi.uploadMultiple(formData)
-                if(data.status) {
+                if(data.success) {
                     setVideoFiles((prev) => [...prev, ...data.data.images]);
                     await formik.setFieldValue("videos", data.data.images)
                     dispatch(
@@ -201,8 +207,8 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
             }
         }
         const data = {...values, polls: hasPolls, thread_polls}
-        dispatch(createThread({id: tribe_id, data })).then((res:any) => {
-            if (res.payload.status) {
+        createThreadMutation.mutate({tribeId: tribe_id, data}, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -212,7 +218,8 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                 );
                 formik.resetForm()
                 toggle()
-            } else {
+            },
+            onError: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -220,9 +227,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                         type: "error",
                     })
                 );
-            }
-        }).catch((error) => {
-
+            },
         })
     }
 

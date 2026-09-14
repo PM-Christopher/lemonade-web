@@ -16,7 +16,6 @@ import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
 import {resetFreeEventState, searchEvent} from "@/features/events/event.slice";
 import {useRouter, useSearchParams} from "next/navigation";
-import {verifyTribePayment} from "@/features/tribes/tribe.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useVerifyTransactionMutation} from "@/features/transaction/mutations";
 import VerifyPaymentModal from "@/components/events/Modals/VerifyPaymentModal";

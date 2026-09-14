@@ -5,7 +5,7 @@ import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {Label} from "@/components/ui/label";
 import {useAppDispatch} from "@/redux/hook";
-import {reportThread} from "@/features/tribes/tribe.slice";
+import {useReportThreadMutation} from "@/features/tribes/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type ReportThreadIF = {
@@ -16,11 +16,14 @@ type ReportThreadIF = {
 
 const ReportThreadModal: React.FC<ReportThreadIF> = ({toggle, isOpen, threadId}) => {
     const dispatch = useAppDispatch()
+    const reportThreadMutation = useReportThreadMutation()
 
     const [selectedReport, setSelectedReport] = useState("Inappropriate content");
 
     const submitThread = () =>{
-        dispatch(reportThread({id: threadId, data: {report: selectedReport}}))
+        if (threadId !== null) {
+            reportThreadMutation.mutate({id: threadId, data: {report: selectedReport}})
+        }
         dispatch(
             updateToastifyReducer({
                 show: true,

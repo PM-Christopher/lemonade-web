@@ -1,13 +1,6 @@
 import React from 'react';
 import CloseIcon from "@/images/icons/close.svg";
-import {Button} from "@/components/ui/button";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
-import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {joinTribe} from "@/features/tribes/tribe.slice";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {formatNumberWithCommas} from "@/lib/formatNumber";
-import {ColorRing} from "react-loader-spinner";
 
 type JoinTribeInterface = {
     toggle: () => void,
