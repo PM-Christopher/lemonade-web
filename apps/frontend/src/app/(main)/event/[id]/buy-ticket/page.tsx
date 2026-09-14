@@ -7,31 +7,25 @@ import CalendarIcon from "@/images/icons/calendar.svg";
 import ClockIcon from "@/images/icons/clock.svg";
 import {Button} from "@/components/ui/button";
 import {useRouter, useSearchParams} from "next/navigation";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
 import {TicketDetails, TicketInterface} from "@/interfaces/EventInterface";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {useAppDispatch} from "@/redux/hook";
-import {addTickets, getEventTicketData} from "@/features/events/event.slice";
+import {addTickets} from "@/features/events/event.slice";
+import {useEventTicketDataQuery} from "@/features/events/queries";
 import MainLayout from "@/components/layouts/MainLayout";
 import {ChevronUp} from "lucide-react";
 import TicketSummary from "@/components/events/Modals/TicketSummary";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {RootState} from "@/redux/store";
 import {EventTicketDetailSkeleton} from "@/components/Skeletons";
 
 const Page = ({params}: { params: { id: number } }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const [summaryModal, setSummaryModal] = useState(false);
-    const {loading, ticket_data} = useSelector((state: RootState) => state.event);
+    const {data: ticket_data, isLoading: loading} = useEventTicketDataQuery(params.id);
     const { event, tickets } = ticket_data || {};
     const searchParams = useSearchParams();
-
-    useEffect(() => {
-        dispatch(getEventTicketData({id: params.id}))
-    }, []);
 
     const [quantities, setQuantities] = useState<TicketDetails[]>([]);
 
@@ -172,9 +166,9 @@ const Page = ({params}: { params: { id: number } }) => {
                                                 {/* Time */}
                                                 <div className="flex items-center gap-2 text-text-grey text-[14px] laptop:text-[16px]">
                                                     <ClockIcon className="text-gray-500" />
-                                                    <span>{formatTime(event?.start_date)}</span>
+                                                    <span>{formatTime(event?.start_date ?? null)}</span>
                                                     <span>-</span>
-                                                    <span>{formatTime(event?.end_date)}</span>
+                                                    <span>{formatTime(event?.end_date ?? null)}</span>
                                                 </div>
                                             </div>
                                         </div>

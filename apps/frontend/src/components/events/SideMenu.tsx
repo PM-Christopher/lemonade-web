@@ -2,10 +2,9 @@
 import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import SideMenuEventCard from "@/components/events/SideMenuEventCard";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {MyTicketInterface} from "@/interfaces/EventInterface";
 import MyEventModal from "@/components/events/Modals/MyEventModal";
+import {useMyTicketsQuery, useMyTicketQuery} from "@/features/events/queries";
 
 type SideMenuInterface = {
     toggleMenu: () => void,
@@ -36,9 +35,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
         setMyEvent(!myEvent)
     }
 
-    const url = ticketId ? `/user/events/attendees/my-ticket/${ticketId}` : null
-    const {data: ticketData, loading: ticketLoading} = useRequest(url as any)
-    const {data, loading} = useRequest(`/user/events/attendees/my-tickets`)
+    const {data: ticketData, isLoading: ticketLoading} = useMyTicketQuery(ticketId ?? undefined)
+    const {data} = useMyTicketsQuery()
 
     return (
         <>
@@ -76,8 +74,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                         className="flex flex-col w-full gap-[12px] overflow-y-auto max-h-screen hide-scrollbar">
                         {
                             option === "upcoming" ? (
-                                data?.upcoming.length > 0 ? (
-                                    data?.upcoming.map((event: MyTicketInterface, index: number) => (
+                                (data?.upcoming?.length ?? 0) > 0 ? (
+                                    data?.upcoming?.map((event: MyTicketInterface, index: number) => (
                                         <SideMenuEventCard ticket_id={event.id} event={event.event} key={index}
                                                            toggle={toggleEventID}/>
                                     ))
@@ -87,8 +85,8 @@ const SideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen}) => {
                                     </div>
                                 )
                             ) : (
-                                data?.past.length > 0 ? (
-                                    data?.past.map((event: MyTicketInterface, index: number) => (
+                                (data?.past?.length ?? 0) > 0 ? (
+                                    data?.past?.map((event: MyTicketInterface, index: number) => (
                                         <SideMenuEventCard ticket_id={event.id} event={event.event} key={index}
                                                            toggle={toggleEventID}/>
                                     ))

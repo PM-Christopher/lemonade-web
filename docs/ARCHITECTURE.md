@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 17 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 18 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1832,12 +1832,77 @@ type, detail, threads, pinned, categories, create-tribe, create-thread, like, co
 search, add-member, delete-thread, join-tribe + verify-transaction) through the real BFF proxy, not just
 against the backend directly.
 
-**Not started at all:** the remaining ~9 `apps/frontend` domains (events — the largest slice in the
-codebase at 897 lines, already known to cross-import from `tribe.slice.ts` before this pass removed
-that coupling — and the non-login/logout authSlice thunks) are still on Redux thunks + the old
-`axiosInstance` — safe (it rides the same proxied transport and had its dead `token`/`authToken` params
-removed in the Tier 2 cleanup below), but not migrated. redux-persist still holds far more than client
-preferences.
+**events** (the largest domain by far: 897-line slice, 26 endpoints, 24 real consumers) is migrated too
+— 15 queries, 15 mutations, plus a slimmed-down `event.slice.ts` that keeps only genuine client-only
+wizard/cart state (the create-event → add-ticket → BankAccountModal draft, the buy-ticket →
+assign-ticket ticket cart, per-event referral codes — all persisted, all carried across route
+navigations, none of it server data). `getMyTickets`/`getMyTicket` weren't reached through the slice at
+all — `SideMenu.tsx`'s "My tickets" panel called them directly via the legacy `useRequest` hook, a real
+live consumer grep-for-the-slice's-thunks wouldn't find; migrated too since they're the same domain and
+already surfaced (same lesson as tribes' `viewProfile`/`createThread` id-vs-slug split: name-based greps
+miss real consumers that reach a domain's routes through a different door). `deleteEvent` has zero real
+consumers — dropped, matching every other dead-code find this session. `check-ins/page.tsx` turned out
+to be an orphaned duplicate of `guest-list/page.tsx` (same thunks, no search, never linked from
+anywhere in the app, confirmed via a repo-wide grep for the string `check-ins`) — left in place and
+migrated rather than deleted, since removing a whole route is a product call this migration shouldn't
+make unasked, but worth a cleanup pass later.
+
+**Six real bugs found live-testing and fixed as part of the migration** (the recurring
+`payload.status`-vs-`payload.success` envelope-key bug, this domain's worst offender yet — each of
+these made a real feature silently no-op even though the underlying backend call succeeded):
+editing an event's own submit handler (`edit-event/page.tsx`) always fell into the error branch, so a
+successful edit never redirected or showed success; the ticket-editor's submit (`add-ticket/page.tsx`)
+had the same shape; publishing a draft event (`OrganizerEventCard.tsx`) moved the event server-side but
+never closed the menu or showed the confirmation toast; paying for a promotion
+(`promote-event/page.tsx`) never redirected to Paystack even on a real successful init; generating an
+affiliate link (`agent-details/page.tsx`) never showed the link or closed the "generating" state;
+checking in a guest (`GuestSideMenu.tsx`) checked the guest in server-side but the modal never
+confirmed it happened. Fixed by switching each to the mutation's own `onSuccess`/`onError`, the same
+structural fix this bug class has gotten in every other domain this pass.
+
+**One real bug found and fixed in `lemonade-backend`, not caught by any earlier domain's live-testing**:
+`GetUserEvent`'s owner-only breakdown (shown on the organizer's own event-detail page) 500'd for the
+first time this session hit it against a real event with a real ticket —
+`InteractsWithEvents::totalTickets()`/`singleTicketRev()`/`singleAffiliateTicketRev()` all sum a query
+builder column (`Ticket::sum('ticket_stock')`, `AssignedTicket::sum('tickets.price')`) and are typed
+`int|float` under `declare(strict_types=1)`, but MySQL's `SUM()` returns a DECIMAL aggregate that PDO
+hands back as a numeric string (or `null` with zero matching rows) — either shape violates the return
+type. Every earlier live-test of this domain happened to use events with no tickets or non-owner
+viewers, so this path was never actually exercised until now. Fixed with an `(int)` cast on all three
+(minor-unit integers throughout this codebase, matching the pattern), confirmed the 500 reproduces
+pre-fix and is gone post-fix, added `tests/Feature/Event/GetUserEventOwnerViewTest.php`. Full backend
+suite (512 tests), PHPStan, and Pint all still clean.
+
+**One bug found live-testing and deliberately left alone, same class as business's boost-package
+mismatch**: `PromoteEventRequest` validates `promo` as `numeric`, but `Promotion::id` is a UUID string
+and the frontend sends exactly that (`selectedPromotion.id`) — confirmed live, a real promote-event
+call 422s with "The promo field must be a number" before `PromoteEvent`'s action ever runs. This means
+promoting an event has probably never worked through this UI. Fixing it means changing a validated
+request contract, not a transport-migration fix — left alone, documented here and in a code comment.
+
+**A genuine double-wrapped response shape, documented rather than "fixed"**: `GetAffiliateDashboard`
+returns `[[ 'total_commission' => ..., 'tickets_sold' => ..., 'promotions' => ..., 'find_events' => ...
+]]` — a numeric array wrapping one object, not the object directly. The pre-migration frontend already
+depended on this exact shape (`reduce`-ing over what's really a one-element array); `AgentSectionView`
+now reads `affiliate_data?.[0]?.total_commission` directly instead, same behavior, typed honestly
+(`AffiliateDashboardResponse` is a 1-tuple, not an object) rather than guessing the double-wrap was
+unintentional and changing a live response shape as a side effect of a transport migration.
+
+Live-verified nearly every real endpoint end-to-end — event list/detail (both owner and non-owner
+views), organizer list, promotions catalog, payment settings, affiliate list/detail/data, create-event,
+update-event, publish-event (draft → pending), edit-tickets, guest-list, guest-details, guest-search,
+check-in, buy-ticket (a real Paystack `initialize` for a paid ticket), generate-affiliate-link, and
+search/filter — through both the backend directly and the real frontend BFF proxy, specifically to catch
+the same id-vs-slug-shaped traps tribes surfaced. Test events, tickets, attendees, orders, payments, and
+tokens all cleaned up after. **Not live-tested**: `promote-event`'s actual payment redirect (blocked by
+the numeric/UUID validation bug above, same as the tickets_sold breakdown, description), consistent with
+this session's rule of not working around a bug it isn't this migration's place to fix.
+
+**This closes out Phase 5 for `apps/frontend`'s tracked domains.** The only remaining Phase 5 work is
+the non-login/logout `authSlice` thunks (not yet scoped) — everything else that reads/writes
+`/v1/user/*` server data now goes through TanStack Query + the BFF transport in both apps. redux-persist
+still holds more than client preferences in a few places (events' own wizard/cart state, deliberately,
+per the note above) but no feature exists in both the old and new pattern at once.
 
 **The "Tier 2" dead-weight cleanup** (not one of this document's original bullets, but directly serves
 this phase's "no feature in both patterns" rule): every non-auth domain's Redux thunks and

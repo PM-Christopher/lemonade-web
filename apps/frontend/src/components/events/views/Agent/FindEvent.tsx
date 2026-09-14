@@ -3,19 +3,15 @@ import SearchIcon from "@/images/icons/search.svg";
 import AgentEventCard from "@/components/events/AgentEventCard";
 import Link from "next/link";
 import {AffiliateEventsSkeleton} from "@/components/Skeletons";
-import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
-import {searchAffiliateEvent, clearAffiliateEventSearch} from "@/features/events/event.slice";
+import {useSearchAffiliateEventsMutation} from "@/features/events/mutations";
 
 function FindEventSubMenu() {
     const [search, setSearch] = useState("");
     const [hasSearched, setHasSearched] = useState(false);
 
-    const dispatch = useAppDispatch();
-    const {affiliateEvents, affiliateLoading: loading} = useSelector(
-        (state: RootState) => state.event
-    );
+    const searchAffiliateEventsMutation = useSearchAffiliateEventsMutation();
+    const affiliateEvents = searchAffiliateEventsMutation.data?.events ?? [];
+    const loading = searchAffiliateEventsMutation.isPending;
 
     const isEmpty = search.trim().length === 0;
 
@@ -23,26 +19,23 @@ function FindEventSubMenu() {
     useEffect(() => {
         if (isEmpty) {
             setHasSearched(false);
-            dispatch(clearAffiliateEventSearch());
+            searchAffiliateEventsMutation.reset();
         }
-    }, [isEmpty, dispatch]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isEmpty]);
 
     const handleSearch = () => {
         const term = search.trim();
         if (!term) {
             // keep user in "start searching" view
             setHasSearched(false);
-            dispatch(clearAffiliateEventSearch());
+            searchAffiliateEventsMutation.reset();
             return;
         }
 
         setHasSearched(true);
-        dispatch(searchAffiliateEvent({data: {search: term}}));
+        searchAffiliateEventsMutation.mutate(term);
     };
-
-    console.log({
-        affiliateEvents
-    })
 
     return (
         <div className="flex flex-col">

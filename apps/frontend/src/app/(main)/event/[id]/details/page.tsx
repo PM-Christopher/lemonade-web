@@ -19,8 +19,9 @@ import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useRouter, useSearchParams} from "next/navigation";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {getEvent, getEventPromotion} from "@/features/events/event.slice";
+import {useQueryClient} from "@tanstack/react-query";
+import {useEventQuery, eventKeys} from "@/features/events/queries";
+import {useEventPromotionMutation} from "@/features/events/mutations";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatLongDate, formatLongTime, formatTime} from "@/lib/dateTimeFormatter";
 import {EventProgramDetailSkeleton} from "@/components/Skeletons";
@@ -30,15 +31,18 @@ import {PromotionInterface} from "@/interfaces/EventInterface";
 
 const EventDetailsPage = ({params}: { params: { id: number } }) => {
     const dispatch = useAppDispatch()
+    const queryClient = useQueryClient()
     const [isOpen, setIsOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-    const {event, loading} = useSelector((state: any) => state.event)
+    const {data: eventData, isLoading: loading} = useEventQuery(params.id)
+    const event = eventData?.event
     const router = useRouter();
     const searchParams = useSearchParams();
     const trxref = searchParams.get('trxref');
     const [promotionData, setPromotionData] = useState<PromotionInterface | null>(null)
     const [eventPromotion, setEventPromotion] = useState(null)
     const verifyTransactionMutation = useVerifyTransactionMutation();
+    const eventPromotionMutation = useEventPromotionMutation();
 
     const activateModal = () => {
         setIsOpen(!isOpen);
@@ -49,21 +53,16 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
     };
 
     useEffect(() => {
-        if (params?.id) {
-            dispatch(getEvent({id: params.id}))
-        }
-    }, []);
-
-    useEffect(() => {
         if (trxref) {
             verifyTransactionMutation.mutate({trx_ref: trxref}, {
                 onSuccess: (res: any) => {
+                    queryClient.invalidateQueries({queryKey: eventKeys.detail(params.id)});
                     // Remove trxref from URL
-                    const params = new URLSearchParams(searchParams);
-                    params.delete('trxref');
-                    params.delete('reference');
+                    const params_ = new URLSearchParams(searchParams);
+                    params_.delete('trxref');
+                    params_.delete('reference');
                     // Update the URL without reloading
-                    router.replace(`?${params.toString()}`);
+                    router.replace(`?${params_.toString()}`);
                     const promotion_data = {
                         ...res?.data?.promo,
                         promotion_date: res?.data?.promotion?.promotion_date
@@ -79,12 +78,13 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [trxref]);
 
-    const handleGetEventPromotion = async () => {
-        const res = await dispatch(getEventPromotion({id: params.id, promotion_id: event?.promotion[0]?.id}))
-        if (res.payload.status) {
-            setEventPromotion(res?.payload?.data?.promotion)
-            activateDetailsModal()
-        }
+    const handleGetEventPromotion = () => {
+        eventPromotionMutation.mutate({id: params.id, promotionId: event?.promotion?.[0]?.id ?? 0}, {
+            onSuccess: (result) => {
+                setEventPromotion(result.promotion as any)
+                activateDetailsModal()
+            },
+        })
     }
 
     return (
@@ -113,7 +113,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         <div className="flex items-center gap-6 p-4 rounded-xl bg-green-tint/60  shadow-sm hover:shadow-md transition-shadow duration-300">
                                             <div className="relative overflow-hidden rounded-lg shadow-md">
                                                 <Image
-                                                    src={event?.event_image}
+                                                    src={event?.event_image || "/images/default-event.jpg"}
                                                     alt={event?.event_name || "Event"}
                                                     width={120}
                                                     height={120}
@@ -132,9 +132,9 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                                     <CalendarIcon className="w-4 h-4 text-green-700" />
                                                     <p className="text-[15px]">{formatLongDate(event?.start_date, "mid")}</p>
                                                     <DotIcon className="w-1 text-green-600" />
-                                                    <p className="text-[15px]">{formatTime(event?.start_date)}</p>
+                                                    <p className="text-[15px]">{formatTime(event?.start_date ?? null)}</p>
                                                     <span className="text-[15px]">–</span>
-                                                    <p className="text-[15px]">{formatTime(event?.end_date)}</p>
+                                                    <p className="text-[15px]">{formatTime(event?.end_date ?? null)}</p>
                                                 </div>
 
                                                 {/* Location */}
@@ -146,7 +146,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </div>
                                         <div className="flex justify-center items-center mt-[24px] gap-8">
                                             {
-                                                event?.promotion?.length > 0 ? (
+                                                (event?.promotion?.length ?? 0) > 0 ? (
                                                     <div className="flex flex-col items-center gap-[8px] cursor-pointer relative" onClick={handleGetEventPromotion}>
                                                         <div className="absolute top-0 left-0 w-[20px] h-[20px] bg-light-green-60 rounded-full flex items-center justify-center -translate-x-1/3 -translate-y-1/3 shadow-md">
                                                             <CheckIcon className="w-[10px] h-[10px]" stroke='#009D44' />
@@ -254,7 +254,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                             Sales revenue by ticket type
                                         </p>
                                         {
-                                            event?.sales_revenue?.sales_revenue_breakdown?.length > 0 && (
+                                            (event?.sales_revenue?.sales_revenue_breakdown?.length ?? 0) > 0 && (
                                                 event?.sales_revenue?.sales_revenue_breakdown?.map((ticket: any, idx: number) => {
                                                     const totalStock = Number(ticket?.stock) || 0;
                                                     const bought = Number(ticket?.bought) || 0;
@@ -300,7 +300,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                         </p>
 
                                         {
-                                            event?.sales_revenue?.tickets_sold_breakdown?.length > 0 && (
+                                            (event?.sales_revenue?.tickets_sold_breakdown?.length ?? 0) > 0 && (
                                                 event?.sales_revenue?.tickets_sold_breakdown?.map((ticket: any, idx: number) => {
                                                     const totalStock = Number(ticket?.stock) || 0;
                                                     const percentageSold = Number(ticket?.percentage_sold) || 0;
@@ -354,7 +354,7 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
                                             Check ins by ticket type
                                         </p>
                                         {
-                                            event?.sales_revenue?.tickets_checkins_breakdown?.length > 0 && (
+                                            (event?.sales_revenue?.tickets_checkins_breakdown?.length ?? 0) > 0 && (
                                                 event?.sales_revenue?.tickets_checkins_breakdown?.map((ticket: any, idx: number) => {
                                                     const totalStock = Number(ticket?.stock) || 0;
                                                     const checkinCount = Number(ticket?.checkin_count) || 0;

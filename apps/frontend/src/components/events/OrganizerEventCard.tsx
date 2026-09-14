@@ -11,10 +11,8 @@ import TrashIcon from "@/images/icons/trashIcon.svg"
 import {useRouter} from "next/navigation";
 import GoLive from "@/images/icons/goLive.svg"
 import {useAppDispatch} from "@/redux/hook";
-import {publishEvent} from "@/features/events/event.slice";
+import {usePublishEventMutation} from "@/features/events/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
 
 type OrganizerEventInterface = {
     draft: boolean
@@ -32,7 +30,8 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft, event}) =
     const moreIconRef = useRef<HTMLDivElement | null>(null);
     const router = useRouter()
     const dispatch = useAppDispatch()
-    const {loading} = useSelector((state: RootState) => state.event)
+    const publishEventMutation = usePublishEventMutation()
+    const loading = publishEventMutation.isPending
 
     const handleMoreIconClick = (e: React.MouseEvent) => {
         if (moreIconRef.current) {
@@ -46,19 +45,19 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({draft, event}) =
         setModalVisible(!isModalVisible); // Toggle modal visibility
     };
 
-    const publishDraftEvent = async (id: number) => {
-        const {payload} = await dispatch(publishEvent({id}))
-
-        if (payload.status) {
-            setModalVisible(!isModalVisible);
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Your event has been published",
-                    type: "success",
-                })
-            );
-        }
+    const publishDraftEvent = (id: number) => {
+        publishEventMutation.mutate(id, {
+            onSuccess: () => {
+                setModalVisible(!isModalVisible);
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Your event has been published",
+                        type: "success",
+                    })
+                );
+            },
+        })
     }
 
     return (

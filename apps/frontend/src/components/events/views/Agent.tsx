@@ -1,42 +1,24 @@
 "use client";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useMemo, useState} from "react";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import PromotionsSubMenu from "@/components/events/views/Agent/Promotions";
 import FindEventSubMenu from "@/components/events/views/Agent/FindEvent";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {useRouter} from "next/navigation";
-import {RootState} from "@/redux/store";
-import {useAppDispatch} from "@/redux/hook";
-import {getAffiliateData, getAffiliateEvents} from "@/features/events/event.slice";
+import {useAffiliateEventsQuery, useAffiliateDataQuery} from "@/features/events/queries";
 import {AffiliateDataSkeleton} from "@/components/Skeletons";
 
 function AgentSectionView({}) {
     const router = useRouter();
     const [view, setView] = useState("promotions");
-    const {
-        affiliate_events,
-        affiliate_data,
-        affiliateLoading,
-        affiliateDataLoading
-    } = useSelector((state: RootState) => state.event)
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        dispatch(getAffiliateEvents())
-        dispatch(getAffiliateData())
-    }, []);
+    const {data: affiliateEventsData, isLoading: affiliateLoading} = useAffiliateEventsQuery()
+    const affiliate_events = affiliateEventsData?.events ?? []
+    const {data: affiliate_data, isLoading: affiliateDataLoading} = useAffiliateDataQuery()
 
     const {total_commission, tickets_sold} = useMemo(() => {
-        const total_commission = affiliate_data?.reduce?.(
-            (acc: any, cur: any) => acc + Number(cur.total_commission),
-            0
-        );
-
-        const tickets_sold = affiliate_data?.reduce?.(
-            (acc: any, cur: any) => acc + Number(cur.tickets_sold),
-            0
-        );
+        // See features/events/api.ts's file-level note: this really is an
+        // array with one entry, not a list to sum over.
+        const total_commission = affiliate_data?.[0]?.total_commission;
+        const tickets_sold = affiliate_data?.[0]?.tickets_sold;
 
         return {total_commission, tickets_sold};
     }, [affiliate_data]);

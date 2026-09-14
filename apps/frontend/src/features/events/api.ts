@@ -1,82 +1,293 @@
-// Endpoint layer for the events domain — one typed function per route,
-// calling the transport with a named constant instead of a path literal.
-// Owns request shape (headers, params, the occasional dynamic-segment
-// concatenation); owns no React, no Redux, no caching policy — see
-// docs/ARCHITECTURE.md §11's "Endpoints" row. Still on the pre-BFF
-// axiosInstance transport deliberately: this only cleans up how routes are
-// referenced, it doesn't move the transport migration up from Phase 5.
-import { axiosInstance } from "@/lib/axiosInstane";
+// Endpoint layer for the events domain — see features/tribes/api.ts for the
+// pattern this follows: the BFF proxy transport (browserApi), not the
+// pre-BFF axiosInstance.
+//
+// NOTE: getAffiliateData/GetAffiliateDashboard's backend action returns
+// `[[ ...fields ]]` — a numerically-indexed array wrapping a single object,
+// not the object directly (confirmed by reading the action source). The
+// pre-migration frontend already relied on this exact shape (`reduce`-ing
+// over what is really a one-element array), so AffiliateDashboardResponse
+// is typed to match reality rather than what looks intended — a real
+// backend inconsistency, documented rather than silently "fixed" here.
+//
+// getMyTickets/getMyTicket aren't reached through event.slice.ts at all —
+// components/events/SideMenu.tsx calls them directly via the legacy
+// useRequest hook (a real, live consumer, just not one grep for the slice's
+// thunks would find) — migrated here too since they're the same domain and
+// already surfaced. deleteEvent genuinely has zero real consumers
+// (confirmed via grep) — not migrated, matching the "dead code, dropped
+// rather than migrated" rule from every other domain this session.
+import { browserApi } from "@/lib/browser-api";
 import { userEventRoutes } from "@lemonade/api-types";
+import type {
+    EventInterface,
+    TicketInterface,
+    GuestListCardProps,
+    PromotionInterface,
+    MyTicketInterface,
+    EventTicketInterface,
+} from "@/interfaces/EventInterface";
+
+export interface EventsListResponse {
+    this_week: EventInterface[];
+    upcoming: EventInterface[];
+    trending: EventInterface[];
+}
+
+// The owner-only fields GetUserEvent adds on top of the base event shape
+// when the viewer owns the event (see the action's `$event['user_id'] ===
+// $user->id` branch) — absent entirely for a non-owner viewer.
+interface EventOwnerBreakdown {
+    sales_revenue: number;
+    tickets_sold: { sold: number; count: number };
+    checkins: { percentage: number; count: number; total: number };
+}
+
+interface EventTicketBreakdownRow {
+    name: string;
+    stock: number;
+    price?: number;
+    bought?: number;
+    percentage_sold?: number;
+    checked_id?: number;
+    checkin_count?: number;
+    stock_type: string;
+}
+
+export interface EventDetailResponse {
+    event: EventInterface & {
+        breakdown?: EventOwnerBreakdown;
+        sales_revenue?: {
+            sales_revenue_breakdown: EventTicketBreakdownRow[];
+            tickets_sold_breakdown: EventTicketBreakdownRow[];
+            tickets_checkins_breakdown: EventTicketBreakdownRow[];
+        };
+        promotion?: {
+            id: number;
+            name: string;
+            price: number;
+            image: string;
+            status: string;
+            promotion_date: string;
+            breakdown: string[];
+        }[];
+    };
+}
+
+export interface CreateEventPayload {
+    event: Record<string, unknown> | unknown;
+    tickets?: unknown[];
+    bank?: { bank_name: string; account_name: string; account_number: string };
+}
+
+export interface UpdateEventPayload {
+    event: Record<string, unknown>;
+}
+
+export interface EventTicketsResponse {
+    tickets: unknown[];
+}
+
+export interface EditEventTicketsPayload {
+    tickets: unknown[];
+}
+
+export interface OrganizerEventsResponse {
+    upcoming: EventInterface[];
+    past: EventInterface[];
+    drafts: EventInterface[];
+    pending: EventInterface[];
+    rejected: EventInterface[];
+}
+
+export interface AffiliateEventsResponse {
+    events: EventInterface[];
+}
+
+// See the file-level note above — this really is an array with one entry.
+export type AffiliateDashboardResponse = [
+    {
+        total_commission: number;
+        tickets_sold: number;
+        promotions: EventInterface[];
+        find_events: EventInterface[];
+    },
+];
+
+export interface EventTicketDataResponse {
+    event: EventInterface;
+    tickets: TicketInterface[];
+}
+
+export interface GuestListResponse {
+    guest_list: GuestListCardProps[];
+}
+
+export interface GuestSearchResponse {
+    guest_list: GuestListCardProps[];
+    meta: { current_page: number; per_page: number; total: number; last_page: number };
+}
+
+export interface GuestDetailsResponse {
+    guest_details: unknown;
+}
+
+export interface PromotionsResponse {
+    promotions: PromotionInterface[];
+}
+
+export interface PayForPromotionPayload {
+    promo: number | undefined;
+    unit: number;
+    promotion_date: string;
+    redirect_url: string;
+}
+
+export interface PayForPromotionResponse {
+    authorization_url: string;
+    reference: string;
+}
+
+export interface EventPromotionResponse {
+    promotion: unknown;
+}
+
+// AFFILIATE/{id} — the frontend's own thunk calls this `getProgram`, but the
+// backend action is GetAffiliateEvent: agent-facing event detail plus the
+// viewer's own affiliate commission/ticket-sold breakdown for it.
+export interface AffiliateEventDetailResponse {
+    events: EventInterface & {
+        isAffiliate: boolean;
+        affiliate_link?: string;
+        breakdown?: { total_commissions: number; ticket_sold: number };
+        commissions?: unknown[];
+        ticket_sold?: unknown[];
+    };
+}
+
+export interface GenerateAffiliateLinkResponse {
+    affiliate_program: unknown;
+    generated_link: string;
+    referral_id: string;
+    events: AffiliateEventDetailResponse["events"];
+}
+
+export interface SearchAffiliateEventsResponse {
+    events: EventInterface[];
+}
+
+export interface SearchEventsResponse {
+    events: EventInterface[];
+}
+
+export interface FilterEventsPayload {
+    category: string;
+    period: string;
+    start_date: string;
+    end_date: string;
+    location: string;
+}
+
+export interface FilterEventsResponse {
+    events: EventInterface[];
+}
+
+export interface PaymentSettingResponse {
+    payment_setting: { type: string } | null;
+}
+
+export interface BuyTicketPayload {
+    tickets?: { id: string; quantity: number }[];
+    assigned_tickets?: { id: string; quantity: number; fullname: string; email: string }[];
+    assign_multiple: boolean;
+    fullname: string;
+    email: string;
+    redirect_url: string;
+    referral: string | null;
+}
+
+export interface BuyTicketResponse {
+    completed?: boolean;
+    payment_url?: string;
+    order_id?: number | string;
+}
+
+export interface MyTicketsResponse {
+    upcoming: MyTicketInterface[];
+    past: MyTicketInterface[];
+}
+
+export interface MyTicketResponse {
+    ticket: EventTicketInterface[];
+}
 
 export const eventsApi = {
-    buyTicket: (eventId: number, data: unknown) =>
-        axiosInstance.post(`${userEventRoutes.ATTENDEES}/${eventId}/assign-tickets`, data),
+    // ATTENDEES base — the public "discover events" list (this_week/upcoming/trending).
+    getEvents: () => browserApi.get<EventsListResponse>(userEventRoutes.ATTENDEES),
 
-    createEvent: (data: unknown) => axiosInstance.post(userEventRoutes.CREATE, data),
+    getEvent: (id: number | string) => browserApi.get<EventDetailResponse>(`${userEventRoutes.BASE}/${id}`),
 
-    editEvent: (id: number, data: unknown) => axiosInstance.put(`${userEventRoutes.UPDATE}/${id}`, data),
+    createEvent: (data: CreateEventPayload) => browserApi.post<EventDetailResponse>(userEventRoutes.CREATE, data),
 
-    publishEvent: (id: number) => axiosInstance.patch(`${userEventRoutes.PUBLISH}/${id}`),
+    updateEvent: (id: number | string, data: UpdateEventPayload) =>
+        browserApi.put<EventDetailResponse>(`${userEventRoutes.UPDATE}/${id}`, data),
 
-    getEvents: () => axiosInstance.get(userEventRoutes.ATTENDEES),
+    publishEvent: (id: number | string) => browserApi.patch<EventDetailResponse>(`${userEventRoutes.PUBLISH}/${id}`),
 
-    getEvent: (id: number, options: { signal?: AbortSignal }) =>
-        axiosInstance.get(`${userEventRoutes.BASE}/${id}`, {
-            signal: options.signal,
-            params: { _ts: Date.now() },
-            headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
-        }),
+    getEventTickets: (id: number | string) => browserApi.get<EventTicketsResponse>(`${userEventRoutes.BASE}/${id}/event-tickets`),
 
-    searchEvent: (data: unknown) =>
-        axiosInstance.post(userEventRoutes.SEARCH, data, {
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-        }),
+    editEventTickets: (id: number | string, data: EditEventTicketsPayload) =>
+        browserApi.patch<EventTicketsResponse>(`${userEventRoutes.BASE}/${id}/edit-tickets`, data),
 
-    getPaymentSetting: () => axiosInstance.get(userEventRoutes.GET_PAYMENT_SETTING),
+    getOrganizerEvents: () => browserApi.get<OrganizerEventsResponse>(userEventRoutes.BASE),
 
-    updatePaymentSetting: (data: unknown) =>
-        axiosInstance.patch(userEventRoutes.UPDATE_PAYMENT_SETTING, data),
+    getPaymentSetting: () => browserApi.get<PaymentSettingResponse>(userEventRoutes.GET_PAYMENT_SETTING),
 
-    filterEvent: (
-        data: { category: string; period: string; start_date: string; end_date: string; location: string },
-    ) =>
-        axiosInstance.get(
-            `${userEventRoutes.FILTER}?category=${data.category}&period=${data.period}&start_date=${data.start_date}&end_date=${data.end_date}&location=${data.location}`,
-        ),
+    updatePaymentSetting: (data: { type: string }) =>
+        browserApi.patch<PaymentSettingResponse>(userEventRoutes.UPDATE_PAYMENT_SETTING, data),
 
-    getOrganizerEvents: () => axiosInstance.get(userEventRoutes.BASE),
+    filterEvents: (data: FilterEventsPayload) =>
+        browserApi.get<FilterEventsResponse>(userEventRoutes.FILTER, { params: data }),
 
-    getAffiliateEvents: () => axiosInstance.get(`${userEventRoutes.AFFILIATE}`),
+    searchEvents: (data: { search: string }) => browserApi.post<SearchEventsResponse>(userEventRoutes.SEARCH, data),
 
-    getAffiliateData: () => axiosInstance.get(`${userEventRoutes.AFFILIATE}/data`),
+    getAffiliateEvents: () => browserApi.get<AffiliateEventsResponse>(userEventRoutes.AFFILIATE),
 
-    getEventTicketData: (id: number) => axiosInstance.get(`${userEventRoutes.ATTENDEES}/${id}/tickets`),
+    getAffiliateEvent: (id: number | string) => browserApi.get<AffiliateEventDetailResponse>(`${userEventRoutes.AFFILIATE}/${id}`),
 
-    getGuestList: (id: number) => axiosInstance.get(`${userEventRoutes.BASE}/${id}/guest-list`),
+    getAffiliateData: () => browserApi.get<AffiliateDashboardResponse>(`${userEventRoutes.AFFILIATE}/data`),
 
-    getGuestListDetails: (id: number, guestId: number | null) =>
-        axiosInstance.get(`${userEventRoutes.BASE}/${id}/${guestId}/guest-details`),
+    generateAffiliateLink: (id: number | string) =>
+        browserApi.post<GenerateAffiliateLinkResponse>(`${userEventRoutes.AFFILIATE}/${id}/generate-link`),
 
-    checkInGuest: (id: number, guestId: number | null) =>
-        axiosInstance.patch(`${userEventRoutes.BASE}/${id}/${guestId}/check-in`),
+    searchAffiliateEvents: (data: { search: string }) =>
+        browserApi.post<SearchAffiliateEventsResponse>(userEventRoutes.SEARCH_AFFILIATE_EVENTS, data),
 
-    getPromotions: () => axiosInstance.get(userEventRoutes.PROMOTIONS),
+    getPromotions: () => browserApi.get<PromotionsResponse>(userEventRoutes.PROMOTIONS),
 
-    payForPromotion: (id: number, data: unknown) => axiosInstance.post(`${userEventRoutes.BASE}/${id}/promote-event`, data),
+    payForPromotion: (id: number | string, data: PayForPromotionPayload) =>
+        browserApi.post<PayForPromotionResponse>(`${userEventRoutes.BASE}/${id}/promote-event`, data),
 
-    getEventPromotion: (id: number, promotionId: number) =>
-        axiosInstance.get(`${userEventRoutes.BASE}/${id}/${promotionId}/event-promotion`),
+    getEventPromotion: (id: number | string, promotionId: number | string) =>
+        browserApi.get<EventPromotionResponse>(`${userEventRoutes.BASE}/${id}/${promotionId}/event-promotion`),
 
-    getEventTickets: (id: number) => axiosInstance.get(`${userEventRoutes.BASE}/${id}/event-tickets`),
+    buyTicket: (eventId: number | string, data: BuyTicketPayload) =>
+        browserApi.post<BuyTicketResponse>(`${userEventRoutes.ATTENDEES}/${eventId}/assign-tickets`, data),
 
-    editEventTickets: (id: number, data: unknown) => axiosInstance.patch(`${userEventRoutes.BASE}/${id}/edit-tickets`, data),
+    getEventTicketData: (id: number | string) => browserApi.get<EventTicketDataResponse>(`${userEventRoutes.ATTENDEES}/${id}/tickets`),
 
-    getProgram: (id: number) => axiosInstance.get(`${userEventRoutes.AFFILIATE}/${id}`),
+    getGuestList: (id: number | string) => browserApi.get<GuestListResponse>(`${userEventRoutes.BASE}/${id}/guest-list`),
 
-    generateAffiliateLink: (id: number) => axiosInstance.post(`${userEventRoutes.AFFILIATE}/${id}/generate-link`),
+    getGuestListDetails: (id: number | string, guestId: number | string) =>
+        browserApi.get<GuestDetailsResponse>(`${userEventRoutes.BASE}/${id}/${guestId}/guest-details`),
 
-    searchAffiliateEvent: (data: unknown) => axiosInstance.post(userEventRoutes.SEARCH_AFFILIATE_EVENTS, data),
+    checkInGuest: (id: number | string, guestId: number | string) =>
+        browserApi.patch<GuestDetailsResponse>(`${userEventRoutes.BASE}/${id}/${guestId}/check-in`),
 
-    guestSearch: (id: number, q: unknown, signal?: AbortSignal) =>
-        axiosInstance.post(`${userEventRoutes.BASE}/${id}/search-guest-list`, null, { params: { q }, signal }),
+    guestSearch: (id: number | string, q: string) =>
+        browserApi.post<GuestSearchResponse>(`${userEventRoutes.BASE}/${id}/search-guest-list`, null, { params: { q } }),
+
+    getMyTickets: () => browserApi.get<MyTicketsResponse>(`${userEventRoutes.ATTENDEES}/my-tickets`),
+
+    getMyTicket: (id: number | string) => browserApi.get<MyTicketResponse>(`${userEventRoutes.ATTENDEES}/my-ticket/${id}`),
 };

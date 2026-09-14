@@ -10,7 +10,8 @@ import BankAccountModal from "@/components/events/Modals/BankAccountModal";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import {useFormik, FieldArray} from "formik";
-import {addEvent, createEvent, createTickets, resetEventState} from "@/features/events/event.slice";
+import {createTickets, resetEventState} from "@/features/events/event.slice";
+import {useCreateEventMutation} from "@/features/events/mutations";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -39,6 +40,7 @@ const AddTicketPage = () => {
         setToggleModal(!toggleModal);
     };
     const {event} = useSelector((state: RootState) => state.event);
+    const createEventMutation = useCreateEventMutation();
 
     const ticketSchema = yup.object().shape({
         ticket_type: yup.string().required("Ticket type is required"),
@@ -161,27 +163,28 @@ const AddTicketPage = () => {
                     tickets: normalizedTickets,
                 };
 
-                const { payload } = await dispatch(createEvent({data}))
-
-                if (payload.status) {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Event created successfully",
-                            type: "success",
-                        })
-                    );
-                    dispatch(resetEventState());
-                    router.push("/event");
-                } else {
-                    dispatch(
-                        updateToastifyReducer({
-                            show: true,
-                            message: "Error creating event",
-                            type: "error",
-                        })
-                    );
-                }
+                createEventMutation.mutate(data, {
+                    onSuccess: () => {
+                        dispatch(
+                            updateToastifyReducer({
+                                show: true,
+                                message: "Event created successfully",
+                                type: "success",
+                            })
+                        );
+                        dispatch(resetEventState());
+                        router.push("/event");
+                    },
+                    onError: () => {
+                        dispatch(
+                            updateToastifyReducer({
+                                show: true,
+                                message: "Error creating event",
+                                type: "error",
+                            })
+                        );
+                    },
+                });
 
             } else {
                 const data = {
@@ -245,8 +248,8 @@ const AddTicketPage = () => {
             event: {...event, status: "draft"},
             tickets: formik.values.tickets
         };
-        dispatch(createEvent({data})).then((res) => {
-            if (res.payload.status) {
+        createEventMutation.mutate(data, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -256,7 +259,8 @@ const AddTicketPage = () => {
                 );
                 dispatch(resetEventState());
                 router.push("/event");
-            } else {
+            },
+            onError: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -264,7 +268,7 @@ const AddTicketPage = () => {
                         type: "error",
                     })
                 );
-            }
+            },
         });
     }
 

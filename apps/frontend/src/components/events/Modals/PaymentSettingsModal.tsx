@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import CloseIcon from "@/images/icons/close.svg";
 import {Button} from "@/components/ui/button";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {Label} from "@/components/ui/label";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
-import {getPaymentSetting, updatePaymentSetting} from "@/features/events/event.slice";
+import {usePaymentSettingQuery} from "@/features/events/queries";
+import {useUpdatePaymentSettingMutation} from "@/features/events/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type PaymentSettingsInterface = {
@@ -16,7 +15,9 @@ type PaymentSettingsInterface = {
 
 const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({toggle, option}) => {
     const dispatch = useAppDispatch();
-    const { payment_setting } = useSelector((state: RootState) => state.event);
+    const { data: paymentSettingData } = usePaymentSettingQuery({enabled: option});
+    const payment_setting = paymentSettingData?.payment_setting;
+    const updatePaymentSettingMutation = useUpdatePaymentSettingMutation();
     const [paymentType, setPaymentType] = useState(payment_setting?.type || "")
 
     const handleUpdate = () => {
@@ -28,21 +29,20 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({toggle, optio
                     type: "error",
                 })
             );
+            return;
         }
-        dispatch(updatePaymentSetting({data: {type: paymentType}})).then((res: any) => {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Payment setting updated successfully",
-                    type: "success",
-                })
-            );
+        updatePaymentSettingMutation.mutate({type: paymentType}, {
+            onSuccess: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Payment setting updated successfully",
+                        type: "success",
+                    })
+                );
+            },
         })
     }
-
-    useEffect(() => {
-        dispatch(getPaymentSetting())
-    }, []);
 
     return (
         <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center z-50 ${option ? "flex" : "hidden"}`}>

@@ -10,12 +10,11 @@ import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
-    createEvent,
     createTickets,
-    editEventTickets,
-    getEventTickets,
     resetEventState
 } from "@/features/events/event.slice";
+import {useEventTicketsQuery} from "@/features/events/queries";
+import {useCreateEventMutation, useEditEventTicketsMutation} from "@/features/events/mutations";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -43,11 +42,11 @@ const AddTicketPage = ({ params }: { params: { id: number } }) => {
     const activateModal = () => {
         setToggleModal(!toggleModal);
     };
-    const { event, event_tickets, loading } = useSelector((state: RootState) => state.event);
-
-    useEffect(() => {
-        dispatch(getEventTickets({id: params.id}))
-    }, []);
+    const { event } = useSelector((state: RootState) => state.event);
+    const { data: eventTicketsData, isLoading: loading } = useEventTicketsQuery(params.id);
+    const event_tickets = eventTicketsData?.tickets ?? [];
+    const editEventTicketsMutation = useEditEventTicketsMutation(params.id);
+    const createEventMutation = useCreateEventMutation();
 
     const ticketSchema = yup.object().shape({
         ticket_id: yup.string(),
@@ -190,27 +189,28 @@ const AddTicketPage = ({ params }: { params: { id: number } }) => {
             const data = {
                 tickets: normalizedTickets,
             };
-            const { payload } = await dispatch(editEventTickets({ data, id: params.id }))
-
-            if (payload.status) {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Tickets updated successfully",
-                        type: "success",
-                    })
-                );
-                dispatch(resetEventState());
-                router.push(`/event/${params.id}/details`);
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Error updating tickets. Please try again.",
-                        type: "error",
-                    })
-                );
-            }
+            editEventTicketsMutation.mutate(data, {
+                onSuccess: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Tickets updated successfully",
+                            type: "success",
+                        })
+                    );
+                    dispatch(resetEventState());
+                    router.push(`/event/${params.id}/details`);
+                },
+                onError: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Error updating tickets. Please try again.",
+                            type: "error",
+                        })
+                    );
+                },
+            });
         },
     });
 
@@ -266,8 +266,8 @@ const AddTicketPage = ({ params }: { params: { id: number } }) => {
             event: {...event, status: "draft"},
             tickets: formik.values.tickets
         };
-        dispatch(createEvent({data})).then((res) => {
-            if (res.payload.status) {
+        createEventMutation.mutate(data, {
+            onSuccess: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -277,7 +277,8 @@ const AddTicketPage = ({ params }: { params: { id: number } }) => {
                 );
                 dispatch(resetEventState());
                 router.push("/event");
-            } else {
+            },
+            onError: () => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -285,7 +286,7 @@ const AddTicketPage = ({ params }: { params: { id: number } }) => {
                         type: "error",
                     })
                 );
-            }
+            },
         });
     }
 

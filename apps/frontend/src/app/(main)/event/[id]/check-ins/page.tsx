@@ -2,35 +2,30 @@
 import React, {useEffect, useState} from 'react';
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import SearchIcon from "@/images/icons/search.svg";
 import UploadIcon from "@/images/icons/uploadIcon.svg"
 import ScanIcon from "@/images/icons/scanIcon.svg"
 import GuestListCard from "@/components/events/GuestListCard";
-import {getGuestList, getGuestListDetails} from "@/features/events/event.slice";
-import {RootState} from "@/redux/store";
+import {useGuestListQuery, useGuestDetailsQuery} from "@/features/events/queries";
 import {GuestListSkeleton} from "@/components/Skeletons";
 import {GuestListCardProps} from "@/interfaces/EventInterface";
 import GuestSideMenu from "@/components/events/GuestSideMenu";
 
 const CheckInsPage = ({params}: { params: { id: number } }) => {
-    const dispatch = useAppDispatch()
-    const {loading, guestList, guestDetails, guestDetailLoading} = useSelector((state: RootState) => state.event)
+    const {data: guestListData, isLoading: loading} = useGuestListQuery(params.id);
+    const guestList = guestListData?.guest_list ?? [];
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedGuest, setSelectedGuest] = useState<any>(null);
 
-
-    useEffect(() => {
-        dispatch(getGuestList({id: params.id}))
-    }, []);
+    const {data: guestDetailsData, isLoading: guestDetailLoading} = useGuestDetailsQuery(params.id, selectedGuest?.id);
+    const guestDetails = guestDetailsData?.guest_details;
 
     useEffect(() => {
         if (!selectedGuest) return
-        dispatch(getGuestListDetails({id: params.id, guest_id: selectedGuest?.id}))
         toggleMenu()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedGuest]);
 
     const toggleMenu = () => {

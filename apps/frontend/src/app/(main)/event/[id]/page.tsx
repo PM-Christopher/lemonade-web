@@ -12,23 +12,19 @@ import InstagramIcon from "@/images/icons/instagram-color.svg";
 import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import {Button} from "@/components/ui/button";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
-import {usePusher} from "@/hooks/usePusher";
-import {updateToastifyReducer} from "@/redux/toastifySlice";
-import useNxtSearchParams from "@/hooks/useSearchParams";
 import {useAppDispatch} from "@/redux/hook";
-import {RootState} from "@/redux/store";
-import {getEvent, setEventReferral} from "@/features/events/event.slice";
+import {setEventReferral} from "@/features/events/event.slice";
+import {useEventQuery} from "@/features/events/queries";
 import {EventDetailsSkeleton} from "@/components/Skeletons";
 import {useSearchParams} from "next/navigation";
 
 const EventDetailsPage = ({params}: { params: { id: number } }) => {
     const dispatch = useAppDispatch()
-    const {event, loading} = useSelector((state: RootState) => state.event)
+    const {data: eventData, isLoading: loading} = useEventQuery(params.id)
+    const event = eventData?.event
 
     const searchParams = useSearchParams();
 
@@ -44,10 +40,6 @@ const EventDetailsPage = ({params}: { params: { id: number } }) => {
         // Persist until payment completes (survives refresh)
         sessionStorage.setItem(`event_referral:${eventId}`, code);
     }, [dispatch, params.id, searchParams]);
-
-    useEffect(() => {
-        dispatch(getEvent({id: params.id}))
-    }, []);
 
     const referralFromUrl = searchParams.get("referral");
     const buyTicketHref = referralFromUrl

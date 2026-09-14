@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {axiosInstance} from "@/lib/axiosInstane";
-import {buyTicket} from "@/features/events/event.slice";
 import {headers} from "next/headers";
 
 interface authState {

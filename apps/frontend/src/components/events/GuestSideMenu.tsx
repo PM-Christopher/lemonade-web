@@ -7,10 +7,8 @@ import {GuestDetailSkeleton} from "@/components/Skeletons";
 import {formatStringUCFirst} from "@/lib/helper";
 import {useAppDispatch} from "@/redux/hook";
 import CheckedInModal from "@/components/events/Modals/CheckedInModal";
-import {checkInGuest} from "@/features/events/event.slice";
+import {useCheckInGuestMutation} from "@/features/events/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
 import {ColorRing} from "react-loader-spinner";
 import CheckIcon from "@/images/icons/checkedFilledIcon.svg"
 
@@ -24,7 +22,8 @@ type SideMenuInterface = {
 
 const GuestSideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, guestDetails, loading, id}) => {
     const dispatch = useAppDispatch()
-    const {checkInLoading} = useSelector((state: RootState) => state.event)
+    const checkInGuestMutation = useCheckInGuestMutation(id)
+    const checkInLoading = checkInGuestMutation.isPending
     const [checkedInOpen, setCheckedInOpen] = useState(false)
 
     const toggleModal = () => {
@@ -32,19 +31,20 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({toggleMenu, isOpen, guestDe
     }
 
     const handleCheckInGuest = () => {
-        dispatch(checkInGuest({id, guest_id: guestDetails?.id})).then((res: any) => {
-            if (res.payload.status) {
+        checkInGuestMutation.mutate(guestDetails?.id, {
+            onSuccess: () => {
                 // toggleMenu()
                 toggleModal()
-            }
-        }).catch((err: any) => {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: `There was an error while checking the guest is`,
-                    type: "error",
-                })
-            );
+            },
+            onError: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: `There was an error while checking the guest is`,
+                        type: "error",
+                    })
+                );
+            },
         })
     }
 

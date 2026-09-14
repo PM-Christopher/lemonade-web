@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import {Label} from "@/components/ui/label";
@@ -8,9 +8,8 @@ import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
 import MainLayout from "@/components/layouts/MainLayout";
 import {useRouter} from "next/navigation";
 import {useAppDispatch} from "@/redux/hook";
-import {getPromotions, payForPromotion} from "@/features/events/event.slice";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
+import {usePromotionsQuery} from "@/features/events/queries";
+import {usePayForPromotionMutation} from "@/features/events/mutations";
 import {PromotionInterface} from "@/interfaces/EventInterface";
 import moment, {now} from "moment";
 import {ColorRing} from "react-loader-spinner";
@@ -19,13 +18,12 @@ import {updateToastifyReducer} from "@/redux/toastifySlice";
 function PromoteEventPage({params}: { params: { id: number } }) {
     const router = useRouter();
     const dispatch = useAppDispatch()
-    const {promotions, loading, promotionLoading} = useSelector((state: RootState) => state.event)
+    const {data: promotionsData, isLoading: loading} = usePromotionsQuery()
+    const promotions = promotionsData?.promotions ?? []
+    const payForPromotionMutation = usePayForPromotionMutation()
+    const promotionLoading = payForPromotionMutation.isPending
     const [selectedPromotion, setSelectedPromotion] = useState<PromotionInterface | null>(null)
     const [unit, setUnit] = useState<number>(1);
-
-    useEffect(() => {
-        dispatch(getPromotions())
-    }, []);
 
     const handleSelectPromotion = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedId = Number(e.target.value)
@@ -57,9 +55,8 @@ function PromoteEventPage({params}: { params: { id: number } }) {
             promotion_date: formatted,
             redirect_url,
         }
-        const res = await dispatch(payForPromotion({id: params.id, data: payload}))
-        if (res.payload.status) {
-            if (res.payload.data.authorization_url) {
+        payForPromotionMutation.mutate({id: params.id, data: payload}, {
+            onSuccess: (result) => {
                 dispatch(
                     updateToastifyReducer({
                         show: true,
@@ -70,18 +67,19 @@ function PromoteEventPage({params}: { params: { id: number } }) {
 
                 // Wait 2 seconds before redirect
                 setTimeout(() => {
-                    window.location.href = res.payload.data.authorization_url;
+                    window.location.href = result.authorization_url;
                 }, 2000);
-            }
-        } else {
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: "Something went wrong while paying for promotion. Please try again.",
-                    type: "error",
-                })
-            );
-        }
+            },
+            onError: () => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: "Something went wrong while paying for promotion. Please try again.",
+                        type: "error",
+                    })
+                );
+            },
+        })
     }
     return (
         <MainLayout>

@@ -1,39 +1,31 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import Carousel from "@/components/global/ImageSlider";
 import EventCard from "@/components/events/EventCard";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {EventInterface} from "@/interfaces/EventInterface";
 import Link from "next/link";
 import {useMediaQuery} from "react-responsive";
-import {RootState} from "@/redux/store";
 import {EventsSkeleton, TrendingEventsSkeleton} from "@/components/Skeletons";
-import {useAppDispatch} from "@/redux/hook";
-import {getEvents} from "@/features/events/event.slice";
+import {useEventsQuery} from "@/features/events/queries";
 
 type EventsInterface = {
     results: EventInterface[];
     searchTerm: string;
+    filtered: boolean;
+    filteredEvents: EventInterface[];
+    filteredLoading: boolean;
 };
 
 const EventsSectionView: React.FC<EventsInterface> = ({
                                                           results,
                                                           searchTerm,
+                                                          filtered,
+                                                          filteredEvents,
+                                                          filteredLoading,
                                                       }) => {
     const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
-    const dispatch = useAppDispatch();
-    const {
-        filtered,
-        filteredEvents,
-        events,
-        eventsLoading,
-        filteredLoading
-    } = useSelector((state: RootState) => state.event);
-
-    useEffect(() => {
-        dispatch(getEvents())
-    }, []);
+    const {data: eventsData, isLoading: eventsLoading} = useEventsQuery();
+    const events = eventsData ?? {trending: [], this_week: [], upcoming: []};
 
     return (
         <section className="mt-2 flex flex-col items-center">

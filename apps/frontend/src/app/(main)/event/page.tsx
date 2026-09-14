@@ -14,7 +14,8 @@ import FilterEventModal from "@/components/events/Modals/FilterEventModal";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
-import {resetFreeEventState, searchEvent} from "@/features/events/event.slice";
+import {resetFreeEventState} from "@/features/events/event.slice";
+import {useSearchEventsMutation, useFilterEventsMutation} from "@/features/events/mutations";
 import {useRouter, useSearchParams} from "next/navigation";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useVerifyTransactionMutation} from "@/features/transaction/mutations";
@@ -37,7 +38,10 @@ const EventPage: React.FC = () => {
     const [toggleFilterEvent, setToggleFilterEvent] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const dispatch = useAppDispatch();
-    const {searchResults, free_event} = useSelector((state: RootState) => state.event);
+    const {free_event} = useSelector((state: RootState) => state.event);
+    const searchEventsMutation = useSearchEventsMutation();
+    const searchResults = searchEventsMutation.data?.events ?? [];
+    const filterEventsMutation = useFilterEventsMutation();
 
     const router = useRouter()
     const searchParams = useSearchParams();
@@ -92,7 +96,7 @@ const EventPage: React.FC = () => {
     const handleEventSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchTerm(value);
-        dispatch(searchEvent({data: {search: value}}));
+        searchEventsMutation.mutate(value);
     };
 
     const activatePaymentModal = () => {
@@ -116,7 +120,13 @@ const EventPage: React.FC = () => {
         switch (menuOption) {
             case "events":
                 return (
-                    <EventsSectionView results={searchResults} searchTerm={searchTerm}/>
+                    <EventsSectionView
+                        results={searchResults}
+                        searchTerm={searchTerm}
+                        filtered={filterEventsMutation.isSuccess}
+                        filteredEvents={filterEventsMutation.data?.events ?? []}
+                        filteredLoading={filterEventsMutation.isPending}
+                    />
                 );
             case "organizer":
                 return (
@@ -233,6 +243,7 @@ const EventPage: React.FC = () => {
             <FilterEventModal
                 toggle={activateFilterEvent}
                 isOpen={toggleFilterEvent}
+                filterEventsMutation={filterEventsMutation}
             />
             <VerifyPaymentModal toggle={toggleVerifyPayment} isOpen={toggleVPaymentModel} event={transaction_data}
                                 toggleMore={toggleMoreTickets}/>

@@ -6,16 +6,16 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {useAppDispatch} from "@/redux/hook";
 import {useRouter} from "next/navigation";
-import {useRequest} from "@/hooks/useRequest";
 import {useSelector} from "react-redux";
-import {verifyAccount} from "@/redux/general.slice";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {FormikButton} from "@/components/global/FormikButton";
-import {createEvent, resetEventState} from "@/features/events/event.slice";
+import {resetEventState} from "@/features/events/event.slice";
+import {useCreateEventMutation} from "@/features/events/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {RootState} from "@/redux/store";
 import {useBanksQuery} from "@/features/shared/queries";
+import {useVerifyAccountMutation} from "@/features/shared/mutations";
 
 type BankAccountInterface = {
     toggle: () => void;
@@ -33,12 +33,11 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
     const [accountNumber, setAccountNumber] = useState("");
     const [error, setError] = useState("");
 
-    const {loading: accountLoading} = useSelector(
-        (state: any) => state.general
-    );
     const {event, newTickets} = useSelector((state: RootState) => state.event);
     const { data: banksData, isLoading: loading } = useBanksQuery({enabled: option});
     const banks = banksData?.banks ?? [];
+    const createEventMutation = useCreateEventMutation();
+    const verifyAccountMutation = useVerifyAccountMutation();
 
     const createEventSchema = yup.object({
         bank_name: yup.string().required(),
@@ -71,8 +70,8 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                     account_number: values.account_number,
                 },
             };
-            dispatch(createEvent({ data })).then((res) => {
-                if (res.payload.status) {
+            createEventMutation.mutate(data, {
+                onSuccess: () => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -82,7 +81,8 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                     );
                     dispatch(resetEventState());
                     router.push("/event");
-                } else {
+                },
+                onError: () => {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -90,7 +90,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                             type: "error",
                         })
                     );
-                }
+                },
             });
         },
     });
@@ -99,18 +99,17 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
         if (accountNumber.length === 10) {
             getAccount();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accountNumber]);
 
     const getAccount = () => {
-        dispatch(
-            verifyAccount({bank_code: bankCode, account_number: accountNumber})
-        ).then((res) => {
-            if (res.payload.status) {
-                console.log({account_name: res.payload.data.account_name});
-                formik.setFieldValue("account_name", res.payload.data.account_name);
-            } else {
+        verifyAccountMutation.mutate({bankCode, accountNumber}, {
+            onSuccess: (result) => {
+                formik.setFieldValue("account_name", result.account_name);
+            },
+            onError: () => {
                 setError("Invalid account details");
-            }
+            },
         });
     };
 

@@ -1,17 +1,13 @@
 "use client"
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Upcoming from "@/components/events/views/Organizer/Upcoming";
 import PastEvent from "@/components/events/views/Organizer/PastEvent";
 import Draft from "@/components/events/views/Organizer/Draft";
 import PaymentSettingsModal from "@/components/events/Modals/PaymentSettingsModal";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {PlusIcon} from "lucide-react";
 import {useMediaQuery} from "react-responsive";
 import {useRouter} from "next/navigation";
-import {useAppDispatch} from "@/redux/hook";
-import {RootState} from "@/redux/store";
-import {getOrganizerEvents} from "@/features/events/event.slice";
+import {useOrganizerEventsQuery} from "@/features/events/queries";
 
 type OrganizerSectionInterface = {
     activatePaymentModal: () => void,
@@ -19,26 +15,21 @@ type OrganizerSectionInterface = {
 }
 
 const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({activatePaymentModal, togglePaymentModel}) => {
-    const dispatch = useAppDispatch()
     const isMobile = useMediaQuery({query: "(max-width: 1023px)"});
     const router = useRouter()
     const [orOption, setOrOption] = useState("upcoming")
-    const {organizer_events, eventsLoading} = useSelector((state: RootState) => state.event)
-
-    useEffect(() => {
-        dispatch(getOrganizerEvents())
-    }, [orOption]);
+    const {data: organizer_events, isLoading: eventsLoading} = useOrganizerEventsQuery()
 
     const renderView = () => {
         switch (orOption) {
             case "upcoming":
-                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading}/>
+                return <Upcoming events={organizer_events?.upcoming ?? []} loading={eventsLoading}/>
             case "past":
-                return <PastEvent events={organizer_events?.past} loading={eventsLoading}/>
+                return <PastEvent events={organizer_events?.past ?? []} loading={eventsLoading}/>
             case "draft":
-                return <Draft events={organizer_events?.drafts} loading={eventsLoading}/>
+                return <Draft events={organizer_events?.drafts ?? []} loading={eventsLoading}/>
             default:
-                return <Upcoming events={organizer_events?.upcoming} loading={eventsLoading}/>
+                return <Upcoming events={organizer_events?.upcoming ?? []} loading={eventsLoading}/>
         }
     }
 

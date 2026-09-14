@@ -2,41 +2,33 @@
 import React, {useEffect, useState} from 'react';
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
 import {useRouter} from "next/navigation";
 import SearchIcon from "@/images/icons/search.svg";
 import UploadIcon from "@/images/icons/uploadIcon.svg"
 import ScanIcon from "@/images/icons/scanIcon.svg"
 import GuestListCard from "@/components/events/GuestListCard";
-import {
-    clearSearch,
-    getGuestList,
-    getGuestListDetails,
-    guestSearch,
-    setSearchTerm
-} from "@/features/events/event.slice";
-import {RootState} from "@/redux/store";
+import {useGuestListQuery, useGuestDetailsQuery, useGuestSearchQuery} from "@/features/events/queries";
 import {GuestListSkeleton} from "@/components/Skeletons";
 import {GuestListCardProps} from "@/interfaces/EventInterface";
 import GuestSideMenu from "@/components/events/GuestSideMenu";
 import { Users } from "lucide-react";
+import useDebounce from "@/hooks/useDebounce";
 
 const CheckInsPage = ({params}: { params: { id: number } }) => {
-    const dispatch = useAppDispatch()
-    const {loading, guestList, guestDetails, guestDetailLoading, guestSearchLoading, guestSearchResults, searchTerm} = useSelector((state: RootState) => state.event)
+    const {data: guestListData, isLoading: loading} = useGuestListQuery(params.id);
+    const guestList = guestListData?.guest_list ?? [];
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [selectedGuest, setSelectedGuest] = useState<any>(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
-    useEffect(() => {
-        dispatch(getGuestList({id: params.id}))
-    }, []);
+    const {data: guestDetailsData, isLoading: guestDetailLoading} = useGuestDetailsQuery(params.id, selectedGuest?.id);
+    const guestDetails = guestDetailsData?.guest_details;
 
     useEffect(() => {
         if (!selectedGuest) return
-        dispatch(getGuestListDetails({id: params.id, guest_id: selectedGuest?.id}))
         toggleMenu()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedGuest]);
 
     const toggleMenu = () => {
@@ -49,18 +41,9 @@ const CheckInsPage = ({params}: { params: { id: number } }) => {
         }
     }, [isOpen]);
 
-    useEffect(() => {
-        const term = (searchTerm ?? "").trim();
-        if (!term) {
-            dispatch(clearSearch())
-            return;
-        }
-        const t = setTimeout(() => {
-            dispatch(guestSearch({id: params.id, q: term}))
-        }, 350)
-
-        return () => clearTimeout(t)
-    }, [searchTerm, params.id, dispatch]);
+    const {debouncedValue: debouncedSearchTerm} = useDebounce(searchTerm, 350);
+    const {data: guestSearchData, isLoading: guestSearchLoading} = useGuestSearchQuery(params.id, debouncedSearchTerm);
+    const guestSearchResults = guestSearchData?.guest_list ?? [];
 
     const safeSearchTerm = (searchTerm ?? "");
     const isSearching = (safeSearchTerm ?? "").trim().length > 0;
@@ -94,7 +77,7 @@ const CheckInsPage = ({params}: { params: { id: number } }) => {
                                     id="search"
                                     type="text"
                                     value={safeSearchTerm}
-                                    onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                     className="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-500 outline-none"
                                     placeholder="Search guest name, email address"
                                 />

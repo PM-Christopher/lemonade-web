@@ -14,7 +14,8 @@ import * as yup from "yup";
 import {FieldArray, useFormik} from "formik";
 import {FormikButton} from "@/components/global/FormikButton";
 import {useAppDispatch} from "@/redux/hook";
-import {buyTicket, freeEventState} from "@/features/events/event.slice";
+import {freeEventState} from "@/features/events/event.slice";
+import {useBuyTicketMutation} from "@/features/events/mutations";
 import MainLayout from "@/components/layouts/MainLayout";
 import {RootState} from "@/redux/store";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
@@ -30,7 +31,9 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
     const handleChange = () => {
         setChecked(!checked);
     };
-    const {tickets, total, loading, eventReferrals} = useSelector((state: RootState) => state.event);
+    const {tickets, total, eventReferrals} = useSelector((state: RootState) => state.event);
+    const buyTicketMutation = useBuyTicketMutation();
+    const loading = buyTicketMutation.isPending;
 
     const ticketSchema = yup.object({
         fullname: yup.string().required("Fullname is required"),
@@ -108,14 +111,15 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                     referral: referralFromUrl ?? null
                 };
             }
-            dispatch(buyTicket({event_id: params.id, data: formValues})).then((res: any) => {
-                if (res.payload.data.completed) {
+            buyTicketMutation.mutate({eventId: params.id, data: formValues}, {
+              onSuccess: (result) => {
+                if (result.completed) {
                     const data = {
                         completed: true
                     }
                     dispatch(freeEventState(data))
                     router.push("/event");
-                } else if (res.payload.data.payment_url) {
+                } else if (result.payment_url) {
                     dispatch(
                         updateToastifyReducer({
                             show: true,
@@ -123,8 +127,9 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
                             type: "success",
                         })
                     );
-                    window.location.href = res.payload.data.payment_url;
+                    window.location.href = result.payment_url;
                 }
+              },
             });
         },
     });

@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -12,9 +12,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import {useAppDispatch} from "@/redux/hook";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {useRouter} from "next/navigation";
-import {getProgram} from "@/features/events/event.slice";
-import {useSelector} from "react-redux";
-import {RootState} from "@/redux/store";
+import {useAffiliateEventDetailQuery} from "@/features/events/queries";
 import {formatLongDate, formatTime} from "@/lib/dateTimeFormatter";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {FaNairaSign} from "react-icons/fa6";
@@ -23,7 +21,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
     const [copied, setCopied] = useState(false);
     const dispatch = useAppDispatch();
     const router = useRouter()
-    const {loading, programDetails} = useSelector((state: RootState) => state.event)
+    const {data: programDetails, isLoading: loading} = useAffiliateEventDetailQuery(params.id)
 
     const handleCopy = (textToCopy: string) => {
         navigator.clipboard.writeText(textToCopy).then(() => {
@@ -38,12 +36,6 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
             setTimeout(() => setCopied(false), 2000); // Reset the copied state after 2 seconds
         });
     };
-
-    useEffect(() => {
-        dispatch(getProgram({id: params.id}))
-    }, []);
-
-    console.log({events: programDetails?.events})
 
     return (
         <MainLayout>
@@ -67,7 +59,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                 <div
                                     className="w-screen laptop:w-full bg-green-tint p-[8px] px-[16px] rounded-[8px] flex gap-3 items-center">
                                     <Image
-                                        src={programDetails?.events?.event_image}
+                                        src={programDetails?.events?.event_image || "/images/default-event.jpg"}
                                         alt="details"
                                         width={120}
                                         height={120}
@@ -85,11 +77,11 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                             </p>
                                             <DotIcon className="w-1"/>
                                             <p className="font-sans font-normal text-[16px] leading-[27px] tracking-custom text-text-grey">
-                                                {formatTime(programDetails?.events?.start_date)}
+                                                {formatTime(programDetails?.events?.start_date ?? null)}
                                             </p>
                                             <p className="font-sans text-text-grey">-</p>
                                             <p className="font-sans font-normal text-[16px] leading-[27px] tracking-custom text-text-grey">
-                                                {formatTime(programDetails?.events?.end_date)}
+                                                {formatTime(programDetails?.events?.end_date ?? null)}
                                             </p>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -143,7 +135,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                         Total commission
                                     </p>
                                     <p className="font-sans font-semibold text-[18px] tracking-custom leading-[27px]">
-                                        ₦ {formatNumberWithCommas(programDetails?.events?.breakdown?.total_commissions) || 0}
+                                        ₦ {formatNumberWithCommas(programDetails?.events?.breakdown?.total_commissions ?? 0)}
                                     </p>
                                     <div className="border-t-mid-grey border-t-[1px] my-[16px]"></div>
                                     <p className="font-sans font-normal text-text-grey text-[14px]">
@@ -165,7 +157,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                             Commissions by ticket type
                                         </p>
                                         {
-                                            programDetails?.events?.commissions.length > 0 && programDetails?.events?.commissions.map((commission: any, index: number) => {
+                                            (programDetails?.events?.commissions?.length ?? 0) > 0 && programDetails?.events?.commissions?.map((commission: any, index: number) => {
                                                 const totalStock = Number(commission?.stock) || 0;
                                                 const checkinCount = Number(commission?.checkin_count) || 0;
 
@@ -207,7 +199,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                         </p>
 
                                         {
-                                            programDetails?.events?.ticket_sold.length > 0 && programDetails?.events?.ticket_sold.map((ticket: any, index: number) => {
+                                            (programDetails?.events?.ticket_sold?.length ?? 0) > 0 && programDetails?.events?.ticket_sold?.map((ticket: any, index: number) => {
                                                 const totalStock = Number(ticket?.stock) || 0;
                                                 const checkinCount = Number(ticket?.checkin_count) || 0;
 

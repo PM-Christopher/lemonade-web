@@ -9,19 +9,18 @@ import CalendarIcon from "@/images/icons/eventCalendarIcon.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {useAppDispatch} from "@/redux/hook";
-import {filterEvent, resetFilter} from "@/features/events/event.slice";
+import {useFilterEventsMutation} from "@/features/events/mutations";
 
 type FilterEventInterface = {
     toggle: () => void,
-    isOpen: boolean
+    isOpen: boolean,
+    filterEventsMutation: ReturnType<typeof useFilterEventsMutation>
 }
 
-const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
+const FilterEventModal = ({toggle, isOpen, filterEventsMutation}: FilterEventInterface) => {
     const [clickedCategory , setClickedCategory] = useState("")
     const [timeOptions, setTimeOption] = useState(['This week', 'This Month'])
     const [timeType , setTimeType] = useState("")
-    const dispatch = useAppDispatch();
 
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
@@ -59,13 +58,13 @@ const FilterEventModal = ({toggle, isOpen}: FilterEventInterface) => {
             end_date: to,
             location: location,
         }
-        dispatch(filterEvent({data})).then((res: any) => {
-            toggle()
+        filterEventsMutation.mutate(data, {
+            onSuccess: () => toggle(),
         })
     }
 
     const handleResetFilter = () => {
-        dispatch(resetFilter())
+        filterEventsMutation.reset()
         setClickedCategory("")
         setTo("")
         setFrom("")

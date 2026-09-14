@@ -4,7 +4,6 @@ import React, {useEffect, useMemo} from "react";
 import {useRouter} from "next/navigation";
 import {useFormik} from "formik";
 import * as yup from "yup";
-import {useSelector} from "react-redux";
 
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -28,10 +27,10 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {FlatButton} from "@/components/global/FlatButton";
 
-import {useAppDispatch} from "@/redux/hook";
-import {RootState} from "@/redux/store";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {editEvent, getEvent} from "@/features/events/event.slice";
+import {useAppDispatch} from "@/redux/hook";
+import {useEventQuery} from "@/features/events/queries";
+import {useUpdateEventMutation} from "@/features/events/mutations";
 import {getTimeZones} from "@/lib/helper";
 import {EventFormSkeleton} from "@/components/Skeletons";
 
@@ -179,16 +178,13 @@ const EditEventPage = ({params}: { params: { id: string } }) => {
     const dispatch = useAppDispatch();
     const router = useRouter();
 
-    const {event, loading} = useSelector((state: RootState) => state.event);
     const eventId = Number(params.id);
+    const {data: eventData, isLoading: loading, refetch} = useEventQuery(eventId);
+    const event = eventData?.event;
+    const updateEventMutation = useUpdateEventMutation(eventId);
 
     useEffect(() => {
         if (!Number.isFinite(eventId)) return;
-
-        const refetch = () => dispatch(getEvent({ id: eventId }));
-
-        // ✅ first load
-        refetch();
 
         // ✅ when returning via browser back/forward cache
         const onPageShow = () => refetch();
@@ -204,7 +200,7 @@ const EditEventPage = ({params}: { params: { id: string } }) => {
             window.removeEventListener("pageshow", onPageShow);
             document.removeEventListener("visibilitychange", onVisibility);
         };
-    }, [dispatch, eventId]);
+    }, [eventId, refetch]);
 
 
     useEffect(() => {
@@ -257,21 +253,14 @@ const EditEventPage = ({params}: { params: { id: string } }) => {
                     },
                 };
 
-                // If your thunk rejects properly, unwrap gives you clean try/catch handling
-                const res: any = await dispatch(editEvent({id: eventId, data: payload})).unwrap();
+                await updateEventMutation.mutateAsync(payload);
 
-                // If your API returns {status: true/false}
-                if (res?.status || res?.payload?.status) {
-                    dispatch(updateToastifyReducer({
-                        show: true,
-                        message: "Event updated successfully",
-                        type: "success"
-                    }));
-                    router.push("/event");
-                    return;
-                }
-
-                dispatch(updateToastifyReducer({show: true, message: "Error updating event", type: "error"}));
+                dispatch(updateToastifyReducer({
+                    show: true,
+                    message: "Event updated successfully",
+                    type: "success"
+                }));
+                router.push("/event");
             } catch (e: any) {
                 dispatch(updateToastifyReducer({
                     show: true,

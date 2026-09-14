@@ -1,9 +1,8 @@
 "use client";
 
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useMemo, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {useSelector} from "react-redux";
 
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -20,8 +19,8 @@ import {Button} from "@/components/ui/button";
 import AffiliateLinkModal from "@/components/events/Modals/AffiliateLinkModal";
 
 import {useAppDispatch} from "@/redux/hook";
-import {RootState} from "@/redux/store";
-import {generateAffiliateLink, getProgram} from "@/features/events/event.slice";
+import {useAffiliateEventDetailQuery} from "@/features/events/queries";
+import {useGenerateAffiliateLinkMutation} from "@/features/events/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import {formatLongDate, formatLongTime} from "@/lib/dateTimeFormatter";
@@ -116,41 +115,37 @@ const AgentDetailsPage = ({params}: { params: { id: number } }) => {
     const dispatch = useAppDispatch();
     const [isOpen, setIsOpen] = useState(false);
 
-    const {generateLinkLoading, programDetails, loading} = useSelector(
-        (state: RootState) => state.event
-    );
+    const {data: programDetails, isLoading: loading} = useAffiliateEventDetailQuery(params.id);
+    const generateAffiliateLinkMutation = useGenerateAffiliateLinkMutation();
+    const generateLinkLoading = generateAffiliateLinkMutation.isPending;
 
     const event = programDetails?.events;
 
-    useEffect(() => {
-        dispatch(getProgram({id: params.id}));
-    }, [dispatch, params.id]);
-
     const toggleModal = () => setIsOpen((p) => !p);
 
-    const generateLink = async () => {
-        const {payload}: any = await dispatch(generateAffiliateLink({id: params.id}));
-
-        if (payload?.status) {
-            toggleModal();
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message:
-                        "Affiliate link generated successfully. Copy the link below to share with your friends.",
-                    type: "success",
-                })
-            );
-            return;
-        }
-
-        dispatch(
-            updateToastifyReducer({
-                show: true,
-                message: payload?.message ?? "Failed to generate affiliate link",
-                type: "error",
-            })
-        );
+    const generateLink = () => {
+        generateAffiliateLinkMutation.mutate(params.id, {
+            onSuccess: () => {
+                toggleModal();
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message:
+                            "Affiliate link generated successfully. Copy the link below to share with your friends.",
+                        type: "success",
+                    })
+                );
+            },
+            onError: (err: any) => {
+                dispatch(
+                    updateToastifyReducer({
+                        show: true,
+                        message: err?.message ?? "Failed to generate affiliate link",
+                        type: "error",
+                    })
+                );
+            },
+        });
     };
 
     const startDate = useMemo(() => (event?.start_date ? new Date(event.start_date) : null), [event]);
@@ -341,7 +336,7 @@ const AgentDetailsPage = ({params}: { params: { id: number } }) => {
                 <AffiliateLinkModal
                     isOpen={isOpen}
                     toggle={toggleModal}
-                    item={event?.affiliate_link}
+                    item={event?.affiliate_link ?? ""}
                 />
             </section>
         </MainLayout>
