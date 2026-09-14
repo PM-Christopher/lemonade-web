@@ -1,20 +1,15 @@
 "use client"
-import React, {useEffect} from 'react';
+import React from 'react';
 import MainLayout from "@/components/layouts/MainLayout";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
-import {getUserProfile} from "@/features/profile/profile.slice";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {useAdminProfileQuery} from "@/features/profile/queries";
 
 function ProfilePage({}) {
 
-    const dispatch = useDispatch<AppDispatch>();
-    const { user } = useSelector((state: RootState) => state.auth);
-    const { profile } = useSelector((state: RootState) => state.profile);
-
-    useEffect(() => {
-        dispatch(getUserProfile());
-    }, []);
-
+    const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+    const { data } = useAdminProfileQuery({ enabled: isLoggedIn });
+    const profile = data?.admin;
 
     return (
         <MainLayout>
