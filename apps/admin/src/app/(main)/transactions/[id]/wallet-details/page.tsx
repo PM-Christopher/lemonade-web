@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PrinterIcon } from "lucide-react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useParams, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { getWalletDetail } from "@/features/transaction/transaction.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useWalletDetailQuery } from "@/features/wallet/queries";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -20,22 +20,13 @@ function WalletDetailsPage({}) {
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { loading, wallet } = useSelector(
-    (state: RootState) => state.transaction
-  ) as { wallet: any; loading: boolean };
-
-  useEffect(() => {
-    if (isLoggedIn && id) {
-      dispatch(getWalletDetail({ id }));
-    }
-  }, []);
-
-  console.log({ wallet });
+  // Same endpoint the already-migrated wallet domain uses — reused rather
+  // than duplicated, see features/transaction/api.ts's note.
+  const { data: wallet } = useWalletDetailQuery(id, { enabled: isLoggedIn });
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(wallet?.history?.length / perPage);
+  const totalPages = Math.ceil((wallet?.history?.length ?? 0) / perPage);
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
@@ -158,7 +149,7 @@ function WalletDetailsPage({}) {
               </p>
             </div>
             <p className={"text-[14px] font-medium"}>
-              N{formatNumberWithCommas(wallet?.info?.amount || 0)}
+              N{formatNumberWithCommas(Number(wallet?.info?.amount) || 0)}
             </p>
           </div>
           <div className={"flex gap-[24px] items-center-center"}>

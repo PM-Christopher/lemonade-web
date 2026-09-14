@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronDown, ChevronRight, PrinterIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { getPlanSubscription } from "@/features/transaction/transaction.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { usePlanSubscriptionDetailQuery } from "@/features/transaction/queries";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 
@@ -15,13 +15,7 @@ function SubscriptionDetailsPage({}) {
       const router = useRouter()
 
   const params = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { loading, subscription } = useSelector(
-    (state: RootState) => state.transaction
-  ) as { subscription: any; loading: boolean };
-
-
 
   const id = params.id
     ? Array.isArray(params.id)
@@ -29,14 +23,10 @@ function SubscriptionDetailsPage({}) {
       : parseInt(params.id)
     : undefined;
 
-  useEffect(() => {
-    if (isLoggedIn && id) {
-      dispatch(getPlanSubscription({ id }));
-    }
-  }, []);
+  const { data: subscription } = usePlanSubscriptionDetailQuery(id, { enabled: isLoggedIn });
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(subscription?.history?.length / perPage);
+  const totalPages = Math.ceil((subscription?.history?.length ?? 0) / perPage);
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;

@@ -1,5 +1,6 @@
-// Endpoint layer for the transaction domain — see
-// apps/frontend/src/features/events/api.ts for the pattern this follows.
+// Endpoint layer for the transaction domain — see features/dashboard/api.ts
+// for the pattern this follows: the BFF proxy transport (browserApi), not
+// the pre-BFF axiosInstance.
 //
 // NOTE (found, not fixed — preserving exact current behavior per this
 // migration's own rule): getTransactionData's "boosting", "services" and
@@ -9,35 +10,100 @@
 // adminTransactionRoutes below — BOOSTS/SERVICES/PROMOTIONS are defined but
 // unused here). Looks like unfinished routing logic, not a path-string bug;
 // reproduced as-is.
-import { axiosInstance } from "@/lib/axiosInstane";
+//
+// Wallet-withdrawal detail is deliberately NOT duplicated here —
+// adminTransactionRoutes.WALLET_WITHDRAWAL is the exact same endpoint the
+// already-migrated wallet domain's useWalletDetailQuery already calls; the
+// wallet-details consumer page below reuses that hook instead.
+import { browserApi } from "@/lib/browser-api";
 import { adminTransactionRoutes } from "@lemonade/api-types";
 
+export interface TransactionHistoryRow {
+    id?: number;
+    unique_id?: string;
+    txn_id?: string;
+    user_id?: string;
+    amount?: number | string;
+    fullname?: string;
+    plan?: string;
+    status?: string;
+    created_at?: string;
+    date_paid?: string;
+    wallet_id?: string;
+    subscription_type?: string;
+    user?: { fullname?: string };
+    wallet?: { wallet_id?: string };
+    [key: string]: unknown;
+}
+
+export interface TransactionListResponse {
+    history?: TransactionHistoryRow[];
+    subscribers?: number;
+    revenue?: string;
+    revenue_minor?: number;
+    total_revenue?: string;
+    total_revenue_minor?: number;
+    tickets_sold?: number;
+    total_events?: number;
+    churn_rate?: number;
+    [key: string]: unknown;
+}
+
+export interface PlanSubscriptionDetailResponse {
+    info: Record<string, unknown> & {
+        fullname?: string;
+        txn_id?: string;
+        plan?: string;
+        amount?: number;
+        status?: string;
+        user_id?: string;
+    };
+    plan: { cost: string; renews: string };
+    history: TransactionHistoryRow[];
+}
+
+export interface TransactionEventDetailResponse {
+    info: Record<string, unknown> & {
+        event_name?: string;
+        organizer?: string;
+        transaction_id?: string;
+        tickets_sold?: number;
+        created_at?: string;
+        status?: string;
+        user_id?: string;
+    };
+    history: TransactionHistoryRow[];
+}
+
+export type TransactionListType =
+    | "plan-subscriptions"
+    | "wallet-withdrawals"
+    | "boosting"
+    | "services"
+    | "events"
+    | "promotions";
+
 export const transactionApi = {
-    getPlanSubscriptions: () => axiosInstance.get(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/`),
-
-    getPlanSubscription: (id: number) => axiosInstance.get(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`),
-
-    getWalletWithdrawal: (id: number) => axiosInstance.get(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`),
-
-    getEventDetail: (id: number) => axiosInstance.get(`${adminTransactionRoutes.EVENT}/${id}`),
-
-    // See the NOTE above for the boosting/services/promotions fallthrough.
-    getTransactionData: (trxType: string) => {
+    getTransactionData: (trxType: TransactionListType) => {
         switch (trxType) {
             case "plan-subscriptions":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             case "wallet-withdrawals":
-                return axiosInstance.get(adminTransactionRoutes.WALLET_WITHDRAWALS);
+                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS);
             case "boosting":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             case "services":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
             case "events":
-                return axiosInstance.get(adminTransactionRoutes.EVENTS);
+                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS);
             case "promotions":
-                return axiosInstance.get(adminTransactionRoutes.PLAN_SUBSCRIPTION);
-            default:
-                return undefined;
+                return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
         }
     },
+
+    getPlanSubscription: (id: number) =>
+        browserApi.get<PlanSubscriptionDetailResponse>(`${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`),
+
+    getEventDetail: (id: number) =>
+        browserApi.get<TransactionEventDetailResponse>(`${adminTransactionRoutes.EVENT}/${id}`),
 };

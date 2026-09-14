@@ -37,8 +37,31 @@ export interface WithdrawalRequests {
 }
 
 export interface WalletDetail {
-    info: Record<string, unknown> & { status?: string };
-    history: Array<{ wallet?: { balance?: number } }>;
+    info: Record<string, unknown> & {
+        fullname?: string;
+        transaction_id?: string | null;
+        date_paid?: string;
+        status?: string;
+        amount_minor?: number;
+        amount?: string;
+        account_number?: string;
+        account_name?: string;
+        bank_name?: string;
+    };
+    // A second admin domain (transaction/wallet-details, reusing this same
+    // endpoint — see its own api.ts) reads more of these fields than the
+    // wallet-management detail page does; typed against the real live
+    // response rather than only what wallet-management happens to use.
+    history: Array<{
+        id?: string;
+        unique_id?: string;
+        user_id?: string;
+        wallet_id?: string;
+        amount?: number;
+        status?: string;
+        created_at?: string;
+        wallet?: { wallet_id?: string; balance?: number };
+    }>;
 }
 
 export const walletApi = {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import {
   CalendarIcon,
@@ -15,38 +15,21 @@ import BoostingViews from "@/views/transactions/boostingViews";
 import ServiceViews from "@/views/transactions/serviceViews";
 import EventViews from "@/views/transactions/eventViews";
 import PromotionViews from "@/views/transactions/promotionViews";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import {
-  getPlanSubscriptions,
-  getTransactionData,
-} from "@/features/transaction/transaction.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useTransactionDataQuery } from "@/features/transaction/queries";
 import { manualTransactionsExport } from "@/utils/helper";
 
 function TransactionsPage({}) {
   const [menuOption, setMenuOption] = useState("plan-subscriptions");
-  const dispatch = useDispatch<AppDispatch>();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  type TrxDataType = {
-    history?: any[];
-    subscribers?: number;
-    // add other properties as needed
-  };
 
-  const { trxData } = useSelector((state: RootState) => state.transaction) as {
-    trxData: TrxDataType;
-  };
+  const { data: trxData } = useTransactionDataQuery(menuOption, { enabled: isLoggedIn });
 
   const switchOption = (option: string) => {
     setMenuOption(option);
   };
-
-  useEffect(() => {
-    if (menuOption && isLoggedIn) {
-      dispatch(getTransactionData({ trxType: menuOption }));
-    }
-  }, [menuOption]);
 
   const renderViews = () => {
     switch (menuOption) {

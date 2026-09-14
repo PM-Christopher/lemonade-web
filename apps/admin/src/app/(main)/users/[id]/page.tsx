@@ -18,7 +18,6 @@ import BalanceModal from "@/modals/users/BalanceModal";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { getEventDetail } from "@/features/transaction/transaction.slice";
 import {
   getAccountInfo,
   getUserDetail,

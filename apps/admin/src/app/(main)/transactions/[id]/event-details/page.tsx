@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PrinterIcon } from "lucide-react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useParams, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { getEventDetail } from "@/features/transaction/transaction.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useTransactionEventDetailQuery } from "@/features/transaction/queries";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import dayjs from "dayjs";
@@ -21,20 +21,11 @@ function EventDetailsPage({}) {
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { loading, event } = useSelector(
-    (state: RootState) => state.transaction
-  ) as { event: any; loading: boolean };
-
-  useEffect(() => {
-    if (isLoggedIn && id) {
-      dispatch(getEventDetail({ id }));
-    }
-  }, []);
+  const { data: event } = useTransactionEventDetailQuery(id, { enabled: isLoggedIn });
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(event?.history?.length / perPage);
+  const totalPages = Math.ceil((event?.history?.length ?? 0) / perPage);
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;

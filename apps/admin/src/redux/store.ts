@@ -6,7 +6,6 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "@/features/authentication/authSlice";
 import tempReducer from "./tempSlice";
 import toastifyReducer from "./toastifySlice"
-import transactionReducer from "@/features/transaction/transaction.slice"
 import userReducer from "@/features/user/user.slice"
 import eventReducer from "@/features/events/event.slice"
 import promotionReducer from "@/features/events/promotion.slice"
@@ -21,7 +20,6 @@ const reducers = combineReducers({
     auth: authReducer,
     temp: tempReducer,
     toast: toastifyReducer,
-    transaction: transactionReducer,
     user: userReducer,
     event: eventReducer,
     promotion: promotionReducer,
