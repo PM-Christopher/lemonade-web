@@ -2,20 +2,21 @@
 import { pusherCon, pusherConfig } from "@/config/pusherConfig";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { addToMessages } from "@/features/connect/connect.slice";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 export const usePusher = (channelName: string, eventName: string) => {
-    const [cookies] = useCookies(["token"]);
     const [data, setData] = useState<any>(null);
     const { user } = useAppSelector((state: any) => state.auth);
     const dispatch = useAppDispatch();
-    const token = cookies.token;
 
     useEffect(() => {
-        const pusher = channelName === "user" ? pusherCon(token) : pusherConfig(token);
-        const channel = pusher.subscribe(channelName);
+        const isUserChannel = channelName === "user";
+        const pusher = isUserChannel ? pusherCon() : pusherConfig();
+        // Backend broadcasts on the "private-"-prefixed wire name (see
+        // routes/channels.php); callers here pass the logical name.
+        const subscribeName = isUserChannel ? channelName : `private-${channelName}`;
+        const channel = pusher.subscribe(subscribeName);
 
         const eventHandler = (receivedData: any) => {
             setData(receivedData);
@@ -45,9 +46,9 @@ export const usePusher = (channelName: string, eventName: string) => {
 
         return () => {
             channel.unbind(eventName, eventHandler);
-            pusher.unsubscribe(channelName);
+            pusher.unsubscribe(subscribeName);
         };
-    }, [channelName, eventName, token]);
+    }, [channelName, eventName]);
 
     return { data };
 };
