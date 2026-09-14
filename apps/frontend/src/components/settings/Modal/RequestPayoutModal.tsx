@@ -5,15 +5,12 @@ import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
 import {useAppDispatch} from "@/redux/hook";
-import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import {verifyAccount} from "@/redux/general.slice";
-import {settingsApi} from "@/features/settings/api";
+import {useBanksQuery} from "@/features/shared/queries";
+import {useVerifyAccountMutation} from "@/features/shared/mutations";
+import {useCreateBankAccountMutation} from "@/features/settings/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {RootState} from "@/redux/store";
-import {getBanks} from "@/features/transaction/transaction.slice";
 import {updateHasBankAccount} from "@/features/authentication/authSlice";
 
 type RequestPayoutInterface = {
@@ -28,12 +25,10 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({isOpen, toggle}) 
     const [error, setError] = useState("");
     const dispatch = useAppDispatch();
 
-    const { banks, loading } = useSelector((state: RootState) => state.transaction);
-
-
-    useEffect(() => {
-        dispatch(getBanks())
-    }, []);
+    const { data: banksData, isLoading: loading } = useBanksQuery({enabled: isOpen});
+    const banks = banksData?.banks ?? [];
+    const verifyAccountMutation = useVerifyAccountMutation();
+    const createBankAccountMutation = useCreateBankAccountMutation();
 
     const bankAccountSchema = yup.object({
         bank_name: yup.string().required(),
@@ -49,65 +44,58 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({isOpen, toggle}) 
         },
         validationSchema: bankAccountSchema,
         onSubmit: async (values) => {
-            await requestPayout()
+            // FOUND, FIXED (found live-testing, not a guess — see the
+            // matching NOTE in features/settings/api.ts): this modal is
+            // shown exactly when the user has no bank account yet
+            // (wallet/page.tsx's handlePayoutRequest), collects bank_name/
+            // account_number/account_name, and its own success toast says
+            // "Error creating account" and dispatches updateHasBankAccount()
+            // — every sign this was always meant to create a bank account.
+            // The old code called settingsApi.requestPayout with this exact
+            // payload instead, which the backend's RequestWithdrawalRequest
+            // doesn't accept at all (it only takes amount/bank_account_id),
+            // so this modal could never have actually worked. Now calls
+            // createBankAccount, matching the payload it already builds.
+            createBankAccountMutation.mutate(values, {
+                onSuccess: () => {
+                    formik.resetForm()
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Bank account added — you can now request a payout",
+                            type: "success",
+                        })
+                    );
+                    dispatch(updateHasBankAccount())
+                    toggle()
+                },
+                onError: (err: any) => {
+                    formik.resetForm()
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: err?.message || "Error creating account",
+                            type: "error",
+                        })
+                    );
+                },
+            });
         },
     });
 
     const getAccount = () => {
         formik.setFieldValue("account_name", "");
-        dispatch(
-            verifyAccount({bank_code: bankCode, account_number: accountNumber})
-        ).then((res) => {
-            if (res.payload.status) {
+        verifyAccountMutation.mutate({bankCode, accountNumber}, {
+            onSuccess: (res) => {
                 setError('')
-                formik.setFieldValue("account_name", res.payload.data.account_name);
-            } else {
+                formik.setFieldValue("account_name", res.account_name);
+            },
+            onError: () => {
                 setError("Invalid account details");
                 formik.setFieldValue("account_name", "");
-            }
+            },
         });
     };
-
-    const requestPayout = async () => {
-        try {
-            const formData = {
-                bank_name: formik.values.bank_name,
-                account_number: formik.values.account_number,
-                account_name: formik.values.account_name,
-                amount: 100000
-            }
-            const {data} = await settingsApi.requestPayout(formData)
-            if (data.status) {
-                formik.resetForm()
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Your payment is being processed and will be disbursed into the account details provided below",
-                        type: "success",
-                    })
-                );
-                dispatch(updateHasBankAccount())
-                toggle()
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Error creating account",
-                        type: "error",
-                    })
-                );
-            }
-        } catch (err: any) {
-            formik.resetForm()
-            dispatch(
-                updateToastifyReducer({
-                    show: true,
-                    message: err?.response?.data?.message || "error",
-                    type: "error",
-                })
-            );
-        }
-    }
 
     useEffect(() => {
         if (accountNumber.length === 10) {

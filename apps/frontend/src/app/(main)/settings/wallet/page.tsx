@@ -9,26 +9,25 @@ import AffiliateSideMenu from "@/components/settings/AffiliateSideMenu";
 import PayoutModal from "@/components/settings/Modal/PayoutModal";
 import {useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
-import {useRequest} from "@/hooks/useRequest";
 import {formatNumberWithCommas} from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
 import {TransactionHistorySkeleton, WalletDetailSkeleton} from "@/components/Skeletons";
 import RequestPayoutModal from "@/components/settings/Modal/RequestPayoutModal";
 import {RootState} from "@/redux/store";
 import {useAppDispatch} from "@/redux/hook";
-import {requestPayout} from "@/features/settings/profile.slice";
+import {useWalletSettingsQuery} from "@/features/settings/queries";
+import {useRequestPayoutMutation} from "@/features/settings/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 import {ColorRing} from "react-loader-spinner";
 
 function WalletSettingsPage({}) {
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const {user} = useSelector((state: RootState) => state.auth)
-    const {loading: profileLoading} = useSelector((state: RootState) => state.profile)
+    const {user, isLoggedIn} = useSelector((state: RootState) => state.auth)
 
-    const {data, loading} = useRequest(
-        `user/profile/wallet`,
-    );
+    const {data, isLoading: loading} = useWalletSettingsQuery({enabled: isLoggedIn});
+    const requestPayoutMutation = useRequestPayoutMutation();
+    const profileLoading = requestPayoutMutation.isPending;
     const [isRefOpen, setIsRefOpen] = useState(false);
     const [isAfOpen, setIsAfOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -50,27 +49,33 @@ function WalletSettingsPage({}) {
         setIsPOpen(!isPOpen);
     };
 
-    const handlePayoutRequest = async () => {
+    const handlePayoutRequest = () => {
         if (user?.has_bank_account) {
-            const {payload} = await dispatch(requestPayout({data: {amount: 100000}}))
-
-            if (payload.status) {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Your payment is being processed and will be disbursed into the account details provided below",
-                        type: "success",
-                    })
-                );
-            } else {
-                dispatch(
-                    updateToastifyReducer({
-                        show: true,
-                        message: "Something went wrong, please try again later",
-                        type: "error",
-                    })
-                );
-            }
+            // No amount = "pay out everything available", the backend's
+            // documented default (RequestWithdrawal action) — matches this
+            // button's original intent better than the old hardcoded
+            // amount: 100000, which the backend used to ignore outright but
+            // now honours literally (a smaller payout than available).
+            requestPayoutMutation.mutate({}, {
+                onSuccess: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Your payment is being processed and will be disbursed into the account details provided below",
+                            type: "success",
+                        })
+                    );
+                },
+                onError: () => {
+                    dispatch(
+                        updateToastifyReducer({
+                            show: true,
+                            message: "Something went wrong, please try again later",
+                            type: "error",
+                        })
+                    );
+                },
+            });
         } else {
             toggleModal()
         }
@@ -108,7 +113,7 @@ function WalletSettingsPage({}) {
                                                 Total Amount Earned
                                             </p>
                                             <p className="font-semibold text-[18px] tracking-custom">
-                                                N{formatNumberWithCommas(data?.total_amount_earned)}
+                                                N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                                             </p>
                                         </div>
                                         <div className="flex justify-between p-[16px] border-b-[1px] border-b-mid-grey">
@@ -117,7 +122,7 @@ function WalletSettingsPage({}) {
                                                     Referral earnings
                                                 </p>
                                                 <p className="font-semibold text-[18px] tracking-custom">
-                                                    N{formatNumberWithCommas(data?.referral_earnings)}
+                                                    N{formatNumberWithCommas(Number(data?.referral_earnings) || 0)}
                                                 </p>
                                             </div>
                                             <ChevronRight
@@ -131,7 +136,7 @@ function WalletSettingsPage({}) {
                                                     Affiliate earnings
                                                 </p>
                                                 <p className="font-semibold text-[18px] tracking-custom">
-                                                    N{formatNumberWithCommas(data?.affiliate_earnings)}
+                                                    N{formatNumberWithCommas(Number(data?.affiliate_earnings) || 0)}
                                                 </p>
                                             </div>
                                             <ChevronRight
@@ -208,7 +213,7 @@ function WalletSettingsPage({}) {
                                                 >
                                                     <div className="flex flex-col">
                                                         <p className="font-semi-normal text-[14px]">
-                                                            N{formatNumberWithCommas(history?.amount)}
+                                                            N{formatNumberWithCommas(Number(history?.amount) || 0)}
                                                         </p>
                                                         <p className="font-normal text-[12px] text-text-grey">
                                                             {history?.date}

@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { formatString, splitLemonId } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
-import { settingsApi } from "@/features/settings/api";
+import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import {
@@ -49,12 +49,12 @@ const ProfileSettingsPage = ({}) => {
       formData.append("file", file);
       try {
         dispatch(setIsRouting(true));
-        const { data } = await settingsApi.upload(formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        if (data.status) {
+        const { data } = await sharedApi.uploadFile(formData);
+        // Found live: the BFF envelope key is `success`, not `status` — this
+        // check was always false, so a successful upload always showed the
+        // "error" toast below. Not otherwise touching this call (upload
+        // stays on axiosInstance; see features/shared/api.ts's NOTE).
+        if (data.success) {
           setAvatar(data.data.image);
           // await formik.setFieldValue("profile_image", data.data.image)
           //   dispatch(

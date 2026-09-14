@@ -6,31 +6,23 @@ import ProfileStep from "@/components/form-steps/profile-step";
 import AddressStep from "@/components/form-steps/address-step";
 import SkillStep from "@/components/form-steps/skills-step";
 import SocialStep from "@/components/form-steps/social-step";
-import {useRequest} from "@/hooks/useRequest";
-import {useCookies} from "react-cookie";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import {useSelector} from "react-redux";
 import Link from "next/link";
 import {RootState} from "@/redux/store";
-import {useAppDispatch} from "@/redux/hook";
-import {getUserProfile} from "@/features/settings/profile.slice";
+import {useUserProfileQuery} from "@/features/settings/queries";
 
 
 
 export default function ProfileStepsPage() {
     const router  = useRouter()
     const [loading, setLoading] = useState(false)
-    const dispatch = useAppDispatch()
     const [step, setStep] = useState(1);
-    const [cookies, setCookie] = useCookies(["newToken"]);
     const { user } = useSelector((state: RootState) => state.auth)
-    const { data } = useSelector((state: RootState) => state.profile)
-
-    useEffect(() => {
-        dispatch(getUserProfile({ token: cookies.newToken }))
-    }, []);
-
-    console.log({data})
+    // No token needed — the BFF proxy reads the onboarding cookie
+    // server-side for exactly this pre-session case (see
+    // app/api/v1/[...path]/route.ts's onboardingToken handling).
+    const { data } = useUserProfileQuery();
 
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);

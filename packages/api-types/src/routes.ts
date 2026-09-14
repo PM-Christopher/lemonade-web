@@ -163,6 +163,7 @@ export const userSettingsRoutes = Object.freeze({
   PROFILE: "/user/profile/user", // GET current user
   CHANGE_PASSWORD: "/user/profile/settings/change-password",
   CHANGE_PROFILE_IMAGE: "/user/profile/settings/change-profile-image",
+  WALLET: "/user/profile/wallet", // GET earnings summary + payout history
   REQUEST_PAYOUT: "/user/profile/wallet/request-payout",
   BANK_ACCOUNT_CREATE: "/user/profile/bank-account/create-account",
 });

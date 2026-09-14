@@ -1,17 +1,110 @@
-// Endpoint layer for the settings/profile domain — see features/events/api.ts
-// for the pattern this follows. Still on the pre-BFF axiosInstance transport
-// deliberately (Phase 5 concern, not this refactor).
-import { axiosInstance } from "@/lib/axiosInstane";
-import { userSettingsRoutes, sharedUtilityRoutes } from "@lemonade/api-types";
+// Endpoint layer for the settings/profile domain — see features/dashboard/api.ts
+// for the pattern this follows: the BFF proxy transport (browserApi), not
+// the pre-BFF axiosInstance.
+//
+// NOTE: this only covers what profile.slice.ts + the direct settingsApi
+// consumers actually use today (profile read, wallet read, request payout,
+// create bank account). ProfileController owns ~30 more routes (notification
+// settings, subscription/billing, account deletion, individual profile-field
+// edits) that several pages still reach via the legacy useRequest hook or
+// haven't been touched at all — out of scope for this pass, tracked as its
+// own follow-up (see docs/ARCHITECTURE.md's Phase 5 status).
+import { browserApi } from "@/lib/browser-api";
+import { userSettingsRoutes } from "@lemonade/api-types";
+
+export interface UserProfile {
+    id: number;
+    referred_by: string | null;
+    lemon_id: string;
+    fullname: string;
+    email: string;
+    username: string;
+    bio: string | null;
+    industry: string | null;
+    profile_image: string | null;
+    status: string;
+    verified: boolean;
+    skills: string[] | null;
+    address: { address: string; city: string; state: string; country: string } | null;
+    interests: string[] | null;
+    socials: Array<{ name: string; value: string }> | null;
+    referral_code: string;
+    subscriptions: {
+        title: string;
+        benefits: {
+            verification_badge: boolean;
+            tribe_creation: boolean;
+            lemon_id: boolean;
+            event_creation: boolean;
+            ticket_sales_commission: number;
+            service_commission: number;
+            connection_range: number;
+            offline_benefits: boolean;
+        };
+    } | null;
+}
+
+export interface PayoutHistoryItem {
+    amount_minor: number;
+    amount: string;
+    status: string;
+    date: string;
+}
+
+export interface WalletSettings {
+    total_amount_earned_minor: number;
+    total_amount_earned: string;
+    referral_earnings_minor: number;
+    referral_earnings: string;
+    affiliate_earnings_minor: number;
+    affiliate_earnings: string;
+    monetized_tribes_minor: number;
+    monetized_tribes: string;
+    payout_history: PayoutHistoryItem[];
+    withdrawal_threshold_minor: number;
+    withdrawal_threshold: string;
+    payout_request: boolean;
+}
+
+export interface RequestPayoutPayload {
+    amount?: number;
+    bank_account_id?: string;
+}
+
+export interface RequestPayoutResponse {
+    message: string;
+    withdrawal_request_id: string;
+    amount_minor: number;
+}
+
+export interface CreateBankAccountPayload {
+    bank_name: string;
+    account_name: string;
+    account_number: string;
+    bank_code?: string;
+}
+
+export interface BankAccount {
+    id: string;
+    user_id: string;
+    account_name: string;
+    account_number: string;
+    bank_name: string;
+    bank_code: string | null;
+}
+
+export interface CreateBankAccountResponse {
+    bank_account: BankAccount;
+}
 
 export const settingsApi = {
-    getUserProfile: (token: string) =>
-        axiosInstance.get(userSettingsRoutes.PROFILE, { headers: { Authorization: `Bearer ${token}` } }),
+    getUserProfile: () => browserApi.get<UserProfile>(userSettingsRoutes.PROFILE),
 
-    requestPayout: (data: unknown) => axiosInstance.post(userSettingsRoutes.REQUEST_PAYOUT, data),
+    getWallet: () => browserApi.get<WalletSettings>(userSettingsRoutes.WALLET),
 
-    createBankAccount: (formData: unknown) =>
-        axiosInstance.post(userSettingsRoutes.BANK_ACCOUNT_CREATE, formData),
+    requestPayout: (data: RequestPayoutPayload) =>
+        browserApi.post<RequestPayoutResponse>(userSettingsRoutes.REQUEST_PAYOUT, data),
 
-    upload: (formData: unknown, config: Record<string, unknown>) => axiosInstance.post(sharedUtilityRoutes.UPLOAD, formData, config),
+    createBankAccount: (data: CreateBankAccountPayload) =>
+        browserApi.post<CreateBankAccountResponse>(userSettingsRoutes.BANK_ACCOUNT_CREATE, data),
 };

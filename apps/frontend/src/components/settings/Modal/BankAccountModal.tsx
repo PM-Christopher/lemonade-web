@@ -3,7 +3,6 @@ import CloseIcon from "@/images/icons/close.svg";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRequest } from "@/hooks/useRequest";
 import {
   Select,
   SelectContent,
@@ -12,12 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAppDispatch } from "@/redux/hook";
-import { verifyAccount } from "@/redux/general.slice";
 import {useFormik} from "formik";
-import {createTickets} from "@/features/events/event.slice";
 import * as yup from "yup";
 import {FormikButton} from "@/components/global/FormikButton";
-import {settingsApi} from "@/features/settings/api";
+import {useBanksQuery} from "@/features/shared/queries";
+import {useVerifyAccountMutation} from "@/features/shared/mutations";
+import {useCreateBankAccountMutation} from "@/features/settings/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 type BankAccountInterface = {
@@ -34,9 +33,10 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
    const [error, setError] = useState("");
   const dispatch = useAppDispatch();
 
-  const { data, loading } = useRequest(
-    `/shared/utilities/get-all-banks`,
-  );
+  const { data: banksData, isLoading: loading } = useBanksQuery({enabled: isOpen});
+  const data = banksData?.banks ?? [];
+  const verifyAccountMutation = useVerifyAccountMutation();
+  const createBankAccountMutation = useCreateBankAccountMutation();
 
   const bankAccountSchema = yup.object({
     bank_name: yup.string().required(),
@@ -52,63 +52,44 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
     },
     validationSchema: bankAccountSchema,
     onSubmit: async (values) => {
-      await createAccount()
+      createBankAccountMutation.mutate(values, {
+        onSuccess: () => {
+          formik.resetForm()
+          dispatch(
+              updateToastifyReducer({
+                show: true,
+                message: "Account created successfully",
+                type: "success",
+              })
+          );
+          toggle()
+        },
+        onError: (err: any) => {
+          dispatch(
+              updateToastifyReducer({
+                show: true,
+                message: err?.message || "Error creating account",
+                type: "error",
+              })
+          );
+        },
+      });
     },
   });
 
   const getAccount =  () => {
     formik.setFieldValue("account_name", "");
-    console.log({"status": "Loading!!!!", bankCode, accountNumber})
-    dispatch(
-      verifyAccount({ bank_code: bankCode, account_number: accountNumber })
-    ).then((res) => {
-      if (res.payload.status) {
+    verifyAccountMutation.mutate({bankCode, accountNumber}, {
+      onSuccess: (res) => {
         setError('')
-        formik.setFieldValue("account_name", res.payload.data.account_name);
-      } else {
+        formik.setFieldValue("account_name", res.account_name);
+      },
+      onError: () => {
         setError("Invalid account details");
         formik.setFieldValue("account_name", "");
-      }
+      },
     });
   };
-
-  const createAccount = async () => {
-    try {
-      const formData = {
-        bank_name: formik.values.bank_name,
-        account_number: formik.values.account_number,
-        account_name: formik.values.account_name,
-      }
-      const { data } = await settingsApi.createBankAccount(formData)
-      if(data.status) {
-        formik.resetForm()
-        dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Account created successfully",
-              type: "success",
-            })
-        );
-        toggle()
-      } else {
-        dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error creating account",
-              type: "error",
-            })
-        );
-      }
-    } catch (err: any) {
-      dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: err?.response?.data?.message || "error",
-            type: "error",
-          })
-      );
-    }
-  }
 
   useEffect(() => {
     if (accountNumber.length === 10) {

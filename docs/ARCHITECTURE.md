@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 12 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 13 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1665,11 +1665,36 @@ hand-rolling new response types — those are pre-existing, widely-used types ou
 still-unmigrated tribes/events/business domains own them), and live-testing surfaced they're already a
 bit stale against the real backend response (e.g. `monetized` comes back as a JSON boolean, the
 interface types it `number`) — not fixed here, since rewriting a shared interface is that domain's call
-when it migrates, not a side effect of migrating dashboard. **Not started at all:** the remaining ~14
-`apps/frontend` domains (business, connect, events, settings, transaction, tribes, and the non-login/
-logout authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same
-proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but
-not migrated. redux-persist still holds far more than client preferences.
+when it migrates, not a side effect of migrating dashboard. **settings** (the profile/wallet/payout
+sub-domain of `features/settings/`) is migrated too — 2 queries (profile, wallet — `staleTime: 60s` and
+`0` respectively, the latter CLAUDE.md's money bucket), 2 mutations (request-payout, create-bank-account)
+— plus a small **shared** package stood up alongside it (`features/shared/`: `useBanksQuery`,
+`useVerifyAccountMutation`) since two of settings' own modals needed the same banks-list/account-
+verification endpoints. Scoped narrowly to what `profile.slice.ts` and the direct `settingsApi`
+consumers actually used — `ProfileController` owns ~30 more routes (notification settings, subscription/
+billing, account deletion, per-field profile edits) that other pages still reach via the legacy
+`useRequest` hook or haven't touched at all; explicitly not migrated in this pass, tracked as its own
+follow-up. Confirmed live that `getUserProfile`'s old `token` parameter was already fully dead — the BFF
+proxy independently reads the same `newToken`/`ONBOARDING_TOKEN_COOKIE` server-side for exactly this
+pre-session case, regardless of what the client sends (see `app/api/v1/[...path]/route.ts`) — removed.
+**Two real bugs found and fixed**: `RequestPayoutModal.tsx` is shown exactly when a user has no bank
+account yet, collects bank_name/account_number/account_name, and its own success copy said "Error
+creating account" and dispatched `updateHasBankAccount()` — every sign it was always meant to create a
+bank account — but called `requestPayout` (backend only accepts `amount`/`bank_account_id`) instead of
+`createBankAccount`, so it could never have worked; confirmed live pre- and post-fix, then found a
+second: `GeneralController::getServicingBanks()` (backend) returned a bare `['banks' => ...]` array
+instead of the standard envelope, so it silently returned `undefined` through the new typed transport
+(the old `useRequest` hook had a literal `?? response.data.banks` fallback for this one endpoint) —
+fixed in `lemonade-backend`, confirmed live both as a raw curl and through the BFF proxy. **One bug found
+and left alone**, same class as admin's promotion-image gap: `settings/profile/page.tsx`'s avatar upload
+checked `data.status` instead of `data.success` (the real envelope key), so a successful upload always
+showed an error toast — this one-line check was fixed (it doesn't touch transport), but the upload call
+itself stays on `axiosInstance`/`sharedApi.uploadFile`, not migrated to `browserApi`, since there's no
+Cloudinary credential locally to live-verify a multipart transport change against. **Not started at
+all:** the remaining ~13 `apps/frontend` domains (business, connect, events, transaction, tribes, and the
+non-login/logout authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides
+the same proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup
+below), but not migrated. redux-persist still holds far more than client preferences.
 
 **The "Tier 2" dead-weight cleanup** (not one of this document's original bullets, but directly serves
 this phase's "no feature in both patterns" rule): every non-auth domain's Redux thunks and

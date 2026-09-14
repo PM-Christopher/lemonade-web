@@ -12,8 +12,8 @@
 //
 // Pre-login onboarding fallback: signup/email-verification/reset-password
 // calls (features/authentication/authSlice.ts's verifyEmailOtp/resendOtp/
-// resetPassword, features/settings/profile.slice.ts's getUserProfile) don't
-// have a main session yet — they authenticate with a distinct, narrowly
+// resetPassword, features/settings/api.ts's getUserProfile, used by
+// profile-setup/page.tsx before a real session exists) don't
 // ability-scoped token in ONBOARDING_TOKEN_COOKIE (see lib/cookie-names.ts).
 // Read it server-side, same trust level as the main session cookie, and use
 // it only when there's no main session — never forward the browser's own
