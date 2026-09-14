@@ -11,7 +11,12 @@
       "outputs": []
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      // Next apps' tsconfig.json includes ".next/types/**/*.ts" (route
+      // typing), which only exists after that app's OWN `next build`/`next
+      // dev` has run — "^build" alone (upstream packages only) lets
+      // typecheck race build and fail on a missing .next/types on a fresh
+      // checkout. "build" (no caret) adds this package's own build first.
+      "dependsOn": ["^build", "build"],
       "outputs": []
     },
     "test": {

@@ -2,6 +2,24 @@ packages:
   - "apps/*"
   - "packages/*"
   - "tooling/*"
+fetchRetries: 5
+fetchTimeout: 300000
+networkConcurrency: 4
+# `allowBuilds` decides which dependencies' install/postinstall scripts pnpm
+# actually runs. An unresolved entry here (pnpm writes literal placeholder
+# text like "set this to true or false" until a real boolean is set) makes
+# `pnpm run <script>` / `pnpm turbo run <task>` fail outright — unlike a
+# plain `pnpm install`, which only warns — which would have broken CI the
+# moment it ran `pnpm turbo run lint/typecheck/test/build`. esbuild and
+# unrs-resolver were already approved; `next build` and `vitest` both pass
+# without the other five running their install scripts (sharp's prebuilt
+# binary download included), so they're denied rather than blindly approved.
+# Revisit if a future dependency on their native builds shows up.
 allowBuilds:
+  '@firebase/util': false
+  '@parcel/watcher': false
+  core-js: false
   esbuild: true
+  protobufjs: false
+  sharp: false
   unrs-resolver: true

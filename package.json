@@ -12,11 +12,12 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore"
+    "format": "prettier --config packages/config/prettier.config.mjs --write \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore",
+    "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   }
