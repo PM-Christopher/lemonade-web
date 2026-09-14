@@ -2,7 +2,7 @@ import React from "react";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
-import { formatCountry } from "@/lib/formatCountry";
+import { formatCountry } from "@lemonade/domain";
 import medal from "@/images/icons/medal.png";
 import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
 

@@ -4,7 +4,7 @@ import React from "react";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
-import { checkError } from "@/lib/checkError";
+import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { signup } from "@/features/authentication/authApi";

@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import OtpInput from "react-otp-input";
-import { checkError } from "@/lib/checkError";
+import { checkError } from "@lemonade/domain";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";

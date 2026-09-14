@@ -10,7 +10,7 @@ import { FormikButton } from "@/components/global/FormikButton";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { checkError } from "@/lib/checkError";
+import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";

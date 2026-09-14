@@ -16,7 +16,7 @@ import CheckPIcon from "@/images/icons/checkPurpleIcon.svg";
 import CloseRedIcon from "@/images/icons/closeRedIcon.svg";
 import PayNowModal from "@/components/business/Modals/PayNowModal";
 import { useMarkJobRequestMutation } from "@/features/business/mutations";
-import { formatCountry } from "@/lib/formatCountry";
+import { formatCountry } from "@lemonade/domain";
 import LoadingSvg from "@/components/svgs/loading.svg";
 import ConfirmCompletionModal from "@/components/business/Modals/ConfirmCompletionModal";
 

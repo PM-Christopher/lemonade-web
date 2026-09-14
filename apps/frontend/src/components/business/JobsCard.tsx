@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
-import { formatCountry } from "@/lib/formatCountry";
+import { formatCountry } from "@lemonade/domain";
 import { formatStringUCFirst } from "@/lib/helper";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";

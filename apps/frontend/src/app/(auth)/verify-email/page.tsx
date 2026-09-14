@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import OtpInput from "react-otp-input";
-import { checkError } from "@/lib/checkError";
+import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { FormikButton } from "@/components/global/FormikButton";

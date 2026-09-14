@@ -4,7 +4,7 @@ import DotIcon from "@/images/icons/dot.svg";
 import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
-import { formatCountry } from "@/lib/formatCountry";
+import { formatCountry } from "@lemonade/domain";
 
 type BusinessIF = {
   business: BusinessInterface;

@@ -11,10 +11,12 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@lemonade/api-types": "workspace:*"
+    "@lemonade/api-types": "workspace:*",
+    "country-list": "^2.3.0"
   },
   "devDependencies": {
     "@lemonade/config": "workspace:*",
+    "@types/country-list": "^2.1.4",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }

@@ -303,6 +303,9 @@ importers:
       '@lemonade/api-types':
         specifier: workspace:*
         version: link:../../packages/api-types
+      '@lemonade/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@mui/material':
         specifier: ^6.1.3
         version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1))(@types/react@18.3.31)(react@18.3.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -650,10 +653,16 @@ importers:
       '@lemonade/api-types':
         specifier: workspace:*
         version: link:../api-types
+      country-list:
+        specifier: ^2.3.0
+        version: 2.4.1
     devDependencies:
       '@lemonade/config':
         specifier: workspace:*
         version: link:../config
+      '@types/country-list':
+        specifier: ^2.1.4
+        version: 2.1.4
       typescript:
         specifier: ^5.7.2
         version: 5.9.3

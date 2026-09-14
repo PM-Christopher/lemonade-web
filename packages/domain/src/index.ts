@@ -18,3 +18,6 @@ export function formatMoney(minorUnits: number, currency: string): string {
     currency,
   }).format(amount);
 }
+
+export { formatCountry } from "./formatCountry";
+export { checkError, handleTest } from "./checkError";

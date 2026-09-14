@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
-import { formatCountry } from "@/lib/formatCountry";
+import { formatCountry } from "@lemonade/domain";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 
 type BusinessCardIF = {

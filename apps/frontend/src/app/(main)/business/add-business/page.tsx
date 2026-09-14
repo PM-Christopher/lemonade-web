@@ -21,7 +21,7 @@ import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import { useCreateListingMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
-import { checkError } from "@/lib/checkError";
+import { checkError } from "@lemonade/domain";
 
 interface businessCategories {
   value: string;

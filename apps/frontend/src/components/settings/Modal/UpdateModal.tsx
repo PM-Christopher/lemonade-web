@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { checkError } from "@/lib/checkError";
+import { checkError } from "@lemonade/domain";
 import CountryList from "country-list-with-dial-code-and-flag";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useUpdateProfileFieldMutation } from "@/features/authentication/mutations";
