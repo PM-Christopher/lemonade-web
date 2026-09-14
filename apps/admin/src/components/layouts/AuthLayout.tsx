@@ -21,18 +21,20 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         //     return;
         // }
         if (!newToken) {
-            !(
+            const isAuthRoute =
                 pathname === "/signup" ||
                 pathname === "/login" ||
                 pathname === "/forgot-password" ||
-                pathname === "/reset-password"
-            ) && redirect("/login");
+                pathname === "/reset-password";
+            if (!isAuthRoute) {
+                redirect("/login");
+            }
         }
     }, [pathname, newToken]);
 
     useEffect(() => {
         dispatch(setIsRouting(false));
-    }, []);
+    }, [dispatch]);
     return (
         <div>
             {children}

@@ -51,7 +51,7 @@ const BusinessView = ({userDetail}: any) => {
                     <div className="flex flex-col gap-[12px] pb-[24px] border-b-[1px]">
                         <p className="font-bold text-[16px]">About business</p>
                         <p className="font-normal text-[14px] text-light-black">
-                            We don't just design products, we build brands. We're a creative agency that takes your
+                            We don&apos;t just design products, we build brands. We&apos;re a creative agency that takes your
                             vision from
                             initial concept to market success. By working with us, you benefit from a seamless
                             experience where

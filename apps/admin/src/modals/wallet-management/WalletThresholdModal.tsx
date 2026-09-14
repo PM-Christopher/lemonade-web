@@ -17,7 +17,6 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
   isOpen,
   toggle,
 }) => {
-  if (!isOpen) return null;
   const dispatch = useDispatch<AppDispatch>();
   const updateThreshold = useUpdateWithdrawalThresholdMutation();
   const prodSchema = yup.object({
@@ -53,6 +52,8 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
       });
     },
   });
+
+  if (!isOpen) return null;
 
   return (
     <div

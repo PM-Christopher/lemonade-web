@@ -15,7 +15,6 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
   isOpen,
   toggle,
 }) => {
-  if (!isOpen) return null;
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -50,6 +49,8 @@ const WithdrawalReject: React.FC<WithdrawalRejectInterface> = ({
       },
     });
   };
+
+  if (!isOpen) return null;
 
   return (
     <div

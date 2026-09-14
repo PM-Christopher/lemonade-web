@@ -6,8 +6,6 @@ import {useRouter} from "next/navigation";
 import PaginationComp from "@/components/global/Pagination";
 
 const AffiliateView = ({pageData}: any) => {
-    console.log({ pageData });
-
     const router = useRouter()
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(10);

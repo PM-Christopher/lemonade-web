@@ -55,6 +55,11 @@ function EditCommissionModal({isOpen, toggle, id, commissionCharge}: EditCommiss
         if (commissionCharge > 0) {
             formik.setFieldValue("percentage", commissionCharge*100);
         }
+        // formik's returned object is recreated on every keystroke (it embeds
+        // current values/errors), so adding it here would re-run this sync
+        // — and re-run setFieldValue — on every render, fighting the user's
+        // own edits. This effect must only fire when commissionCharge changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [commissionCharge]);
 
     return (

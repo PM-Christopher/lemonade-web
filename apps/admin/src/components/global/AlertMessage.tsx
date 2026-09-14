@@ -8,7 +8,6 @@ import Alert from "@mui/material/Alert";
 export const AlertMessage = () => {
     const dispatch = useDispatch();
 
-    // @ts-ignore
     const { showToast } = useSelector((s: any) => s.toast);
 
     useEffect(() => {

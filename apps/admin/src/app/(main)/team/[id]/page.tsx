@@ -149,8 +149,7 @@ function Page() {
         );
     }
 
-    console.log({team})
-    return (
+        return (
         <MainLayout>
             <section className={"p-[20px] flex justify-between"}>
                 <div className={"w-[588px] h-fit bg-white flex flex-col rounded-[12px] gap-[12px]"}>
@@ -241,7 +240,7 @@ function Page() {
                                         <p className={'text-text-grey font-normal text-[14px]'}>Mon, 23 Mar, 2024 05:00PM</p>
                                     </div>
                                     <div className="flex justify-between px-[24px] py-[16px]">
-                                        <p className={"font-medium text-[14px] text-light-black"}>Created a 'Nigeria start-ups' Tribe</p>
+                                        <p className={"font-medium text-[14px] text-light-black"}>Created a &apos;Nigeria start-ups&apos; Tribe</p>
                                         <p className={'text-text-grey font-normal text-[14px]'}>Mon, 23 Mar, 2024 05:00PM</p>
                                     </div>
                                 </div>

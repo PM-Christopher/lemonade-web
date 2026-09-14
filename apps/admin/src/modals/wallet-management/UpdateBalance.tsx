@@ -33,8 +33,6 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
   balance,
   reload,
 }) => {
-  if (!isOpen) return null;
-
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const id = params.id
@@ -94,6 +92,8 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
     },
     enableReinitialize: true,
   });
+
+  if (!isOpen) return null;
 
   return (
     <div

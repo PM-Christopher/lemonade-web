@@ -28,8 +28,7 @@ function AddPromotionPage() {
         setPromotionId(promotionId)
     }
 
-    console.log({promotionId})
-
+    
 
     return (
         <MainLayout>

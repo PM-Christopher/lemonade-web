@@ -118,6 +118,12 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
             formik.setFieldValue('price_option', "")
             setBreakdowns([''])
         }
+        // formik's returned object is recreated on every keystroke (it embeds
+        // current values/errors), so adding it here would re-run this sync
+        // — and re-run setFieldValue — on every render, fighting the user's
+        // own edits. This effect must only fire when the target record
+        // changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [promotionId, promotionDetail]);
 
     return (

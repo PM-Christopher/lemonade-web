@@ -26,7 +26,7 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
 
     useEffect(() => {
         dispatch(setIsRouting(false));
-    }, []);
+    }, [dispatch]);
 
     // The single source of truth for "who is logged in" — replaces a
     // client-side check of the OLD, JS-readable "token" cookie. Route

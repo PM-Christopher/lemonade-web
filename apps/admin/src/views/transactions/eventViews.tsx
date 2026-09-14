@@ -52,8 +52,7 @@ function EventViews({ trx_data }: EventIF) {
     startIndex + perPage
   );
 
-  console.log("trx_data", trx_data);
-  return (
+    return (
     <>
       <div
         className={

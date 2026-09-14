@@ -85,6 +85,11 @@ function UsersPage({}) {
   const { setSearchParams } = useSearchParams();
   useEffect(() => {
     setSearchParams({ q: debouncedValue });
+    // setSearchParams's identity changes on every navigation (it depends on
+    // useSearchParams()'s live searchParams — see hooks/useSearchParams.ts),
+    // so including it here would re-run this effect after every push and
+    // push again, in a loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
 
   useEffect(() => {
@@ -95,6 +100,7 @@ function UsersPage({}) {
         setSearchParams({ status });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   return (

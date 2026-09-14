@@ -35,8 +35,7 @@ function EventDetailsPage({}) {
     setCurrentPage(page);
   };
 
-  console.log("event", event);
-
+  
   const printCSV = () => {
     if (!event?.history || event?.history.length === 0) {
       alert("No data available to export");

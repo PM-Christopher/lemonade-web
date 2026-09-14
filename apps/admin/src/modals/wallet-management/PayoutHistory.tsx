@@ -45,7 +45,7 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({isOpen, toggle, data})
                     <div className={"flex flex-col px-[24px] mt-[16px]"}>
                         {
                             payoutHistoryData.map((item: any, index: number) => (
-                                <div className={"flex justify-between px-[16px] pt-[16px] pb-[24px]"}>
+                                <div key={index} className={"flex justify-between px-[16px] pt-[16px] pb-[24px]"}>
                                     <div className={"flex flex-col"}>
                                         <p className={"font-medium text-[14px]"}>{item.amount}</p>
                                         <p className={"text-[12px] font-normal text-text-grey"}>

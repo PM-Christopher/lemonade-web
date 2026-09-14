@@ -59,7 +59,7 @@ function WalletMgtPage({}) {
   // Generate page numbers to display
   const getPageNumbers = () => {
     const maxPageButtons = 5;
-    let pageNumbers = [];
+    const pageNumbers = [];
 
     if (totalPages <= maxPageButtons) {
       // Show all pages if total pages are less than max buttons

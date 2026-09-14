@@ -15,8 +15,6 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
   isOpen,
   toggle,
 }) => {
-  if (!isOpen) return null;
-
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -51,6 +49,9 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
       },
     });
   };
+
+  if (!isOpen) return null;
+
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 ${
@@ -78,6 +79,13 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({
             className={"p-[16px] rounded-[12px] bg-mid-grey flex flex-col"}
             style={{ gap: "17px" }}
           >
+            {/* Hardcoded placeholder data (amount/account holder/bank/account
+                number) — this modal renders no real withdrawal-request detail
+                today, only a hardcoded fixture. It's a pre-existing bug, not
+                introduced by the Phase 1 lint wiring; fixing it needs the
+                caller to pass the actual withdrawal request through as a
+                prop, which none of this component's callers currently do.
+                Not fixed here — see docs/ARCHITECTURE.md. */}
             <div
               className={"flex flex-col text-center"}
               style={{

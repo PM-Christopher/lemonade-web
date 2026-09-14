@@ -32,7 +32,6 @@ const EventView = ({pageData}: any) => {
         } else {
             const q = query?.toLowerCase()?.trim();
             const filtered = pageData?.events.filter((event: any) => {
-                console.log({event})
                 return !q ||
                     event?.event_name?.toLowerCase().includes(q) ||
                     event?.category?.toLowerCase().includes(q)||
@@ -44,7 +43,7 @@ const EventView = ({pageData}: any) => {
         }
 
         setCurrentPage(1); // Reset to first page on search
-    }, [query]);
+    }, [query, pageData?.events]);
 
     // Calculate total pages based on the data length and perPage value
     const totalPages = Math.ceil(data?.length / perPage);

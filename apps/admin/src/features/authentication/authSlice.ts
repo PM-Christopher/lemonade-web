@@ -10,8 +10,8 @@ interface authState {
     admin: any;
     adminToken: string | null;
     isLoggedIn: boolean;
-    plan: {} | null,
-    appSettings: {} | null
+    plan: Record<string, unknown> | null,
+    appSettings: Record<string, unknown> | null
 }
 
 const initialState: authState = {

@@ -49,7 +49,6 @@ function TransactionsPage({}) {
   };
 
   const exportCSV = () => {
-    console.log("menuOption", menuOption);
     switch (menuOption) {
       case "plan-subscriptions":
         manualTransactionsExport(trxData?.history || [], "plan-subscriptions");
@@ -69,8 +68,7 @@ function TransactionsPage({}) {
     }
   };
 
-  console.log("trxData", trxData);
-
+  
   return (
     <MainLayout>
       <section className="flex flex-col gap-[20px] mt-[20px]">

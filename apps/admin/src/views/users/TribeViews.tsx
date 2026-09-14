@@ -2,7 +2,6 @@ import React from "react";
 import TribeCard from "@/components/tribes/TribeCard";
 
 const TribeViews = ({ userDetail }: any) => {
-  console.log("tribes", userDetail?.tribes);
   return (
     <div className={"flex flex-col  py-[20px]"}>
       {userDetail?.tribes?.map((item: any) => (

@@ -22,18 +22,6 @@ export const usePusher = (channelName: string, eventName: string) => {
             }
         };
 
-        pusher.connection.bind("state_change", function (states: any) {
-            console.log(states, "state change event>>>>>>>");
-            eventName === "test-event" &&
-            console.log(states, "test state change event>>>>>>>");
-        });
-
-        pusher.connection.bind("connected", function (states: any) {
-            console.log("state change connected event>>>>>>>");
-            eventName === "test-event" &&
-            console.log("test state change connected event>>>>>>>");
-        });
-
         channel.bind(eventName, eventHandler);
 
         return () => {

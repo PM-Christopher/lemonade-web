@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const AffiliateView = ({ userData, menuOption }: any) => {
-  console.log("afflilite", userData?.affiliates);
   const router = useRouter();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("q");
