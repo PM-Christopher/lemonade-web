@@ -1508,7 +1508,7 @@ endpoints remain genuinely broken** and need a product/backend decision, not a g
 `verifyTribePayment`, business-boost verify, and business verify-payment all reference routes that
 don't exist in the current backend contract.
 
-### Phase 1 — Quality gates **[MUST]** **[NOT STARTED]**
+### Phase 1 — Quality gates **[MUST]** **[DONE]**
 
 Put a signal in place before changing anything structural.
 
@@ -1518,14 +1518,37 @@ Put a signal in place before changing anything structural.
 - Dependabot and `pnpm audit` in CI
 - Zod-validated env module in both apps
 
-**Status:** None of this shipped. Vitest exists and is used for `packages/api-client`'s own unit tests
-(15 passing, including regression coverage added this phase for the pre-login onboarding-token fix),
-but that's package-level, not the CI-gate infrastructure this phase describes — there's no GitHub
-Actions workflow, no flat ESLint config change, no Zod env validation. `pnpm typecheck`/`pnpm build`
-work locally per-app and have been the actual verification method used throughout Phases 0, 4 and 5
-(run manually, not gated in CI). One recurring local-only friction, not a CI problem: any command that
-triggers `pnpm install`'s dependency-status check fails here with `[ERR_PNPM_IGNORED_BUILDS]` — bypass
-by running `next dev` directly from `node_modules/.bin` rather than through `pnpm`/`turbo`.
+**Status:** Shipped. Both apps extend `@lemonade/config`'s shared flat ESLint config, layer
+`eslint-config-next` (pinned to each app's own Next major via FlatCompat) and
+`eslint-plugin-boundaries`'s cross-feature-family check, and lint clean (zero errors — the
+`no-explicit-any`/axios-and-MUI-import-restriction/`no-unused-vars` rules are downgraded to `warn` at
+the app layer only, since those describe target states ~150–300 pre-existing occurrences per app don't
+meet yet; `packages/*` keeps the strict `error` level). Fixing lint to zero surfaced and fixed real
+bugs, not just style — several `react-hooks/rules-of-hooks` violations in money-adjacent wallet modals
+(hooks called after an early `return null`), a cross-feature-internals import
+`eslint-plugin-boundaries` was added specifically to catch, a stale-Pusher-user-id bug, and more — see
+the `fix(admin)`/`fix(frontend)` commits from this phase for the full list. `.github/workflows/ci.yml`
+runs lint/typecheck/test/build via `pnpm turbo run <task> --filter=...[origin/main]`, plus a
+report-only `audit` job (74 pre-existing advisories, mostly transitive through antd/draft-js/sharp,
+make it non-blocking for now — Dependabot is what burns that down). Both apps have a jsdom Vitest
+config extending `@lemonade/config/vitest.base`, with a characterization test and a Testing-Library
+component smoke test each. `src/lib/env.{server,client}.ts` in both apps validate `process.env` with
+Zod at import time; `.env.example` documents every var each app actually reads. The repo-wide Prettier
+pass landed as its own isolated commit, verified not to change lint/typecheck/test/build outcomes.
+
+Two rules were tried and dropped, not shipped silently broken: an `app/**` must-not-import-`@lemonade/api-client`
+check and a feature-entry-point-must-be-`index.ts` check both produced zero hits against known real
+violations (the BFF route handlers under `app/api/**` that are _supposed_ to import `@lemonade/api-client`
+directly; pages importing their own matching feature's `queries.ts` directly, the established
+correct pattern everywhere in both apps) — `eslint-plugin-boundaries`'s external-package matching and
+its `entry-point` rule didn't work as expected in this workspace. Revisit if picked back up later.
+
+One local-dev friction now fixed rather than worked around: `pnpm-workspace.yaml` had unresolved
+"set this to true or false" placeholders left over from an interrupted `pnpm approve-builds` run —
+`pnpm run <script>`/`pnpm turbo run <task>` failed outright on those (unlike a plain `pnpm install`,
+which only warned), which would have broken CI the moment it ran. Fixed by setting real `allowBuilds`
+booleans (esbuild/unrs-resolver approved, the other five denied — `next build` and `vitest` both pass
+without them).
 
 ### Phase 2 — Monorepo consolidation **[MUST]** **[PARTIAL]**
 
