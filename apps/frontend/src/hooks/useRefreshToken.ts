@@ -12,7 +12,6 @@ export const useRefreshToken = () => {
 
         isRefreshing.current = true
         try {
-            console.log({here: "here"})
             const res = await axiosInstance.post('/user/auth/refresh', {
                 refresh_token: Cookies.get("refresh_token"),
             })
@@ -24,7 +23,7 @@ export const useRefreshToken = () => {
             Cookies.set("token", token, { expires: 1 / 96, sameSite: "Lax" });
         }
         catch(err) {
-            console.log({err})
+            console.error(err)
             // window.location.href = "/login";
         } finally {
             isRefreshing.current = false

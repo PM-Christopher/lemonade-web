@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import business_logo from "@/images/business/jobLogo.png";
@@ -74,9 +74,9 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
         setBoostDetails(!boostDetails)
     }
 
-    const toggleDisputeModal = () => {
-        setIsDisputeOpen(!isDisputeOpen)
-    }
+    const toggleDisputeModal = useCallback(() => {
+        setIsDisputeOpen((prev) => !prev)
+    }, [])
 
     const toggleSubmitDisputeModal = () => {
         setIsSubmitDisputeOpen(!isSubmitDisputeOpen)
@@ -88,7 +88,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
             toggleDisputeModal()
             router.replace(pathname);
         }
-    }, [searchParams]);
+    }, [searchParams, pathname, router, toggleDisputeModal]);
 
     // business reviews
     const { data: reviewData, loading: reviewLoading } = useRequest(`/user/business/${params.id}/business-reviews`)
@@ -122,7 +122,7 @@ const BusinessDetailsPage = ({params}: {params: {id: number}}) => {
             }
         };
         verifyBusinessBoost();
-    }, [trxref]);
+    }, [trxref, router, searchParams]);
 
     const loadMore = () => {
         setDisplayCount((prevCount) => prevCount + 4); // Increase the count by 4

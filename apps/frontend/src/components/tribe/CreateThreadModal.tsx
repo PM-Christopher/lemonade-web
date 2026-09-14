@@ -313,7 +313,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({toggle, isOpen, tri
                                     {
                                         mediaFiles && mediaFiles.length > 0 && (
                                             mediaFiles.map((media: any, index: number) => (
-                                                <div className="relative inline-block w-[200px] h-[200px]">
+                                                <div key={index} className="relative inline-block w-[200px] h-[200px]">
                                                     <Image
                                                         src={media}
                                                         alt="event_image"

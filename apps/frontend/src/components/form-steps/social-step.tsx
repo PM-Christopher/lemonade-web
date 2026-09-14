@@ -19,7 +19,7 @@ import {useCookies} from "react-cookie";
 import {useRouter} from "next/navigation";
 
 interface SocialInterface {
-    loading: Boolean,
+    loading: boolean,
     prev_step: () => void,
     onComplete: () => void
 }
@@ -89,7 +89,6 @@ const SocialStep: React.FC<SocialInterface> = ({loading, prev_step, onComplete})
         dispatch(authStart())
         try {
             const { data } = await axiosInstance.post("/user/profile/socials-set-up", requestBody, getHeader());
-            console.log({data})
             if(data.status) {
                 dispatch(authSuccess(data.data));
                 removeCookie("newToken")

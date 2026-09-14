@@ -151,7 +151,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
                     </div>
 
                     <p className="text-light-black font-medium text-[16px] sm:text-left">
-                        You've unlocked all membership access
+                        You&apos;ve unlocked all membership access
                     </p>
 
                     <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 flex flex-col gap-5">

@@ -19,7 +19,7 @@ import {useCookies} from "react-cookie";
 import CountryList from "country-list-with-dial-code-and-flag";
 
 interface AddressInterface {
-    loading: Boolean,
+    loading: boolean,
     next_step: () => void,
     prev_step: () => void
 }
@@ -74,7 +74,6 @@ const AddressStep: React.FC<AddressInterface> = ({loading, next_step, prev_step}
 
         try {
             const { data } = await axiosInstance.post("/user/profile/address-set-up", { ...values }, getHeader());
-            console.log({data})
             if(data.status) {
                 next_step()
             } else {
@@ -114,7 +113,7 @@ const AddressStep: React.FC<AddressInterface> = ({loading, next_step, prev_step}
                     <div>
                         <p className="font-sans text-[24px] font-semibold">Contact address</p>
                         <p className="font-sans text-[14px] leading-[21px] font-normal text-text-grey">
-                            We'll use this address for important information and <br /> keep it confidential.
+                            We&apos;ll use this address for important information and <br /> keep it confidential.
                         </p>
                     </div>
                 </CardHeader>

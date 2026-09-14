@@ -146,7 +146,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
                 })
             );
         }
-    }, [hasLiked, likeCount, thread.id, likeThreadMutation, dispatch]);
+    }, [hasLiked, likeCount, thread.id, tribe_id, likeThreadMutation, dispatch]);
 
     // --- Poll vote
     const pollVote = (option_id: number) =>

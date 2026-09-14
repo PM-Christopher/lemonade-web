@@ -169,7 +169,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                                             : "0%";
 
                                                 return (
-                                                    <div>
+                                                    <div key={commission?.id ?? index}>
                                                         <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
                                                             {commission?.name}
                                                         </p>
@@ -218,7 +218,7 @@ const ProgramDetailsPage = ({params}: { params: { id: number } }) => {
                                                             : "0%";
 
                                                 return (
-                                                    <div>
+                                                    <div key={ticket?.id ?? index}>
                                                         <p className="font-sans font-normal text-[14px] leading-[16.8px] mt-[16px]">
                                                             {ticket.name}
                                                         </p>

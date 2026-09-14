@@ -22,18 +22,20 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             return;
         }
         if (!newToken) {
-            !(
+            const isAuthRoute =
                 pathname === "/signup" ||
                 pathname === "/login" ||
                 pathname === "/forgot-password" ||
-                pathname === "/reset-password"
-            ) && redirect("/login");
+                pathname === "/reset-password";
+            if (!isAuthRoute) {
+                redirect("/login");
+            }
         }
-    }, [pathname, newToken]);
+    }, [pathname, newToken, token]);
 
     useEffect(() => {
         dispatch(setIsRouting(false));
-    }, []);
+    }, [dispatch]);
 
     return (
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>

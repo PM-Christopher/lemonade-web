@@ -52,7 +52,7 @@ const ConfirmPaymentModal = ({isOpen, toggleMenu, job, sMenu}: {isOpen: boolean,
                 </div>
                 <div className="mt-10 pb-[10px] flex flex-col items-center">
                     <p className="font-normal text-[14px] w-[328px]">
-                        To ensure a smooth process, please mark the job as completed only after it's finished. Your
+                        To ensure a smooth process, please mark the job as completed only after it&apos;s finished. Your
                         payment will be released only when the client confirms completion. You may dispute delayed
                         payments.
                     </p>

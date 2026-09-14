@@ -17,7 +17,7 @@ import {authFailure, authStart, authSuccess, loadStop} from "@/features/authenti
 import {useCookies} from "react-cookie";
 
 interface SkillsInterface {
-    loading: Boolean,
+    loading: boolean,
     next_step: () => void,
     prev_step: () => void
 }
@@ -109,7 +109,6 @@ const SkillStep: React.FC<SkillsInterface> = ({loading, next_step, prev_step}) =
 
         try {
             const { data } = await axiosInstance.post("/user/profile/skills-set-up", { ...values }, getHeader());
-            console.log({data})
             if(data.status) {
                 next_step()
             } else {

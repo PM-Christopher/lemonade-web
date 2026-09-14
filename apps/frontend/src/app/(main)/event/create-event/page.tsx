@@ -617,7 +617,7 @@ const CreateEventPage = () => {
                                                     onChange={(date: Date | null) => {
                                                         if (date) {
                                                             // Update start date
-                                                            let formated_time = date.toTimeString().split(" ")[0].slice(0, 5)
+                                                            const formated_time = date.toTimeString().split(" ")[0].slice(0, 5)
                                                             formik.setFieldValue("start_time", formated_time);
                                                         }
                                                     }}

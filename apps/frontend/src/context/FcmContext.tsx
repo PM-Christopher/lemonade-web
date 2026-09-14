@@ -1,6 +1,7 @@
 "use client"
 import { useContext, createContext, useEffect, useState } from "react";
 import { messaging, onMessage, getToken } from "@/lib/firebase";
+import type { MessagePayload } from "firebase/messaging";
 import { toast, Toaster } from "react-hot-toast";
 
 interface FcmContextProps {
@@ -33,7 +34,7 @@ export const getFirebaseToken = () =>
 
 export const onForegroundMessage = () =>
     new Promise((resolve) =>
-    onMessage(messaging, (payload) => resolve(payload)))
+    onMessage(messaging, (payload: MessagePayload) => resolve(payload)))
 
 export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
     const [fcmToken, setFcmToken] = useState<string | null>(null)
@@ -56,7 +57,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
             }
         };
 
-        const unsubscribe = onMessage(messaging, (payload) => {
+        const unsubscribe = onMessage(messaging, (payload: MessagePayload) => {
             setNotification(payload?.notification);
             setShowToaster(true);
 

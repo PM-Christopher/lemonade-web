@@ -57,7 +57,7 @@ export default function VerifyPage() {
             setSeconds(COUNTDOWN_DURATION);
             setCanResend(false);
         }
-    }, []);
+    }, [COUNTDOWN_DURATION, STORAGE_KEY]);
 
     useEffect(() => {
         if (seconds > 0) {
@@ -74,7 +74,7 @@ export default function VerifyPage() {
             }, 1000);
             return () => clearInterval(timer);
         }
-    }, [seconds]);
+    }, [seconds, STORAGE_KEY]);
 
     const handleResend = () => {
         formik.setFieldValue('code', null)

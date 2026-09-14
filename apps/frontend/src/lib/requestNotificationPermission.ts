@@ -1,4 +1,5 @@
 import { getToken, messaging, onMessage } from "./firebase";
+import type { MessagePayload } from "firebase/messaging";
 
 export const requestNotificationPermission = async () => {
     try {
@@ -14,7 +15,6 @@ export const requestNotificationPermission = async () => {
         })
 
         if (!token) return
-        console.log("FCM Token: ", token)
     } catch (error) {
         console.error("Error requesting notification permission: ",error)
         return
@@ -24,7 +24,7 @@ export const requestNotificationPermission = async () => {
 export const onMessageListener = () => {
     return new Promise((resolve) => {
         if (!messaging) return
-        onMessage(messaging, (payload) => {
+        onMessage(messaging, (payload: MessagePayload) => {
             resolve(payload)
         })
     })

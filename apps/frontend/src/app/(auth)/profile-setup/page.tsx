@@ -1,5 +1,5 @@
 'use client'
-import React, {useEffect, useState} from "react"
+import React, {useCallback, useEffect, useState} from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import ProfileStep from "@/components/form-steps/profile-step";
@@ -46,7 +46,7 @@ export default function ProfileStepsPage() {
         }
     };
 
-    const checkStep = () => {
+    const checkStep = useCallback(() => {
         if(data?.bio === null) {
             setStep(1)
         } else if (data?.address === null) {
@@ -56,11 +56,11 @@ export default function ProfileStepsPage() {
         } else if (data?.socials === null) {
             setStep(4)
         }
-    }
+    }, [data])
 
     useEffect(() => {
         checkStep()
-    }, [data])
+    }, [checkStep])
 
 
 

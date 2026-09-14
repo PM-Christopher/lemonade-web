@@ -21,7 +21,6 @@ export const useTransactionPolling = (config: null | {
     useEffect(() => {
         if (!config || !config.transactionId) return
 
-        let isActive = true
         const { transactionId, isSuccess, onSuccess, pollingInterval=4000 } = config
 
         const verifyTransaction = async () => {
@@ -48,6 +47,12 @@ export const useTransactionPolling = (config: null | {
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current)
         }
+        // Deliberately keyed on transactionId alone: config is typically a
+        // fresh object/callbacks from the caller on every render (see
+        // settings/plan/page.tsx's pollingConfig), and restarting the
+        // interval on every such render would re-fire verifyTransaction
+        // immediately each time instead of polling on pollingInterval.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [config?.transactionId]);
 
     return { data, loading }

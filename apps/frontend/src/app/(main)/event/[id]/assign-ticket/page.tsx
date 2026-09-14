@@ -172,7 +172,7 @@ const AssignTicketPage = ({params}: { params: { id: number } }) => {
         return () => {
             clear();
         };
-    }, [router, params.id, key]);
+    }, [router, params.id, key, COUNTDOWN_DURATION, assignTicketHref]);
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);

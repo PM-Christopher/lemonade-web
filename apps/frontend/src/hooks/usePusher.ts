@@ -50,7 +50,7 @@ export const usePusher = (channelName: string, eventName: string) => {
             channel.unbind(eventName, eventHandler);
             pusher.unsubscribe(subscribeName);
         };
-    }, [channelName, eventName]);
+    }, [channelName, eventName, dispatch, queryClient, user?.id]);
 
     return { data };
 };

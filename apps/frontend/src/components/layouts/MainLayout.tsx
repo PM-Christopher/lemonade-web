@@ -19,7 +19,7 @@ const MainLayout = ({children}: {children: React.ReactNode}) => {
 
     useEffect(() => {
         dispatch(setIsRouting(false));
-    }, []);
+    }, [dispatch]);
 
     // The single source of truth for "who is logged in" — replaces a
     // verifyUserToken function that used to sit here unused (no effect

@@ -11,6 +11,9 @@ const MultipleTicketCard= ({ ticket, index, formik }: any) => {
   useEffect(() => {
     formik.setFieldValue(`assigned_tickets[${index}].id`, ticket.id);
     formik.setFieldValue(`assigned_tickets[${index}].quantity`, ticket?.quantity);
+    // formik (a Formik instance passed down as a prop) is recreated on every
+    // keystroke — this must only seed the field once, on mount, for this card.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

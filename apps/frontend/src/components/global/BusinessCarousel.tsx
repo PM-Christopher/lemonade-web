@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import BusinessCard from "@/components/dashboard/BusinessCard";
 import {BusinessInterface} from "@/interfaces/BusinessInterface";
 import FeaturedBusiness from "@/components/business/FeaturedBusiness";
@@ -11,6 +11,13 @@ interface ImageSlider {
 
 const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDots}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    const nextSlide = useCallback(() => {
+        const isLastSlide = currentIndex === businesses?.length - 1;
+        const newIndex = isLastSlide ? 0 : currentIndex + 1;
+        setCurrentIndex(newIndex);
+    }, [currentIndex, businesses?.length]);
+
     // Auto-slide functionality
     useEffect(() => {
         const slideInterval = setInterval(() => {
@@ -18,17 +25,11 @@ const BusinessCarousel: React.FC<ImageSlider> = ({businesses, showArrows, showDo
         }, 3000); // Slide every 3 seconds
 
         return () => clearInterval(slideInterval); // Clean up on unmount
-    }, [currentIndex]);
+    }, [nextSlide]);
 
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
         const newIndex = isFirstSlide ? businesses?.length - 1 : currentIndex - 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const nextSlide = () => {
-        const isLastSlide = currentIndex === businesses?.length - 1;
-        const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
 

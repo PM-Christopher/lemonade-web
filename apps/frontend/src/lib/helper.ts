@@ -33,7 +33,7 @@ export const formatString = (str: string) => {
 
 export const splitLemonId = (str: string) => {
     if (str) {
-        let str_split = str.split("-")
+        const str_split = str.split("-")
         return str_split[1]
     }
 }

@@ -48,7 +48,7 @@ const TermsAndConditionsPage = ({}) => {
                             <h2 className="text-lg font-semibold mt-4">OUR SERVICES</h2>
 
                             <p>
-                                We agree to provide you with the Lemonade Service. The Service includes all of the features, applications, services and software that we provide to advance Lemonade's mission: To bring you closer to the people and things that you love. The Service is made up of the following aspects:
+                                We agree to provide you with the Lemonade Service. The Service includes all of the features, applications, services and software that we provide to advance Lemonade&apos;s mission: To bring you closer to the people and things that you love. The Service is made up of the following aspects:
                             </p>
 
                             <ul className="list-disc list-inside ml-4 space-y-2">
@@ -100,14 +100,14 @@ const TermsAndConditionsPage = ({}) => {
                                 <li>You must be fully able and legally competent to agree to these Terms;</li>
                                 <li>We must not have previously disabled your account for violation of law or any of our policies;</li>
                                 <li>
-                                    How you can't use Lemonade. Providing a safe and open Service for a broad community requires that we all do our part.
+                                    How you can&apos;t use Lemonade. Providing a safe and open Service for a broad community requires that we all do our part.
                                 </li>
-                                <li>You can't impersonate others or provide inaccurate information. You don't have to disclose your identity on Lemonade, but you must provide us with accurate and up-to-date information (including registration information), which may include providing personal data. Also, you may not impersonate someone or something you aren't, and you can't create an account for someone else unless you have their express permission.</li>
-                                <li>You can't do anything unlawful, misleading or fraudulent or for an illegal or unauthorised purpose.</li>
-                                <li>You can't violate (or help or encourage others to violate) these Terms or our policies, including in particular the Lemonade Community Guidelines.</li>
-                                <li>You can't do anything to interfere with or impair the intended operation of the Service. This includes misusing any reporting, dispute or appeals channel, such as by making fraudulent or groundless reports or appeals.</li>
-                                <li>You can't attempt to create accounts or access or collect information in unauthorised ways. This includes creating accounts or collecting information in an automated way without our express permission.</li>
-                                <li>You can't sell, license or purchase any account or data obtained from us or our Service. This includes attempts to buy, sell or transfer any aspect of your account (including your username); solicit, collect or use login credentials or badges of other users; or request or collect Lemonade usernames, passwords or misappropriate access tokens.</li>
+                                <li>You can&apos;t impersonate others or provide inaccurate information. You don&apos;t have to disclose your identity on Lemonade, but you must provide us with accurate and up-to-date information (including registration information), which may include providing personal data. Also, you may not impersonate someone or something you aren&apos;t, and you can&apos;t create an account for someone else unless you have their express permission.</li>
+                                <li>You can&apos;t do anything unlawful, misleading or fraudulent or for an illegal or unauthorised purpose.</li>
+                                <li>You can&apos;t violate (or help or encourage others to violate) these Terms or our policies, including in particular the Lemonade Community Guidelines.</li>
+                                <li>You can&apos;t do anything to interfere with or impair the intended operation of the Service. This includes misusing any reporting, dispute or appeals channel, such as by making fraudulent or groundless reports or appeals.</li>
+                                <li>You can&apos;t attempt to create accounts or access or collect information in unauthorised ways. This includes creating accounts or collecting information in an automated way without our express permission.</li>
+                                <li>You can&apos;t sell, license or purchase any account or data obtained from us or our Service. This includes attempts to buy, sell or transfer any aspect of your account (including your username); solicit, collect or use login credentials or badges of other users; or request or collect Lemonade usernames, passwords or misappropriate access tokens.</li>
                                 <li>You can’t intimidate or harass another, or promote sexually explicit material, violence or discrimination based on race, sex, religion, nationality, disability, sexual orientation or age</li>
                             </ul>
 
@@ -119,7 +119,7 @@ const TermsAndConditionsPage = ({}) => {
 
                             <ul className="list-disc list-inside ml-4 space-y-2">
                                 <li>
-                                    We do not claim ownership of your content, but you grant us a license to use it. Nothing is changing about your rights in your content. We do not claim ownership of your content that you post on or through the Service and you are free to share your content with anyone else, wherever you choose. However, we need certain legal permissions from you (known as a "license") to provide the Service. When you share, post or upload content that is covered by intellectual property rights (such as photos or videos) on or in connection with our Service, you hereby grant to us a non-exclusive, royalty-free, transferable, sublicensable, worldwide license to host, use, distribute, modify, run, copy, publicly perform or display, translate and create derivative works of your content (consistent with your privacy and application settings). This license will end when your content is deleted from our systems. You can delete content individually or all at once by deleting your account. To learn more about how we use information, and how to control or delete your content, review the Privacy Policy.
+                                    We do not claim ownership of your content, but you grant us a license to use it. Nothing is changing about your rights in your content. We do not claim ownership of your content that you post on or through the Service and you are free to share your content with anyone else, wherever you choose. However, we need certain legal permissions from you (known as a &quot;license&quot;) to provide the Service. When you share, post or upload content that is covered by intellectual property rights (such as photos or videos) on or in connection with our Service, you hereby grant to us a non-exclusive, royalty-free, transferable, sublicensable, worldwide license to host, use, distribute, modify, run, copy, publicly perform or display, translate and create derivative works of your content (consistent with your privacy and application settings). This license will end when your content is deleted from our systems. You can delete content individually or all at once by deleting your account. To learn more about how we use information, and how to control or delete your content, review the Privacy Policy.
                                 </li>
                                 <li>
                                     In addition to the above, your access to and use of the Services must, at all times, be compliant with our Community Guidelines.
@@ -172,7 +172,7 @@ const TermsAndConditionsPage = ({}) => {
                             </ul>
 
                             <p>
-                                Our responsibility for anything that happens on the Service (also called "liability") is limited as much as the law will allow. If there is an issue with our Service, we can't know what all the possible impacts might be. You agree that we won't be responsible ("liable") for any lost profits, revenues, information or data, or consequential, special, indirect, exemplary, punitive or incidental damages arising out of or related to these Terms, even if we know that they are possible. This includes when we delete your content, information or account.
+                                Our responsibility for anything that happens on the Service (also called &quot;liability&quot;) is limited as much as the law will allow. If there is an issue with our Service, we can&apos;t know what all the possible impacts might be. You agree that we won&apos;t be responsible (&quot;liable&quot;) for any lost profits, revenues, information or data, or consequential, special, indirect, exemplary, punitive or incidental damages arising out of or related to these Terms, even if we know that they are possible. This includes when we delete your content, information or account.
                             </p>
 
                             <p>
@@ -182,7 +182,7 @@ const TermsAndConditionsPage = ({}) => {
                             <h2 className="text-lg font-semibold mt-4">UPDATING THESE TERMS</h2>
 
                             <p>
-                                We reserve the right to modify our Service and policies, and we may need to update these Terms to accurately reflect those changes. Unless required by law, we will notify you (for instance, through a notice on our Platform) before making changes to these Terms. It is important for you to review the Terms regularly for such updates. We will update the 'Last Updated' date at the top of the Terms to indicate the effective date of the changes. By continuing to use the Service after the changes take effect, you agree to be bound by the updated Terms. If you do not agree to the new Terms, you must discontinue accessing or using the Services.
+                                We reserve the right to modify our Service and policies, and we may need to update these Terms to accurately reflect those changes. Unless required by law, we will notify you (for instance, through a notice on our Platform) before making changes to these Terms. It is important for you to review the Terms regularly for such updates. We will update the &apos;Last Updated&apos; date at the top of the Terms to indicate the effective date of the changes. By continuing to use the Service after the changes take effect, you agree to be bound by the updated Terms. If you do not agree to the new Terms, you must discontinue accessing or using the Services.
                             </p>
                         </div>
                     </div>

@@ -62,6 +62,10 @@ export default function LoginPage() {
         if (fcmToken) {
             formik.setFieldValue('notification.device_token', fcmToken);
         }
+        // formik's returned object is recreated on every keystroke (it embeds
+        // current values/errors), so adding it here would re-run this sync
+        // on every render, fighting the user's own edits.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fcmToken])
 
     const next = useMemo(() => safeNext(searchParams.get("next")), [searchParams]);
@@ -200,8 +204,6 @@ export default function LoginPage() {
 
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse: any) => {
-            console.log('Auth Code Response:', tokenResponse);
-
             // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)
             try {
                 const res = await axiosInstance.post(`/user/auth/google`, {
@@ -250,7 +252,7 @@ export default function LoginPage() {
                                 Login
                             </p>
                             <p className="text-[18px] font-normal leading-[27px] font-sans mt-2">
-                                Let's get you back into your account
+                                Let&apos;s get you back into your account
                             </p>
                         </div>
                         {/* Show image only on desktop and laptop screens */}

@@ -11,7 +11,6 @@ const FirebaseInit = () => {
         }
 
         onMessageListener().then((payload) => {
-            console.log({payload})
         })
         subscribeUser()
     }, []);

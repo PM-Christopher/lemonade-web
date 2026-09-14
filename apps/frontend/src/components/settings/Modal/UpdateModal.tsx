@@ -243,6 +243,11 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
 
         // Reset form values for the current `type` only
         formik.resetForm({ values: initialValues });
+        // formik is recreated on every keystroke and profileTypeSchema is a
+        // plain function redeclared every render — adding either here would
+        // re-run this reset on every render, discarding the user's own
+        // edits. This effect must only fire when the field `type` changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type]);
 
     useEffect(() => {
@@ -274,6 +279,9 @@ const UpdateModal: React.FC<UpdateInterface> = ({toggle, isOpen, type, user}) =>
                     break;
             }
         }
+        // formik is recreated on every keystroke — adding it here would
+        // re-run this sync on every render, fighting the user's own edits.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, type]);
 
     const getSocialUrl = (platform: string) => {

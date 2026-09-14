@@ -63,7 +63,7 @@ const EventPage: React.FC = () => {
                 dispatch(resetFreeEventState())
             }
         }
-    }, [free_event]);
+    }, [free_event, dispatch]);
 
     useEffect(() => {
         if (trxref) {

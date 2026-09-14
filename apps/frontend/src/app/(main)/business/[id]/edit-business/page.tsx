@@ -193,6 +193,11 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
             setSelectedFrameworks([...data?.business?.categories])
         }
 
+        // formik's returned object is recreated on every keystroke (it embeds
+        // current values/errors), so adding it here would re-run this sync
+        // — and re-run setFieldValue — on every render, fighting the user's
+        // own edits. This effect must only fire when the loaded record changes.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data?.business])
 
     return (
@@ -246,7 +251,6 @@ const EditBusinessPage = ({params}: {params: {id: number}}) => {
                                 <MultiSelect
                                     options={frameworksList}
                                     onValueChange={(values) => {
-                                        console.log({values})
                                         formik.setFieldValue("categories", values)
                                     }}
                                     defaultValue={selectedFrameworks}

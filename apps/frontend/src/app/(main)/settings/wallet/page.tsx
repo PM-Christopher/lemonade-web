@@ -148,7 +148,7 @@ function WalletSettingsPage({}) {
                                     {data?.payout_request && (
                                         <div className="rounded-[12px] p-[16px] flex flex-col bg-light-tint mt-[24px]">
                                             <p className="font-normal text-[16px] text-light-black">
-                                                Commission payouts are available when you've earned over
+                                                Commission payouts are available when you&apos;ve earned over
                                                 ₦100,000
                                             </p>
                                             <Button

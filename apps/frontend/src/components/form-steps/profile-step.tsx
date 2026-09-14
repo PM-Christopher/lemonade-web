@@ -18,7 +18,7 @@ import {useCookies} from "react-cookie";
 
 
 interface ProfileInterface {
-    loading: Boolean,
+    loading: boolean,
     next_step: () => void
 }
 

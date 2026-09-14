@@ -3,7 +3,7 @@
 // transport (browserApi), not the pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
 import { userConnectRoutes } from "@lemonade/api-types";
-import { sharedApi } from "@/features/shared/api";
+import { sharedApi } from "@/features/shared";
 import type { ChatInterface, MessageInterface } from "@/interfaces/ChatInterface";
 
 export interface ChatDetailResponse {

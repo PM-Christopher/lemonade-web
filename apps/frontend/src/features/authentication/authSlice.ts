@@ -25,8 +25,8 @@ interface authState {
         id: number
     } | any | null,
     subscription_id: number | null,
-    plan: {} | null,
-    appSettings: {} | null
+    plan: Record<string, unknown> | null,
+    appSettings: Record<string, unknown> | null
     code: string | null;
     downgradeData: {
         reason?: string;

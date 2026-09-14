@@ -101,6 +101,11 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({isOpen, toggle}) 
         if (accountNumber.length === 10) {
             getAccount();
         }
+        // getAccount closes over formik (recreated every keystroke) and the
+        // mutation object (recreated every render) — including it here would
+        // re-verify on every render instead of only when accountNumber
+        // reaches 10 digits.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accountNumber]);
 
     return (

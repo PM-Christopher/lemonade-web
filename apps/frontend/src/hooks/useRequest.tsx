@@ -53,6 +53,11 @@ export const useRequest = (
     useLayoutEffect(() => {
         if (start) getData();
         else setLoading(false);
+        // getData closes over method/body/headers, which callers commonly
+        // pass as fresh literals on every render (e.g. useRequest(url) with
+        // the {} defaults) — this hook is deliberately designed to refetch
+        // only on url change, not on every render of every caller.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     return { data, loading, error, errorMessage, getData };

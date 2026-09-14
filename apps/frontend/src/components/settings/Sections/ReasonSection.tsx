@@ -33,7 +33,7 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
             <div>
                 <p className="font-semibold text-[20px]">Why are you leaving?</p>
                 <p className="font-normal text-[14px] text-light-black">
-                    Tell us why you canceled your plan and we'll do our best to improve
+                    Tell us why you canceled your plan and we&apos;ll do our best to improve
                 </p>
             </div>
 

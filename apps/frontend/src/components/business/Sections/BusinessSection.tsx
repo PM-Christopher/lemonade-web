@@ -58,7 +58,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({businesses, featured, 
             }
         };
         verifyPayment();
-    }, [trxref]);
+    }, [trxref, dispatch, router, searchParams]);
 
     return (
         <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">

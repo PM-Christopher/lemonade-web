@@ -1,5 +1,5 @@
 "use client"
-import React, {useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PricingCard from "@/components/settings/PricingCard";
@@ -44,9 +44,9 @@ const PricingPage = () => {
         setSubMode(mode)
     }
 
-    const toggleVerMembership = () => {
-        setOpenMem(!openMem)
-    }
+    const toggleVerMembership = useCallback(() => {
+        setOpenMem((prev) => !prev)
+    }, [])
 
     const pollingConfig = useMemo(() => {
         if (!trxref) return null
@@ -62,7 +62,7 @@ const PricingPage = () => {
             },
             pollingInterval: 4000
         }
-    }, [trxref])
+    }, [trxref, dispatch, toggleVerMembership])
 
     const {data: verData, loading: verifying} = useTransactionPolling(pollingConfig)
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import Image from "next/image";
 import {CalendarIcon} from "lucide-react";
 import DotIcon from "@/images/icons/dot.svg"
@@ -14,6 +14,12 @@ interface ImageSlider {
 const Carousel: React.FC<ImageSlider> = ({showArrows = false, showDots = true, events}: ImageSlider) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    const nextSlide = useCallback(() => {
+        const isLastSlide = currentIndex === events.length - 1;
+        const newIndex = isLastSlide ? 0 : currentIndex + 1;
+        setCurrentIndex(newIndex);
+    }, [currentIndex, events.length]);
+
     // Auto-slide functionality
     useEffect(() => {
         const slideInterval = setInterval(() => {
@@ -21,17 +27,11 @@ const Carousel: React.FC<ImageSlider> = ({showArrows = false, showDots = true, e
         }, 3000); // Slide every 3 seconds
 
         return () => clearInterval(slideInterval); // Clean up on unmount
-    }, [currentIndex]);
+    }, [nextSlide]);
 
     const prevSlide = () => {
         const isFirstSlide = currentIndex === 0;
         const newIndex = isFirstSlide ? events.length - 1 : currentIndex - 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const nextSlide = () => {
-        const isLastSlide = currentIndex === events.length - 1;
-        const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex);
     };
 

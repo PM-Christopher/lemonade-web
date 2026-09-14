@@ -542,7 +542,7 @@ export const GuestListSkeleton = ({count}: { count: 4 }) => {
     return (
         <>
             {[...Array(count)].map((_, i) => (
-                <div className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm animate-pulse">
+                <div key={i} className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm animate-pulse">
                     <div className="min-w-0 w-full">
                         {/* Name + ticket */}
                         <div className="flex items-center gap-2">
@@ -1142,7 +1142,7 @@ export const ImagesLoadingSkeleton = ({count}: { count: number }) => {
     return (
         <>
             {Array(count).fill(0).map((_, index) => (
-                <div className="relative inline-block w-[165.5px] h-[165.5px] animate-pulse">
+                <div key={index} className="relative inline-block w-[165.5px] h-[165.5px] animate-pulse">
                     {/* Image Skeleton */}
                     <div className="w-full h-full bg-gray-200 rounded-[12px]"/>
 
@@ -1201,7 +1201,7 @@ export const JobListSkeleton = ({count}: { count: number }) => {
 export const ChatListCardSkeleton = ({count}: { count: number }) => {
     return (
         Array(count).fill(0).map((_, index) => (
-            <div className="p-4 flex items-center gap-3 rounded-xl cursor-pointer animate-pulse">
+            <div key={index} className="p-4 flex items-center gap-3 rounded-xl cursor-pointer animate-pulse">
                 {/* Avatar Skeleton */}
                 <div className="w-[48px] h-[48px] rounded-[16px] bg-gray-200 shadow-sm"/>
 

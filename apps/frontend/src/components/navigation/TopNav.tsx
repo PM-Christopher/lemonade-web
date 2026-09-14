@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {usePathname} from "next/navigation";
 import {navLinks} from "../../../pageLinks";
-import {activeLink} from "@/lib/activeLink";
+import {isActiveLink} from "@/lib/activeLink";
 import {useSelector} from "react-redux";
 import {formatName, getInitials} from "@/lib/helper";
 import {useMediaQuery} from "react-responsive";
@@ -13,6 +14,7 @@ import {FaBell} from "react-icons/fa";
 import {usePersistentMenuState} from "@/context/MenuStateProvider";
 
 const TopNav = () => {
+    const pathname = usePathname();
     const {user} = useSelector((state: any) => state.auth);
     const isMobile = useMediaQuery({query: "(max-width: 640px)"});
     const [openNotifications, setOpenNotifications] = useState<boolean>(false);
@@ -56,7 +58,7 @@ const TopNav = () => {
                         >
                             <div
                                 className={`flex flex-col gap-2 items-center ${
-                                    activeLink(link.path, true)
+                                    isActiveLink(pathname, link.path, true)
                                         ? "bg-light-green-10 p-[8px] rounded-[8px] text-light-green"
                                         : "text-text-grey"
                                 }  `}
@@ -64,7 +66,7 @@ const TopNav = () => {
                                 <Image src={link.icon} alt="home" width={12.8} height={12.8}/>
                                 <p
                                     className={`text-[12px] leading-[14.4px] ${
-                                        activeLink(link.path, true)
+                                        isActiveLink(pathname, link.path, true)
                                             ? "font-semibold"
                                             : "font-normal"
                                     }`}

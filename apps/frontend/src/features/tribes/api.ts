@@ -15,7 +15,7 @@
 // getListing.
 import { browserApi } from "@/lib/browser-api";
 import { userTribeRoutes, sharedUtilityRoutes } from "@lemonade/api-types";
-import { sharedApi } from "@/features/shared/api";
+import { sharedApi } from "@/features/shared";
 import type { TribeInterface, Thread, ThreadComment } from "@/interfaces/TribeInterface";
 
 export interface TribesListResponse {

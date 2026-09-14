@@ -28,7 +28,6 @@ const FilterEventModal = ({toggle, isOpen, filterEventsMutation}: FilterEventInt
     const [location, setLocation] = useState("");
 
     const handleLocationChange = (value: string) => {
-        console.log("Selected Location:", value);
         setLocation(value);
     };
 

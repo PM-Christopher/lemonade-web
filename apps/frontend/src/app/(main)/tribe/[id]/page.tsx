@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import PinnedIcon from "@/images/icons/pinnedIcon.svg"
@@ -48,7 +48,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     const {data: tribeData, isLoading: tribeLoading} = useTribeQuery(params.id);
     const tribe = tribeData?.tribe ?? null;
     const {data: threadsData, isLoading: dataLoading} = useThreadsQuery(params.id);
-    const threads = threadsData?.threads ?? [];
+    const threads = useMemo(() => threadsData?.threads ?? [], [threadsData?.threads]);
     const {data: pinnedThreadsData} = usePinnedThreadsQuery(params.id);
     const pinnedThreads = pinnedThreadsData?.threads ?? [];
 
@@ -68,6 +68,11 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     const {debouncedValue} = useDebounce(searchValue, 500);
     useEffect(() => {
         setSearchParams({search: debouncedValue});
+        // setSearchParams's identity changes on every navigation (it depends
+        // on useSearchParams()'s live searchParams — see
+        // hooks/useSearchParams.ts), so including it here would re-run this
+        // effect after every push and push again, in a loop.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedValue]);
 
     const [data, setData] = useState<Thread[] | undefined>(undefined);
@@ -176,7 +181,7 @@ const SingleTribePage = ({params}: { params: { id: string } }) => {
     }
 
     const handleScroll = (id: number) => {
-        let itemId = `pinned-${id}`
+        const itemId = `pinned-${id}`
         const element = document.getElementById(itemId);
         if (element) {
             element.scrollIntoView({behavior: 'smooth'});

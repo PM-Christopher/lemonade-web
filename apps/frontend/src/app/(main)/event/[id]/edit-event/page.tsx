@@ -208,6 +208,10 @@ const EditEventPage = ({params}: { params: { id: string } }) => {
         if (Number(event?.id) !== eventId) return;
 
         formik.resetForm({ values: buildInitialValues(event) });
+        // formik's returned object is recreated on every keystroke (it embeds
+        // current values/errors), so adding it here would re-reset the form
+        // on every render, discarding the user's own edits.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventId, event]);
 
     const timeZones = useMemo(() => getTimeZones(), []);
