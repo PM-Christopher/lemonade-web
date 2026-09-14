@@ -4,19 +4,19 @@ import MainLayout from "@/components/layouts/MainLayout";
 import {usersDetailPageViews} from "@/utils/pageViews";
 import {CalendarIcon, ChevronDown} from "lucide-react";
 import {useParams} from "next/navigation";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
-import {getTeamDetail} from "@/features/team/team.slice";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {useTeamDetailQuery} from "@/features/team/queries";
 import {capitalizeSpecial, capitalizeWords} from "@/utils/helper";
 
 function Page() {
     const currentPage: number = 1;
     const totalPages: number = 10;
     const params = useParams()
-    const dispatch = useDispatch<AppDispatch>()
     const { isLoggedIn } = useSelector((state: RootState) => state.auth)
     const id = params.id ? (Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id)) : undefined;
-    const { loading, team } = useSelector((state: RootState) => state.team) as { team: any, loading: boolean };
+    const { data: detail } = useTeamDetailQuery(id, { enabled: isLoggedIn });
+    const team = detail?.team;
 
     // Add hydration protection
     const [isHydrated, setIsHydrated] = useState(false);
@@ -25,12 +25,6 @@ function Page() {
         // Set hydrated state after component mounts
         setIsHydrated(true);
     }, []);
-
-    useEffect(() => {
-        if (id && isLoggedIn && isHydrated) {
-            dispatch(getTeamDetail({id}))
-        }
-    }, [id, isLoggedIn, isHydrated, dispatch])
 
     // Don't render dynamic content until hydrated
     if (!isHydrated) {

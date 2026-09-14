@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 7 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 8 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1618,7 +1618,7 @@ the actual BFF proxy (not just typechecked): **auth/session** (both apps — `us
 mutations), **profile** (1 query), **exports** (1 mutation — a one-shot CSV download, not cacheable
 server state, plus its own pass-through proxy route since the backend streams raw CSV, not the standard
 JSON envelope `browserApi` expects), **announcements** (2 queries, read-only — create/edit aren't wired
-to anything in the UI yet). Each migration deleted its old `*.slice.ts` outright and removed the reducer from
+to anything in the UI yet), **team** (2 queries, 1 mutation). Each migration deleted its old `*.slice.ts` outright and removed the reducer from
 `store.ts`, per this phase's own rule that a feature never exists in both patterns at once.
 **Named deviations from the plan:** the prescribed migration order (reference data → discovery → ...
 → wallet/transactions/subscriptions/payouts *last*) was not followed — auth went first (reasonable,
@@ -1632,8 +1632,8 @@ migrated to React Hook Form + Zod in the same pass as their domain, contra the p
 domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
 `Skeletons.tsx`/`tableData.ts` retirement hasn't started. **Not started at all:** the other ~15
 frontend domains (business, connect, events, settings, transaction, tribes, and the non-login/logout
-authSlice thunks) and ~5 more admin domains (transaction, user, events, promotion,
-team) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same
+authSlice thunks) and ~4 more admin domains (transaction, user, events, promotion) are still on Redux
+thunks + the old `axiosInstance` — safe (it rides the same
 proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but
 not migrated. redux-persist still holds far more than client preferences.
 

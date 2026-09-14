@@ -9,7 +9,6 @@ import toastifyReducer from "./toastifySlice"
 import transactionReducer from "@/features/transaction/transaction.slice"
 import userReducer from "@/features/user/user.slice"
 import eventReducer from "@/features/events/event.slice"
-import teamReducer from "@/features/team/team.slice"
 import promotionReducer from "@/features/events/promotion.slice"
 
 const persistConfig = {
@@ -25,7 +24,6 @@ const reducers = combineReducers({
     transaction: transactionReducer,
     user: userReducer,
     event: eventReducer,
-    team: teamReducer,
     promotion: promotionReducer,
 });
 

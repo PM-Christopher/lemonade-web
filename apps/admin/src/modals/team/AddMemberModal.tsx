@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { addTeamMember } from "@/features/team/team.slice";
+import { useAddTeamMemberMutation } from "@/features/team/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 interface BalanceModalProps {
@@ -17,6 +17,7 @@ interface BalanceModalProps {
 const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const addTeamMember = useAddTeamMemberMutation();
   const prodSchema = yup.object({
     email: yup
       .string()
@@ -48,20 +49,16 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
     validationSchema: prodSchema,
     onSubmit: (values) => {
       setLoading(true);
-      dispatch(
-        addTeamMember({
+      addTeamMember.mutate(
+        {
           email: values.email,
           name: `${values.first_name} ${values.last_name}`,
           password: values.password,
           role: values.role,
-        })
-      )
-        .then((res) => {
-          setLoading(false);
-
-          if (res.payload.status) {
+        },
+        {
+          onSuccess: () => {
             setLoading(false);
-
             dispatch(
               updateToastifyReducer({
                 show: true,
@@ -69,27 +66,19 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 type: "success",
               })
             );
-          } else {
+          },
+          onError: (error) => {
             setLoading(false);
             dispatch(
               updateToastifyReducer({
                 show: true,
-                message: res.payload.message || `Something went wrong`,
+                message: error?.message || `Something went wrong`,
                 type: "error",
               })
             );
-          }
-        })
-        .catch((res) => {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: res.payload.message || `Something went wrong`,
-              type: "error",
-            })
-          );
-        });
+          },
+        }
+      );
     },
   });
   return (

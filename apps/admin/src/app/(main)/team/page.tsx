@@ -5,11 +5,11 @@ import {PlusIcon, SearchIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {teamHeaders} from "@/data/tableData";
 import {useRouter} from "next/navigation";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
 import {capitalizeWords} from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
-import {getTeamData} from "@/features/team/team.slice";
+import {useTeamQuery} from "@/features/team/queries";
 import AddMember from "@/modals/team/AddMemberModal";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
@@ -34,19 +34,10 @@ function TeamMembersPage({}) {
     setCurrentPage(page);
   };
 
-  const dispatch = useDispatch<AppDispatch>();
-
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { teamData } = useSelector((state: RootState) => state.team) as {
-    teamData: any;
-  };
+  const { data: teamData } = useTeamQuery({ enabled: isLoggedIn });
 
   const [data, setData] = useState<any>(teamData?.admins || []);
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch(getTeamData());
-    }
-  }, []);
 
   const { debouncedValue } = useDebounce(searchValue, 500);
   const { setSearchParams } = useSearchParams();
@@ -70,7 +61,7 @@ function TeamMembersPage({}) {
     }
 
     setCurrentPage(1); // Reset to first page on search
-  }, [query]);
+  }, [query, teamData]);
 
   // Calculate total pages based on the data length and perPage value
   const totalPages = Math.ceil(data?.length / perPage);
