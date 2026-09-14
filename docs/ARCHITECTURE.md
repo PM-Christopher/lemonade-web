@@ -1596,7 +1596,7 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the *old* token cookie was absent — which post-cutover is always true.
 
-### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 10 of ~19 domains]**
+### Phase 5 — Server state, domain by domain **[MUST]** **[IN PROGRESS — 11 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
 
@@ -1626,7 +1626,21 @@ list/detail/affiliate-detail/account-info, plus suspend/deactivate/reactivate; t
 from a commented-out line in both; also surfaced a pre-existing backend bug, not fixed here — the
 affiliate list is built from the `Referrer` model but its detail endpoint looks the id up in the
 unrelated `Affiliate` table, so most row clicks 400 with "Affiliate not found," same as the old axios
-code — needs a backend/product decision, not a frontend fix). Each migration deleted its old `*.slice.ts` outright and removed the reducer from
+code — needs a backend/product decision, not a frontend fix), and **events + promotion** (both slices
+in `features/events/` migrated together in one pass since they shared a folder and the events page
+composes both: 4 queries covering the events list/detail plus the affiliates and promotions-queue tabs,
+and the separate promotions catalog `add-promotions/page.tsx` uses; 7 mutations — suspend/activate/
+delete-event, update-commission-charge, and create/update/delete-promotion. Two real bugs found live-
+testing and fixed as part of the migration, not just noted: `deletePromotion`'s old fulfilled handler
+filtered the cached list by `payload.data.id`, a field the backend never actually returns (it returns
+`{deleted: true}`), so a deleted promotion never disappeared without a manual reload — fixed by
+mutations owning their own invalidation, same class of fix as team's `AddMemberModal`; and promotion
+create/update sent `price` as a string, which crashes `Money::fromUnits()` (`int|float` only) with a
+500 — confirmed live both ways, fixed by coercing with `Number(...)` before sending. One bug found and
+left alone, needing a product decision: `CreatePromotionRequest`/`UpdatePromotionRequest` both require
+an `image` field `CreatePromotionModal.tsx`'s form never collects, so every create/update 422s —
+confirmed live; fixing it means adding real image-upload UI, out of scope for a transport migration).
+Each migration deleted its old `*.slice.ts` outright and removed the reducer from
 `store.ts`, per this phase's own rule that a feature never exists in both patterns at once.
 **Named deviations from the plan:** the prescribed migration order (reference data → discovery → ...
 → wallet/transactions/subscriptions/payouts *last*) was not followed — auth went first (reasonable,
@@ -1638,10 +1652,14 @@ paid for itself: it surfaced two real backend bugs meaning the admin wallet cred
 *never actually worked* from this UI (fixed in `lemonade-backend`, tests added). Forms were **not**
 migrated to React Hook Form + Zod in the same pass as their domain, contra the plan — every migrated
 domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
-`Skeletons.tsx`/`tableData.ts` retirement hasn't started. **Not started at all:** the other ~15
-frontend domains (business, connect, events, settings, transaction, tribes, and the non-login/logout
-authSlice thunks) and ~2 more admin domains (events, promotion) are still on Redux
-thunks + the old `axiosInstance` — safe (it rides the same
+`Skeletons.tsx`/`tableData.ts` retirement hasn't started. **All of `apps/admin`'s tracked Phase 5
+domains are now on TanStack Query** — no `features/*/*.slice.ts` files remain under `apps/admin`.
+(`redux/general.slice.ts` still exists but was never one of the tracked domains and turned out to be
+fully dead — no importers anywhere, not even wired into `store.ts` — found while checking for
+stragglers; left alone since deleting unrelated dead code wasn't asked for, worth a cleanup pass later.)
+**Not started at all:** all ~15
+`apps/frontend` domains (business, connect, events, settings, transaction, tribes, and the non-login/
+logout authSlice thunks) are still on Redux thunks + the old `axiosInstance` — safe (it rides the same
 proxied transport and had its dead `token`/`authToken` params removed in the Tier 2 cleanup below), but
 not migrated. redux-persist still holds far more than client preferences.
 

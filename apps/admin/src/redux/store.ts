@@ -6,8 +6,6 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "@/features/authentication/authSlice";
 import tempReducer from "./tempSlice";
 import toastifyReducer from "./toastifySlice"
-import eventReducer from "@/features/events/event.slice"
-import promotionReducer from "@/features/events/promotion.slice"
 
 const persistConfig = {
     key: "root",
@@ -19,8 +17,6 @@ const reducers = combineReducers({
     auth: authReducer,
     temp: tempReducer,
     toast: toastifyReducer,
-    event: eventReducer,
-    promotion: promotionReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

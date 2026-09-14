@@ -1,36 +1,28 @@
 'use client'
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import MainLayout from "@/components/layouts/MainLayout";
 import {PencilIcon, PlusIcon, TrashIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import PromotionsCard from "@/components/events/PromotionsCard";
 import {listPromotions} from "@/data/tableData";
 import CreatePromotionModal from "@/modals/events/CreatePromotionModal";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
-import {clearPromotion, getPromotionData} from "@/features/events/promotion.slice";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {usePromotionListQuery} from "@/features/events/queries";
 
 function AddPromotionPage() {
     const [promotionModal, setPromotionModal] = useState(false)
-    const dispatch = useDispatch<AppDispatch>();
     const [promotionId, setPromotionId] = useState(0);
 
     const { isLoggedIn } = useSelector((state: RootState) => state.auth)
-    const { promotionData } = useSelector((state: RootState) => state.promotion) as {promotionData: any}
+    const { data: promotionData } = usePromotionListQuery({ enabled: isLoggedIn });
 
     const togglePromotionModal = () => {
         if (promotionId !== 0) {
             setPromotionId(0)
-            dispatch(clearPromotion())
         }
         setPromotionModal(!promotionModal);
     }
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            dispatch(getPromotionData())
-        }
-    }, [])
 
     const storePromotionId = (promotionId: number) => {
         setPromotionId(promotionId)

@@ -4,7 +4,8 @@ import {useFormik} from "formik";
 import * as yup from "yup";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@/redux/store";
-import {clearPromotion, createPromotion, getPromotion, updatePromotion} from "@/features/events/promotion.slice";
+import {usePromotionDetailQuery} from "@/features/events/queries";
+import {useCreatePromotionMutation, useUpdatePromotionMutation} from "@/features/events/mutations";
 import {FormikButton} from "@/components/global/FormikButton";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
@@ -16,9 +17,13 @@ interface CreatePromotionModalProps {
 
 const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, toggle, promotionId}) => {
     const [eventType, setEventType] = React.useState('');
-    const dispatch = useDispatch<AppDispatch>();
     const { isLoggedIn } = useSelector((state: RootState) => state.auth)
-    const { promotion } = useSelector((state: RootState) => state.promotion);
+    const dispatch = useDispatch<AppDispatch>();
+    const createPromotionMutation = useCreatePromotionMutation();
+    const updatePromotionMutation = useUpdatePromotionMutation(promotionId);
+    const { data: promotionDetail } = usePromotionDetailQuery(promotionId, {
+        enabled: Boolean(promotionId),
+    });
     const [promotionTitle, setPromotionTitle] = useState('Create Promotion');
 
     const [breakdowns, setBreakdowns] = useState<string[]>(['']);
@@ -59,10 +64,16 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
         validationSchema: createPromotionSchema,
         onSubmit: async (values) => {
             if (isLoggedIn) {
-                const data = {...values, breakdown: breakdowns}
+                // NOTE (found, not fixed — pre-existing bug, see the NOTE on
+                // promotionsApi in features/events/api.ts): the backend
+                // requires `image`, which this form never collects, so
+                // create/update always 422s. Preserving the promotion's
+                // existing image on edit is the closest equivalent of the
+                // old behavior (an empty string still fails `required`).
+                const data = {...values, price: Number(values.price), breakdown: breakdowns, image: promotionDetail?.promotion?.image ?? ""}
                 if (promotionId !== 0) {
-                    dispatch(updatePromotion({data:data, id: promotionId })).then((res: any) => {
-                        if (res.payload.status) {
+                    updatePromotionMutation.mutate(data, {
+                        onSuccess: () => {
                             dispatch(
                                 updateToastifyReducer({
                                     show: true,
@@ -70,13 +81,12 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
                                     type: "success",
                                 })
                             );
-                            dispatch(clearPromotion())
                             toggle()
-                        }
+                        },
                     })
                 } else {
-                    dispatch(createPromotion({ data })).then((res: any) => {
-                        if (res.payload.status) {
+                    createPromotionMutation.mutate(data, {
+                        onSuccess: () => {
                             dispatch(
                                 updateToastifyReducer({
                                     show: true,
@@ -85,7 +95,7 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
                                 })
                             );
                             toggle()
-                        }
+                        },
                     })
                 }
             }
@@ -93,27 +103,22 @@ const CreatePromotionModal:  React.FC<CreatePromotionModalProps> = ({isOpen, tog
     })
 
     useEffect(() => {
-        if (promotionId !== 0) {
-            dispatch(getPromotion({id: promotionId})).then((res) => {
-                if (res.payload.status) {
-                    const data = res.payload.data.promotion
-                    setEventType(data.price_option)
-                    setPromotionTitle("Edit Promotion")
-                    formik.setFieldValue('name', data.name)
-                    formik.setFieldValue('price', data.price)
-                    formik.setFieldValue('price_option', data.price_option)
-                    setBreakdowns(data.breakdown ?? [])
-                }
-            })
-        } else {
+        if (promotionId !== 0 && promotionDetail) {
+            const data = promotionDetail.promotion
+            setEventType(data.price_option)
+            setPromotionTitle("Edit Promotion")
+            formik.setFieldValue('name', data.name)
+            formik.setFieldValue('price', data.price)
+            formik.setFieldValue('price_option', data.price_option)
+            setBreakdowns(data.breakdown ?? [])
+        } else if (promotionId === 0) {
             setPromotionTitle("Create Promotion")
-            dispatch(clearPromotion())
             formik.setFieldValue('name', "")
             formik.setFieldValue('price', "")
             formik.setFieldValue('price_option', "")
             setBreakdowns([''])
         }
-    }, [promotionId]);
+    }, [promotionId, promotionDetail]);
 
     return (
         <div

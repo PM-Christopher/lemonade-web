@@ -9,9 +9,10 @@ import {
   MapPinIcon,
 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
-import { eventAction, getEventDetail } from "@/features/events/event.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useEventDetailQuery } from "@/features/events/queries";
+import { useActivateEventMutation } from "@/features/events/mutations";
 import { capitalizeWords } from "@/utils/helper";
 import Image from "next/image";
 import SuspendModal from "@/modals/events/SuspendModal";
@@ -24,12 +25,8 @@ const Page = ({}) => {
       ? parseInt(params.id[0])
       : parseInt(params.id)
     : undefined;
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { loading, event } = useSelector((state: RootState) => state.event) as {
-    loading: boolean;
-    event: any;
-  };
+  const { data: event } = useEventDetailQuery(id, { enabled: isLoggedIn });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
 
@@ -59,12 +56,6 @@ const Page = ({}) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn && id) {
-      dispatch(getEventDetail({ id }));
-    }
-  }, []);
-
   const toggleSuspendModalOpen = () => {
     setSuspendModalOpen(!suspendModalOpen);
   };
@@ -73,9 +64,11 @@ const Page = ({}) => {
     setDeleteModalOpen(!deleteModalOpen);
   };
 
+  const activateEventMutation = useActivateEventMutation(id);
+
   const unsuspendEvent = () => {
     if (isLoggedIn && id) {
-      dispatch(eventAction({ id, actionType: "activate" }));
+      activateEventMutation.mutate();
     }
   };
 
@@ -339,8 +332,8 @@ const Page = ({}) => {
           }
         >
           <Image
-            src={event?.event?.event_image}
-            alt={event?.event?.event_name}
+            src={event?.event?.event_image ?? ""}
+            alt={event?.event?.event_name ?? ""}
             width={320}
             height={343}
             className={"w-[320px] h-[343px] rounded-[16px]"}

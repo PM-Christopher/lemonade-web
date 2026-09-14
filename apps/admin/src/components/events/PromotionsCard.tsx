@@ -3,7 +3,7 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 import { formatThousandSeparator } from "@/utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { deletePromotion } from "@/features/events/promotion.slice";
+import { useDeletePromotionMutation } from "@/features/events/mutations";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
 
 function PromotionsCard({promotion, promotionId, setPromotionId, toggle,}: {
@@ -14,11 +14,12 @@ function PromotionsCard({promotion, promotionId, setPromotionId, toggle,}: {
 }) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const deletePromotionMutation = useDeletePromotionMutation();
 
   const handleDeletePromotion = (id: number) => {
     if (isLoggedIn && id) {
-      dispatch(deletePromotion({ id })).then((res: any) => {
-        if (res.payload.status) {
+      deletePromotionMutation.mutate(id, {
+        onSuccess: () => {
           dispatch(
               updateToastifyReducer({
                 show: true,
@@ -26,8 +27,7 @@ function PromotionsCard({promotion, promotionId, setPromotionId, toggle,}: {
                 type: "success",
               })
           );
-          window.location.reload();
-        }
+        },
       });
     }
   };

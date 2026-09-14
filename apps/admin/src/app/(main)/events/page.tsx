@@ -13,12 +13,11 @@ import EventView from "@/views/events/EventView";
 import PromotionView from "@/views/tribes/PromotionView";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { getEventData } from "@/features/events/event.slice";
+import { useEventListQuery } from "@/features/events/queries";
 import { useExportCsvMutation } from "@/features/exports/mutations";
 import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { Button } from "@/components/ui/button";
-import EditCommissionModal from "@/modals/events/EditCommissionModal";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
 
@@ -30,9 +29,7 @@ const EventsPage = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { eventData } = useSelector((state: RootState) => state.event) as {
-    eventData: any;
-  };
+  const { data: eventData } = useEventListQuery(menuOption, { enabled: isLoggedIn });
   const [isLoading, setLoading] = useState(false);
   const exportCsv = useExportCsvMutation();
   const switchOption = (option: string) => {
@@ -57,12 +54,6 @@ const EventsPage = () => {
   useEffect(() => {
     setSearchParams({ search: debouncedValue });
   }, [debouncedValue]);
-
-  useEffect(() => {
-    if (isLoggedIn && menuOption) {
-      dispatch(getEventData({ trxType: menuOption }));
-    }
-  }, [menuOption]);
 
   const exportFunc = () => {
     setLoading(true);
@@ -96,7 +87,7 @@ const EventsPage = () => {
       <section className="flex flex-col gap-[20px] mt-[24px]">
         <div className={"px-[20px] flex justify-between"}>
           <p className={"text-[16px] font-semiBold"}>
-            {eventData?.events?.length || 6} Events
+            {(eventData && "events" in eventData ? eventData.events.length : 0) || 6} Events
           </p>
           <div className={"flex justify-between gap-[12px]"}>
             <div className="flex items-center gap-3 bg-light_grey p-2 px-[12px] h-[40px] w-[285px] rounded-[12px] border-[1px] border-grey-20">

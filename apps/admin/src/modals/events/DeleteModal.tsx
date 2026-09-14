@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {XIcon} from "lucide-react";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "@/redux/store";
-import {eventAction} from "@/features/events/event.slice";
+import {useSelector} from "react-redux";
+import {RootState} from "@/redux/store";
+import {useDeleteEventMutation} from "@/features/events/mutations";
 
 interface DeactivateModalProps {
     isOpen: boolean;
@@ -12,9 +12,8 @@ interface DeactivateModalProps {
 
 function DeleteModal({isOpen, toggle, id}: DeactivateModalProps) {
     const [selectedOption, setSelectedOption] = useState<string>('policy-violation');
-    const dispatch  = useDispatch<AppDispatch>()
     const { isLoggedIn } = useSelector((state: RootState) => state.auth)
-    // const { userAction: actionStatus } = useSelector((state: RootState) => state.user) as { userAction: any }
+    const deleteEventMutation = useDeleteEventMutation(id);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(e.target.value);
@@ -23,12 +22,11 @@ function DeleteModal({isOpen, toggle, id}: DeactivateModalProps) {
 
     const SubmitAction = () => {
         if (isLoggedIn && id) {
-            dispatch(eventAction({id, actionType: "delete"})).then((res: any) => {
-                console.log({res})
-                if (res.status === 200) {
+            deleteEventMutation.mutate(undefined, {
+                onSuccess: () => {
                     toggle();
-                }
-            })
+                },
+            });
         }
     }
 

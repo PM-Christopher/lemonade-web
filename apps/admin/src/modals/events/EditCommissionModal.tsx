@@ -6,7 +6,7 @@ import {AppDispatch} from "@/redux/store";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import {updateToastifyReducer} from "@/redux/toastifySlice";
-import {updateCommissionCharge} from "@/features/events/event.slice";
+import {useUpdateCommissionChargeMutation} from "@/features/events/mutations";
 import {FormikButton} from "@/components/global/FormikButton";
 
 interface EditCommissionModalProps {
@@ -20,6 +20,7 @@ function EditCommissionModal({isOpen, toggle, id, commissionCharge}: EditCommiss
 
     const [isLoading, setLoading] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
+    const updateCommissionChargeMutation = useUpdateCommissionChargeMutation();
     const commSchema = yup.object({
         percentage: yup.string().required("Commission percentage is required"),
     });
@@ -31,11 +32,8 @@ function EditCommissionModal({isOpen, toggle, id, commissionCharge}: EditCommiss
         validationSchema: commSchema,
         onSubmit: (values) => {
             setLoading(true);
-            const data = {
-                commission_charge: values.percentage,
-            }
-            dispatch(updateCommissionCharge({data: data})).then((res) => {
-                if (res.payload.status) {
+            updateCommissionChargeMutation.mutate(Number(values.percentage), {
+                onSuccess: () => {
                     setLoading(false);
                     dispatch(
                         updateToastifyReducer({
@@ -45,9 +43,11 @@ function EditCommissionModal({isOpen, toggle, id, commissionCharge}: EditCommiss
                         })
                     );
                     toggle()
-                    window.location.reload()
-                }
-            })
+                },
+                onError: () => {
+                    setLoading(false);
+                },
+            });
         }
     });
 
