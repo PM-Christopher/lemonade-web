@@ -16,6 +16,8 @@ import type {
   GuestListResponse,
   AffiliateEventDetailResponse,
   EventTicketDataResponse,
+  EventTicketsResponse,
+  PromotionsResponse,
 } from "./api";
 
 export const eventsServerApi = {
@@ -36,4 +38,12 @@ export const eventsServerApi = {
     backendApi.get<EventTicketDataResponse>(
       `${userEventRoutes.ATTENDEES}/${id}/tickets`,
     ),
+
+  getEventTickets: (id: number | string) =>
+    backendApi.get<EventTicketsResponse>(
+      `${userEventRoutes.BASE}/${id}/event-tickets`,
+    ),
+
+  getPromotions: () =>
+    backendApi.get<PromotionsResponse>(userEventRoutes.PROMOTIONS),
 };
