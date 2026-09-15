@@ -108,6 +108,7 @@ export const sharedUtilityRoutes = Object.freeze({
   UPLOAD_MULTIPLE: "/shared/utilities/upload-multiple",
   VERIFY_ACCOUNT: "/shared/utilities/verify-account",
   TRIBES_CATEGORIES: "/shared/utilities/tribes-categories",
+  BUSINESS_CATEGORIES: "/shared/utilities/business-categories",
 });
 
 export const adminTeamRoutes = Object.freeze({

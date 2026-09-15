@@ -1,27 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { useBusinessQuery } from "@/features/business/queries";
-import { useBusinessCategoriesQuery } from "@/features/shared/queries";
-import { useUpdateListingMutation } from "@/features/business/mutations";
-import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useAppDispatch } from "@/redux/hook";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { MultiSelect } from "@/components/ui/multi-select";
-import CountryList from "country-list-with-dial-code-and-flag";
-import CloseIcon from "@/images/icons/close.svg";
-import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import MessageIcon from "@/images/icons/messageIcon.svg";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
+import CloseIcon from "@/images/icons/close.svg";
+import { useRouter } from "next/navigation";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import { useAppDispatch } from "@/redux/hook";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { useBusinessCategoriesQuery } from "@/features/shared/queries";
+import CountryList from "country-list-with-dial-code-and-flag";
 import { FormikButton } from "@/components/global/FormikButton";
+import MultipleFileUploader from "@/components/global/MultipleFileUploader";
+import { useCreateListingMutation } from "@/features/business/mutations";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
+import { checkError } from "@lemonade/domain";
 
 interface businessCategories {
   value: string;
@@ -43,22 +43,11 @@ interface FormValues {
   website_url: string;
 }
 
-const EditBusinessClient = ({ id }: { id: number }) => {
+const AddBusinessClient = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isRequestOpen, setIsRequestOpen] = useState(false);
-  const [displayCount, setDisplayCount] = useState(4); // Initial number of reviews to show
-  const [reviews, setReviews] = useState([]);
+  const createListingMutation = useCreateListingMutation();
   const [inputValue, setInputValue] = useState("");
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
-  const [frameworksList, setFrameworksList] = useState<businessCategories[]>(
-    [],
-  );
-
-  const { data } = useBusinessQuery(id);
-  const updateListingMutation = useUpdateListingMutation(id);
-  const { data: categories } = useBusinessCategoriesQuery();
 
   const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
@@ -81,7 +70,14 @@ const EditBusinessClient = ({ id }: { id: number }) => {
     formik.setFieldValue("services", updatedServices);
   };
 
-  const editBusinessSchema = yup.object({
+  const { data } = useBusinessCategoriesQuery();
+
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
+  const [frameworksList, setFrameworksList] = useState<businessCategories[]>(
+    [],
+  );
+
+  const createBusinessSchema = yup.object({
     image: yup.string().required("Business image is required"),
     name: yup.string().required("Business name is required"),
     categories: yup
@@ -125,14 +121,14 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       phone_number: "",
       website_url: "",
     },
-    validationSchema: editBusinessSchema,
+    validationSchema: createBusinessSchema,
     onSubmit: (values) => {
-      updateListingMutation.mutate(values, {
+      createListingMutation.mutate(values, {
         onSuccess: () => {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "business updated",
+              message: "business uploaded",
               type: "success",
             }),
           );
@@ -152,53 +148,29 @@ const EditBusinessClient = ({ id }: { id: number }) => {
   });
 
   useEffect(() => {
-    if (categories?.categories) {
-      const updatedFrameworksList = categories.categories.map(
+    if (data?.categories) {
+      const updatedFrameworksList = data.categories.map(
         (category: { name: string; slug: string }) => ({
           label: category.name,
           value: category.name,
         }),
       );
+
       setFrameworksList(updatedFrameworksList);
     }
-  }, [categories]);
-
-  useEffect(() => {
-    if (data?.business) {
-      formik.setFieldValue("image", data?.business?.image);
-      formik.setFieldValue("name", data?.business?.name);
-      formik.setFieldValue("categories", data?.business?.categories);
-      formik.setFieldValue("description", data?.business?.description);
-      formik.setFieldValue("city", data?.business?.city);
-      formik.setFieldValue("country", data?.business?.country);
-      formik.setFieldValue("services", data?.business?.services);
-      formik.setFieldValue("service_rate", data?.business?.service_rate);
-      formik.setFieldValue("gallery", data?.business?.gallery);
-      formik.setFieldValue("email", data?.business?.email);
-      formik.setFieldValue("phone_number", data?.business?.phone_number);
-      formik.setFieldValue("website_url", data?.business?.website_url);
-
-      setSelectedFrameworks([...data?.business?.categories]);
-    }
-
-    // formik's returned object is recreated on every keystroke (it embeds
-    // current values/errors), so adding it here would re-run this sync
-    // — and re-run setFieldValue — on every render, fighting the user's
-    // own edits. This effect must only fire when the loaded record changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.business]);
+  }, [data]);
 
   return (
     <MainLayout>
       <section className="bg-white pb-10 laptop:bg-light_grey">
         <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
-            onClick={() => router.back()}
-          >
-            <ChevronLeft />
+          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]">
+            <ChevronLeft
+              className="cursor-pointer"
+              onClick={() => router.back()}
+            />
             <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Edit business
+              Add business
             </p>
           </div>
         </div>
@@ -212,7 +184,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 length="single"
                 type="business"
                 setField={formik}
-                image={data?.business?.image}
+                image=""
                 title="Upload business image"
               />
               {formik.errors.image ? (
@@ -249,7 +221,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   htmlFor="fullname"
                   className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
                 >
-                  Business category
+                  Business categories
                 </Label>
                 <MultiSelect
                   options={frameworksList}
@@ -345,13 +317,13 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               </p>
               <div className="mt-[24px] grid gap-2">
                 <Label
-                  htmlFor="services"
+                  htmlFor="city"
                   className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
                 >
                   Services
                 </Label>
                 <Input
-                  id="services"
+                  id="city"
                   type="text"
                   placeholder=""
                   value={inputValue}
@@ -409,7 +381,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 length="multiple"
                 type="business"
                 setField={formik}
-                images={formik.values.gallery}
+                images={[]}
                 title="Upload multiple images"
               />
               <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
@@ -424,7 +396,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full rounded-xl border-0 bg-light_grey font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                      className="w-full border-0 bg-light_grey pl-[5px] font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
                       placeholder="Email address"
                       value={formik.values.email}
                       onChange={(e) => {
@@ -448,7 +420,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full rounded-xl border-0 bg-light_grey font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                      className="w-full border-0 bg-light_grey pl-[5px] font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
                       placeholder="Phone number"
                       value={formik.values.phone_number}
                       onChange={(e) => {
@@ -472,7 +444,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full rounded-xl border-0 bg-light_grey font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                      className="w-full border-0 bg-light_grey pl-[5px] font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
                       placeholder="Website URL"
                       value={formik.values.website_url}
                       onChange={(e) => {
@@ -487,8 +459,9 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </p>
                 ) : null}
               </div>
+
               <FormikButton
-                title="Save changes"
+                title="List business"
                 error={formik.isValid}
                 loading={formik.isSubmitting}
                 classes="mt-[32px] h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"
@@ -501,4 +474,4 @@ const EditBusinessClient = ({ id }: { id: number }) => {
   );
 };
 
-export default EditBusinessClient;
+export default AddBusinessClient;

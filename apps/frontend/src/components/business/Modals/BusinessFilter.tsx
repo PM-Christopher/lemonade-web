@@ -2,7 +2,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import { Label } from "@/components/ui/label";
 import LocationIcon from "@/images/icons/location.svg";
 import React, { useState } from "react";
-import { useRequest } from "@/hooks/useRequest";
+import { useBusinessCategoriesQuery } from "@/features/shared/queries";
 import {
   Select,
   SelectContent,
@@ -23,11 +23,7 @@ type FilterBusinessInterface = {
 
 const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
   const filterBusinessMutation = useFilterBusinessMutation();
-  // NOTE: business-categories is a /shared/utilities/* endpoint not wired
-  // to business.slice.ts at all — out of scope for this migration, same
-  // as several other useRequest calls in this domain (see
-  // docs/ARCHITECTURE.md's business domain note).
-  const { data, loading } = useRequest(`/shared/utilities/business-categories`, "GET");
+  const { data } = useBusinessCategoriesQuery();
 
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
@@ -127,11 +123,13 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   </SelectTrigger>
                   <SelectContent className="form-font">
                     <SelectItem value="all">All Locations</SelectItem>
-                    {data?.categories?.map((item: { name: string; slug: string }, idx: number) => (
-                      <SelectItem value={item.slug} key={idx}>
-                        {item.name}
-                      </SelectItem>
-                    ))}
+                    {data?.categories?.map(
+                      (item: { name: string; slug: string }, idx: number) => (
+                        <SelectItem value={item.slug} key={idx}>
+                          {item.name}
+                        </SelectItem>
+                      ),
+                    )}
                   </SelectContent>
                 </Select>
               </div>

@@ -30,8 +30,25 @@ export interface UploadFileResponse {
   image: string;
 }
 
+export interface BusinessCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+}
+
+export interface BusinessCategoriesResponse {
+  categories: BusinessCategory[];
+}
+
 export const sharedApi = {
-  getBanks: () => browserApi.get<GetAllBanksResponse>(sharedUtilityRoutes.GET_ALL_BANKS),
+  getBanks: () =>
+    browserApi.get<GetAllBanksResponse>(sharedUtilityRoutes.GET_ALL_BANKS),
+
+  getBusinessCategories: () =>
+    browserApi.get<BusinessCategoriesResponse>(
+      sharedUtilityRoutes.BUSINESS_CATEGORIES,
+    ),
 
   verifyAccount: (bankCode: string, accountNumber: string) =>
     browserApi.post<VerifyAccountResponse>(sharedUtilityRoutes.VERIFY_ACCOUNT, {
