@@ -29,6 +29,16 @@ jobs:
       - name: Lint
         run: pnpm turbo run lint --filter=...[origin/main]
 
+      # Declining budget on @typescript-eslint/no-explicit-any (that rule is
+      # "warn" at the app layer, not "error" — see apps/*/eslint.config.mjs
+      # and docs/ARCHITECTURE.md Phase 3) — fails if either app's count grew.
+      # Not filtered by --filter=...[origin/main]: it's cheap enough to just
+      # always run both, and a change in one app can't silently exempt it.
+      - name: Any-type budget
+        run: |
+          (cd apps/frontend && pnpm run lint:any-budget)
+          (cd apps/admin && pnpm run lint:any-budget)
+
       - name: Typecheck
         run: pnpm turbo run typecheck --filter=...[origin/main]
 
