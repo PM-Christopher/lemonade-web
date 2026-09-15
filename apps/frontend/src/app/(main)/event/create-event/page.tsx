@@ -5,7 +5,6 @@ import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import LocationIcon from "@/images/icons/location-large.svg";
 import WebIcon from "@/images/icons/world.svg";
 import CalendarIcon from "@/images/icons/calendarIcon.svg";
