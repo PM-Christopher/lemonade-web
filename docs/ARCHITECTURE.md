@@ -1378,6 +1378,11 @@ surface was removed before its consumers moved. Never again in one step.
 
 ## 20. Version Upgrade & Migration Plan
 
+> **Executed — see Phase 3's status for what actually happened.** Both apps are on Next 15.1.11 and
+> React 19 now. The plan below is kept as the pre-execution risk assessment it was, not updated line by
+> line to match the outcome — it called the react-quill/draft-js/react-draft-wysiwyg removals and the
+> evergreen-ui migration correctly, ahead of time.
+
 > The two apps are on different Next majors (15.1.11 and 14.2.7) and both on React 18. Align them
 > before refactoring — otherwise every shared package must satisfy two framework versions, and every
 > large refactor gets written twice.
@@ -1614,7 +1619,7 @@ left for direct action rather than automated from here; no tooling access to do 
 either way (no `gh` CLI in this environment). They still exist, untouched, now stale relative to this
 monorepo (see the canonical-location note at the top of this document).
 
-### Phase 3 — Version alignment **[MUST]** **[Blockers cleared — bump not started]**
+### Phase 3 — Version alignment **[MUST]** **[DONE]**
 
 Once, in one dependency graph, before the refactors that would otherwise be written twice.
 
@@ -1624,11 +1629,10 @@ Once, in one dependency graph, before the refactors that would otherwise be writ
 - `images.domains` → `remotePatterns`, restricted to Cloudinary and DO Spaces
 - Tighten `tsconfig`; `no-explicit-any` as a warning with a declining budget
 
-**Status:** The Next 14/15 asymmetry this phase would remove is real and current, and has already
-required care in Phase 4/5 work: `apps/frontend` is Next 14.2.7 (`cookies()` and Route Handler
-`params` are synchronous), `apps/admin` is Next 15.1.11 (both are async/a Promise). The two apps'
-`server-api.ts` and `app/api/v1/[...path]/route.ts` are deliberately not identical because of this —
-don't "fix" one to match the other without checking which Next major it's actually on.
+**Status:** The Next 14/15 asymmetry this phase set out to remove was real through Phase 4/5 (`apps/frontend`
+was Next 14.2.7 with synchronous `cookies()`/Route Handler `params`; `apps/admin` was already on Next
+15.1.11 with both async) and required care during that work — it's gone now, both apps are on Next 15
+and `server-api.ts`/`app/api/v1/[...path]/route.ts` are the same shape in both apps again.
 
 Three of five bullets are done:
 
@@ -1666,12 +1670,33 @@ Three of five bullets are done:
     deeply integrated across both apps (this doc's own Phase 7 scope again), so that verification is
     real work, not a formality.
 
-Not started: the Next 15 unification + async-request-API codemod, the React 19 bump itself, and
-tightening `tsconfig`/`no-explicit-any`'s budget (the `no-explicit-any: "warn"` override landed in
-Phase 1 already anticipates this — see that phase's status — but the "declining budget" enforcement
-mechanism itself isn't built). The actual version bumps are real, cross-cutting risk to both
-production-ish apps with no end-to-end test coverage to catch behavioral regressions — deliberately
-not started without checking in first, same as the rest of this phase's higher-risk items.
+The version bumps landed too — checked in before starting, given the risk. `apps/frontend` is now on
+Next 15.1.11 (matching admin) via Next's own `next-async-request-api` codemod, and both apps are on
+React 19. The two bumps turned out not to be separable for frontend specifically: the codemod's
+output for Client Component dynamic pages (`const params = use(props.params)`) depends on React's
+`use()` hook, which doesn't exist at runtime in React 18.3 (confirmed directly — `typeof
+require("react").use` was `undefined` before the bump, a real function after; TypeScript alone didn't
+catch this, only running the actual page would have). The codemod's output was reviewed file by file,
+not trusted blind — `lib/server-api.ts` was the one place it fell back to Next's
+`UnsafeUnwrappedCookies` escape hatch rather than converting cleanly, since `getToken`/
+`getRefreshToken`/etc.'s signatures weren't trivial for it to make async automatically; replaced by
+hand with the same fully-async pattern `apps/admin/src/lib/server-api.ts` already used (that file's
+been on Next 15 since Phase 4). One real React 19 breaking type change found by typecheck outside the
+codemod's scope: the bare global `JSX` namespace moved under `React.JSX` — one occurrence, fixed.
+Verified beyond lint/typecheck/build: ran `next start` against the production build for both apps
+together with the real local backend, confirmed real page HTML renders with no server errors,
+middleware still correctly gates protected routes, and the async-params BFF proxy round-trips through
+to the live backend. Not verified: full authenticated flows through a real login (no test credentials
+available in this environment) — the 16 dynamic pages' `use()` pattern is Next's own tested codemod
+output, not hand-written, but wasn't exercised live end-to-end behind auth.
+
+`no-explicit-any`'s declining budget is now real, not just the `"warn"` override Phase 1 landed
+anticipating it: `packages/config/scripts/check-any-budget.mjs` counts each app's current occurrences
+and fails CI if the count grows past `packages/config/no-any-budget.json`'s entry for that app (209
+frontend, 105 admin — today's real counts), with a nudge to lower the budget file when the count
+genuinely drops. Wired into CI right after the Lint step.
+
+Every bullet in this phase is done.
 
 ### Phase 4 — Transport & authentication **[MUST]** **[DONE, with named deviations]**
 
