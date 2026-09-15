@@ -18,11 +18,15 @@ import type {
   EventTicketDataResponse,
   EventTicketsResponse,
   PromotionsResponse,
+  EventsListResponse,
 } from "./api";
 
 export const eventsServerApi = {
   getEvent: (id: number | string) =>
     backendApi.get<EventDetailResponse>(`${userEventRoutes.BASE}/${id}`),
+
+  getEvents: () =>
+    backendApi.get<EventsListResponse>(userEventRoutes.ATTENDEES),
 
   getGuestList: (id: number | string) =>
     backendApi.get<GuestListResponse>(
