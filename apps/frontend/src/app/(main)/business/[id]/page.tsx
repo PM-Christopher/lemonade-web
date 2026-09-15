@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import business_logo from "@/images/business/jobLogo.png";
@@ -38,7 +38,8 @@ import { BusinessDetailSkeleton } from "@/components/Skeletons";
 import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
 import SubmitDisputeModal from "@/components/business/Modals/SubmitDisputeModal";
 
-const BusinessDetailsPage = ({ params }: { params: { id: number } }) => {
+const BusinessDetailsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const [isOpen, setIsOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [displayCount, setDisplayCount] = useState(4); // Initial number of reviews to show

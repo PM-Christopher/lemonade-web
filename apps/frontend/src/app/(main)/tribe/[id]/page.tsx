@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, use } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import PinnedIcon from "@/images/icons/pinnedIcon.svg";
@@ -45,7 +45,8 @@ import PadlockIcon from "@/images/icons/padlockIconFilled.svg";
 import JoinedTribeModal from "@/components/tribe/JoinedTribeModal";
 import { ThreadsSkeleton } from "@/components/Skeletons";
 
-const SingleTribePage = ({ params }: { params: { id: string } }) => {
+const SingleTribePage = (props: { params: Promise<{ id: string }> }) => {
+  const params = use(props.params);
   const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false);
   const [joinTribeModalOpen, setJoinTribeModalOpen] = useState(false);
   const [shareTribeModalOpen, setShareTribeModalOpen] = useState(false);

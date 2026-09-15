@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, use } from "react";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -178,7 +178,8 @@ const buildInitialValues = (event?: any): EventFormValues => {
   };
 };
 
-const EditEventPage = ({ params }: { params: { id: string } }) => {
+const EditEventPage = (props: { params: Promise<{ id: string }> }) => {
+  const params = use(props.params);
   const dispatch = useAppDispatch();
   const router = useRouter();
 

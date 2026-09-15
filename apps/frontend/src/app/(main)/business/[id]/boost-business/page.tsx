@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label } from "@/components/ui/label";
@@ -27,7 +27,8 @@ interface BoostPackages {
   price: number;
 }
 
-const BoostBusinessPage = ({ params }: { params: { id: number } }) => {
+const BoostBusinessPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const { setSearchParams, nxtSearchParams } = useNxtSearchParams();

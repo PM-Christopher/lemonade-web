@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import { useRequest } from "@/hooks/useRequest";
 import { useRouter } from "next/navigation";
 import * as yup from "yup";
@@ -43,7 +43,8 @@ interface FormValues {
   website_url: string;
 }
 
-const EditBusinessPage = ({ params }: { params: { id: number } }) => {
+const EditBusinessPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);

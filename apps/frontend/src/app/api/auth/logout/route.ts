@@ -8,6 +8,6 @@ export async function POST() {
   // token, network blip), the cookie still gets cleared below, so the
   // client is logged out either way.
   await backendApi.post(userAuthRoutes.LOGOUT).catch(() => undefined);
-  clearUserSession();
+  await clearUserSession();
   return NextResponse.json({ success: true, message: "Logged out" });
 }

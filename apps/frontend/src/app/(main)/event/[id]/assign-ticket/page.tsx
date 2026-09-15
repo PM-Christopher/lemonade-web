@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -20,7 +20,8 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
-const AssignTicketPage = ({ params }: { params: { id: number } }) => {
+const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const [checked, setChecked] = useState(false);
   const COUNTDOWN_DURATION = 10 * 60;
   const [timeLeft, setTimeLeft] = useState(COUNTDOWN_DURATION); // 10 minutes in seconds

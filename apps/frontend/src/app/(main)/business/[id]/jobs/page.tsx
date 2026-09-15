@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import JobsCard from "@/components/business/JobsCard";
@@ -8,7 +8,8 @@ import { useRequest } from "@/hooks/useRequest";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
 
-const JobsPage = ({ params }: { params: { id: number } }) => {
+const JobsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const router = useRouter();
   const [jobType, setJobType] = useState("in-progress");
 

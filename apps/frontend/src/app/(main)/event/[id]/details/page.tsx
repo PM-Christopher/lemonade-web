@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -29,7 +29,8 @@ import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { PromotionInterface } from "@/interfaces/EventInterface";
 
-const EventDetailsPage = ({ params }: { params: { id: number } }) => {
+const EventDetailsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);

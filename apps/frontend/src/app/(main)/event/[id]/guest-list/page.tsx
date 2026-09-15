@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,8 @@ import GuestSideMenu from "@/components/events/GuestSideMenu";
 import { Users } from "lucide-react";
 import useDebounce from "@/hooks/useDebounce";
 
-const CheckInsPage = ({ params }: { params: { id: number } }) => {
+const CheckInsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const { data: guestListData, isLoading: loading } = useGuestListQuery(params.id);
   const guestList = guestListData?.guest_list ?? [];
   const router = useRouter();

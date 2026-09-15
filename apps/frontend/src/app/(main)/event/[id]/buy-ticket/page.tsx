@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -19,7 +19,8 @@ import TicketSummary from "@/components/events/Modals/TicketSummary";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { EventTicketDetailSkeleton } from "@/components/Skeletons";
 
-const Page = ({ params }: { params: { id: number } }) => {
+const Page = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [summaryModal, setSummaryModal] = useState(false);

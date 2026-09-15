@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,8 @@ type Ticket = {
   ticket_id?: string;
 };
 
-const AddTicketPage = ({ params }: { params: { id: number } }) => {
+const AddTicketPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [toggleModal, setToggleModal] = useState(false);

@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       });
     }
 
-    persistUserSession(result.token, result.refresh_token, result.expires_in);
+    await persistUserSession(result.token, result.refresh_token, result.expires_in);
 
     return NextResponse.json({
       success: true,

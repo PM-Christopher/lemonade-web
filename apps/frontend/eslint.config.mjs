@@ -1,6 +1,6 @@
 // Extends the shared @lemonade/config flat config with:
 //   - eslint-config-next (via FlatCompat, since it's still eslintrc-shaped),
-//     pinned to this app's own Next major (14) through the workspace's
+//     pinned to this app's own Next major (15) through the workspace's
 //     eslint-config-next devDependency version, not @lemonade/config's.
 //   - eslint-plugin-boundaries element paths for THIS app's src/ layout,
 //     encoding docs/ARCHITECTURE.md's import-rules table (see §9):

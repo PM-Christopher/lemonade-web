@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,8 @@ import moment, { now } from "moment";
 import { ColorRing } from "react-loader-spinner";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
-function PromoteEventPage({ params }: { params: { id: number } }) {
+function PromoteEventPage(props: { params: Promise<{ id: number }> }) {
+  const params = use(props.params);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { data: promotionsData, isLoading: loading } = usePromotionsQuery();

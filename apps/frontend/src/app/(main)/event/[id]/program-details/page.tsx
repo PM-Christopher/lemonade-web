@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -17,7 +17,8 @@ import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { FaNairaSign } from "react-icons/fa6";
 
-const ProgramDetailsPage = ({ params }: { params: { id: number } }) => {
+const ProgramDetailsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const [copied, setCopied] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();

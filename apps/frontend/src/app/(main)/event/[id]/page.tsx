@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, use } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -21,7 +21,8 @@ import { useEventQuery } from "@/features/events/queries";
 import { EventDetailsSkeleton } from "@/components/Skeletons";
 import { useSearchParams } from "next/navigation";
 
-const EventDetailsPage = ({ params }: { params: { id: number } }) => {
+const EventDetailsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const dispatch = useAppDispatch();
   const { data: eventData, isLoading: loading } = useEventQuery(params.id);
   const event = eventData?.event;

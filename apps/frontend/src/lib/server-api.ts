@@ -5,10 +5,9 @@ import "server-only";
 // Server Actions. Never import this into a Client Component; the bundler
 // will refuse to build if you do (that's what `server-only` is for).
 //
-// NOTE: apps/frontend is still on Next 14.2.7, where `cookies()` is
-// SYNCHRONOUS. apps/admin is already on Next 15, where it's async — see
-// apps/admin/src/lib/server-api.ts. Don't copy this file verbatim between
-// the two apps; Phase 3 (version alignment) is what removes this asymmetry.
+// Both apps are on Next 15 now (Phase 3), so `cookies()` is ASYNC in both —
+// this file and apps/admin/src/lib/server-api.ts are deliberately kept in
+// the same shape.
 import { cookies } from "next/headers";
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
 import { userAuthRoutes } from "@lemonade/api-types";
@@ -25,12 +24,14 @@ const LARAVEL_API_URL = serverEnv.LARAVEL_API_URL;
 const DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS = 60 * 60;
 const REFRESH_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // sanctum.rf_expiration's current default (30 days)
 
-function getToken(): string | undefined {
-  return cookies().get(USER_TOKEN_COOKIE)?.value;
+async function getToken(): Promise<string | undefined> {
+  const store = await cookies();
+  return store.get(USER_TOKEN_COOKIE)?.value;
 }
 
-function getRefreshToken(): string | undefined {
-  return cookies().get(USER_REFRESH_COOKIE)?.value;
+async function getRefreshToken(): Promise<string | undefined> {
+  const store = await cookies();
+  return store.get(USER_REFRESH_COOKIE)?.value;
 }
 
 // Cookie writes only succeed inside a Route Handler or Server Action. If a
@@ -39,9 +40,10 @@ function getRefreshToken(): string | undefined {
 // refreshed token still lets *this* request succeed, the write-back just
 // doesn't stick, so the next request refreshes again. Better than crashing
 // the render.
-function persistAccessToken(token: string, maxAgeSeconds: number): void {
+async function persistAccessToken(token: string, maxAgeSeconds: number): Promise<void> {
   try {
-    cookies().set(USER_TOKEN_COOKIE, token, {
+    const store = await cookies();
+    store.set(USER_TOKEN_COOKIE, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -53,9 +55,10 @@ function persistAccessToken(token: string, maxAgeSeconds: number): void {
   }
 }
 
-function persistRefreshToken(token: string): void {
+async function persistRefreshToken(token: string): Promise<void> {
   try {
-    cookies().set(USER_REFRESH_COOKIE, token, {
+    const store = await cookies();
+    store.set(USER_REFRESH_COOKIE, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -67,10 +70,11 @@ function persistRefreshToken(token: string): void {
   }
 }
 
-export function clearUserSession(): void {
+export async function clearUserSession(): Promise<void> {
   try {
-    cookies().delete(USER_TOKEN_COOKIE);
-    cookies().delete(USER_REFRESH_COOKIE);
+    const store = await cookies();
+    store.delete(USER_TOKEN_COOKIE);
+    store.delete(USER_REFRESH_COOKIE);
   } catch {
     // Not in a writable context.
   }
@@ -82,19 +86,19 @@ export const backendApi: ApiClient = createApiClient({
   refresh: {
     refreshPath: userAuthRoutes.REFRESH,
     getRefreshToken,
-    onRefreshed: (accessToken, refreshToken, expiresIn) => {
-      persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
-      if (refreshToken) persistRefreshToken(refreshToken);
+    onRefreshed: async (accessToken, refreshToken, expiresIn) => {
+      await persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
+      if (refreshToken) await persistRefreshToken(refreshToken);
     },
   },
   onUnauthorized: clearUserSession,
 });
 
-export function persistUserSession(
+export async function persistUserSession(
   accessToken: string,
   refreshToken?: string,
   expiresIn?: number,
-): void {
-  persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
-  if (refreshToken) persistRefreshToken(refreshToken);
+): Promise<void> {
+  await persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
+  if (refreshToken) await persistRefreshToken(refreshToken);
 }

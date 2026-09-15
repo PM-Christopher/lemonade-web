@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -27,7 +27,7 @@ import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 
 type SocialIconName = "facebook" | "instagram" | "linkedin" | "twitter" | "website";
 
-const ICON_MAP: Record<SocialIconName, JSX.Element> = {
+const ICON_MAP: Record<SocialIconName, React.JSX.Element> = {
   facebook: <FacebookIcon className="h-5 w-5" />,
   instagram: <InstagramIcon className="h-5 w-5" />,
   linkedin: <LinkedInIcon className="h-5 w-5" />,
@@ -107,7 +107,8 @@ function GenerateLinkCTA({
   );
 }
 
-const AgentDetailsPage = ({ params }: { params: { id: number } }) => {
+const AgentDetailsPage = (props: { params: Promise<{ id: number }> }) => {
+  const params = use(props.params);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
 

@@ -21,8 +21,8 @@
 // Authorization header (backendApi's transport strips that unconditionally
 // regardless).
 //
-// Next 14 (this app): route handler `params` are synchronous. Next 15
-// (apps/admin): async — see the admin equivalent of this file.
+// Both apps are on Next 15 now (Phase 3) — route handler `params` are async
+// in both. See the admin equivalent of this file.
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "@lemonade/api-client";
 import { backendApi, USER_TOKEN_COOKIE } from "@/lib/server-api";
@@ -92,25 +92,30 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
 }
 
 interface RouteParams {
-  params: { path: string[] };
+  params: Promise<{ path: string[] }>;
 }
 
-export function GET(req: NextRequest, { params }: RouteParams) {
+export async function GET(req: NextRequest, props: RouteParams) {
+  const params = await props.params;
   return handle(req, params.path, "GET");
 }
 
-export function POST(req: NextRequest, { params }: RouteParams) {
+export async function POST(req: NextRequest, props: RouteParams) {
+  const params = await props.params;
   return handle(req, params.path, "POST");
 }
 
-export function PATCH(req: NextRequest, { params }: RouteParams) {
+export async function PATCH(req: NextRequest, props: RouteParams) {
+  const params = await props.params;
   return handle(req, params.path, "PATCH");
 }
 
-export function PUT(req: NextRequest, { params }: RouteParams) {
+export async function PUT(req: NextRequest, props: RouteParams) {
+  const params = await props.params;
   return handle(req, params.path, "PUT");
 }
 
-export function DELETE(req: NextRequest, { params }: RouteParams) {
+export async function DELETE(req: NextRequest, props: RouteParams) {
+  const params = await props.params;
   return handle(req, params.path, "DELETE");
 }
