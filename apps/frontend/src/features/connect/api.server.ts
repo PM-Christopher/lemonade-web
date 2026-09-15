@@ -5,9 +5,18 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
 import { userConnectRoutes } from "@lemonade/api-types";
-import type { InvitesResponse } from "./api";
+import type {
+  InvitesResponse,
+  ChatHistoryResponse,
+  ConnectionInfo,
+} from "./api";
 
 export const connectServerApi = {
   getInvites: () =>
     backendApi.get<InvitesResponse>(userConnectRoutes.GET_INVITES),
+
+  getMessages: () =>
+    backendApi.get<ChatHistoryResponse>(userConnectRoutes.MESSAGES),
+
+  getConnection: () => backendApi.get<ConnectionInfo>(userConnectRoutes.BASE),
 };
