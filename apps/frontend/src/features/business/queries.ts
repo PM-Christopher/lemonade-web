@@ -8,6 +8,8 @@ export const businessKeys = {
   detail: (id: number | string) =>
     [...businessKeys.all(), "detail", id] as const,
   jobsData: () => [...businessKeys.all(), "jobsData"] as const,
+  businessJobData: (id: number | string) =>
+    [...businessKeys.all(), "businessJobData", id] as const,
   boostPackages: () => [...businessKeys.all(), "boostPackages"] as const,
 };
 
@@ -51,6 +53,20 @@ export function useJobsDataQuery(options?: { enabled?: boolean }) {
     queryFn: businessApi.getJobsData,
     staleTime: 0,
     enabled: options?.enabled,
+  });
+}
+
+// Job payment/lifecycle tracking for one owned business listing —
+// money-adjacent, same 0 bucket as useJobsDataQuery.
+export function useBusinessJobDataQuery(
+  id: number | string | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: businessKeys.businessJobData(id ?? 0),
+    queryFn: () => businessApi.getBusinessJobData(id as number),
+    staleTime: 0,
+    enabled: Boolean(id) && options?.enabled !== false,
   });
 }
 

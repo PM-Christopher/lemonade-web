@@ -152,6 +152,12 @@ export const businessApi = {
   getJobsData: () =>
     browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_ALL),
 
+  // Same shape as getJobsData, scoped to one owned business listing.
+  getBusinessJobData: (id: number | string) =>
+    browserApi.get<JobsDataResponse>(
+      `${userBusinessRoutes.LISTING}/${id}/job-data`,
+    ),
+
   getBoostPackages: () =>
     browserApi.get<BoostPackagesResponse>(
       `${userBusinessRoutes.LISTING}/boosts`,

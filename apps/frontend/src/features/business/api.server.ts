@@ -8,6 +8,7 @@ import type {
   BusinessDetailResponse,
   BusinessListResponse,
   BoostPackagesResponse,
+  JobsDataResponse,
 } from "./api";
 
 export const businessServerApi = {
@@ -20,5 +21,10 @@ export const businessServerApi = {
   getBoostPackages: () =>
     backendApi.get<BoostPackagesResponse>(
       `${userBusinessRoutes.LISTING}/boosts`,
+    ),
+
+  getBusinessJobData: (id: number | string) =>
+    backendApi.get<JobsDataResponse>(
+      `${userBusinessRoutes.LISTING}/${id}/job-data`,
     ),
 };
