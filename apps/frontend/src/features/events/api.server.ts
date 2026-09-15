@@ -11,9 +11,12 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
 import { userEventRoutes } from "@lemonade/api-types";
-import type { EventDetailResponse } from "./api";
+import type { EventDetailResponse, GuestListResponse } from "./api";
 
 export const eventsServerApi = {
   getEvent: (id: number | string) =>
     backendApi.get<EventDetailResponse>(`${userEventRoutes.BASE}/${id}`),
+
+  getGuestList: (id: number | string) =>
+    backendApi.get<GuestListResponse>(`${userEventRoutes.BASE}/${id}/guest-list`),
 };
