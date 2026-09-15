@@ -1,0 +1,3817 @@
+[
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/account/change-password",
+        "name": "v1.admin.account.change-password",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ChangeAdminPasswordRequest",
+        "fields": {
+            "password": [
+                "required",
+                "string"
+            ],
+            "new_password": [
+                "required",
+                "string",
+                "confirmed",
+                "password"
+            ],
+            "new_password_confirmation": [
+                "required",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/account/change-profile-image",
+        "name": "v1.admin.account.change-profile-image",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/account/dashboard",
+        "name": "v1.admin.account.dashboard",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/account/export",
+        "name": "v1.admin.account.export",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/account/get-tables",
+        "name": "v1.admin.account.get-tables",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/account/profile",
+        "name": "v1.admin.account.profile",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/affiliates",
+        "name": "v1.admin.affiliates.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/affiliates/{id}",
+        "name": "v1.admin.affiliates.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/announcement",
+        "name": "v1.admin.announcement.create",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/announcement",
+        "name": "v1.admin.announcement.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/announcement/{id}",
+        "name": "v1.admin.announcement.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/auth/check-otp",
+        "name": "v1.admin.auth.check-otp",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\VerifyAdminPasswordResetOtpRequest",
+        "fields": []
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/auth/forgot-password",
+        "name": "v1.admin.auth.forgot-password",
+        "guard": null,
+        "formRequest": "App\\Http\\Requests\\Admin\\RequestAdminPasswordResetRequest",
+        "fields": {
+            "email": [
+                "required",
+                "string",
+                "email"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/auth/login",
+        "name": "v1.admin.auth.login",
+        "guard": null,
+        "formRequest": "App\\Http\\Requests\\Admin\\SignInAdminRequest",
+        "fields": {
+            "email": [
+                "required",
+                "string",
+                "email"
+            ],
+            "password": [
+                "required",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/auth/logout",
+        "name": "v1.admin.auth.logout",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/auth/refresh",
+        "name": "v1.admin.auth.refresh",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/auth/reset-password",
+        "name": "v1.admin.auth.reset-password",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ResetAdminPasswordRequest",
+        "fields": {
+            "code": [
+                "required",
+                "string"
+            ],
+            "password": [
+                "required",
+                "string",
+                "password"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/{id}/approve",
+        "name": "v1.admin.businesses.approve",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/businesses/{id}",
+        "name": "v1.admin.businesses.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/businesses",
+        "name": "v1.admin.businesses.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/{id}/reactivate",
+        "name": "v1.admin.businesses.reactivate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/{id}/reject",
+        "name": "v1.admin.businesses.reject",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\RejectSubmissionRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "required",
+                "min:3",
+                "max:1000"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/businesses/{id}",
+        "name": "v1.admin.businesses.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/{id}/suspend",
+        "name": "v1.admin.businesses.suspend",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\RejectSubmissionRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "required",
+                "min:3",
+                "max:1000"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/event-promotions/{id}/completed",
+        "name": "v1.admin.event-promotions.completed",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/event-promotions",
+        "name": "v1.admin.event-promotions.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/event-promotions/{id}/schedule",
+        "name": "v1.admin.event-promotions.schedule",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/event-promotions/{id}",
+        "name": "v1.admin.event-promotions.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/events/{id}/activate-event",
+        "name": "v1.admin.events.activate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/events/{id}/approve",
+        "name": "v1.admin.events.approve",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/events/{id}/delete-event",
+        "name": "v1.admin.events.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/events/filter-events",
+        "name": "v1.admin.events.filter",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/events",
+        "name": "v1.admin.events.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/events/pending",
+        "name": "v1.admin.events.pending",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/events/{id}/reject",
+        "name": "v1.admin.events.reject",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\RejectSubmissionRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "required",
+                "min:3",
+                "max:1000"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/events/search-events",
+        "name": "v1.admin.events.search",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/events/{id}",
+        "name": "v1.admin.events.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/events/{id}/suspend-event",
+        "name": "v1.admin.events.suspend",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/events/update-commission-charge",
+        "name": "v1.admin.events.update-commission-charge",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/moderation/content/{type}/{id}",
+        "name": "v1.admin.moderation.content.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/moderation/content/{type}",
+        "name": "v1.admin.moderation.content.list",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ListModeratedContentRequest",
+        "fields": {
+            "deleted": [
+                "boolean",
+                "nullable"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:255"
+            ],
+            "user_id": [
+                "uuid",
+                "nullable"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:100"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/moderation/content/{type}/{id}/restore",
+        "name": "v1.admin.moderation.content.restore",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/moderation/content/{type}/{id}",
+        "name": "v1.admin.moderation.content.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/moderation/forums/{id}/status",
+        "name": "v1.admin.moderation.forums.status",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\UpdateForumStatusRequest",
+        "fields": {
+            "status": [
+                "string",
+                "required",
+                "in:active,inactive,suspended,Active,Inactive,Suspended,ACTIVE,INACTIVE,SUSPENDED"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/moderation/queue",
+        "name": "v1.admin.moderation.queue",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/page-content",
+        "name": "v1.admin.page-content.save",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/page-content",
+        "name": "v1.admin.page-content.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/promotions",
+        "name": "v1.admin.promotions.create",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\CreatePromotionRequest",
+        "fields": {
+            "name": [
+                "required",
+                "string"
+            ],
+            "price_option": [
+                "required",
+                "string"
+            ],
+            "price": [
+                "required",
+                "numeric",
+                "decimal:0,2"
+            ],
+            "image": [
+                "required",
+                "string"
+            ],
+            "breakdown": [
+                "required",
+                "array",
+                "min:1"
+            ],
+            "breakdown.*": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/promotions/{id}",
+        "name": "v1.admin.promotions.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/promotions",
+        "name": "v1.admin.promotions.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/promotions/{id}",
+        "name": "v1.admin.promotions.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/promotions/{id}",
+        "name": "v1.admin.promotions.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\UpdatePromotionRequest",
+        "fields": {
+            "name": [
+                "required",
+                "string"
+            ],
+            "price_option": [
+                "required",
+                "string"
+            ],
+            "price": [
+                "required",
+                "numeric",
+                "decimal:0,2"
+            ],
+            "image": [
+                "required",
+                "string"
+            ],
+            "breakdown": [
+                "required",
+                "array",
+                "min:1"
+            ],
+            "breakdown.*": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/reports/{id}/delete-content",
+        "name": "v1.admin.reports.delete-content",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\DeleteReportedContentRequest",
+        "fields": {
+            "category": [
+                "string",
+                "required"
+            ],
+            "category_id": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/reports",
+        "name": "v1.admin.reports.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/reports/{id}",
+        "name": "v1.admin.reports.mark-completed",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/reports/{id}",
+        "name": "v1.admin.reports.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/subscriptions/{id}/activate",
+        "name": "v1.admin.subscriptions.activate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/subscriptions/{id}/deactivate",
+        "name": "v1.admin.subscriptions.deactivate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/subscriptions/{id}",
+        "name": "v1.admin.subscriptions.destroy",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/subscriptions",
+        "name": "v1.admin.subscriptions.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/subscriptions/overview",
+        "name": "v1.admin.subscriptions.overview",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/subscriptions",
+        "name": "v1.admin.subscriptions.store",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\SubscriptionPlanRequest",
+        "fields": {
+            "title": [
+                "string",
+                "required",
+                "max:120"
+            ],
+            "access_type": [
+                "string",
+                "required",
+                "max:60"
+            ],
+            "monthly_charge": [
+                "numeric",
+                "required",
+                "min:0"
+            ],
+            "yearly_charge": [
+                "numeric",
+                "required",
+                "min:0"
+            ],
+            "ver_badge": [
+                "boolean",
+                "required"
+            ],
+            "forum_creation": [
+                "boolean",
+                "required"
+            ],
+            "lemon_id": [
+                "boolean",
+                "required"
+            ],
+            "event_creation": [
+                "integer",
+                "required",
+                "min:0"
+            ],
+            "sales_commission": [
+                "integer",
+                "required",
+                "min:0",
+                "max:100"
+            ],
+            "service_commission": [
+                "integer",
+                "required",
+                "min:0",
+                "max:100"
+            ],
+            "connection_range": [
+                "string",
+                "required",
+                "max:60"
+            ],
+            "offline_benefits": [
+                "boolean",
+                "required"
+            ],
+            "recommended": [
+                "boolean",
+                "nullable"
+            ],
+            "active": [
+                "boolean",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/subscriptions/{id}/subscribers",
+        "name": "v1.admin.subscriptions.subscribers",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ListPlanSubscribersRequest",
+        "fields": {
+            "status": [
+                "string",
+                "nullable",
+                "in"
+            ],
+            "cycle": [
+                "string",
+                "nullable",
+                "in:free,monthly,yearly"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:100"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/subscriptions/{id}",
+        "name": "v1.admin.subscriptions.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\SubscriptionPlanRequest",
+        "fields": {
+            "title": [
+                "string",
+                "required",
+                "max:120"
+            ],
+            "access_type": [
+                "string",
+                "required",
+                "max:60"
+            ],
+            "monthly_charge": [
+                "numeric",
+                "required",
+                "min:0"
+            ],
+            "yearly_charge": [
+                "numeric",
+                "required",
+                "min:0"
+            ],
+            "ver_badge": [
+                "boolean",
+                "required"
+            ],
+            "forum_creation": [
+                "boolean",
+                "required"
+            ],
+            "lemon_id": [
+                "boolean",
+                "required"
+            ],
+            "event_creation": [
+                "integer",
+                "required",
+                "min:0"
+            ],
+            "sales_commission": [
+                "integer",
+                "required",
+                "min:0",
+                "max:100"
+            ],
+            "service_commission": [
+                "integer",
+                "required",
+                "min:0",
+                "max:100"
+            ],
+            "connection_range": [
+                "string",
+                "required",
+                "max:60"
+            ],
+            "offline_benefits": [
+                "boolean",
+                "required"
+            ],
+            "recommended": [
+                "boolean",
+                "nullable"
+            ],
+            "active": [
+                "boolean",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/team-members/change-password/{id}",
+        "name": "v1.admin.team-members.change-password",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ChangeAdminPasswordRequest",
+        "fields": {
+            "password": [
+                "required",
+                "string"
+            ],
+            "new_password": [
+                "required",
+                "string",
+                "confirmed",
+                "password"
+            ],
+            "new_password_confirmation": [
+                "required",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/team-members",
+        "name": "v1.admin.team-members.create",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\CreateAdminUserRequest",
+        "fields": {
+            "name": [
+                "required",
+                "string"
+            ],
+            "email": [
+                "required",
+                "string",
+                "email",
+                "unique:admins,email"
+            ],
+            "password": [
+                "required",
+                "string",
+                "password"
+            ],
+            "role": [
+                "required",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/team-members/delete-admin/{id}",
+        "name": "v1.admin.team-members.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/team-members",
+        "name": "v1.admin.team-members.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/team-members/roles",
+        "name": "v1.admin.team-members.roles",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/team-members/{id}",
+        "name": "v1.admin.team-members.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/boosts",
+        "name": "v1.admin.transaction.boosts",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/event/{id}",
+        "name": "v1.admin.transaction.event",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/events",
+        "name": "v1.admin.transaction.events",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/ledger",
+        "name": "v1.admin.transaction.ledger",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ListLedgerEntriesRequest",
+        "fields": {
+            "account_type": [
+                "string",
+                "nullable",
+                "in"
+            ],
+            "account_id": [
+                "string",
+                "nullable"
+            ],
+            "transaction_id": [
+                "uuid",
+                "nullable"
+            ],
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction",
+        "name": "v1.admin.transaction.list",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ListTransactionsRequest",
+        "fields": {
+            "type": [
+                "string",
+                "nullable",
+                "in:ticket,subscription,tribe,promotion,boost,service_request"
+            ],
+            "status": [
+                "string",
+                "nullable",
+                "in:pending,success,failed,abandoned"
+            ],
+            "user_id": [
+                "uuid",
+                "nullable"
+            ],
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:255"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:100"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/promotions",
+        "name": "v1.admin.transaction.promotions",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/services",
+        "name": "v1.admin.transaction.services",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/plan-subscription/{id}",
+        "name": "v1.admin.transaction.subscription",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/plan-subscription",
+        "name": "v1.admin.transaction.subscriptions",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/wallet-withdrawal/{id}",
+        "name": "v1.admin.transaction.wallet-withdrawal",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/wallet-withdrawals",
+        "name": "v1.admin.transaction.wallet-withdrawals",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/tribes/{id}/add-thread",
+        "name": "v1.admin.tribes.add-thread",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/tribes/create-tribe",
+        "name": "v1.admin.tribes.create",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/tribes/{id}",
+        "name": "v1.admin.tribes.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/tribes/{id}/delete-thread",
+        "name": "v1.admin.tribes.delete-thread",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/tribes",
+        "name": "v1.admin.tribes.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/tribes/{id}/reactivate-tribe",
+        "name": "v1.admin.tribes.reactivate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/tribes/{id}/remove-user/{user_id}",
+        "name": "v1.admin.tribes.remove-member",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/tribes/{id}/restrict-tribe",
+        "name": "v1.admin.tribes.restrict",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/tribes/{id}",
+        "name": "v1.admin.tribes.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/account-plan",
+        "name": "v1.admin.users.account-plan",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/affiliates/{id}/detail",
+        "name": "v1.admin.users.affiliates.detail",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/affiliates/log",
+        "name": "v1.admin.users.affiliates.log",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/users/{id}/cancel-plan",
+        "name": "v1.admin.users.cancel-plan",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/users/{id}/change-plan",
+        "name": "v1.admin.users.change-plan",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/users/{id}/deactivate-user",
+        "name": "v1.admin.users.deactivate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-events",
+        "name": "v1.admin.users.events",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users",
+        "name": "v1.admin.users.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-logs",
+        "name": "v1.admin.users.logs",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/users/{id}/reactivate-user",
+        "name": "v1.admin.users.reactivate",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}",
+        "name": "v1.admin.users.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/users/{id}/suspend-user",
+        "name": "v1.admin.users.suspend",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-tribe/{tribe_id}",
+        "name": "v1.admin.users.tribe",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-tribes",
+        "name": "v1.admin.users.tribes",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-wallet",
+        "name": "v1.admin.users.wallet",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/wallet",
+        "name": "v1.admin.wallet.dashboard",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/wallet/update-withdrawal-threshold",
+        "name": "v1.admin.wallet.update-withdrawal-threshold",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\UpdateWithdrawalThresholdRequest",
+        "fields": {
+            "threshold": [
+                "required",
+                "numeric",
+                "decimal:0,2"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/wallet/user/{id}/add",
+        "name": "v1.admin.wallet.user.add",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AddUserWalletBalanceRequest",
+        "fields": {
+            "amount": [
+                "required",
+                "numeric",
+                "decimal:0,2",
+                "min:0.01"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/wallet/user/{id}/deduct",
+        "name": "v1.admin.wallet.user.deduct",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\DeductUserWalletBalanceRequest",
+        "fields": {
+            "amount": [
+                "required",
+                "numeric",
+                "decimal:0,2",
+                "min:0.01"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/wallet/user/{id}",
+        "name": "v1.admin.wallet.user.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/wallet/user/{id}/withdrawal-request",
+        "name": "v1.admin.wallet.user.withdrawal-request",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ProcessWithdrawalRequestRequest",
+        "fields": {
+            "type": [
+                "required",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/wallet/withdrawals/{id}/retry",
+        "name": "v1.admin.wallet.withdrawals.retry",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/payment/paystack/webhook",
+        "name": "v1.shared.payment.paystack.webhook",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/payment/verify",
+        "name": "v1.shared.payment.verify",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/get-all-banks",
+        "name": "v1.shared.utilities.all-banks",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/app-settings",
+        "name": "v1.shared.utilities.app-settings",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/attendee-data",
+        "name": "v1.shared.utilities.attendee-data",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/business-categories",
+        "name": "v1.shared.utilities.business-categories",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/event-categories",
+        "name": "v1.shared.utilities.event-categories",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/get-user",
+        "name": "v1.shared.utilities.find-user",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/utilities/generate-qr-code",
+        "name": "v1.shared.utilities.generate-qr-code",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/get-industries",
+        "name": "v1.shared.utilities.industries",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/utilities/send-push-notification",
+        "name": "v1.shared.utilities.send-push-notification",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/get-tags",
+        "name": "v1.shared.utilities.tags",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/utilities/test-push-notification",
+        "name": "v1.shared.utilities.test-push-notification",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/tribes-categories",
+        "name": "v1.shared.utilities.tribes-categories",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/utilities/upload",
+        "name": "v1.shared.utilities.upload",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Shared\\UploadFileRequest",
+        "fields": {
+            "file": [
+                "required",
+                "file",
+                "mimes:jpeg,png,jpg,mp4,avi,mov",
+                "max:10240"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/utilities/upload-multiple",
+        "name": "v1.shared.utilities.upload-multiple",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Shared\\UploadMultipleFilesRequest",
+        "fields": {
+            "files": [
+                "required"
+            ],
+            "files.*": [
+                "file",
+                "max:10240"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/shared/utilities/verify-account",
+        "name": "v1.shared.utilities.verify-account",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/check-otp",
+        "name": "v1.user.auth.check-otp",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\VerifyPasswordResetOtpRequest",
+        "fields": {
+            "code": [
+                "numeric",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/forgot-password",
+        "name": "v1.user.auth.forgot-password",
+        "guard": null,
+        "formRequest": "App\\Http\\Requests\\Identity\\RequestPasswordResetRequest",
+        "fields": {
+            "email": [
+                "string",
+                "email",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/google",
+        "name": "v1.user.auth.google",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/login",
+        "name": "v1.user.auth.login",
+        "guard": null,
+        "formRequest": "App\\Http\\Requests\\Identity\\SignInRequest",
+        "fields": {
+            "email": [
+                "string",
+                "email",
+                "required"
+            ],
+            "password": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/refresh",
+        "name": "v1.user.auth.refresh",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/register",
+        "name": "v1.user.auth.register",
+        "guard": null,
+        "formRequest": "App\\Http\\Requests\\Identity\\SignUpRequest",
+        "fields": {
+            "fullname": [
+                "string",
+                "required"
+            ],
+            "email": [
+                "string",
+                "email",
+                "required"
+            ],
+            "password": [
+                "required",
+                "string",
+                "password"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/auth/reset-password",
+        "name": "v1.user.auth.reset-password",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\ResetUserPasswordRequest",
+        "fields": {
+            "password": [
+                "required",
+                "string",
+                "password"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/{id}/boost-business",
+        "name": "v1.user.business.boost",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\BoostBusinessRequest",
+        "fields": {
+            "package": [
+                "numeric",
+                "required"
+            ],
+            "option": [
+                "numeric",
+                "required"
+            ],
+            "start_date": [
+                "string",
+                "required"
+            ],
+            "start_time": [
+                "string",
+                "required"
+            ],
+            "callback_url": [
+                "string",
+                "sometimes"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/filter-business",
+        "name": "v1.user.business.filter",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/jobs/completed",
+        "name": "v1.user.business.jobs.completed",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/jobs/{id}/dispute",
+        "name": "v1.user.business.jobs.dispute",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\DisputeJobRequest",
+        "fields": {
+            "dispute": [
+                "string",
+                "required"
+            ],
+            "attachments": [
+                "required",
+                "array"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/jobs/in-progress",
+        "name": "v1.user.business.jobs.in-progress",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/jobs/all",
+        "name": "v1.user.business.jobs.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/jobs/{id}/mark-job",
+        "name": "v1.user.business.jobs.mark",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\MarkJobStatusRequest",
+        "fields": {
+            "status": [
+                "string",
+                "required"
+            ],
+            "remark": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/jobs/{id}/mark-completed",
+        "name": "v1.user.business.jobs.mark-completed",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/jobs/{id}/pay",
+        "name": "v1.user.business.jobs.pay",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/jobs/{id}/review",
+        "name": "v1.user.business.jobs.review",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\ReviewCompletedJobRequest",
+        "fields": {
+            "title": [
+                "string",
+                "required"
+            ],
+            "rating": [
+                "required",
+                "numeric",
+                "between:1,5"
+            ],
+            "description": [
+                "required",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/jobs/sent-offers",
+        "name": "v1.user.business.jobs.sent-offers",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/jobs/job/{id}",
+        "name": "v1.user.business.jobs.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business",
+        "name": "v1.user.business.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/{id}/request-service",
+        "name": "v1.user.business.request-service",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\RequestBusinessServiceRequest",
+        "fields": {
+            "amount": [
+                "numeric",
+                "required",
+                "decimal:0,2"
+            ],
+            "services": [
+                "required",
+                "array"
+            ],
+            "additional_information": [
+                "nullable",
+                "string"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/{id}/business-reviews",
+        "name": "v1.user.business.reviews",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/business/{id}",
+        "name": "v1.user.business.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/business/{id}/write-review",
+        "name": "v1.user.business.write-review",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\WriteBusinessReviewRequest",
+        "fields": {
+            "rating": [
+                "numeric",
+                "required"
+            ],
+            "title": [
+                "string",
+                "required"
+            ],
+            "description": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/connect/find-user",
+        "name": "v1.user.connect.find-user",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Connect\\FindConnectUserRequest",
+        "fields": {
+            "search": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/connect",
+        "name": "v1.user.connect.index",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/connect/get-invites",
+        "name": "v1.user.connect.invites.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/connect/invite-response/{id}",
+        "name": "v1.user.connect.invites.respond",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/connect/send-invite",
+        "name": "v1.user.connect.invites.send",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/connect/get-invite/{id}",
+        "name": "v1.user.connect.invites.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/connect/get-message-logs",
+        "name": "v1.user.connect.message-logs",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/connect/get-messages/{receiver_id}",
+        "name": "v1.user.connect.messages",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/connect/send-message",
+        "name": "v1.user.connect.send-message",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Connect\\SendConnectMessageRequest",
+        "fields": {
+            "receiver_id": [
+                "uuid",
+                "required"
+            ],
+            "content": [
+                "string",
+                "required"
+            ],
+            "media_path": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/connect/update-location",
+        "name": "v1.user.connect.update-location",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/connect/update-visibility",
+        "name": "v1.user.connect.update-visibility",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Connect\\UpdateConnectVisibilityRequest",
+        "fields": {
+            "visibility": [
+                "boolean",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/dashboard/businesses",
+        "name": "v1.user.dashboard.businesses",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/dashboard/events",
+        "name": "v1.user.dashboard.events",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/dashboard/tribes",
+        "name": "v1.user.dashboard.tribes",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/affiliate/data",
+        "name": "v1.user.events.affiliate.data",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/affiliate/{id}/generate-link",
+        "name": "v1.user.events.affiliate.generate-link",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/affiliate",
+        "name": "v1.user.events.affiliate.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/affiliate/{id}",
+        "name": "v1.user.events.affiliate.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/attendees/{id}/assign-tickets",
+        "name": "v1.user.events.attendees.assign-tickets",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Event\\AssignEventTicketsRequest",
+        "fields": {
+            "fullname": [
+                "string",
+                "required"
+            ],
+            "email": [
+                "string",
+                "email",
+                "required"
+            ],
+            "assign_multiple": [
+                "boolean",
+                "required"
+            ],
+            "referral": [
+                "string",
+                "nullable"
+            ],
+            "tickets": [
+                "array",
+                "required_if:assign_multiple,false"
+            ],
+            "tickets.*.id": [
+                "uuid",
+                "required"
+            ],
+            "tickets.*.quantity": [
+                "numeric",
+                "required"
+            ],
+            "assigned_tickets": [
+                "array",
+                "required_if:assign_multiple,true"
+            ],
+            "assigned_tickets.*.id": [
+                "uuid",
+                "required_if:assign_multiple,true"
+            ],
+            "assigned_tickets.*.quantity": [
+                "numeric",
+                "required_if:assign_multiple,true"
+            ],
+            "assigned_tickets.*.fullname": [
+                "string",
+                "required_if:assign_multiple,true"
+            ],
+            "assigned_tickets.*.email": [
+                "string",
+                "email",
+                "required_if:assign_multiple,true"
+            ],
+            "redirect_url": [
+                "string",
+                "sometimes"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/attendees",
+        "name": "v1.user.events.attendees.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/attendees/my-ticket/{id}",
+        "name": "v1.user.events.attendees.my-ticket",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/attendees/my-tickets",
+        "name": "v1.user.events.attendees.my-tickets",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/attendees/{id}/tickets",
+        "name": "v1.user.events.attendees.tickets",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/events/{id}/{guest_id}/check-in",
+        "name": "v1.user.events.check-in",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/create-event",
+        "name": "v1.user.events.create",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Event\\CreateEventRequest",
+        "fields": {
+            "event.event_image": [
+                "string",
+                "required"
+            ],
+            "event.event_name": [
+                "string",
+                "required"
+            ],
+            "event.event_description": [
+                "string",
+                "required"
+            ],
+            "event.category": [
+                "string",
+                "required"
+            ],
+            "event.event_type": [
+                "string",
+                "required"
+            ],
+            "event.location": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,physical"
+            ],
+            "event.hosting_platform": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,online"
+            ],
+            "event.meeting_link": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,online"
+            ],
+            "event.meeting_passcode": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,online"
+            ],
+            "event.time_zone": [
+                "string",
+                "required"
+            ],
+            "event.start_date": [
+                "date",
+                "required",
+                "after_or_equal:now"
+            ],
+            "event.end_date": [
+                "date",
+                "required",
+                "after_or_equal:event.start_date"
+            ],
+            "event.affiliate_program": [
+                "boolean",
+                "required"
+            ],
+            "event.commission": [
+                "numeric",
+                "nullable",
+                "required_if:event.affiliate_program,1",
+                "between:0,100"
+            ],
+            "event.socials": [
+                "nullable"
+            ],
+            "event.status": [
+                "sometimes",
+                "in:draft"
+            ],
+            "tickets": [
+                "array",
+                "required"
+            ],
+            "tickets.*.ticket_type": [
+                "string",
+                "required"
+            ],
+            "tickets.*.name": [
+                "string",
+                "required"
+            ],
+            "tickets.*.price": [
+                "numeric",
+                "required",
+                "decimal:0,2"
+            ],
+            "tickets.*.transfer_commission": [
+                "boolean",
+                "required"
+            ],
+            "tickets.*.stock_type": [
+                "string",
+                "required"
+            ],
+            "tickets.*.ticket_stock": [
+                "numeric",
+                "required",
+                "unlimitedStock"
+            ],
+            "tickets.*.purchase_limit": [
+                "numeric",
+                "required"
+            ],
+            "tickets.*.description": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/events/delete-event/{id}",
+        "name": "v1.user.events.delete",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/events/{id}/edit-tickets",
+        "name": "v1.user.events.edit-tickets",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Event\\EditEventTicketsRequest",
+        "fields": {
+            "tickets": [
+                "array",
+                "required"
+            ],
+            "tickets.*.ticket_id": [
+                "string",
+                "nullable"
+            ],
+            "tickets.*.ticket_type": [
+                "string",
+                "required"
+            ],
+            "tickets.*.name": [
+                "string",
+                "required"
+            ],
+            "tickets.*.price": [
+                "numeric",
+                "required",
+                "decimal:0,2"
+            ],
+            "tickets.*.transfer_commission": [
+                "boolean",
+                "required"
+            ],
+            "tickets.*.stock_type": [
+                "string",
+                "required"
+            ],
+            "tickets.*.ticket_stock": [
+                "numeric",
+                "required",
+                "unlimitedStock"
+            ],
+            "tickets.*.purchase_limit": [
+                "numeric",
+                "required"
+            ],
+            "tickets.*.description": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/{id}/{promo_id}/event-promotion",
+        "name": "v1.user.events.event-promotion",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/{id}/event-tickets",
+        "name": "v1.user.events.event-tickets",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/filter-event",
+        "name": "v1.user.events.filter",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/{id}/{guest_id}/guest-details",
+        "name": "v1.user.events.guest-details",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/{id}/guest-list",
+        "name": "v1.user.events.guest-list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events",
+        "name": "v1.user.events.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/get-payment-setting",
+        "name": "v1.user.events.payment-setting.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/events/update-payment-setting",
+        "name": "v1.user.events.payment-setting.update",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Event\\UpdateEventPaymentSettingsRequest",
+        "fields": {
+            "type": [
+                "string",
+                "required",
+                "in:monthly,weekly"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/{id}/promote-event",
+        "name": "v1.user.events.promote",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Event\\PromoteEventRequest",
+        "fields": {
+            "promo": [
+                "numeric",
+                "required"
+            ],
+            "unit": [
+                "numeric",
+                "required"
+            ],
+            "promotion_date": [
+                "date",
+                "required"
+            ],
+            "redirect_url": [
+                "string",
+                "sometimes"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/promotions",
+        "name": "v1.user.events.promotions",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/events/publish-event/{id}",
+        "name": "v1.user.events.publish",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/search-events",
+        "name": "v1.user.events.search",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/search-affiliate-events",
+        "name": "v1.user.events.search-affiliate",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/events/{id}/search-guest-list",
+        "name": "v1.user.events.search-guest-list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/events/{id}",
+        "name": "v1.user.events.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PUT",
+        "uri": "/v1/user/events/update-event/{id}",
+        "name": "v1.user.events.update",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Event\\UpdateEventRequest",
+        "fields": {
+            "event.event_image": [
+                "string",
+                "required"
+            ],
+            "event.event_name": [
+                "string",
+                "required"
+            ],
+            "event.event_description": [
+                "string",
+                "required"
+            ],
+            "event.category": [
+                "string",
+                "required"
+            ],
+            "event.event_type": [
+                "string",
+                "required"
+            ],
+            "event.location": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,physical"
+            ],
+            "event.hosting_platform": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,online"
+            ],
+            "event.meeting_link": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,online"
+            ],
+            "event.meeting_passcode": [
+                "string",
+                "nullable",
+                "required_if:event.event_type,online"
+            ],
+            "event.time_zone": [
+                "string",
+                "required"
+            ],
+            "event.start_date": [
+                "date",
+                "required",
+                "after_or_equal:now"
+            ],
+            "event.end_date": [
+                "date",
+                "required",
+                "after_or_equal:event.start_date"
+            ],
+            "event.affiliate_program": [
+                "boolean",
+                "required"
+            ],
+            "event.commission": [
+                "numeric",
+                "nullable"
+            ],
+            "event.socials": [
+                "nullable"
+            ],
+            "event.status": [
+                "sometimes",
+                "in:draft,active"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/forum/add-member/{forum_id}",
+        "name": "v1.user.forum.add-member",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Forum\\AddForumMemberRequest",
+        "fields": {
+            "username": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/forum/create-forum",
+        "name": "v1.user.forum.create",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Forum\\CreateForumRequest",
+        "fields": {
+            "title": [
+                "string",
+                "required",
+                "min:6"
+            ],
+            "category": [
+                "string",
+                "required"
+            ],
+            "description": [
+                "string",
+                "required",
+                "min:6"
+            ],
+            "image": [
+                "string",
+                "required"
+            ],
+            "private": [
+                "boolean",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/forum/join-forum/{forum_id}",
+        "name": "v1.user.forum.join",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/forum",
+        "name": "v1.user.forum.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/forum/remove-member/{forum_id}",
+        "name": "v1.user.forum.remove-member",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Forum\\RemoveForumMemberRequest",
+        "fields": {
+            "username": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/forum/{id}",
+        "name": "v1.user.forum.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/forum/{forum}/threads/create-thread",
+        "name": "v1.user.forum.threads.create",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Forum\\CreateForumThreadRequest",
+        "fields": {
+            "topic": [
+                "string",
+                "required"
+            ],
+            "thoughts": [
+                "string",
+                "required"
+            ],
+            "media": [
+                "array",
+                "nullable"
+            ],
+            "tags": [
+                "array",
+                "nullable"
+            ],
+            "polls": [
+                "boolean",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/forum/{forum}/threads/all",
+        "name": "v1.user.forum.threads.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/forum/{forum}/threads/{thread}",
+        "name": "v1.user.forum.threads.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/listing/boost-business/{id}",
+        "name": "v1.user.listing.boost",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\BoostBusinessRequest",
+        "fields": {
+            "package": [
+                "numeric",
+                "required"
+            ],
+            "option": [
+                "numeric",
+                "required"
+            ],
+            "start_date": [
+                "string",
+                "required"
+            ],
+            "start_time": [
+                "string",
+                "required"
+            ],
+            "callback_url": [
+                "string",
+                "sometimes"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/listing/boosts",
+        "name": "v1.user.listing.boosts",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/listing",
+        "name": "v1.user.listing.create",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\CreateBusinessRequest",
+        "fields": {
+            "name": [
+                "string",
+                "required"
+            ],
+            "image": [
+                "string",
+                "required"
+            ],
+            "categories": [
+                "array",
+                "required"
+            ],
+            "description": [
+                "string",
+                "required"
+            ],
+            "city": [
+                "string",
+                "required"
+            ],
+            "country": [
+                "string",
+                "required"
+            ],
+            "services": [
+                "array",
+                "required"
+            ],
+            "service_rate": [
+                "numeric",
+                "nullable",
+                "decimal:0,2"
+            ],
+            "gallery": [
+                "array",
+                "nullable"
+            ],
+            "email": [
+                "string",
+                "email",
+                "required"
+            ],
+            "phone_number": [
+                "string",
+                "required"
+            ],
+            "website_url": [
+                "string",
+                "url",
+                "required"
+            ],
+            "account_number": [
+                "string",
+                "sometimes"
+            ],
+            "account_name": [
+                "string",
+                "sometimes"
+            ],
+            "bank_name": [
+                "string",
+                "sometimes"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/listing/{id}",
+        "name": "v1.user.listing.delete",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/listing/{id}/job-data",
+        "name": "v1.user.listing.job-data",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/listing/jobs/{id}/dispute",
+        "name": "v1.user.listing.jobs.dispute",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\DisputeJobRequest",
+        "fields": {
+            "dispute": [
+                "string",
+                "required"
+            ],
+            "attachments": [
+                "required",
+                "array"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/listing/jobs/{id}/mark-job",
+        "name": "v1.user.listing.jobs.mark",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\MarkJobStatusRequest",
+        "fields": {
+            "status": [
+                "string",
+                "required"
+            ],
+            "remark": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/listing/jobs/{id}/request-payment",
+        "name": "v1.user.listing.jobs.request-payment",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/listing/jobs/job/{id}",
+        "name": "v1.user.listing.jobs.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/listing",
+        "name": "v1.user.listing.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/listing/{id}",
+        "name": "v1.user.listing.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/listing/{id}",
+        "name": "v1.user.listing.update",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Business\\UpdateBusinessRequest",
+        "fields": {
+            "name": [
+                "string",
+                "required"
+            ],
+            "image": [
+                "string",
+                "required"
+            ],
+            "categories": [
+                "array",
+                "required"
+            ],
+            "description": [
+                "string",
+                "required"
+            ],
+            "city": [
+                "string",
+                "required"
+            ],
+            "country": [
+                "string",
+                "required"
+            ],
+            "services": [
+                "array",
+                "required"
+            ],
+            "service_rate": [
+                "numeric",
+                "nullable",
+                "decimal:0,2"
+            ],
+            "gallery": [
+                "array",
+                "required"
+            ],
+            "email": [
+                "string",
+                "email",
+                "required"
+            ],
+            "phone_number": [
+                "string",
+                "required"
+            ],
+            "website_url": [
+                "string",
+                "url",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/messages/chat",
+        "name": "v1.user.messages.chat",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/messages",
+        "name": "v1.user.messages.history",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/messages",
+        "name": "v1.user.messages.send",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Connect\\SendChatMessageRequest",
+        "fields": {
+            "receiver_id": [
+                "uuid",
+                "required"
+            ],
+            "message": [
+                "string",
+                "nullable"
+            ],
+            "media": [
+                "array",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/messages/typing",
+        "name": "v1.user.messages.typing",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Connect\\SendTypingIndicatorRequest",
+        "fields": {
+            "receiver_id": [
+                "uuid",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/notification",
+        "name": "v1.user.notification.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/notification/{id}",
+        "name": "v1.user.notification.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/otp/resend",
+        "name": "v1.user.otp.resend",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/otp/verify",
+        "name": "v1.user.otp.verify",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\VerifyAccountOtpRequest",
+        "fields": {
+            "code": [
+                "numeric",
+                "required",
+                "digits:4"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/address-set-up",
+        "name": "v1.user.profile.address-set-up",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\AddressRequest",
+        "fields": {
+            "address": [
+                "string",
+                "required"
+            ],
+            "country": [
+                "string",
+                "required"
+            ],
+            "state": [
+                "string",
+                "required"
+            ],
+            "city": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/bank-account/create-account",
+        "name": "v1.user.profile.bank-account.create",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Billing\\BankAccountRequest",
+        "fields": {
+            "bank_name": [
+                "string",
+                "required"
+            ],
+            "account_name": [
+                "string",
+                "required"
+            ],
+            "account_number": [
+                "string",
+                "required"
+            ],
+            "bank_code": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/bank-account",
+        "name": "v1.user.profile.bank-account.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/bank-account/update-account",
+        "name": "v1.user.profile.bank-account.update",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Billing\\BankAccountRequest",
+        "fields": {
+            "bank_name": [
+                "string",
+                "required"
+            ],
+            "account_name": [
+                "string",
+                "required"
+            ],
+            "account_number": [
+                "string",
+                "required"
+            ],
+            "bank_code": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/logout",
+        "name": "v1.user.profile.logout",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/notification-settings/device-token",
+        "name": "v1.user.profile.notification-settings.device-token",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Notification\\RegisterDeviceTokenRequest",
+        "fields": {
+            "device_token": [
+                "string",
+                "required"
+            ],
+            "device_type": [
+                "string",
+                "nullable"
+            ],
+            "platform": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/notification-settings",
+        "name": "v1.user.profile.notification-settings.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/notification-settings/update-all-notification",
+        "name": "v1.user.profile.notification-settings.update-all-notification",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Settings\\AppNotificationSettingsRequest",
+        "fields": {
+            "type": [
+                "string",
+                "required",
+                "in:new_thread,thread_engagements,ticket_sales,ticket_payout,service_offer,service_status,service_payout,connect_request,new_message"
+            ],
+            "settings": [
+                "array",
+                "required"
+            ],
+            "settings.push_notification": [
+                "boolean",
+                "nullable"
+            ],
+            "settings.in_app_notification": [
+                "boolean",
+                "required"
+            ],
+            "settings.email": [
+                "boolean",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/notification-settings/update-push-notification",
+        "name": "v1.user.profile.notification-settings.update-push-notification",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Notification\\PushNotificationSettingsRequest",
+        "fields": {
+            "push_notification": [
+                "boolean",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/profile-set-up",
+        "name": "v1.user.profile.profile-set-up",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\ProfileSetupRequest",
+        "fields": {
+            "profile_image": [
+                "string",
+                "nullable"
+            ],
+            "username": [
+                "string",
+                "required",
+                "unique:users"
+            ],
+            "bio": [
+                "string",
+                "required"
+            ],
+            "industry": [
+                "string",
+                "required"
+            ],
+            "referral_code": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/referral/referral-activity",
+        "name": "v1.user.profile.referral.activity",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/referral",
+        "name": "v1.user.profile.referral.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-address",
+        "name": "v1.user.profile.settings.change-address",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\AddressRequest",
+        "fields": {
+            "address": [
+                "string",
+                "required"
+            ],
+            "country": [
+                "string",
+                "required"
+            ],
+            "state": [
+                "string",
+                "required"
+            ],
+            "city": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-bio",
+        "name": "v1.user.profile.settings.change-bio",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\BioRequest",
+        "fields": {
+            "bio": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-password",
+        "name": "v1.user.profile.settings.change-password",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\ChangePasswordRequest",
+        "fields": {
+            "password": [
+                "string",
+                "required"
+            ],
+            "new_password": [
+                "string",
+                "required",
+                "confirmed",
+                "password"
+            ],
+            "new_password_confirmation": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-profession",
+        "name": "v1.user.profile.settings.change-profession",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\ProfessionRequest",
+        "fields": {
+            "industry": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-profile-image",
+        "name": "v1.user.profile.settings.change-profile-image",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\ProfileImageRequest",
+        "fields": {
+            "profile_image": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-skills",
+        "name": "v1.user.profile.settings.change-skills",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\SkillsAndInterestsRequest",
+        "fields": {
+            "skills": [
+                "array",
+                "required",
+                "min:3"
+            ],
+            "skills.*": [
+                "string",
+                "required"
+            ],
+            "interests": [
+                "array",
+                "required",
+                "min:3"
+            ],
+            "interests.*": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-socials",
+        "name": "v1.user.profile.settings.change-socials",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\SocialsRequest",
+        "fields": {
+            "socials": [
+                "array",
+                "sometimes"
+            ],
+            "socials.*.name": [
+                "string",
+                "required"
+            ],
+            "socials.*.value": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/profile/settings/change-username",
+        "name": "v1.user.profile.settings.change-username",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\UsernameRequest",
+        "fields": {
+            "username": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/settings/delete-account",
+        "name": "v1.user.profile.settings.delete-account",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\DeleteAccountRequest",
+        "fields": {
+            "confirmation": [
+                "string",
+                "required",
+                "in:DELETE"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/settings/request-account-deletion",
+        "name": "v1.user.profile.settings.request-account-deletion",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\RequestAccountDeletionRequest",
+        "fields": {
+            "email": [
+                "email",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/settings/verify-account-deletion",
+        "name": "v1.user.profile.settings.verify-account-deletion",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\VerifyAccountDeletionRequest",
+        "fields": {
+            "code": [
+                "string",
+                "required",
+                "digits:4"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/user",
+        "name": "v1.user.profile.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/skills-set-up",
+        "name": "v1.user.profile.skills-set-up",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\SkillsAndInterestsRequest",
+        "fields": {
+            "skills": [
+                "array",
+                "required",
+                "min:3"
+            ],
+            "skills.*": [
+                "string",
+                "required"
+            ],
+            "interests": [
+                "array",
+                "required",
+                "min:3"
+            ],
+            "interests.*": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/socials-set-up",
+        "name": "v1.user.profile.socials-set-up",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Identity\\SocialsRequest",
+        "fields": {
+            "socials": [
+                "array",
+                "sometimes"
+            ],
+            "socials.*.name": [
+                "string",
+                "required"
+            ],
+            "socials.*.value": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/subscription/billing-history",
+        "name": "v1.user.profile.subscription.billing-history",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/subscription/cancel",
+        "name": "v1.user.profile.subscription.cancel",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/subscription/change-plan",
+        "name": "v1.user.profile.subscription.change-plan",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Subscription\\ChangeSubscriptionPlanRequest",
+        "fields": {
+            "subscription_id": [
+                "uuid",
+                "required"
+            ],
+            "reason": [
+                "string",
+                "required_if:mode,downgrade"
+            ],
+            "type": [
+                "string",
+                "sometimes",
+                "in:monthly,yearly"
+            ],
+            "mode": [
+                "string",
+                "required",
+                "in:upgrade,downgrade"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/subscription/renew",
+        "name": "v1.user.profile.subscription.renew",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Subscription\\RenewSubscriptionRequest",
+        "fields": {
+            "redirect_url": [
+                "string",
+                "nullable",
+                "url"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/subscription/resume",
+        "name": "v1.user.profile.subscription.resume",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/subscription",
+        "name": "v1.user.profile.subscription.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/profile/wallet/request-payout",
+        "name": "v1.user.profile.wallet.request-payout",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Billing\\RequestWithdrawalRequest",
+        "fields": {
+            "amount": [
+                "numeric",
+                "nullable",
+                "min:1"
+            ],
+            "bank_account_id": [
+                "uuid",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/profile/wallet",
+        "name": "v1.user.profile.wallet.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/subscription",
+        "name": "v1.user.subscription.list",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/subscription/{id}",
+        "name": "v1.user.subscription.show",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/threads/{tribe_id}/{id}/comments",
+        "name": "v1.user.threads.comments",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/threads/{id}/delete-thread",
+        "name": "v1.user.threads.delete",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/threads/{thread_id}/like-comment/{comment_id}",
+        "name": "v1.user.threads.like-comment",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/threads/{id}/pin-thread",
+        "name": "v1.user.threads.pin",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/threads/{id}/pinned",
+        "name": "v1.user.threads.pinned",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/threads/{tribe_id}/{thread_id}/{poll_id}/poll-action",
+        "name": "v1.user.threads.poll-action",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\VoteOnTribePollRequest",
+        "fields": {
+            "option_id": [
+                "uuid",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/threads/{tribe_id}/{id}/post-comment",
+        "name": "v1.user.threads.post-comment",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\CommentOnTribeThreadRequest",
+        "fields": {
+            "body": [
+                "string",
+                "required"
+            ],
+            "parent_id": [
+                "nullable",
+                "exists:thread_comments,id"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/threads/{tribe_id}/{id}/post-like",
+        "name": "v1.user.threads.post-like",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/threads/{id}/report-thread",
+        "name": "v1.user.threads.report",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\ReportTribeThreadRequest",
+        "fields": {
+            "report": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/threads/view-profile/{id}",
+        "name": "v1.user.threads.view-profile",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/transaction/verify-transaction",
+        "name": "v1.user.transaction.verify",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/tribes/add-member/{id}",
+        "name": "v1.user.tribes.add-member",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\AddTribeMemberRequest",
+        "fields": {
+            "usernames": [
+                "required",
+                "array"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/tribes/change-tribe-type/{id}",
+        "name": "v1.user.tribes.change-type",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/tribes/create-tribe",
+        "name": "v1.user.tribes.create",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/tribes/exit-tribe/{id}",
+        "name": "v1.user.tribes.exit",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/tribes/join-tribe/{id}",
+        "name": "v1.user.tribes.join",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/tribes",
+        "name": "v1.user.tribes.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/tribes/{id}/members",
+        "name": "v1.user.tribes.members",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/tribes/remove-member/{id}",
+        "name": "v1.user.tribes.remove-member",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\RemoveTribeMemberRequest",
+        "fields": []
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/tribes/search-tribe",
+        "name": "v1.user.tribes.search",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/tribes/{id}",
+        "name": "v1.user.tribes.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/tribes/{forum}/threads/create-thread",
+        "name": "v1.user.tribes.threads.create",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\CreateTribeThreadRequest",
+        "fields": {
+            "topic": [
+                "required",
+                "string"
+            ],
+            "thoughts": [
+                "required",
+                "string"
+            ],
+            "polls": [
+                "required",
+                "boolean"
+            ],
+            "media": [
+                "array",
+                "sometimes"
+            ],
+            "media.*": [
+                "string"
+            ],
+            "videos": [
+                "array",
+                "sometimes"
+            ],
+            "videos.*": [
+                "string"
+            ],
+            "tags": [
+                "array",
+                "sometimes"
+            ],
+            "tags.*": [
+                "string"
+            ],
+            "thread_polls": [
+                "required_if:polls,1,true,on,yes",
+                "array",
+                "nullable"
+            ],
+            "thread_polls.title": [
+                "required_if:polls,1,true,on,yes",
+                "string",
+                "max:255"
+            ],
+            "thread_polls.options": [
+                "required_if:polls,1,true,on,yes",
+                "array",
+                "min:2"
+            ],
+            "thread_polls.options.*": [
+                "required_if:polls,1,true,on,yes",
+                "string",
+                "max:100"
+            ],
+            "thread_polls.start_at": [
+                "required_if:polls,1,true,on,yes",
+                "date",
+                "after_or_equal:now"
+            ],
+            "thread_polls.end_at": [
+                "required_if:polls,1,true,on,yes",
+                "date",
+                "after:thread_polls.start_at"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/tribes/{forum}/threads/all",
+        "name": "v1.user.tribes.threads.list",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/tribes/{forum}/threads/{thread}",
+        "name": "v1.user.tribes.threads.show",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/tribes/{forum}/threads/sort-thread",
+        "name": "v1.user.tribes.threads.sort",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\SortTribeThreadsRequest",
+        "fields": {
+            "filter": [
+                "required",
+                "string",
+                "in:popular,newest,oldest"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/wallet/affiliate-history",
+        "name": "v1.user.wallet.affiliate-history",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/wallet/earnings",
+        "name": "v1.user.wallet.earnings",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/wallet/referral-history",
+        "name": "v1.user.wallet.referral-history",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/wallet/tribe-history",
+        "name": "v1.user.wallet.tribe-history",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    }
+]

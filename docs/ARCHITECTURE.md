@@ -1550,7 +1550,7 @@ which only warned), which would have broken CI the moment it ran. Fixed by setti
 booleans (esbuild/unrs-resolver approved, the other five denied — `next build` and `vitest` both pass
 without them).
 
-### Phase 2 — Monorepo consolidation **[MUST]** **[PARTIAL]**
+### Phase 2 — Monorepo consolidation **[MUST]** **[MOSTLY DONE]**
 
 Mechanical and low-risk. No behaviour changes in this phase — that is the point.
 
@@ -1566,10 +1566,10 @@ Turborepo are real and in use (`turbo.json`, `packages/{api-client,api-types,dom
 Whether the original `git subtree`-with-history step is how it got there wasn't verified this phase.
 `@lemonade/api-types` exists and is genuinely load-bearing (every domain's route constants live there,
 ~20 route-constant objects, plus the shared `ErrorCode`/`TokenType` enums mirrored from the backend's
-PHP enums) — **but it's hand-maintained, not generated from the backend contract**; there is no
-`tooling/generate-api-types` pipeline and no contract-drift CI check, despite the doc's original intent
-in §7. `@lemonade/api-client` (the transport package, not `@lemonade/domain`) is built and is the one
-genuinely new, tested shared package. `eslint-plugin-boundaries` is wired up in both apps' ESLint
+PHP enums) — **still hand-maintained for now** (see below for what changed), but the generation
+pipeline the doc's §7 intent describes is real and working. `@lemonade/api-client` (the transport
+package, not `@lemonade/domain`) is built and is the one genuinely new, tested shared package.
+`eslint-plugin-boundaries` is wired up in both apps' ESLint
 configs (Phase 1) — its cross-feature-family check, specifically; two other rules it was tried for
 (app/\*\* must not import `@lemonade/api-client` directly, a feature may only be entered through its
 own `index.ts`) didn't work as expected against known real cases and were dropped rather than shipped
@@ -1583,13 +1583,34 @@ store besides); `components/ui/label.tsx`, `lib/utils.ts`'s `cn()`, and `hooks/u
 while both apps are still on React 18 (Phase 3), and Phase 7 is explicitly where the two apps'
 diverged shadcn styles (admin: `new-york`, frontend: `default`) get reconciled — moving one primitive
 there now, unconsumed by either app, would be a half-migration; `favicon.ico` is a binary asset, not
-extractable the same way. Not done: the `tooling/generate-api-types` pipeline and contract-drift CI
-check (a real build — the backend repo is available locally to build it against, but it's substantial
-enough, and touches the actual contract between both apps and the backend closely enough, that it
-wasn't started without checking in first), and archiving the old `lemonade/{admin,frontend}` repos
-(a destructive action on repos outside this one — needs explicit authorization, not something to do
-autonomously). They still exist, untouched, now stale relative to this monorepo (see the
-canonical-location note at the top of this document).
+extractable the same way.
+
+`tooling/generate-api-types` is real and working, built against the local `lemonade-backend`
+checkout: `introspect.php` boots the Laravel app, walks every registered `v1/*` route (290 today,
+up from the 288 this doc originally measured), and for each one resolves the controller's
+type-hinted `FormRequest` (via reflection, no HTTP request needed) and dumps its `rules()` as raw
+token arrays. `generate.mjs` turns that into `packages/api-types/src/generated/routes.generated.ts`
+(35 `<guard><Domain>Routes` groups covering all 290 named routes — not the hand-picked ~20 the
+existing `routes.ts` covers) and `requests.generated.ts` (77 `FormRequest` interfaces, field types
+inferred from validation rules — `in:a,b,c` becomes a string-literal union, dot-notation fields like
+`tickets.*.id` become real nested arrays/objects, not literal dotted keys, and an unrecognized rule
+honestly falls through to `unknown` rather than guessing). `manifest.snapshot.json` is a committed
+point-in-time capture of the backend contract, so `generate:from-snapshot` and CI's new
+`contract-drift` job don't need PHP or a live backend checkout — that job regenerates from the
+snapshot and fails if the committed generated files differ. What that check does **not** catch: drift
+against the actual live backend since the snapshot was last refreshed (needs `lemonade-backend`
+checked out in this repo's CI, a cross-repo access decision, not something to provision from here) or
+response shapes (API Resources aren't introspected — only request-side `FormRequest` rules). The
+generated output lives under a separate `@lemonade/api-types/generated` import specifically so it
+doesn't collide with (or silently replace) `routes.ts` — several group names match by design
+(`adminAuthRoutes` exists in both). Migrating the ~15 features that import from `routes.ts` today
+over to the generated output is real, separate, mechanical follow-up work, not folded into standing
+the pipeline up. See `tooling/generate-api-types/README.md` for the full picture.
+
+Not done: archiving the old `lemonade/{admin,frontend}` repos (a destructive action on repos outside
+this one — needs explicit authorization, not something to do autonomously). They still exist,
+untouched, now stale relative to this monorepo (see the canonical-location note at the top of this
+document).
 
 ### Phase 3 — Version alignment **[MUST]** **[NOT STARTED]**
 

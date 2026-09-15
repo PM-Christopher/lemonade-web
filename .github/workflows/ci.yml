@@ -1,10 +1,9 @@
 name: CI
 
 # Mirrors the shape of lemonade-backend's `composer test:ci` gate, and the
-# pipeline documented in docs/ARCHITECTURE.md §19. Contract-drift,
-# bundle-budget and e2e jobs are still TODOs — they depend on pieces that
-# don't exist yet (packages/api-types generation, apps/* actually containing
-# code, a Playwright setup).
+# pipeline documented in docs/ARCHITECTURE.md §19. bundle-budget and e2e
+# jobs are still TODOs — they depend on pieces that don't exist yet (apps/*
+# actually containing code, a Playwright setup).
 
 on:
   pull_request:
@@ -39,9 +38,33 @@ jobs:
       - name: Build
         run: pnpm turbo run build --filter=...[origin/main]
 
-  # TODO(Phase 2): regenerate @lemonade/api-types from the backend contract
-  # and fail if the committed output differs. See docs/ARCHITECTURE.md §19.
-  # contract-drift:
+  contract-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Regenerates packages/api-types/src/generated/* from the committed
+      # manifest.snapshot.json (no PHP or a live backend checkout needed —
+      # see tooling/generate-api-types/README.md for what this does and
+      # doesn't catch) and fails if that's not what's already committed.
+      # Catches "hand-edited a generated file" and "changed the snapshot
+      # without re-running the generator" — not drift against the live
+      # backend, which needs lemonade-backend checked out in this repo's CI.
+      - name: Regenerate api-types from the committed snapshot
+        run: pnpm --filter @lemonade/generate-api-types generate:from-snapshot
+
+      - name: Fail if generated output differs from what's committed
+        run: git diff --exit-code -- packages/api-types/src/generated
 
   audit:
     runs-on: ubuntu-latest

@@ -1,0 +1,20 @@
+{
+  "name": "@lemonade/generate-api-types",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generates packages/api-types/src/generated/* from a lemonade-backend route manifest. See README.md.",
+  "type": "module",
+  "scripts": {
+    "generate:from-backend": "node generate.mjs --backend ../../../lemonade-backend && pnpm run format",
+    "generate:from-snapshot": "node generate.mjs --manifest manifest.snapshot.json && pnpm run format",
+    "refresh-snapshot": "php introspect.php ../../../lemonade-backend > manifest.snapshot.json",
+    "format": "prettier --config ../../packages/config/prettier.config.mjs --write ../../packages/api-types/src/generated/*.ts",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@lemonade/config": "workspace:*",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "vitest": "^2.1.8"
+  }
+}
