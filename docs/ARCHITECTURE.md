@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 9 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 13 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2186,16 +2186,40 @@ normally, never wrong, just occasionally not the tab that renders. `event/[id]/p
 is a third single-query detail page, no new wrinkles, confirming the pattern generalizes without
 each page needing its own variation.
 
-Nine pages converted, all verified the same way (lint/typecheck/build plus a real running server hit
-with a syntactically-valid-but-backend-rejected session cookie, confirming a full 200 with real
-content and no server error each time). Not started: converting the rest of the ~36 remaining Client
-Component pages in frontend (a large, page-by-page effort — deliberate pace, not a ceiling; picking up
-more later means repeating the same read-the-page, extract-the-query, verify-with-a-real-server loop
-this establishes; note that several pages have no `useQuery` at all — still on the pre-Phase-5
-`useRequest` hook, or reading only from Redux — and aren't candidates for this exact pattern until
-they're migrated), admin's list-shell/table-island split, server-side pagination (depends on backend
-endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets, and
-Lighthouse CI.
+Four more followed, all reusing existing `api.server.ts` endpoints except one, and confirming the
+pattern holds even where the earlier assumptions get stress-tested: `event/[id]/page.tsx` and
+`event/[id]/agent-details/page.tsx` reuse the exact query keys `event/[id]/details` and
+`program-details` already established (`eventKeys.detail`, `eventKeys.affiliateEventDetail`) — zero
+`api.server.ts` changes needed. `event/[id]/page.tsx` also carries a `useEffect` (referral-code capture
+into Redux + `sessionStorage`) that had nothing to do with the query itself; it moved into
+`EventClient.tsx` unchanged, keyed off the same `id` prop instead of unwrapped `params`, confirming
+the split cleanly separates "what needs prefetching" from "what's just client-side behavior colocated
+in the same file." `event/[id]/buy-ticket/page.tsx` needed a genuinely new endpoint
+(`getEventTicketData`, added to `features/events/api.server.ts`) — the first new addition to that file
+since the original three.
+
+`connect/requests/page.tsx` is the first conversion outside `event`/`tribe`/`business`/`settings`, and
+the first to surface the `PROTECTED_PREFIXES` gap noted at the top of this section: `/connect` isn't in
+that list, so an unauthenticated visitor can reach this route today, unlike every page converted so
+far. Investigated rather than worked around: the client query is already `enabled: Boolean(user?.id)`
+(Redux-sourced, not server-readable), and `prefetchQuery` already swallows a failed backend call the
+same way it swallows a rejected fake-token call on a gated page — so an unauthenticated hit just
+produces an unused, silently-discarded prefetch, and the client renders its normal
+logged-out/loading state. Verified directly: hit the running production build both with the usual
+fake-cookie technique and with **no cookie at all**, confirming both return a clean 200 with no server
+error. First `features/connect/api.server.ts` added, one endpoint (`getInvites`).
+
+Thirteen pages converted, all verified the same way (lint/typecheck/build plus a real running server
+hit with a syntactically-valid-but-backend-rejected session cookie — and, for `connect/requests`, also
+with no cookie at all — confirming a full 200 with real content and no server error each time). Not
+started: converting the rest of the ~32 remaining Client Component pages in frontend (a large,
+page-by-page effort — deliberate pace, not a ceiling; picking up more later means repeating the same
+read-the-page, extract-the-query, verify-with-a-real-server loop this establishes; note that several
+pages have no `useQuery` at all — still on the pre-Phase-5 `useRequest` hook (confirmed for
+`business/[id]/jobs/page.tsx`), or reading only from Redux — and aren't candidates for this exact
+pattern until they're migrated), admin's list-shell/table-island split, server-side pagination (depends
+on backend endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets,
+and Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
