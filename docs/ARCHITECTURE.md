@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 22 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 23 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2269,13 +2269,28 @@ became a Server Component candidate too, so both happened together:
    reusing the established per-feature `api.server.ts` pattern — a bigger, riskier change than anything
    else done this phase, so it stays deferred rather than worked around.
 
-Twenty-two pages converted, all verified the same way (lint/typecheck/build plus a real running server
+One more followed the same day: `business/[id]/jobs/page.tsx`'s own `/user/listing/:id/job-data` call
+was the last real per-business `useRequest` read in the business domain. Added
+`getBusinessJobData`/`useBusinessJobDataQuery` (reusing the existing `JobsDataResponse` shape
+`getJobsData` already defined — same response, just scoped to one listing), converted the page. Typed
+data surfaced a real possibly-undefined gap in the revenue stat display — fixed with a `?? 0`, not
+papered over, same class of fix as `boost-business`'s.
+
+With this, **every real per-page `useRequest` read in the business and connect domains is now migrated
+and converted.** (What's left in that domain per `features/business/api.ts`'s NOTE — `business-reviews`,
+the `business`/`listing` `verify-payment` flows — aren't page-level reads with a Server Component
+payoff; left alone.)
+
+Twenty-three pages converted, all verified the same way (lint/typecheck/build plus a real running server
 hit with a syntactically-valid-but-backend-rejected session cookie, confirming a full 200 with real
-content and no server error each time). Still not migrated, same `useRequest`/Redux-only reasoning as
-before: `business/[id]/jobs/page.tsx` (its own `/user/listing/:id/job-data` call), most of `settings/*`,
-`event/create-event`, `event/add-ticket`, `event/[id]/assign-ticket` — these have no read query to
-prefetch at all (pure forms/mutations), so they're not Server Component candidates even once migrated,
-only `business/[id]/jobs` (a real per-business read) would be. Not started: admin's
+content and no server error each time). Still not migrated: `event/create-event`, `event/add-ticket`,
+`event/[id]/assign-ticket` (pure forms/mutations, no read query at all — not Server Component candidates
+even once any of their mutations move), and the big remaining concentration, **`settings/*`** — Phase
+5's own status text already named this: ~30 `ProfileController` routes (notification settings,
+subscription/billing, account deletion, per-field profile edits) still on the legacy `useRequest` hook
+or untouched, spread across `settings/account/*`, `settings/billing-history`, `settings/notification`,
+`settings/plan/*`, `settings/privacy`, `settings/profile`, `settings/terms-and-conditions`. Larger scope
+than anything migrated so far this phase — not started. Also not started: admin's
 list-shell/table-island split, server-side pagination (depends on backend endpoints landing it — not
 confirmed either way this phase), lazy-loading, bundle budgets, and Lighthouse CI.
 
