@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — pattern proven, one page]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 3 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2143,26 +2143,31 @@ unauthenticated visitor be able to view these at all? today they're redirected t
 implementation detail, and wasn't decided or acted on here.
 
 What Server Components buy independent of that question — faster first paint for already-logged-in
-users, no change to who can see what — was pursued instead, and the pattern is proven on one page:
-`apps/frontend/src/app/(main)/event/[id]/details/page.tsx` is now a real async Server Component. Two
-new, reusable pieces came out of it: `lib/query-client.server.ts` (one `QueryClient` per request via
-React's `cache()`, the standard prefetch-then-`<HydrationBoundary>` pattern) and a
-`features/events/api.server.ts` convention (a server-side twin of one endpoint from a feature's
-`api.ts`, calling the backend directly via `lib/server-api.ts` instead of the BFF proxy round-trip a
-Client Component needs — only the specific endpoint being prefetched, not a wholesale mirror). The
-existing Client Component becomes `<Feature>Client.tsx` verbatim, taking the resolved id as a plain
-prop instead of unwrapping `params` itself — `useEventQuery()` inside it is completely unchanged,
-same staleTime/refetch/invalidation, it just starts with data already in cache. Verified beyond
-lint/typecheck/build: hit the running production build with a syntactically-valid-but-backend-rejected
-session cookie (to get past middleware without real credentials) and confirmed a full 200 response
-with no server error when the server-side prefetch itself fails auth — `prefetchQuery`'s built-in
-error swallowing falls back to the client query rather than crashing the page.
+users, no change to who can see what — was pursued instead. The pattern is proven on the exact
+"event, tribe, business" trio the first bullet names for detail pages:
+`app/(main)/event/[id]/details/page.tsx`, `app/(main)/tribe/[id]/page.tsx` and
+`app/(main)/business/[id]/page.tsx` are all real async Server Components now. Two reusable pieces
+came out of the first conversion and held up unchanged across all three: `lib/query-client.server.ts`
+(one `QueryClient` per request via React's `cache()`, the standard prefetch-then-`<HydrationBoundary>`
+pattern) and a `features/<domain>/api.server.ts` convention (a server-side twin of only the
+endpoint(s) actually prefetched — one for events and business, three for tribes, run concurrently via
+`Promise.all` since that page's data comes from three separate queries — calling the backend directly
+via `lib/server-api.ts` instead of the BFF proxy round-trip a Client Component needs). Each existing
+Client Component becomes `<Feature>Client.tsx` verbatim, taking the resolved id as a plain prop
+instead of unwrapping `params` itself — the `useQuery` hooks inside are completely unchanged, same
+staleTime/refetch/invalidation, they just start with data already in cache. Verified beyond
+lint/typecheck/build for all three: hit the running production build with a
+syntactically-valid-but-backend-rejected session cookie (to get past middleware without real
+credentials) and confirmed a full 200 response with real page content and no server error each time —
+`prefetchQuery`'s built-in error swallowing falls back to the client query rather than crashing the
+page when the server-side prefetch itself fails auth.
 
-Not started: converting the rest of the ~44 remaining Client Component pages (a large, page-by-page
-effort — this one page's split, done carefully with real verification, is a better use of a single
-pass than doing several quickly), admin's list-shell/table-island split, server-side pagination
-(depends on backend endpoints landing it — not confirmed either way this phase), lazy-loading, bundle
-budgets, and Lighthouse CI.
+Not started: converting the rest of the ~42 remaining Client Component pages in frontend (a large,
+page-by-page effort — three pages done carefully with real verification each is a deliberate pace,
+not a ceiling; picking up more later means repeating the same read-the-page, extract-the-query,
+verify-with-a-real-server loop this establishes) admin's list-shell/table-island split, server-side
+pagination (depends on backend endpoints landing it — not confirmed either way this phase),
+lazy-loading, bundle budgets, and Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
