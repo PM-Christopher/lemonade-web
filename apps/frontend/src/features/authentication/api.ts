@@ -9,7 +9,10 @@
 //   - getCurrentUser calls the real backend through browserApi (the BFF
 //     proxy), same as every other authenticated read.
 import { browserApi } from "@/lib/browser-api";
-import { userSettingsRoutes } from "@lemonade/api-types";
+import {
+  userSettingsRoutes,
+  userSubscriptionRoutes,
+} from "@lemonade/api-types";
 
 export interface CurrentUser {
   id: string | number;
@@ -145,13 +148,71 @@ export interface ChangePlanResult {
   amount_due?: string;
 }
 
+export interface NotificationSettingChannels {
+  email: boolean;
+  in_app_notification: boolean;
+}
+
+export interface AppSettings {
+  id: string;
+  push_notification: boolean;
+  new_thread: NotificationSettingChannels;
+  thread_engagements: NotificationSettingChannels;
+  ticket_sales: NotificationSettingChannels;
+  ticket_payout: NotificationSettingChannels;
+  service_offer: NotificationSettingChannels;
+  service_status: NotificationSettingChannels;
+  service_payout: NotificationSettingChannels;
+  connect_request: NotificationSettingChannels;
+  new_message: NotificationSettingChannels;
+}
+
+export interface AppSettingsResponse {
+  app_settings: AppSettings | null;
+}
+
+export interface SubscriptionBenefits {
+  verification_badge: boolean;
+  tribe_creation: boolean;
+  lemon_id: boolean;
+  event_creation: boolean;
+  ticket_sales_commission: number;
+  service_commission: number;
+  connection_range: number;
+  offline_benefits: boolean;
+}
+
+export interface SubscriptionSummary {
+  title: string;
+  payment_method: string;
+  plan_price: string;
+  next_billing_date: string;
+}
+
+export interface SubscriptionResponse {
+  subscription: SubscriptionSummary & { benefits: SubscriptionBenefits };
+}
+
+export interface BillingHistoryItem {
+  title: string;
+  amount: number;
+  created_at: string;
+}
+
+export interface BillingHistoryResponse {
+  plan: SubscriptionSummary;
+  histories: BillingHistoryItem[];
+}
+
 export const authApi = {
-  login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
+  login: (payload: LoginPayload) =>
+    postJson<LoginResult>("/api/auth/login", payload),
   logout: () => postJson<void>("/api/auth/logout"),
   getCurrentUser: () => browserApi.get<CurrentUser>(userSettingsRoutes.PROFILE),
 
   // Post-signup email verification — the "verify-email" page's flow.
-  verifyAccountOtp: (data: VerifyOtpPayload) => browserApi.post<void>("/user/otp/verify", data),
+  verifyAccountOtp: (data: VerifyOtpPayload) =>
+    browserApi.post<void>("/user/otp/verify", data),
 
   // Password-reset OTP check — the "verify-code" page's flow.
   // VerifyForgotPasswordAction (backend) deletes the forgot-password
@@ -188,22 +249,47 @@ export const authApi = {
     browserApi.patch<UpdateProfileFieldResult>(url, data),
 
   changePassword: (data: ChangePasswordPayload) =>
-    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-password", data),
-
-  changeProfileImage: (data: { profile_image: string }) =>
-    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-profile-image", data),
-
-  deleteAccount: (data: DeleteAccountPayload) =>
-    browserApi.post<{ user: null }>("/user/profile/settings/delete-account", data),
-
-  updateNotificationSettings: (data: NotificationSettingsPayload) =>
-    browserApi.patch<{ app_settings: unknown }>(
-      "/user/profile/notification-settings/update-all-notification",
+    browserApi.patch<UpdateProfileFieldResult>(
+      "/user/profile/settings/change-password",
       data,
     ),
 
+  changeProfileImage: (data: { profile_image: string }) =>
+    browserApi.patch<UpdateProfileFieldResult>(
+      "/user/profile/settings/change-profile-image",
+      data,
+    ),
+
+  deleteAccount: (data: DeleteAccountPayload) =>
+    browserApi.post<{ user: null }>(
+      "/user/profile/settings/delete-account",
+      data,
+    ),
+
+  getNotificationSettings: () =>
+    browserApi.get<AppSettingsResponse>(
+      userSettingsRoutes.NOTIFICATION_SETTINGS,
+    ),
+
+  updateNotificationSettings: (data: NotificationSettingsPayload) =>
+    browserApi.patch<{ app_settings: unknown }>(
+      `${userSettingsRoutes.NOTIFICATION_SETTINGS}/update-all-notification`,
+      data,
+    ),
+
+  getSubscription: () =>
+    browserApi.get<SubscriptionResponse>(userSettingsRoutes.SUBSCRIPTION),
+
+  getBillingHistory: () =>
+    browserApi.get<BillingHistoryResponse>(
+      `${userSettingsRoutes.SUBSCRIPTION}/billing-history`,
+    ),
+
   changePlan: (data: ChangePlanPayload) =>
-    browserApi.post<ChangePlanResult>("/user/profile/subscription/change-plan", data),
+    browserApi.post<ChangePlanResult>(
+      `${userSettingsRoutes.SUBSCRIPTION}/change-plan`,
+      data,
+    ),
 
   // A single subscription plan's fresh details, fetched by id
   // (PricingCard's "Subscribe" click). SubscriptionResource nests a real
@@ -213,7 +299,15 @@ export const authApi = {
   // as the `pricing` prop it maps over, so this isn't the single-object-
   // vs-array mismatch it looks like at first glance.
   getSubscriptionPlan: (id: number | string) =>
-    browserApi.get<{ subscription: SubscriptionDetail }>(`/user/subscription/${id}`),
+    browserApi.get<{ subscription: SubscriptionDetail }>(
+      `${userSubscriptionRoutes.BASE}/${id}`,
+    ),
+
+  // The public plan catalog (settings/plan/page.tsx) — loosely typed, same
+  // as PricingCard.tsx's own `subscription: any` prop, since the resource
+  // isn't otherwise modeled here.
+  getSubscriptionPlans: () =>
+    browserApi.get<{ subscriptions: unknown[] }>(userSubscriptionRoutes.BASE),
 };
 
 export interface SubscriptionDetail {

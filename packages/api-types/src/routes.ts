@@ -168,6 +168,15 @@ export const userSettingsRoutes = Object.freeze({
   WALLET: "/user/profile/wallet", // GET earnings summary + payout history
   REQUEST_PAYOUT: "/user/profile/wallet/request-payout",
   BANK_ACCOUNT_CREATE: "/user/profile/bank-account/create-account",
+  NOTIFICATION_SETTINGS: "/user/profile/notification-settings", // GET (show); + update-push-notification (PATCH), update-all-notification (PATCH), device-token (POST)
+  SUBSCRIPTION: "/user/profile/subscription", // GET (current user's subscription + benefits); + billing-history (GET), change-plan (POST), renew|cancel|resume (POST)
+});
+
+// The public plan catalog — distinct from userSettingsRoutes.SUBSCRIPTION
+// (the current user's own subscription), a separate SubscriptionController
+// at /user/subscription (not /user/profile/subscription).
+export const userSubscriptionRoutes = Object.freeze({
+  BASE: "/user/subscription", // GET (list); + /:id (GET)
 });
 
 export const userTribeRoutes = Object.freeze({

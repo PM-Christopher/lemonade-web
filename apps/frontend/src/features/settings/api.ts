@@ -6,9 +6,14 @@
 // consumers actually use today (profile read, wallet read, request payout,
 // create bank account). ProfileController owns ~30 more routes (notification
 // settings, subscription/billing, account deletion, individual profile-field
-// edits) that several pages still reach via the legacy useRequest hook or
-// haven't been touched at all — out of scope for this pass, tracked as its
-// own follow-up (see docs/ARCHITECTURE.md's Phase 5 status).
+// edits) — several of those (notification-settings, subscription,
+// billing-history) were migrated in Phase 6, but into
+// features/authentication instead of here, since their existing mutations
+// (updateNotificationSettings, changePlan) already live there and
+// eslint-plugin-boundaries doesn't allow one feature's mutations to
+// invalidate another feature's query keys. What's left (account deletion,
+// individual profile-field edits) is still on the legacy useRequest hook or
+// untouched — tracked as its own follow-up.
 import { browserApi } from "@/lib/browser-api";
 import { userSettingsRoutes } from "@lemonade/api-types";
 
@@ -25,7 +30,12 @@ export interface UserProfile {
   status: string;
   verified: boolean;
   skills: string[] | null;
-  address: { address: string; city: string; state: string; country: string } | null;
+  address: {
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+  } | null;
   interests: string[] | null;
   socials: Array<{ name: string; value: string }> | null;
   referral_code: string;
@@ -103,8 +113,14 @@ export const settingsApi = {
   getWallet: () => browserApi.get<WalletSettings>(userSettingsRoutes.WALLET),
 
   requestPayout: (data: RequestPayoutPayload) =>
-    browserApi.post<RequestPayoutResponse>(userSettingsRoutes.REQUEST_PAYOUT, data),
+    browserApi.post<RequestPayoutResponse>(
+      userSettingsRoutes.REQUEST_PAYOUT,
+      data,
+    ),
 
   createBankAccount: (data: CreateBankAccountPayload) =>
-    browserApi.post<CreateBankAccountResponse>(userSettingsRoutes.BANK_ACCOUNT_CREATE, data),
+    browserApi.post<CreateBankAccountResponse>(
+      userSettingsRoutes.BANK_ACCOUNT_CREATE,
+      data,
+    ),
 };

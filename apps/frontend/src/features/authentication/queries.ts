@@ -7,6 +7,11 @@ import { authApi } from "./api";
 export const authKeys = {
   all: () => ["auth"] as const,
   currentUser: () => [...authKeys.all(), "currentUser"] as const,
+  subscriptionPlans: () => [...authKeys.all(), "subscriptionPlans"] as const,
+  notificationSettings: () =>
+    [...authKeys.all(), "notificationSettings"] as const,
+  subscription: () => [...authKeys.all(), "subscription"] as const,
+  billingHistory: () => [...authKeys.all(), "billingHistory"] as const,
 };
 
 /**
@@ -23,6 +28,51 @@ export function useCurrentUserQuery(options?: { enabled?: boolean }) {
     queryFn: authApi.getCurrentUser,
     staleTime: 60_000,
     retry: false,
+    enabled: options?.enabled,
+  });
+}
+
+// The public plan catalog (settings/plan/page.tsx) — CLAUDE.md's "reference
+// data" staleness bucket (1h), same as features/shared's useBanksQuery.
+export function useSubscriptionPlansQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: authKeys.subscriptionPlans(),
+    queryFn: authApi.getSubscriptionPlans,
+    staleTime: 60 * 60_000,
+    enabled: options?.enabled,
+  });
+}
+
+// User-owned content — CLAUDE.md's 60s bucket. Lives here (not
+// features/settings) so useUpdateNotificationSettingsMutation, already in
+// this domain, can invalidate it without a cross-feature import.
+export function useNotificationSettingsQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: authKeys.notificationSettings(),
+    queryFn: authApi.getNotificationSettings,
+    staleTime: 60_000,
+    enabled: options?.enabled,
+  });
+}
+
+// The current user's own subscription + benefits — user-owned content.
+// Lives here (not features/settings) so useChangePlanMutation can
+// invalidate it without a cross-feature import.
+export function useSubscriptionQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: authKeys.subscription(),
+    queryFn: authApi.getSubscription,
+    staleTime: 60_000,
+    enabled: options?.enabled,
+  });
+}
+
+// Past subscription payments — user-owned content.
+export function useBillingHistoryQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: authKeys.billingHistory(),
+    queryFn: authApi.getBillingHistory,
+    staleTime: 60_000,
     enabled: options?.enabled,
   });
 }
