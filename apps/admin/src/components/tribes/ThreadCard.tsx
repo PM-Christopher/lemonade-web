@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { DotIcon } from "lucide-react";
-import { MoreIcon } from "evergreen-ui";
+import { DotIcon, MoreVerticalIcon } from "lucide-react";
 
 interface ModalPosition {
   top: number;
@@ -66,7 +65,7 @@ const ThreadCard: React.FC = ({}) => {
             </div>
           </div>
           {/*<div className="cursor-pointer" ref={moreIconRef}>*/}
-          <MoreIcon className="cursor-pointer" />
+          <MoreVerticalIcon className="cursor-pointer" />
           {/*</div>*/}
         </div>
         <div className="mt-[4px]">

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import BusinessCarousel from "@/components/global/BusinessCarousel";
 import AllBusinessCard from "@/components/business/AllBusinessCard";
 import { useSelector } from "react-redux";
-import { Spinner } from "evergreen-ui";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";

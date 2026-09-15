@@ -6,7 +6,6 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
 import upload_image from "@/image/icons/upload_image.png";
-import { CircleSpinner, RingSpinner } from "react-spinner-overlay";
 import { ImagesLoadingSkeleton } from "@/components/Skeletons";
 
 const MultipleFileUploader = ({

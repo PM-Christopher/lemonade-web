@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
-import { ChatIcon } from "evergreen-ui";
+import { ChevronRight, MessageSquare } from "lucide-react";
 
 const TribeCard = ({
   image,
@@ -51,7 +50,7 @@ const TribeCard = ({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <ChatIcon />
+            <MessageSquare className="h-4 w-4" />
             <p className="font-semi-normal font-sans text-[12px] leading-[14.4px] text-black-light">
               {threads || 0}threads
             </p>

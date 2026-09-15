@@ -17,8 +17,7 @@ import { usePusher } from "@/hooks/usePusher";
 import { formatSingleTime, getInitials } from "@/lib/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { connectApi } from "@/features/connect/api";
-import { Spinner } from "evergreen-ui";
-import { WindmillSpinner } from "react-spinner-overlay";
+import { Loader2 } from "lucide-react";
 
 type OpenChatProps = {
   toggleModal: () => void;
@@ -260,7 +259,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 {text.trim() && (
                   <div className="flex-shrink-0">
                     {mediaLoading ? (
-                      <Spinner size={20} color={"#BFDF37"} />
+                      <Loader2 className="h-5 w-5 animate-spin text-light-green-90" />
                     ) : (
                       <SendIcon
                         className="h-[19.25px] w-[19.72px] cursor-pointer"
@@ -341,7 +340,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 (mediaFiles.length > 0 && (
                   <div className="flex-shrink-0">
                     {mediaLoading ? (
-                      <Spinner size={20} color={"#BFDF37"} />
+                      <Loader2 className="h-5 w-5 animate-spin text-light-green-90" />
                     ) : (
                       <SendIcon
                         className="h-[19.25px] w-[19.72px] cursor-pointer"

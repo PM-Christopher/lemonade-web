@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChatIcon, MoreIcon, SendMessageIcon } from "evergreen-ui";
 import {
   ChevronDown,
   ChevronLeft,

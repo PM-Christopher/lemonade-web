@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { MoreIcon } from "evergreen-ui";
-import { DotIcon } from "lucide-react";
+import { DotIcon, MoreVerticalIcon } from "lucide-react";
 
 function EventView({ event }: { event: any }) {
   return (
@@ -30,7 +29,7 @@ function EventView({ event }: { event: any }) {
           </div>
         </div>
         <div className="cursor-pointer">
-          <MoreIcon className="cursor-pointer" />
+          <MoreVerticalIcon className="cursor-pointer" />
         </div>
       </div>
       <div className="mt-[4px]">
