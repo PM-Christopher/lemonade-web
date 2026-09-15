@@ -5,11 +5,13 @@
 // NOTE: getListing/GetBusinessListing had zero real frontend consumers
 // (dead code, dropped here rather than migrated) — confirmed via grep, same
 // as this migration's rule throughout the session. Also out of scope:
-// business-categories, business-reviews, and listing/boosts
-// (shared-utility/business-detail reads still on the legacy useRequest
-// hook, not wired to this slice at all) and the business/listing
-// verify-payment flows (raw axiosInstance calls, not wired to this slice
-// either) — all tracked as follow-ups, not migrated in this pass.
+// business-categories, business-reviews (shared-utility/business-detail
+// reads still on the legacy useRequest hook, not wired to this slice at
+// all) and the business/listing verify-payment flows (raw axiosInstance
+// calls, not wired to this slice either) — tracked as follow-ups, not
+// migrated in this pass. listing/boosts was migrated below (Phase 6
+// follow-up) since boost-business/page.tsx needed it on TanStack Query to
+// become a Server Component candidate.
 //
 // Job objects (getJob/jobsData/markJobRequest/etc.) are intentionally typed
 // loosely (unknown) rather than modeled field-by-field: comparing
@@ -65,7 +67,12 @@ export interface BoostBusinessResponse {
 }
 
 export interface JobsDataResponse {
-  count: { in_progress: number; completed: number; sent_offers: number; revenue: number };
+  count: {
+    in_progress: number;
+    completed: number;
+    sent_offers: number;
+    revenue: number;
+  };
   in_progress: unknown[];
   completed: unknown[];
   sent_offers: unknown[];
@@ -106,14 +113,35 @@ export interface DisputeJobResponse {
   message: string;
 }
 
+export interface BoostPackageOption {
+  duration: number;
+  price: number;
+}
+
+export interface BoostPackage {
+  id: string;
+  title: string;
+  description: string;
+  packages: BoostPackageOption[];
+  status: string;
+}
+
+export interface BoostPackagesResponse {
+  packages: BoostPackage[];
+}
+
 export const businessApi = {
-  getListings: () => browserApi.get<ListingsResponse>(userBusinessRoutes.LISTING),
+  getListings: () =>
+    browserApi.get<ListingsResponse>(userBusinessRoutes.LISTING),
 
   createListing: (values: CreateOrUpdateBusinessPayload) =>
     browserApi.post<BusinessDetailResponse>(userBusinessRoutes.LISTING, values),
 
   updateListing: (id: number | string, values: CreateOrUpdateBusinessPayload) =>
-    browserApi.patch<BusinessDetailResponse>(`${userBusinessRoutes.LISTING}/${id}`, values),
+    browserApi.patch<BusinessDetailResponse>(
+      `${userBusinessRoutes.LISTING}/${id}`,
+      values,
+    ),
 
   boostListing: (id: number | string, data: BoostBusinessPayload) =>
     browserApi.post<BoostBusinessResponse>(
@@ -121,9 +149,16 @@ export const businessApi = {
       data,
     ),
 
-  getJobsData: () => browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_ALL),
+  getJobsData: () =>
+    browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_ALL),
 
-  getBusinesses: () => browserApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
+  getBoostPackages: () =>
+    browserApi.get<BoostPackagesResponse>(
+      `${userBusinessRoutes.LISTING}/boosts`,
+    ),
+
+  getBusinesses: () =>
+    browserApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
 
   getBusiness: (id: number | string) =>
     browserApi.get<BusinessDetailResponse>(`${userBusinessRoutes.BASE}/${id}`),
@@ -146,7 +181,10 @@ export const businessApi = {
     service_type: string;
     start_range: string;
     end_range: string;
-  }) => browserApi.get<FilterBusinessResponse>(userBusinessRoutes.FILTER, { params: value }),
+  }) =>
+    browserApi.get<FilterBusinessResponse>(userBusinessRoutes.FILTER, {
+      params: value,
+    }),
 
   markJobRequest: (id: number, data: unknown) =>
     browserApi.post<MarkJobRequestResponse>(
@@ -160,7 +198,10 @@ export const businessApi = {
     ),
 
   makeJobPayment: (id: number, data: unknown) =>
-    browserApi.post<MakeJobPaymentResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/pay`, data),
+    browserApi.post<MakeJobPaymentResponse>(
+      `${userBusinessRoutes.BASE}/jobs/${id}/pay`,
+      data,
+    ),
 
   markJobCompleted: (id: number) =>
     browserApi.post<MarkJobCompletedResponse>(
@@ -168,5 +209,8 @@ export const businessApi = {
     ),
 
   disputeJob: (id: number, data: unknown) =>
-    browserApi.post<DisputeJobResponse>(`${userBusinessRoutes.BASE}/jobs/${id}/dispute`, data),
+    browserApi.post<DisputeJobResponse>(
+      `${userBusinessRoutes.BASE}/jobs/${id}/dispute`,
+      data,
+    ),
 };

@@ -5,8 +5,10 @@ export const businessKeys = {
   all: () => ["business"] as const,
   businesses: () => [...businessKeys.all(), "businesses"] as const,
   listings: () => [...businessKeys.all(), "listings"] as const,
-  detail: (id: number | string) => [...businessKeys.all(), "detail", id] as const,
+  detail: (id: number | string) =>
+    [...businessKeys.all(), "detail", id] as const,
   jobsData: () => [...businessKeys.all(), "jobsData"] as const,
+  boostPackages: () => [...businessKeys.all(), "boostPackages"] as const,
 };
 
 // Public browse of other users' businesses — CLAUDE.md's "discovery content"
@@ -30,7 +32,10 @@ export function useListingsQuery(options?: { enabled?: boolean }) {
   });
 }
 
-export function useBusinessQuery(id: number | string | undefined, options?: { enabled?: boolean }) {
+export function useBusinessQuery(
+  id: number | string | undefined,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: businessKeys.detail(id ?? 0),
     queryFn: () => businessApi.getBusiness(id as number),
@@ -45,6 +50,17 @@ export function useJobsDataQuery(options?: { enabled?: boolean }) {
     queryKey: businessKeys.jobsData(),
     queryFn: businessApi.getJobsData,
     staleTime: 0,
+    enabled: options?.enabled,
+  });
+}
+
+// The boost-listing package catalog — CLAUDE.md's "reference data" bucket
+// (1h), same as features/shared's useBanksQuery.
+export function useBoostPackagesQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: businessKeys.boostPackages(),
+    queryFn: businessApi.getBoostPackages,
+    staleTime: 60 * 60_000,
     enabled: options?.enabled,
   });
 }
