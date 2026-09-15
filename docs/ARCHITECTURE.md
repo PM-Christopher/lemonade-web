@@ -1607,10 +1607,12 @@ doesn't collide with (or silently replace) `routes.ts` — several group names m
 over to the generated output is real, separate, mechanical follow-up work, not folded into standing
 the pipeline up. See `tooling/generate-api-types/README.md` for the full picture.
 
-Not done: archiving the old `lemonade/{admin,frontend}` repos (a destructive action on repos outside
-this one — needs explicit authorization, not something to do autonomously). They still exist,
-untouched, now stale relative to this monorepo (see the canonical-location note at the top of this
-document).
+Not done: archiving the old `lemonade/{admin,frontend}` repos —
+`github.com/PM-Christopher/lemonade-admin` and `github.com/PM-Christopher/lemonade-frontend`, found by
+checking the local checkouts' own `git remote -v`. A destructive action on repos outside this one, so
+left for direct action rather than automated from here; no tooling access to do it automatically
+either way (no `gh` CLI in this environment). They still exist, untouched, now stale relative to this
+monorepo (see the canonical-location note at the top of this document).
 
 ### Phase 3 — Version alignment **[MUST]** **[NOT STARTED]**
 
