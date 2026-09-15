@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 6 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 9 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2176,12 +2176,24 @@ noting explicitly since it's the first prefetch touching money data: the prefetc
 server-fetched snapshot for first paint, the client query is still immediately stale on mount and free
 to revalidate normally, so nothing about the staleness policy or "never optimistic for money" changes.
 
-Six pages converted, all verified the same way (lint/typecheck/build plus a real running server hit
+Three more followed, each reusing an existing `api.server.ts` file rather than starting a new one, and
+testing the last variation the first six hadn't: `tribe/page.tsx` and `business/page.tsx` are
+non-dynamic, tabbed list pages backed by `usePersistentMenuState` (client-only state — no way to read
+a returning visitor's persisted tab choice server-side), so each prefetches only its default tab's
+query (tribe: `"discover"`, business: `"business"`, matching each page's own fallback) — if a visitor
+actually has a different tab persisted, the prefetch is simply unused and that tab's query fetches
+normally, never wrong, just occasionally not the tab that renders. `event/[id]/program-details/page.tsx`
+is a third single-query detail page, no new wrinkles, confirming the pattern generalizes without
+each page needing its own variation.
+
+Nine pages converted, all verified the same way (lint/typecheck/build plus a real running server hit
 with a syntactically-valid-but-backend-rejected session cookie, confirming a full 200 with real
-content and no server error each time). Not started: converting the rest of the ~39 remaining Client
+content and no server error each time). Not started: converting the rest of the ~36 remaining Client
 Component pages in frontend (a large, page-by-page effort — deliberate pace, not a ceiling; picking up
 more later means repeating the same read-the-page, extract-the-query, verify-with-a-real-server loop
-this establishes), admin's list-shell/table-island split, server-side pagination (depends on backend
+this establishes; note that several pages have no `useQuery` at all — still on the pre-Phase-5
+`useRequest` hook, or reading only from Redux — and aren't candidates for this exact pattern until
+they're migrated), admin's list-shell/table-island split, server-side pagination (depends on backend
 endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets, and
 Lighthouse CI.
 
