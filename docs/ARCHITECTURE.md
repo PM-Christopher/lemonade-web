@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 18 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 19 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2229,17 +2229,37 @@ gates `/` behind login (it's literally in `PROTECTED_PREFIXES`), so — same rea
 `settings/wallet/page.tsx` — there's no client-side `enabled` branch to reproduce server-side; the
 prefetch runs unconditionally.
 
-Eighteen pages converted, all verified the same way (lint/typecheck/build plus a real running server
-hit with a syntactically-valid-but-backend-rejected session cookie — and, for `connect/requests`, also
-with no cookie at all — confirming a full 200 with real content and no server error each time). Not
-started: converting the rest of the ~27 remaining Client Component pages in frontend (a large,
-page-by-page effort — deliberate pace, not a ceiling; picking up more later means repeating the same
-read-the-page, extract-the-query, verify-with-a-real-server loop this establishes; note that several
-pages have no `useQuery` at all — still on the pre-Phase-5 `useRequest` hook (confirmed for
-`business/[id]/jobs/page.tsx`), or reading only from Redux — and aren't candidates for this exact
-pattern until they're migrated), admin's list-shell/table-island split, server-side pagination (depends
-on backend endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets,
-and Lighthouse CI.
+`app/(main)/connect/page.tsx` followed the same day, converted alongside `connect/requests` — it
+prefetches two of its three queries (`getMessages` for the chat sidebar, `getConnection`), while its
+third (`useChatQuery`, enabled only once a chat is actually opened client-side) stays client-only, same
+interaction-gated-query rule as `event/[id]/guest-list`. Like `connect/requests`, `/connect` isn't in
+`PROTECTED_PREFIXES` either — verified the same way, with and without a cookie.
+
+Nineteen pages converted, all verified the same way (lint/typecheck/build plus a real running server
+hit with a syntactically-valid-but-backend-rejected session cookie — and, for both `/connect` routes,
+also with no cookie at all — confirming a full 200 with real content and no server error each time).
+
+At this point every `(main)` page with a directly-callable TanStack Query hook has been converted.
+What's left splits into two buckets, both deliberately not attempted this round:
+
+1. **Pages not yet on TanStack Query** — still the pre-Phase-5 `useRequest` hook (confirmed for
+   `business/[id]/jobs/page.tsx`) or reading only from Redux (most of `settings/*`, `event/create-event`,
+   `event/add-ticket`, `business/add-business`, `business/[id]/boost-business`,
+   `event/[id]/assign-ticket`, `event/page.tsx`). Converting these to Server Components isn't a Phase 6
+   task by itself — they'd need a Phase 5-style query migration first.
+2. **`(auth)/profile-setup/page.tsx`** — genuinely different, not just unconverted. It calls
+   `useUserProfileQuery()` on purpose without a normal session: the comment in that file explains the
+   BFF proxy (`app/api/v1/[...path]/route.ts`) falls back to a separate onboarding cookie
+   (`ONBOARDING_TOKEN_COOKIE`, read via `bearerTokenOverride`) for this exact pre-session case —
+   confirmed by reading that route handler. `lib/server-api.ts`'s `backendApi` (what every
+   `api.server.ts` in this phase calls) has no equivalent onboarding-cookie fallback; only the BFF proxy
+   does. Converting this page properly means extending shared server-side auth infrastructure, not
+   reusing the established per-feature `api.server.ts` pattern — a bigger, riskier change than anything
+   else done this phase, so it's deferred rather than worked around.
+
+Not started: admin's list-shell/table-island split, server-side pagination (depends on backend
+endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets, and
+Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
