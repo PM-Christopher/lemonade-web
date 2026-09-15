@@ -1614,7 +1614,7 @@ left for direct action rather than automated from here; no tooling access to do 
 either way (no `gh` CLI in this environment). They still exist, untouched, now stale relative to this
 monorepo (see the canonical-location note at the top of this document).
 
-### Phase 3 — Version alignment **[MUST]** **[AUDIT DONE — bump not started]**
+### Phase 3 — Version alignment **[MUST]** **[Blockers cleared — bump not started]**
 
 Once, in one dependency graph, before the refactors that would otherwise be written twice.
 
@@ -1644,12 +1644,16 @@ Three of five bullets are done:
     app (confirmed by grep, including a stray orphaned `react-draft-wysiwyg` CSS import in frontend's
     create-event page with no matching `Editor` import anywhere). Removed outright, along with their
     `@types/*` packages — 28 packages gone from the lockfile.
-  - `evergreen-ui` (last published 2023-06, peer caps at React 18) — 6 real usages (2 frontend, 4
-    admin). Already flagged in this doc's own Phase 7 scope ("MUI, antd and Evergreen are retired in
-    favour of `@lemonade/ui`") — this and that work are the same migration, not two.
-  - `react-spinner-overlay` (last published 2021-11, peer doesn't even claim React 18 support despite
-    both apps already running 18 today without issue) — 2 real usages, frontend only. Small, easy swap
-    to any maintained spinner.
+  - `evergreen-ui` and `react-spinner-overlay` (last published 2023-06 and 2021-11 respectively;
+    react-spinner-overlay's peer doesn't even claim React 18 support, despite both apps already
+    running 18 today without issue) — both now removed too, in a follow-up pass. Of evergreen-ui's 6
+    imports (2 frontend, 4 admin) and react-spinner-overlay's 2 (frontend only), all but one were
+    dead — imported, never rendered. The one real usage (`OpenedChat.tsx`'s upload spinner) and
+    admin's three real `MoreIcon`/`ChatIcon` usages moved to `lucide-react`, already this codebase's
+    icon library everywhere else. `evergreen-ui`'s removal is also this doc's own Phase 7 item ("MUI,
+    antd and Evergreen are retired in favour of `@lemonade/ui`") — done from the dependency-tree side;
+    Phase 7 is still where `@lemonade/ui` gets real primitives to replace what these icons/spinners
+    were standing in for.
   - Everything else checked — `antd`, `@mui/material`, `@radix-ui/*`, `@tanstack/react-query`,
     `@reduxjs/toolkit`, `react-redux`, `zustand`, `formik`, `framer-motion`, `react-datepicker`,
     `react-date-picker`, `cmdk`, `react-dropzone`, `react-switch`, `react-cookie`, `react-icons`,
