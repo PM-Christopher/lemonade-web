@@ -1614,7 +1614,7 @@ left for direct action rather than automated from here; no tooling access to do 
 either way (no `gh` CLI in this environment). They still exist, untouched, now stale relative to this
 monorepo (see the canonical-location note at the top of this document).
 
-### Phase 3 — Version alignment **[MUST]** **[NOT STARTED]**
+### Phase 3 — Version alignment **[MUST]** **[AUDIT DONE — bump not started]**
 
 Once, in one dependency graph, before the refactors that would otherwise be written twice.
 
@@ -1624,11 +1624,50 @@ Once, in one dependency graph, before the refactors that would otherwise be writ
 - `images.domains` → `remotePatterns`, restricted to Cloudinary and DO Spaces
 - Tighten `tsconfig`; `no-explicit-any` as a warning with a declining budget
 
-**Status:** Not started. The Next 14/15 asymmetry this phase would remove is real and current, and has
-already required care in Phase 4/5 work: `apps/frontend` is Next 14.2.7 (`cookies()` and Route Handler
+**Status:** The Next 14/15 asymmetry this phase would remove is real and current, and has already
+required care in Phase 4/5 work: `apps/frontend` is Next 14.2.7 (`cookies()` and Route Handler
 `params` are synchronous), `apps/admin` is Next 15.1.11 (both are async/a Promise). The two apps'
 `server-api.ts` and `app/api/v1/[...path]/route.ts` are deliberately not identical because of this —
 don't "fix" one to match the other without checking which Next major it's actually on.
+
+Three of five bullets are done:
+
+- `images.domains` → `remotePatterns`: done, in both apps, narrowed to DigitalOcean Spaces and
+  Cloudinary — grepped both apps' source first and confirmed the two dropped hosts
+  (`images.unsplash.com`, `encrypted-tbn0.gstatic.com`) were dead config, referenced nowhere.
+- The React 19 UI dependency audit: done — every `dependencies` entry shared between the two apps or
+  frontend-only was checked against its actual installed version's `peerDependencies.react` and, for
+  anything capping below 19, against npm's latest published version (not just what's installed, in
+  case an update exists that hasn't been pulled in yet). Five packages cap below React 19 with no
+  newer version published upstream:
+  - `draft-js`, `react-draft-wysiwyg`, `react-quill` — all three had **zero real usages** in either
+    app (confirmed by grep, including a stray orphaned `react-draft-wysiwyg` CSS import in frontend's
+    create-event page with no matching `Editor` import anywhere). Removed outright, along with their
+    `@types/*` packages — 28 packages gone from the lockfile.
+  - `evergreen-ui` (last published 2023-06, peer caps at React 18) — 6 real usages (2 frontend, 4
+    admin). Already flagged in this doc's own Phase 7 scope ("MUI, antd and Evergreen are retired in
+    favour of `@lemonade/ui`") — this and that work are the same migration, not two.
+  - `react-spinner-overlay` (last published 2021-11, peer doesn't even claim React 18 support despite
+    both apps already running 18 today without issue) — 2 real usages, frontend only. Small, easy swap
+    to any maintained spinner.
+  - Everything else checked — `antd`, `@mui/material`, `@radix-ui/*`, `@tanstack/react-query`,
+    `@reduxjs/toolkit`, `react-redux`, `zustand`, `formik`, `framer-motion`, `react-datepicker`,
+    `react-date-picker`, `cmdk`, `react-dropzone`, `react-switch`, `react-cookie`, `react-icons`,
+    `react-hot-toast`, `react-number-format`, `react-otp-input`, `react-responsive`,
+    `react-copy-to-clipboard`, `react-loader-spinner`, `react-slideshow-image`,
+    `@ant-design/nextjs-registry`, `@bprogress/next`, `@react-oauth/google` — either explicitly
+    declares React 19 support or has a peer range wide enough to permit it. `antd` (peer
+    `>=16.9.0`, no upper bound) is the one worth a second look even so: a loose peer range means it
+    _installs_ under React 19, not that its actual runtime behavior has been verified there — it's
+    deeply integrated across both apps (this doc's own Phase 7 scope again), so that verification is
+    real work, not a formality.
+
+Not started: the Next 15 unification + async-request-API codemod, the React 19 bump itself, and
+tightening `tsconfig`/`no-explicit-any`'s budget (the `no-explicit-any: "warn"` override landed in
+Phase 1 already anticipates this — see that phase's status — but the "declining budget" enforcement
+mechanism itself isn't built). The actual version bumps are real, cross-cutting risk to both
+production-ish apps with no end-to-end test coverage to catch behavioral regressions — deliberately
+not started without checking in first, same as the rest of this phase's higher-risk items.
 
 ### Phase 4 — Transport & authentication **[MUST]** **[DONE, with named deviations]**
 
