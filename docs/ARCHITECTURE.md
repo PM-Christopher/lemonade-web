@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 3 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 6 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2162,12 +2162,28 @@ credentials) and confirmed a full 200 response with real page content and no ser
 `prefetchQuery`'s built-in error swallowing falls back to the client query rather than crashing the
 page when the server-side prefetch itself fails auth.
 
-Not started: converting the rest of the ~42 remaining Client Component pages in frontend (a large,
-page-by-page effort — three pages done carefully with real verification each is a deliberate pace,
-not a ceiling; picking up more later means repeating the same read-the-page, extract-the-query,
-verify-with-a-real-server loop this establishes) admin's list-shell/table-island split, server-side
-pagination (depends on backend endpoints landing it — not confirmed either way this phase),
-lazy-loading, bundle budgets, and Lighthouse CI.
+Three more pages followed the same pattern, each testing a shape the first three didn't cover:
+`event/[id]/guest-list` and `event/[id]/check-ins` both prefetch the same `getGuestList` endpoint
+(added once to `features/events/api.server.ts`, reused by both) while leaving their _other_ query —
+guest details / guest search — client-only on purpose, since both are `enabled` conditionally on user
+interaction (a selected guest, a typed search term) that doesn't exist at request time; there's
+nothing meaningful to prefetch for a query gated on state that hasn't happened yet.
+`settings/wallet/page.tsx` is the first non-dynamic-route conversion — no `[id]` segment, so the
+Server Component takes no params, just prefetches unconditionally (middleware already gates
+`/settings` behind login, so there's no client-side `enabled: isLoggedIn` branch to reproduce
+server-side). It's also CLAUDE.md's money bucket (`useWalletSettingsQuery`'s `staleTime` is 0) — worth
+noting explicitly since it's the first prefetch touching money data: the prefetch only seeds a real
+server-fetched snapshot for first paint, the client query is still immediately stale on mount and free
+to revalidate normally, so nothing about the staleness policy or "never optimistic for money" changes.
+
+Six pages converted, all verified the same way (lint/typecheck/build plus a real running server hit
+with a syntactically-valid-but-backend-rejected session cookie, confirming a full 200 with real
+content and no server error each time). Not started: converting the rest of the ~39 remaining Client
+Component pages in frontend (a large, page-by-page effort — deliberate pace, not a ceiling; picking up
+more later means repeating the same read-the-page, extract-the-query, verify-with-a-real-server loop
+this establishes), admin's list-shell/table-island split, server-side pagination (depends on backend
+endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets, and
+Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
