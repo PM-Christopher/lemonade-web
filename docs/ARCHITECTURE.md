@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 19 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 22 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2239,27 +2239,45 @@ Nineteen pages converted, all verified the same way (lint/typecheck/build plus a
 hit with a syntactically-valid-but-backend-rejected session cookie — and, for both `/connect` routes,
 also with no cookie at all — confirming a full 200 with real content and no server error each time).
 
-At this point every `(main)` page with a directly-callable TanStack Query hook has been converted.
-What's left splits into two buckets, both deliberately not attempted this round:
+At the 19-page mark, every `(main)` page with a directly-callable TanStack Query hook was converted;
+`event/page.tsx` turned out to be one of them after all — its `useQuery` calls live in child components
+(`Events.tsx`/`Organizer.tsx`/`Agent.tsx`), which a page-level-only grep had missed. It converted the
+same way as the other tabbed-list pages (prefetch the default "events" tab).
 
-1. **Pages not yet on TanStack Query** — still the pre-Phase-5 `useRequest` hook (confirmed for
-   `business/[id]/jobs/page.tsx`) or reading only from Redux (most of `settings/*`, `event/create-event`,
-   `event/add-ticket`, `business/add-business`, `business/[id]/boost-business`,
-   `event/[id]/assign-ticket`, `event/page.tsx`). Converting these to Server Components isn't a Phase 6
-   task by itself — they'd need a Phase 5-style query migration first.
-2. **`(auth)/profile-setup/page.tsx`** — genuinely different, not just unconverted. It calls
-   `useUserProfileQuery()` on purpose without a normal session: the comment in that file explains the
-   BFF proxy (`app/api/v1/[...path]/route.ts`) falls back to a separate onboarding cookie
+What remained split into three buckets. The user chose to continue by migrating `useRequest` pages onto
+TanStack Query — treated as a Phase 5 continuation, not a Phase 6 task by itself, but each migrated page
+became a Server Component candidate too, so both happened together:
+
+1. **`business/[id]/boost-business/page.tsx`** — `getBoostPackages` (the `listing/boosts` catalog) added
+   to `features/business/api.ts`/`api.server.ts`, `useBoostPackagesQuery` added (CLAUDE.md's reference-data
+   bucket, 1h, same as `useBanksQuery`), page converted to a Server Component. The real response type
+   (vs. `useRequest`'s untyped `any`) surfaced two genuine possibly-undefined bugs in
+   `handleSelectPackage` — fixed with `??` fallbacks, not papered over.
+2. **`business-categories`** — a `/shared/utilities/*` catalog endpoint with three real consumers
+   (`edit-business`, `add-business`, `BusinessFilter.tsx`), explicitly flagged out-of-scope in Phase 5.
+   Added the route constant, `getBusinessCategories` to `features/shared/api.ts`/`api.server.ts`, and
+   `useBusinessCategoriesQuery`. All three consumers switched over; `add-business/page.tsx` converted to
+   a Server Component (no dynamic params, nothing else to prefetch); `edit-business/page.tsx` (already
+   converted) got the same prefetch added alongside its existing business-record one, via `Promise.all`.
+3. **`(auth)/profile-setup/page.tsx`** — still deferred, and different in kind from the two above. It
+   calls `useUserProfileQuery()` on purpose without a normal session: the comment in that file explains
+   the BFF proxy (`app/api/v1/[...path]/route.ts`) falls back to a separate onboarding cookie
    (`ONBOARDING_TOKEN_COOKIE`, read via `bearerTokenOverride`) for this exact pre-session case —
    confirmed by reading that route handler. `lib/server-api.ts`'s `backendApi` (what every
    `api.server.ts` in this phase calls) has no equivalent onboarding-cookie fallback; only the BFF proxy
    does. Converting this page properly means extending shared server-side auth infrastructure, not
    reusing the established per-feature `api.server.ts` pattern — a bigger, riskier change than anything
-   else done this phase, so it's deferred rather than worked around.
+   else done this phase, so it stays deferred rather than worked around.
 
-Not started: admin's list-shell/table-island split, server-side pagination (depends on backend
-endpoints landing it — not confirmed either way this phase), lazy-loading, bundle budgets, and
-Lighthouse CI.
+Twenty-two pages converted, all verified the same way (lint/typecheck/build plus a real running server
+hit with a syntactically-valid-but-backend-rejected session cookie, confirming a full 200 with real
+content and no server error each time). Still not migrated, same `useRequest`/Redux-only reasoning as
+before: `business/[id]/jobs/page.tsx` (its own `/user/listing/:id/job-data` call), most of `settings/*`,
+`event/create-event`, `event/add-ticket`, `event/[id]/assign-ticket` — these have no read query to
+prefetch at all (pure forms/mutations), so they're not Server Component candidates even once migrated,
+only `business/[id]/jobs` (a real per-business read) would be. Not started: admin's
+list-shell/table-island split, server-side pagination (depends on backend endpoints landing it — not
+confirmed either way this phase), lazy-loading, bundle budgets, and Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
