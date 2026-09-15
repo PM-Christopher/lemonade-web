@@ -4,9 +4,11 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
 import { userBusinessRoutes } from "@lemonade/api-types";
-import type { BusinessDetailResponse } from "./api";
+import type { BusinessDetailResponse, BusinessListResponse } from "./api";
 
 export const businessServerApi = {
   getBusiness: (id: number | string) =>
     backendApi.get<BusinessDetailResponse>(`${userBusinessRoutes.BASE}/${id}`),
+
+  getBusinesses: () => backendApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
 };

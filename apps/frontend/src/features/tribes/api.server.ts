@@ -6,10 +6,13 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
 import { userTribeRoutes } from "@lemonade/api-types";
-import type { TribeDetailResponse, ThreadsResponse } from "./api";
+import type { TribeDetailResponse, ThreadsResponse, TribesListResponse } from "./api";
 
 export const tribesServerApi = {
   getTribe: (id: string) => backendApi.get<TribeDetailResponse>(`${userTribeRoutes.BASE}/${id}`),
+
+  getTribes: (tribeType: string) =>
+    backendApi.get<TribesListResponse>(`${userTribeRoutes.BASE}?type=${tribeType}`),
 
   getThreads: (id: string) =>
     backendApi.get<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/all`),

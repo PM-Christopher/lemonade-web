@@ -1,146 +1,27 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
-import BusinessSection from "@/components/business/Sections/BusinessSection";
-import ListingSection from "@/components/business/Sections/ListingSection";
-import BusinessSubMenu from "@/components/business/Menu/BusinessSubMenu";
-import SideMenu from "@/components/business/SideMenu";
-import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
-import { useSelector } from "react-redux";
-import MainLayout from "@/components/layouts/MainLayout";
-import BusinessFilter from "@/components/business/Modals/BusinessFilter";
-import { RootState } from "@/redux/store";
-import { useBusinessesQuery, useListingsQuery } from "@/features/business/queries";
-import { usePersistentMenuState } from "@/context/MenuStateProvider";
+// Server Component — prefetches the "business" tab's list on the server
+// (usePersistentMenuState's own fallback default — see
+// BusinessListClient.tsx). The "listings" tab's query stays client-only,
+// same reasoning as tribe/page.tsx: if a returning visitor has "listings"
+// persisted client-side, this prefetch is simply unused and the client
+// query fetches normally. See event/[id]/details/page.tsx and
+// docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/query-client.server";
+import { businessKeys } from "@/features/business/queries";
+import { businessServerApi } from "@/features/business/api.server";
+import BusinessListClient from "./BusinessListClient";
 
-const BusinessPage = () => {
-  const { setActive, getActive, selectedMenu } = usePersistentMenuState();
-  const persistedMenuOption = getActive("business") ?? "business";
+export default async function BusinessPage() {
+  const queryClient = getQueryClient();
 
-  const [menuOption, setMenuOption] = useState(persistedMenuOption);
-  // ✅ Sync local state when persisted value changes
-  useEffect(() => {
-    setMenuOption(persistedMenuOption);
-  }, [persistedMenuOption]);
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [isServiceOpen, setItServiceOpen] = useState(false);
-  const [businessFilter, setBusinessFilter] = useState(false);
-
-  const { selectedJob: job } = useSelector((state: RootState) => state.temp);
-  const { data: businessesData, isLoading: businessesLoading } = useBusinessesQuery({
-    enabled: menuOption === "business",
+  await queryClient.prefetchQuery({
+    queryKey: businessKeys.businesses(),
+    queryFn: businessServerApi.getBusinesses,
   });
-  const { data: listingsData, isLoading: listingsLoading } = useListingsQuery({
-    enabled: menuOption === "listings",
-  });
-  const businesses = businessesData?.businesses ?? [];
-  const featured = businessesData?.featured ?? [];
-  const listings = listingsData?.listings ?? [];
-  const loading = menuOption === "business" ? businessesLoading : listingsLoading;
-  const jobLoading = false;
-
-  const switchOption = (option: string) => {
-    setMenuOption(option);
-  };
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const toggleBusinessFilter = () => {
-    setBusinessFilter(!businessFilter);
-  };
-
-  const toggleServiceDetailsMenu = () => {
-    setItServiceOpen(!isServiceOpen);
-  };
-
-  const renderView = () => {
-    switch (menuOption) {
-      case "business":
-        return <BusinessSection businesses={businesses} loading={loading} featured={featured} />;
-      case "listings":
-        return <ListingSection businesses={listings} loading={loading} />;
-      default:
-        return <BusinessSection businesses={businesses} featured={featured} loading={loading} />;
-    }
-  };
-
-  const renderSubMenu = () => {
-    switch (menuOption) {
-      case "business":
-        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
-      case "listings":
-        return <></>;
-      default:
-        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
-    }
-  };
 
   return (
-    <MainLayout>
-      <section className="bg-light_grey pb-10">
-        <SideMenu
-          toggleMenu={toggleMenu}
-          isOpen={isOpen}
-          detailsToggle={toggleServiceDetailsMenu}
-        />
-        <div className="flex flex-col justify-between gap-2 border-b-[1px] border-t-[1px] bg-white p-5 px-10 laptop:flex-row laptop:items-center">
-          <div className="sm:text-base relative inline-flex rounded-xl bg-mid-grey p-[0.35em] text-sm">
-            {/* Sliding pill */}
-            <span
-              className={[
-                "absolute inset-[0.35em] w-[calc(50%-0.35em)] rounded-[0.7em] bg-white",
-                "transition-transform duration-300 ease-out",
-                menuOption === "listings" ? "translate-x-full" : "translate-x-0",
-              ].join(" ")}
-            />
-
-            {[
-              { key: "business", label: "Business" },
-              { key: "listings", label: "Listings" },
-            ].map((tab) => {
-              const isActive = menuOption === tab.key;
-
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => {
-                    switchOption(tab.key);
-                    setActive("business", tab.key);
-                  }}
-                  className="relative z-10 flex w-1/2 items-center justify-center rounded-[0.7em] px-[1em] py-[0.55em]"
-                >
-                  <span
-                    className={[
-                      "font-sans leading-none transition-colors duration-200",
-                      isActive ? "font-semibold text-gray-900" : "font-normal text-text-grey",
-                    ].join(" ")}
-                  >
-                    {tab.label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {renderSubMenu()}
-        </div>
-        {renderView()}
-        {Boolean(job) && (
-          <ServiceDetailsModal
-            job={job}
-            isOpen={isServiceOpen}
-            toggleMenu={toggleServiceDetailsMenu}
-            loading={jobLoading}
-          />
-        )}
-        <BusinessFilter toggle={toggleBusinessFilter} isOpen={businessFilter} />
-      </section>
-    </MainLayout>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <BusinessListClient />
+    </HydrationBoundary>
   );
-};
-
-export default BusinessPage;
+}
