@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 23 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 26 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2281,16 +2281,38 @@ and converted.** (What's left in that domain per `features/business/api.ts`'s NO
 the `business`/`listing` `verify-payment` flows — aren't page-level reads with a Server Component
 payoff; left alone.)
 
-Twenty-three pages converted, all verified the same way (lint/typecheck/build plus a real running server
+The user chose to take on the `settings/*` concentration too. Three of the ~30 leftover
+`ProfileController` routes had a real page-level read worth prefetching: `settings/notification/page.tsx`
+(`notification-settings`), `settings/plan/page.tsx` (the public plan catalog, `/user/subscription` — a
+genuinely different endpoint than the current user's own subscription, confirmed by reading the backend:
+a separate `SubscriptionController` at `/user/subscription`, distinct from `ProfileController`'s
+`/user/profile/subscription`), and `settings/billing-history/page.tsx`. All three migrated and
+converted.
+
+Where these landed surfaced a real architecture decision, not just a mechanical port: the natural
+home looked like `features/settings` (same domain as `useUserProfileQuery`/`useWalletSettingsQuery`),
+but the existing mutations for two of these three reads (`updateNotificationSettings`, `changePlan`)
+already live in `features/authentication`, left there from Phase 5. `eslint-plugin-boundaries` doesn't
+allow one feature's mutation to invalidate another feature's query keys (`features/x/**` may only reach
+`features/y/**` through its public surface, and there's no cross-feature invalidation path that
+respects that). Rather than force a cross-feature import, all three queries went into
+`features/authentication` instead, next to their mutations — keeping read and write in the same
+feature, which also meant `useUpdateNotificationSettingsMutation` and `useChangePlanMutation` could
+finally get real `invalidateQueries` calls. Neither mutation had any before this: the notification
+settings page never actually refreshed after toggling a setting — a real pre-existing gap, fixed as
+part of wiring the queries up correctly, not a side effect.
+
+Typed responses (vs. `useRequest`'s `any`) surfaced one more real gap: `data.app_settings[type]` indexed
+an object with a plain `string` variable — fixed with a `keyof AppSettings` cast and a null fallback,
+same class of fix as `boost-business`'s and `business/[id]/jobs`'s.
+
+Twenty-six pages converted, all verified the same way (lint/typecheck/build plus a real running server
 hit with a syntactically-valid-but-backend-rejected session cookie, confirming a full 200 with real
 content and no server error each time). Still not migrated: `event/create-event`, `event/add-ticket`,
 `event/[id]/assign-ticket` (pure forms/mutations, no read query at all — not Server Component candidates
-even once any of their mutations move), and the big remaining concentration, **`settings/*`** — Phase
-5's own status text already named this: ~30 `ProfileController` routes (notification settings,
-subscription/billing, account deletion, per-field profile edits) still on the legacy `useRequest` hook
-or untouched, spread across `settings/account/*`, `settings/billing-history`, `settings/notification`,
-`settings/plan/*`, `settings/privacy`, `settings/profile`, `settings/terms-and-conditions`. Larger scope
-than anything migrated so far this phase — not started. Also not started: admin's
+even once any of their mutations move), and the rest of `settings/*` — `settings/account/*`,
+`settings/plan/cancel-subscription`, `settings/privacy`, `settings/profile`, `settings/terms-and-conditions`
+— which are either pure forms/mutations (same as above) or genuinely untouched. Not started: admin's
 list-shell/table-island split, server-side pagination (depends on backend endpoints landing it — not
 confirmed either way this phase), lazy-loading, bundle budgets, and Lighthouse CI.
 
