@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 13 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 18 of ~45 frontend pages]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2209,10 +2209,30 @@ logged-out/loading state. Verified directly: hit the running production build bo
 fake-cookie technique and with **no cookie at all**, confirming both return a clean 200 with no server
 error. First `features/connect/api.server.ts` added, one endpoint (`getInvites`).
 
-Thirteen pages converted, all verified the same way (lint/typecheck/build plus a real running server
+Five more followed, extending the pattern into edit/create forms and the home dashboard rather than
+just detail pages: `business/[id]/edit-business/page.tsx` and `event/[id]/edit-event/page.tsx` both
+reuse existing endpoints (`businessServerApi.getBusiness`, `eventsServerApi.getEvent`) — each page's
+own record-loading query prefetches server-side, while a separate `useRequest` call on
+edit-business (a `/shared/utilities/*` catalog fetch, not a TanStack Query, already noted as
+out-of-scope in that file) stays entirely client-side, same treatment as an interaction-gated query.
+`event/[id]/add-ticket/page.tsx` and `event/[id]/promote-event/page.tsx` each needed one new
+`events/api.server.ts` endpoint (`getEventTickets`, `getPromotions`) — `promote-event` is notable for
+being the first prefetched query with no `id` argument at all despite living under a `[id]` route
+(the promotions catalog is global; the id is only used later, for the payment redirect).
+
+The home page (`app/(main)/page.tsx`, `DashboardPage`) is the sixth and most structurally different:
+three independent queries (`useDashboardTribesQuery`, `useDashboardEventsQuery`,
+`useDashboardBusinessesQuery`, each `enabled: isLoggedIn` client-side) all prefetched concurrently via
+`Promise.all`, same concurrency pattern `tribe/[id]/page.tsx` established for its three queries back in
+the first batch. First `features/dashboard/api.server.ts`. No dynamic params, and middleware already
+gates `/` behind login (it's literally in `PROTECTED_PREFIXES`), so — same reasoning as
+`settings/wallet/page.tsx` — there's no client-side `enabled` branch to reproduce server-side; the
+prefetch runs unconditionally.
+
+Eighteen pages converted, all verified the same way (lint/typecheck/build plus a real running server
 hit with a syntactically-valid-but-backend-rejected session cookie — and, for `connect/requests`, also
 with no cookie at all — confirming a full 200 with real content and no server error each time). Not
-started: converting the rest of the ~32 remaining Client Component pages in frontend (a large,
+started: converting the rest of the ~27 remaining Client Component pages in frontend (a large,
 page-by-page effort — deliberate pace, not a ceiling; picking up more later means repeating the same
 read-the-page, extract-the-query, verify-with-a-real-server loop this establishes; note that several
 pages have no `useQuery` at all — still on the pre-Phase-5 `useRequest` hook (confirmed for
