@@ -11,7 +11,7 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
 import { userEventRoutes } from "@lemonade/api-types";
-import type { EventDetailResponse, GuestListResponse } from "./api";
+import type { EventDetailResponse, GuestListResponse, AffiliateEventDetailResponse } from "./api";
 
 export const eventsServerApi = {
   getEvent: (id: number | string) =>
@@ -19,4 +19,7 @@ export const eventsServerApi = {
 
   getGuestList: (id: number | string) =>
     backendApi.get<GuestListResponse>(`${userEventRoutes.BASE}/${id}/guest-list`),
+
+  getAffiliateEvent: (id: number | string) =>
+    backendApi.get<AffiliateEventDetailResponse>(`${userEventRoutes.AFFILIATE}/${id}`),
 };
