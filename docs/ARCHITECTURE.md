@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[NOT STARTED]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — pattern proven, one page]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2132,6 +2132,37 @@ Now possible, because auth is server-readable and data fetching is query-shaped.
 - Admin: server-render list shells, keep tables as client islands
 - Server-side pagination as backend endpoints land it; move page/sort/filter state into `searchParams`
 - Lazy-load heavy leaves; add bundle budgets and Lighthouse CI to the PR pipeline
+
+**Status:** One real finding before any code: there is no `(public)` route group today, and there
+never has been — `middleware.ts`'s `PROTECTED_PREFIXES` gates `/event`, `/tribe`, `/business`,
+`/settings` and `/` (root) behind login entirely. Every one of frontend's 45 pages is a Client
+Component today (confirmed by checking each `page.tsx`'s first line); admin has 6 of 31 already
+server-rendered. So the first bullet's literal ask — public event/tribe/business pages with real
+Open Graph metadata — is blocked on a genuine product/access-control decision (should an
+unauthenticated visitor be able to view these at all? today they're redirected to `/login`), not an
+implementation detail, and wasn't decided or acted on here.
+
+What Server Components buy independent of that question — faster first paint for already-logged-in
+users, no change to who can see what — was pursued instead, and the pattern is proven on one page:
+`apps/frontend/src/app/(main)/event/[id]/details/page.tsx` is now a real async Server Component. Two
+new, reusable pieces came out of it: `lib/query-client.server.ts` (one `QueryClient` per request via
+React's `cache()`, the standard prefetch-then-`<HydrationBoundary>` pattern) and a
+`features/events/api.server.ts` convention (a server-side twin of one endpoint from a feature's
+`api.ts`, calling the backend directly via `lib/server-api.ts` instead of the BFF proxy round-trip a
+Client Component needs — only the specific endpoint being prefetched, not a wholesale mirror). The
+existing Client Component becomes `<Feature>Client.tsx` verbatim, taking the resolved id as a plain
+prop instead of unwrapping `params` itself — `useEventQuery()` inside it is completely unchanged,
+same staleTime/refetch/invalidation, it just starts with data already in cache. Verified beyond
+lint/typecheck/build: hit the running production build with a syntactically-valid-but-backend-rejected
+session cookie (to get past middleware without real credentials) and confirmed a full 200 response
+with no server error when the server-side prefetch itself fails auth — `prefetchQuery`'s built-in
+error swallowing falls back to the client query rather than crashing the page.
+
+Not started: converting the rest of the ~44 remaining Client Component pages (a large, page-by-page
+effort — this one page's split, done carefully with real verification, is a better use of a single
+pass than doing several quickly), admin's list-shell/table-island split, server-side pagination
+(depends on backend endpoints landing it — not confirmed either way this phase), lazy-loading, bundle
+budgets, and Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
