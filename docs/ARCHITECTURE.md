@@ -2366,8 +2366,35 @@ All verified the same way as frontend's conversions: lint/typecheck/build plus a
 `next start` hit with a syntactically-valid-but-backend-rejected `lemonade_admin_token` cookie,
 confirming a full 200 with no server error, for every converted route.
 
+**Dead-dependency cleanup.** A fresh audit before touching bundle size turned up confirmed-dead packages
+still sitting in `package.json` from §14's perf table: `zustand` (admin, zero importers anywhere),
+`firebase-admin` (frontend — `firebase`, the client SDK, is genuinely used for FCM push notifications
+and stays), `react-date-picker` (zero importers in either app — `react-datepicker` is the one actually
+used), and `scroll-into-view-if-needed`/`smooth-scroll-into-view-if-needed` (zero importers in either
+app). All confirmed via grep before removal, same methodology as every other dead-code find this
+session. `pnpm install` dropped 109 packages. Typecheck/lint/build clean in both apps; First Load JS
+was essentially unchanged, since none of these were ever in the shipped bundle — the real win is
+smaller `node_modules`, faster installs, and less transitive-dependency attack surface (relevant to the
+CI `audit` job's own note about most advisories living in exactly this kind of dead weight).
+
+**Lazy-loading heavy leaf UI.** Targeted the biggest modals by line count in both apps (`wc -l` across
+`components/**/Modal*.tsx` and `modals/**`), all genuine leaf UI — gated behind `isOpen`/a click, never
+needed for first paint. Converted each to `next/dynamic(() => import(...), { ssr: false })` at its
+import site: 17 modals across 14 files in frontend (`UpdateModal` 575 lines down to
+`NotificationSettingsModal` 140), 8 across 6 files in admin (`CreatePromotionModal` down to
+`WalletThresholdModal`). Verified with a real `next build`: First Load JS dropped meaningfully on the
+pages that carried the heaviest modals — frontend's `tribe/[id]` 473 KB → 369 KB, admin's `/events`
+218 KB → 182 KB, `/team` 204 KB → 179 KB, `/wallet-management` 207 KB → 183 KB — all comfortably inside
+the §15 budgets (350 KB frontend authenticated, 500 KB admin). One page's own-chunk size *grew* in the
+build output (`event/[id]/buy-ticket`, 7.6 KB → 43 KB) — investigated rather than dismissed: its actual
+First Load JS (the number the budget cares about) moved by about 1 KB, confirming webpack just
+reshuffled what counts as "shared" vs "page-specific" once other pages' modals left the synchronous
+graph, not a real regression. Found and removed one genuinely dead duplicate import along the way
+(`admin/users/[id]/UserDetailsClient.tsx` had both `SuspendModal` and a lowercase `suspendModal`
+importing the same module — only the capitalized one was ever used).
+
 Not started: server-side pagination (depends on backend endpoints landing it — not confirmed either way
-this phase), lazy-loading, bundle budgets, and Lighthouse CI.
+this phase), bundle budgets (CI), and Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
