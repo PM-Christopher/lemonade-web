@@ -2420,7 +2420,7 @@ lands, extending `collect.url` in `lighthouserc.frontend.json` is the only chang
 endpoints landing it (§13's Conflict 1), not confirmed either way this phase, and isn't something the
 frontend can implement alone.
 
-### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed; Tailwind tokens and a11y partially done, both documented below; arbitrary-pixel lint and full modal/contrast audit remain]**
+### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added; a11y partially done; full modal migration and contrast audit remain]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -2578,6 +2578,30 @@ mechanical fix, and not something verifiable without a browser in this environme
 audited either — checking real rendered contrast ratios against WCAG needs either a browser or a
 palette-wide script computing ratios for every `text`/`bg` color pairing actually used together, neither
 of which this pass had the tooling or the scope to do safely.
+
+**Arbitrary pixel values are now a lint warning, with the same declining-budget ratchet already used for
+`no-explicit-any`.** `eslint-plugin-tailwindcss`'s own `no-arbitrary-value` rule turned out to be the
+wrong tool — it flags every arbitrary value (colors, percentages, `calc()`), not just the `[Npx]` pattern
+this phase's own bullet and §18's table actually track, and it needs a resolved Tailwind config at lint
+time (extra fragility for no real gain here). Wrote a small custom rule instead —
+`packages/config/eslint-rules/no-hardcoded-pixel-class.js` — that just regex-matches `-[Npx]` in string
+literals and template-literal chunks, registered as `local/no-hardcoded-pixel-class`. Same severity split
+as every other measured-debt rule this session: `"error"` in the shared `packages/config/eslint.config.mjs`
+(so a new package starts clean), downgraded to `"warn"` in each app's own `eslint.config.mjs` with the
+measured count in the comment.
+
+Actually running it surfaced a real number, not the stale one: **2,591 in frontend, 1,487 in admin** —
+lower than the 7,041 the roadmap measured before this session, almost certainly because Phase 6/7's own
+work (Server Component conversions, the MUI/antd removal, the primitives lift) already rewrote a lot of
+the files that count was measured against. Seeded `packages/config/pixel-class-budget.json` with today's
+real counts, not the old figure. Enforcement is `packages/config/scripts/check-pixel-budget.mjs` — a
+generalized version of the existing `check-any-budget.mjs` (both now share
+`packages/config/scripts/check-rule-budget.core.mjs` rather than duplicating the same ~60 lines of
+"run eslint --format json, count one ruleId, compare to a budget" twice), wired into both apps'
+`package.json` as `lint:pixel-budget` and into `.github/workflows/ci.yml` right next to the any-type
+budget step. While in there, the any-type budget script surfaced its own real improvement from earlier
+in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
+`no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
 
 ### Phase 8 — Observability & hardening **[SHOULD]** **[STARTED — code-only bullets done; Sentry and full e2e blocked, see below]**
 
@@ -2755,7 +2779,7 @@ backend work.
 | Apps with lint config             |        0 |                                                                                                                                                                            0 |                     2 | P1     | CI fails on warnings                         |
 | Apps with route protection        | 1 (weak) |                                                                           2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated |         2 (validated) | P4     | e2e: unauthenticated deep link redirects     |
 | Public routes server-rendered     |        0 |                                                                                                                                                                            0 |     All in `(public)` | P6     | View source shows content pre-hydration      |
-| Hardcoded pixel classes           |    7,041 |                                                                                                                                                not re-measured this revision |     Declining, no new | P7     | Lint warning; ratchet on the count           |
+| Hardcoded pixel classes           |    7,041 |                                                    4,078 (2,591 frontend + 1,487 admin) — measured fresh via the new `local/no-hardcoded-pixel-class` rule, not the stale count |     Declining, no new | P7     | Lint warning; ratchet on the count — **done** |
 
 **Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
 remaining `Authorization`-header files) was real on both sides. Frontend read a `token` cookie that

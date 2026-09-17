@@ -38,6 +38,14 @@ jobs:
           (cd apps/frontend && pnpm run lint:any-budget)
           (cd apps/admin && pnpm run lint:any-budget)
 
+      # Same ratchet, for local/no-hardcoded-pixel-class ("warn" at the app
+      # layer — see apps/*/eslint.config.mjs and docs/ARCHITECTURE.md
+      # Phase 7): fails if either app's hardcoded `[Npx]` class count grew.
+      - name: Pixel-class budget
+        run: |
+          (cd apps/frontend && pnpm run lint:pixel-budget)
+          (cd apps/admin && pnpm run lint:pixel-budget)
+
       - name: Typecheck
         run: pnpm turbo run typecheck --filter=...[origin/main]
 

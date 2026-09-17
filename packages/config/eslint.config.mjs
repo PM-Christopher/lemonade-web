@@ -9,6 +9,7 @@ import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import boundaries from "eslint-plugin-boundaries";
 import reactHooks from "eslint-plugin-react-hooks";
+import local from "./eslint-rules/no-hardcoded-pixel-class.js";
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
@@ -34,10 +35,16 @@ export default [
       "@typescript-eslint": tseslint,
       "react-hooks": reactHooks,
       boundaries,
+      local,
     },
     rules: {
       // Prevents the 574 `any` annotations measured in the pre-migration apps.
       "@typescript-eslint/no-explicit-any": "error",
+
+      // Prevents the 7,041 hardcoded `[Npx]` classes measured pre-Phase-7 —
+      // see packages/config/eslint-rules/no-hardcoded-pixel-class.js and
+      // docs/ARCHITECTURE.md §7/§18.
+      "local/no-hardcoded-pixel-class": "error",
 
       // Prevents the 32 stale-closure effects found in admin's app/ tree.
       "react-hooks/exhaustive-deps": "error",
