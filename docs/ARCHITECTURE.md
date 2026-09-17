@@ -2420,7 +2420,7 @@ lands, extending `collect.url` in `lighthouserc.frontend.json` is the only chang
 endpoints landing it (§13's Conflict 1), not confirmed either way this phase, and isn't something the
 frontend can implement alone.
 
-### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
+### Phase 7 — Design system **[SHOULD]** **[STARTED]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -2428,6 +2428,58 @@ Deferred deliberately: visible, but not structural. Safe to run in parallel with
 - One Tailwind preset with real tokens; arbitrary pixel values become lint warnings
 - Remove MUI, antd and Evergreen; add the import ban
 - Accessibility pass: focus management, dialog semantics, table headers, contrast
+
+**Status:** MUI and antd removed entirely, confirmed via grep before touching anything (the same
+methodology as every dead-dependency find this session, including deep subpath imports like
+`@mui/material/Alert` a bare-package grep would miss). `@mui/material` had **zero real usage in either
+app** — pure dead weight, likely left over from an early scaffold. `antd` had exactly three real call
+sites total: `apps/frontend/src/redux/Provider.tsx` (`AntdRegistry` + `ConfigProvider`, wrapping the
+*entire app*, not a specific page — theming setup for antd's `Modal` component specifically),
+`apps/frontend/src/components/navigation/TopNav.tsx` (`Button`, `Empty`, `Modal` — the notification
+bell's dropdown, rendered on every authenticated page via `MainLayout`), and
+`apps/admin/src/app/(main)/users/UsersClient.tsx` (a `Select` for the status filter). Migrated all
+three onto the shadcn/Radix primitives already in `components/ui/` (`Dialog`, `Button`, `Select` — no
+new primitive needed): `TopNav`'s two antd `Modal`s became `Dialog`/`DialogContent`/`DialogHeader`/
+`DialogTitle` (kept `DialogTitle` for Radix's own a11y requirement rather than hiding it, since this
+phase's own last bullet is an accessibility pass — no shortcut here); `Empty` became a plain "No new
+notifications" text block (no shadcn equivalent needed, it's just an empty-state message); `Button
+type="link"` became `variant="link"`; admin's antd `Select` became `Select`/`SelectTrigger`/
+`SelectValue`/`SelectContent`/`SelectItem`, the exact same composition already used elsewhere in this
+app (`tribe/page.tsx`'s status filter, migrated during Phase 6). Along the way, found and fixed a real
+gap the typed switch from `any` surfaced: `apps/admin/src/components/global/AlertMessage.tsx` used
+`@mui/material/Alert` (a deep subpath import the first grep pass missed) for the app's global toast —
+`apps/frontend`'s own equivalent `AlertMessage.tsx` already used `react-hot-toast` (already a shared
+dependency in both apps) instead, so admin's was rewritten to match it exactly rather than inventing a
+third pattern — the two apps now render the identical `toastifySlice`-driven toast the same way.
+
+Removed `antd`, `@ant-design/nextjs-registry`, `@mui/material`, `@emotion/react`, `@emotion/styled` from
+both `package.json`s (confirmed zero remaining importers of any of these, including subpaths, before
+removing) — 93 packages dropped from `node_modules`. The `no-restricted-imports` ban on `@mui/*`/
+`antd`/`evergreen-ui` already existed (added ahead of this work, anticipating it) and stays at `warn`,
+not `error`: it's one shared rule entry that also bans `axios`, and ESLint's severity is per-rule, not
+per-pattern — flipping it to `error` now would additionally hard-block on the 24 files still importing
+axios directly, a separate, still-outstanding migration this phase didn't touch. Left a comment in
+`apps/frontend/eslint.config.mjs` explaining exactly that, so a future reader doesn't mistake the "warn"
+level for MUI/antd/Evergreen cleanup being incomplete.
+
+**The real payoff wasn't the package count — it was bundle size**, because `Providers` (via
+`AntdRegistry`/`ConfigProvider`) wrapped every single page in the app, not just the ones that used antd
+directly. Verified with a real `next build` before/after: frontend's `/settings/wallet` First Load JS
+went from 304 KB to 236 KB, `/tribe/[id]` from 369 KB to 289 KB, `/settings` from 286 KB to 228 KB.
+Admin's `/users` — the one page with a real antd component — dropped from 272 KB to 210 KB, with the
+page's own chunk alone shrinking from 99 KB to 6.1 KB (antd's `Select` was apparently ~93 KB on its
+own). Every frontend and admin route landed comfortably inside the §15 budgets (200/350 KB frontend,
+500 KB admin) after this change; several routes that were already over budget before this session (from
+before Phase 6/7's work started) are now well under it as a side effect, though that was never the
+target — the ratchet in `tooling/bundle-budget/` only checks for regression, not for taking credit on
+debt a PR happened to pay down. Verified beyond typecheck/lint/build: a real `next start` hit on every
+page that rendered one of the migrated components (`/`, `/tribe/[id]`, `/event`, `/settings`,
+`/settings/wallet` for frontend; `/`, `/users`, `/login` for admin, since `AlertMessage` renders in the
+root layout) — all clean 200s, no server error.
+
+Not started: lifting primitives into `@lemonade/ui` (today they're app-local `components/ui/`, one copy
+per app — genuinely duplicated, not yet promoted, since Phase 7 hadn't started before this pass), the
+Tailwind preset with real tokens, and the accessibility pass.
 
 ### Phase 8 — Observability & hardening **[SHOULD]** **[NOT STARTED]**
 
