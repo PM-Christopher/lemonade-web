@@ -632,6 +632,15 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@20.19.43)(jsdom@25.0.1)(sass@1.104.0)
 
+  tooling/bundle-budget:
+    devDependencies:
+      '@lemonade/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@20.19.43)(jsdom@25.0.1)(sass@1.104.0)
+
   tooling/generate-api-types:
     devDependencies:
       '@lemonade/config':

@@ -1,0 +1,14 @@
+{
+  "name": "@lemonade/bundle-budget",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Parses next build's own route table (First Load JS per route) and fails CI on regression vs. the base branch. See README.md.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@lemonade/config": "workspace:*",
+    "vitest": "^2.1.8"
+  }
+}

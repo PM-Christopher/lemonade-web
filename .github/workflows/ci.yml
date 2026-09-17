@@ -1,9 +1,8 @@
 name: CI
 
 # Mirrors the shape of lemonade-backend's `composer test:ci` gate, and the
-# pipeline documented in docs/ARCHITECTURE.md §19. bundle-budget and e2e
-# jobs are still TODOs — they depend on pieces that don't exist yet (apps/*
-# actually containing code, a Playwright setup).
+# pipeline documented in docs/ARCHITECTURE.md §19. e2e is still a TODO — it
+# depends on a Playwright setup that doesn't exist yet.
 
 on:
   pull_request:
@@ -101,8 +100,52 @@ jobs:
       - name: Audit (report only)
         run: pnpm audit --audit-level=high || true
 
-  # TODO(Phase 6): fail on bundle-size regression vs. base branch.
-  # bundle-budget:
+  # Fails on First Load JS regression vs. the PR's base branch — never on an
+  # absolute number for a route that already existed, so the ratchet only
+  # turns one way (see docs/ARCHITECTURE.md §15 and
+  # tooling/bundle-budget/README.md). PR-only: a push to main has no base
+  # branch of its own to diff against.
+  bundle-budget:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install (PR branch)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build PR branch and snapshot bundle sizes
+        run: |
+          pnpm --filter lemonade-app build | node tooling/bundle-budget/parse-build-output.mjs > /tmp/current-frontend.json
+          pnpm --filter lemonade-admin build | node tooling/bundle-budget/parse-build-output.mjs > /tmp/current-admin.json
+
+      - name: Check out base branch into a separate worktree
+        run: git worktree add /tmp/base-branch ${{ github.event.pull_request.base.sha }}
+
+      - name: Install (base branch)
+        working-directory: /tmp/base-branch
+        run: pnpm install --frozen-lockfile
+
+      - name: Build base branch and snapshot bundle sizes
+        working-directory: /tmp/base-branch
+        run: |
+          pnpm --filter lemonade-app build | node tooling/bundle-budget/parse-build-output.mjs > /tmp/base-frontend.json
+          pnpm --filter lemonade-admin build | node tooling/bundle-budget/parse-build-output.mjs > /tmp/base-admin.json
+
+      - name: Compare frontend
+        run: node tooling/bundle-budget/compare.mjs --base /tmp/base-frontend.json --current /tmp/current-frontend.json --app frontend
+
+      - name: Compare admin
+        run: node tooling/bundle-budget/compare.mjs --base /tmp/base-admin.json --current /tmp/current-admin.json --app admin
 
   # TODO(Phase 8): Playwright, the ten journeys from docs/ARCHITECTURE.md §17,
   # merge queue only.
