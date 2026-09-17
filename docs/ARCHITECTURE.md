@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 26 of ~45 frontend pages; admin done]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[MOSTLY DONE — 26 of ~45 frontend pages (rest verified non-candidates); admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI all done; server-side pagination blocked on backend]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2393,8 +2393,32 @@ graph, not a real regression. Found and removed one genuinely dead duplicate imp
 (`admin/users/[id]/UserDetailsClient.tsx` had both `SuspendModal` and a lowercase `suspendModal`
 importing the same module — only the capitalized one was ever used).
 
-Not started: server-side pagination (depends on backend endpoints landing it — not confirmed either way
-this phase), bundle budgets (CI), and Lighthouse CI.
+**Bundle budgets, enforced in CI.** `tooling/bundle-budget/` parses `next build`'s own route table
+(First Load JS per route — a real number Next already computes, not re-derived worse from raw chunk
+files) and fails a new `bundle-budget` CI job on regression vs. the PR's base branch, never on an
+absolute number for a route that already existed — the §15 principle ("the ratchet only turns one
+way") implemented literally: an existing route already over budget is left alone unless a PR makes it
+worse, while a brand-new route with no baseline is judged against the app's absolute ceiling (200/350
+KB frontend public/authenticated, 500 KB admin) since there's nothing to regress against. Verified
+against real build output, including a deliberately-injected regression to confirm the check actually
+fails when it should. 12 unit tests cover the parser and the comparison logic.
+
+**Lighthouse CI**, added as a `lighthouse` CI job, but narrower than §15's literal ask and honestly
+scoped rather than faked: that section's LCP/CLS targets were written for public event/tribe/business
+pages, which — as this phase's own opening finding established — don't exist as public pages today and
+won't until the deferred product decision lands. So `tooling/lighthouse-ci/` checks the pages that
+actually are reachable without a session: `middleware.ts`'s own pre-login `PUBLIC_PATHS` (login, signup,
+forgot-password for frontend; login and forgot-password for admin, at its own desktop preset per
+CLAUDE.md's "admin is desktop" framing). Every assertion is `warn`, not `error` — same reasoning as the
+`audit` job's own "report, don't block on debt nobody's measured yet": a real local run against these
+exact pages found frontend's LCP sitting at ~3.6s against the 2.5s target (admin's two pages already
+pass clean) — a genuine, previously-unmeasured finding, and blocking on it immediately would fail every
+PR on pre-existing performance, not on anything that PR introduced. When the public-pages decision
+lands, extending `collect.url` in `lighthouserc.frontend.json` is the only change needed.
+
+**Server-side pagination** is the one Phase 6 bullet still not started — it depends on backend
+endpoints landing it (§13's Conflict 1), not confirmed either way this phase, and isn't something the
+frontend can implement alone.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
