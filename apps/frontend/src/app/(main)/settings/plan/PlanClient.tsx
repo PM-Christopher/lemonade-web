@@ -7,14 +7,27 @@ import { useSelector } from "react-redux";
 import { useSubscriptionPlansQuery } from "@/features/authentication/queries";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useRouter, useSearchParams } from "next/navigation";
-import UpgradePlanModal from "@/components/settings/Modal/UpgradePlanModal";
+import dynamic from "next/dynamic";
 import { useTransactionPolling } from "@/hooks/useTransactionPolling";
 import { SubscriptionsSkeleton } from "@/components/Skeletons";
-import VerifiedSubscriptionModal from "@/components/settings/Modal/VerifiedSubscriptionModal";
 import { useAppDispatch } from "@/redux/hook";
 import { changeSubscription } from "@/features/authentication/authSlice";
 import { useSubscriptionPlanMutation } from "@/features/authentication/mutations";
 import { RootState } from "@/redux/store";
+
+// Off the initial bundle — both are only needed once a plan-change is
+// triggered or a payment completes (docs/ARCHITECTURE.md Phase 6,
+// "lazy-load heavy leaf UI").
+const UpgradePlanModal = dynamic(
+  () => import("@/components/settings/Modal/UpgradePlanModal"),
+  {
+    ssr: false,
+  },
+);
+const VerifiedSubscriptionModal = dynamic(
+  () => import("@/components/settings/Modal/VerifiedSubscriptionModal"),
+  { ssr: false },
+);
 
 const PlanClient = () => {
   const { subscription, user } = useSelector((state: RootState) => state.auth);

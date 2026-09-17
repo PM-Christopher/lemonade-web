@@ -3,11 +3,18 @@ import React, { useState } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
-import NotificationSettingsModal from "@/components/settings/Modal/NotificationSettingsModal";
+import dynamic from "next/dynamic";
 import { useNotificationSettingsQuery } from "@/features/authentication/queries";
 import type { AppSettings } from "@/features/authentication/api";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
+
+// Off the initial bundle — only needed once a notification row is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const NotificationSettingsModal = dynamic(
+  () => import("@/components/settings/Modal/NotificationSettingsModal"),
+  { ssr: false },
+);
 
 const NotificationSettingsClient = () => {
   const router = useRouter();

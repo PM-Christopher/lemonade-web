@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import BankAccountModal from "@/components/events/Modals/BankAccountModal";
+import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -22,6 +22,15 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
+
+// Off the initial bundle — only needed once the bank-account section is
+// opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const BankAccountModal = dynamic(
+  () => import("@/components/events/Modals/BankAccountModal"),
+  {
+    ssr: false,
+  },
+);
 
 type Ticket = {
   ticket_type: string; // was: "free" | "paid"

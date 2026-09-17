@@ -10,7 +10,7 @@ import AgentSectionView from "@/components/events/views/Agent";
 import MainLayout from "@/components/layouts/MainLayout";
 import TicketIcon from "@/images/icons/ticket.svg";
 import SettingsIcon from "@/images/icons/settingsIcon.svg";
-import FilterEventModal from "@/components/events/Modals/FilterEventModal";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
@@ -24,6 +24,15 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
 import VerifyPaymentModal from "@/components/events/Modals/VerifyPaymentModal";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
+
+// Off the initial bundle — only needed once the filter button is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const FilterEventModal = dynamic(
+  () => import("@/components/events/Modals/FilterEventModal"),
+  {
+    ssr: false,
+  },
+);
 
 const EventListClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

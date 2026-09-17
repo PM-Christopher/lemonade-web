@@ -5,13 +5,23 @@ import BusinessSection from "@/components/business/Sections/BusinessSection";
 import ListingSection from "@/components/business/Sections/ListingSection";
 import BusinessSubMenu from "@/components/business/Menu/BusinessSubMenu";
 import SideMenu from "@/components/business/SideMenu";
-import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
 import { useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import BusinessFilter from "@/components/business/Modals/BusinessFilter";
 import { RootState } from "@/redux/store";
-import { useBusinessesQuery, useListingsQuery } from "@/features/business/queries";
+import {
+  useBusinessesQuery,
+  useListingsQuery,
+} from "@/features/business/queries";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
+import dynamic from "next/dynamic";
+
+// Off the initial bundle — only needed once a service card is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const ServiceDetailsModal = dynamic(
+  () => import("@/components/business/Modals/ServiceDetailsModal"),
+  { ssr: false },
+);
 
 const BusinessListClient = () => {
   const { setActive, getActive, selectedMenu } = usePersistentMenuState();
@@ -28,16 +38,18 @@ const BusinessListClient = () => {
   const [businessFilter, setBusinessFilter] = useState(false);
 
   const { selectedJob: job } = useSelector((state: RootState) => state.temp);
-  const { data: businessesData, isLoading: businessesLoading } = useBusinessesQuery({
-    enabled: menuOption === "business",
-  });
+  const { data: businessesData, isLoading: businessesLoading } =
+    useBusinessesQuery({
+      enabled: menuOption === "business",
+    });
   const { data: listingsData, isLoading: listingsLoading } = useListingsQuery({
     enabled: menuOption === "listings",
   });
   const businesses = businessesData?.businesses ?? [];
   const featured = businessesData?.featured ?? [];
   const listings = listingsData?.listings ?? [];
-  const loading = menuOption === "business" ? businessesLoading : listingsLoading;
+  const loading =
+    menuOption === "business" ? businessesLoading : listingsLoading;
   const jobLoading = false;
 
   const switchOption = (option: string) => {
@@ -59,22 +71,44 @@ const BusinessListClient = () => {
   const renderView = () => {
     switch (menuOption) {
       case "business":
-        return <BusinessSection businesses={businesses} loading={loading} featured={featured} />;
+        return (
+          <BusinessSection
+            businesses={businesses}
+            loading={loading}
+            featured={featured}
+          />
+        );
       case "listings":
         return <ListingSection businesses={listings} loading={loading} />;
       default:
-        return <BusinessSection businesses={businesses} featured={featured} loading={loading} />;
+        return (
+          <BusinessSection
+            businesses={businesses}
+            featured={featured}
+            loading={loading}
+          />
+        );
     }
   };
 
   const renderSubMenu = () => {
     switch (menuOption) {
       case "business":
-        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
+        return (
+          <BusinessSubMenu
+            toggle={toggleMenu}
+            toggleBusiness={toggleBusinessFilter}
+          />
+        );
       case "listings":
         return <></>;
       default:
-        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
+        return (
+          <BusinessSubMenu
+            toggle={toggleMenu}
+            toggleBusiness={toggleBusinessFilter}
+          />
+        );
     }
   };
 
@@ -93,7 +127,9 @@ const BusinessListClient = () => {
               className={[
                 "absolute inset-[0.35em] w-[calc(50%-0.35em)] rounded-[0.7em] bg-white",
                 "transition-transform duration-300 ease-out",
-                menuOption === "listings" ? "translate-x-full" : "translate-x-0",
+                menuOption === "listings"
+                  ? "translate-x-full"
+                  : "translate-x-0",
               ].join(" ")}
             />
 
@@ -116,7 +152,9 @@ const BusinessListClient = () => {
                   <span
                     className={[
                       "font-sans leading-none transition-colors duration-200",
-                      isActive ? "font-semibold text-gray-900" : "font-normal text-text-grey",
+                      isActive
+                        ? "font-semibold text-gray-900"
+                        : "font-normal text-text-grey",
                     ].join(" ")}
                   >
                     {tab.label}

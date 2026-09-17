@@ -4,8 +4,7 @@ import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import RequestCard from "@/components/connect/RequestCard";
-import InviteModal from "@/components/connect/Modal/InviteModal";
-import ConnectModal from "@/components/connect/Modal/ConnectModal";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -14,6 +13,21 @@ import { useFindUserMutation } from "@/features/connect/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { InviteSkeleton } from "@/components/Skeletons";
+
+// Off the initial bundle — both are only needed once their triggering
+// action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const InviteModal = dynamic(
+  () => import("@/components/connect/Modal/InviteModal"),
+  {
+    ssr: false,
+  },
+);
+const ConnectModal = dynamic(
+  () => import("@/components/connect/Modal/ConnectModal"),
+  {
+    ssr: false,
+  },
+);
 
 const RequestsClient = () => {
   const router = useRouter();

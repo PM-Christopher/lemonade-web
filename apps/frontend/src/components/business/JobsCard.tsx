@@ -5,13 +5,20 @@ import ChevronRight from "@/images/icons/chevronRight.svg";
 import { formatCountry } from "@lemonade/domain";
 import { formatStringUCFirst } from "@/lib/helper";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import ServiceDetailsModal from "@/components/business/Modals/ServiceDetailsModal";
 import { useAppDispatch } from "@/redux/hook";
 import { useSelector } from "react-redux";
 import { useGetJobMutation } from "@/features/business/mutations";
 import { setSelectedJob } from "@/redux/tempSlice";
 import JobEmpty from "@/image/JobEmpty.png";
 import { RootState } from "@/redux/store";
+import dynamic from "next/dynamic";
+
+// Off the initial bundle — only needed once a job row is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const ServiceDetailsModal = dynamic(
+  () => import("@/components/business/Modals/ServiceDetailsModal"),
+  { ssr: false },
+);
 
 type JobCardInterface = {
   jobs: any;
@@ -71,7 +78,9 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                       className="h-[40px] w-[40px] rounded-xl border border-step-color object-cover"
                     />
                     <div className="flex flex-col">
-                      <p className="text-[15px] font-semibold text-black">{job?.name}</p>
+                      <p className="text-[15px] font-semibold text-black">
+                        {job?.name}
+                      </p>
                       <p className="mt-1 text-[13px] text-text-grey">
                         {job?.city}, {formatCountry(job?.country)}
                       </p>
@@ -122,7 +131,12 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
       ) : (
         <div className="mt-[150px] flex items-center justify-center">
           <div className="flex flex-col items-center">
-            <Image src={"/images/jobEmpty.png"} alt="empty_jobs" width={160} height={141} />
+            <Image
+              src={"/images/jobEmpty.png"}
+              alt="empty_jobs"
+              width={160}
+              height={141}
+            />
             <p>No jobs yet</p>
           </div>
         </div>

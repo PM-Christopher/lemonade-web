@@ -18,7 +18,7 @@ import RocketIconGrey from "@/images/icons/rocketIconGrey.svg";
 import RatingsBar from "@/components/global/RatingsBar";
 import Reviews from "@/components/global/Reviews";
 import ReviewModal from "@/components/business/Modals/ReviewModal";
-import RequestServiceModal from "@/components/business/Modals/RequestServiceModal";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { useRequest } from "@/hooks/useRequest";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -36,7 +36,17 @@ import { RootState } from "@/redux/store";
 import { useBusinessQuery } from "@/features/business/queries";
 import { BusinessDetailSkeleton } from "@/components/Skeletons";
 import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
-import SubmitDisputeModal from "@/components/business/Modals/SubmitDisputeModal";
+
+// Off the initial bundle — both are only needed once their triggering
+// action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const RequestServiceModal = dynamic(
+  () => import("@/components/business/Modals/RequestServiceModal"),
+  { ssr: false },
+);
+const SubmitDisputeModal = dynamic(
+  () => import("@/components/business/Modals/SubmitDisputeModal"),
+  { ssr: false },
+);
 
 const BusinessDetailsClient = ({ id }: { id: number }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -135,7 +145,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
 
   const hasMoreReviews = displayCount < reviews.length;
 
-  const handleButtonsClick = (type: "call" | "web" | "email", value: string) => {
+  const handleButtonsClick = (
+    type: "call" | "web" | "email",
+    value: string,
+  ) => {
     let href = "";
 
     switch (type) {
@@ -159,8 +172,13 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
       <section className="bg-light_grey pb-10">
         <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
           <div className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]">
-            <ChevronLeft className="cursor-pointer" onClick={() => router.back()} />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Business details</p>
+            <ChevronLeft
+              className="cursor-pointer"
+              onClick={() => router.back()}
+            />
+            <p className="font-sans text-[16px] font-semibold tracking-custom">
+              Business details
+            </p>
           </div>
         </div>
         <section className="mt-4 flex min-h-screen flex-col items-center gap-4">
@@ -183,7 +201,9 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     />
                   </div>
                   <div className="mt-[8px] flex flex-col justify-center">
-                    <p className="text-center text-[16px] font-semibold">{business?.name}</p>
+                    <p className="text-center text-[16px] font-semibold">
+                      {business?.name}
+                    </p>
                     <p className="text-center text-[14px] font-semi-normal text-text-grey">
                       {business?.city}, {business?.country}
                     </p>
@@ -198,7 +218,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div className="mt-[8px] flex justify-center">
                     <div className="flex w-fit items-center justify-center gap-1 rounded-xl bg-mid-grey p-2">
                       <div>
-                        <Image src={"/images/medal.png"} alt="medal" width={16} height={16} />
+                        <Image
+                          src={"/images/medal.png"}
+                          alt="medal"
+                          width={16}
+                          height={16}
+                        />
                       </div>
                       <div>
                         <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-primary-black">
@@ -214,7 +239,9 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         className="w-fit bg-gradient-green p-[14px] px-[24px] shadow-custom-bottom"
                         onClick={toggleRequestModal}
                       >
-                        <p className="font-normal text-white">Request service</p>
+                        <p className="font-normal text-white">
+                          Request service
+                        </p>
                       </Button>
                     </div>
                   )}
@@ -231,7 +258,9 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div className="absolute right-0 top-0 rounded-bl-[12px] rounded-tr-[12px] bg-light-green-10">
                     <div className="flex items-center gap-[4px] p-[4px] px-[8px]">
                       <RocketIconGreen />
-                      <p className="text-[14px] font-semi-normal text-mid-green">Boosted</p>
+                      <p className="text-[14px] font-semi-normal text-mid-green">
+                        Boosted
+                      </p>
                     </div>
                   </div>
                 )}
@@ -301,7 +330,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div
                     className="flex cursor-pointer flex-col items-center gap-[8px]"
                     onClick={() =>
-                      handleButtonsClick(businessButtons.call, business?.phone_number ?? "")
+                      handleButtonsClick(
+                        businessButtons.call,
+                        business?.phone_number ?? "",
+                      )
                     }
                   >
                     <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
@@ -313,7 +345,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   </div>
                   <div
                     className="flex cursor-pointer flex-col items-center gap-[8px]"
-                    onClick={() => handleButtonsClick(businessButtons.email, business?.email ?? "")}
+                    onClick={() =>
+                      handleButtonsClick(
+                        businessButtons.email,
+                        business?.email ?? "",
+                      )
+                    }
                   >
                     <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
                       <MessageIcon />
@@ -325,7 +362,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div
                     className="flex cursor-pointer flex-col items-center gap-[8px]"
                     onClick={() =>
-                      handleButtonsClick(businessButtons.web, business?.website_url ?? "")
+                      handleButtonsClick(
+                        businessButtons.web,
+                        business?.website_url ?? "",
+                      )
                     }
                   >
                     <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
@@ -343,7 +383,8 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
               <div className="w-full rounded-tl-[24px] rounded-tr-[24px] bg-purple-tint-1 laptop:w-[640px]">
                 <div className="pb-[8px] pl-[16px] pr-[16px] pt-[16px]">
                   <p className="text-[14px] font-semi-normal">
-                    Lemonade protects in-app transactions only. Use caution outside the app
+                    Lemonade protects in-app transactions only. Use caution
+                    outside the app
                   </p>
                 </div>
                 <div className="rounded-tl-[24px] rounded-tr-[24px] bg-white">
@@ -352,29 +393,39 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     <p className="mt-[12px] text-[14px] font-normal text-light-black">
                       {business?.description}
                     </p>
-                    <p className="text-[14px] font-semi-normal text-light-green">More</p>
+                    <p className="text-[14px] font-semi-normal text-light-green">
+                      More
+                    </p>
                     <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
-                    <p className="text-[16px] font-semibold">Business categories</p>
+                    <p className="text-[16px] font-semibold">
+                      Business categories
+                    </p>
                     <p className="mt-[12px] text-[14px] font-normal text-light-black">
-                      {business?.categories?.map((category: string, index: number) => (
-                        <span key={index}>
-                          {formatStringUCFirst(category)}
-                          {index < business?.categories?.length - 1 && ", "}
-                        </span>
-                      ))}
+                      {business?.categories?.map(
+                        (category: string, index: number) => (
+                          <span key={index}>
+                            {formatStringUCFirst(category)}
+                            {index < business?.categories?.length - 1 && ", "}
+                          </span>
+                        ),
+                      )}
                     </p>
                     <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
                     <p className="text-[16px] font-semibold">Services</p>
                     <p className="mt-[12px] text-[14px] font-normal text-light-black">
-                      {business?.services?.map((service: string, index: number) => (
-                        <span key={index}>
-                          {formatStringUCFirst(service)}
-                          {index < business?.services?.length - 1 && ", "}
-                        </span>
-                      ))}
+                      {business?.services?.map(
+                        (service: string, index: number) => (
+                          <span key={index}>
+                            {formatStringUCFirst(service)}
+                            {index < business?.services?.length - 1 && ", "}
+                          </span>
+                        ),
+                      )}
                     </p>
                     <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
-                    <p className="text-[16px] font-semibold">Portfolio Gallery</p>
+                    <p className="text-[16px] font-semibold">
+                      Portfolio Gallery
+                    </p>
                     <div className="sm:grid-cols-3 lg:grid-cols-4 mt-4 grid grid-cols-2 gap-3">
                       {business?.gallery?.map((item: string, index: number) => (
                         <div
@@ -429,7 +480,9 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         {!reviewLoading &&
                           reviews
                             .slice(0, displayCount)
-                            .map((review, index) => <Reviews review={review} key={index} />)}
+                            .map((review, index) => (
+                              <Reviews review={review} key={index} />
+                            ))}
                       </>
                     ) : (
                       <div className="flex flex-col items-center justify-center">
@@ -460,7 +513,11 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
             </>
           )}
         </section>
-        <VerifyBoost boost={boost} isOpen={isVerifyBoost} toggleMenu={toggleVerifyBoost} />
+        <VerifyBoost
+          boost={boost}
+          isOpen={isVerifyBoost}
+          toggleMenu={toggleVerifyBoost}
+        />
         <ReviewModal isOpen={isOpen} toggleMenu={toggleMenu} />
         <RequestServiceModal
           id={id}
@@ -479,7 +536,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
           job={business}
           toggleSubmit={toggleSubmitDisputeModal}
         />
-        <SubmitDisputeModal isOpen={isSubmitDisputeOpen} toggle={toggleSubmitDisputeModal} />
+        <SubmitDisputeModal
+          isOpen={isSubmitDisputeOpen}
+          toggle={toggleSubmitDisputeModal}
+        />
       </section>
     </MainLayout>
   );

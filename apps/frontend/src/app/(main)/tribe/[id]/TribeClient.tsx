@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/select";
 import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
-import CreateThreadModal from "@/components/tribe/CreateThreadModal";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import { Thread } from "@/interfaces/TribeInterface";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,6 +21,7 @@ import { useMediaQuery } from "react-responsive";
 import ShareTribeModal from "@/components/tribe/ShareTribeModal";
 import UserInfoModal from "@/components/tribe/UserInfoModal";
 import { useQueryClient } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 import {
   useTribeQuery,
   useThreadsQuery,
@@ -34,7 +34,6 @@ import {
   useViewProfileMutation,
 } from "@/features/tribes/mutations";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
-import ReportThreadModal from "@/components/tribe/ReportThreadModal";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 import AddMemberModal from "@/components/tribe/AddMemberModal";
 import { useAppDispatch } from "@/redux/hook";
@@ -44,6 +43,22 @@ import useNxtSearchParams from "@/hooks/useSearchParams";
 import PadlockIcon from "@/images/icons/padlockIconFilled.svg";
 import JoinedTribeModal from "@/components/tribe/JoinedTribeModal";
 import { ThreadsSkeleton } from "@/components/Skeletons";
+
+// Off the initial bundle — both are only needed once a user opens the
+// corresponding modal (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy
+// leaf UI").
+const CreateThreadModal = dynamic(
+  () => import("@/components/tribe/CreateThreadModal"),
+  {
+    ssr: false,
+  },
+);
+const ReportThreadModal = dynamic(
+  () => import("@/components/tribe/ReportThreadModal"),
+  {
+    ssr: false,
+  },
+);
 
 const TribeClient = ({ id }: { id: string }) => {
   const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false);
@@ -62,7 +77,10 @@ const TribeClient = ({ id }: { id: string }) => {
   const { data: tribeData, isLoading: tribeLoading } = useTribeQuery(id);
   const tribe = tribeData?.tribe ?? null;
   const { data: threadsData, isLoading: dataLoading } = useThreadsQuery(id);
-  const threads = useMemo(() => threadsData?.threads ?? [], [threadsData?.threads]);
+  const threads = useMemo(
+    () => threadsData?.threads ?? [],
+    [threadsData?.threads],
+  );
   const { data: pinnedThreadsData } = usePinnedThreadsQuery(id);
   const pinnedThreads = pinnedThreadsData?.threads ?? [];
 
@@ -161,7 +179,10 @@ const TribeClient = ({ id }: { id: string }) => {
 
   const setPinThread = (id: number) => {
     const current = threads.find((t) => t.id === id);
-    pinThreadMutation.mutate({ threadId: id, wasPinned: current?.pinned ?? false });
+    pinThreadMutation.mutate({
+      threadId: id,
+      wasPinned: current?.pinned ?? false,
+    });
   };
 
   const activateJoinTribeModal = () => {
@@ -291,7 +312,9 @@ const TribeClient = ({ id }: { id: string }) => {
               {dataLoading || data === undefined ? (
                 <ThreadsSkeleton count={4} />
               ) : data.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">No threads found...</div>
+                <div className="p-6 text-center text-gray-500">
+                  No threads found...
+                </div>
               ) : (
                 <div className="flex flex-col gap-6">
                   {data.map((thread: Thread) => (
@@ -385,7 +408,11 @@ const TribeClient = ({ id }: { id: string }) => {
             setThreadId={setThreadId}
             tribeId={id}
           />
-          <AddMemberModal isOpen={addUserModal} toggle={toggleAddMember} id={id} />
+          <AddMemberModal
+            isOpen={addUserModal}
+            toggle={toggleAddMember}
+            id={id}
+          />
         </div>
       </div>
       {isMobile && (

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import BankAccountModal from "@/components/events/Modals/BankAccountModal";
+import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import { useFormik, FieldArray } from "formik";
@@ -20,6 +20,15 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
 import { getIn } from "yup";
+
+// Off the initial bundle — only needed once the bank-account section is
+// opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const BankAccountModal = dynamic(
+  () => import("@/components/events/Modals/BankAccountModal"),
+  {
+    ssr: false,
+  },
+);
 
 type Ticket = {
   ticket_type: string; // was: "free" | "paid"
@@ -49,25 +58,32 @@ const AddTicketPage = () => {
 
     price: yup
       .string()
-      .when("ticket_type", (values: any[], schema: yup.StringSchema<string | undefined>) => {
-        // Yup's typings say `values` is any[], so we read from index 0
-        const ticket_type = Array.isArray(values) ? values[0] : values;
+      .when(
+        "ticket_type",
+        (values: any[], schema: yup.StringSchema<string | undefined>) => {
+          // Yup's typings say `values` is any[], so we read from index 0
+          const ticket_type = Array.isArray(values) ? values[0] : values;
 
-        // Only validate price when ticket is paid
-        if (ticket_type === "paid") {
-          return schema
-            .required("Ticket price is required")
-            .test("valid-price", "Ticket price must be greater than 0", (value) => {
-              if (!value) return false; // required already, but keeps TS happy
-              const cleaned = value.replace(/,/g, "");
-              const num = Number(cleaned);
-              return !Number.isNaN(num) && num > 0;
-            });
-        }
+          // Only validate price when ticket is paid
+          if (ticket_type === "paid") {
+            return schema
+              .required("Ticket price is required")
+              .test(
+                "valid-price",
+                "Ticket price must be greater than 0",
+                (value) => {
+                  if (!value) return false; // required already, but keeps TS happy
+                  const cleaned = value.replace(/,/g, "");
+                  const num = Number(cleaned);
+                  return !Number.isNaN(num) && num > 0;
+                },
+              );
+          }
 
-        // For "free" or unset ticket_type → no validation
-        return schema.notRequired();
-      }),
+          // For "free" or unset ticket_type → no validation
+          return schema.notRequired();
+        },
+      ),
 
     transfer_commission: yup.boolean().optional(),
 
@@ -76,28 +92,39 @@ const AddTicketPage = () => {
     ticket_stock: yup
       .number()
       .transform((value, originalValue) => {
-        if (originalValue === "" || originalValue === null || originalValue === undefined) {
+        if (
+          originalValue === "" ||
+          originalValue === null ||
+          originalValue === undefined
+        ) {
           return undefined;
         }
         const cleaned = String(originalValue).replace(/,/g, "");
         const num = Number(cleaned);
         return Number.isNaN(num) ? undefined : num;
       })
-      .when("stock_type", (stock_type: any, schema: yup.NumberSchema<number | undefined>) => {
-        if (stock_type === "limited") {
-          // REQUIRED and must be > 0
-          return schema
-            .required("Ticket stock is required")
-            .moreThan(0, "Ticket stock must be greater than 0");
-        }
-        // Unlimited → not required
-        return schema.notRequired();
-      }),
+      .when(
+        "stock_type",
+        (stock_type: any, schema: yup.NumberSchema<number | undefined>) => {
+          if (stock_type === "limited") {
+            // REQUIRED and must be > 0
+            return schema
+              .required("Ticket stock is required")
+              .moreThan(0, "Ticket stock must be greater than 0");
+          }
+          // Unlimited → not required
+          return schema.notRequired();
+        },
+      ),
 
     purchase_limit: yup
       .number()
       .transform((value, originalValue) => {
-        if (originalValue === "" || originalValue === null || originalValue === undefined) {
+        if (
+          originalValue === "" ||
+          originalValue === null ||
+          originalValue === undefined
+        ) {
           return undefined;
         }
         const cleaned = String(originalValue).replace(/,/g, "");
@@ -270,7 +297,9 @@ const AddTicketPage = () => {
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Add ticket</p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">
+              Add ticket
+            </p>
           </div>
         </div>
         <section className="mt-0 flex flex-col items-center laptop:mt-4">
@@ -280,7 +309,9 @@ const AddTicketPage = () => {
                 <div className="mb-[24px]" key={index}>
                   {index > 0 && (
                     <div className="mb-[16px] flex items-center justify-between rounded-[8px] bg-grey-20 p-[8px] px-[16px]">
-                      <p className="text-[14px] font-normal">Ticket {index + 1}</p>
+                      <p className="text-[14px] font-normal">
+                        Ticket {index + 1}
+                      </p>
                       <CloseIcon
                         className="h-[10px] w-[10px] cursor-pointer"
                         onClick={() => removeTicket(index)}
@@ -297,7 +328,12 @@ const AddTicketPage = () => {
                           ? "bg-gradient-green-2 shadow-event-custom"
                           : "bg-light_grey text-text-grey"
                       }`}
-                      onClick={() => formik.setFieldValue(`tickets[${index}].ticket_type`, "free")}
+                      onClick={() =>
+                        formik.setFieldValue(
+                          `tickets[${index}].ticket_type`,
+                          "free",
+                        )
+                      }
                     >
                       <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
                         Free
@@ -309,7 +345,12 @@ const AddTicketPage = () => {
                           ? "bg-gradient-green-2 shadow-event-custom"
                           : "bg-light_grey text-text-grey"
                       }`}
-                      onClick={() => formik.setFieldValue(`tickets[${index}].ticket_type`, "paid")}
+                      onClick={() =>
+                        formik.setFieldValue(
+                          `tickets[${index}].ticket_type`,
+                          "paid",
+                        )
+                      }
                     >
                       <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
                         Paid
@@ -353,8 +394,14 @@ const AddTicketPage = () => {
                           className="form-font h-12 rounded-xl border-0 bg-light_grey"
                           value={formik.values.tickets[index].price || ""}
                           onChange={(e) => {
-                            const numericValue = e.target.value.replace(/[^0-9.]/g, "");
-                            formik.setFieldValue(`tickets[${index}].price`, numericValue);
+                            const numericValue = e.target.value.replace(
+                              /[^0-9.]/g,
+                              "",
+                            );
+                            formik.setFieldValue(
+                              `tickets[${index}].price`,
+                              numericValue,
+                            );
                           }}
                           onKeyDown={(e) => {
                             if (["e", "E", "+", "-"].includes(e.key)) {
@@ -370,7 +417,9 @@ const AddTicketPage = () => {
                         <input
                           type="checkbox"
                           className="w-[20px] border-[1px] border-text-grey"
-                          checked={formik.values.tickets[index].transfer_commission}
+                          checked={
+                            formik.values.tickets[index].transfer_commission
+                          }
                           onChange={formik.handleChange}
                           name={`tickets[${index}].transfer_commission`}
                         />
@@ -400,7 +449,8 @@ const AddTicketPage = () => {
                         <option value="limited">Limited stock</option>
                         <option value="unlimited">Unlimited stock</option>
                       </select>
-                      {formik.values.tickets[index].stock_type !== "unlimited" && (
+                      {formik.values.tickets[index].stock_type !==
+                        "unlimited" && (
                         <Input
                           type="text"
                           placeholder=""
@@ -408,7 +458,10 @@ const AddTicketPage = () => {
                           value={formik.values.tickets[index].ticket_stock}
                           onChange={formik.handleChange}
                           name={`tickets[${index}].ticket_stock`}
-                          readOnly={formik.values.tickets[index].stock_type === "unlimited"}
+                          readOnly={
+                            formik.values.tickets[index].stock_type ===
+                            "unlimited"
+                          }
                         />
                       )}
                     </div>

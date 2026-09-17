@@ -20,8 +20,19 @@ import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { useGoogleLogin } from "@react-oauth/google";
-import TermsOfUseModal from "@/components/TermsOfUseModal";
-import PrivacyPolicyModal from "@/components/PrivacyPolicyModal";
+import dynamic from "next/dynamic";
+
+// Off the initial bundle — only needed once a legal-document link is
+// clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const TermsOfUseModal = dynamic(() => import("@/components/TermsOfUseModal"), {
+  ssr: false,
+});
+const PrivacyPolicyModal = dynamic(
+  () => import("@/components/PrivacyPolicyModal"),
+  {
+    ssr: false,
+  },
+);
 
 type valuesType = {
   email: string;
@@ -49,7 +60,10 @@ export default function SignupPage() {
   //form validation
   const signUpSchema = yup.object({
     fullname: yup.string().required("Fullname is required"),
-    email: yup.string().email("Please enter a valid email").required("Email is required"),
+    email: yup
+      .string()
+      .email("Please enter a valid email")
+      .required("Email is required"),
     password: yup
       .string()
       .min(8)
@@ -168,18 +182,27 @@ export default function SignupPage() {
       <section className="h-full min-h-screen overflow-hidden bg-gradient-light-green">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <Link href="/login">
-            <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+            <Image
+              src={"/images/logo.png"}
+              alt="logo"
+              width={127}
+              height={56}
+            />
           </Link>
           <div>
             <Link href="/login">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">Login</p>
+              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">
+                Login
+              </p>
             </Link>
           </div>
         </div>
         <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
           <div className="flex flex-col phone:mb-[16px]">
             <div className="text-center phone:text-left">
-              <p className="font-ruso text-[40px] font-bold leading-[48px]">Create account</p>
+              <p className="font-ruso text-[40px] font-bold leading-[48px]">
+                Create account
+              </p>
               <p className="font-sans text-[18px] font-normal leading-[27px]">
                 Join the network of diverse pool of talents.
               </p>
@@ -213,7 +236,9 @@ export default function SignupPage() {
                     className="form-font h-12 rounded-xl border-0 bg-light_grey"
                   />
                   {checkError("fullname", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.fullname}</p>
+                    <p className="text-[12px] text-[#FF8D8D]">
+                      {formik.errors.fullname}
+                    </p>
                   ) : null}
                 </div>
                 <div className="grid gap-2">
@@ -233,7 +258,9 @@ export default function SignupPage() {
                     className="form-font h-12 rounded-xl border-0 bg-light_grey"
                   />
                   {checkError("email", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
+                    <p className="text-[12px] text-[#FF8D8D]">
+                      {formik.errors.email}
+                    </p>
                   ) : null}
                 </div>
                 <div className="grid gap-2">
@@ -253,7 +280,9 @@ export default function SignupPage() {
                   />
 
                   {checkError("password", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.password}</p>
+                    <p className="text-[12px] text-[#FF8D8D]">
+                      {formik.errors.password}
+                    </p>
                   ) : null}
                 </div>
                 <FormikButton
@@ -277,7 +306,12 @@ export default function SignupPage() {
                     className="app-icon-border flex cursor-pointer items-center justify-center"
                     onClick={() => googleLogin()}
                   >
-                    <Image src={"/images/google.png"} alt="logo" width={24} height={24} />
+                    <Image
+                      src={"/images/google.png"}
+                      alt="logo"
+                      width={24}
+                      height={24}
+                    />
                   </div>
                   {/*<div className="app-icon-border flex justify-center items-center">*/}
                   {/*    <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>*/}
@@ -294,7 +328,10 @@ export default function SignupPage() {
                     Terms of Use
                   </span>{" "}
                   and{" "}
-                  <span className="cursor-pointer text-mid-green underline" onClick={togglePrivacy}>
+                  <span
+                    className="cursor-pointer text-mid-green underline"
+                    onClick={togglePrivacy}
+                  >
                     Privacy Policy
                   </span>
                 </p>

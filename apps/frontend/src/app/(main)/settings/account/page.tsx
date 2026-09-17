@@ -6,13 +6,20 @@ import PadlockIcon from "@/images/icons/padlockIcon.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import TrashIcon from "@/images/icons/trashIcon.svg";
 import LogoutIcon from "@/images/icons/logoutIcon.svg";
-import UpdatePasswordModal from "@/components/settings/Modal/UpdatePasswordModal";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
+
+// Off the initial bundle — only needed once "Change password" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const UpdatePasswordModal = dynamic(
+  () => import("@/components/settings/Modal/UpdatePasswordModal"),
+  { ssr: false },
+);
 
 const AccountSettingsPage = () => {
   const dispatch = useAppDispatch();
@@ -78,7 +85,9 @@ const AccountSettingsPage = () => {
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Account settings</p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">
+              Account settings
+            </p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center px-5">
@@ -91,7 +100,9 @@ const AccountSettingsPage = () => {
               >
                 <div className="flex items-center gap-[8px]">
                   {item.icon}
-                  <p className={`text-[16px] font-normal ${item.textColor}`}>{item.label}</p>
+                  <p className={`text-[16px] font-normal ${item.textColor}`}>
+                    {item.label}
+                  </p>
                 </div>
                 <ChevronRight className="text-gray-400" />
               </div>

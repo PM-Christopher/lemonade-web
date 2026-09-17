@@ -10,7 +10,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import PencilIcon from "@/images/icons/pencilIcon.svg";
-import UpdateModal from "@/components/settings/Modal/UpdateModal";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { formatString, splitLemonId } from "@/lib/helper";
 import { useRouter } from "next/navigation";
@@ -20,6 +20,15 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
 import { setIsRouting } from "@/redux/tempSlice";
+
+// Off the initial bundle — only needed once a field's edit button is
+// clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const UpdateModal = dynamic(
+  () => import("@/components/settings/Modal/UpdateModal"),
+  {
+    ssr: false,
+  },
+);
 
 const ProfileSettingsPage = ({}) => {
   const router = useRouter();
@@ -36,7 +45,9 @@ const ProfileSettingsPage = ({}) => {
   const [avatar, setAvatar] = useState(null);
 
   // Handle file input change (when a file is selected)
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const formData = new FormData();
@@ -122,7 +133,9 @@ const ProfileSettingsPage = ({}) => {
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Profile settings</p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">
+              Profile settings
+            </p>
           </div>
         </div>
 
@@ -150,24 +163,38 @@ const ProfileSettingsPage = ({}) => {
             </div>
             <div className="mt-[45.5px] flex w-[343px] flex-col gap-[8px] rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
               <div className="flex justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Full name</p>
-                <p className="text-[14px] font-semi-normal text-black-light">{user?.fullname}</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Full name
+                </p>
+                <p className="text-[14px] font-semi-normal text-black-light">
+                  {user?.fullname}
+                </p>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Email address</p>
-                <p className="text-[14px] font-semi-normal text-black-light">{user?.email}</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Email address
+                </p>
+                <p className="text-[14px] font-semi-normal text-black-light">
+                  {user?.email}
+                </p>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Lemonade tag</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Lemonade tag
+                </p>
                 <p className="text-[14px] font-semi-normal text-black-light">
                   Lemon {splitLemonId(user?.lemon_id)} (L
                   {splitLemonId(user?.lemon_id)})
                 </p>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Username</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Username
+                </p>
                 <div className="flex items-center gap-2">
-                  <p className="text-[14px] font-semi-normal text-black-light">{user?.username}</p>
+                  <p className="text-[14px] font-semi-normal text-black-light">
+                    {user?.username}
+                  </p>
                   <PencilIcon
                     className="h-[16px] w-[16px] cursor-pointer"
                     onClick={() => {
@@ -193,7 +220,9 @@ const ProfileSettingsPage = ({}) => {
                 </div>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Profession</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Profession
+                </p>
                 <div className="flex items-center gap-2">
                   <p className="text-[14px] font-semi-normal text-black-light">
                     {formatString(user?.industry)}
@@ -208,10 +237,13 @@ const ProfileSettingsPage = ({}) => {
                 </div>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Address</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Address
+                </p>
                 <div className="flex items-center gap-2">
                   <p className="max-w-[130px] truncate text-[14px] font-semi-normal text-black-light">
-                    {user?.address?.address}, {user?.address?.city}, {user?.address?.state}
+                    {user?.address?.address}, {user?.address?.city},{" "}
+                    {user?.address?.state}
                   </p>
                   <PencilIcon
                     className="h-[16px] w-[16px] cursor-pointer"
@@ -223,7 +255,9 @@ const ProfileSettingsPage = ({}) => {
                 </div>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Skills & interests</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Skills & interests
+                </p>
                 <div className="flex items-center gap-2">
                   <p className="text-[14px] font-semi-normal text-black-light">
                     {user?.skills.length + user?.interests.length}
@@ -238,7 +272,9 @@ const ProfileSettingsPage = ({}) => {
                 </div>
               </div>
               <div className="my-[8px] flex items-center justify-between">
-                <p className="text-[14px] font-normal text-text-grey">Socials</p>
+                <p className="text-[14px] font-normal text-text-grey">
+                  Socials
+                </p>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-[8px] rounded-[18px] bg-light_grey p-[4px]">
                     {user?.socials.map((link: any) => (
@@ -248,13 +284,21 @@ const ProfileSettingsPage = ({}) => {
                         rel="noopener noreferrer"
                         key={link.name}
                       >
-                        {link.name === "facebook" && <FacebookIcon className="h-[20px] w-[20px]" />}
+                        {link.name === "facebook" && (
+                          <FacebookIcon className="h-[20px] w-[20px]" />
+                        )}
                         {link.name === "instagram" && (
                           <InstagramIcon className="h-[20px] w-[20px]" />
                         )}
-                        {link.name === "linkedin" && <LinkedInIcon className="h-[20px] w-[20px]" />}
-                        {link.name === "twitter" && <TwitterIcon className="h-[20px] w-[20px]" />}
-                        {link.name === "website" && <WebIcon className="h-[20px] w-[20px]" />}
+                        {link.name === "linkedin" && (
+                          <LinkedInIcon className="h-[20px] w-[20px]" />
+                        )}
+                        {link.name === "twitter" && (
+                          <TwitterIcon className="h-[20px] w-[20px]" />
+                        )}
+                        {link.name === "website" && (
+                          <WebIcon className="h-[20px] w-[20px]" />
+                        )}
                       </a>
                     ))}
                   </div>
@@ -270,7 +314,12 @@ const ProfileSettingsPage = ({}) => {
             </div>
           </div>
         </section>
-        <UpdateModal user={user} type={profileType} toggle={toggleModal} isOpen={isOpen} />
+        <UpdateModal
+          user={user}
+          type={profileType}
+          toggle={toggleModal}
+          isOpen={isOpen}
+        />
       </section>
     </MainLayout>
   );

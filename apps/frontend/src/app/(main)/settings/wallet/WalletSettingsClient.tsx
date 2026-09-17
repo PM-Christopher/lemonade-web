@@ -11,8 +11,11 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
-import { TransactionHistorySkeleton, WalletDetailSkeleton } from "@/components/Skeletons";
-import RequestPayoutModal from "@/components/settings/Modal/RequestPayoutModal";
+import {
+  TransactionHistorySkeleton,
+  WalletDetailSkeleton,
+} from "@/components/Skeletons";
+import dynamic from "next/dynamic";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { useWalletSettingsQuery } from "@/features/settings/queries";
@@ -20,12 +23,21 @@ import { useRequestPayoutMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { ColorRing } from "react-loader-spinner";
 
+// Off the initial bundle — only needed once "Request payout" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const RequestPayoutModal = dynamic(
+  () => import("@/components/settings/Modal/RequestPayoutModal"),
+  { ssr: false },
+);
+
 function WalletSettingsClient() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
 
-  const { data, isLoading: loading } = useWalletSettingsQuery({ enabled: isLoggedIn });
+  const { data, isLoading: loading } = useWalletSettingsQuery({
+    enabled: isLoggedIn,
+  });
   const requestPayoutMutation = useRequestPayoutMutation();
   const profileLoading = requestPayoutMutation.isPending;
   const [isRefOpen, setIsRefOpen] = useState(false);
@@ -96,7 +108,9 @@ function WalletSettingsClient() {
             onClick={() => router.push("/settings")}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Wallet</p>
+            <p className="font-sans text-[16px] font-semibold tracking-custom">
+              Wallet
+            </p>
           </div>
         </div>
 
@@ -107,34 +121,56 @@ function WalletSettingsClient() {
             <div className="flex w-full flex-col laptop:w-[580px]">
               <div className="flex flex-col rounded-[12px] bg-white p-[16px]">
                 <div className="flex flex-col border-b-[1px] border-b-mid-grey p-[16px]">
-                  <p className="text-[14px] font-normal text-text-grey">Total Amount Earned</p>
+                  <p className="text-[14px] font-normal text-text-grey">
+                    Total Amount Earned
+                  </p>
                   <p className="text-[18px] font-semibold tracking-custom">
-                    N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
+                    N
+                    {formatNumberWithCommas(
+                      Number(data?.total_amount_earned) || 0,
+                    )}
                   </p>
                 </div>
                 <div className="flex justify-between border-b-[1px] border-b-mid-grey p-[16px]">
                   <div className="flex flex-col">
-                    <p className="text-[14px] font-normal text-text-grey">Referral earnings</p>
+                    <p className="text-[14px] font-normal text-text-grey">
+                      Referral earnings
+                    </p>
                     <p className="text-[18px] font-semibold tracking-custom">
-                      N{formatNumberWithCommas(Number(data?.referral_earnings) || 0)}
+                      N
+                      {formatNumberWithCommas(
+                        Number(data?.referral_earnings) || 0,
+                      )}
                     </p>
                   </div>
-                  <ChevronRight onClick={toggleRefMenu} className="cursor-pointer" />
+                  <ChevronRight
+                    onClick={toggleRefMenu}
+                    className="cursor-pointer"
+                  />
                 </div>
                 <div className="flex justify-between p-[16px]">
                   <div className="flex flex-col">
-                    <p className="text-[14px] font-normal text-text-grey">Affiliate earnings</p>
+                    <p className="text-[14px] font-normal text-text-grey">
+                      Affiliate earnings
+                    </p>
                     <p className="text-[18px] font-semibold tracking-custom">
-                      N{formatNumberWithCommas(Number(data?.affiliate_earnings) || 0)}
+                      N
+                      {formatNumberWithCommas(
+                        Number(data?.affiliate_earnings) || 0,
+                      )}
                     </p>
                   </div>
-                  <ChevronRight onClick={toggleAfMenu} className="cursor-pointer" />
+                  <ChevronRight
+                    onClick={toggleAfMenu}
+                    className="cursor-pointer"
+                  />
                 </div>
               </div>
               {data?.payout_request && (
                 <div className="mt-[24px] flex flex-col rounded-[12px] bg-light-tint p-[16px]">
                   <p className="text-[16px] font-normal text-light-black">
-                    Commission payouts are available when you&apos;ve earned over ₦100,000
+                    Commission payouts are available when you&apos;ve earned
+                    over ₦100,000
                   </p>
                   <Button
                     className={`mt-[16px] h-[48px] w-fit rounded-[12px] bg-gradient-green p-[14px] px-[48px] ${
@@ -167,10 +203,14 @@ function WalletSettingsClient() {
                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                           />
                         </svg>
-                        <p className={"text-[16px] font-semi-normal"}>Loading...</p>
+                        <p className={"text-[16px] font-semi-normal"}>
+                          Loading...
+                        </p>
                       </>
                     ) : (
-                      <p className={"text-[16px] font-semi-normal"}>Request pay out</p>
+                      <p className={"text-[16px] font-semi-normal"}>
+                        Request pay out
+                      </p>
                     )}
                   </Button>
                 </div>
@@ -193,9 +233,12 @@ function WalletSettingsClient() {
                     >
                       <div className="flex flex-col">
                         <p className="text-[14px] font-semi-normal">
-                          N{formatNumberWithCommas(Number(history?.amount) || 0)}
+                          N
+                          {formatNumberWithCommas(Number(history?.amount) || 0)}
                         </p>
-                        <p className="text-[12px] font-normal text-text-grey">{history?.date}</p>
+                        <p className="text-[12px] font-normal text-text-grey">
+                          {history?.date}
+                        </p>
                       </div>
                       {history?.status === "processing" && (
                         <div className="rounded-[8px] bg-warning px-[8px] py-[4px]">
@@ -214,12 +257,16 @@ function WalletSettingsClient() {
                         ))}
                       {history?.status === "failed" && (
                         <div className="rounded-[8px] bg-red-3 px-[8px] py-[4px]">
-                          <p className="text-[12px] font-semi-normal text-red-1">Failed</p>
+                          <p className="text-[12px] font-semi-normal text-red-1">
+                            Failed
+                          </p>
                         </div>
                       )}
                       {history?.status === "pending" && (
                         <div className="rounded-[8px] bg-warning px-[8px] py-[4px]">
-                          <p className="text-[12px] font-semi-normal text-warning-bold">Pending</p>
+                          <p className="text-[12px] font-semi-normal text-warning-bold">
+                            Pending
+                          </p>
                         </div>
                       )}
                     </div>

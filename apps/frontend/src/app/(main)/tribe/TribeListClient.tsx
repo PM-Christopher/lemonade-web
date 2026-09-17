@@ -10,9 +10,18 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { useMediaQuery } from "react-responsive";
 import { useTribesQuery } from "@/features/tribes/queries";
 import { useSearchTribeMutation } from "@/features/tribes/mutations";
-import CreateTribeModal from "@/components/tribe/CreateTribeModal";
 import { TribeListSkeleton } from "@/components/Skeletons";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
+import dynamic from "next/dynamic";
+
+// Off the initial bundle — only needed once "Create tribe" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const CreateTribeModal = dynamic(
+  () => import("@/components/tribe/CreateTribeModal"),
+  {
+    ssr: false,
+  },
+);
 
 export default function TribeListClient() {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -79,7 +88,9 @@ export default function TribeListClient() {
                 <span
                   className={[
                     "font-sans text-sm leading-[21px] transition-colors duration-200",
-                    isActive ? "font-semibold text-black-light" : "font-normal text-text-grey",
+                    isActive
+                      ? "font-semibold text-black-light"
+                      : "font-normal text-text-grey",
                   ].join(" ")}
                 >
                   {tab.label}
@@ -118,7 +129,9 @@ export default function TribeListClient() {
             className="auth-button flex items-center gap-2 rounded-xl border-step-color px-4 py-2 shadow-custom-bottom"
             onClick={activateModal}
           >
-            <span className="text-base font-medium">{isMobile ? "+" : "+ Create Tribe"}</span>
+            <span className="text-base font-medium">
+              {isMobile ? "+" : "+ Create Tribe"}
+            </span>
           </Button>
         </div>
       </div>
@@ -139,7 +152,9 @@ export default function TribeListClient() {
             </div>
           ) : (
             <div className="flex h-full items-center justify-center">
-              <p className="text-lg font-medium text-gray-500">No tribes found</p>
+              <p className="text-lg font-medium text-gray-500">
+                No tribes found
+              </p>
             </div>
           )}
         </section>
@@ -233,7 +248,9 @@ export default function TribeListClient() {
                       />
                     </svg>
                   </div>
-                  <p className="mb-1 text-sm font-medium text-gray-900">No tribes found</p>
+                  <p className="mb-1 text-sm font-medium text-gray-900">
+                    No tribes found
+                  </p>
                   <p className="text-center text-xs text-gray-500">
                     Try a different name or keyword.
                   </p>
@@ -256,7 +273,9 @@ export default function TribeListClient() {
                       />
                     </svg>
                   </div>
-                  <p className="mb-1 text-sm font-medium text-gray-900">No recent searches</p>
+                  <p className="mb-1 text-sm font-medium text-gray-900">
+                    No recent searches
+                  </p>
                   <p className="text-center text-xs text-gray-500">
                     Your search history will appear here.
                   </p>
