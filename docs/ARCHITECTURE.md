@@ -2314,6 +2314,19 @@ even once any of their mutations move), and the rest of `settings/*` — `settin
 `settings/plan/cancel-subscription`, `settings/privacy`, `settings/profile`, `settings/terms-and-conditions`
 — which are either pure forms/mutations (same as above) or genuinely untouched.
 
+**Closed out frontend's page-by-page conversion properly**, after `event/page.tsx` proved a page-level-
+only grep can miss a real candidate (its query lived in a child component). Re-checked every remaining
+page's full component tree, not just the page file: `event/create-event`, `event/add-ticket`,
+`event/[id]/assign-ticket`, `settings/page.tsx`, `settings/account/*`, `settings/plan/cancel-subscription`,
+`settings/privacy`, `settings/profile`, `settings/terms-and-conditions`. All confirmed non-candidates for
+one of three reasons: no data fetching anywhere in the tree (pure forms/mutations or static content);
+reads only from Redux (`settings/profile`/`settings/account` read `user` from `state.auth`, populated by
+`useCurrentUserQuery` in a shared layout wrapper, not fetched at the page level); or an interaction-
+gated query in a modal (`event/add-ticket`'s `BankAccountModal` calls `useBanksQuery({ enabled: option })`,
+only true once the modal opens — same "don't prefetch interaction-gated queries" rule as
+`event/[id]/guest-list`). Frontend's page-by-page conversion is genuinely exhausted at 26 pages, not
+just paused.
+
 **Admin's list-shell/table-island split.** First checked whether the bullet's assumed shape actually
 matched the codebase: it didn't. Of the 6 admin pages the earlier survey counted as "already
 server-rendered," none were real — `businesses/page.tsx` is a literal `<div></div>` stub, and the other
