@@ -1,72 +1,20 @@
-"use client";
-import React, { useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PromotionsCard from "@/components/events/PromotionsCard";
-import { listPromotions } from "@/data/tableData";
-import CreatePromotionModal from "@/modals/events/CreatePromotionModal";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { usePromotionListQuery } from "@/features/events/queries";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/query-client.server";
+import { promotionKeys } from "@/features/events/queries";
+import { promotionsServerApi } from "@/features/events/api.server";
+import AddPromotionsClient from "./AddPromotionsClient";
 
-function AddPromotionPage() {
-  const [promotionModal, setPromotionModal] = useState(false);
-  const [promotionId, setPromotionId] = useState(0);
+export default async function AddPromotionsPage() {
+  const queryClient = getQueryClient();
 
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: promotionData } = usePromotionListQuery({ enabled: isLoggedIn });
-
-  const togglePromotionModal = () => {
-    if (promotionId !== 0) {
-      setPromotionId(0);
-    }
-    setPromotionModal(!promotionModal);
-  };
-
-  const storePromotionId = (promotionId: number) => {
-    setPromotionId(promotionId);
-  };
+  await queryClient.prefetchQuery({
+    queryKey: promotionKeys.lists(),
+    queryFn: promotionsServerApi.getPromotions,
+  });
 
   return (
-    <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
-          <p className={"text-[16px] font-semiBold"}>
-            {promotionData?.promotions?.length || 0} Promotions
-          </p>
-          <div className={"flex justify-between gap-[12px]"}>
-            <div>
-              <Button
-                className={"flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"}
-              >
-                <PlusIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"} onClick={togglePromotionModal}>
-                  Add promotion
-                </p>
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className={"grid grid-cols-3 gap-[24px] px-[20px]"}>
-          {promotionData?.promotions.map((promotion: any, index: number) => (
-            <PromotionsCard
-              promotion={promotion}
-              key={index}
-              promotionId={promotion?.id}
-              setPromotionId={setPromotionId}
-              toggle={togglePromotionModal}
-            />
-          ))}
-        </div>
-      </section>
-      <CreatePromotionModal
-        isOpen={promotionModal}
-        toggle={togglePromotionModal}
-        promotionId={promotionId}
-      />
-    </MainLayout>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AddPromotionsClient />
+    </HydrationBoundary>
   );
 }
-
-export default AddPromotionPage;
