@@ -10,11 +10,9 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { usersDetailPageViews } from "@/utils/pageViews";
 import ActivitiesViews from "@/views/users/ActivitiesViews";
 import TribeViews from "@/views/users/TribeViews";
-import TribeModal from "@/components/users/TribeModal";
 import BusinessView from "@/views/users/BusinessView";
 import EventView from "@/views/users/EventView";
 import WalletView from "@/views/users/WalletView";
-import BalanceModal from "@/modals/users/BalanceModal";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -23,11 +21,25 @@ import {
   useUserDetailQuery,
 } from "@/features/user/queries";
 import { useReactivateUserMutation } from "@/features/user/mutations";
-import DeactivateModal from "@/modals/users/DeactivateModal";
-import SuspendModal from "@/modals/users/SuspendModal";
-import suspendModal from "@/modals/users/SuspendModal";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { FaSpinner } from "react-icons/fa6";
+
+// Off the initial bundle — all four are only needed once their triggering
+// action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const TribeModal = dynamic(() => import("@/components/users/TribeModal"), {
+  ssr: false,
+});
+const BalanceModal = dynamic(() => import("@/modals/users/BalanceModal"), {
+  ssr: false,
+});
+const DeactivateModal = dynamic(
+  () => import("@/modals/users/DeactivateModal"),
+  { ssr: false },
+);
+const SuspendModal = dynamic(() => import("@/modals/users/SuspendModal"), {
+  ssr: false,
+});
 
 function UserDetailsClient({ id }: { id: number | undefined }) {
   const router = useRouter();

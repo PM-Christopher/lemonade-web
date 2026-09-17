@@ -10,9 +10,15 @@ import { RootState } from "@/redux/store";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useTeamQuery } from "@/features/team/queries";
-import AddMember from "@/modals/team/AddMemberModal";
+import dynamic from "next/dynamic";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
+
+// Off the initial bundle — only needed once "Add member" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const AddMember = dynamic(() => import("@/modals/team/AddMemberModal"), {
+  ssr: false,
+});
 
 function TeamClient() {
   const router = useRouter();

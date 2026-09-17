@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import DataCard from "@/components/global/DataCard";
 import { walletHeaders } from "@/data/tableData";
-import WalletThresholdModal from "@/modals/wallet-management/WalletThresholdModal";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import {
   useWalletDataQuery,
@@ -18,6 +18,13 @@ import {
 } from "@/features/wallet/queries";
 import { RootState } from "@/redux/store";
 import dayjs from "dayjs";
+
+// Off the initial bundle — only needed once "Edit threshold" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const WalletThresholdModal = dynamic(
+  () => import("@/modals/wallet-management/WalletThresholdModal"),
+  { ssr: false },
+);
 
 function WalletManagementClient() {
   const [editThreshold, setEditThreshold] = useState(false);

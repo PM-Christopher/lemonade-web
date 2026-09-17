@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import GlobalTable from "@/components/global/GlobalTable";
-import { eventMainData, eventMainHeaders, planHeaders, walletHeaders } from "@/data/tableData";
+import {
+  eventMainData,
+  eventMainHeaders,
+  planHeaders,
+  walletHeaders,
+} from "@/data/tableData";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
-import EditCommissionModal from "@/modals/events/EditCommissionModal";
+import dynamic from "next/dynamic";
 import useSearchParams from "@/hooks/useSearchParams";
+
+// Off the initial bundle — only needed once "Edit commission" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const EditCommissionModal = dynamic(
+  () => import("@/modals/events/EditCommissionModal"),
+  {
+    ssr: false,
+  },
+);
 
 const EventView = ({ pageData }: any) => {
   const router = useRouter();
@@ -57,7 +71,11 @@ const EventView = ({ pageData }: any) => {
   return (
     <>
       <>
-        <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
+        <div
+          className={
+            "flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"
+          }
+        >
           <DataCard
             styles={"w-full"}
             title={"Ticket Commission"}
@@ -72,14 +90,21 @@ const EventView = ({ pageData }: any) => {
             isEditable={true}
             handleChange={toggleEditModal}
           />
-          <DataCard styles={"w-full"} title={"Total Events"} count={pageData?.total_events} />
+          <DataCard
+            styles={"w-full"}
+            title={"Total Events"}
+            count={pageData?.total_events}
+          />
         </div>
         <div className="rounded-lg bg-white shadow-md">
           <table className="min-w-full table-auto border-collapse">
             <thead>
               <tr className="bg-mid-grey">
                 {eventMainHeaders.map((header, idx) => (
-                  <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
+                  <th
+                    className="p-4 text-left text-[12px] font-semiBold text-text-grey"
+                    key={idx}
+                  >
                     {header}
                   </th>
                 ))}
@@ -93,12 +118,24 @@ const EventView = ({ pageData }: any) => {
                     className="h-[72px] cursor-pointer border-b border-grey-20"
                     onClick={() => router.push(`/events/${row.id}`)}
                   >
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.event_name}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.event_type}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.category}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.date_created_at}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.status}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row?.unique_id}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row?.event_name}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row?.event_type}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row?.category}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row?.date_created_at}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row?.status}
+                    </td>
                   </tr>
                 ))
               ) : (

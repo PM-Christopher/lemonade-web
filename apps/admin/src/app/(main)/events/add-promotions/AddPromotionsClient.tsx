@@ -5,10 +5,19 @@ import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PromotionsCard from "@/components/events/PromotionsCard";
 import { listPromotions } from "@/data/tableData";
-import CreatePromotionModal from "@/modals/events/CreatePromotionModal";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { usePromotionListQuery } from "@/features/events/queries";
+
+// Off the initial bundle — only needed once "New promotion" is clicked
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const CreatePromotionModal = dynamic(
+  () => import("@/modals/events/CreatePromotionModal"),
+  {
+    ssr: false,
+  },
+);
 
 function AddPromotionsClient() {
   const [promotionModal, setPromotionModal] = useState(false);

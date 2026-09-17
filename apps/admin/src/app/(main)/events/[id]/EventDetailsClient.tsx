@@ -14,8 +14,16 @@ import { useEventDetailQuery } from "@/features/events/queries";
 import { useActivateEventMutation } from "@/features/events/mutations";
 import { capitalizeWords } from "@/utils/helper";
 import Image from "next/image";
-import SuspendModal from "@/modals/events/SuspendModal";
-import DeleteModal from "@/modals/events/DeleteModal";
+import dynamic from "next/dynamic";
+
+// Off the initial bundle — both are only needed once their triggering
+// action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+const SuspendModal = dynamic(() => import("@/modals/events/SuspendModal"), {
+  ssr: false,
+});
+const DeleteModal = dynamic(() => import("@/modals/events/DeleteModal"), {
+  ssr: false,
+});
 
 const EventDetailsClient = ({ id }: { id: number | undefined }) => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
