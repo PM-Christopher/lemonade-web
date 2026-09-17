@@ -2420,7 +2420,7 @@ lands, extending `collect.url` in `lighthouserc.frontend.json` is the only chang
 endpoints landing it (§13's Conflict 1), not confirmed either way this phase, and isn't something the
 frontend can implement alone.
 
-### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added; a11y partially done; full modal migration and contrast audit remain]**
+### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, token contrast audited (2 real findings, need a design decision); only the full custom-modal-to-Dialog migration remains]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -2574,10 +2574,31 @@ left it alone rather than fixing a component nothing renders.
 Deliberately not attempted in this pass: most "modals" in both apps are hand-built `<div>`s, not the
 `Dialog` primitive, so they don't get Radix's focus trap, Escape-to-close, or `aria-modal` semantics for
 free — migrating them is a real, large, one-component-at-a-time effort (dozens of files), not a
-mechanical fix, and not something verifiable without a browser in this environment. Contrast wasn't
-audited either — checking real rendered contrast ratios against WCAG needs either a browser or a
-palette-wide script computing ratios for every `text`/`bg` color pairing actually used together, neither
-of which this pass had the tooling or the scope to do safely.
+mechanical fix, and not something verifiable without a browser in this environment.
+
+**Contrast audit — done for the design system's own tokens, not every call site.** A palette-wide script
+checking every `text`/`bg` pairing actually used together across ~4,000 className strings would need to
+know which classes land on the same element — real AST work, not attempted here. What's tractable without
+a browser: WCAG's contrast formula is pure math over a color's HSL values, and both apps' shadcn primitives
+render through a small, fixed set of CSS-variable token pairs (`primary`/`primary-foreground`,
+`card`/`card-foreground`, `border`/`background`, and so on — defined once in `globals.css`, identical in
+both apps). Built `tooling/contrast-audit/` to check exactly those: `parse-tokens.mjs` reads the HSL
+values out of `globals.css`, `contrast.mjs` implements the real WCAG 2.1 relative-luminance formula (no
+headless browser needed — same math a browser uses), `audit.mjs` checks each pair against the right
+threshold (4.5:1 for text, 3:1 for non-text UI components like borders) for both light and dark mode. 8
+unit tests, including a regression test for a real bug the first run caught: `globals.css` has an earlier,
+unrelated `:root { --foreground-rgb: 0, 0, 0; }` block (legacy, comma-separated, not HSL) before the real
+shadcn token block, and the first version of the parser matched that one by mistake, silently returning an
+empty token set instead of erroring.
+
+Running it for real found genuine, previously-unmeasured failures, all stock shadcn defaults never
+customized for this project: light mode's `destructive-foreground` on `destructive` is 3.60:1 (needs
+4.5:1 — the "delete" button variant's own text fails contrast against its own background), `muted-foreground`
+on `muted` is 4.35:1 (fails by a hair), and `border`/`input` on `background` are 1.26:1 light / 1.31:1 dark
+(both need 3:1 — though WCAG 1.4.11 exempts purely decorative borders, so this one's a closer call than
+the destructive-button failure). Wired into `.github/workflows/ci.yml` as a new `contrast-audit` job,
+report-only like the Lighthouse job — these are real findings worth a design decision, not something to
+silently "fix" by picking new colors without the user's input.
 
 **Arbitrary pixel values are now a lint warning, with the same declining-budget ratchet already used for
 `no-explicit-any`.** `eslint-plugin-tailwindcss`'s own `no-arbitrary-value` rule turned out to be the

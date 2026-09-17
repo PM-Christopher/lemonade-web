@@ -189,6 +189,28 @@ jobs:
       - name: Lighthouse CI (admin)
         run: pnpm --filter @lemonade/lighthouse-ci admin
 
+  # Report-only, like Lighthouse above — see tooling/contrast-audit/README.md.
+  # Checks the shared shadcn token pairs against WCAG AA; two known failures
+  # (destructive-foreground on destructive, border/input on background) are
+  # a real design decision, not something CI should silently block on.
+  contrast-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Contrast audit
+        run: pnpm --filter @lemonade/contrast-audit check
+
   # TODO(Phase 8): Playwright, the ten journeys from docs/ARCHITECTURE.md §17,
   # merge queue only.
   # e2e:

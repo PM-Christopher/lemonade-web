@@ -1,0 +1,15 @@
+{
+  "name": "@lemonade/contrast-audit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Checks the shared shadcn token pairs in packages/ui's primitives against WCAG AA contrast. See docs/ARCHITECTURE.md §7.",
+  "type": "module",
+  "scripts": {
+    "check": "node audit.mjs",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "@lemonade/config": "workspace:*",
+    "vitest": "^2.1.8"
+  }
+}
