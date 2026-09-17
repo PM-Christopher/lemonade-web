@@ -1,0 +1,13 @@
+{
+  "name": "@lemonade/lighthouse-ci",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Lighthouse CI config for the pages that are actually public today (the pre-login auth flow — see README.md for why that's the whole list). See docs/ARCHITECTURE.md §15.",
+  "scripts": {
+    "frontend": "lhci autorun --config=./lighthouserc.frontend.json",
+    "admin": "lhci autorun --config=./lighthouserc.admin.json"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.14.0"
+  }
+}

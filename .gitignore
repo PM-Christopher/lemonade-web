@@ -16,6 +16,10 @@ build/
 # Testing
 coverage/
 
+# Lighthouse CI reports (tooling/lighthouse-ci)
+lhci-reports/
+.lighthouseci/
+
 # Env
 .env
 .env.local

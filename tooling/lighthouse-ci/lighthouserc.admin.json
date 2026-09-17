@@ -1,0 +1,28 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm --filter lemonade-admin start -p 4101",
+      "startServerReadyPattern": "Ready in",
+      "startServerReadyTimeout": 30000,
+      "numberOfRuns": 1,
+      "settings": {
+        "preset": "desktop",
+        "onlyCategories": ["performance"]
+      },
+      "url": [
+        "http://localhost:4101/login",
+        "http://localhost:4101/forgot-password"
+      ]
+    },
+    "assert": {
+      "assertions": {
+        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.1 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "./lhci-reports/admin"
+    }
+  }
+}

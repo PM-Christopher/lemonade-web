@@ -147,6 +147,40 @@ jobs:
       - name: Compare admin
         run: node tooling/bundle-budget/compare.mjs --base /tmp/base-admin.json --current /tmp/current-admin.json --app admin
 
+  # Report-only (warn, not error) — see tooling/lighthouse-ci/README.md for
+  # why: this is the first time these pages have had Lighthouse run in CI,
+  # and it only covers the pages that are actually public today (the
+  # pre-login auth flow). Both are real limits, not placeholders — the
+  # doc's own §15 LCP/CLS targets were written for public event/tribe/
+  # business pages that don't exist as public pages yet (see Phase 6's
+  # status: that's a deferred product decision, not a frontend gap).
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm --filter lemonade-app build
+
+      - name: Lighthouse CI (frontend)
+        run: pnpm --filter @lemonade/lighthouse-ci frontend
+
+      - name: Build admin
+        run: pnpm --filter lemonade-admin build
+
+      - name: Lighthouse CI (admin)
+        run: pnpm --filter @lemonade/lighthouse-ci admin
+
   # TODO(Phase 8): Playwright, the ten journeys from docs/ARCHITECTURE.md §17,
   # merge queue only.
   # e2e:
