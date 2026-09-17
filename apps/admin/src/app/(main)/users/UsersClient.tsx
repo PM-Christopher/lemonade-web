@@ -19,7 +19,13 @@ import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
-import { Select } from "antd";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function UsersClient() {
   const statusOptions = [
@@ -129,18 +135,18 @@ function UsersClient() {
               </div>
             </div>
             {menuOption === "users" && (
-              <Select
-                suffixIcon={<ChevronDown className="w-[20px] text-text-grey" />}
-                defaultValue="Status"
-                className="h-[40px] w-[193px] rounded-[12px] text-[12px] font-semiBold text-text-grey focus:!border-light-green-50"
-                options={statusOptions.map((status) => ({
-                  label: status,
-                  value: status.toLowerCase(),
-                }))}
-                onChange={(value) => {
-                  setStatus(value);
-                }}
-              />
+              <Select onValueChange={(value) => setStatus(value)}>
+                <SelectTrigger className="h-[40px] w-[193px] rounded-[12px] text-[12px] font-semiBold text-text-grey focus:!border-light-green-50">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((option) => (
+                    <SelectItem key={option} value={option.toLowerCase()}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
             <div
               className={

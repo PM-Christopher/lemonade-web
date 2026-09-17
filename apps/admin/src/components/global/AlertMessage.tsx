@@ -2,12 +2,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import Alert from "@mui/material/Alert";
+import { toast, Toaster } from "react-hot-toast";
+import { RootState } from "@/redux/store";
 
 export const AlertMessage = () => {
   const dispatch = useDispatch();
-
-  const { showToast } = useSelector((s: any) => s.toast);
+  const { showToast } = useSelector((s: RootState) => s.toast);
 
   useEffect(() => {
     let timer: any;
@@ -30,16 +30,46 @@ export const AlertMessage = () => {
     };
   }, [showToast, dispatch]);
 
+  useEffect(() => {
+    if (showToast.message) {
+      if (showToast.type === "success") {
+        toast.success(showToast.message);
+      } else {
+        toast.error(showToast.message);
+      }
+    }
+  }, [showToast]);
+
   return showToast.show ? (
     <div className="fixed left-0 top-10 w-full" style={{ zIndex: 99999 }}>
       <div className="z-100 w-full px-5 tablet:mx-auto tablet:w-[872px]">
-        <Alert
-          variant="filled"
-          severity={showToast.type === "success" ? "success" : "error"}
-          onClose={() => {}}
-        >
-          {showToast.message}
-        </Alert>
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: "#BFDF37",
+              color: "#fff",
+              width: "100%",
+            },
+            success: {
+              duration: 3000,
+              iconTheme: {
+                primary: "green",
+                secondary: "black",
+              },
+            },
+            error: {
+              duration: 3000,
+              iconTheme: {
+                primary: "red",
+                secondary: "white",
+              },
+            },
+          }}
+        />
       </div>
     </div>
   ) : null;
