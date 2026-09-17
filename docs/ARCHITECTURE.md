@@ -2624,7 +2624,7 @@ budget step. While in there, the any-type budget script surfaced its own real im
 in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
 `no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
 
-### Phase 8 — Observability & hardening **[SHOULD]** **[STARTED — code-only bullets done; Sentry and full e2e blocked, see below]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP and docs finalization done; Sentry and full e2e blocked on external resources, see below]**
 
 Closes the loop with the backend, which already reports to Sentry.
 
@@ -2679,9 +2679,28 @@ Did the rest, all verifiable without either:
   first, then enforced" order means the *next* step is watching real `/api/csp-report` data for a while
   before ever switching the header name to `Content-Security-Policy`.
 
-Not attempted: `docs/` finalization (ADRs, `CONTRACT.md`, per-app READMEs) — CLAUDE.md itself is mid-edit
-by the user outside this session (see git status), so left alone rather than racing an edit already in
-flight; the rest of the docs pass is real scope on its own and hasn't been started.
+**`docs/` finalization — done except the one piece that's off-limits.** `CLAUDE.md` itself is mid-edit by
+the user outside this session (see git status at session start), so left untouched rather than racing an
+edit already in flight. Everything else in that bullet was genuinely stale, not just missing:
+
+- **Root `README.md`** described the repo as it was before Phase 0 — "Tooling scaffold only... apps/admin
+  and apps/frontend are placeholders," migrated in later via `git subtree`. None of that has been true for
+  a long time; rewrote it to describe what's actually here (structure, real commands, current phase
+  status by reference to `docs/ARCHITECTURE.md` rather than duplicating it).
+- **`docs/CONTRACT.md`** said "Not written yet... once tooling/generate-api-types exists" — that tool has
+  existed since Phase 2 and has its own thorough README. Wrote the actual contract doc: where the
+  generated types come from, what's still hand-written (response shapes — the manifest only sees
+  request-side `FormRequest` rules) and not yet migrated (the ~15 features still on the hand-maintained
+  `routes.ts`), and — the part this doc is actually for — what a `contract-drift` CI failure means and
+  what to do about an `unknown`-typed field, rather than just linking to the generator's own README.
+- **Per-app READMEs** didn't exist at all. Added `apps/frontend/README.md` and `apps/admin/README.md` —
+  real structure, real `.env.example`-derived setup steps, and each app's own genuinely different gotchas
+  (admin's Turbopack dev-server quirk noted earlier this session; frontend's `"use client"` placement
+  rule stated with the actual reasoning, not just cross-referenced).
+- **A new ADR** (`docs/adr/0002-shared-ui-style.md`) records the one decision from this session durable
+  and hard-to-reverse enough to be worth one: which shadcn style `@lemonade/ui` standardized on, why (two
+  of new-york's differences are objectively better independent of which app "started" with them), and
+  what shipped as a side effect (admin's `Input` gained a password-visibility toggle it never had).
 
 ---
 

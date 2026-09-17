@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# frontend (`lemonade-app`)
 
-## Getting Started
+The public, mobile-first creator platform — tribes, threads, events, ticketing, business listings, jobs,
+Connect messaging, wallet, subscriptions. Public + authenticated, at scale. Server-rendered wherever the
+page is readable — first paint and SEO matter here in a way they don't for `apps/admin`. See root
+`README.md` and `docs/ARCHITECTURE.md` for the wider monorepo context.
 
-First, run the development server:
+## Running it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local   # fill in LARAVEL_API_URL at minimum
+pnpm --filter lemonade-app dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Needs a running `lemonade-backend` at `LARAVEL_API_URL` for anything beyond static rendering. `.env.example`
+documents every variable, required and optional (Google OAuth, Pusher, Firebase push notifications — the
+app degrades rather than crashing when the optional ones are unset).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+src/app/
+  (auth)/       login, signup, forgot/reset password, verify-email, verify-code, profile-setup
+  (main)/       everything behind auth — event, tribe, business, settings, connect
+  api/          Route Handlers — the BFF layer (auth cookies, proxying to the backend)
+src/features/
+  authentication, business, connect, dashboard, events, settings, tribes, transaction, shared
+src/components/  app-wide, cross-feature UI (nav, layout, global alerts)
+src/lib/         app-local glue — logger, server-api (BFF transport), query-client, env validation
+```
 
-## Learn More
+Route protection is `src/middleware.ts` (UX redirect only — see its own comments for the real
+authorization chain) plus a `Content-Security-Policy-Report-Only` header with a per-request nonce (see
+`docs/ARCHITECTURE.md` Phase 8).
 
-To learn more about Next.js, take a look at the following resources:
+## Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm --filter lemonade-app dev          # localhost:3000
+pnpm --filter lemonade-app build
+pnpm --filter lemonade-app lint
+pnpm --filter lemonade-app lint:any-budget      # fails if `any` usage grew — see packages/config/no-any-budget.json
+pnpm --filter lemonade-app lint:pixel-budget    # fails if hardcoded [Npx] classes grew
+pnpm --filter lemonade-app typecheck
+pnpm --filter lemonade-app test
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Things worth knowing before changing this app
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- **`"use client"` goes on the smallest component that needs it**, not a page or layout — see
+  `CLAUDE.md`. A page that needs it is a signal data orchestration hasn't been lifted into a Server
+  Component.
+- **Money is displayed, never computed** — format via `@lemonade/domain`, render server-computed figures.
+- **Shared UI primitives come from `@lemonade/ui`**, not a local `components/ui/` copy — that directory
+  now only holds primitives with exactly one real consumer (this app), not the ones both apps share.
+- Real known gaps are tracked in `docs/ARCHITECTURE.md`'s Phase 6/7/8 status sections, not silently fixed
+  here — e.g. most modals are still hand-built `<div>`s rather than the `Dialog` primitive, and ~2,600
+  hardcoded pixel Tailwind classes remain under a declining-budget lint ratchet.

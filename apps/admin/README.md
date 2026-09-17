@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# admin (`lemonade-admin`)
 
-## Getting Started
+The internal operations console — money, moderation, platform config. Small, authenticated, trained,
+desktop audience. Client-heavy is acceptable here in a way it isn't for `apps/frontend`. See root
+`README.md` and `docs/ARCHITECTURE.md` for the wider monorepo context.
 
-First, run the development server:
+## Running it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local   # fill in LARAVEL_API_URL at minimum
+pnpm --filter lemonade-admin dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Needs a running `lemonade-backend` at `LARAVEL_API_URL` for anything beyond static rendering.
+`--turbopack` is the default `dev` script here; if it hits an unrelated "Next.js package not found"
+internal error in your environment, `next dev` (without `--turbopack`) works — `next build` (what CI and
+production actually use) is unaffected either way.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/app/
+  (auth)/       login, forgot/reset password
+  (main)/       users, transactions, events, wallet-management, team, reporting, announcements, tribes
+  api/          Route Handlers — the BFF layer (auth cookies, CSV export, proxying to the backend)
+src/features/
+  announcements, authentication, dashboard, events, exports, profile, reporting, team, transaction, user, wallet
+src/components/  app-wide, cross-feature UI (main layout, global alerts)
+src/lib/         app-local glue — logger, server-api (BFF transport), query-client, env validation
+```
 
-## Learn More
+Route protection is `src/middleware.ts` (UX redirect only — see its own comments for the real
+authorization chain) plus a `Content-Security-Policy-Report-Only` header with a per-request nonce (see
+`docs/ARCHITECTURE.md` Phase 8).
 
-To learn more about Next.js, take a look at the following resources:
+## Commands
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm --filter lemonade-admin dev          # localhost:3000 (or :3001 if frontend's already running)
+pnpm --filter lemonade-admin build
+pnpm --filter lemonade-admin lint
+pnpm --filter lemonade-admin lint:any-budget      # fails if `any` usage grew — see packages/config/no-any-budget.json
+pnpm --filter lemonade-admin lint:pixel-budget    # fails if hardcoded [Npx] classes grew
+pnpm --filter lemonade-admin typecheck
+pnpm --filter lemonade-admin test
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Things worth knowing before changing this app
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **`"use client"` goes on the smallest component that needs it**, not a page or layout — see
+  `CLAUDE.md`. Every real page's Server Component now prefetches its default tab's data and hands off to
+  a client component for interactivity (search, filters, tabs) — see any `<Feature>Client.tsx` next to
+  its `page.tsx` for the pattern.
+- **Money is displayed, never computed** — format via `@lemonade/domain`, render server-computed figures.
+  This matters more here than anywhere else in the monorepo: this app is where payouts, wallet balances,
+  and commission adjustments actually happen.
+- **Shared UI primitives come from `@lemonade/ui`**, not a local `components/ui/` copy — that directory
+  doesn't exist in this app anymore; every primitive this app used turned out to also be used by
+  `apps/frontend`, so all of them got promoted.
+- Real known gaps are tracked in `docs/ARCHITECTURE.md`'s Phase 6/7/8 status sections, not silently fixed
+  here — e.g. server-side pagination on the largest tables (users, transactions, reporting) is blocked on
+  a backend change, and most modals are still hand-built `<div>`s rather than the `Dialog` primitive.
