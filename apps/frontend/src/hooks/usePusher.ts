@@ -36,14 +36,6 @@ export const usePusher = (channelName: string, eventName: string) => {
       }
     };
 
-    pusher.connection.bind("state_change", (states: any) => {
-      // console.log("Pusher connection state change:", states);
-    });
-
-    pusher.connection.bind("connected", () => {
-      // console.log("Pusher connected");
-    });
-
     channel.bind(eventName, eventHandler);
 
     return () => {

@@ -30,7 +30,6 @@ export const useRefreshToken = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // console.log('TRIGGERED!!!')
       refreshAccessToken();
     }, 60 * 1000);
     return () => clearInterval(interval);
