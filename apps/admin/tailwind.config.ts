@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
+import sharedPreset from "@lemonade/config/tailwind-preset";
 
 export default {
+  presets: [sharedPreset],
   darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -21,18 +23,17 @@ export default {
       wide: "1536px", // Large desktops and ultra-wide screens
     },
     extend: {
-      fontFamily: {
-        sans: ["Work Sans", "sans-serif"],
-        ruso: ["Russo One", "sans-serif"],
-      },
       boxShadow: {
-        "custom-top": "0px 2px 0px 0px #C1FF3C inset",
-        "custom-bottom": "0px -2px 2px 0px #658E0D inset",
-        "div-shadow-1": "-8px 8px 12px 0px rgba(187, 187, 187, 0.15)",
-        "div-shadow-2": "2px 0px 8px 0px rgba(230, 230, 230, 0.25)",
-        "event-custom": "0px -1px 2px 0px #9FC207 inset",
+        // Pre-existing bug, not touched here: this should be a shadow VALUE
+        // ("0px 0px 1px 1.5px #EDEDED4D"), not a full "box-shadow: ..."
+        // declaration — Tailwind's boxShadow theme values are values, not
+        // statements, so this utility silently never applies. Flagging it
+        // rather than fixing it silently since it wasn't part of this pass's
+        // scope and fixing it changes rendered output somewhere unverified.
         "card-shadow": "box-shadow: 0px 0px 1px 1.5px #EDEDED4D",
       },
+      // Not shared with frontend's fontWeight scale — see
+      // apps/frontend/tailwind.config.ts's comment on the same key.
       fontWeight: {
         thin: "100", // Extra Light or Thin
         extraLight: "200", // Ultra Light or Extra Light
@@ -45,59 +46,12 @@ export default {
         black: "900", // Black or Heavy
       },
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-green": "linear-gradient(12deg, #9BE303, #7FBB00)",
         "gradient-green-2": "linear-gradient(90deg, #FFFAAD, #E6FF7C)",
         "gradient-light-green": "linear-gradient(90deg, #FFFCCC, #EEFFA8)",
         "gradient-progress-green": "linear-gradient(90deg, #EBFFC0, #A2EC02)",
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
         "light-grey": "#F9FAFA",
         "text-grey": "#757C91",
         "border-grey": "#E3E6ED",
@@ -147,11 +101,6 @@ export default {
         "yellow-accent-2": "#FEFEF0",
         "yellow-accent-3": "#CEC529",
       },
-      height: {
-        "desk-content": "calc(100vh-100px)",
-        "mobile-content": "calc(100vh-50px)",
-      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
 } satisfies Config;

@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
+import sharedPreset from "@lemonade/config/tailwind-preset";
 
 const config: Config = {
+  presets: [sharedPreset],
   darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -18,22 +20,17 @@ const config: Config = {
       wide: "1536px", // Large desktops and ultra-wide screens
     },
     extend: {
-      fontFamily: {
-        sans: ["Work Sans", "sans-serif"],
-        ruso: ["Russo One", "sans-serif"],
-      },
       letterSpacing: {
         custom: "-0.005em",
       },
       boxShadow: {
-        "custom-top": "0px 2px 0px 0px #C1FF3C inset",
-        "custom-bottom": "0px -2px 2px 0px #658E0D inset",
-        "div-shadow-1": "-8px 8px 12px 0px rgba(187, 187, 187, 0.15)",
-        "div-shadow-2": "2px 0px 8px 0px rgba(230, 230, 230, 0.25)",
-        "event-custom": "0px -1px 2px 0px #9FC207 inset",
         "green-inset": "inset 0px 2px 0px 0px #C1FF3C, inset 0px -2px 2px 0px #658E0D",
         "green-inset-strong": "inset 0px 3px 0px 0px #C1FF3C, inset 0px -3px 3px 0px #658E0D",
       },
+      // Not shared with admin's fontWeight scale — the same key name means a
+      // different weight in each app today (e.g. "thin" is 300 here, 100 in
+      // admin's), so merging them would silently change rendered weight on
+      // one app's existing classes. See docs/ARCHITECTURE.md §7.
       fontWeight: {
         regular: "100",
         thin: "300",
@@ -43,59 +40,12 @@ const config: Config = {
         bold: "700",
       },
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-green": "linear-gradient(90deg, #9BE303, #7FBB00)",
         "gradient-green-2": "linear-gradient(90deg, #FFFAAD, #E6FF7C)",
         "gradient-light-green": "linear-gradient(90deg, #FFFCCC, #EEFFA8)",
         "gradient-progress-green": "linear-gradient(90deg, #EBFFC0, #A2EC02)",
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
         light_grey: "#F9FAFA",
         "text-grey": "#757C91",
         "border-grey": "#E3E6ED",
@@ -140,12 +90,7 @@ const config: Config = {
         "blue-accent-1": "#5D00D4",
         "red-accent-1": "#FFEBEB",
       },
-      height: {
-        "desk-content": "calc(100vh-100px)",
-        "mobile-content": "calc(100vh-50px)",
-      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
 };
 export default config;

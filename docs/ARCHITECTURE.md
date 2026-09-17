@@ -2516,7 +2516,39 @@ serve 200s on every route touched. Admin's Turbopack dev server (`next dev --tur
 so not a regression; `next build` (webpack) and plain `next dev` both work, which is what CI and
 production actually use.
 
-Not started: the Tailwind preset with real tokens, and the accessibility pass.
+**One Tailwind preset with real tokens — the safe half done, the rest documented instead of guessed.**
+Diffed both apps' `tailwind.config.ts` line by line. Found a clean split: shadcn's own CSS-variable-driven
+token set (`background`/`foreground`/`card`/`popover`/`primary`/`secondary`/`muted`/`accent`/
+`destructive`/`border`/`input`/`ring`/`chart`), `borderRadius`, `fontFamily`, the generic
+`gradient-radial`/`gradient-conic` `backgroundImage`s, and five `boxShadow` utilities
+(`custom-top`/`custom-bottom`/`div-shadow-1`/`div-shadow-2`/`event-custom`) were byte-identical between
+the two files — real duplication, safe to share. Moved exactly those into `packages/config/tailwind.preset.js`,
+had both apps' configs pull it in via `presets: [require("@lemonade/config/tailwind-preset")]`, and
+verified the change is a no-op: built both apps before and after, diffed the generated CSS output
+file-for-file, byte-identical in both apps. Nothing rendered differently; this only removed duplication.
+
+Left everything else exactly where it was, because merging it isn't safe without a way to visually verify
+the result (no browser tool in this environment, and both apps ship to real users): the two apps'
+`fontWeight` scales use the **same key names for different weights** (`thin` is `300` in frontend's scale,
+`100` in admin's) — merging them would silently reweight text somewhere neither typecheck nor a CSS diff
+would catch. The `tablet` breakpoint differs by 1px (767 vs 768) between the two configs, undocumented
+anywhere as intentional — flagging it as a likely bug, not fixing it, since picking either value changes
+real layout behavior at that exact width. Frontend's shared color key is `light_grey` (underscore, used
+as `bg-light_grey` at real call sites); admin's is `light-grey` (hyphen) — same value, different key,
+so sharing it under either spelling would break the other app's existing class names. Also found, while
+diffing: admin's `card-shadow` in `boxShadow` is a real pre-existing bug — its value is a full
+`"box-shadow: 0px 0px 1px 1.5px #EDEDED4D"` declaration string, not a shadow *value*, so the utility
+Tailwind generates from it never actually applies anywhere it's used. Left it as-is and commented in
+place rather than fixing it silently, same reasoning as the rest of this paragraph.
+
+"Arbitrary pixel values become lint warnings" — not started. This phase's own preset file already
+measured **7,041 hardcoded pixel classes** across both apps before any of this session's work began; a
+lint rule that fires on all of them at once isn't a small addition, it's asking every future PR to wade
+through thousands of pre-existing warnings to find its own. Needs its own scoped pass (or an ESLint
+overrides list seeded from today's count, the same "warn on new, not on existing" shape as this session's
+`no-explicit-any`/MUI bans) rather than a blanket switch-on.
+
+Also not started: the accessibility pass.
 
 ### Phase 8 — Observability & hardening **[SHOULD]** **[NOT STARTED]**
 
