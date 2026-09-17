@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Label, Input, Button } from "@lemonade/ui";
 import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";

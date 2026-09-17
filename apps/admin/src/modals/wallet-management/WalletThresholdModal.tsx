@@ -1,6 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@lemonade/ui";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";

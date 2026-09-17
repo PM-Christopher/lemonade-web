@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, Label } from "@lemonade/ui";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { useAppDispatch } from "@/redux/hook";
 import { changeReason } from "@/features/authentication/authSlice";
 import { cancelReason } from "../../../../pageData";

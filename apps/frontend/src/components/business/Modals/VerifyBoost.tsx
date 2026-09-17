@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import Image from "next/image";
 import PromoteEvent from "@/image/PromoteEventIcon.png";
 import { useRouter } from "next/navigation";

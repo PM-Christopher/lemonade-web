@@ -1,7 +1,4 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { Input, Label, Select, SelectContent, SelectTrigger, SelectValue, Textarea } from "@lemonade/ui";
 import { XIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";

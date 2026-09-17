@@ -2,7 +2,7 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { formatStringUCFirst, getDistanceFromLatLonInKm } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { useInviteResponseMutation } from "@/features/connect/mutations";

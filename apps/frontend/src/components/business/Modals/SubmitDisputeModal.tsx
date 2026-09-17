@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import { useFormik } from "formik";

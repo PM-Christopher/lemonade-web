@@ -1,6 +1,6 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";

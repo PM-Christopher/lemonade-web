@@ -7,7 +7,7 @@ import {
   SearchIcon,
   UploadIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import DataCard from "@/components/global/DataCard";
 import { walletHeaders } from "@/data/tableData";
 import dynamic from "next/dynamic";

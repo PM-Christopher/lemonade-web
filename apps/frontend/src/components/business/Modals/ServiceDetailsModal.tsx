@@ -4,7 +4,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import medal from "@/images/icons/medal.png";
 import ClockIconOrange from "@/images/icons/clockIconOrange.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatDecimal, formatStringUCFirst, getInitials } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";

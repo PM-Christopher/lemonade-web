@@ -3,14 +3,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import MainTribeCard from "@/components/tribes/MainTribeCard";
 import ThreadCard from "@/components/tribes/ThreadCard";
 import TribeDetails from "@/components/tribes/TribeDetails";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import {
   ChevronDown,
   ChevronLeft,

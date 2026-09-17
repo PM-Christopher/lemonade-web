@@ -11,7 +11,7 @@ import FacebookIcon from "@/images/icons/facebook-color.svg";
 import InstagramIcon from "@/images/icons/instagram-color.svg";
 import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";

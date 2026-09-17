@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Label } from "@/components/ui/label";
+import { Label } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
 import * as yup from "yup";
 import { useFormik } from "formik";

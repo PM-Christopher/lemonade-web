@@ -8,7 +8,7 @@ import TicketIcon from "@/images/icons/ticketFilledIcon.svg";
 import BagIcon from "@/images/icons/caseFilledIcon.svg";
 import WebIcon from "@/images/icons/webFilledIcon.svg";
 import ReferralIcon from "@/images/icons/referralFilledIcon.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useRouter } from "next/navigation";
 import CheckIcon from "@/images/icons/checkGreenIcon.svg";
 import { useAppDispatch } from "@/redux/hook";

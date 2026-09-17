@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, Label, Input, Button } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
 import { FormikButton } from "@/components/global/FormikButton";
 

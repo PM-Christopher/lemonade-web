@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label, Input } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";

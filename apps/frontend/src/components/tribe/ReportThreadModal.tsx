@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button, Label } from "@lemonade/ui";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { useAppDispatch } from "@/redux/hook";
 import { useReportThreadMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";

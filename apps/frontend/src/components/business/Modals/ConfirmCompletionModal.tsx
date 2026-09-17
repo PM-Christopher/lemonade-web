@@ -2,7 +2,7 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useMarkJobCompletedMutation } from "@/features/business/mutations";
 import { setSelectedJob } from "@/redux/tempSlice";

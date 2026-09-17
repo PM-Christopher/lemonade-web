@@ -2477,9 +2477,46 @@ page that rendered one of the migrated components (`/`, `/tribe/[id]`, `/event`,
 `/settings/wallet` for frontend; `/`, `/users`, `/login` for admin, since `AlertMessage` renders in the
 root layout) — all clean 200s, no server error.
 
-Not started: lifting primitives into `@lemonade/ui` (today they're app-local `components/ui/`, one copy
-per app — genuinely duplicated, not yet promoted, since Phase 7 hadn't started before this pass), the
-Tailwind preset with real tokens, and the accessibility pass.
+**Primitives lifted into `@lemonade/ui`.** Diffed every `components/ui/*.tsx` file both apps had in
+common — 7 files (`button`, `button.test`, `card`, `input`, `label`, `select`, `textarea`; admin's
+entire `components/ui/` was exactly these 7, so the directory is now gone). `label.tsx` was
+byte-identical. The rest split into two kinds of difference: real shadcn style divergence (admin was on
+"new-york", frontend on "default" — the package's own `index.ts` TODO had flagged this as unresolved)
+and two genuine correctness gaps that happened to track the same fault line. Resolved style by taking
+admin's new-york conventions as the default (icon-aware button sizing, `lucide-react` over
+`@radix-ui/react-icons` since lucide is already the dominant icon library in both apps everywhere outside
+these files, mobile-safe `text-base md:text-sm` input/textarea sizing that avoids iOS's zoom-on-focus).
+Kept two things from frontend's version instead, because they're fixes, not style: `CardTitle`/
+`CardDescription` render as `<h3>`/`<p>` (shadcn's own canonical semantic markup — admin's used bare
+`<div>`s), and `Input` carries the password-visibility toggle (gated on `type="password"`, so any
+consumer gets it by passing that type — not an app-shaped flag, so it doesn't trip CLAUDE.md's
+"no app-shaped branching" rule). Also fixed a real bug surfaced while diffing: frontend's `select.tsx`
+had `data-[disabled]:pointer-tribes-none` where every other copy (admin's, shadcn's own upstream) reads
+`pointer-events-none` — looks like a stray find-replace artifact from unrelated tribes-domain work
+elsewhere in the codebase; the disabled-state styling silently never applied. Carried `cn()` into
+`packages/ui/src/lib/utils.ts` (same `clsx`+`tailwind-merge` implementation both apps already had
+locally) rather than routing through `@lemonade/domain`, since class-merging is a UI concern, not a
+domain one — both apps' own `lib/utils.ts` are untouched, this is additive.
+
+Rewrote every import site across both apps (54 button, 39 label, 34 input, 13 card, 12 select, 3
+textarea call sites) from `@/components/ui/<name>` to `@lemonade/ui`, merged the resulting
+multiple-imports-from-one-module lines back into one per file, deleted the 7 app-local files from both
+apps, and pruned each app's `package.json` down to what's still used directly: `@radix-ui/react-select`,
+`@radix-ui/react-label` and `@radix-ui/react-slot` are gone from both (fully absorbed into
+`@lemonade/ui`); `class-variance-authority` and `@radix-ui/react-icons` stay in frontend only (still used
+directly by `badge.tsx`/`multi-select.tsx` and two event components, respectively — neither is promoted,
+both have exactly one real consumer today); admin's `@radix-ui/react-icons` turned out to already be a
+dead dependency with zero usage anywhere, caught and removed in the same pass. `packages/ui` gained its
+own `vitest.config.ts`/`vitest.setup.ts` (jsdom + Testing Library, mirroring the apps') since it now
+holds a real component test, not just pure functions. Verified: `pnpm install` (lockfile clean),
+typecheck/lint/test/build all green on `@lemonade/ui` and both apps (lint: 0 errors in both, all
+warnings pre-existing debt tracked earlier in this phase and Phase 3); both apps' dev servers boot and
+serve 200s on every route touched. Admin's Turbopack dev server (`next dev --turbopack`) hit an unrelated
+"Next.js package not found" internal error on this machine — reproduced on `main` before this change too,
+so not a regression; `next build` (webpack) and plain `next dev` both work, which is what CI and
+production actually use.
+
+Not started: the Tailwind preset with real tokens, and the accessibility pass.
 
 ### Phase 8 — Observability & hardening **[SHOULD]** **[NOT STARTED]**
 

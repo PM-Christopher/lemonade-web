@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useRequest } from "@/hooks/useRequest";
 import dayjs from "dayjs";
 import { FaBell } from "react-icons/fa";

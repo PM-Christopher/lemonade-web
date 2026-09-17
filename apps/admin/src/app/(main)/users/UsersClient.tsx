@@ -7,7 +7,7 @@ import {
   SearchIcon,
   UploadIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { usersPageViews } from "@/utils/pageViews";
 import UsersViews from "@/views/users/UsersView";
 import AffiliateView from "@/views/users/AffiliateView";
@@ -19,13 +19,6 @@ import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 function UsersClient() {
   const statusOptions = [

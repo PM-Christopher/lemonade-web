@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, Button } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";

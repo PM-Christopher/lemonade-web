@@ -1,15 +1,8 @@
 import CloseIcon from "@/images/icons/close.svg";
-import { Label } from "@/components/ui/label";
+import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import LocationIcon from "@/images/icons/location.svg";
 import React, { useState } from "react";
 import { useBusinessCategoriesQuery } from "@/features/shared/queries";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import NairaIcon from "@/images/icons/nairaIcon.svg";
 import * as yup from "yup";
 import { useFormik } from "formik";

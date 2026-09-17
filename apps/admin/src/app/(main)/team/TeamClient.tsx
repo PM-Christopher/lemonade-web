@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { teamHeaders } from "@/data/tableData";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";

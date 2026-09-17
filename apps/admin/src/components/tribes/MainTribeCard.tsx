@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@lemonade/ui";
 import Image from "next/image";
 import {
   ChevronLeft,

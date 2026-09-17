@@ -3,7 +3,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 

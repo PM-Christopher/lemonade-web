@@ -4,7 +4,7 @@ import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import business_logo from "@/images/business/jobLogo.png";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
 import MessageIcon from "@/images/icons/messageIcon.svg";
 import WebIcon from "@/images/icons/webIcon.svg";

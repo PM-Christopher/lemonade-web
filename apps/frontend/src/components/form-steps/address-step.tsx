@@ -1,17 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, Label, Input, Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";

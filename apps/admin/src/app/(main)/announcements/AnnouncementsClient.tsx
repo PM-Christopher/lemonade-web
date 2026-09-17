@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { announcementHeaders } from "@/data/tableData";
 import DataInfoCard from "@/components/global/DataInfoCard";
 import { useRouter } from "next/navigation";

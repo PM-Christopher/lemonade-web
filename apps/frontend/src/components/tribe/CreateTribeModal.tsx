@@ -2,16 +2,7 @@ import React, { useRef, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
 import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { Label, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from "@lemonade/ui";
 import DollarBillIcon from "@/images/icons/dollar-bill.svg";
 import InfoIcon from "@/images/icons/infoIcon.svg";
 import PadlockIcon from "@/images/icons/padlock.svg";

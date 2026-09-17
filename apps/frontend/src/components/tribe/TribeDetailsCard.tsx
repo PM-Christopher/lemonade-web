@@ -3,7 +3,7 @@ import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import ShareIcon from "@/images/icons/share.svg";
 import AddUserIcon from "@/images/icons/addUserIcon.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import EditIcon from "@/images/icons/edit.svg";
 import DeleteIcon from "@/images/icons/delete.svg";
 import { TribeInterface, TribeMemberInterface } from "@/interfaces/TribeInterface";

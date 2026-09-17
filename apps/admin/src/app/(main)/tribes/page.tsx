@@ -1,6 +1,6 @@
 "use client";
 import MainLayout from "@/components/layouts/MainLayout";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import CreateTribeModal from "@/modals/tribes/CreateTribeModal";
 import { tribeViews } from "@/utils/pageViews";
 import CreatedTribeViews from "@/views/tribes/CreatedViews";

@@ -2,8 +2,7 @@
 import React, { useState } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label, Input } from "@lemonade/ui";
 import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useRouter } from "next/navigation";

@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import { Label } from "@/components/ui/label";
+import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
 import { useRequest } from "@/hooks/useRequest";
 import { useSelector } from "react-redux";
 import CalendarIcon from "@/images/icons/eventCalendarIcon.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useFilterEventsMutation } from "@/features/events/mutations";
 
 type FilterEventInterface = {

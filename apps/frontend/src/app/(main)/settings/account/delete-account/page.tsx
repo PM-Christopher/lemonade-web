@@ -8,7 +8,7 @@ import BagIcon from "@/images/icons/caseIcon.svg";
 import BankIcon from "@/images/icons/bankIcon.svg";
 import SuppprtIcon from "@/images/icons/supportIcon.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 

@@ -23,8 +23,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { SingleFileUploader } from "@/components/global/FileUploader";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label, Input } from "@lemonade/ui";
 import { FlatButton } from "@/components/global/FlatButton";
 
 import { updateToastifyReducer } from "@/redux/toastifySlice";

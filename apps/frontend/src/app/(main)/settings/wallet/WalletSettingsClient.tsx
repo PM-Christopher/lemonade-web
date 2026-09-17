@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import ReferralSideMenu from "@/components/settings/ReferralSideMenu";
 import AffiliateSideMenu from "@/components/settings/AffiliateSideMenu";
 import PayoutModal from "@/components/settings/Modal/PayoutModal";

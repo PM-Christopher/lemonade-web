@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label, Input } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";

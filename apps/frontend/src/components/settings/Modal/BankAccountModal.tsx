@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Label, Input, Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useFormik } from "formik";
 import * as yup from "yup";

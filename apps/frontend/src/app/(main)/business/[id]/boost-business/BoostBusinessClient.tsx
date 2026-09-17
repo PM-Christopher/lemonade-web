@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label } from "@/components/ui/label";
+import { Label } from "@lemonade/ui";
 import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import FeaturedImage from "@/images/featured.png";

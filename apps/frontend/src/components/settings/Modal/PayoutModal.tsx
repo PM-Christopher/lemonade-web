@@ -1,7 +1,7 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 
 type PayoutInterface = {
   isOpen: boolean;

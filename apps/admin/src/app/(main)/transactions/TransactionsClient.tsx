@@ -7,7 +7,7 @@ import {
   SearchIcon,
   UploadIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { transactionPageViews } from "@/utils/pageViews";
 import PlansViews from "@/views/transactions/PlansViews";
 import WalletViews from "@/views/transactions/walletViews";

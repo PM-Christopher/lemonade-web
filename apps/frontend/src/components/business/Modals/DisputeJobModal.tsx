@@ -1,6 +1,6 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 
 interface DisputeJobModalProps {
   isOpen: boolean;

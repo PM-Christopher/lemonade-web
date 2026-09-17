@@ -2,7 +2,7 @@
 import React from "react";
 import GearIcon from "@/images/icons/gear.svg";
 import { PlusIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useRouter } from "next/navigation";
 
 type OrganizerSubMenuInterface = {

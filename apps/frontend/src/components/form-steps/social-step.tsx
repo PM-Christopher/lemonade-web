@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, Input } from "@lemonade/ui";
 import Image from "next/image";
 import facebook_image from "@/image/facebook.png";
 import linkedin_image from "@/images/linkedin.png";
 import twitter_image from "@/images/twitter.png";
 import instagram_image from "@/images/instagram.png";
-import { Input } from "@/components/ui/input";
 
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";

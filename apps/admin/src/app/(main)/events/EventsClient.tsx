@@ -17,7 +17,7 @@ import { useEventListQuery } from "@/features/events/queries";
 import { useExportCsvMutation } from "@/features/exports/mutations";
 import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
 

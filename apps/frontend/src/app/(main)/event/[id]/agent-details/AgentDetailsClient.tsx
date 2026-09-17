@@ -15,7 +15,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import AttachmentIcon from "@/images/icons/attachments.svg";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import AffiliateLinkModal from "@/components/events/Modals/AffiliateLinkModal";
 
 import { useAppDispatch } from "@/redux/hook";

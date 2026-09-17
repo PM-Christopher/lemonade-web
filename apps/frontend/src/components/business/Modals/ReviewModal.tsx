@@ -1,9 +1,7 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import RatingGreyIcon from "@/image/icons/RatingGreyIcon.png";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Button, Label, Input } from "@lemonade/ui";
 import Image from "next/image";
 
 type ReviewInterface = {

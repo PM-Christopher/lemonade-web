@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import organizer_image from "@/image/event_images/organizer_image.png";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 
 const EmptyEvent: React.FC = () => {
   return (

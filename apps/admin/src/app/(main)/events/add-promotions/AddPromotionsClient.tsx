@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import PromotionsCard from "@/components/events/PromotionsCard";
 import { listPromotions } from "@/data/tableData";
 import dynamic from "next/dynamic";

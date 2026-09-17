@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, Label, Input } from "@lemonade/ui";
 import OtpInput from "react-otp-input";
 import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import Image from "next/image";
 import SearchIcon from "@/images/icons/search.svg";
 import TribeCardList from "@/components/tribe/TribeCardList";

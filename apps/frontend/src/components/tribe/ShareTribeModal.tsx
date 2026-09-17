@@ -6,7 +6,7 @@ import TwitterIcon from "@/images/icons/twitter-color.svg";
 import InstagramIcon from "@/images/icons/instagram-color.svg";
 import WhatsAppIcon from "@/images/icons/whatsappIcon.svg";
 import TelegramIcon from "@/images/icons/telegramIcon.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
 import { useRouter } from "next/navigation";

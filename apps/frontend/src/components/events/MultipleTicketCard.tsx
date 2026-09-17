@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label, Input } from "@lemonade/ui";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import { useFormikContext } from "formik";
 

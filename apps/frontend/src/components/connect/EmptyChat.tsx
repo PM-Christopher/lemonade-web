@@ -3,7 +3,7 @@ import Image from "next/image";
 import avatar from "@/image/avatar_3.png";
 import DotIcon from "@/image/icons/Dot.svg";
 import MoreIcon from "@/image/icons/MoreIcon.svg";
-import { Input } from "@/components/ui/input";
+import { Input } from "@lemonade/ui";
 import ImageIcon from "@/image/icons/ImageIcon.svg";
 
 const EmptyChat = () => {

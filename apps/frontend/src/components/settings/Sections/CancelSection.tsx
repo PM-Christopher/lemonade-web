@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import CheckIcon from "@/images/icons/checkGreenIcon.svg";
 import PadlockIcon from "@/images/icons/padlockFilledIcon.svg";

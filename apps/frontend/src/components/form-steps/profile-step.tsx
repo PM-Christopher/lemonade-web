@@ -1,18 +1,8 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, Label, Input, Textarea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import avatar_url from "@/image/avatar_1.png";
 import Image from "next/image";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";

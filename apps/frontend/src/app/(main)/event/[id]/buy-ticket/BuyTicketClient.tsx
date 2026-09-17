@@ -5,7 +5,7 @@ import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import ClockIcon from "@/images/icons/clock.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { TicketDetails, TicketInterface } from "@/interfaces/EventInterface";

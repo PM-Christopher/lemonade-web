@@ -1,6 +1,6 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button } from "@lemonade/ui";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { useJoinTribeMutation } from "@/features/tribes/mutations";

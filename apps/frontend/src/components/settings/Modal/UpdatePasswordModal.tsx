@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Label } from "@/components/ui/label";
+import { Label } from "@lemonade/ui";
 import EyeIcon from "@/images/icons/eyeIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";

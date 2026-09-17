@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { XIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import * as yup from "yup";

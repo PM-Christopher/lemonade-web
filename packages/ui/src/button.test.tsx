@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { Button } from "./button";
 
 // Pipeline smoke test — proves jsdom + Testing Library actually render and
-// interact with a real component under this app's Vitest config, not just
-// that the runner starts. See docs/ARCHITECTURE.md Phase 1.
+// interact with a real component under this package's Vitest config, not
+// just that the runner starts. See docs/ARCHITECTURE.md Phase 1.
 describe("Button", () => {
   it("renders its children and responds to clicks", () => {
     const onClick = vi.fn();

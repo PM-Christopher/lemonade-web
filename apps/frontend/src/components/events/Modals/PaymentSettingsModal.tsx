@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@/components/ui/button";
+import { Button, Label } from "@lemonade/ui";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { useAppDispatch } from "@/redux/hook";
 import { usePaymentSettingQuery } from "@/features/events/queries";
 import { useUpdatePaymentSettingMutation } from "@/features/events/mutations";

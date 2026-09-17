@@ -3,9 +3,7 @@ import React from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, Label, Input } from "@lemonade/ui";
 import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
 
