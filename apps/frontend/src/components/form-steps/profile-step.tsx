@@ -232,7 +232,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
               onValueChange={(value) => formik.setFieldValue("industry", value)} // Update value with Formik
               value={formik.values.industry}
             >
-              <SelectTrigger>
+              <SelectTrigger aria-label="Industry">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent className="form-font">

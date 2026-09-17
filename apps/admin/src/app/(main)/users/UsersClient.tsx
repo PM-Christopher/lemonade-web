@@ -129,7 +129,10 @@ function UsersClient() {
             </div>
             {menuOption === "users" && (
               <Select onValueChange={(value) => setStatus(value)}>
-                <SelectTrigger className="h-[40px] w-[193px] rounded-[12px] text-[12px] font-semiBold text-text-grey focus:!border-light-green-50">
+                <SelectTrigger
+                  aria-label="Filter by status"
+                  className="h-[40px] w-[193px] rounded-[12px] text-[12px] font-semiBold text-text-grey focus:!border-light-green-50"
+                >
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

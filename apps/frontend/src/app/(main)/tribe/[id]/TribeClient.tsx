@@ -265,7 +265,10 @@ const TribeClient = ({ id }: { id: string }) => {
               </div>
             </div>
             <Select onValueChange={sortThreads}>
-              <SelectTrigger className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]">
+              <SelectTrigger
+                aria-label="Sort threads"
+                className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]"
+              >
                 <SelectValue
                   placeholder={
                     <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">

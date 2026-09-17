@@ -197,7 +197,10 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
             </Label>
             <div className="mt-2">
               <Select onValueChange={handleLocationChange}>
-                <SelectTrigger className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]">
+                <SelectTrigger
+                  aria-label="Location"
+                  className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]"
+                >
                   <SelectValue
                     placeholder={
                       <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">

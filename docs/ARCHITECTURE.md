@@ -2420,7 +2420,7 @@ lands, extending `collect.url` in `lighthouserc.frontend.json` is the only chang
 endpoints landing it (§13's Conflict 1), not confirmed either way this phase, and isn't something the
 frontend can implement alone.
 
-### Phase 7 — Design system **[SHOULD]** **[STARTED]**
+### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed; Tailwind tokens and a11y partially done, both documented below; arbitrary-pixel lint and full modal/contrast audit remain]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -2548,7 +2548,36 @@ through thousands of pre-existing warnings to find its own. Needs its own scoped
 overrides list seeded from today's count, the same "warn on new, not on existing" shape as this session's
 `no-explicit-any`/MUI bans) rather than a blanket switch-on.
 
-Also not started: the accessibility pass.
+**Accessibility pass — started, scoped to what's verifiable without a browser.** CLAUDE.md names
+`axe-core` in component tests as the intended tool for this row of the testing table; wired it up for
+real via `jest-axe` in `packages/ui` (the package every primitive now ships from) rather than adding it
+per-app, since a violation caught here is caught everywhere the primitive is used. Three new tests in
+`packages/ui/src/a11y.test.tsx` assert zero axe violations on the actual composed shapes pages build with
+today: a labeled form (`Label`+`Input`+`Textarea`, including a password field), a `Card` with headings and
+buttons, and a labeled `Select`.
+
+The `Select` test caught a real, generalizable gap: `SelectTrigger` renders a `<button role="combobox">`,
+not a native form control, so a `Label htmlFor`/`id` pair — which works for a real `<input>` — does **not**
+auto-associate with it. Every Select in both apps was relying on `SelectValue`'s placeholder text alone
+for its accessible name, which disappears the moment a value is selected (a screen reader then hears just
+"Active" or "Lagos", with no indication of what field that is). Fixed by adding an explicit `aria-label`
+(the field's real label text) to every real `SelectTrigger` in both apps — 8 call sites total, one
+`aria-label` attribute each, zero visual or layout change: `apps/admin/.../users/UsersClient.tsx` (status
+filter), `apps/frontend/.../tribe/[id]/TribeClient.tsx` (sort), `apps/frontend/.../CreateTribeModal.tsx`
+and `apps/admin/.../CreateTribeModal.tsx` (category), `apps/frontend/.../BusinessFilter.tsx` (business
+category), `apps/frontend/.../BankAccountModal.tsx` (bank name), `apps/frontend/.../profile-step.tsx`
+(industry), `apps/frontend/.../FilterEventModal.tsx` (location). Also found, while auditing every real
+`<Dialog>`/`<SelectTrigger>` usage: `apps/frontend/src/components/ui/command.tsx`'s `CommandDialog` has no
+`DialogTitle` at all (Radix requires one), but it's dead code — never imported anywhere in either app — so
+left it alone rather than fixing a component nothing renders.
+
+Deliberately not attempted in this pass: most "modals" in both apps are hand-built `<div>`s, not the
+`Dialog` primitive, so they don't get Radix's focus trap, Escape-to-close, or `aria-modal` semantics for
+free — migrating them is a real, large, one-component-at-a-time effort (dozens of files), not a
+mechanical fix, and not something verifiable without a browser in this environment. Contrast wasn't
+audited either — checking real rendered contrast ratios against WCAG needs either a browser or a
+palette-wide script computing ratios for every `text`/`bg` color pairing actually used together, neither
+of which this pass had the tooling or the scope to do safely.
 
 ### Phase 8 — Observability & hardening **[SHOULD]** **[NOT STARTED]**
 

@@ -129,7 +129,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
                   formik.setFieldValue("bank_name", selectedItem.name);
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger aria-label="Bank Name">
                   <SelectValue placeholder="Select Bank" />
                 </SelectTrigger>
                 <SelectContent className="form-font">

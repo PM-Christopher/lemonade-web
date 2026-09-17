@@ -105,7 +105,10 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
               </Label>
               <div className="mt-2">
                 <Select onValueChange={handleCategoryChange}>
-                  <SelectTrigger className="h-[48px] w-full rounded-xl border-0 bg-light_grey px-[16px] font-sans focus:border-transparent focus:outline-none focus:ring-0">
+                  <SelectTrigger
+                    aria-label="Business Category"
+                    className="h-[48px] w-full rounded-xl border-0 bg-light_grey px-[16px] font-sans focus:border-transparent focus:outline-none focus:ring-0"
+                  >
                     <SelectValue
                       placeholder={
                         <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">

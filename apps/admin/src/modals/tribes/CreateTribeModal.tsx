@@ -77,7 +77,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
               //     formik.setFieldValue("category", value)
               // }}
               >
-                <SelectTrigger className="bg-light_grey h-[48px] rounded-xl border-0">
+                <SelectTrigger aria-label="Category" className="bg-light_grey h-[48px] rounded-xl border-0">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent className="form-font">
