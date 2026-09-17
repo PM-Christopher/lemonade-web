@@ -5,6 +5,7 @@ import Provider from "@/redux/Provider";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { FcmProvider } from "@/context/FcmContext";
 import { MenuStateProvider } from "@/context/MenuStateProvider";
+import { WebVitalsReporter } from "@/components/global/WebVitalsReporter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <WebVitalsReporter />
         <MenuStateProvider>
           <Provider>
             <LayoutWrapper>

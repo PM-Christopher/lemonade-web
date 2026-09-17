@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "@/redux/Provider";
 import { AlertMessage } from "@/components/global/AlertMessage";
+import { WebVitalsReporter } from "@/components/global/WebVitalsReporter";
 
 // export const dynamic = 'force-dynamic';
 const geistSans = Geist({
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <WebVitalsReporter />
         <Providers>
           {children}
           <AlertMessage />

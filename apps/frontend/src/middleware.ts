@@ -10,6 +10,36 @@ import { USER_TOKEN_COOKIE } from "@/lib/cookie-names";
 // set by anything; a session created before this cutover won't carry the
 // new cookie and will be redirected to log in again once.
 
+// Content-Security-Policy-Report-Only — report-only, so nothing here can
+// break a page; violations land at /api/csp-report (see that route and
+// docs/ARCHITECTURE.md Phase 8). Covers this app's real external
+// integrations: Firebase Cloud Messaging (push notifications + its service
+// worker), Google Identity Services (login/signup's "Sign in with
+// Google"), Pusher (Connect's realtime channel), and the two image hosts
+// already allow-listed in next.config.mjs. `style-src` still needs
+// 'unsafe-inline' — much of this app's UI sets the `style` attribute
+// directly rather than a class, and auditing/migrating that is its own
+// pass, not something to silently break by tightening the policy here.
+// Nothing is enforced yet; tightening this from real report-only data is
+// the next step before ever flipping to `Content-Security-Policy`.
+function buildCsp(nonce: string) {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com",
+    "font-src 'self' data:",
+    "connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com wss://*.pusher.com https://*.pusher.com https://*.pusherapp.com",
+    "frame-src https://accounts.google.com",
+    "worker-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "report-uri /api/csp-report",
+  ].join("; ");
+}
+
 const PUBLIC_PATHS = [
   "/login",
   "/signup",
@@ -32,17 +62,29 @@ function isProtected(pathname: string) {
 export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
-  if (isPublic(pathname)) return NextResponse.next();
-  if (!isProtected(pathname)) return NextResponse.next();
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-nonce", nonce);
+
+  function next() {
+    const res = NextResponse.next({ request: { headers: requestHeaders } });
+    res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+    return res;
+  }
+
+  if (isPublic(pathname)) return next();
+  if (!isProtected(pathname)) return next();
 
   const token = req.cookies.get(USER_TOKEN_COOKIE)?.value;
-  if (token) return NextResponse.next();
+  if (token) return next();
 
   const loginUrl = req.nextUrl.clone();
   loginUrl.pathname = "/login";
   loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
 
-  return NextResponse.redirect(loginUrl);
+  const res = NextResponse.redirect(loginUrl);
+  res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+  return res;
 }
 
 export const config = {

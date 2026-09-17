@@ -2579,7 +2579,7 @@ audited either — checking real rendered contrast ratios against WCAG needs eit
 palette-wide script computing ratios for every `text`/`bg` color pairing actually used together, neither
 of which this pass had the tooling or the scope to do safely.
 
-### Phase 8 — Observability & hardening **[SHOULD]** **[NOT STARTED]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[STARTED — code-only bullets done; Sentry and full e2e blocked, see below]**
 
 Closes the loop with the backend, which already reports to Sentry.
 
@@ -2588,6 +2588,55 @@ Closes the loop with the backend, which already reports to Sentry.
 - CSP with nonces via middleware — report-only first, then enforced
 - Playwright e2e for the ten journeys in the merge queue
 - `docs/` finalized: ARCHITECTURE, ADRs, CONTRACT, per-app READMEs, root `CLAUDE.md`
+
+**Status.** Two bullets are genuinely blocked in this environment, not skipped by choice: Sentry needs a
+real DSN/account (adding `@sentry/nextjs` against a placeholder DSN would silently do nothing — worse
+than not adding it, since it'd look wired up in a diff without being wired up in practice), and the
+Playwright e2e suite needs a live backend plus test credentials (`LARAVEL_API_URL=http://127.0.0.1:9900`
+in both apps' `.env.local` isn't reachable here — confirmed via a direct request, not assumed). Both need
+the user's input (an account, or a running backend + seeded test accounts) before either is worth
+starting for real.
+
+Did the rest, all verifiable without either:
+
+- **`console` calls** — already effectively zero live ones (`no-console` at `"error"` in
+  `packages/config/eslint.config.mjs` was already catching them). Found and removed 3 dead
+  commented-out `console.log` lines in `apps/frontend/src/hooks/{useRefreshToken,usePusher}.ts` — two of
+  them were `pusher.connection.bind(...)` calls whose entire handler body was just the commented-out log,
+  so the whole no-op listener came out, not just the comment.
+- **Structured logging with redaction** — `apps/{frontend,admin}/src/lib/logger.ts` (app-local, same
+  duplication tolerance as `lib/utils.ts`'s `cn()`): `logger.info/warn/error(message, context?)` emits one
+  JSON line (`level`, `message`, `timestamp`, redacted `context`) via `console.warn`/`console.error` only
+  — `info` still routes through `console.warn` under the hood since CLAUDE.md's `no-console` rule doesn't
+  allow a plain `console.log`/`console.info`, but the JSON payload's own `level` field is what a log
+  aggregator actually reads, not which console method emitted the line. Redacts
+  `password`/`token`/`access_token`/`refresh_token`/`authorization`/`secret`/`otp`/`pin`/`card_number`/
+  `cvv`/`ssn` at any depth, including inside arrays. 5 unit tests per app (10 total), covering redaction at
+  the top level, nested, and inside arrays.
+- **Web Vitals reporting** — `WebVitalsReporter.tsx` (mounted once in each app's root layout) calls
+  `useReportWebVitals` from `next/web-vitals` and beacons each metric to a new `POST /api/web-vitals`
+  Route Handler (`sendBeacon`, falling back to `fetch(..., { keepalive: true })`), which logs it via the
+  new structured logger. Verified against real running dev servers in both apps: posted a real
+  `{name, value, id, label}` payload, confirmed a 204 and the resulting `{"level":"info","message":"web
+  vital",...}` line in the server's own output.
+- **CSP with nonces via middleware, report-only** — both apps' `middleware.ts` now generate a per-request
+  nonce (`crypto.randomUUID()`), thread it onto both the request headers (`x-nonce`, for a future Server
+  Component to read) and a `Content-Security-Policy-Report-Only` response header, and report violations to
+  a new `POST /api/csp-report` Route Handler that logs them via the structured logger. Report-only by
+  design — nothing here can break a page, which is exactly why this was safe to write without a browser to
+  verify rendering against: verified instead by curling both apps' real dev servers and confirming the
+  header, the nonce, and a real violation payload landing in the log. Each app's policy is scoped to its
+  actual integrations, not a generic template: frontend's covers Firebase Cloud Messaging (including its
+  service worker), Google Identity Services (`@react-oauth/google`), Pusher, and the two allow-listed image
+  hosts; admin's is the same minus Firebase and Google OAuth, which it doesn't use. Both still need
+  `style-src 'unsafe-inline'` — neither app's inline `style` attribute usage has been audited or migrated,
+  and tightening that blind would just break real pages. Nothing is enforced; the plan's own "report-only
+  first, then enforced" order means the *next* step is watching real `/api/csp-report` data for a while
+  before ever switching the header name to `Content-Security-Policy`.
+
+Not attempted: `docs/` finalization (ADRs, `CONTRACT.md`, per-app READMEs) — CLAUDE.md itself is mid-edit
+by the user outside this session (see git status), so left alone rather than racing an edit already in
+flight; the rest of the docs pass is real scope on its own and hasn't been started.
 
 ---
 
