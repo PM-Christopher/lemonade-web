@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 26 of ~45 frontend pages]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[STARTED — 26 of ~45 frontend pages; admin done]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2312,9 +2312,49 @@ content and no server error each time). Still not migrated: `event/create-event`
 `event/[id]/assign-ticket` (pure forms/mutations, no read query at all — not Server Component candidates
 even once any of their mutations move), and the rest of `settings/*` — `settings/account/*`,
 `settings/plan/cancel-subscription`, `settings/privacy`, `settings/profile`, `settings/terms-and-conditions`
-— which are either pure forms/mutations (same as above) or genuinely untouched. Not started: admin's
-list-shell/table-island split, server-side pagination (depends on backend endpoints landing it — not
-confirmed either way this phase), lazy-loading, bundle budgets, and Lighthouse CI.
+— which are either pure forms/mutations (same as above) or genuinely untouched.
+
+**Admin's list-shell/table-island split.** First checked whether the bullet's assumed shape actually
+matched the codebase: it didn't. Of the 6 admin pages the earlier survey counted as "already
+server-rendered," none were real — `businesses/page.tsx` is a literal `<div></div>` stub, and the other
+5 (`events/[id]/affiliates`, `events/[id]/promotions`, three `transactions/[id]/*-details` pages) are
+static UI with hardcoded fake data ("Adebayo Akintoye," "AF112332"), not wired to any query — unbuilt
+features that happened to lack `"use client"`, not Phase 6 work. The 25 real client pages weren't a
+clean "static shell + dumb table" shape either — search-with-debounce, tab state, status filters, and
+CSV export are woven through the same component as the table, and even the shared `MainLayout` chrome
+is a Client Component (`useCurrentAdminQuery`, `useEffect`, dispatches auth state).
+
+Proved the pattern on one page first (`users/page.tsx`) before committing to the rest. Turned out
+untangling filters from the table wasn't necessary — moving the `"use client"` boundary down one level
+(page.tsx becomes an async Server Component prefetching the default tab; the rest of the file becomes
+`UsersClient.tsx` unchanged) was the whole job, same shape as `apps/frontend`'s tabbed list pages. Added
+`apps/admin/src/lib/query-client.server.ts` (identical to frontend's) and one `api.server.ts` per
+feature. `apps/admin/src/lib/server-api.ts` (the direct-to-backend transport) already existed from
+earlier, unused groundwork.
+
+That held for the rest of admin too: **every real client page converted** —
+`dashboard`, `profile`, `announcements` + detail, `reporting` + detail, `team` + detail, `events` +
+detail + `add-promotions`, `transactions` + its three convertible detail pages (`event-details`,
+`subscription-details`, `wallet-details` — `boosting-details`, `promotion-details`, `service-details`
+were already-stub pages, untouched), `wallet-management` + detail, `users/[id]`, and
+`users/affiliate/[id]`. Two of admin's own `enabled: isLoggedIn` client queries turned out to read data
+also used elsewhere with a matching backend endpoint already known (`transactions/[id]/wallet-details`
+and `wallet-management/[id]` share `useWalletDetailQuery` — one `api.server.ts` entry, `walletKeys`,
+covers both). `users/[id]/page.tsx` needed two prefetches (`getUserDetail` unconditional,
+`getAccountInfo`'s default "activities-log" tab) via `Promise.all`, matching `tribe/[id]/page.tsx`'s
+concurrent-query pattern in frontend.
+
+Left alone, confirmed genuinely not candidates: the `(auth)` pages (pre-login, not gated, nothing to
+prefetch) and `tribes/page.tsx`/`tribes/[id]/page.tsx` — no `useRequest`, no TanStack Query, no data
+fetching of any kind anywhere in their component tree; local UI state over static mock content, same
+unbuilt-feature class as the fake "server" pages found at the start of this pass.
+
+All verified the same way as frontend's conversions: lint/typecheck/build plus a real running
+`next start` hit with a syntactically-valid-but-backend-rejected `lemonade_admin_token` cookie,
+confirming a full 200 with no server error, for every converted route.
+
+Not started: server-side pagination (depends on backend endpoints landing it — not confirmed either way
+this phase), lazy-loading, bundle budgets, and Lighthouse CI.
 
 ### Phase 7 — Design system **[SHOULD]** **[NOT STARTED]**
 
