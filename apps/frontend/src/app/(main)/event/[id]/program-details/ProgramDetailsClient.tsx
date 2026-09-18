@@ -16,6 +16,7 @@ import { useAffiliateEventDetailQuery } from "@/features/events/queries";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { FaNairaSign } from "react-icons/fa6";
+import { getSafeImageSrc } from "@/lib/helper";
 
 const ProgramDetailsClient = ({ id }: { id: number }) => {
   const [copied, setCopied] = useState(false);
@@ -56,7 +57,7 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
               <div className="p-0 laptop:p-[24px]">
                 <div className="flex w-screen items-center gap-3 rounded-[8px] bg-green-tint p-[8px] px-[16px] laptop:w-full">
                   <Image
-                    src={programDetails?.events?.event_image || "/images/default-event.jpg"}
+                    src={getSafeImageSrc(programDetails?.events?.event_image, "/images/default-event.jpg")}
                     alt="details"
                     width={120}
                     height={120}

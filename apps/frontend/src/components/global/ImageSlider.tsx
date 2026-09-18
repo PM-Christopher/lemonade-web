@@ -4,6 +4,7 @@ import { CalendarIcon } from "lucide-react";
 import DotIcon from "@/images/icons/dot.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
+import { getSafeImageSrc } from "@/lib/helper";
 
 interface ImageSlider {
   showArrows: boolean;
@@ -55,7 +56,7 @@ const Carousel: React.FC<ImageSlider> = ({
             }`}
           >
             <Image
-              src={item?.event_image}
+              src={getSafeImageSrc(item?.event_image, "/images/default-event.jpg")}
               alt={item?.event_name ? `${item.event_name} banner` : `Slide ${index + 1}`}
               fill
               priority={index === 0}

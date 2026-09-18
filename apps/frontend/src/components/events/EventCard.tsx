@@ -5,6 +5,7 @@ import DotIcon from "@/images/icons/dot.svg";
 import LocationIcon from "@/images/icons/location.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatDate, formatLongTime } from "@/lib/dateTimeFormatter";
+import { getSafeImageSrc } from "@/lib/helper";
 
 type EventCardIF = {
   event: EventInterface;
@@ -13,7 +14,7 @@ const EventCard: React.FC<EventCardIF> = ({ event }) => {
   return (
     <div className="mb-[16px] flex w-[165px] flex-col rounded-[12px] bg-white laptop:w-[316px]">
       <Image
-        src={event?.event_image}
+        src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
         alt="event_1"
         width={316}
         height={316}

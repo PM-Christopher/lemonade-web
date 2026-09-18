@@ -2656,9 +2656,12 @@ timeouts as the suite grew — a real environment characteristic, not a bug bein
 pages don't have coverage yet for an honest reason, not an oversight: this seed data has zero rows in
 admin's reporting/announcements/wallet-management tables and frontend's events list, so there's nothing
 real to click into yet, and admin's `/tribes` is still the static mock content Phase 6 already found. Full
-scope, exactly why each of the ten journeys is or isn't covered, and one real-but-minor finding this pass
-didn't chase down (a console error on frontend's `/event` page — an empty string passed to an image `src`
-somewhere in the event card, non-fatal) are all in `tooling/e2e/README.md`, not duplicated here.
+scope, and exactly why each of the ten journeys is or isn't covered, are in `tooling/e2e/README.md`, not
+duplicated here. One finding flagged there as non-fatal and not chased down — an empty-string image `src`
+on frontend's `/event` cards — was fixed on follow-up and, in verifying that fix with a real browser,
+turned out to be masking a second, worse bug in the same code path: a real (non-empty) `event_image` value
+from seed data pointing at a host `next.config.mjs` doesn't allow-list, which crashes the whole page, not
+just the image. See `tooling/e2e/README.md`'s "Real bugs this suite has already found" for both.
 
 **This is the first tool in the whole session that executes real client-side JavaScript in a real
 browser** — every other check (curl-based route verification, `next build`, typecheck) either doesn't run

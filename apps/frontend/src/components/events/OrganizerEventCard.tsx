@@ -13,6 +13,7 @@ import GoLive from "@/images/icons/goLive.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { usePublishEventMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { getSafeImageSrc } from "@/lib/helper";
 
 type OrganizerEventInterface = {
   draft: boolean;
@@ -65,7 +66,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
       <div className="flex flex-col">
         <div className="relative">
           <Image
-            src={event?.event_image}
+            src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
             alt="event_1"
             className="h-[150px] w-full rounded-[8px] laptop:h-[230px] laptop:w-[230px]"
             width={230}

@@ -71,14 +71,16 @@ const MyEventModal = ({
                       <p className="text-[14px] font-semi-normal">{ticket?.ticket[0]?.venue}</p>
                     </div>
                   </div>
-                  <div className="mt-[94px] flex items-center justify-center laptop:mt-[48px]">
-                    <Image
-                      src={ticket?.ticket[0]?.qr_code}
-                      alt="qr_code"
-                      width={240}
-                      height={240}
-                    />
-                  </div>
+                  {ticket?.ticket[0]?.qr_code && (
+                    <div className="mt-[94px] flex items-center justify-center laptop:mt-[48px]">
+                      <Image
+                        src={ticket.ticket[0].qr_code}
+                        alt="qr_code"
+                        width={240}
+                        height={240}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

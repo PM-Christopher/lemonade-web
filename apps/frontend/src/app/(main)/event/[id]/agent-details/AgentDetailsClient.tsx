@@ -23,6 +23,7 @@ import { useAffiliateEventDetailQuery } from "@/features/events/queries";
 import { useGenerateAffiliateLinkMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { getSafeImageSrc } from "@/lib/helper";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 
 type SocialIconName =
@@ -201,7 +202,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                       <div className="relative aspect-[16/11] w-full bg-gray-100 laptop:aspect-[496/532]">
                         <Image
                           src={
-                            event?.event_image || "/images/default-event.jpg"
+                            getSafeImageSrc(event?.event_image, "/images/default-event.jpg")
                           }
                           alt={event?.event_name || "event image"}
                           fill

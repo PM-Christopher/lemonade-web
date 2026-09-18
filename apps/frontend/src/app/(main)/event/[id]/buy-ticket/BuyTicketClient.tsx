@@ -18,6 +18,7 @@ import { ChevronUp } from "lucide-react";
 import TicketSummary from "@/components/events/Modals/TicketSummary";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { EventTicketDetailSkeleton } from "@/components/Skeletons";
+import { getSafeImageSrc } from "@/lib/helper";
 
 const BuyTicketClient = ({ id }: { id: number }) => {
   const router = useRouter();
@@ -137,7 +138,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     {/* Event Poster */}
                     <div className="h-[120px] w-full flex-shrink-0 laptop:h-[120px] laptop:w-[120px]">
                       <Image
-                        src={event?.event_image || "/images/default-event.jpg"}
+                        src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
                         alt={event?.event_name || "event poster"}
                         width={120}
                         height={120}

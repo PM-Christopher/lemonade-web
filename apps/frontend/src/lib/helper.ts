@@ -10,6 +10,24 @@ export const formatName = (name: string) => {
   return null;
 };
 
+// next/image only optimizes images from hosts listed in next.config.mjs's
+// images.remotePatterns (two: the DO Spaces bucket and Cloudinary) — any
+// other hostname throws "Invalid src prop" and crashes the whole page, not
+// just that image. Some seed/demo data has event_image values pointing at
+// example.com (clearly placeholder, not a real image host), which doesn't
+// need adding to the allowlist since it will never actually serve an
+// image — treat it the same as a missing image instead.
+const ALLOWED_IMAGE_HOSTS = ["dev-lemonade-bucket.lon1.digitaloceanspaces.com", "res.cloudinary.com"];
+
+export const getSafeImageSrc = (url: string | null | undefined, fallback: string) => {
+  if (!url) return fallback;
+  try {
+    return ALLOWED_IMAGE_HOSTS.includes(new URL(url).hostname) ? url : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 export const formatStringUCFirst = (value: string) => {
   return value?.charAt(0)?.toUpperCase() + value?.slice(1)?.toLowerCase();
 };

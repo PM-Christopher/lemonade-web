@@ -23,6 +23,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEventQuery, eventKeys } from "@/features/events/queries";
 import { useEventPromotionMutation } from "@/features/events/mutations";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { getSafeImageSrc } from "@/lib/helper";
 import { formatLongDate, formatLongTime, formatTime } from "@/lib/dateTimeFormatter";
 import { EventProgramDetailSkeleton } from "@/components/Skeletons";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
@@ -115,7 +116,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                   <div className="flex items-center gap-6 rounded-xl bg-green-tint/60 p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     <div className="relative overflow-hidden rounded-lg shadow-md">
                       <Image
-                        src={event?.event_image || "/images/default-event.jpg"}
+                        src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
                         alt={event?.event_name || "Event"}
                         width={120}
                         height={120}

@@ -42,15 +42,10 @@ against the real backend:
   the seed data has real rows.
 - **Admin's `/tribes`** — confirmed elsewhere in this repo (`docs/ARCHITECTURE.md` Phase 6) to be static
   mock content with no real data-driven navigation. Nothing to click into.
-- **A minor, non-fatal finding, not chased down**: frontend's `/event` page logs a real console error —
-  "An empty string ("") was passed to the src attribute" — on an image somewhere in the event
-  card/list component. Doesn't crash anything (Next's dev overlay shows it as a "Console Error", not the
-  fatal "Unhandled Runtime Error" the smoke tests check for), so it didn't block anything here, but it's a
-  real bug worth a look separately.
 
 ## Real bugs this suite has already found
 
-Both fixed in the same commit that added the test that caught them, not left as known-broken:
+Fixed in the same pass that added the test that caught them, not left as known-broken:
 
 - **`apps/frontend/src/lib/firebase.ts`** — `getMessaging(app)` throws synchronously when
   `NEXT_PUBLIC_FIREBASE_PROJECT_ID` (or the other required config) is unset. Since this ran at module
@@ -65,6 +60,19 @@ Both fixed in the same commit that added the test that caught them, not left as 
   for any user whose `socials` field is null/undefined from the backend, which is the normal case for an
   account that hasn't set up social links (including the e2e test account this suite logs in as). Fixed
   to `user?.socials && user.socials.length > 0`.
+- **`/event`'s image `src`, two separate bugs in the same code path** — first found as a non-fatal
+  "empty string passed to src" console error on `EventCard.tsx` and 5 other card/list components, all
+  passing `event?.event_image` straight to `next/image` with no fallback for a missing image. Fixing that
+  (matching the `|| "/images/default-event.jpg"` fallback the `[id]` detail pages already used)
+  surfaced a second, worse bug on re-verification: a **real, non-empty** `event_image` value from seed
+  data — `https://example.com/events/career-night-kano.jpg`, clearly placeholder — pointed at a host not
+  in `next.config.mjs`'s `images.remotePatterns` (only the DO Spaces bucket and Cloudinary are allowed),
+  which throws `Invalid src prop` and crashes the **whole page**, not just that image. A plain `||`
+  fallback only catches falsy values, not "present but from a disallowed host" — added
+  `apps/frontend/src/lib/helper.ts`'s `getSafeImageSrc(url, fallback)`, which validates the hostname
+  against the same allowlist and falls back for either failure mode. Applied everywhere `event_image`
+  reaches `next/image`: the 6 card/list components plus the 5 `[id]` detail pages that already had the
+  weaker `||` guard. 4 unit tests in `apps/frontend/src/lib/helper.test.ts`.
 
 ## Running it
 

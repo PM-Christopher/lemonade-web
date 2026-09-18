@@ -20,6 +20,7 @@ import { setEventReferral } from "@/features/events/event.slice";
 import { useEventQuery } from "@/features/events/queries";
 import { EventDetailsSkeleton } from "@/components/Skeletons";
 import { useSearchParams } from "next/navigation";
+import { getSafeImageSrc } from "@/lib/helper";
 
 const EventClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
@@ -69,7 +70,7 @@ const EventClient = ({ id }: { id: number }) => {
                 {/* Event Image */}
                 <div className="w-full laptop:w-[480px]">
                   <Image
-                    src={event?.event_image || "/images/default-event.jpg"}
+                    src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
                     alt={event?.event_name || "Event image"}
                     width={496}
                     height={532}

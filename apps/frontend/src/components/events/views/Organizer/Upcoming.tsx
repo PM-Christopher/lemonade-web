@@ -13,6 +13,7 @@ import { useMediaQuery } from "react-responsive";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { EventsSkeleton } from "@/components/Skeletons";
+import { getSafeImageSrc } from "@/lib/helper";
 
 const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: boolean }) => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
       {events?.length > 0 && (
         <div className="flex w-full flex-col gap-[24px] rounded-[16px] bg-white pr-0 laptop:w-[780px] laptop:flex-row laptop:pr-[80px]">
           <Image
-            src={events[0]?.event_image}
+            src={getSafeImageSrc(events[0]?.event_image, "/images/default-event.jpg")}
             alt="poster"
             width={320}
             height={343}

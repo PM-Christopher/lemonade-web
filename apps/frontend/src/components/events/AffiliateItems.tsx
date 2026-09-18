@@ -7,6 +7,7 @@ import { DotFilledIcon } from "@radix-ui/react-icons";
 import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import Image from "next/image";
+import { getSafeImageSrc } from "@/lib/helper";
 
 const AffiliateItems = ({ event }: { event: EventInterface }) => {
   return (
@@ -17,7 +18,7 @@ const AffiliateItems = ({ event }: { event: EventInterface }) => {
           {/* Image */}
           <div className="sm:w-[84px] sm:h-[84px] relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100">
             <Image
-              src={event?.event_image}
+              src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
               alt={event?.event_name ?? "event"}
               fill
               className="object-cover"

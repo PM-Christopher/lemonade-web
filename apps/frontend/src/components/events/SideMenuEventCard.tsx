@@ -6,6 +6,7 @@ import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatDate, formatLongTime, formatTime } from "@/lib/dateTimeFormatter";
+import { getSafeImageSrc } from "@/lib/helper";
 
 const SideMenuEventCard = ({
   event,
@@ -21,7 +22,7 @@ const SideMenuEventCard = ({
       <div className="flex items-center gap-2">
         <div>
           <Image
-            src={event.event_image}
+            src={getSafeImageSrc(event.event_image, "/images/default-event.jpg")}
             alt="upcoming_event"
             width={94}
             height={94}
