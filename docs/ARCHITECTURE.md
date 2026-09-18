@@ -2624,7 +2624,7 @@ budget step. While in there, the any-type budget script surfaced its own real im
 in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
 `no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
 
-### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP and docs finalization done; Sentry and full e2e blocked on external resources, see below]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP, docs finalization, and a started (not full-ten-journey) Playwright suite all done; only Sentry remains blocked, see below]**
 
 Closes the loop with the backend, which already reports to Sentry.
 
@@ -2634,13 +2634,44 @@ Closes the loop with the backend, which already reports to Sentry.
 - Playwright e2e for the ten journeys in the merge queue
 - `docs/` finalized: ARCHITECTURE, ADRs, CONTRACT, per-app READMEs, root `CLAUDE.md`
 
-**Status.** Two bullets are genuinely blocked in this environment, not skipped by choice: Sentry needs a
-real DSN/account (adding `@sentry/nextjs` against a placeholder DSN would silently do nothing — worse
-than not adding it, since it'd look wired up in a diff without being wired up in practice), and the
-Playwright e2e suite needs a live backend plus test credentials (`LARAVEL_API_URL=http://127.0.0.1:9900`
-in both apps' `.env.local` isn't reachable here — confirmed via a direct request, not assumed). Both need
-the user's input (an account, or a running backend + seeded test accounts) before either is worth
-starting for real.
+**Status.** Sentry is still blocked — needs a real DSN/account; adding `@sentry/nextjs` against a
+placeholder DSN would silently do nothing, worse than not adding it, since it'd look wired up in a diff
+without being wired up in practice. The Playwright e2e bullet was blocked for the same reason
+(`LARAVEL_API_URL=http://127.0.0.1:9900` wasn't reachable — confirmed via a direct request, not assumed)
+until the user started a real backend at `127.0.0.1:9800` and gave real seed credentials for both a user
+and an admin account — see below for what shipped once that was available.
+
+**Playwright e2e — started, not the full ten journeys.** `tooling/e2e/` runs against the live backend the
+user provided. Not the full journey list from this section's own table above — several assume things this
+pass didn't have: a payment gateway sandbox (journey 4), a second seeded account (journey 10 needs two
+parties messaging each other), a way to read a real OTP/verification email (journey 1). What's genuinely
+covered: real login for both a user and an admin account (`tests/*/auth.setup.ts`, `storageState` reused
+across the rest of the suite so login only happens once); session persistence across a hard reload
+(journey 2's non-token-expiry half); every top-level authenticated route in both apps visited once,
+asserting no client-side throw (`tests/*/smoke.spec.ts`); and one real dynamic-data flow, clicking a real
+user row in admin's users table through to their detail page. Full scope, and exactly why each of the ten
+journeys is or isn't covered, is in `tooling/e2e/README.md`, not duplicated here.
+
+**This is the first tool in the whole session that executes real client-side JavaScript in a real
+browser** — every other check (curl-based route verification, `next build`, typecheck) either doesn't run
+JS at all or only proves the bundle compiles, not that it runs. That gap was real: the suite's first
+run found two genuine bugs neither typecheck nor lint nor a curl-based check had ever caught, both fixed
+in the same pass:
+
+- `apps/frontend/src/lib/firebase.ts` — `getMessaging(app)` throws synchronously when
+  `NEXT_PUBLIC_FIREBASE_PROJECT_ID` is unset, and since `FcmProvider` wraps the entire root layout, an
+  unconfigured Firebase crashed **every page in the app** — despite `.env.example`'s own comment claiming
+  the feature "degrades rather than crashing when these are unset." Guarded on `firebaseConfig.projectId`
+  being present and wrapped the init in try/catch; `messaging` is now honestly typed as possibly
+  `undefined`, which surfaced three more call sites assuming it was always defined.
+- `apps/frontend/src/app/(main)/settings/page.tsx:100` — `user?.socials.length > 0` only guards `user`
+  being null, not `user.socials` itself. Threw for any user whose `socials` field is null/undefined from
+  the backend — the normal case for an account that hasn't set up social links, including the e2e test
+  account itself.
+
+Not wired into `.github/workflows/ci.yml` — would need `lemonade-backend` running in CI (a cross-repo
+checkout/secrets decision) plus real seeded credentials as CI secrets, neither of which exist yet. See
+`tooling/e2e/README.md`'s "Wiring into CI" section for exactly what that needs once it's available.
 
 Did the rest, all verifiable without either:
 

@@ -11,11 +11,21 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-let messaging: ReturnType<typeof getMessaging>;
+let messaging: ReturnType<typeof getMessaging> | undefined;
 
-if (typeof window !== "undefined" && "navigator" in window) {
-  const app = initializeApp(firebaseConfig);
-  messaging = getMessaging(app);
+// getMessaging() throws synchronously if firebaseConfig.projectId (or the
+// other required fields) are missing — since this ran at module load time
+// with no guard on that, an unconfigured Firebase crashed the entire app
+// (FcmProvider wraps the root layout) instead of degrading, despite
+// .env.example's claim that it degrades. Caught by a real browser e2e run
+// — see tooling/e2e/README.md.
+if (typeof window !== "undefined" && "navigator" in window && firebaseConfig.projectId) {
+  try {
+    const app = initializeApp(firebaseConfig);
+    messaging = getMessaging(app);
+  } catch (error) {
+    console.error("Firebase messaging failed to initialize:", error);
+  }
 }
 
 export { messaging, getToken, onMessage };

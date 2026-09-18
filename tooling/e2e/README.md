@@ -1,0 +1,78 @@
+# e2e
+
+Playwright end-to-end suite against a real running backend — see `docs/ARCHITECTURE.md` §17 for the
+original "ten journeys" list this is meant to grow into. **Not automatically wired into `.github/workflows/ci.yml`**:
+unlike this repo's other CI jobs, this one needs a live `lemonade-backend` and real (if low-stakes,
+seed/demo) credentials, neither of which the existing CI environment has. Run it manually, or against a
+CI environment that's been given both — see "Wiring into CI" below.
+
+## What's actually covered today
+
+Not the full ten journeys — those assume things this suite doesn't have yet: a payment gateway sandbox
+(journey 4), a second seeded test account (journey 10 needs two parties messaging each other), and a way
+to read a real OTP/verification email (journey 1's email verification step). What's genuinely covered,
+against the real backend:
+
+- **Auth** (`tests/{frontend,admin}/auth.setup.ts`) — real login for both a regular user and an admin,
+  saving `storageState` so the rest of the suite doesn't re-login per test. This is also journey 2's
+  login half.
+- **Session persistence** (`tests/frontend/session.spec.ts`) — journey 2's other half: a hard reload
+  doesn't lose the session, proving the httpOnly cookie (not just in-memory Redux state) is what's
+  actually keeping the user logged in. Forcing a real token expiry mid-session isn't covered (would need
+  the backend to issue a near-expired token on demand).
+- **Smoke coverage** (`tests/{frontend,admin}/smoke.spec.ts`) — every top-level authenticated route in
+  both apps, visited once each, asserting nothing throws client-side. This is the check this repo's other,
+  curl-based smoke tests structurally can't do: curl never executes JavaScript, so a client-side throw is
+  invisible to it. This suite's first real run against a live backend caught two genuine bugs neither
+  typecheck, lint, nor a curl-based check had ever surfaced (see "Real bugs this suite has already found"
+  below).
+- **Real dynamic-data navigation** (`tests/admin/users-detail.spec.ts`) — clicking a real user row in
+  admin's users table navigates to that user's real detail page. Exercises the list → detail flow admin
+  actually uses for moderation/support, not just a static route.
+
+## Real bugs this suite has already found
+
+Both fixed in the same commit that added the test that caught them, not left as known-broken:
+
+- **`apps/frontend/src/lib/firebase.ts`** — `getMessaging(app)` throws synchronously when
+  `NEXT_PUBLIC_FIREBASE_PROJECT_ID` (or the other required config) is unset. Since this ran at module
+  load time with no guard beyond "are we in a browser", and `FcmProvider` wraps the entire root layout,
+  an unconfigured Firebase crashed **every single page** in the app — despite `.env.example`'s comment
+  claiming "the feature degrades rather than crashing when these are unset". Fixed by guarding on
+  `firebaseConfig.projectId` being present and wrapping the init in try/catch; `messaging` is now honestly
+  typed as possibly `undefined`, which surfaced three more call sites (`FcmContext.tsx` ×3,
+  `requestNotificationPermission.ts` ×1) that assumed it was always defined and needed their own guards.
+- **`apps/frontend/src/app/(main)/settings/page.tsx:100`** — `user?.socials.length > 0` only guards
+  `user` being null, not `user.socials` itself — a broken optional chain, not a fully-optional one. Threw
+  for any user whose `socials` field is null/undefined from the backend, which is the normal case for an
+  account that hasn't set up social links (including the e2e test account this suite logs in as). Fixed
+  to `user?.socials && user.socials.length > 0`.
+
+## Running it
+
+```bash
+cd tooling/e2e
+cp .env.e2e.example .env.e2e.local   # fill in real credentials — never commit this file
+pnpm install
+pnpm exec playwright install chromium
+pnpm test
+```
+
+Reuses whatever's already running on `localhost:3000`/`:3001` if those ports respond (see
+`playwright.config.ts`'s `webServer` entries) — this repo's own dev servers, pointed at a real backend via
+`.env.local`, work fine. Otherwise it starts both itself, deliberately bypassing each app's `dev` package
+script in favor of plain `next dev` — admin's `--turbopack` default hits an unrelated "Next.js package not
+found" internal error in some environments (confirmed on the machine this suite was built on); e2e doesn't
+need Turbopack's faster HMR anyway.
+
+`workers` is capped at 2, and `fullyParallel` is off — both apps' dev servers compile routes on demand,
+and more than one test per app running concurrently was measured to cause real timeouts (a 708-row table
+taking longer than a tight assertion timeout to populate under load), not a bug in the app or the test.
+
+## Wiring into CI
+
+Not done — would need `lemonade-backend` running in the CI environment (a cross-repo checkout/secrets
+decision, same one `tooling/generate-api-types/README.md` flags for true live-backend contract-drift
+detection) plus `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`/`E2E_ADMIN_EMAIL`/`E2E_ADMIN_PASSWORD` as real CI
+secrets pointing at seeded, low-stakes accounts — never real user credentials. Once both exist, this is a
+normal new job: install, `playwright install chromium --with-deps`, `pnpm --filter @lemonade/e2e test`.

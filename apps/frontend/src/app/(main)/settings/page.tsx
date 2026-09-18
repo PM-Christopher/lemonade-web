@@ -97,11 +97,11 @@ function SettingsPage() {
               </p>
               <p className="mt-[8x] text-[12px] font-semi-normal text-text-grey">Bio</p>
               <p className="max-w-[600px] text-[14px] font-normal text-black-light">{user?.bio}</p>
-              {user?.socials.length > 0 && (
+              {user?.socials && user.socials.length > 0 && (
                 <>
                   <p className="mt-[8x] text-[12px] font-semi-normal text-text-grey">Socials</p>
                   <div className="flex w-fit gap-[8px] rounded-[16px] bg-mid-grey p-[4px]">
-                    {user?.socials.map((link: any) => (
+                    {user.socials.map((link: any) => (
                       <a
                         href={link.value}
                         target="_blank"

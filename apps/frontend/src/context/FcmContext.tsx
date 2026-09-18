@@ -27,16 +27,22 @@ export const getOrRegisterServiceWorker = async () => {
   throw new Error("Service Worker is not supported in this browser");
 };
 
-export const getFirebaseToken = () =>
-  getOrRegisterServiceWorker().then((serviceWorkerRegistration) =>
-    getToken(messaging, {
+export const getFirebaseToken = () => {
+  if (!messaging) return Promise.resolve(null);
+  const activeMessaging = messaging;
+  return getOrRegisterServiceWorker().then((serviceWorkerRegistration) =>
+    getToken(activeMessaging, {
       vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
       serviceWorkerRegistration,
     }),
   );
+};
 
 export const onForegroundMessage = () =>
-  new Promise((resolve) => onMessage(messaging, (payload: MessagePayload) => resolve(payload)));
+  new Promise((resolve) => {
+    if (!messaging) return;
+    onMessage(messaging, (payload: MessagePayload) => resolve(payload));
+  });
 
 export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
@@ -44,10 +50,11 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [showToaster, setShowToaster] = useState(false);
 
   useEffect(() => {
+    if (!messaging) return;
+    const activeMessaging = messaging;
+
     const register = async () => {
       try {
-        if (!messaging) return;
-
         const token = await getFirebaseToken();
         if (!token) {
           console.warn("No FCM token registered");
@@ -59,7 +66,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    const unsubscribe = onMessage(messaging, (payload: MessagePayload) => {
+    const unsubscribe = onMessage(activeMessaging, (payload: MessagePayload) => {
       setNotification(payload?.notification);
       setShowToaster(true);
 

@@ -1,0 +1,13 @@
+{
+  "name": "@lemonade/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Playwright end-to-end suite against a real running backend — see docs/ARCHITECTURE.md §17 and README.md for which of the ten journeys are covered and why the rest aren't yet.",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

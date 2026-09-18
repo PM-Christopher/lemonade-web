@@ -20,6 +20,15 @@ coverage/
 lhci-reports/
 .lighthouseci/
 
+# Playwright (tooling/e2e) — .auth/ holds real session storageState, never
+# committed. Matched with **/ (not a fixed path) as a safety net: a wrong
+# relative path in playwright.config.ts once put a real one two directories
+# deeper than expected, past a path-specific ignore rule.
+**/test-results/
+**/playwright-report/
+**/.auth/
+**/blob-report/
+
 # Env
 .env
 .env.local
