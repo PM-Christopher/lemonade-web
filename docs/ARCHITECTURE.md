@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[MOSTLY DONE — 26 of ~45 frontend pages (rest verified non-candidates); admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI all done; server-side pagination blocked on backend]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[MOSTLY DONE — 26 of ~45 frontend pages (rest verified non-candidates); admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI all done; server-side pagination now shipped on the backend (§22 Conflict 1), frontend adoption still open]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2753,7 +2753,7 @@ edit already in flight. Everything else in that bullet was genuinely stale, not 
 Three conflicts with existing backend behaviour, named rather than designed around. All three need
 backend work.
 
-#### Conflict 1 — server-side pagination does not exist for most endpoints **[MUST]**
+#### Conflict 1 — server-side pagination does not exist for most endpoints **[MUST]** — **backend half done**
 
 - **Conflict** — This document specifies server-driven pagination with page state in the URL. The
   backend calls `paginate()` in only 10 places across ~280 actions; most list endpoints return unbounded
@@ -2767,6 +2767,28 @@ backend work.
   endpoint lands, so adoption is a one-line change per feature.
 - **If deferred** — Admin tables degrade first and worst. This should be a backend ticket opened at the
   start of Phase 0, not discovered during Phase 6.
+- **Status (2026-09-18)** — Done on the `lemonade-backend` side, committed on `ft_architecture_upgrade`
+  (not yet pushed — a local branch in this workspace) as `feat(admin): add opt-in pagination to the
+  largest unbounded admin lists`. Exactly the opt-in shape this conflict specifies: `?page=`/`?per_page=`
+  absent → identical response to today, byte-for-byte (verified against the live backend, not assumed);
+  present → the items array becomes just that page plus a `meta: {current_page, last_page, per_page,
+  total}` key, same shape `ListModeratedContent`/`ListAllTransactions` already used. Covers the actual
+  endpoints behind admin's real tables: `ListUsers` (708 rows today), `ListReports`, the six per-type
+  transaction lists (boost/promotion/service/subscription/wallet-withdrawal/event — all six shared one
+  new `App\Support\OptionallyPaginates` trait), and `GetWalletAdminDashboard` (the real endpoint behind
+  `/wallet-management`, found by checking the actual route table rather than assuming `ListWalletWithdrawals`
+  was it). Several summary stats (`total_transactions`, `subscribers`, `total_wallets`, ticket/revenue
+  sums) were being computed by loading every row into a PHP collection just to `count()`/`sum()` it —
+  switched to real DB aggregation queries as part of the same pass, since it's the identical "don't fetch
+  everything" problem one layer up. 538 backend tests passing (522 pre-existing + 16 new), PHPStan and
+  Pint clean, verified against the live backend with real curl requests (not just the test suite) showing
+  identical totals whether paginated or not.
+
+  **Not done yet:** the frontend side. `apps/admin`'s query hooks still do plain unpaginated fetches +
+  client-side slicing — this backend capability exists now but nothing in `apps/admin` calls it with
+  `?page=` yet. That's real, separate work (query hooks, `searchParams`-driven page state per CLAUDE.md's
+  "URL state for anything shareable", actual pagination controls in each table) and wasn't in scope for
+  "implement Phase 6 in the Laravel code" specifically.
 
 #### Conflict 2 — the admin permission model is a single string column **[SHOULD]**
 
@@ -2850,7 +2872,7 @@ backend work.
 | `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed |
 | Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                       |
 | Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule              |
-| Client-side pagination sites      |        7 |                                                                                                                                                not re-measured this revision |                     0 | P6     | Requires Conflict 1 resolved                 |
+| Client-side pagination sites      |        7 |                                                                                          7 — backend capability now exists (§22 Conflict 1), frontend hasn't adopted it yet |                     0 | P6     | Requires Conflict 1 resolved                 |
 | Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                   |
 | `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                        |
 | Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                    |
