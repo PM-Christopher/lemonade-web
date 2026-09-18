@@ -23,12 +23,14 @@ if (existsSync(envFile)) {
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: false, // shared login state (storageState) per project — avoid cross-test races
-  // Capped at 2, not left to the CPU-count default — both apps' dev servers
-  // compile routes on demand (next dev, not a production build), and more
-  // than one test per app hitting that concurrently was measured to cause
-  // real timeouts (a table taking >5s to populate under load), not a bug
-  // in the app or the test.
-  workers: 2,
+  // Fully serial, not left to the CPU-count default — both apps' dev
+  // servers compile routes on demand (next dev, not a production build),
+  // and any concurrency was measured to cause real, non-deterministic
+  // timeouts as the suite grew (a table or list taking longer than a test's
+  // wait to populate under load), not a bug in the app or the test. This
+  // suite is meant to be trustworthy on merge, not fast — a slower,
+  // reliable 2 minutes beats a faster, flaky 1.
+  workers: 1,
   forbidOnly: !!process.env.CI,
   // 1 even locally, not just in CI — session.spec.ts's post-reload check
   // against a real dev server has shown occasional single-retry flakiness

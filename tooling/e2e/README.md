@@ -26,9 +26,27 @@ against the real backend:
   invisible to it. This suite's first real run against a live backend caught two genuine bugs neither
   typecheck, lint, nor a curl-based check had ever surfaced (see "Real bugs this suite has already found"
   below).
-- **Real dynamic-data navigation** (`tests/admin/users-detail.spec.ts`) — clicking a real user row in
-  admin's users table navigates to that user's real detail page. Exercises the list → detail flow admin
-  actually uses for moderation/support, not just a static route.
+- **Real dynamic-data navigation** (`tests/admin/users-detail.spec.ts`,
+  `tests/{frontend,admin}/detail-navigation.spec.ts`) — clicking a real row/card in a list navigates to
+  that record's real detail page: admin's users, events, team and transactions tables; frontend's tribe
+  and business lists. Exercises the list → detail flow these apps actually use day to day, not just a
+  static route. Deliberately doesn't cover every list — see "What's not covered and why" below for the
+  ones this seed data can't exercise yet.
+
+### What's not covered and why
+
+- **Admin's `/reporting`, `/announcements`, `/wallet-management` detail pages, and frontend's `/event`
+  detail page** — this seed data has zero rows in each of those tables ("0 Reports", "0 Announcements",
+  "0 Wallets", confirmed by screenshot; `/event` has no `a[href^="/event/"]` to click after a 15s wait).
+  A test asserting on a click target that doesn't exist isn't testing anything real — add these back once
+  the seed data has real rows.
+- **Admin's `/tribes`** — confirmed elsewhere in this repo (`docs/ARCHITECTURE.md` Phase 6) to be static
+  mock content with no real data-driven navigation. Nothing to click into.
+- **A minor, non-fatal finding, not chased down**: frontend's `/event` page logs a real console error —
+  "An empty string ("") was passed to the src attribute" — on an image somewhere in the event
+  card/list component. Doesn't crash anything (Next's dev overlay shows it as a "Console Error", not the
+  fatal "Unhandled Runtime Error" the smoke tests check for), so it didn't block anything here, but it's a
+  real bug worth a look separately.
 
 ## Real bugs this suite has already found
 
@@ -65,9 +83,14 @@ script in favor of plain `next dev` — admin's `--turbopack` default hits an un
 found" internal error in some environments (confirmed on the machine this suite was built on); e2e doesn't
 need Turbopack's faster HMR anyway.
 
-`workers` is capped at 2, and `fullyParallel` is off — both apps' dev servers compile routes on demand,
-and more than one test per app running concurrently was measured to cause real timeouts (a 708-row table
-taking longer than a tight assertion timeout to populate under load), not a bug in the app or the test.
+`workers` is 1 (fully serial), and `fullyParallel` is off — both apps' dev servers compile routes on
+demand, and any concurrency was measured to cause real, non-deterministic timeouts as the suite grew (a
+table or list taking longer than a test's wait to populate under load), not a bug in the app or the test.
+This suite is meant to be trustworthy on merge, not fast — a slower, reliable ~2 minutes beats a faster,
+flaky one. `retries` is 1 even locally for the same reason: a real dev server and a real backend are both
+slower and less deterministic than a mock, and one retry absorbs that without hiding a genuine failure
+(all 26 tests have been run clean, back to back, multiple times — a test that fails twice in a row is a
+real signal, not noise).
 
 ## Wiring into CI
 
