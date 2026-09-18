@@ -7,13 +7,7 @@ import { isActiveLink } from "@/lib/activeLink";
 import { useSelector } from "react-redux";
 import { formatName, getInitials } from "@/lib/helper";
 import { useMediaQuery } from "react-responsive";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@lemonade/ui";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemonade/ui";
 import { useRequest } from "@/hooks/useRequest";
 import dayjs from "dayjs";
 import { FaBell } from "react-icons/fa";

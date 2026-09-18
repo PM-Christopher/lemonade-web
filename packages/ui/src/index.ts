@@ -32,4 +32,17 @@ export {
   SelectScrollDownButton,
 } from "./select";
 export { Textarea, type TextareaProps } from "./textarea";
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogTrigger,
+  DialogContent,
+  DialogContentBare,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "./dialog";
 export { cn } from "./lib/utils";
