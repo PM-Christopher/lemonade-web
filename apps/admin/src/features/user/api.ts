@@ -32,8 +32,16 @@ export interface AdminUser {
   events_created: number;
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface UserListResponse {
   users: AdminUser[];
+  meta?: PaginationMeta;
 }
 
 export interface AffiliateListItem {
@@ -120,13 +128,24 @@ export interface UserActionResponse {
 }
 
 export const userApi = {
-  getUserData: (trxType: string): Promise<UserListResponse | AffiliateListResponse> => {
+  // page/perPage are opt-in on the backend (see docs/ARCHITECTURE.md §22
+  // Conflict 1) — omit both to get the old unpaginated shape back, which
+  // UsersClient does while a search/status filter is active so client-side
+  // filtering still sees every user, not just the current page.
+  getUserData: (
+    trxType: string,
+    pagination?: { page?: number; perPage?: number },
+  ): Promise<UserListResponse | AffiliateListResponse> => {
     switch (trxType) {
       case "affiliates":
         return browserApi.get<AffiliateListResponse>(adminUserRoutes.AFFILIATES_LOG);
       case "users":
       default:
-        return browserApi.get<UserListResponse>(adminUserRoutes.BASE);
+        return browserApi.get<UserListResponse>(adminUserRoutes.BASE, {
+          params: pagination?.page
+            ? { page: pagination.page, per_page: pagination.perPage }
+            : undefined,
+        });
     }
   },
 

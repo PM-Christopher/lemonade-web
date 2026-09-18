@@ -26,6 +26,13 @@ export interface WithdrawalRequestRow {
   status: string;
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface WithdrawalRequests {
   history: WithdrawalRequestRow[];
   // The backend's wallet-withdrawals response also carries these
@@ -34,6 +41,7 @@ export interface WithdrawalRequests {
   wallet_revenue?: string;
   wallet_revenue_minor?: number;
   total_wallets?: number;
+  meta?: PaginationMeta;
 }
 
 export interface WalletDetail {
@@ -67,8 +75,13 @@ export interface WalletDetail {
 export const walletApi = {
   getWalletData: () => browserApi.get<WalletData>(adminWalletRoutes.BASE),
 
-  getWithdrawalRequests: () =>
-    browserApi.get<WithdrawalRequests>(adminTransactionRoutes.WALLET_WITHDRAWALS),
+  // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
+  getWithdrawalRequests: (pagination?: { page?: number; perPage?: number }) =>
+    browserApi.get<WithdrawalRequests>(adminTransactionRoutes.WALLET_WITHDRAWALS, {
+      params: pagination?.page
+        ? { page: pagination.page, per_page: pagination.perPage }
+        : undefined,
+    }),
 
   getWalletDetail: (id: number) =>
     browserApi.get<WalletDetail>(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`),

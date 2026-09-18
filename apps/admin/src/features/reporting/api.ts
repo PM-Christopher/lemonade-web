@@ -18,8 +18,16 @@ export interface ReportRow {
   status: string;
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface ReportListResponse {
   reports: ReportRow[];
+  meta?: PaginationMeta;
 }
 
 export interface ReportDetail extends ReportRow {
@@ -32,7 +40,13 @@ export interface ReportDetailResponse {
 }
 
 export const reportingApi = {
-  getReportData: () => browserApi.get<ReportListResponse>(adminReportRoutes.BASE),
+  // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
+  getReportData: (pagination?: { page?: number; perPage?: number }) =>
+    browserApi.get<ReportListResponse>(adminReportRoutes.BASE, {
+      params: pagination?.page
+        ? { page: pagination.page, per_page: pagination.perPage }
+        : undefined,
+    }),
 
   getReportDetail: (id: number) =>
     browserApi.get<ReportDetailResponse>(`${adminReportRoutes.BASE}/${id}`),

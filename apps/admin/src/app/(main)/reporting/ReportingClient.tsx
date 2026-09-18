@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { CalendarIcon, ChevronDown, SearchIcon } from "lucide-react";
 import { reportHeaders } from "@/data/tableData";
@@ -10,36 +10,37 @@ import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import useSearchParams from "@/hooks/useSearchParams";
+
+const PER_PAGE = 10;
 
 function ReportingClient() {
   const router = useRouter();
-  // State for current page and items per page
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const { searchParams, setSearchParams } = useSearchParams();
+  const currentPage = Number(searchParams?.get("page") ?? 1);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setSearchParams({ page: String(page) });
   };
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: reportData } = useReportsQuery({ enabled: isLoggedIn });
+  const { data: reportData } = useReportsQuery({
+    enabled: isLoggedIn,
+    page: currentPage,
+    perPage: PER_PAGE,
+  });
 
-  // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil((reportData?.reports?.length ?? 0) / perPage);
-
-  // Determine the start and end indices for slicing the data array
-  const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = reportData?.reports?.slice(
-    startIndex,
-    startIndex + perPage,
-  );
+  // The backend already paginated this (docs/ARCHITECTURE.md §22 Conflict 1)
+  // — reportData.reports is just the current page, no client-side slicing.
+  const totalPages = reportData?.meta?.last_page ?? 1;
+  const paginatedData = reportData?.reports;
 
   return (
     <MainLayout>
       <section className="mt-[24px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
           <p className={"text-[16px] font-semiBold"}>
-            {paginatedData?.length} Reports
+            {reportData?.meta?.total ?? paginatedData?.length ?? 0} Reports
           </p>
           <div className={"flex justify-between gap-[12px]"}>
             <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
@@ -151,7 +152,7 @@ function ReportingClient() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-                perPage={perPage}
+                perPage={PER_PAGE}
               />
             </div>
           </div>

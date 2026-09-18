@@ -37,9 +37,24 @@ function UsersClient() {
   const exportCsv = useExportCsvMutation();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { searchParams, setSearchParams } = useSearchParams();
+  const query = searchParams?.get("q");
+  const statusParam = searchParams?.get("status");
+  // Search/status filter active -> fetch the old unpaginated shape so
+  // client-side filtering (in UsersViews) still sees every user, not just
+  // the current page. See docs/ARCHITECTURE.md §22 Conflict 1.
+  const isFiltering = Boolean(query?.trim()) || Boolean(statusParam?.trim());
+  const page = menuOption === "users" && !isFiltering ? Number(searchParams?.get("page") ?? 1) : undefined;
+
   const { data: userData } = useUserListQuery(menuOption, {
     enabled: isLoggedIn,
+    page,
+    perPage: 10,
   });
+
+  const handlePageChange = (nextPage: number) => {
+    setSearchParams({ page: String(nextPage) });
+  };
 
   const switchOption = (option: string) => {
     setMenuOption(option);
@@ -48,7 +63,14 @@ function UsersClient() {
   const renderViews = () => {
     switch (menuOption) {
       case "users":
-        return <UsersViews userData={userData} menuOption={menuOption} />;
+        return (
+          <UsersViews
+            userData={userData}
+            menuOption={menuOption}
+            page={page ?? 1}
+            onPageChange={handlePageChange}
+          />
+        );
       case "affiliates":
         return <AffiliateView userData={userData} menuOption={menuOption} />;
     }
@@ -83,9 +105,10 @@ function UsersClient() {
   };
 
   const { debouncedValue } = useDebounce(searchValue, 500);
-  const { setSearchParams } = useSearchParams();
   useEffect(() => {
-    setSearchParams({ q: debouncedValue });
+    // Reset to page 1 on a new search — same "reset pagination on search"
+    // behavior this used to do with local currentPage state.
+    setSearchParams({ q: debouncedValue, page: undefined });
     // setSearchParams's identity changes on every navigation (it depends on
     // useSearchParams()'s live searchParams — see hooks/useSearchParams.ts),
     // so including it here would re-run this effect after every push and
@@ -96,9 +119,9 @@ function UsersClient() {
   useEffect(() => {
     if (!["", "status"].includes(status)) {
       if (status === "clear selection") {
-        setSearchParams({ status: "" });
+        setSearchParams({ status: "", page: undefined });
       } else {
-        setSearchParams({ status });
+        setSearchParams({ status, page: undefined });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -4,7 +4,10 @@ import { walletApi } from "./api";
 export const walletKeys = {
   all: () => ["wallet"] as const,
   data: () => [...walletKeys.all(), "data"] as const,
-  withdrawalRequests: () => [...walletKeys.all(), "withdrawalRequests"] as const,
+  withdrawalRequests: (page?: number) =>
+    page
+      ? ([...walletKeys.all(), "withdrawalRequests", page] as const)
+      : ([...walletKeys.all(), "withdrawalRequests"] as const),
   detail: (id: number) => [...walletKeys.all(), "detail", id] as const,
 };
 
@@ -19,10 +22,12 @@ export function useWalletDataQuery(options?: { enabled?: boolean }) {
 }
 
 /** The withdrawal-request queue — "operational queue" per the staleness table. */
-export function useWithdrawalRequestsQuery(options?: { enabled?: boolean }) {
+export function useWithdrawalRequestsQuery(
+  options?: { enabled?: boolean; page?: number; perPage?: number },
+) {
   return useQuery({
-    queryKey: walletKeys.withdrawalRequests(),
-    queryFn: walletApi.getWithdrawalRequests,
+    queryKey: walletKeys.withdrawalRequests(options?.page),
+    queryFn: () => walletApi.getWithdrawalRequests({ page: options?.page, perPage: options?.perPage }),
     staleTime: 30_000,
     enabled: options?.enabled,
   });

@@ -18,56 +18,60 @@ import PromotionViews from "@/views/transactions/promotionViews";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTransactionDataQuery } from "@/features/transaction/queries";
+import { transactionApi, type TransactionListType } from "@/features/transaction/api";
 import { manualTransactionsExport } from "@/utils/helper";
+import useSearchParams from "@/hooks/useSearchParams";
+
+const PER_PAGE = 10;
 
 function TransactionsClient() {
   const [menuOption, setMenuOption] = useState("plan-subscriptions");
+  const { searchParams, setSearchParams } = useSearchParams();
+  const page = Number(searchParams?.get("page") ?? 1);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   const { data: trxData } = useTransactionDataQuery(menuOption, {
     enabled: isLoggedIn,
+    page,
+    perPage: PER_PAGE,
   });
 
   const switchOption = (option: string) => {
     setMenuOption(option);
+    setSearchParams({ page: undefined }); // reset to page 1 on tab switch
+  };
+
+  const handlePageChange = (nextPage: number) => {
+    setSearchParams({ page: String(nextPage) });
   };
 
   const renderViews = () => {
     switch (menuOption) {
       case "plan-subscriptions":
-        return <PlansViews trx_data={trxData} />;
+        return <PlansViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "wallet-withdrawals":
-        return <WalletViews trx_data={trxData} />;
+        return <WalletViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "boosting":
         return <BoostingViews />;
       case "services":
         return <ServiceViews />;
       case "events":
-        return <EventViews trx_data={trxData} />;
+        return <EventViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "promotions":
         return <PromotionViews />;
     }
   };
 
-  const exportCSV = () => {
-    switch (menuOption) {
-      case "plan-subscriptions":
-        manualTransactionsExport(trxData?.history || [], "plan-subscriptions");
-        break;
-      case "wallet-withdrawals":
-        manualTransactionsExport(trxData?.history || [], "wallet-withdrawals");
-        break;
-      case "boosting":
-        break;
-      case "services":
-        break;
-      case "events":
-        manualTransactionsExport(trxData?.history || [], "events");
-        break;
-      case "promotions":
-        break;
-    }
+  // trxData is paginated now — export needs every row, not just the
+  // current page, so this fetches its own unpaginated copy on demand
+  // (omitting page/perPage gets the old full-array shape back, see
+  // docs/ARCHITECTURE.md §22 Conflict 1) rather than reusing trxData.
+  const exportCSV = async () => {
+    if (!["plan-subscriptions", "wallet-withdrawals", "events"].includes(menuOption)) return;
+
+    const fullData = await transactionApi.getTransactionData(menuOption as TransactionListType);
+    manualTransactionsExport(fullData?.history || [], menuOption);
   };
 
   return (
@@ -75,7 +79,10 @@ function TransactionsClient() {
       <section className="mt-[20px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
           <p className={"text-[16px] font-semiBold"}>
-            {trxData?.subscribers || trxData?.history?.length || 0} Transactions
+            {/* subscribers (real subscriber count) still wins for plan-subscriptions
+                — it's a different number from meta.total (total history rows),
+                not just a fallback for it. */}
+            {trxData?.subscribers ?? trxData?.meta?.total ?? trxData?.history?.length ?? 0} Transactions
           </p>
           <div className={"flex justify-between gap-[12px]"}>
             {/* <div

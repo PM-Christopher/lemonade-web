@@ -30,13 +30,22 @@ function WalletManagementClient() {
   const [editThreshold, setEditThreshold] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [itemsPerPage] = useState(5); // Number of items per page
+  const itemsPerPage = 5; // Number of items per page
+
+  // Search active -> fetch the old unpaginated shape so client-side
+  // filtering still sees every withdrawal request, not just the current
+  // page. See docs/ARCHITECTURE.md §22 Conflict 1.
+  const isFiltering = Boolean(searchTerm.trim());
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: withdrawalRequests } = useWithdrawalRequestsQuery({
     enabled: isLoggedIn,
+    page: isFiltering ? undefined : currentPage,
+    perPage: itemsPerPage,
   });
   const { data: walletData } = useWalletDataQuery({ enabled: isLoggedIn });
+
+  const isServerPaginated = Boolean(withdrawalRequests?.meta) && !isFiltering;
 
   // Handle searching
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,19 +53,25 @@ function WalletManagementClient() {
     setCurrentPage(1); // Reset to first page on search
   };
 
-  // Filter data based on search term
-  const filteredData =
-    withdrawalRequests?.history?.filter((row: any) =>
-      row?.fullname?.toLowerCase().includes(searchTerm.toLowerCase()),
-    ) || [];
+  // Filter data based on search term — a no-op filter once the backend
+  // already paginated (isServerPaginated), since there's nothing left to
+  // narrow down client-side at that point.
+  const filteredData = isServerPaginated
+    ? withdrawalRequests?.history || []
+    : withdrawalRequests?.history?.filter((row: any) =>
+        row?.fullname?.toLowerCase().includes(searchTerm.toLowerCase()),
+      ) || [];
 
   // Calculate total pages
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = isServerPaginated
+    ? (withdrawalRequests?.meta?.last_page ?? 1)
+    : Math.ceil(filteredData.length / itemsPerPage);
 
-  // Get current items for the page
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  // Get current items for the page — already just the current page when
+  // server-paginated, otherwise slice the client-filtered array same as before.
+  const currentItems = isServerPaginated
+    ? filteredData
+    : filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Change page
   const handlePageChange = (pageNumber: number) => {
@@ -105,7 +120,7 @@ function WalletManagementClient() {
       <section className="mt-[20px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
           <p className={"text-[16px] font-semiBold"}>
-            {withdrawalRequests?.history?.length || 0} Wallets
+            {withdrawalRequests?.meta?.total ?? withdrawalRequests?.history?.length ?? 0} Wallets
           </p>
           <div className={"flex justify-between gap-[12px]"}>
             <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">

@@ -1,31 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import DataCard from "@/components/global/DataCard";
-import GlobalTable from "@/components/global/GlobalTable";
-import { planData, planHeaders, walletHeaders } from "@/data/tableData";
+import { planHeaders, walletHeaders } from "@/data/tableData";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
 
 interface PlanIF {
   trx_data: any;
+  page: number;
+  onPageChange: (page: number) => void;
 }
 
-function PlansViews({ trx_data }: PlanIF) {
+// Server-paginated (docs/ARCHITECTURE.md §22 Conflict 1) — trx_data.history
+// is already just the current page; page/onPageChange are URL state owned
+// by TransactionsClient.
+function PlansViews({ trx_data, page, onPageChange }: PlanIF) {
   const router = useRouter();
-  // State for current page and items per page
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(trx_data?.history?.length / perPage);
-
-  // Determine the start and end indices for slicing the data array
-  const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = trx_data?.history?.slice(startIndex, startIndex + perPage);
+  const totalPages = trx_data?.meta?.last_page ?? 1;
+  const perPage = trx_data?.meta?.per_page ?? 10;
+  const paginatedData = trx_data?.history;
 
   return (
     <>
@@ -88,9 +81,9 @@ function PlansViews({ trx_data }: PlanIF) {
 
         {/* Pagination */}
         <PaginationComp
-          currentPage={currentPage}
+          currentPage={page}
           totalPages={totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={onPageChange}
           perPage={perPage}
         />
       </div>

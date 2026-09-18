@@ -2123,7 +2123,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[MOSTLY DONE — 26 of ~45 frontend pages (rest verified non-candidates); admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI all done; server-side pagination now shipped on the backend (§22 Conflict 1), frontend adoption still open]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[MOSTLY DONE — 26 of ~45 frontend pages (rest verified non-candidates); admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI, and server-side pagination (backend + admin frontend, §22 Conflict 1) all done]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2753,7 +2753,7 @@ edit already in flight. Everything else in that bullet was genuinely stale, not 
 Three conflicts with existing backend behaviour, named rather than designed around. All three need
 backend work.
 
-#### Conflict 1 — server-side pagination does not exist for most endpoints **[MUST]** — **backend half done**
+#### Conflict 1 — server-side pagination does not exist for most endpoints **[MUST]** — **resolved for the four real admin list endpoints**
 
 - **Conflict** — This document specifies server-driven pagination with page state in the URL. The
   backend calls `paginate()` in only 10 places across ~280 actions; most list endpoints return unbounded
@@ -2784,11 +2784,38 @@ backend work.
   Pint clean, verified against the live backend with real curl requests (not just the test suite) showing
   identical totals whether paginated or not.
 
-  **Not done yet:** the frontend side. `apps/admin`'s query hooks still do plain unpaginated fetches +
-  client-side slicing — this backend capability exists now but nothing in `apps/admin` calls it with
-  `?page=` yet. That's real, separate work (query hooks, `searchParams`-driven page state per CLAUDE.md's
-  "URL state for anything shareable", actual pagination controls in each table) and wasn't in scope for
-  "implement Phase 6 in the Laravel code" specifically.
+  **Frontend adoption — done for the four real endpoints, skipped for three that don't exist yet.**
+  Wired `apps/admin`'s query hooks (users, reporting, the plan-subscriptions/wallet-withdrawals/events
+  transaction tabs, and the wallet-management dashboard) to the backend's opt-in `?page=`, replacing
+  client-side slicing over the full unbounded fetch. `page` lives in `searchParams` (per CLAUDE.md's "URL
+  state for anything shareable"), not `useState`, for every list that didn't already have real
+  client-side search to preserve. `PaginationComp` — a fully-built pager component that already existed
+  in every one of these tables, wired to *local* page math — needed no changes at all, just a real
+  `meta.last_page`/`onPageChange` instead of `Math.ceil(data.length / perPage)`.
+
+  Two lists (`/users`, `/wallet-management`) have real, working client-side search/filter UI wired to
+  local or URL state. Pure server pagination would silently narrow search down to whatever the current
+  page happened to contain — so both now branch: no active filter → real server pagination; a filter
+  active → fall back to the exact unpaginated fetch + client-side filter they always did (send no `page`
+  param, get the old full-array shape back, per the same opt-in contract). `/transactions`' CSV export
+  hit the identical problem one call removed — it used to read `trxData.history`, which is now just the
+  current page — so it fetches its own unpaginated copy on click instead of reusing the paginated query
+  state.
+
+  Found and preserved rather than silently fixed: the "boosting"/"services"/"promotions" transaction tabs
+  are commented out of the tab bar entirely and their view components render static fixture data, not
+  `trx_data` — genuinely unbuilt, not just unpaginated, matching the exact pattern Phase 6 already found
+  in admin's `/tribes`. `getTransactionData`'s "boosting"/"services"/"promotions" cases still route to the
+  `plan-subscriptions` endpoint, a pre-existing bug an earlier pass in this repo already found, documented,
+  and deliberately left as-is ("reproduced as-is," see the file's own NOTE) — not something this pass
+  should silently relitigate. Pagination params are threaded through those cases uniformly anyway, since
+  nothing about "which endpoint answers" changes what params get attached to whichever request goes out.
+
+  Verified against the live backend with real Playwright tests, not just typecheck/build:
+  `tooling/e2e/tests/admin/pagination.spec.ts` clicks page 2 on `/users` and confirms the row set actually
+  changes and the URL updates; confirms searching `/users` still finds a user regardless of what page
+  they'd be on; clicks page 2 on `/transactions`' default tab; and confirms switching tabs resets to page
+  1 and paginates the new tab independently. 28 e2e tests passing in total.
 
 #### Conflict 2 — the admin permission model is a single string column **[SHOULD]**
 
@@ -2872,7 +2899,7 @@ backend work.
 | `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed |
 | Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                       |
 | Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule              |
-| Client-side pagination sites      |        7 |                                                                                          7 — backend capability now exists (§22 Conflict 1), frontend hasn't adopted it yet |                     0 | P6     | Requires Conflict 1 resolved                 |
+| Client-side pagination sites      |        7 |                                                          4 real endpoints wired to real server pagination (users, reporting, transactions, wallet-management); 3 (boosting/services/promotions) are unbuilt static fixtures, not a pagination gap |                     0 | P6     | Requires Conflict 1 resolved — **done**      |
 | Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                   |
 | `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                        |
 | Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                    |

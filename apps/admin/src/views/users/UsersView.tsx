@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
-import DataCard from "@/components/global/DataCard";
-import GlobalTable from "@/components/global/GlobalTable";
-import { usersData, usersHeaders } from "@/data/tableData";
+import { usersHeaders } from "@/data/tableData";
 import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
 import useSearchParams from "@/hooks/useSearchParams";
 
-function UsersViews({ userData, menuOption }: any) {
+// `userData.meta` present -> the backend already paginated this response
+// (docs/ARCHITECTURE.md §22 Conflict 1) — `data` is just the current page,
+// so render it directly and drive the pager from `page`/`onPageChange`
+// (URL state, owned by UsersClient). `meta` absent -> a search/status
+// filter is active, UsersClient fetched the old unpaginated shape instead,
+// and this component falls back to exactly the client-side filter + slice
+// it always did, with its own local page state.
+function UsersViews({ userData, menuOption, page, onPageChange }: any) {
   const router = useRouter();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("q");
   const status = searchParams?.get("status");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [localPage, setLocalPage] = useState(1);
+  const perPage = 10;
   const [data, setData] = useState<any>(userData?.users || []);
+
+  const isServerPaginated = Boolean(userData?.meta);
 
   // Update data when userData changes
   useEffect(() => {
@@ -23,10 +30,13 @@ function UsersViews({ userData, menuOption }: any) {
       setData(userData.users);
     }
   }, [userData]);
-  // Search + reset pagination
+
+  // Search + reset pagination — only runs the client-side filter path when
+  // the backend didn't already paginate (see the file header comment).
   useEffect(() => {
     if (menuOption !== "users") return;
     if (!userData) return;
+    if (isServerPaginated) return;
 
     if ((!query && !status) || query?.trim() === "") {
       setData(userData.users);
@@ -50,17 +60,24 @@ function UsersViews({ userData, menuOption }: any) {
       setData(filtered);
     }
 
-    setCurrentPage(1); // Reset to first page on search
-  }, [query, status, userData, menuOption]);
+    setLocalPage(1); // Reset to first page on search
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, status, userData, menuOption, isServerPaginated]);
 
-  // Calculate pagination from filtered data
-  const totalPages = Math.ceil(data?.length / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = data?.slice(startIndex, startIndex + perPage);
+  const totalPages = isServerPaginated
+    ? userData.meta.last_page
+    : Math.ceil(data?.length / perPage);
+  const currentPage = isServerPaginated ? (page ?? 1) : localPage;
+  const paginatedData = isServerPaginated
+    ? data
+    : data?.slice((localPage - 1) * perPage, localPage * perPage);
 
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  const handlePageChange = (nextPage: number) => {
+    if (isServerPaginated && onPageChange) {
+      onPageChange(nextPage);
+    } else {
+      setLocalPage(nextPage);
+    }
   };
 
   return (

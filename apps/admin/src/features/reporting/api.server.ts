@@ -4,8 +4,12 @@ import { adminReportRoutes } from "@lemonade/api-types";
 import type { ReportListResponse, ReportDetailResponse } from "./api";
 
 export const reportingServerApi = {
-  getReportData: () =>
-    backendApi.get<ReportListResponse>(adminReportRoutes.BASE),
+  getReportData: (pagination?: { page?: number; perPage?: number }) =>
+    backendApi.get<ReportListResponse>(adminReportRoutes.BASE, {
+      params: pagination?.page
+        ? { page: pagination.page, per_page: pagination.perPage }
+        : undefined,
+    }),
 
   getReportDetail: (id: number | string) =>
     backendApi.get<ReportDetailResponse>(`${adminReportRoutes.BASE}/${id}`),

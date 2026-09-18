@@ -7,18 +7,34 @@
 // client-side enabled: isLoggedIn branch to reproduce server-side. First
 // Server Component conversion in apps/admin under Phase 6's
 // list-shell/table-island split — see docs/ARCHITECTURE.md.
+//
+// Pagination (docs/ARCHITECTURE.md §22 Conflict 1): a deep link that
+// already carries a search/status filter (e.g. `/users?q=foo`) prefetches
+// the old unpaginated shape instead of page 1, so UsersClient's
+// client-side filtering has every user to search on first paint too, not
+// just page 1's ten rows — matches what it falls back to once mounted.
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { userKeys } from "@/features/user/queries";
 import { userServerApi } from "@/features/user/api.server";
 import UsersClient from "./UsersClient";
 
-export default async function UsersPage() {
+const DEFAULT_PER_PAGE = 10;
+
+export default async function UsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const isFiltering = Boolean(params.q) || Boolean(params.status);
+  const page = isFiltering ? undefined : Number(params.page ?? 1);
+
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: userKeys.list("users"),
-    queryFn: userServerApi.getUsers,
+    queryKey: userKeys.list("users", page),
+    queryFn: () => userServerApi.getUsers(page ? { page, perPage: DEFAULT_PER_PAGE } : undefined),
   });
 
   return (

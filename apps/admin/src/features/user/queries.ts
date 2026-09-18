@@ -4,7 +4,8 @@ import { userApi } from "./api";
 export const userKeys = {
   all: () => ["user"] as const,
   lists: () => [...userKeys.all(), "list"] as const,
-  list: (trxType: string) => [...userKeys.lists(), trxType] as const,
+  list: (trxType: string, page?: number) =>
+    page ? [...userKeys.lists(), trxType, page] as const : [...userKeys.lists(), trxType] as const,
   details: () => [...userKeys.all(), "detail"] as const,
   detail: (id: number) => [...userKeys.details(), id] as const,
   affiliateDetail: (id: number) => [...userKeys.all(), "affiliate-detail", id] as const,
@@ -12,10 +13,13 @@ export const userKeys = {
     [...userKeys.all(), "account-info", id, infoType] as const,
 };
 
-export function useUserListQuery(trxType: string, options?: { enabled?: boolean }) {
+export function useUserListQuery(
+  trxType: string,
+  options?: { enabled?: boolean; page?: number; perPage?: number },
+) {
   return useQuery({
-    queryKey: userKeys.list(trxType),
-    queryFn: () => userApi.getUserData(trxType),
+    queryKey: userKeys.list(trxType, options?.page),
+    queryFn: () => userApi.getUserData(trxType, { page: options?.page, perPage: options?.perPage }),
     staleTime: 60_000,
     enabled: options?.enabled,
   });

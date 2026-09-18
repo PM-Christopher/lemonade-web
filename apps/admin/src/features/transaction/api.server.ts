@@ -8,10 +8,12 @@ import type {
 } from "./api";
 
 export const transactionServerApi = {
-  getPlanSubscriptions: () =>
-    backendApi.get<TransactionListResponse>(
-      adminTransactionRoutes.PLAN_SUBSCRIPTION,
-    ),
+  getPlanSubscriptions: (pagination?: { page?: number; perPage?: number }) =>
+    backendApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, {
+      params: pagination?.page
+        ? { page: pagination.page, per_page: pagination.perPage }
+        : undefined,
+    }),
 
   getPlanSubscription: (id: number | string) =>
     backendApi.get<PlanSubscriptionDetailResponse>(

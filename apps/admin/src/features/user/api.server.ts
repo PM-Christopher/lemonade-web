@@ -13,7 +13,16 @@ import type {
 } from "./api";
 
 export const userServerApi = {
-  getUsers: () => backendApi.get<UserListResponse>(adminUserRoutes.BASE),
+  // page omitted -> the old unpaginated shape (see docs/ARCHITECTURE.md §22
+  // Conflict 1) — used when the page is first requested with a search/status
+  // filter already in the URL, so client-side filtering has every user to
+  // search, not just one page of it.
+  getUsers: (pagination?: { page?: number; perPage?: number }) =>
+    backendApi.get<UserListResponse>(adminUserRoutes.BASE, {
+      params: pagination?.page
+        ? { page: pagination.page, per_page: pagination.perPage }
+        : undefined,
+    }),
 
   getUserDetail: (id: number | string) =>
     backendApi.get<UserDetailResponse>(`${adminUserRoutes.BASE}/${id}`),

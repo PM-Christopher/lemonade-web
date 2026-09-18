@@ -3,15 +3,16 @@ import { reportingApi } from "./api";
 
 export const reportingKeys = {
   all: () => ["reporting"] as const,
-  list: () => [...reportingKeys.all(), "list"] as const,
+  list: (page?: number) =>
+    page ? [...reportingKeys.all(), "list", page] as const : [...reportingKeys.all(), "list"] as const,
   detail: (id: number) => [...reportingKeys.all(), "detail", id] as const,
 };
 
 /** Moderation reports — "operational queue" per the staleness table (30s), named there explicitly. */
-export function useReportsQuery(options?: { enabled?: boolean }) {
+export function useReportsQuery(options?: { enabled?: boolean; page?: number; perPage?: number }) {
   return useQuery({
-    queryKey: reportingKeys.list(),
-    queryFn: reportingApi.getReportData,
+    queryKey: reportingKeys.list(options?.page),
+    queryFn: () => reportingApi.getReportData({ page: options?.page, perPage: options?.perPage }),
     staleTime: 30_000,
     enabled: options?.enabled,
   });

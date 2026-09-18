@@ -36,6 +36,13 @@ export interface TransactionHistoryRow {
   [key: string]: unknown;
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface TransactionListResponse {
   history?: TransactionHistoryRow[];
   subscribers?: number;
@@ -45,7 +52,10 @@ export interface TransactionListResponse {
   total_revenue_minor?: number;
   tickets_sold?: number;
   total_events?: number;
+  total_transactions?: number;
+  total_wallets?: number;
   churn_rate?: number;
+  meta?: PaginationMeta;
   [key: string]: unknown;
 }
 
@@ -79,20 +89,28 @@ export type TransactionListType =
   "plan-subscriptions" | "wallet-withdrawals" | "boosting" | "services" | "events" | "promotions";
 
 export const transactionApi = {
-  getTransactionData: (trxType: TransactionListType) => {
+  // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
+  // Threaded through every case uniformly, including boosting/services/promotions
+  // — their routing to PLAN_SUBSCRIPTION is a pre-existing bug (see the NOTE
+  // above), reproduced as-is; not this change's problem to fix.
+  getTransactionData: (trxType: TransactionListType, pagination?: { page?: number; perPage?: number }) => {
+    const params = pagination?.page
+      ? { page: pagination.page, per_page: pagination.perPage }
+      : undefined;
+
     switch (trxType) {
       case "plan-subscriptions":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
       case "wallet-withdrawals":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS);
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS, { params });
       case "boosting":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
       case "services":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
       case "events":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS);
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS, { params });
       case "promotions":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION);
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
     }
   },
 
