@@ -2648,9 +2648,17 @@ parties messaging each other), a way to read a real OTP/verification email (jour
 covered: real login for both a user and an admin account (`tests/*/auth.setup.ts`, `storageState` reused
 across the rest of the suite so login only happens once); session persistence across a hard reload
 (journey 2's non-token-expiry half); every top-level authenticated route in both apps visited once,
-asserting no client-side throw (`tests/*/smoke.spec.ts`); and one real dynamic-data flow, clicking a real
-user row in admin's users table through to their detail page. Full scope, and exactly why each of the ten
-journeys is or isn't covered, is in `tooling/e2e/README.md`, not duplicated here.
+asserting no client-side throw (`tests/*/smoke.spec.ts`); and real dynamic-data list-to-detail flows —
+admin's users, events, team and transactions tables, frontend's tribe and business lists — each clicked
+through from a real list to a real detail page, not just a static route. 26 tests total, run serially
+(`workers: 1`) against real `next dev` servers, since any concurrency measurably caused non-deterministic
+timeouts as the suite grew — a real environment characteristic, not a bug being papered over. A few list
+pages don't have coverage yet for an honest reason, not an oversight: this seed data has zero rows in
+admin's reporting/announcements/wallet-management tables and frontend's events list, so there's nothing
+real to click into yet, and admin's `/tribes` is still the static mock content Phase 6 already found. Full
+scope, exactly why each of the ten journeys is or isn't covered, and one real-but-minor finding this pass
+didn't chase down (a console error on frontend's `/event` page — an empty string passed to an image `src`
+somewhere in the event card, non-fatal) are all in `tooling/e2e/README.md`, not duplicated here.
 
 **This is the first tool in the whole session that executes real client-side JavaScript in a real
 browser** — every other check (curl-based route verification, `next build`, typecheck) either doesn't run
