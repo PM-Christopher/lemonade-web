@@ -33,6 +33,13 @@ const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
 async function handle(req: NextRequest, path: string[], method: string): Promise<NextResponse> {
   const targetUrl = `/${path.join("/")}${req.nextUrl.search}`;
   const correlationId = req.headers.get("x-correlation-id") ?? undefined;
+  // docs/ARCHITECTURE.md §22 Conflict 3 — without this, every request reaches
+  // Laravel from the Next server's own IP, and TrustProxies (already
+  // configured to honour these) has nothing real to resolve. Forwarded as-is
+  // from whatever this Next server itself received — never fabricated, so a
+  // request with no upstream proxy in front of Next simply carries none.
+  const forwardedFor = req.headers.get("x-forwarded-for") ?? undefined;
+  const userAgent = req.headers.get("user-agent") ?? undefined;
 
   let data: unknown;
   let bodyContentType: string | undefined;
@@ -68,6 +75,8 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
       headers: {
         ...(correlationId ? { "X-Correlation-Id": correlationId } : {}),
         ...(bodyContentType ? { "Content-Type": bodyContentType } : {}),
+        ...(forwardedFor ? { "X-Forwarded-For": forwardedFor } : {}),
+        ...(userAgent ? { "User-Agent": userAgent } : {}),
       },
       ...(onboardingToken ? { bearerTokenOverride: onboardingToken } : {}),
     });

@@ -2848,7 +2848,7 @@ backend work.
   backend adds a roles/permissions model and exposes the effective permission set on the session
   endpoint; the frontend then renders from that list and never from a hardcoded map.
 
-#### Conflict 3 — the BFF changes where the backend sees requests from **[SHOULD]**
+#### Conflict 3 — the BFF changes where the backend sees requests from **[SHOULD]** — **resolved**
 
 - **Conflict** — Today requests reach Laravel from browsers. Under the BFF, they arrive from the Next
   server — changing origin, IP, and user-agent as the backend observes them. The backend applies rate
@@ -2862,16 +2862,23 @@ backend work.
   correlation id; verify throttle keys resolve to the end user, not the proxy. Test this in staging
   under load — it is the single most likely BFF surprise, and it fails in a way that looks like an
   outage.
-- **Status — this conflict is now live; one side is ready, the other isn't.** The BFF shipped in Phase 4
-  (§21) without the flag this section assumes. The backend side is actually fine: `TrustProxies` already
-  trusts `X-Forwarded-For`/`-Host`/`-Port`/`-Proto` from any proxy (`$proxies = '*'`), so it would
-  resolve the real client IP correctly if it received the header. It doesn't: `app/api/v1/[...path]/route.ts`
-  in both apps forwards only `X-Correlation-Id` and, for multipart bodies, `Content-Type` — no
-  `X-Forwarded-For` or user-agent. This hasn't caused a known problem yet (local/dev traffic only so
-  far), but per-IP throttling (`throttle:auth`, `throttle:otp`) is currently keyed on the Next server's
-  own IP for every real request, exactly the failure mode this section warns about. The fix is entirely
-  on the frontend side — add the header to the proxy's outbound request — and is small; worth doing
-  before this reaches real user traffic, not discovered later.
+- **Status (2026-09-18) — fixed.** The backend side was already fine: `TrustProxies` trusts
+  `X-Forwarded-For`/`-Host`/`-Port`/`-Proto` from any proxy (`$proxies = '*'`), so it resolves the real
+  client IP correctly once it receives the header — nothing to change there. `app/api/v1/[...path]/route.ts`
+  in both apps now forwards the inbound request's own `X-Forwarded-For` and `User-Agent` headers to the
+  backend alongside the existing `X-Correlation-Id`, so `throttle:auth`/`throttle:otp` (both keyed on
+  `$request->ip()`) resolve to the actual end user instead of the Next server's own IP. Forwarded as-is,
+  never fabricated — a request with no upstream proxy in front of Next (e.g. this repo's own local dev)
+  simply carries no `X-Forwarded-For`, same as before; this only starts mattering once something (a load
+  balancer, Vercel's edge network, etc.) sits in front of the Next server in a real deployment and sets
+  that header on the way in.
+
+  Live-verified the actual header forwarding, not just read the code: pointed the admin app's
+  `LARAVEL_API_URL` at a throwaway local echo server in place of the real backend, hit the BFF proxy
+  through a real running `next dev` with `curl -H "X-Forwarded-For: 203.0.113.42" -H "User-Agent:
+  verification-agent/1.0"`, and confirmed both headers arrived at the echo server unchanged alongside the
+  proxy's own `X-Correlation-Id`. Restored the real backend config afterward and re-ran the full admin
+  Playwright pagination suite (8 tests) against it to confirm no regression.
 
 ### Risk register
 
