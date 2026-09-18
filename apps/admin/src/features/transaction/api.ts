@@ -2,14 +2,10 @@
 // for the pattern this follows: the BFF proxy transport (browserApi), not
 // the pre-BFF axiosInstance.
 //
-// NOTE (found, not fixed — preserving exact current behavior per this
-// migration's own rule): getTransactionData's "boosting", "services" and
-// "promotions" cases all call the same plan-subscription endpoint as
-// "plan-subscriptions" does, even though the backend has dedicated
-// /admin/transaction/{boosts,services,promotions} routes (see
-// adminTransactionRoutes below — BOOSTS/SERVICES/PROMOTIONS are defined but
-// unused here). Looks like unfinished routing logic, not a path-string bug;
-// reproduced as-is.
+// boosting/services/promotions used to all route to PLAN_SUBSCRIPTION (found
+// during the pagination migration, fixed here) — the backend has always had
+// dedicated /admin/transaction/{boosts,services,promotions} routes, they were
+// just never wired up on this side.
 //
 // Wallet-withdrawal detail is deliberately NOT duplicated here —
 // adminTransactionRoutes.WALLET_WITHDRAWAL is the exact same endpoint the
@@ -31,8 +27,19 @@ export interface TransactionHistoryRow {
   date_paid?: string;
   wallet_id?: string;
   subscription_type?: string;
-  user?: { fullname?: string };
+  user?: { fullname?: string; name?: string; username?: string; email?: string };
   wallet?: { wallet_id?: string };
+  // PaymentTransactionResource fields — boosting/services/promotions history
+  // rows (see app/Http/Resources/Billing/PaymentTransactionResource.php).
+  reference?: string;
+  type?: string;
+  provider?: string;
+  channel?: string;
+  currency?: string;
+  amount_minor?: number;
+  paid_at?: string | null;
+  paymentable_type?: string;
+  paymentable_id?: number;
   [key: string]: unknown;
 }
 
@@ -53,6 +60,7 @@ export interface TransactionListResponse {
   tickets_sold?: number;
   total_events?: number;
   total_transactions?: number;
+  successful_transactions?: number;
   total_wallets?: number;
   churn_rate?: number;
   meta?: PaginationMeta;
@@ -90,9 +98,7 @@ export type TransactionListType =
 
 export const transactionApi = {
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
-  // Threaded through every case uniformly, including boosting/services/promotions
-  // — their routing to PLAN_SUBSCRIPTION is a pre-existing bug (see the NOTE
-  // above), reproduced as-is; not this change's problem to fix.
+  // Threaded through every case uniformly.
   getTransactionData: (trxType: TransactionListType, pagination?: { page?: number; perPage?: number }) => {
     const params = pagination?.page
       ? { page: pagination.page, per_page: pagination.perPage }
@@ -104,13 +110,13 @@ export const transactionApi = {
       case "wallet-withdrawals":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS, { params });
       case "boosting":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.BOOSTS, { params });
       case "services":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.SERVICES, { params });
       case "events":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS, { params });
       case "promotions":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PROMOTIONS, { params });
     }
   },
 

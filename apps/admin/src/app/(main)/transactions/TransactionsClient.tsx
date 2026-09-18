@@ -53,13 +53,13 @@ function TransactionsClient() {
       case "wallet-withdrawals":
         return <WalletViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "boosting":
-        return <BoostingViews />;
+        return <BoostingViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "services":
-        return <ServiceViews />;
+        return <ServiceViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "events":
         return <EventViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "promotions":
-        return <PromotionViews />;
+        return <PromotionViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
     }
   };
 
@@ -68,8 +68,6 @@ function TransactionsClient() {
   // (omitting page/perPage gets the old full-array shape back, see
   // docs/ARCHITECTURE.md §22 Conflict 1) rather than reusing trxData.
   const exportCSV = async () => {
-    if (!["plan-subscriptions", "wallet-withdrawals", "events"].includes(menuOption)) return;
-
     const fullData = await transactionApi.getTransactionData(menuOption as TransactionListType);
     manualTransactionsExport(fullData?.history || [], menuOption);
   };

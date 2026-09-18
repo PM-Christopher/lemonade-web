@@ -2416,9 +2416,9 @@ pass clean) — a genuine, previously-unmeasured finding, and blocking on it imm
 PR on pre-existing performance, not on anything that PR introduced. When the public-pages decision
 lands, extending `collect.url` in `lighthouserc.frontend.json` is the only change needed.
 
-**Server-side pagination** is the one Phase 6 bullet still not started — it depends on backend
-endpoints landing it (§13's Conflict 1), not confirmed either way this phase, and isn't something the
-frontend can implement alone.
+**Server-side pagination** — done, both sides. See §22 Conflict 1 for the full writeup: backend added
+opt-in `?page=` pagination to the seven largest unbounded admin lists, and admin's query hooks
+(users, reporting, all six transaction tabs, wallet-management) were wired to it.
 
 ### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, token contrast audited (2 real findings, need a design decision); only the full custom-modal-to-Dialog migration remains]**
 
@@ -2753,7 +2753,7 @@ edit already in flight. Everything else in that bullet was genuinely stale, not 
 Three conflicts with existing backend behaviour, named rather than designed around. All three need
 backend work.
 
-#### Conflict 1 — server-side pagination does not exist for most endpoints **[MUST]** — **resolved for the four real admin list endpoints**
+#### Conflict 1 — server-side pagination does not exist for most endpoints **[MUST]** — **resolved for all seven admin list endpoints**
 
 - **Conflict** — This document specifies server-driven pagination with page state in the URL. The
   backend calls `paginate()` in only 10 places across ~280 actions; most list endpoints return unbounded
@@ -2802,20 +2802,38 @@ backend work.
   current page — so it fetches its own unpaginated copy on click instead of reusing the paginated query
   state.
 
-  Found and preserved rather than silently fixed: the "boosting"/"services"/"promotions" transaction tabs
-  are commented out of the tab bar entirely and their view components render static fixture data, not
-  `trx_data` — genuinely unbuilt, not just unpaginated, matching the exact pattern Phase 6 already found
-  in admin's `/tribes`. `getTransactionData`'s "boosting"/"services"/"promotions" cases still route to the
-  `plan-subscriptions` endpoint, a pre-existing bug an earlier pass in this repo already found, documented,
-  and deliberately left as-is ("reproduced as-is," see the file's own NOTE) — not something this pass
-  should silently relitigate. Pagination params are threaded through those cases uniformly anyway, since
-  nothing about "which endpoint answers" changes what params get attached to whichever request goes out.
+  **Boosting/services/promotions, fixed as a follow-up.** These three transaction tabs were commented out
+  of the tab bar and their view components rendered static fixture data, not `trx_data` — genuinely
+  unbuilt, not just unpaginated. `getTransactionData`'s "boosting"/"services"/"promotions" cases also
+  routed to the `plan-subscriptions` endpoint instead of the backend's own dedicated
+  `/admin/transaction/{boosts,services,promotions}` routes (`BOOSTS`/`SERVICES`/`PROMOTIONS` were defined
+  in `adminTransactionRoutes` but never used) — confirmed live that all three backend endpoints are real
+  and populated (73/84/798 transactions respectively) before doing any frontend work. Fixed the routing,
+  uncommented the three tabs, and rewrote `boostingViews.tsx`/`serviceViews.tsx`/`promotionViews.tsx` to
+  the same `trx_data`/`page`/`onPageChange`/`meta.last_page` pattern as the four already-migrated views,
+  reading the real `PaymentTransactionResource` shape (`reference`, `user.name`, `amount`, `provider`,
+  `paid_at`, `status`) instead of the old fixture's invented fields (business name, boost type, duration)
+  that don't exist on the backend at all. `tableData.ts`'s three mock header/data exports were deleted and
+  replaced with one shared `paymentTransactionHeaders`, since all three tabs list the same resource shape.
+  `/transactions`' CSV export now covers these three tabs too (`manualTransactionsExport` gained a matching
+  branch instead of falling through to its generic `Object.keys` fallback, which would have dumped
+  `[object Object]` for the nested `user` field).
+
+  Rows in these three tabs are deliberately **not** clickable to a detail page: `TransactionController.php`
+  has no `boost($id)`/`promotion($id)`/`service($id)` detail method and no matching route, only the list
+  endpoints. The `boosting-details`/`promotion-details`/`service-details` route directories already existed
+  (inspected directly) but are themselves fully static mock pages — hardcoded "Global tech" /
+  "Adebayo Akintoye" fixture content with commented-out pagination handlers, not wired to any id — so
+  linking a real row into one would just trade an empty tab for a misleading one. Left alone; building
+  real per-transaction detail is new backend + frontend work, out of this pass's scope.
 
   Verified against the live backend with real Playwright tests, not just typecheck/build:
   `tooling/e2e/tests/admin/pagination.spec.ts` clicks page 2 on `/users` and confirms the row set actually
   changes and the URL updates; confirms searching `/users` still finds a user regardless of what page
-  they'd be on; clicks page 2 on `/transactions`' default tab; and confirms switching tabs resets to page
-  1 and paginates the new tab independently. 28 e2e tests passing in total.
+  they'd be on; clicks page 2 on `/transactions`' default tab; confirms switching tabs resets to page 1 and
+  paginates the new tab independently; and confirms each of the boosting/services/promotions tabs renders
+  real backend rows, not the old fixture's fixed "Global tech"/"Unlocking business potentials" text. 33 e2e
+  tests passing in total.
 
 #### Conflict 2 — the admin permission model is a single string column **[SHOULD]**
 
@@ -2899,7 +2917,7 @@ backend work.
 | `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed |
 | Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                       |
 | Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule              |
-| Client-side pagination sites      |        7 |                                                          4 real endpoints wired to real server pagination (users, reporting, transactions, wallet-management); 3 (boosting/services/promotions) are unbuilt static fixtures, not a pagination gap |                     0 | P6     | Requires Conflict 1 resolved — **done**      |
+| Client-side pagination sites      |        7 |                                                          All 7 wired to real server pagination (users, reporting, all six transaction tabs, wallet-management) |                     0 | P6     | Requires Conflict 1 resolved — **done**      |
 | Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                   |
 | `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                        |
 | Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                    |

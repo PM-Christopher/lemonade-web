@@ -111,6 +111,8 @@ export const manualTransactionsExport = (data: any, type: any) => {
       "Status",
       "Created At",
     ];
+  } else if (type === "boosting" || type === "services" || type === "promotions") {
+    headers = ["Reference", "User", "Amount", "Provider", "Paid At", "Status"];
   } else {
     // Default: use object keys as headers
     headers = Object.keys(data[0]);
@@ -154,6 +156,15 @@ export const manualTransactionsExport = (data: any, type: any) => {
         item.tickets_sold || "",
         item.status || "",
         item.created_at || "",
+      ];
+    } else if (type === "boosting" || type === "services" || type === "promotions") {
+      row = [
+        item.reference || "",
+        item.user?.name || "",
+        item.amount || "",
+        item.provider || "",
+        item.paid_at || "",
+        item.status || "",
       ];
     } else {
       // Default: use all object values

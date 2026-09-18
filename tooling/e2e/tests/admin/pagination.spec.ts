@@ -88,3 +88,28 @@ test("switching to the events tab on /transactions resets to page 1 and paginate
     .poll(async () => page.locator("tbody tr").first().textContent(), { timeout: 10_000 })
     .not.toBe(firstRowTextBefore);
 });
+
+// Boosting/services/promotions were previously commented out of the tab bar
+// and hit PLAN_SUBSCRIPTION instead of their own routes — see
+// docs/ARCHITECTURE.md §22 Conflict 1 "Frontend adoption". Verifies the fix:
+// real, distinct data from each dedicated endpoint, not fixture rows.
+for (const tab of ["Boosting", "Services", "Promotions"]) {
+  test(`the ${tab} transactions tab renders real backend data, not the old static fixture`, async ({
+    page,
+  }) => {
+    const pageErrors: Error[] = [];
+    page.on("pageerror", (error) => pageErrors.push(error));
+
+    await page.goto("/transactions");
+    await page.locator("main p", { hasText: tab }).first().click();
+
+    // The old fixture rows always said "Global tech" / "BO12343" etc. — a
+    // real backend-driven row won't.
+    const row = page.locator("tbody tr").first();
+    await expect(row).toBeVisible({ timeout: 15_000 });
+    await expect(row).not.toContainText("Global tech");
+    await expect(row).not.toContainText("Unlocking business potentials");
+
+    expect(pageErrors, pageErrors.map((e) => e.message).join("\n")).toHaveLength(0);
+  });
+}

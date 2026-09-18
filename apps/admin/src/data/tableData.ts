@@ -149,136 +149,16 @@ export const walletData = [
   },
 ];
 
-export const boostingHeaders = [
-  "TXN ID",
-  "BUSINESS NAME",
-  "BOOST TYPE",
+// Shared by BoostingViews/ServiceViews/PromotionViews — all three list the
+// same PaymentTransactionResource shape from the backend (boost/service_request/
+// promotion `type` on the same `payments` table), so one header set covers all.
+export const paymentTransactionHeaders = [
+  "REFERENCE",
+  "USER",
   "AMOUNT",
-  "DURATION",
-  "DATE CREATED",
+  "PROVIDER",
+  "PAID AT",
   "STATUS",
-];
-export const boostingData = [
-  {
-    "TXN ID": "BO12343",
-    "BUSINESS NAME": "Global tech",
-    "BOOST TYPE": "Featured",
-    AMOUNT: "₦15,000",
-    DURATION: "30 days",
-    "DATE CREATED": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "BO12343",
-    "BUSINESS NAME": "Global tech",
-    "BOOST TYPE": "Featured",
-    AMOUNT: "₦7,000",
-    DURATION: "14 days",
-    "DATE CREATED": "23 Apr, 2024 09:45 PM",
-    STATUS: "Failed",
-  },
-  {
-    "TXN ID": "BO12343",
-    "BUSINESS NAME": "Global tech",
-    "BOOST TYPE": "Featured",
-    AMOUNT: "₦15,000",
-    DURATION: "30 days",
-    "DATE CREATED": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "BO12343",
-    "BUSINESS NAME": "Global tech",
-    "BOOST TYPE": "Featured",
-    AMOUNT: "₦3,500",
-    DURATION: "7 days",
-    "DATE CREATED": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "BO12343",
-    "BUSINESS NAME": "Global tech",
-    "BOOST TYPE": "Featured",
-    AMOUNT: "₦15,000",
-    DURATION: "30 days",
-    "DATE CREATED": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "BO12343",
-    "BUSINESS NAME": "Global tech",
-    "BOOST TYPE": "Featured",
-    AMOUNT: "₦500",
-    DURATION: "1 day",
-    "DATE CREATED": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-];
-
-export const servicesHeaders = [
-  "TXN ID",
-  "BUSINESS NAME",
-  "CLIENT NAME",
-  "AMOUNT",
-  "TRANSACTION TYPE",
-  "START DATE",
-  "STATUS",
-];
-export const servicesData = [
-  {
-    "TXN ID": "SE12343",
-    "BUSINESS NAME": "Global tech",
-    "CLIENT NAME": "Chidozie Okoli",
-    AMOUNT: "₦30,000",
-    "TRANSACTION TYPE": "Pay out",
-    "START DATE": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "SE12343",
-    "BUSINESS NAME": "Global tech",
-    "CLIENT NAME": "Chidozie Okoli",
-    AMOUNT: "₦30,000",
-    "TRANSACTION TYPE": "Service payment",
-    "START DATE": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "SE12343",
-    "BUSINESS NAME": "Global tech",
-    "CLIENT NAME": "Chidozie Okoli",
-    AMOUNT: "₦30,000",
-    "TRANSACTION TYPE": "Pay out",
-    "START DATE": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "SE12343",
-    "BUSINESS NAME": "Global tech",
-    "CLIENT NAME": "Chidozie Okoli",
-    AMOUNT: "₦30,000",
-    "TRANSACTION TYPE": "Service payment",
-    "START DATE": "23 Apr, 2024 09:45 PM",
-    STATUS: "Failed",
-  },
-  {
-    "TXN ID": "SE12343",
-    "BUSINESS NAME": "Global tech",
-    "CLIENT NAME": "Chidozie Okoli",
-    AMOUNT: "₦30,000",
-    "TRANSACTION TYPE": "Service payment",
-    "START DATE": "23 Apr, 2024 09:45 PM",
-    STATUS: "Failed",
-  },
-  {
-    "TXN ID": "SE12343",
-    "BUSINESS NAME": "Global tech",
-    "CLIENT NAME": "Chidozie Okoli",
-    AMOUNT: "₦30,000",
-    "TRANSACTION TYPE": "Pay out",
-    "START DATE": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
 ];
 
 export const eventsHeaders = [
@@ -342,65 +222,6 @@ export const eventsData = [
     "ORGANIZER NAME": "Chidozie Okoli",
     AMOUNT: "₦30,000",
     "TICKETS SOLD": "3000",
-    "DATE PAID": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-];
-
-export const promotionsHeaders = [
-  "TXN ID",
-  "EVENT NAME",
-  "PROMOTION NAME",
-  "AMOUNT",
-  "DATE PAID",
-  "STATUS",
-];
-export const promotionsData = [
-  {
-    "TXN ID": "PR12343",
-    "EVENT NAME": "Unlocking business potentials",
-    "PROMOTION NAME": "Instagram Feed Post",
-    AMOUNT: "₦30,000",
-    "DATE PAID": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "PR12343",
-    "EVENT NAME": "Unlocking business potentials",
-    "PROMOTION NAME": "Instagram Feed Post",
-    AMOUNT: "₦30,000",
-    "DATE PAID": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "PR12343",
-    "EVENT NAME": "Unlocking business potentials",
-    "PROMOTION NAME": "Instagram Feed Post",
-    AMOUNT: "₦30,000",
-    "DATE PAID": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "PR12343",
-    "EVENT NAME": "Unlocking business potentials",
-    "PROMOTION NAME": "Instagram Feed Post",
-    AMOUNT: "₦30,000",
-    "DATE PAID": "23 Apr, 2024 09:45 PM",
-    STATUS: "Failed",
-  },
-  {
-    "TXN ID": "PR12343",
-    "EVENT NAME": "Unlocking business potentials",
-    "PROMOTION NAME": "Instagram Feed Post",
-    AMOUNT: "₦30,000",
-    "DATE PAID": "23 Apr, 2024 09:45 PM",
-    STATUS: "Successful",
-  },
-  {
-    "TXN ID": "PR12343",
-    "EVENT NAME": "Unlocking business potentials",
-    "PROMOTION NAME": "Instagram Feed Post",
-    AMOUNT: "₦30,000",
     "DATE PAID": "23 Apr, 2024 09:45 PM",
     STATUS: "Successful",
   },
