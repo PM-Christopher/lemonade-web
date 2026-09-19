@@ -2420,7 +2420,7 @@ lands, extending `collect.url` in `lighthouserc.frontend.json` is the only chang
 opt-in `?page=` pagination to the seven largest unbounded admin lists, and admin's query hooks
 (users, reporting, all six transaction tabs, wallet-management) were wired to it.
 
-### Phase 7 — Design system **[SHOULD]** **[MOSTLY DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, token contrast audited (2 real findings, need a design decision); only the full custom-modal-to-Dialog migration remains]**
+### Phase 7 — Design system **[SHOULD]** **[DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, modal→Dialog migration complete (59 files, both apps); token contrast has 2 real findings that need a design decision, not an implementation gap]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -2571,10 +2571,60 @@ category), `apps/frontend/.../BankAccountModal.tsx` (bank name), `apps/frontend/
 `DialogTitle` at all (Radix requires one), but it's dead code — never imported anywhere in either app — so
 left it alone rather than fixing a component nothing renders.
 
-Deliberately not attempted in this pass: most "modals" in both apps are hand-built `<div>`s, not the
-`Dialog` primitive, so they don't get Radix's focus trap, Escape-to-close, or `aria-modal` semantics for
-free — migrating them is a real, large, one-component-at-a-time effort (dozens of files), not a
-mechanical fix, and not something verifiable without a browser in this environment.
+**Modal → Dialog migration — done, all 59 real modal files across both apps.** The gap flagged above is
+closed: every hand-built overlay `<div>` (the `fixed inset-0 ... bg-opacity-* ${isOpen ? "flex" :
+"hidden"}` pattern, or an `if (!isOpen) return null` variant of it) now renders through
+`@lemonade/ui`'s `Dialog`, giving every one of these modals Radix's focus trap, Escape-to-close, overlay-
+click-to-close, and `aria-modal` semantics for free — none of that was hand-rolled before. `Dialog` itself
+was lifted into `@lemonade/ui` from frontend's local `components/ui/dialog.tsx` (admin had no Dialog
+primitive at all, despite already listing `@radix-ui/react-dialog` as an unused dependency) — same
+"diff and reconcile, then delete the app-local copy" pattern as every other primitive this phase lifted.
+Added `DialogContentBare` alongside the standard `DialogContent`: identical positioning/overlay/animation/
+focus-trap machinery, minus the built-in close button, specifically for wrapping a legacy panel that
+already renders its own close icon — using `DialogContent` here would have produced two overlapping close
+buttons on every single one of these 59 files.
+
+The conversion is mechanical and uniform: the outer overlay div becomes `<Dialog open={isOpen}
+onOpenChange={...}>`, a `<DialogTitle className="sr-only">` is added (Radix requires one; every one of
+these modals already had a visible heading to source the text from, so this is invisible — screen-reader
+accessibility, not a visual change) as the *first child of* `DialogContentBare` (getting this nesting
+wrong — putting `DialogTitle` as a sibling of `DialogContentBare` instead of inside it — was a mistake
+this pass caught and fixed itself: since `DialogTitle` wasn't gated by the Portal's own open/closed
+mounting, every closed dialog's sr-only title was rendering into the DOM unconditionally, and the open
+dialog's real `aria-labelledby` wiring never pointed at it; caught via a real Playwright accessibility-tree
+snapshot showing three simultaneous "dialog" headings on a page with zero dialogs open, not by inspection),
+and the original panel div — width, background, padding, its own close icon, all business logic — is kept
+completely unchanged as `DialogContentBare`'s child. `DialogContentBare` itself is neutralized to
+`w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none` so it contributes no visible box of its
+own; the untouched original panel supplies 100% of the visual styling, same as before.
+
+Done as 4 parallel forks (one per subdirectory grouping, ~16 files each) given a precise written recipe,
+followed by a manual verification pass over the combined result: re-typechecked/linted/built both apps,
+diffed every file against the recipe to confirm no unrelated changes leaked in, and fixed the DialogTitle-
+nesting bug described above across all 43 affected files with a small script once found (the other 16, one
+fork's own batch, had already nested it correctly). One file — `events/Modals/GuestDetailsModal.tsx` — was
+correctly flagged and skipped by its fork rather than force-converted: it's a right-edge sliding drawer
+(`translate-x-0`/`translate-x-full`), not a centered dialog, with an always-mounted content div and a
+separate conditional backdrop sibling — a real structural difference, not just a style variant. Converted
+by hand afterward using the same right-anchored `DialogContentBare` override three of admin's
+wallet-management history panels (also drawers, not centered dialogs) already needed.
+
+Live-verified with real Playwright runs, not just typecheck/build — `tooling/e2e/tests/{admin,frontend}/modal-migration.spec.ts`: a lazy-loaded (`next/dynamic`, `ssr:false`) admin modal opens from its real
+trigger and Escape actually closes it (Radix's own behavior now, not hand-rolled); the admin withdrawal-
+threshold modal (the right-anchored-panel-adjacent standard case) does the same; and frontend's
+`CreateTribeModal` — which uses non-standard prop names (`modalFlag`/`activateModal`, not `isOpen`/
+`toggle`) — proves the conversion handled that deviation correctly too, not just the common case. Full
+existing e2e suite re-run after: 34 passing, 2 flaky-but-recovered (frontend detail-navigation's own
+pre-existing, already-documented single-retry flakiness, unrelated to this change).
+
+**One pre-existing bug found, not fixed, while writing the admin e2e test**: `apps/admin`'s
+`/users/[id]` page renders an `<Image>` with an empty-string `src` somewhere reachable from its default
+tab, which Next dev's error overlay surfaces as a full-screen blocking panel over the whole page —
+confirmed via a real console-message listener (77 occurrences on that one page load), confirmed unrelated
+to this migration (it fires before any tab is even clicked), and confirmed *not* present on `/wallet-
+management`, `/events/[id]`, or `/events/add-promotions` (checked each directly rather than assumed).
+Root cause not tracked down — out of scope for a modal migration — but real, and worth a look next time
+that page is touched.
 
 **Contrast audit — done for the design system's own tokens, not every call site.** A palette-wide script
 checking every `text`/`bg` pairing actually used together across ~4,000 className strings would need to
