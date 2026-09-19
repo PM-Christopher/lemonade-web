@@ -10,7 +10,7 @@ import "server-only";
 // the same shape.
 import { cookies } from "next/headers";
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
-import { userAuthRoutes } from "@lemonade/api-types";
+import { userAuthRoutes } from "@lemonade/api-types/generated";
 import { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE } from "@/lib/cookie-names";
 import { serverEnv } from "@/lib/env.server";
 

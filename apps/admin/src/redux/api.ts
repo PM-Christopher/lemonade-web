@@ -7,11 +7,11 @@
 // reachable under any real route). Real route confirmed against the
 // Postman-derived route list: POST /v1/shared/utilities/verify-account.
 import { axiosInstance } from "@/lib/axiosInstane";
-import { sharedUtilityRoutes } from "@lemonade/api-types";
+import { sharedUtilitiesRoutes } from "@lemonade/api-types/generated";
 
 export const generalApi = {
   verifyAccount: (bankCode: string, accountNumber: string) =>
-    axiosInstance.post(sharedUtilityRoutes.VERIFY_ACCOUNT, {
+    axiosInstance.post(sharedUtilitiesRoutes.VERIFY_ACCOUNT, {
       bank_code: bankCode,
       account_number: accountNumber,
     }),

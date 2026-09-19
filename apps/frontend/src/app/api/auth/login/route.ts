@@ -12,7 +12,7 @@
 // treatment to the real one.
 import { NextResponse } from "next/server";
 import { ApiError } from "@lemonade/api-client";
-import { userAuthRoutes } from "@lemonade/api-types";
+import { userAuthRoutes } from "@lemonade/api-types/generated";
 import { backendApi, persistUserSession } from "@/lib/server-api";
 
 interface LoginUser {

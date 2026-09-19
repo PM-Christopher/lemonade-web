@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminAuthRoutes } from "@lemonade/api-types";
+import { adminAuthRoutes } from "@lemonade/api-types/generated";
 import { backendApi, clearAdminSession } from "@/lib/server-api";
 
 // POST /v1/admin/auth/logout now exists and revokes every token belonging

@@ -9,7 +9,7 @@
 // the httpOnly session cookie.
 import { NextResponse } from "next/server";
 import { ApiError } from "@lemonade/api-client";
-import { adminAuthRoutes } from "@lemonade/api-types";
+import { adminAuthRoutes } from "@lemonade/api-types/generated";
 import { backendApi, persistAdminSession } from "@/lib/server-api";
 
 interface LoginAdmin {
