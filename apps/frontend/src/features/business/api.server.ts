@@ -3,7 +3,7 @@
 // convention as features/events/api.server.ts.
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { userBusinessRoutes } from "@lemonade/api-types";
+import { userBusinessRoutes, userListingRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   BusinessDetailResponse,
   BusinessListResponse,
@@ -13,18 +13,16 @@ import type {
 
 export const businessServerApi = {
   getBusiness: (id: number | string) =>
-    backendApi.get<BusinessDetailResponse>(`${userBusinessRoutes.BASE}/${id}`),
+    backendApi.get<BusinessDetailResponse>(buildPath(userBusinessRoutes.SHOW, { id })),
 
   getBusinesses: () =>
-    backendApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
+    backendApi.get<BusinessListResponse>(userBusinessRoutes.LIST),
 
   getBoostPackages: () =>
-    backendApi.get<BoostPackagesResponse>(
-      `${userBusinessRoutes.LISTING}/boosts`,
-    ),
+    backendApi.get<BoostPackagesResponse>(userListingRoutes.BOOSTS),
 
   getBusinessJobData: (id: number | string) =>
     backendApi.get<JobsDataResponse>(
-      `${userBusinessRoutes.LISTING}/${id}/job-data`,
+      buildPath(userListingRoutes.JOB_DATA, { id }),
     ),
 };

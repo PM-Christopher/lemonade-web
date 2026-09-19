@@ -3,9 +3,9 @@
 // convention as features/events/api.server.ts.
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { userSettingsRoutes } from "@lemonade/api-types";
+import { userProfileRoutes } from "@lemonade/api-types/generated";
 import type { WalletSettings } from "./api";
 
 export const settingsServerApi = {
-  getWallet: () => backendApi.get<WalletSettings>(userSettingsRoutes.WALLET),
+  getWallet: () => backendApi.get<WalletSettings>(userProfileRoutes.WALLET_SHOW),
 };

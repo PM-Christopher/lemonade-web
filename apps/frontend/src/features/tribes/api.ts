@@ -14,7 +14,12 @@
 // same "dead code, dropped rather than migrated" rule as business's
 // getListing.
 import { browserApi } from "@/lib/browser-api";
-import { userTribeRoutes, sharedUtilityRoutes } from "@lemonade/api-types";
+import {
+  userTribesRoutes,
+  userThreadsRoutes,
+  sharedUtilitiesRoutes,
+  buildPath,
+} from "@lemonade/api-types/generated";
 import { sharedApi } from "@/features/shared";
 import type { TribeInterface, Thread, ThreadComment } from "@/interfaces/TribeInterface";
 
@@ -140,22 +145,23 @@ export interface TribeCategoriesResponse {
 
 export const tribesApi = {
   getTribes: (tribeType: string) =>
-    browserApi.get<TribesListResponse>(`${userTribeRoutes.BASE}?type=${tribeType}`),
+    browserApi.get<TribesListResponse>(`${userTribesRoutes.LIST}?type=${tribeType}`),
 
-  getTribe: (id: string) => browserApi.get<TribeDetailResponse>(`${userTribeRoutes.BASE}/${id}`),
+  getTribe: (id: string) =>
+    browserApi.get<TribeDetailResponse>(buildPath(userTribesRoutes.SHOW, { id })),
 
   joinTribe: (id: string, data: { redirect_url?: string | null }) =>
-    browserApi.post<JoinTribeResponse>(`${userTribeRoutes.BASE}/join-tribe/${id}`, data),
+    browserApi.post<JoinTribeResponse>(buildPath(userTribesRoutes.JOIN, { id }), data),
 
   createThread: (id: number | string, data: CreateThreadPayload) =>
     browserApi.post<CreateThreadResponse>(
-      `${userTribeRoutes.BASE}/${id}/threads/create-thread`,
+      buildPath(userTribesRoutes.THREADS_CREATE, { forum: id }),
       data,
     ),
 
   likeThread: (tribeId: number | string, id: number | string) =>
     browserApi.post<LikeThreadResponse>(
-      `${userTribeRoutes.THREADS_PINNED}/${tribeId}/${id}/post-like`,
+      buildPath(userThreadsRoutes.POST_LIKE, { tribe_id: tribeId, id }),
       {},
     ),
 
@@ -166,53 +172,60 @@ export const tribesApi = {
     data: SubmitVotePayload,
   ) =>
     browserApi.post<SubmitVoteResponse>(
-      `${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/${pollId}/poll-action`,
+      buildPath(userThreadsRoutes.POLL_ACTION, {
+        tribe_id: tribeId,
+        thread_id: threadId,
+        poll_id: pollId,
+      }),
       data,
     ),
 
   getThreads: (id: string) =>
-    browserApi.get<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/all`),
+    browserApi.get<ThreadsResponse>(buildPath(userTribesRoutes.THREADS_LIST, { forum: id })),
 
   filterThreads: (id: number | string, data: { filter: string }) =>
-    browserApi.post<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/sort-thread`, data),
+    browserApi.post<ThreadsResponse>(
+      buildPath(userTribesRoutes.THREADS_SORT, { forum: id }),
+      data,
+    ),
 
   viewProfile: (id: number | string) =>
-    browserApi.get<ViewProfileResponse>(`${userTribeRoutes.THREADS_VIEW_PROFILE}/${id}`),
+    browserApi.get<ViewProfileResponse>(buildPath(userThreadsRoutes.VIEW_PROFILE, { id })),
 
   pinThread: (id: number | string) =>
-    browserApi.post<PinThreadResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pin-thread`, {}),
+    browserApi.post<PinThreadResponse>(buildPath(userThreadsRoutes.PIN, { id }), {}),
 
   getPinThreads: (id: string) =>
-    browserApi.get<ThreadsResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pinned`),
+    browserApi.get<ThreadsResponse>(buildPath(userThreadsRoutes.PINNED, { id })),
 
   reportThread: (id: number | string, data: ReportThreadPayload) =>
     browserApi.post<{ report: unknown }>(
-      `${userTribeRoutes.THREADS_PINNED}/${id}/report-thread`,
+      buildPath(userThreadsRoutes.REPORT, { id }),
       data,
     ),
 
   deleteThread: (id: number | string) =>
     browserApi.delete<DeleteThreadResponse>(
-      `${userTribeRoutes.THREADS_PINNED}/${id}/delete-thread`,
+      buildPath(userThreadsRoutes.DELETE, { id }),
     ),
 
   searchTribe: (data: { search: string }) =>
-    browserApi.post<SearchTribeResponse>(userTribeRoutes.SEARCH, data),
+    browserApi.post<SearchTribeResponse>(userTribesRoutes.SEARCH, data),
 
   addTribeMember: (id: string, data: AddTribeMemberPayload) =>
-    browserApi.post<AddTribeMemberResponse>(`${userTribeRoutes.BASE}/add-member/${id}`, data),
+    browserApi.post<AddTribeMemberResponse>(buildPath(userTribesRoutes.ADD_MEMBER, { id }), data),
 
   postComment: (tribeId: number | string, threadId: number | string, data: PostCommentPayload) =>
     browserApi.post<PostCommentResponse>(
-      `${userTribeRoutes.THREADS_PINNED}/${tribeId}/${threadId}/post-comment`,
+      buildPath(userThreadsRoutes.POST_COMMENT, { tribe_id: tribeId, id: threadId }),
       data,
     ),
 
   createTribe: (values: CreateTribePayload) =>
-    browserApi.post<CreateTribeResponse>(userTribeRoutes.CREATE, values),
+    browserApi.post<CreateTribeResponse>(userTribesRoutes.CREATE, values),
 
   getTribeCategories: () =>
-    browserApi.get<TribeCategoriesResponse>(sharedUtilityRoutes.TRIBES_CATEGORIES),
+    browserApi.get<TribeCategoriesResponse>(sharedUtilitiesRoutes.TRIBES_CATEGORIES),
 
   upload: (formData: FormData) => sharedApi.uploadFile(formData),
   uploadMultiple: (formData: FormData) => sharedApi.uploadMultipleFiles(formData),

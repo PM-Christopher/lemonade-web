@@ -4,7 +4,7 @@
 // instead of browserApi (BFF-proxy, client-only).
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { userDashboardRoutes } from "@lemonade/api-types";
+import { userDashboardRoutes } from "@lemonade/api-types/generated";
 import type {
   DashboardTribesResponse,
   DashboardEventsResponse,

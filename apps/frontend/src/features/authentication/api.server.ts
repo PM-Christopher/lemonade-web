@@ -5,9 +5,9 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
 import {
-  userSettingsRoutes,
+  userProfileRoutes,
   userSubscriptionRoutes,
-} from "@lemonade/api-types";
+} from "@lemonade/api-types/generated";
 import type {
   AppSettingsResponse,
   SubscriptionResponse,
@@ -17,17 +17,17 @@ import type {
 export const authServerApi = {
   getNotificationSettings: () =>
     backendApi.get<AppSettingsResponse>(
-      userSettingsRoutes.NOTIFICATION_SETTINGS,
+      userProfileRoutes.NOTIFICATION_SETTINGS_SHOW,
     ),
 
   getSubscription: () =>
-    backendApi.get<SubscriptionResponse>(userSettingsRoutes.SUBSCRIPTION),
+    backendApi.get<SubscriptionResponse>(userProfileRoutes.SUBSCRIPTION_SHOW),
 
   getBillingHistory: () =>
     backendApi.get<BillingHistoryResponse>(
-      `${userSettingsRoutes.SUBSCRIPTION}/billing-history`,
+      userProfileRoutes.SUBSCRIPTION_BILLING_HISTORY,
     ),
 
   getSubscriptionPlans: () =>
-    backendApi.get<{ subscriptions: unknown[] }>(userSubscriptionRoutes.BASE),
+    backendApi.get<{ subscriptions: unknown[] }>(userSubscriptionRoutes.LIST),
 };

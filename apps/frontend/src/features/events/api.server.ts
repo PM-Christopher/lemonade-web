@@ -10,7 +10,7 @@
 // actually prefetched (not a wholesale server-side mirror of api.ts).
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { userEventRoutes } from "@lemonade/api-types";
+import { userEventsRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   EventDetailResponse,
   GuestListResponse,
@@ -23,31 +23,31 @@ import type {
 
 export const eventsServerApi = {
   getEvent: (id: number | string) =>
-    backendApi.get<EventDetailResponse>(`${userEventRoutes.BASE}/${id}`),
+    backendApi.get<EventDetailResponse>(buildPath(userEventsRoutes.SHOW, { id })),
 
   getEvents: () =>
-    backendApi.get<EventsListResponse>(userEventRoutes.ATTENDEES),
+    backendApi.get<EventsListResponse>(userEventsRoutes.ATTENDEES_LIST),
 
   getGuestList: (id: number | string) =>
     backendApi.get<GuestListResponse>(
-      `${userEventRoutes.BASE}/${id}/guest-list`,
+      buildPath(userEventsRoutes.GUEST_LIST, { id }),
     ),
 
   getAffiliateEvent: (id: number | string) =>
     backendApi.get<AffiliateEventDetailResponse>(
-      `${userEventRoutes.AFFILIATE}/${id}`,
+      buildPath(userEventsRoutes.AFFILIATE_SHOW, { id }),
     ),
 
   getEventTicketData: (id: number | string) =>
     backendApi.get<EventTicketDataResponse>(
-      `${userEventRoutes.ATTENDEES}/${id}/tickets`,
+      buildPath(userEventsRoutes.ATTENDEES_TICKETS, { id }),
     ),
 
   getEventTickets: (id: number | string) =>
     backendApi.get<EventTicketsResponse>(
-      `${userEventRoutes.BASE}/${id}/event-tickets`,
+      buildPath(userEventsRoutes.EVENT_TICKETS, { id }),
     ),
 
   getPromotions: () =>
-    backendApi.get<PromotionsResponse>(userEventRoutes.PROMOTIONS),
+    backendApi.get<PromotionsResponse>(userEventsRoutes.PROMOTIONS),
 };

@@ -2,7 +2,7 @@
 // features/settings/api.ts for the pattern this follows: the BFF proxy
 // transport (browserApi), not the pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
-import { userConnectRoutes } from "@lemonade/api-types";
+import { userConnectRoutes, userMessagesRoutes, buildPath } from "@lemonade/api-types/generated";
 import { sharedApi } from "@/features/shared";
 import type { ChatInterface, MessageInterface } from "@/interfaces/ChatInterface";
 
@@ -110,19 +110,19 @@ export interface UpdateVisibilityResponse {
 
 export const connectApi = {
   getChat: (receiverId: number) =>
-    browserApi.get<ChatDetailResponse>(`${userConnectRoutes.MESSAGES}/chat`, {
+    browserApi.get<ChatDetailResponse>(userMessagesRoutes.CHAT, {
       params: { receiver_id: receiverId },
     }),
 
   sendChat: (receiverId: number | null, message: string | null, media: string[]) =>
     browserApi.post<SendChatResponse>(
-      userConnectRoutes.MESSAGES,
+      userMessagesRoutes.SEND,
       { message, media },
       { params: { receiver_id: receiverId } },
     ),
 
   inviteResponse: (id: number, option: "accepted" | "rejected") =>
-    browserApi.post<InviteResponseResult>(`${userConnectRoutes.BASE}/invite-response/${id}`, {
+    browserApi.post<InviteResponseResult>(buildPath(userConnectRoutes.INVITES_RESPOND, { id }), {
       option,
     }),
 
@@ -130,13 +130,13 @@ export const connectApi = {
     browserApi.get<FoundUser[]>(userConnectRoutes.FIND_USER, { params: { search } }),
 
   sendInvite: (data: SendInvitePayload) =>
-    browserApi.post<SendInviteResponse>(userConnectRoutes.SEND_INVITE, data),
+    browserApi.post<SendInviteResponse>(userConnectRoutes.INVITES_SEND, data),
 
-  getInvites: () => browserApi.get<InvitesResponse>(userConnectRoutes.GET_INVITES),
+  getInvites: () => browserApi.get<InvitesResponse>(userConnectRoutes.INVITES_LIST),
 
-  getConnection: () => browserApi.get<ConnectionInfo>(userConnectRoutes.BASE),
+  getConnection: () => browserApi.get<ConnectionInfo>(userConnectRoutes.INDEX),
 
-  getMessages: () => browserApi.get<ChatHistoryResponse>(userConnectRoutes.MESSAGES),
+  getMessages: () => browserApi.get<ChatHistoryResponse>(userMessagesRoutes.HISTORY),
 
   updateVisibility: (visible: boolean) =>
     browserApi.patch<UpdateVisibilityResponse>(userConnectRoutes.UPDATE_VISIBILITY, {

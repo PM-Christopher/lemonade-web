@@ -9,7 +9,7 @@
 // BankAccountModal.tsx, components/events/Modals/BankAccountModal.tsx) now
 // use features/shared/queries.ts's useBanksQuery.
 import { browserApi } from "@/lib/browser-api";
-import { userTransactionRoutes } from "@lemonade/api-types";
+import { userTransactionRoutes } from "@lemonade/api-types/generated";
 
 export interface VerifyTransactionPayload {
   trx_ref: string;

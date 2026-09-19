@@ -10,9 +10,10 @@
 //     proxy), same as every other authenticated read.
 import { browserApi } from "@/lib/browser-api";
 import {
-  userSettingsRoutes,
+  userProfileRoutes,
   userSubscriptionRoutes,
-} from "@lemonade/api-types";
+  buildPath,
+} from "@lemonade/api-types/generated";
 
 export interface CurrentUser {
   id: string | number;
@@ -208,7 +209,7 @@ export const authApi = {
   login: (payload: LoginPayload) =>
     postJson<LoginResult>("/api/auth/login", payload),
   logout: () => postJson<void>("/api/auth/logout"),
-  getCurrentUser: () => browserApi.get<CurrentUser>(userSettingsRoutes.PROFILE),
+  getCurrentUser: () => browserApi.get<CurrentUser>(userProfileRoutes.SHOW),
 
   // Post-signup email verification — the "verify-email" page's flow.
   verifyAccountOtp: (data: VerifyOtpPayload) =>
@@ -268,26 +269,26 @@ export const authApi = {
 
   getNotificationSettings: () =>
     browserApi.get<AppSettingsResponse>(
-      userSettingsRoutes.NOTIFICATION_SETTINGS,
+      userProfileRoutes.NOTIFICATION_SETTINGS_SHOW,
     ),
 
   updateNotificationSettings: (data: NotificationSettingsPayload) =>
     browserApi.patch<{ app_settings: unknown }>(
-      `${userSettingsRoutes.NOTIFICATION_SETTINGS}/update-all-notification`,
+      userProfileRoutes.NOTIFICATION_SETTINGS_UPDATE_ALL_NOTIFICATION,
       data,
     ),
 
   getSubscription: () =>
-    browserApi.get<SubscriptionResponse>(userSettingsRoutes.SUBSCRIPTION),
+    browserApi.get<SubscriptionResponse>(userProfileRoutes.SUBSCRIPTION_SHOW),
 
   getBillingHistory: () =>
     browserApi.get<BillingHistoryResponse>(
-      `${userSettingsRoutes.SUBSCRIPTION}/billing-history`,
+      userProfileRoutes.SUBSCRIPTION_BILLING_HISTORY,
     ),
 
   changePlan: (data: ChangePlanPayload) =>
     browserApi.post<ChangePlanResult>(
-      `${userSettingsRoutes.SUBSCRIPTION}/change-plan`,
+      userProfileRoutes.SUBSCRIPTION_CHANGE_PLAN,
       data,
     ),
 
@@ -300,14 +301,14 @@ export const authApi = {
   // vs-array mismatch it looks like at first glance.
   getSubscriptionPlan: (id: number | string) =>
     browserApi.get<{ subscription: SubscriptionDetail }>(
-      `${userSubscriptionRoutes.BASE}/${id}`,
+      buildPath(userSubscriptionRoutes.SHOW, { id }),
     ),
 
   // The public plan catalog (settings/plan/page.tsx) — loosely typed, same
   // as PricingCard.tsx's own `subscription: any` prop, since the resource
   // isn't otherwise modeled here.
   getSubscriptionPlans: () =>
-    browserApi.get<{ subscriptions: unknown[] }>(userSubscriptionRoutes.BASE),
+    browserApi.get<{ subscriptions: unknown[] }>(userSubscriptionRoutes.LIST),
 };
 
 export interface SubscriptionDetail {

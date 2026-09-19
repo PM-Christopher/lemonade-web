@@ -4,12 +4,12 @@
 // instead of browserApi (BFF-proxy, client-only).
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { sharedUtilityRoutes } from "@lemonade/api-types";
+import { sharedUtilitiesRoutes } from "@lemonade/api-types/generated";
 import type { BusinessCategoriesResponse } from "./api";
 
 export const sharedServerApi = {
   getBusinessCategories: () =>
     backendApi.get<BusinessCategoriesResponse>(
-      sharedUtilityRoutes.BUSINESS_CATEGORIES,
+      sharedUtilitiesRoutes.BUSINESS_CATEGORIES,
     ),
 };

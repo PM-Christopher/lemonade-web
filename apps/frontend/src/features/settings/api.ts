@@ -15,7 +15,7 @@
 // individual profile-field edits) is still on the legacy useRequest hook or
 // untouched — tracked as its own follow-up.
 import { browserApi } from "@/lib/browser-api";
-import { userSettingsRoutes } from "@lemonade/api-types";
+import { userProfileRoutes } from "@lemonade/api-types/generated";
 
 export interface UserProfile {
   id: number;
@@ -108,19 +108,19 @@ export interface CreateBankAccountResponse {
 }
 
 export const settingsApi = {
-  getUserProfile: () => browserApi.get<UserProfile>(userSettingsRoutes.PROFILE),
+  getUserProfile: () => browserApi.get<UserProfile>(userProfileRoutes.SHOW),
 
-  getWallet: () => browserApi.get<WalletSettings>(userSettingsRoutes.WALLET),
+  getWallet: () => browserApi.get<WalletSettings>(userProfileRoutes.WALLET_SHOW),
 
   requestPayout: (data: RequestPayoutPayload) =>
     browserApi.post<RequestPayoutResponse>(
-      userSettingsRoutes.REQUEST_PAYOUT,
+      userProfileRoutes.WALLET_REQUEST_PAYOUT,
       data,
     ),
 
   createBankAccount: (data: CreateBankAccountPayload) =>
     browserApi.post<CreateBankAccountResponse>(
-      userSettingsRoutes.BANK_ACCOUNT_CREATE,
+      userProfileRoutes.BANK_ACCOUNT_CREATE,
       data,
     ),
 };

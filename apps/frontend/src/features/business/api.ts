@@ -23,7 +23,7 @@
 // transport migration should silently paper over by guessing which side is
 // "right". See docs/ARCHITECTURE.md's Phase 5 status for the full note.
 import { browserApi } from "@/lib/browser-api";
-import { userBusinessRoutes } from "@lemonade/api-types";
+import { userBusinessRoutes, userListingRoutes, buildPath } from "@lemonade/api-types/generated";
 import type { BusinessInterface } from "@/interfaces/BusinessInterface";
 
 export interface BusinessListResponse {
@@ -132,46 +132,44 @@ export interface BoostPackagesResponse {
 
 export const businessApi = {
   getListings: () =>
-    browserApi.get<ListingsResponse>(userBusinessRoutes.LISTING),
+    browserApi.get<ListingsResponse>(userListingRoutes.LIST),
 
   createListing: (values: CreateOrUpdateBusinessPayload) =>
-    browserApi.post<BusinessDetailResponse>(userBusinessRoutes.LISTING, values),
+    browserApi.post<BusinessDetailResponse>(userListingRoutes.CREATE, values),
 
   updateListing: (id: number | string, values: CreateOrUpdateBusinessPayload) =>
     browserApi.patch<BusinessDetailResponse>(
-      `${userBusinessRoutes.LISTING}/${id}`,
+      buildPath(userListingRoutes.UPDATE, { id }),
       values,
     ),
 
   boostListing: (id: number | string, data: BoostBusinessPayload) =>
     browserApi.post<BoostBusinessResponse>(
-      `${userBusinessRoutes.LISTING}/boost-business/${id}`,
+      buildPath(userListingRoutes.BOOST, { id }),
       data,
     ),
 
   getJobsData: () =>
-    browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_ALL),
+    browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_LIST),
 
   // Same shape as getJobsData, scoped to one owned business listing.
   getBusinessJobData: (id: number | string) =>
     browserApi.get<JobsDataResponse>(
-      `${userBusinessRoutes.LISTING}/${id}/job-data`,
+      buildPath(userListingRoutes.JOB_DATA, { id }),
     ),
 
   getBoostPackages: () =>
-    browserApi.get<BoostPackagesResponse>(
-      `${userBusinessRoutes.LISTING}/boosts`,
-    ),
+    browserApi.get<BoostPackagesResponse>(userListingRoutes.BOOSTS),
 
   getBusinesses: () =>
-    browserApi.get<BusinessListResponse>(userBusinessRoutes.BASE),
+    browserApi.get<BusinessListResponse>(userBusinessRoutes.LIST),
 
   getBusiness: (id: number | string) =>
-    browserApi.get<BusinessDetailResponse>(`${userBusinessRoutes.BASE}/${id}`),
+    browserApi.get<BusinessDetailResponse>(buildPath(userBusinessRoutes.SHOW, { id })),
 
   requestService: (id: number, data: unknown) =>
     browserApi.post<RequestServiceResponse>(
-      `${userBusinessRoutes.BASE}/${id}/request-service`,
+      buildPath(userBusinessRoutes.REQUEST_SERVICE, { id }),
       data,
     ),
 
@@ -194,29 +192,29 @@ export const businessApi = {
 
   markJobRequest: (id: number, data: unknown) =>
     browserApi.post<MarkJobRequestResponse>(
-      `${userBusinessRoutes.LISTING}/jobs/${id}/mark-job`,
+      buildPath(userListingRoutes.JOBS_MARK, { id }),
       data,
     ),
 
   requestJobPayment: (id: number) =>
     browserApi.patch<RequestJobPaymentResponse>(
-      `${userBusinessRoutes.LISTING}/jobs/${id}/request-payment`,
+      buildPath(userListingRoutes.JOBS_REQUEST_PAYMENT, { id }),
     ),
 
   makeJobPayment: (id: number, data: unknown) =>
     browserApi.post<MakeJobPaymentResponse>(
-      `${userBusinessRoutes.BASE}/jobs/${id}/pay`,
+      buildPath(userBusinessRoutes.JOBS_PAY, { id }),
       data,
     ),
 
   markJobCompleted: (id: number) =>
     browserApi.post<MarkJobCompletedResponse>(
-      `${userBusinessRoutes.BASE}/jobs/${id}/mark-completed`,
+      buildPath(userBusinessRoutes.JOBS_MARK_COMPLETED, { id }),
     ),
 
   disputeJob: (id: number, data: unknown) =>
     browserApi.post<DisputeJobResponse>(
-      `${userBusinessRoutes.BASE}/jobs/${id}/dispute`,
+      buildPath(userBusinessRoutes.JOBS_DISPUTE, { id }),
       data,
     ),
 };

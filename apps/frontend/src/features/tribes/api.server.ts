@@ -5,18 +5,18 @@
 // Component is already running server-side.
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { userTribeRoutes } from "@lemonade/api-types";
+import { userTribesRoutes, userThreadsRoutes, buildPath } from "@lemonade/api-types/generated";
 import type { TribeDetailResponse, ThreadsResponse, TribesListResponse } from "./api";
 
 export const tribesServerApi = {
-  getTribe: (id: string) => backendApi.get<TribeDetailResponse>(`${userTribeRoutes.BASE}/${id}`),
+  getTribe: (id: string) => backendApi.get<TribeDetailResponse>(buildPath(userTribesRoutes.SHOW, { id })),
 
   getTribes: (tribeType: string) =>
-    backendApi.get<TribesListResponse>(`${userTribeRoutes.BASE}?type=${tribeType}`),
+    backendApi.get<TribesListResponse>(`${userTribesRoutes.LIST}?type=${tribeType}`),
 
   getThreads: (id: string) =>
-    backendApi.get<ThreadsResponse>(`${userTribeRoutes.BASE}/${id}/threads/all`),
+    backendApi.get<ThreadsResponse>(buildPath(userTribesRoutes.THREADS_LIST, { forum: id })),
 
   getPinThreads: (id: string) =>
-    backendApi.get<ThreadsResponse>(`${userTribeRoutes.THREADS_PINNED}/${id}/pinned`),
+    backendApi.get<ThreadsResponse>(buildPath(userThreadsRoutes.PINNED, { id })),
 };

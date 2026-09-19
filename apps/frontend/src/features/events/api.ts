@@ -18,7 +18,7 @@
 // (confirmed via grep) — not migrated, matching the "dead code, dropped
 // rather than migrated" rule from every other domain this session.
 import { browserApi } from "@/lib/browser-api";
-import { userEventRoutes } from "@lemonade/api-types";
+import { userEventsRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   EventInterface,
   TicketInterface,
@@ -222,92 +222,98 @@ export interface MyTicketResponse {
 }
 
 export const eventsApi = {
-  // ATTENDEES base — the public "discover events" list (this_week/upcoming/trending).
-  getEvents: () => browserApi.get<EventsListResponse>(userEventRoutes.ATTENDEES),
+  // ATTENDEES_LIST — the public "discover events" list (this_week/upcoming/trending).
+  getEvents: () => browserApi.get<EventsListResponse>(userEventsRoutes.ATTENDEES_LIST),
 
   getEvent: (id: number | string) =>
-    browserApi.get<EventDetailResponse>(`${userEventRoutes.BASE}/${id}`),
+    browserApi.get<EventDetailResponse>(buildPath(userEventsRoutes.SHOW, { id })),
 
   createEvent: (data: CreateEventPayload) =>
-    browserApi.post<EventDetailResponse>(userEventRoutes.CREATE, data),
+    browserApi.post<EventDetailResponse>(userEventsRoutes.CREATE, data),
 
   updateEvent: (id: number | string, data: UpdateEventPayload) =>
-    browserApi.put<EventDetailResponse>(`${userEventRoutes.UPDATE}/${id}`, data),
+    browserApi.put<EventDetailResponse>(buildPath(userEventsRoutes.UPDATE, { id }), data),
 
   publishEvent: (id: number | string) =>
-    browserApi.patch<EventDetailResponse>(`${userEventRoutes.PUBLISH}/${id}`),
+    browserApi.patch<EventDetailResponse>(buildPath(userEventsRoutes.PUBLISH, { id })),
 
   getEventTickets: (id: number | string) =>
-    browserApi.get<EventTicketsResponse>(`${userEventRoutes.BASE}/${id}/event-tickets`),
+    browserApi.get<EventTicketsResponse>(buildPath(userEventsRoutes.EVENT_TICKETS, { id })),
 
   editEventTickets: (id: number | string, data: EditEventTicketsPayload) =>
-    browserApi.patch<EventTicketsResponse>(`${userEventRoutes.BASE}/${id}/edit-tickets`, data),
+    browserApi.patch<EventTicketsResponse>(buildPath(userEventsRoutes.EDIT_TICKETS, { id }), data),
 
-  getOrganizerEvents: () => browserApi.get<OrganizerEventsResponse>(userEventRoutes.BASE),
+  getOrganizerEvents: () => browserApi.get<OrganizerEventsResponse>(userEventsRoutes.LIST),
 
   getPaymentSetting: () =>
-    browserApi.get<PaymentSettingResponse>(userEventRoutes.GET_PAYMENT_SETTING),
+    browserApi.get<PaymentSettingResponse>(userEventsRoutes.PAYMENT_SETTING_SHOW),
 
   updatePaymentSetting: (data: { type: string }) =>
-    browserApi.patch<PaymentSettingResponse>(userEventRoutes.UPDATE_PAYMENT_SETTING, data),
+    browserApi.patch<PaymentSettingResponse>(userEventsRoutes.PAYMENT_SETTING_UPDATE, data),
 
   filterEvents: (data: FilterEventsPayload) =>
-    browserApi.get<FilterEventsResponse>(userEventRoutes.FILTER, { params: data }),
+    browserApi.get<FilterEventsResponse>(userEventsRoutes.FILTER, { params: data }),
 
   searchEvents: (data: { search: string }) =>
-    browserApi.post<SearchEventsResponse>(userEventRoutes.SEARCH, data),
+    browserApi.post<SearchEventsResponse>(userEventsRoutes.SEARCH, data),
 
-  getAffiliateEvents: () => browserApi.get<AffiliateEventsResponse>(userEventRoutes.AFFILIATE),
+  getAffiliateEvents: () => browserApi.get<AffiliateEventsResponse>(userEventsRoutes.AFFILIATE_LIST),
 
   getAffiliateEvent: (id: number | string) =>
-    browserApi.get<AffiliateEventDetailResponse>(`${userEventRoutes.AFFILIATE}/${id}`),
+    browserApi.get<AffiliateEventDetailResponse>(buildPath(userEventsRoutes.AFFILIATE_SHOW, { id })),
 
   getAffiliateData: () =>
-    browserApi.get<AffiliateDashboardResponse>(`${userEventRoutes.AFFILIATE}/data`),
+    browserApi.get<AffiliateDashboardResponse>(userEventsRoutes.AFFILIATE_DATA),
 
   generateAffiliateLink: (id: number | string) =>
     browserApi.post<GenerateAffiliateLinkResponse>(
-      `${userEventRoutes.AFFILIATE}/${id}/generate-link`,
+      buildPath(userEventsRoutes.AFFILIATE_GENERATE_LINK, { id }),
     ),
 
   searchAffiliateEvents: (data: { search: string }) =>
-    browserApi.post<SearchAffiliateEventsResponse>(userEventRoutes.SEARCH_AFFILIATE_EVENTS, data),
+    browserApi.post<SearchAffiliateEventsResponse>(userEventsRoutes.SEARCH_AFFILIATE, data),
 
-  getPromotions: () => browserApi.get<PromotionsResponse>(userEventRoutes.PROMOTIONS),
+  getPromotions: () => browserApi.get<PromotionsResponse>(userEventsRoutes.PROMOTIONS),
 
   payForPromotion: (id: number | string, data: PayForPromotionPayload) =>
-    browserApi.post<PayForPromotionResponse>(`${userEventRoutes.BASE}/${id}/promote-event`, data),
+    browserApi.post<PayForPromotionResponse>(buildPath(userEventsRoutes.PROMOTE, { id }), data),
 
   getEventPromotion: (id: number | string, promotionId: number | string) =>
     browserApi.get<EventPromotionResponse>(
-      `${userEventRoutes.BASE}/${id}/${promotionId}/event-promotion`,
+      buildPath(userEventsRoutes.EVENT_PROMOTION, { id, promo_id: promotionId }),
     ),
 
   buyTicket: (eventId: number | string, data: BuyTicketPayload) =>
     browserApi.post<BuyTicketResponse>(
-      `${userEventRoutes.ATTENDEES}/${eventId}/assign-tickets`,
+      buildPath(userEventsRoutes.ATTENDEES_ASSIGN_TICKETS, { id: eventId }),
       data,
     ),
 
   getEventTicketData: (id: number | string) =>
-    browserApi.get<EventTicketDataResponse>(`${userEventRoutes.ATTENDEES}/${id}/tickets`),
+    browserApi.get<EventTicketDataResponse>(buildPath(userEventsRoutes.ATTENDEES_TICKETS, { id })),
 
   getGuestList: (id: number | string) =>
-    browserApi.get<GuestListResponse>(`${userEventRoutes.BASE}/${id}/guest-list`),
+    browserApi.get<GuestListResponse>(buildPath(userEventsRoutes.GUEST_LIST, { id })),
 
   getGuestListDetails: (id: number | string, guestId: number | string) =>
-    browserApi.get<GuestDetailsResponse>(`${userEventRoutes.BASE}/${id}/${guestId}/guest-details`),
+    browserApi.get<GuestDetailsResponse>(
+      buildPath(userEventsRoutes.GUEST_DETAILS, { id, guest_id: guestId }),
+    ),
 
   checkInGuest: (id: number | string, guestId: number | string) =>
-    browserApi.patch<GuestDetailsResponse>(`${userEventRoutes.BASE}/${id}/${guestId}/check-in`),
+    browserApi.patch<GuestDetailsResponse>(
+      buildPath(userEventsRoutes.CHECK_IN, { id, guest_id: guestId }),
+    ),
 
   guestSearch: (id: number | string, q: string) =>
-    browserApi.post<GuestSearchResponse>(`${userEventRoutes.BASE}/${id}/search-guest-list`, null, {
-      params: { q },
-    }),
+    browserApi.post<GuestSearchResponse>(
+      buildPath(userEventsRoutes.SEARCH_GUEST_LIST, { id }),
+      null,
+      { params: { q } },
+    ),
 
-  getMyTickets: () => browserApi.get<MyTicketsResponse>(`${userEventRoutes.ATTENDEES}/my-tickets`),
+  getMyTickets: () => browserApi.get<MyTicketsResponse>(userEventsRoutes.ATTENDEES_MY_TICKETS),
 
   getMyTicket: (id: number | string) =>
-    browserApi.get<MyTicketResponse>(`${userEventRoutes.ATTENDEES}/my-ticket/${id}`),
+    browserApi.get<MyTicketResponse>(buildPath(userEventsRoutes.ATTENDEES_MY_TICKET, { id })),
 };
