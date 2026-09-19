@@ -1,7 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button, Label, Input } from "@lemonade/ui";
+import {
+  Button,
+  Label,
+  Input,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+} from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -20,7 +27,10 @@ type BankAccountInterface = {
   option: boolean;
 };
 
-const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) => {
+const BankAccountModal: React.FC<BankAccountInterface> = ({
+  toggle,
+  option,
+}) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -29,7 +39,9 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
   const [error, setError] = useState("");
 
   const { event, newTickets } = useSelector((state: RootState) => state.event);
-  const { data: banksData, isLoading: loading } = useBanksQuery({ enabled: option });
+  const { data: banksData, isLoading: loading } = useBanksQuery({
+    enabled: option,
+  });
   const banks = banksData?.banks ?? [];
   const createEventMutation = useCreateEventMutation();
   const verifyAccountMutation = useVerifyAccountMutation();
@@ -110,105 +122,109 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
-        option ? "flex" : "hidden"
-      }`}
+    <Dialog
+      open={option}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <form onSubmit={formik.handleSubmit}>
-        <div className="h-screen w-full rounded-lg bg-white p-6 shadow-lg laptop:h-full laptop:w-[640px]">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="cursor-pointer" onClick={toggle}>
-                <CloseIcon />
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">{"Bank Account"}</DialogTitle>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="h-screen w-full rounded-lg bg-white p-6 shadow-lg laptop:h-full laptop:w-[640px]">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="cursor-pointer" onClick={toggle}>
+                  <CloseIcon />
+                </div>
+                <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+                  Bank Account
+                </p>
               </div>
-              <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
-                Bank Account
-              </p>
+              <div>
+                <FormikButton
+                  title="Submit"
+                  error={formik.isValid}
+                  loading={formik.isSubmitting}
+                  classes="w-full h-[48px] rounded-xl px-[14px] p-[10px] rounded-[12px] border-step-color shadow-green-inset hover:shadow-green-inset-strong"
+                />
+              </div>
             </div>
-            <div>
-              <FormikButton
-                title="Submit"
-                error={formik.isValid}
-                loading={formik.isSubmitting}
-                classes="w-full h-[48px] rounded-xl px-[14px] p-[10px] rounded-[12px] border-step-color shadow-green-inset hover:shadow-green-inset-strong"
-              />
-            </div>
-          </div>
-          <div className="mt-10">
-            <div className="mt-[24px] grid gap-2">
-              <Label
-                htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-              >
-                Bank Name
-              </Label>
-              <select
-                value={formik.values.bank_name}
-                className="form-font h-12 w-full rounded-xl border-0 bg-light_grey p-2"
-                onChange={(e) => {
-                  setBankCode(e.target.value);
-                  formik.setFieldValue("bank_name", e.target.value);
-                }}
-              >
-                {loading ? (
-                  <option>Loading...</option>
-                ) : (
-                  <>
-                    <option value="">Select Bank</option>
-                    {banks &&
-                      banks.map((bank: any, index: number) => (
-                        <option value={bank.code} key={index}>
-                          {bank?.name}
-                        </option>
-                      ))}
-                  </>
-                )}
-              </select>
-            </div>
-            <div className="mt-[24px] grid gap-2">
-              <Label
-                htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-              >
-                Account number
-              </Label>
-              <Input
-                id="fullname"
-                type="text"
-                placeholder=""
-                className="form-font h-12 rounded-xl border-0 bg-light_grey"
-                value={formik.values.account_number}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    setAccountNumber(value);
-                    formik.setFieldValue("account_number", value);
-                  }
-                }}
-                maxLength={10}
-              />
-            </div>
-            <div className="mt-[24px] grid gap-2">
-              <Label
-                htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-              >
-                Account name
-              </Label>
-              <Input
-                id="fullname"
-                type="text"
-                placeholder=""
-                className="form-font h-12 rounded-xl border-0 bg-light_grey"
-                readOnly={true}
-                value={formik.values.account_name}
-              />
+            <div className="mt-10">
+              <div className="mt-[24px] grid gap-2">
+                <Label
+                  htmlFor="fullname"
+                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                >
+                  Bank Name
+                </Label>
+                <select
+                  value={formik.values.bank_name}
+                  className="form-font h-12 w-full rounded-xl border-0 bg-light_grey p-2"
+                  onChange={(e) => {
+                    setBankCode(e.target.value);
+                    formik.setFieldValue("bank_name", e.target.value);
+                  }}
+                >
+                  {loading ? (
+                    <option>Loading...</option>
+                  ) : (
+                    <>
+                      <option value="">Select Bank</option>
+                      {banks &&
+                        banks.map((bank: any, index: number) => (
+                          <option value={bank.code} key={index}>
+                            {bank?.name}
+                          </option>
+                        ))}
+                    </>
+                  )}
+                </select>
+              </div>
+              <div className="mt-[24px] grid gap-2">
+                <Label
+                  htmlFor="fullname"
+                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                >
+                  Account number
+                </Label>
+                <Input
+                  id="fullname"
+                  type="text"
+                  placeholder=""
+                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  value={formik.values.account_number}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      setAccountNumber(value);
+                      formik.setFieldValue("account_number", value);
+                    }
+                  }}
+                  maxLength={10}
+                />
+              </div>
+              <div className="mt-[24px] grid gap-2">
+                <Label
+                  htmlFor="fullname"
+                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                >
+                  Account name
+                </Label>
+                <Input
+                  id="fullname"
+                  type="text"
+                  placeholder=""
+                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  readOnly={true}
+                  value={formik.values.account_name}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

@@ -16,6 +16,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
 type CreateThreadInterface = {
   toggle: () => void;
@@ -82,7 +83,9 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     }
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const files = event.target.files;
     if (files) {
       const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
@@ -149,10 +152,14 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
   };
 
   const removeImage = (imageToRemove: string) => {
-    setMediaFiles((prevImages) => prevImages.filter((image) => image !== imageToRemove));
+    setMediaFiles((prevImages) =>
+      prevImages.filter((image) => image !== imageToRemove),
+    );
   };
 
-  const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const files = event.target.files;
     if (files) {
       const formData = new FormData();
@@ -193,7 +200,9 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
   };
 
   const removeVideo = (videoToRemove: string) => {
-    setVideoFiles((prevVideos) => prevVideos.filter((video) => video !== videoToRemove));
+    setVideoFiles((prevVideos) =>
+      prevVideos.filter((video) => video !== videoToRemove),
+    );
   };
 
   const handleCreateThread = async (values: any) => {
@@ -265,59 +274,99 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
   }, [pollOptions]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <form onSubmit={formik.handleSubmit}>
-        <div className="flex h-screen w-screen flex-col rounded-[12px] bg-white laptop:h-full laptop:w-[800px]">
-          <div className={`p-6`}>
-            <div className="flex items-center justify-between">
-              <div className="cursor-pointer" onClick={toggle}>
-                <CloseIcon />
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Create thread</DialogTitle>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="flex h-screen w-screen flex-col rounded-[12px] bg-white laptop:h-full laptop:w-[800px]">
+            <div className={`p-6`}>
+              <div className="flex items-center justify-between">
+                <div className="cursor-pointer" onClick={toggle}>
+                  <CloseIcon />
+                </div>
+                <div>
+                  <FormikButton
+                    loading={formik.isSubmitting}
+                    title="Post"
+                    error={formik.isValid}
+                  />
+                </div>
               </div>
-              <div>
-                <FormikButton loading={formik.isSubmitting} title="Post" error={formik.isValid} />
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="grid gap-2">
-                <input
-                  id="tribe-name"
-                  type="text"
-                  className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:outline-none focus:ring-0"
-                  placeholder="Topic"
-                  onChange={(e) => {
-                    formik.setFieldValue("topic", e.target.value);
-                  }}
-                  value={formik.values.topic}
-                />
-                {formik.touched.topic && formik.errors.topic ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.topic}</p>
-                ) : null}
-              </div>
-              <div className="mt-4 grid gap-2">
-                <textarea
-                  id="tribe-name"
-                  className="h-[160px] resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:outline-none focus:ring-0"
-                  placeholder="Share your thoughts..."
-                  value={formik.values.thoughts}
-                  onChange={(e) => {
-                    formik.setFieldValue("thoughts", e.target.value);
-                  }}
-                />
-                {formik.touched.thoughts && formik.errors.thoughts ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.thoughts}</p>
-                ) : null}
-              </div>
-              <div className="flex flex-col gap-[40px]">
-                <div className={"flex gap-2"}>
-                  {mediaFiles &&
-                    mediaFiles.length > 0 &&
-                    mediaFiles.map((media: any, index: number) => (
-                      <div key={index} className="relative inline-block h-[200px] w-[200px]">
-                        <Image
+              <div className="mt-2">
+                <div className="grid gap-2">
+                  <input
+                    id="tribe-name"
+                    type="text"
+                    className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:outline-none focus:ring-0"
+                    placeholder="Topic"
+                    onChange={(e) => {
+                      formik.setFieldValue("topic", e.target.value);
+                    }}
+                    value={formik.values.topic}
+                  />
+                  {formik.touched.topic && formik.errors.topic ? (
+                    <p className="text-[12px] text-[#FF8D8D]">
+                      {formik.errors.topic}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="mt-4 grid gap-2">
+                  <textarea
+                    id="tribe-name"
+                    className="h-[160px] resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:outline-none focus:ring-0"
+                    placeholder="Share your thoughts..."
+                    value={formik.values.thoughts}
+                    onChange={(e) => {
+                      formik.setFieldValue("thoughts", e.target.value);
+                    }}
+                  />
+                  {formik.touched.thoughts && formik.errors.thoughts ? (
+                    <p className="text-[12px] text-[#FF8D8D]">
+                      {formik.errors.thoughts}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="flex flex-col gap-[40px]">
+                  <div className={"flex gap-2"}>
+                    {mediaFiles &&
+                      mediaFiles.length > 0 &&
+                      mediaFiles.map((media: any, index: number) => (
+                        <div
+                          key={index}
+                          className="relative inline-block h-[200px] w-[200px]"
+                        >
+                          <Image
+                            src={media}
+                            alt="event_image"
+                            width={200}
+                            height={200}
+                            className="h-full w-full rounded"
+                          />
+
+                          <div
+                            className="absolute right-2 top-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
+                            onClick={() => removeImage(media)}
+                          >
+                            <span className="font-semibold text-black">X</span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                  {videoFiles &&
+                    videoFiles.length > 0 &&
+                    videoFiles.map((media: any, index: number) => (
+                      <div
+                        className="relative inline-block h-[200px] w-[200px]"
+                        key={index}
+                      >
+                        <video
                           src={media}
-                          alt="event_image"
+                          controls
                           width={200}
                           height={200}
                           className="h-full w-full rounded"
@@ -325,153 +374,147 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
 
                         <div
                           className="absolute right-2 top-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
-                          onClick={() => removeImage(media)}
+                          onClick={() => removeVideo(media)}
                         >
                           <span className="font-semibold text-black">X</span>
                         </div>
                       </div>
                     ))}
-                </div>
-                {videoFiles &&
-                  videoFiles.length > 0 &&
-                  videoFiles.map((media: any, index: number) => (
-                    <div className="relative inline-block h-[200px] w-[200px]" key={index}>
-                      <video
-                        src={media}
-                        controls
-                        width={200}
-                        height={200}
-                        className="h-full w-full rounded"
+                  {poll && (
+                    <div className="grid gap-3">
+                      <input
+                        id="tribe-name"
+                        type="text"
+                        className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:outline-none focus:ring-0"
+                        placeholder="Poll title"
+                        onChange={(e) => {
+                          setPollTitle(e.target.value);
+                        }}
+                        value={pollTitle}
                       />
 
-                      <div
-                        className="absolute right-2 top-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
-                        onClick={() => removeVideo(media)}
-                      >
-                        <span className="font-semibold text-black">X</span>
-                      </div>
-                    </div>
-                  ))}
-                {poll && (
-                  <div className="grid gap-3">
-                    <input
-                      id="tribe-name"
-                      type="text"
-                      className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:outline-none focus:ring-0"
-                      placeholder="Poll title"
-                      onChange={(e) => {
-                        setPollTitle(e.target.value);
-                      }}
-                      value={pollTitle}
-                    />
-
-                    <div className="flex flex-col gap-2">
-                      {pollOptions.map((option, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            className="w-[300px] rounded-md border border-gray-300 px-3 py-2 font-sans text-[16px] shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder={`Option ${index + 1}`}
-                            onChange={(e) => updatePollOption(index, e.target.value)}
-                            value={option}
-                          />
-                          {pollOptions.length > 1 && index > 0 && (
-                            <CloseRedIcon
-                              className="cursor-pointer"
-                              onClick={() => removePollOption(index)}
+                      <div className="flex flex-col gap-2">
+                        {pollOptions.map((option, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              className="w-[300px] rounded-md border border-gray-300 px-3 py-2 font-sans text-[16px] shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              placeholder={`Option ${index + 1}`}
+                              onChange={(e) =>
+                                updatePollOption(index, e.target.value)
+                              }
+                              value={option}
                             />
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                            {pollOptions.length > 1 && index > 0 && (
+                              <CloseRedIcon
+                                className="cursor-pointer"
+                                onClick={() => removePollOption(index)}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
 
-                    <button
-                      type="button"
-                      className="w-[100px] rounded-md bg-gradient-green py-2 font-sans font-semibold text-white shadow-sm hover:bg-indigo-600"
-                      onClick={addPollOption}
-                    >
-                      Add Option
-                    </button>
+                      <button
+                        type="button"
+                        className="w-[100px] rounded-md bg-gradient-green py-2 font-sans font-semibold text-white shadow-sm hover:bg-indigo-600"
+                        onClick={addPollOption}
+                      >
+                        Add Option
+                      </button>
 
-                    <div className="mt-2 flex gap-2">
-                      <DatePicker
-                        selected={pollStart ? new Date(pollStart) : null}
-                        onChange={(date: Date | null) => {
-                          if (date) {
-                            // Update start date
-                            setPollStart(date.toISOString());
-                            // Adjust end date if it's before the new start date
-                            if (pollEnd && new Date(pollEnd) < date) {
+                      <div className="mt-2 flex gap-2">
+                        <DatePicker
+                          selected={pollStart ? new Date(pollStart) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              // Update start date
+                              setPollStart(date.toISOString());
+                              // Adjust end date if it's before the new start date
+                              if (pollEnd && new Date(pollEnd) < date) {
+                                setPollEnd(date.toISOString());
+                              }
+                            }
+                          }}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          dateFormat="yyyy-MM-dd HH:mm"
+                          className="w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          placeholderText="Poll start date and time"
+                        />
+
+                        <DatePicker
+                          selected={pollEnd ? new Date(pollEnd) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              // Ensure end date is not before start date
                               setPollEnd(date.toISOString());
                             }
-                          }
-                        }}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] font-semi-normal shadow-none"
-                        placeholderText="Poll start date and time"
-                      />
-
-                      <DatePicker
-                        selected={pollEnd ? new Date(pollEnd) : null}
-                        onChange={(date: Date | null) => {
-                          if (date) {
-                            // Ensure end date is not before start date
-                            setPollEnd(date.toISOString());
-                          }
-                        }}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="yyyy-MM-dd HH:mm"
-                        className="w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] font-semi-normal shadow-none"
-                        placeholderText="Poll end date and time"
-                      />
+                          }}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          dateFormat="yyyy-MM-dd HH:mm"
+                          className="w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          placeholderText="Poll end date and time"
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
+            {isMobile ? (
+              <div className="fixed bottom-0 flex w-full items-center gap-6 rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-4">
+                <ImageIcon
+                  className="cursor-pointer"
+                  onClick={handleImageInput}
+                />
+                <VideoIcon
+                  className="cursor-pointer"
+                  onClick={handleVideoInput}
+                />
+                <PollIcon className="cursor-pointer" onClick={handlePolls} />
+                <div className="ml-4 flex cursor-pointer">
+                  <p>+ Add tags</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-6 rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-4">
+                <ImageIcon
+                  className="cursor-pointer"
+                  onClick={handleImageInput}
+                />
+                <VideoIcon
+                  className="cursor-pointer"
+                  onClick={handleVideoInput}
+                />
+                <PollIcon className="cursor-pointer" onClick={handlePolls} />
+                <div className="ml-4 flex cursor-pointer">
+                  <p>+ Add tags</p>
+                </div>
+              </div>
+            )}
           </div>
-          {isMobile ? (
-            <div className="fixed bottom-0 flex w-full items-center gap-6 rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-4">
-              <ImageIcon className="cursor-pointer" onClick={handleImageInput} />
-              <VideoIcon className="cursor-pointer" onClick={handleVideoInput} />
-              <PollIcon className="cursor-pointer" onClick={handlePolls} />
-              <div className="ml-4 flex cursor-pointer">
-                <p>+ Add tags</p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-6 rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-4">
-              <ImageIcon className="cursor-pointer" onClick={handleImageInput} />
-              <VideoIcon className="cursor-pointer" onClick={handleVideoInput} />
-              <PollIcon className="cursor-pointer" onClick={handlePolls} />
-              <div className="ml-4 flex cursor-pointer">
-                <p>+ Add tags</p>
-              </div>
-            </div>
-          )}
-        </div>
-        <input
-          type="file"
-          accept="image/*"
-          multiple={true}
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-        <input
-          type="file"
-          accept="video/*"
-          ref={videoFileInputRef}
-          style={{ display: "none" }}
-          onChange={handleVideoChange}
-        />
-      </form>
-    </div>
+          <input
+            type="file"
+            accept="image/*"
+            multiple={true}
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+          <input
+            type="file"
+            accept="video/*"
+            ref={videoFileInputRef}
+            style={{ display: "none" }}
+            onChange={handleVideoChange}
+          />
+        </form>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

@@ -3,20 +3,26 @@ import CloseIcon from "@/images/icons/close.svg";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
 import DotIcon from "@/images/icons/dot.svg";
 import ClockOrange from "@/images/icons/clock-orange.svg";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
 type GuestDetailsInterface = {
   toggleMenu: () => void;
   isOpen: boolean;
 };
 
-const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen }) => {
+const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({
+  toggleMenu,
+  isOpen,
+}) => {
   return (
-    <>
-      <div
-        className={`fixed right-0 top-0 z-50 h-full transform bg-gray-800 bg-opacity-50 transition-transform ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggleMenu();
+      }}
+    >
+      <DialogContentBare className="fixed right-0 top-0 bottom-0 left-auto h-full w-fit max-w-none translate-x-0 translate-y-0 gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Guest details</DialogTitle>
         <div className="h-full w-[585px] bg-white p-[48px] px-[20px]">
           <div className="flex items-center justify-between">
             <div>
@@ -29,7 +35,9 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
             </div>
           </div>
           <div className="mt-[40px] p-[24px] px-[64px]">
-            <p className="font-sans text-[20px] font-semibold leading-[28px]">Halloween party</p>
+            <p className="font-sans text-[20px] font-semibold leading-[28px]">
+              Halloween party
+            </p>
             <div className="flex items-center gap-2">
               <CalendarIcon />
               <p className="font-sans text-[16px] font-normal leading-[27px] tracking-custom text-text-grey">
@@ -116,16 +124,8 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
             </div>
           </div>
         </div>
-      </div>
-      {isOpen && (
-        <div
-          className={`fixed inset-0 z-10 transition-all duration-300 ${
-            isOpen ? "bg-black bg-opacity-50 backdrop-blur-sm" : "bg-transparent"
-          }`}
-          onClick={toggleMenu}
-        ></div>
-      )}
-    </>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

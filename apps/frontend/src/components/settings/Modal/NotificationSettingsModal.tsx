@@ -6,6 +6,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useUpdateNotificationSettingsMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { motion, AnimatePresence } from "framer-motion";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 type NotificationSettingsInterface = {
   toggle: () => void;
   isOpen: boolean;
@@ -22,7 +23,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
   type,
 }) => {
   const dispatch = useAppDispatch();
-  const updateNotificationSettingsMutation = useUpdateNotificationSettingsMutation();
+  const updateNotificationSettingsMutation =
+    useUpdateNotificationSettingsMutation();
   const [emailChecked, setEmailChecked] = useState(false);
   const [inAppChecked, setInAppChecked] = useState(false);
 
@@ -72,68 +74,76 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
   }, [settings]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
-        isOpen ? "flex" : "hidden"
-      }`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key="modal"
-            className="w-full rounded-none bg-white p-6 shadow-lg laptop:w-[640px] laptop:rounded-lg"
-            initial={{ y: "50%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "50%" }}
-            transition={{ type: "spring", stiffness: 50, damping: 30 }}
-          >
-            <div className="">
-              <div className="flex items-center justify-between">
-                <div className="flex gap-2">
-                  <div className="cursor-pointer" onClick={toggle}>
-                    <CloseIcon className="w-[11.25px]" />
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Notification settings</DialogTitle>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              key="modal"
+              className="w-full rounded-none bg-white p-6 shadow-lg laptop:w-[640px] laptop:rounded-lg"
+              initial={{ y: "50%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "50%" }}
+              transition={{ type: "spring", stiffness: 50, damping: 30 }}
+            >
+              <div className="">
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-2">
+                    <div className="cursor-pointer" onClick={toggle}>
+                      <CloseIcon className="w-[11.25px]" />
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-[16px] font-semibold">
+                        {renderHeader()?.title}
+                      </p>
+                      <p className="text-[14px] font-normal text-text-grey">
+                        {renderHeader()?.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <p className="text-[16px] font-semibold">{renderHeader()?.title}</p>
-                    <p className="text-[14px] font-normal text-text-grey">
-                      {renderHeader()?.description}
-                    </p>
+                </div>
+                <div className="mt-[24px]">
+                  <div className="flex flex-col gap-[12px]">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[16px] font-normal">
+                        In-app notification
+                      </p>
+                      <Switch
+                        onChange={(change) => {
+                          handleChange("in-app");
+                        }}
+                        checked={inAppChecked}
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onColor="#9BE303"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[16px] font-normal">Email</p>
+                      <Switch
+                        onChange={(change) => {
+                          handleChange("email");
+                        }}
+                        checked={emailChecked}
+                        checkedIcon={false}
+                        uncheckedIcon={false}
+                        onColor="#9BE303"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="mt-[24px]">
-                <div className="flex flex-col gap-[12px]">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[16px] font-normal">In-app notification</p>
-                    <Switch
-                      onChange={(change) => {
-                        handleChange("in-app");
-                      }}
-                      checked={inAppChecked}
-                      checkedIcon={false}
-                      uncheckedIcon={false}
-                      onColor="#9BE303"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-[16px] font-normal">Email</p>
-                    <Switch
-                      onChange={(change) => {
-                        handleChange("email");
-                      }}
-                      checked={emailChecked}
-                      checkedIcon={false}
-                      uncheckedIcon={false}
-                      onColor="#9BE303"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

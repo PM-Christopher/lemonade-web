@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useCallback } from "react";
+import React from "react";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import CloseIcon from "@/images/icons/close.svg";
@@ -34,28 +35,27 @@ interface VerifiedSuccessProps {
   };
 }
 
-const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, toggle, data }) => {
+const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
+  isOpen,
+  toggle,
+  data,
+}) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { subscription } = data || {};
-
-  // Close modal on ESC key
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) toggle();
-    },
-    [isOpen, toggle],
-  );
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
 
   if (!isOpen) return null;
 
   const benefits = [
-    { icon: GreyVerIcon, label: "Verification badge", value: subscription?.ver_badge },
-    { icon: ChatIcon, label: "Tribe creation", value: subscription?.forum_creation },
+    {
+      icon: GreyVerIcon,
+      label: "Verification badge",
+      value: subscription?.ver_badge,
+    },
+    {
+      icon: ChatIcon,
+      label: "Tribe creation",
+      value: subscription?.forum_creation,
+    },
     { icon: LemonIcon, label: "Lemon ID", value: subscription?.lemon_id },
     {
       icon: CalendarIcon,
@@ -69,7 +69,9 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
       icon: TicketIcon,
       label: "Ticket sales commission",
       value:
-        subscription?.sales_commission === 0 ? "None" : `${subscription?.sales_commission ?? 0}%`,
+        subscription?.sales_commission === 0
+          ? "None"
+          : `${subscription?.sales_commission ?? 0}%`,
     },
     {
       icon: BagIcon,
@@ -84,74 +86,86 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
       label: "Connection range",
       value: subscription?.connection_range ?? "--",
     },
-    { icon: ReferralIcon, label: "Offline benefits", value: subscription?.offline_benefits },
+    {
+      icon: ReferralIcon,
+      label: "Offline benefits",
+      value: subscription?.offline_benefits,
+    },
   ];
 
   return (
-    <div
-      className="animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-gray-800/60 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <div className="sm:p-8 hide-scrollbar animate-scaleIn flex max-h-[90vh] w-[640px] max-w-[92%] flex-col overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white pb-3">
-          <button
-            aria-label="Close"
-            className="cursor-pointer transition hover:opacity-80"
-            onClick={toggle}
-          >
-            <CloseIcon />
-          </button>
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Welcome to Membership</DialogTitle>
+        <div className="sm:p-8 hide-scrollbar animate-scaleIn flex max-h-[90vh] w-[640px] max-w-[92%] flex-col overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+          {/* Header */}
+          <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white pb-3">
+            <button
+              aria-label="Close"
+              className="cursor-pointer transition hover:opacity-80"
+              onClick={toggle}
+            >
+              <CloseIcon />
+            </button>
 
-          <button
-            type="button"
-            onClick={toggle}
-            className="flex items-center justify-center gap-2 rounded-xl border border-step-color bg-gradient-green px-4 py-2 font-sans text-[16px] font-medium text-white shadow-green-inset transition-all duration-300 hover:shadow-green-inset-strong"
-          >
-            <span>Done</span>
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="mt-8 flex flex-col gap-6">
-          <div className="sm:text-left flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <p className="text-[18px] font-semibold">{user?.fullname}</p>
-              <VerIcon className="h-[20px] w-[20px]" />
-            </div>
-            <p className="sm:text-[40px] font-ruso text-[32px] leading-tight text-black-light">
-              Welcome to Membership
-            </p>
+            <button
+              type="button"
+              onClick={toggle}
+              className="flex items-center justify-center gap-2 rounded-xl border border-step-color bg-gradient-green px-4 py-2 font-sans text-[16px] font-medium text-white shadow-green-inset transition-all duration-300 hover:shadow-green-inset-strong"
+            >
+              <span>Done</span>
+            </button>
           </div>
 
-          <p className="sm:text-left text-[16px] font-medium text-light-black">
-            You&apos;ve unlocked all membership access
-          </p>
-
-          <div className="flex flex-col gap-5 rounded-2xl border border-gray-100 bg-gray-50 p-5">
-            {benefits.map(({ icon: Icon, label, value }, idx) => (
-              <div key={idx} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Icon className="h-[14px] w-[14px]" />
-                  <p className="text-[14px] font-medium text-gray-800">{label}</p>
-                </div>
-
-                {typeof value === "boolean" ? (
-                  value ? (
-                    <CheckIcon />
-                  ) : (
-                    <PadlockIcon />
-                  )
-                ) : (
-                  <p className="text-[14px] font-normal text-text-grey">{value}</p>
-                )}
+          {/* Content */}
+          <div className="mt-8 flex flex-col gap-6">
+            <div className="sm:text-left flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <p className="text-[18px] font-semibold">{user?.fullname}</p>
+                <VerIcon className="h-[20px] w-[20px]" />
               </div>
-            ))}
+              <p className="sm:text-[40px] font-ruso text-[32px] leading-tight text-black-light">
+                Welcome to Membership
+              </p>
+            </div>
+
+            <p className="sm:text-left text-[16px] font-medium text-light-black">
+              You&apos;ve unlocked all membership access
+            </p>
+
+            <div className="flex flex-col gap-5 rounded-2xl border border-gray-100 bg-gray-50 p-5">
+              {benefits.map(({ icon: Icon, label, value }, idx) => (
+                <div key={idx} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-[14px] w-[14px]" />
+                    <p className="text-[14px] font-medium text-gray-800">
+                      {label}
+                    </p>
+                  </div>
+
+                  {typeof value === "boolean" ? (
+                    value ? (
+                      <CheckIcon />
+                    ) : (
+                      <PadlockIcon />
+                    )
+                  ) : (
+                    <p className="text-[14px] font-normal text-text-grey">
+                      {value}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

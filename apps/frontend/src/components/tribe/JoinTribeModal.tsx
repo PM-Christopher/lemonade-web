@@ -1,6 +1,6 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button } from "@lemonade/ui";
+import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { useJoinTribeMutation } from "@/features/tribes/mutations";
@@ -14,7 +14,11 @@ type JoinTribeInterface = {
   tribe: any;
 };
 
-const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe }) => {
+const JoinTribeModal: React.FC<JoinTribeInterface> = ({
+  toggle,
+  isOpen,
+  tribe,
+}) => {
   const dispatch = useAppDispatch();
   const joinTribeMutation = useJoinTribeMutation(tribe?.slug ?? "");
   const tribeLoading = joinTribeMutation.isPending;
@@ -42,92 +46,105 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="cursor-pointer" onClick={toggle}>
-              <CloseIcon />
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Unlock Exclusive content!</DialogTitle>
+        <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="cursor-pointer" onClick={toggle}>
+                <CloseIcon />
+              </div>
+              <p className="font-sans text-[18px] font-semibold leading-[27px]">
+                Unlock Exclusive content!
+              </p>
             </div>
-            <p className="font-sans text-[18px] font-semibold leading-[27px]">
-              Unlock Exclusive content!
-            </p>
+            <div>
+              <Button
+                className="auth-button rounded-[12px] p-[10px] px-[14px] shadow-green-inset hover:shadow-green-inset-strong"
+                onClick={() => handleJoinTribe(tribe.slug)}
+                disabled={tribeLoading}
+              >
+                {tribeLoading ? (
+                  <ColorRing
+                    visible={true}
+                    height="30"
+                    width="30"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="color-ring-wrapper"
+                    colors={[
+                      "#e15b64",
+                      "#f47e60",
+                      "#f8b26a",
+                      "#abbd81",
+                      "#849b87",
+                    ]}
+                  />
+                ) : (
+                  <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">
+                    Join Tribe now
+                  </p>
+                )}
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button
-              className="auth-button rounded-[12px] p-[10px] px-[14px] shadow-green-inset hover:shadow-green-inset-strong"
-              onClick={() => handleJoinTribe(tribe.slug)}
-              disabled={tribeLoading}
-            >
-              {tribeLoading ? (
-                <ColorRing
-                  visible={true}
-                  height="30"
-                  width="30"
-                  ariaLabel="color-ring-loading"
-                  wrapperStyle={{}}
-                  wrapperClass="color-ring-wrapper"
-                  colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                />
-              ) : (
-                <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">
-                  Join Tribe now
+          <div className="mt-10 flex flex-col items-center">
+            <div className="flex justify-center">
+              <div className="flex w-[544px] flex-col items-center rounded-[12px] border-2 border-step-color bg-light-green-10 p-[16px]">
+                <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                  Membership fee
                 </p>
-              )}
-            </Button>
+                <p className="mt-2 font-sans text-[24px] font-semibold leading-[33.6px]">
+                  N {formatNumberWithCommas(tribe?.membership_fee)}
+                </p>
+              </div>
+            </div>
+
+            <div className="my-6 flex justify-center">
+              <div className="flex w-[544px] justify-center">
+                <p className="text-center font-sans text-[14px] font-semibold leading-[21px]">
+                  {tribe?.tribe_name}{" "}
+                  <span className="font-semi-normal">
+                    offers exclusive content and discussions for a membership
+                    fee set by the Tribe creator. Join now and enjoy this
+                    exclusive benefits
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-center rounded-[12px] bg-light_grey">
+              <div className="flex w-[544px] flex-col gap-4 p-4 py-[24px]">
+                <div className="flex items-center gap-4">
+                  <CheckedIcon />
+                  <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                    Access to in-depth content
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <CheckedIcon />
+                  <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                    Gain valuable knowledge
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <CheckedIcon />
+                  <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                    Connect with your community
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mt-10 flex flex-col items-center">
-          <div className="flex justify-center">
-            <div className="flex w-[544px] flex-col items-center rounded-[12px] border-2 border-step-color bg-light-green-10 p-[16px]">
-              <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
-                Membership fee
-              </p>
-              <p className="mt-2 font-sans text-[24px] font-semibold leading-[33.6px]">
-                N {formatNumberWithCommas(tribe?.membership_fee)}
-              </p>
-            </div>
-          </div>
-
-          <div className="my-6 flex justify-center">
-            <div className="flex w-[544px] justify-center">
-              <p className="text-center font-sans text-[14px] font-semibold leading-[21px]">
-                {tribe?.tribe_name}{" "}
-                <span className="font-semi-normal">
-                  offers exclusive content and discussions for a membership fee set by the Tribe
-                  creator. Join now and enjoy this exclusive benefits
-                </span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex justify-center rounded-[12px] bg-light_grey">
-            <div className="flex w-[544px] flex-col gap-4 p-4 py-[24px]">
-              <div className="flex items-center gap-4">
-                <CheckedIcon />
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
-                  Access to in-depth content
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <CheckedIcon />
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
-                  Gain valuable knowledge
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <CheckedIcon />
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
-                  Connect with your community
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

@@ -2,7 +2,13 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import { Label, Input } from "@lemonade/ui";
+import {
+  Label,
+  Input,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+} from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -38,7 +44,12 @@ interface SocialMediaHandles {
   twitter: string;
 }
 
-const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) => {
+const UpdateModal: React.FC<UpdateInterface> = ({
+  toggle,
+  isOpen,
+  type,
+  user,
+}) => {
   const dispatch = useAppDispatch();
   const updateProfileFieldMutation = useUpdateProfileFieldMutation();
   const [socials, setSocials] = useState<SocialMediaHandles>({
@@ -72,7 +83,13 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
     }
   };
 
-  const skills = ["Creativity", "Leadership", "Problem-solving", "Critical thinking", "Work ethic"];
+  const skills = [
+    "Creativity",
+    "Leadership",
+    "Problem-solving",
+    "Critical thinking",
+    "Work ethic",
+  ];
   const interests = [
     "Arts",
     "Entertainment",
@@ -292,282 +309,328 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <form onSubmit={formik.handleSubmit}>
-        <div className="h-screen w-screen rounded-none bg-white p-6 shadow-lg laptop:h-full laptop:w-[480px] laptop:rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="cursor-pointer" onClick={toggle}>
-                <CloseIcon className="w-[11.25px]" />
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">
+          Change {profileTypeHeader()}
+        </DialogTitle>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="h-screen w-screen rounded-none bg-white p-6 shadow-lg laptop:h-full laptop:w-[480px] laptop:rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="cursor-pointer" onClick={toggle}>
+                  <CloseIcon className="w-[11.25px]" />
+                </div>
+                <p className="text-[16px] font-semibold">
+                  Change {profileTypeHeader()}
+                </p>
               </div>
-              <p className="text-[16px] font-semibold">Change {profileTypeHeader()}</p>
-            </div>
-            <div className="hidden laptop:block">
-              <FormikButton
-                title="Save changes"
-                error={formik.isValid}
-                loading={formik.isSubmitting}
-                classes="max-w-[135px] p-2 max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"
-              />
-            </div>
-          </div>
-          <div className="mt-[24px]">
-            <div className="flex flex-col gap-y-[300px]">
-              <div className="flex flex-col">
-                {type === "username" && (
-                  <div className="mt-[24px] grid gap-1">
-                    <Label
-                      htmlFor="username"
-                      className="text-[14px] font-normal leading-[16.8px] text-text-grey"
-                    >
-                      Username
-                    </Label>
-                    <Input
-                      id="username"
-                      type="text"
-                      placeholder=""
-                      className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
-                      value={formik.values.username}
-                      onChange={formik.handleChange}
-                    />
-                  </div>
-                )}
-
-                {type === "bio" && (
-                  <div className="mt-[24px] grid gap-1">
-                    <Label
-                      htmlFor="bio"
-                      className="text-[14px] font-normal leading-[16.8px] text-text-grey"
-                    >
-                      Bio
-                    </Label>
-                    <Input
-                      id="bio"
-                      type="text"
-                      placeholder=""
-                      className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
-                      value={formik.values.bio}
-                      onChange={formik.handleChange}
-                    />
-                  </div>
-                )}
-
-                {type === "industry" && (
-                  <div className="mt-[24px] grid gap-1">
-                    <Label
-                      htmlFor="industry"
-                      className="text-[14px] font-normal leading-[16.8px] text-text-grey"
-                    >
-                      Profession
-                    </Label>
-                    <Input
-                      id="industry"
-                      type="text"
-                      placeholder=""
-                      className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
-                      value={formik.values.industry}
-                      onChange={formik.handleChange}
-                    />
-                  </div>
-                )}
-
-                {type === "addresses" && (
-                  <>
-                    <div className="grid gap-4">
-                      <Label htmlFor="address" className="font-label">
-                        Address
-                      </Label>
-                      <Input
-                        id="address"
-                        type="text"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey"
-                        value={formik.values.address}
-                        onBlur={formik.handleBlur}
-                        onChange={formik.handleChange}
-                      />
-                      {checkError("address", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.address}</p>
-                      ) : null}
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="city" className="font-label">
-                        City
-                      </Label>
-                      <Input
-                        id="city"
-                        type="text"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey"
-                        value={formik.values.city}
-                        onBlur={formik.handleBlur}
-                        onChange={formik.handleChange}
-                      />
-                      {checkError("city", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
-                      ) : null}
-                    </div>
-
-                    <div className="my-2 grid gap-2">
-                      <Label htmlFor="email" className="font-label">
-                        Country
-                      </Label>
-                      <select
-                        id="country"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
-                        value={formik.values.country}
-                        onChange={(e) => {
-                          formik.setFieldValue("country", e.target.value);
-                        }}
-                      >
-                        <option value="">Select country</option>
-                        {CountryList.getAll().map((country, index) => (
-                          <option value={country.name} key={index}>
-                            {country.name}
-                          </option>
-                        ))}
-                      </select>
-                      {checkError("country", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
-                      ) : null}
-                    </div>
-                    <div className="my-2 grid gap-2">
-                      <Label htmlFor="state" className="font-label">
-                        State/Region
-                      </Label>
-                      <Input
-                        id="state"
-                        type="text"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey"
-                        value={formik.values.state}
-                        onBlur={formik.handleBlur}
-                        onChange={formik.handleChange}
-                      />
-                      {checkError("state", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.state}</p>
-                      ) : null}
-                    </div>
-                  </>
-                )}
-
-                {type === "skills-interest" && (
-                  <div className="mt-[24px] grid gap-1">
-                    <div>
-                      <p className="font-sans text-[18px] font-semibold">Skills</p>
-                    </div>
-                    <div className="grid grid-cols-[repeat(3,auto)] gap-3">
-                      {skills.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${
-                            Array.isArray(formik.values.skills) &&
-                            formik.values.skills.includes(item)
-                              ? "bg-gradient-green text-white"
-                              : "bg-light_grey"
-                          }`}
-                          onClick={() => handleSkillsClick(item)}
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    {checkError("skills", formik) ? (
-                      <p className="text-[12px] text-[#FF8D8D]">{formik.errors.skills}</p>
-                    ) : null}
-                    <div className="mt-2">
-                      <p className="font-sans text-[18px] font-semibold">Interests</p>
-                    </div>
-                    <div className="grid grid-cols-[repeat(4,auto)] gap-3">
-                      {interests.map((item, idx) => (
-                        <div
-                          className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
-                          key={idx}
-                          onClick={() => handleInterestClick(item)}
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    {checkError("interests", formik) ? (
-                      <p className="text-[12px] text-[#FF8D8D]">{formik.errors.interests}</p>
-                    ) : null}
-                  </div>
-                )}
-
-                {type === "socials" && (
-                  <div className="mt-[24px] grid gap-1">
-                    <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
-                      <div className="">
-                        <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
-                      </div>
-                      <Input
-                        name="facebook"
-                        id="facebook"
-                        type="text"
-                        className="form-font border-0 shadow-none"
-                        placeholder="Username"
-                        value={socials.facebook || getSocialUrl("facebook")}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
-                      <div className="">
-                        <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
-                      </div>
-                      <Input
-                        name="linkedin"
-                        id="linkedin"
-                        type="text"
-                        className="form-font border-0 shadow-none"
-                        placeholder="Username"
-                        value={socials.linkedin || getSocialUrl("linkedin")}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
-                      <div className="">
-                        <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
-                      </div>
-                      <Input
-                        name="twitter"
-                        id="twitter"
-                        type="text"
-                        className="form-font border-0 shadow-none"
-                        placeholder="Username"
-                        value={socials.twitter || getSocialUrl("twitter")}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
-                      <div className="">
-                        <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
-                      </div>
-                      <Input
-                        name="instagram"
-                        id="instagram"
-                        type="text"
-                        className="form-font border-0 shadow-none"
-                        placeholder="Username"
-                        value={socials.instagram || getSocialUrl("instagram")}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="flex laptop:hidden">
+              <div className="hidden laptop:block">
                 <FormikButton
                   title="Save changes"
                   error={formik.isValid}
                   loading={formik.isSubmitting}
-                  classes="w-full laptop:max-w-[135px] p-2 h-[48px] laptop:max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"
+                  classes="max-w-[135px] p-2 max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"
                 />
               </div>
             </div>
+            <div className="mt-[24px]">
+              <div className="flex flex-col gap-y-[300px]">
+                <div className="flex flex-col">
+                  {type === "username" && (
+                    <div className="mt-[24px] grid gap-1">
+                      <Label
+                        htmlFor="username"
+                        className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      >
+                        Username
+                      </Label>
+                      <Input
+                        id="username"
+                        type="text"
+                        placeholder=""
+                        className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
+                        value={formik.values.username}
+                        onChange={formik.handleChange}
+                      />
+                    </div>
+                  )}
+
+                  {type === "bio" && (
+                    <div className="mt-[24px] grid gap-1">
+                      <Label
+                        htmlFor="bio"
+                        className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      >
+                        Bio
+                      </Label>
+                      <Input
+                        id="bio"
+                        type="text"
+                        placeholder=""
+                        className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
+                        value={formik.values.bio}
+                        onChange={formik.handleChange}
+                      />
+                    </div>
+                  )}
+
+                  {type === "industry" && (
+                    <div className="mt-[24px] grid gap-1">
+                      <Label
+                        htmlFor="industry"
+                        className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      >
+                        Profession
+                      </Label>
+                      <Input
+                        id="industry"
+                        type="text"
+                        placeholder=""
+                        className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
+                        value={formik.values.industry}
+                        onChange={formik.handleChange}
+                      />
+                    </div>
+                  )}
+
+                  {type === "addresses" && (
+                    <>
+                      <div className="grid gap-4">
+                        <Label htmlFor="address" className="font-label">
+                          Address
+                        </Label>
+                        <Input
+                          id="address"
+                          type="text"
+                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          value={formik.values.address}
+                          onBlur={formik.handleBlur}
+                          onChange={formik.handleChange}
+                        />
+                        {checkError("address", formik) ? (
+                          <p className="text-[12px] text-[#FF8D8D]">
+                            {formik.errors.address}
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="city" className="font-label">
+                          City
+                        </Label>
+                        <Input
+                          id="city"
+                          type="text"
+                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          value={formik.values.city}
+                          onBlur={formik.handleBlur}
+                          onChange={formik.handleChange}
+                        />
+                        {checkError("city", formik) ? (
+                          <p className="text-[12px] text-[#FF8D8D]">
+                            {formik.errors.city}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="my-2 grid gap-2">
+                        <Label htmlFor="email" className="font-label">
+                          Country
+                        </Label>
+                        <select
+                          id="country"
+                          className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                          value={formik.values.country}
+                          onChange={(e) => {
+                            formik.setFieldValue("country", e.target.value);
+                          }}
+                        >
+                          <option value="">Select country</option>
+                          {CountryList.getAll().map((country, index) => (
+                            <option value={country.name} key={index}>
+                              {country.name}
+                            </option>
+                          ))}
+                        </select>
+                        {checkError("country", formik) ? (
+                          <p className="text-[12px] text-[#FF8D8D]">
+                            {formik.errors.country}
+                          </p>
+                        ) : null}
+                      </div>
+                      <div className="my-2 grid gap-2">
+                        <Label htmlFor="state" className="font-label">
+                          State/Region
+                        </Label>
+                        <Input
+                          id="state"
+                          type="text"
+                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          value={formik.values.state}
+                          onBlur={formik.handleBlur}
+                          onChange={formik.handleChange}
+                        />
+                        {checkError("state", formik) ? (
+                          <p className="text-[12px] text-[#FF8D8D]">
+                            {formik.errors.state}
+                          </p>
+                        ) : null}
+                      </div>
+                    </>
+                  )}
+
+                  {type === "skills-interest" && (
+                    <div className="mt-[24px] grid gap-1">
+                      <div>
+                        <p className="font-sans text-[18px] font-semibold">
+                          Skills
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-[repeat(3,auto)] gap-3">
+                        {skills.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${
+                              Array.isArray(formik.values.skills) &&
+                              formik.values.skills.includes(item)
+                                ? "bg-gradient-green text-white"
+                                : "bg-light_grey"
+                            }`}
+                            onClick={() => handleSkillsClick(item)}
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                      {checkError("skills", formik) ? (
+                        <p className="text-[12px] text-[#FF8D8D]">
+                          {formik.errors.skills}
+                        </p>
+                      ) : null}
+                      <div className="mt-2">
+                        <p className="font-sans text-[18px] font-semibold">
+                          Interests
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-[repeat(4,auto)] gap-3">
+                        {interests.map((item, idx) => (
+                          <div
+                            className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                            key={idx}
+                            onClick={() => handleInterestClick(item)}
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                      {checkError("interests", formik) ? (
+                        <p className="text-[12px] text-[#FF8D8D]">
+                          {formik.errors.interests}
+                        </p>
+                      ) : null}
+                    </div>
+                  )}
+
+                  {type === "socials" && (
+                    <div className="mt-[24px] grid gap-1">
+                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                        <div className="">
+                          <Image
+                            src={"/images/facebook.png"}
+                            alt=""
+                            width={19.2}
+                            height={19.2}
+                          />
+                        </div>
+                        <Input
+                          name="facebook"
+                          id="facebook"
+                          type="text"
+                          className="form-font border-0 shadow-none"
+                          placeholder="Username"
+                          value={socials.facebook || getSocialUrl("facebook")}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                        <div className="">
+                          <Image
+                            src={"/images/linkedin.png"}
+                            alt=""
+                            width={19.2}
+                            height={19.2}
+                          />
+                        </div>
+                        <Input
+                          name="linkedin"
+                          id="linkedin"
+                          type="text"
+                          className="form-font border-0 shadow-none"
+                          placeholder="Username"
+                          value={socials.linkedin || getSocialUrl("linkedin")}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                        <div className="">
+                          <Image
+                            src={"/images/twitter.png"}
+                            alt=""
+                            width={19.2}
+                            height={19.2}
+                          />
+                        </div>
+                        <Input
+                          name="twitter"
+                          id="twitter"
+                          type="text"
+                          className="form-font border-0 shadow-none"
+                          placeholder="Username"
+                          value={socials.twitter || getSocialUrl("twitter")}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                        <div className="">
+                          <Image
+                            src={"/images/instagram.png"}
+                            alt=""
+                            width={19.2}
+                            height={19.2}
+                          />
+                        </div>
+                        <Input
+                          name="instagram"
+                          id="instagram"
+                          type="text"
+                          className="form-font border-0 shadow-none"
+                          placeholder="Username"
+                          value={socials.instagram || getSocialUrl("instagram")}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="flex laptop:hidden">
+                  <FormikButton
+                    title="Save changes"
+                    error={formik.isValid}
+                    loading={formik.isSubmitting}
+                    classes="w-full laptop:max-w-[135px] p-2 h-[48px] laptop:max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

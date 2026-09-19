@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
+import {
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+} from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
 import { useRequest } from "@/hooks/useRequest";
 import { useSelector } from "react-redux";
@@ -16,7 +26,11 @@ type FilterEventInterface = {
   filterEventsMutation: ReturnType<typeof useFilterEventsMutation>;
 };
 
-const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventInterface) => {
+const FilterEventModal = ({
+  toggle,
+  isOpen,
+  filterEventsMutation,
+}: FilterEventInterface) => {
   const [clickedCategory, setClickedCategory] = useState("");
   const [timeOptions, setTimeOption] = useState(["This week", "This Month"]);
   const [timeType, setTimeType] = useState("");
@@ -72,170 +86,180 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="cursor-pointer" onClick={toggle}>
-              <CloseIcon />
-            </div>
-            <p>Event filter</p>
-          </div>
-        </div>
-        <div className="mt-[24px] flex flex-col">
-          <div className="mt-[24px] grid gap-2">
-            <Label
-              htmlFor="fullname"
-              className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-            >
-              CATEGORY
-            </Label>
-            <div className="mt-2">
-              <div className="flex flex-wrap gap-2">
-                {loading ? (
-                  <p>Loading...</p>
-                ) : (
-                  data?.categories?.map((category: any, index: number) => (
-                    <div
-                      className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
-                        category?.name === clickedCategory
-                          ? "bg-gradient-green-2 shadow-event-custom"
-                          : "bg-light_grey"
-                      }`}
-                      key={index}
-                      onClick={() => handleCategoryClick(category?.name)}
-                    >
-                      <p className="text-[14px] font-normal text-text-grey">
-                        {formatStringUCFirst(category?.name)}
-                      </p>
-                    </div>
-                  ))
-                )}
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">{"Event filter"}</DialogTitle>
+        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="cursor-pointer" onClick={toggle}>
+                <CloseIcon />
               </div>
+              <p>Event filter</p>
             </div>
           </div>
-          <div className="mt-[24px] grid gap-2">
-            <Label
-              htmlFor="fullname"
-              className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-            >
-              TIME & DATE
-            </Label>
-            <div className="mt-2">
-              <div className="flex flex-col gap-4">
+          <div className="mt-[24px] flex flex-col">
+            <div className="mt-[24px] grid gap-2">
+              <Label
+                htmlFor="fullname"
+                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+              >
+                CATEGORY
+              </Label>
+              <div className="mt-2">
                 <div className="flex flex-wrap gap-2">
-                  {timeOptions?.map((option: string, index: number) => (
-                    <div
-                      className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
-                        option === timeType
-                          ? "bg-gradient-green-2 shadow-event-custom"
-                          : "bg-light_grey"
-                      }`}
-                      key={index}
-                      onClick={() => handleTimeType(option)}
-                    >
-                      <p className="text-[14px] font-normal text-text-grey">{option}</p>
-                    </div>
-                  ))}
+                  {loading ? (
+                    <p>Loading...</p>
+                  ) : (
+                    data?.categories?.map((category: any, index: number) => (
+                      <div
+                        className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
+                          category?.name === clickedCategory
+                            ? "bg-gradient-green-2 shadow-event-custom"
+                            : "bg-light_grey"
+                        }`}
+                        key={index}
+                        onClick={() => handleCategoryClick(category?.name)}
+                      >
+                        <p className="text-[14px] font-normal text-text-grey">
+                          {formatStringUCFirst(category?.name)}
+                        </p>
+                      </div>
+                    ))
+                  )}
                 </div>
-                <div className="flex items-center justify-between gap-[10px]">
-                  <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
-                    <div>
-                      <CalendarIcon />
-                    </div>
-                    <div className="w-full">
-                      <DatePicker
-                        selected={from ? new Date(from) : null}
-                        onChange={(date: Date | null) => {
-                          if (date) {
-                            // Update start date
-                            setFrom(date.toISOString());
-                            setTimeType("");
-                          }
-                        }}
-                        showTimeSelect={false}
-                        dateFormat="yyyy-MM-dd"
-                        className="w-full cursor-pointer bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none"
-                        placeholderText="From"
-                      />
-                    </div>
+              </div>
+            </div>
+            <div className="mt-[24px] grid gap-2">
+              <Label
+                htmlFor="fullname"
+                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+              >
+                TIME & DATE
+              </Label>
+              <div className="mt-2">
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-wrap gap-2">
+                    {timeOptions?.map((option: string, index: number) => (
+                      <div
+                        className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
+                          option === timeType
+                            ? "bg-gradient-green-2 shadow-event-custom"
+                            : "bg-light_grey"
+                        }`}
+                        key={index}
+                        onClick={() => handleTimeType(option)}
+                      >
+                        <p className="text-[14px] font-normal text-text-grey">
+                          {option}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                  <p>-</p>
-                  <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
-                    <div>
-                      <CalendarIcon />
+                  <div className="flex items-center justify-between gap-[10px]">
+                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                      <div>
+                        <CalendarIcon />
+                      </div>
+                      <div className="w-full">
+                        <DatePicker
+                          selected={from ? new Date(from) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              // Update start date
+                              setFrom(date.toISOString());
+                              setTimeType("");
+                            }
+                          }}
+                          showTimeSelect={false}
+                          dateFormat="yyyy-MM-dd"
+                          className="w-full cursor-pointer bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          placeholderText="From"
+                        />
+                      </div>
                     </div>
-                    <div className="w-full">
-                      <DatePicker
-                        selected={to ? new Date(to) : null}
-                        onChange={(date: Date | null) => {
-                          if (date) {
-                            // Update start date
-                            setTo(date.toISOString());
-                            setTimeType("");
-                          }
-                        }}
-                        showTimeSelect={false}
-                        dateFormat="yyyy-MM-dd"
-                        className="w-full cursor-pointer bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none"
-                        placeholderText="To"
-                      />
+                    <p>-</p>
+                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                      <div>
+                        <CalendarIcon />
+                      </div>
+                      <div className="w-full">
+                        <DatePicker
+                          selected={to ? new Date(to) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              // Update start date
+                              setTo(date.toISOString());
+                              setTimeType("");
+                            }
+                          }}
+                          showTimeSelect={false}
+                          dateFormat="yyyy-MM-dd"
+                          className="w-full cursor-pointer bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          placeholderText="To"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="mt-[24px] grid gap-2">
-            <Label
-              htmlFor="fullname"
-              className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-            >
-              LOCATION
-            </Label>
-            <div className="mt-2">
-              <Select onValueChange={handleLocationChange}>
-                <SelectTrigger
-                  aria-label="Location"
-                  className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]"
-                >
-                  <SelectValue
-                    placeholder={
-                      <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">
-                        Location
-                      </span>
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent className="form-font">
-                  <SelectItem value="all">All Locations</SelectItem>
-                  <SelectItem value="online">Online</SelectItem>
-                  <SelectItem value="physical">Physical</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="mt-[24px] grid gap-2">
+              <Label
+                htmlFor="fullname"
+                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+              >
+                LOCATION
+              </Label>
+              <div className="mt-2">
+                <Select onValueChange={handleLocationChange}>
+                  <SelectTrigger
+                    aria-label="Location"
+                    className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]"
+                  >
+                    <SelectValue
+                      placeholder={
+                        <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">
+                          Location
+                        </span>
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="form-font">
+                    <SelectItem value="all">All Locations</SelectItem>
+                    <SelectItem value="online">Online</SelectItem>
+                    <SelectItem value="physical">Physical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="mt-[40px] flex gap-[4px]">
+              <button
+                className="w-full rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+                onClick={handleResetFilter}
+              >
+                <p className="font-sans text-[16px] font-semi-normal text-black-light">
+                  Reset filter
+                </p>
+              </button>
+              <button
+                className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+                onClick={handleFilterEvent}
+              >
+                <p className="font-sans text-[16px] font-semi-normal text-white">
+                  Apply filter
+                </p>
+              </button>
             </div>
           </div>
-          <div className="mt-[40px] flex gap-[4px]">
-            <button
-              className="w-full rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
-              onClick={handleResetFilter}
-            >
-              <p className="font-sans text-[16px] font-semi-normal text-black-light">
-                Reset filter
-              </p>
-            </button>
-            <button
-              className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
-              onClick={handleFilterEvent}
-            >
-              <p className="font-sans text-[16px] font-semi-normal text-white">Apply filter</p>
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
-import { Label, Input } from "@lemonade/ui";
+import {
+  Label,
+  Input,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+} from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -16,7 +22,13 @@ interface UpgradePlanProps {
   pricing: any[];
 }
 
-const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradePlanProps) => {
+const UpgradePlanModal = ({
+  isOpen,
+  toggle,
+  sub_id,
+  subMode,
+  pricing,
+}: UpgradePlanProps) => {
   const [selected, setSelected] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const [subType, setSubType] = useState<string | null>("");
@@ -24,9 +36,13 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
   const upgradeLoading = changePlanMutation.isPending;
 
   const handleSelectedPlan = (membership: { id: number; type: string }) => {
-    setSelected((prevSelected) => (prevSelected === membership.id ? null : membership.id));
+    setSelected((prevSelected) =>
+      prevSelected === membership.id ? null : membership.id,
+    );
 
-    setSubType((prevSelected) => (selected === membership.id ? null : membership.type));
+    setSubType((prevSelected) =>
+      selected === membership.id ? null : membership.type,
+    );
   };
 
   const handleSubUpgrade = async () => {
@@ -77,7 +93,8 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: error?.message || "Something went wrong. Please try again!!!",
+            message:
+              error?.message || "Something went wrong. Please try again!!!",
             type: "error",
           }),
         );
@@ -86,89 +103,98 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
-        isOpen ? "flex" : "hidden"
-      }`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <form>
-        <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="cursor-pointer" onClick={toggle}>
-                <CloseIcon />
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Membership</DialogTitle>
+        <form>
+          <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="cursor-pointer" onClick={toggle}>
+                  <CloseIcon />
+                </div>
+                <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+                  Membership
+                </p>
               </div>
-              <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
-                Membership
-              </p>
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={handleSubUpgrade}
-                disabled={!selected || upgradeLoading}
-                className={`flex h-[39px] w-fit items-center justify-center gap-2 rounded-xl px-4 py-2 font-sans text-[16px] font-medium text-white transition-all duration-300 ${
-                  selected && !upgradeLoading
-                    ? "border border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
-                    : "cursor-not-allowed bg-mid-green opacity-70"
-                }`}
-              >
-                {upgradeLoading ? (
-                  <>
-                    <svg
-                      className="h-4 w-4 animate-spin text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      />
-                    </svg>
-                    <span>Loading...</span>
-                  </>
-                ) : (
-                  <span>Pay now</span>
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="mt-10">
-            <div className={"flex flex-col gap-[16px]"}>
-              {pricing?.map((membership: any) => (
-                <div
-                  className={`cursor-pointer rounded-[12px] p-[16px] ${selected === membership.id ? "border-[1px] border-step-color bg-light-green-10" : "bg-mid-grey"}`}
-                  key={membership.id}
-                  onClick={() => handleSelectedPlan(membership)}
+              <div>
+                <button
+                  type="button"
+                  onClick={handleSubUpgrade}
+                  disabled={!selected || upgradeLoading}
+                  className={`flex h-[39px] w-fit items-center justify-center gap-2 rounded-xl px-4 py-2 font-sans text-[16px] font-medium text-white transition-all duration-300 ${
+                    selected && !upgradeLoading
+                      ? "border border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
+                      : "cursor-not-allowed bg-mid-green opacity-70"
+                  }`}
                 >
-                  <div className={"flex items-center justify-between"}>
-                    <p className={"text-[16px] font-semiBold text-black-light"}>
-                      {membership.title}
-                    </p>
-                    <p className={"text-[16px] font-semiBold text-black-light"}>
-                      ₦{formatNumberWithCommas(membership.amount)}/{membership.pay_by}
+                  {upgradeLoading ? (
+                    <>
+                      <svg
+                        className="h-4 w-4 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                      </svg>
+                      <span>Loading...</span>
+                    </>
+                  ) : (
+                    <span>Pay now</span>
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="mt-10">
+              <div className={"flex flex-col gap-[16px]"}>
+                {pricing?.map((membership: any) => (
+                  <div
+                    className={`cursor-pointer rounded-[12px] p-[16px] ${selected === membership.id ? "border-[1px] border-step-color bg-light-green-10" : "bg-mid-grey"}`}
+                    key={membership.id}
+                    onClick={() => handleSelectedPlan(membership)}
+                  >
+                    <div className={"flex items-center justify-between"}>
+                      <p
+                        className={"text-[16px] font-semiBold text-black-light"}
+                      >
+                        {membership.title}
+                      </p>
+                      <p
+                        className={"text-[16px] font-semiBold text-black-light"}
+                      >
+                        ₦{formatNumberWithCommas(membership.amount)}/
+                        {membership.pay_by}
+                      </p>
+                    </div>
+                    <p className={"text-[14px] font-normal text-text-grey"}>
+                      Billed {membership.type}
                     </p>
                   </div>
-                  <p className={"text-[14px] font-normal text-text-grey"}>
-                    Billed {membership.type}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

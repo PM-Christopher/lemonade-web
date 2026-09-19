@@ -2,7 +2,19 @@ import React, { useRef, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
 import Image from "next/image";
-import { Label, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from "@lemonade/ui";
+import {
+  Label,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+} from "@lemonade/ui";
 import DollarBillIcon from "@/images/icons/dollar-bill.svg";
 import InfoIcon from "@/images/icons/infoIcon.svg";
 import PadlockIcon from "@/images/icons/padlock.svg";
@@ -22,7 +34,10 @@ interface CreateTribeModalProps {
   activateModal: () => void;
 }
 
-const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) => {
+const CreateTribeModal = ({
+  modalFlag,
+  activateModal,
+}: CreateTribeModalProps) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const createTribeMutation = useCreateTribeMutation();
@@ -102,7 +117,9 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
     }
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const formData = new FormData();
@@ -147,216 +164,229 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${modalFlag ? "visible bg-gray-800/50 opacity-100" : "invisible opacity-0"}`}
+    <Dialog
+      open={modalFlag}
+      onOpenChange={(open) => {
+        if (!open) activateModal();
+      }}
     >
-      <div className="hide-scrollbar flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl laptop:h-auto laptop:max-h-[90vh] laptop:w-[640px] laptop:rounded-lg">
-        <form onSubmit={formik.handleSubmit} className="flex flex-col">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-[8px]">
-              <CloseIcon onClick={activateModal} className="cursor-pointer" />
-              <p className="text-[18px] font-semiBold">Create Tribe</p>
-            </div>
-            <div className="hidden tablet:block">
-              <FormikButton
-                title="Create tribe"
-                error={formik.isValid}
-                loading={formik.isSubmitting}
-                classes="px-[14px] p-[10px] rounded-[12px] border-step-color"
-              />
-            </div>
-          </div>
-          <div className="mt-[48px] flex justify-center tablet:mt-[24px]">
-            {image ? (
-              <Image
-                src={image}
-                alt="upload"
-                width={89}
-                height={83}
-                className="h-[89px] w-[89px] cursor-pointer rounded-[24px] border-[1px]"
-                onClick={handleImageClick}
-              />
-            ) : (
-              <Image
-                src={"/images/upload.png"}
-                alt="upload"
-                width={89}
-                height={83}
-                className="cursor-pointer"
-                onClick={handleImageClick}
-              />
-            )}
-
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
-          </div>
-          <div className="mt-[16px] flex flex-col">
-            <div className="grid gap-2">
-              <Label
-                htmlFor="tribe-name"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-              >
-                Tribe name
-              </Label>
-              <Input
-                id="tribe-name"
-                type="text"
-                className="form-font h-[48px] rounded-xl border-0 bg-light_grey"
-                value={formik.values.tribe_name}
-                onChange={(e: any) => {
-                  formik.setFieldValue("tribe_name", e.target.value);
-                }}
-              />
-            </div>
-            <div className="mt-4 grid gap-2">
-              <Label
-                htmlFor="tribe-name"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-              >
-                Category
-              </Label>
-              <Select
-                value={formik.values.category}
-                onValueChange={(value) => {
-                  formik.setFieldValue("category", value);
-                }}
-              >
-                <SelectTrigger aria-label="Category" className="h-[48px] rounded-xl border-0 bg-light_grey">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent className="form-font">
-                  {tribe_cat?.categories?.map((category: any, index: number) => (
-                    <SelectItem value={category?.name} key={index}>
-                      {category?.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="mt-4 grid gap-2">
-              <div className="flex items-center justify-between">
-                <Label
-                  htmlFor="description"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-                >
-                  Description
-                </Label>
-                <p className="text-[12px] font-normal text-text-grey">100 characters</p>
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Create Tribe</DialogTitle>
+        <div className="hide-scrollbar flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl laptop:h-auto laptop:max-h-[90vh] laptop:w-[640px] laptop:rounded-lg">
+          <form onSubmit={formik.handleSubmit} className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-[8px]">
+                <CloseIcon onClick={activateModal} className="cursor-pointer" />
+                <p className="text-[18px] font-semiBold">Create Tribe</p>
               </div>
-              <Textarea
-                id="description"
-                className="form-font h-[91px] resize-none rounded-xl border-0 bg-light_grey"
-                placeholder="Description about this tribe"
-                value={formik.values.description}
-                onChange={(e: any) => {
-                  formik.setFieldValue("description", e.target.value);
-                }}
-              />
-            </div>
-
-            <div className="mt-8 flex flex-col">
-              <div className="mb-[24px] flex justify-between">
-                <div className="flex gap-2">
-                  <div>
-                    <DollarBillIcon />
-                  </div>
-                  <div>
-                    <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
-                      Monetize tribe
-                    </p>
-                    <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
-                      User will pay to be part of your tribe
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <Switch
-                    onChange={(change) => {
-                      handleChange("monetized");
-                      formik.setFieldValue("monetized", change);
-                    }}
-                    checked={monetizedCheck}
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    onColor="#9BE303"
-                  />
-                </div>
-              </div>
-              {monetizedCheck && (
-                <div className="grid gap-2">
-                  <Label
-                    htmlFor="tribe-name"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
-                  >
-                    Acceptance fee (₦)
-                  </Label>
-                  <Input
-                    id="tribe-name"
-                    type="number"
-                    className="form-font h-[48px] rounded-xl border-0 bg-light_grey"
-                    value={formik.values.membership_fee}
-                    onChange={(e: any) => {
-                      formik.setFieldValue("membership_fee", e.target.value);
-                    }}
-                  />
-                  <div className="mb-[24px] mt-[5px] flex items-center gap-2">
-                    <InfoIcon />
-                    <p className="text-[12px] font-normal text-text-grey">
-                      {" "}
-                      10% of membership fees go to the Lemonade Network
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex justify-between">
-                <div className="flex gap-2">
-                  <div>
-                    <PadlockIcon />
-                  </div>
-                  <div>
-                    <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
-                      Private tribe
-                    </p>
-                    <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
-                      Tribe will only be available to invited members
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <Switch
-                    onChange={(change) => {
-                      handleChange("private");
-                      formik.setFieldValue("private", change);
-                    }}
-                    checked={privateCheck}
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    onColor="#9BE303"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          {isMobile && (
-            <div className="fixed bottom-0 left-0 flex w-full flex-col items-center justify-center pb-[24px] pl-[16px] pr-[16px] pt-[16px]">
-              <div className="mt-auto">
+              <div className="hidden tablet:block">
                 <FormikButton
                   title="Create tribe"
                   error={formik.isValid}
                   loading={formik.isSubmitting}
-                  classes="w-[343px] px-[14px] p-[10px] rounded-[12px] border-step-color h-[48px]"
+                  classes="px-[14px] p-[10px] rounded-[12px] border-step-color"
                 />
               </div>
             </div>
-          )}
-        </form>
-      </div>
-    </div>
+            <div className="mt-[48px] flex justify-center tablet:mt-[24px]">
+              {image ? (
+                <Image
+                  src={image}
+                  alt="upload"
+                  width={89}
+                  height={83}
+                  className="h-[89px] w-[89px] cursor-pointer rounded-[24px] border-[1px]"
+                  onClick={handleImageClick}
+                />
+              ) : (
+                <Image
+                  src={"/images/upload.png"}
+                  alt="upload"
+                  width={89}
+                  height={83}
+                  className="cursor-pointer"
+                  onClick={handleImageClick}
+                />
+              )}
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </div>
+            <div className="mt-[16px] flex flex-col">
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="tribe-name"
+                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                >
+                  Tribe name
+                </Label>
+                <Input
+                  id="tribe-name"
+                  type="text"
+                  className="form-font h-[48px] rounded-xl border-0 bg-light_grey"
+                  value={formik.values.tribe_name}
+                  onChange={(e: any) => {
+                    formik.setFieldValue("tribe_name", e.target.value);
+                  }}
+                />
+              </div>
+              <div className="mt-4 grid gap-2">
+                <Label
+                  htmlFor="tribe-name"
+                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                >
+                  Category
+                </Label>
+                <Select
+                  value={formik.values.category}
+                  onValueChange={(value) => {
+                    formik.setFieldValue("category", value);
+                  }}
+                >
+                  <SelectTrigger
+                    aria-label="Category"
+                    className="h-[48px] rounded-xl border-0 bg-light_grey"
+                  >
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent className="form-font">
+                    {tribe_cat?.categories?.map(
+                      (category: any, index: number) => (
+                        <SelectItem value={category?.name} key={index}>
+                          {category?.name}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="mt-4 grid gap-2">
+                <div className="flex items-center justify-between">
+                  <Label
+                    htmlFor="description"
+                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  >
+                    Description
+                  </Label>
+                  <p className="text-[12px] font-normal text-text-grey">
+                    100 characters
+                  </p>
+                </div>
+                <Textarea
+                  id="description"
+                  className="form-font h-[91px] resize-none rounded-xl border-0 bg-light_grey"
+                  placeholder="Description about this tribe"
+                  value={formik.values.description}
+                  onChange={(e: any) => {
+                    formik.setFieldValue("description", e.target.value);
+                  }}
+                />
+              </div>
+
+              <div className="mt-8 flex flex-col">
+                <div className="mb-[24px] flex justify-between">
+                  <div className="flex gap-2">
+                    <div>
+                      <DollarBillIcon />
+                    </div>
+                    <div>
+                      <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
+                        Monetize tribe
+                      </p>
+                      <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                        User will pay to be part of your tribe
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <Switch
+                      onChange={(change) => {
+                        handleChange("monetized");
+                        formik.setFieldValue("monetized", change);
+                      }}
+                      checked={monetizedCheck}
+                      checkedIcon={false}
+                      uncheckedIcon={false}
+                      onColor="#9BE303"
+                    />
+                  </div>
+                </div>
+                {monetizedCheck && (
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="tribe-name"
+                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    >
+                      Acceptance fee (₦)
+                    </Label>
+                    <Input
+                      id="tribe-name"
+                      type="number"
+                      className="form-font h-[48px] rounded-xl border-0 bg-light_grey"
+                      value={formik.values.membership_fee}
+                      onChange={(e: any) => {
+                        formik.setFieldValue("membership_fee", e.target.value);
+                      }}
+                    />
+                    <div className="mb-[24px] mt-[5px] flex items-center gap-2">
+                      <InfoIcon />
+                      <p className="text-[12px] font-normal text-text-grey">
+                        {" "}
+                        10% of membership fees go to the Lemonade Network
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-between">
+                  <div className="flex gap-2">
+                    <div>
+                      <PadlockIcon />
+                    </div>
+                    <div>
+                      <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
+                        Private tribe
+                      </p>
+                      <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                        Tribe will only be available to invited members
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <Switch
+                      onChange={(change) => {
+                        handleChange("private");
+                        formik.setFieldValue("private", change);
+                      }}
+                      checked={privateCheck}
+                      checkedIcon={false}
+                      uncheckedIcon={false}
+                      onColor="#9BE303"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {isMobile && (
+              <div className="fixed bottom-0 left-0 flex w-full flex-col items-center justify-center pb-[24px] pl-[16px] pr-[16px] pt-[16px]">
+                <div className="mt-auto">
+                  <FormikButton
+                    title="Create tribe"
+                    error={formik.isValid}
+                    loading={formik.isSubmitting}
+                    classes="w-[343px] px-[14px] p-[10px] rounded-[12px] border-step-color h-[48px]"
+                  />
+                </div>
+              </div>
+            )}
+          </form>
+        </div>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 
