@@ -1,5 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { payoutHistoryData } from "@/data/walletData";
 
 type PayoutHistoryInterface = {
@@ -8,7 +9,11 @@ type PayoutHistoryInterface = {
   data: any;
 };
 
-const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle, data }) => {
+const PayoutHistory: React.FC<PayoutHistoryInterface> = ({
+  isOpen,
+  toggle,
+  data,
+}) => {
   if (!isOpen) return null;
 
   const renderStyle = (status: string) => {
@@ -23,18 +28,18 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle, data 
   };
 
   return (
-    <>
-      <div
-        className={
-          "fixed inset-0 z-50 flex transform justify-end bg-gray-800 bg-opacity-50 transition-transform"
-        }
-        style={{
-          display: "flex",
-          justifyContent: "end",
-          padding: "20px",
-        }}
-      >
-        <div className="flex h-full flex-col rounded-[12px] bg-white" style={{ width: "585px" }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
+    >
+      <DialogContentBare className="fixed right-5 top-5 bottom-5 left-auto w-fit max-w-none translate-x-0 translate-y-0 gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Payout history</DialogTitle>
+        <div
+          className="flex h-full flex-col rounded-[12px] bg-white"
+          style={{ width: "585px" }}
+        >
           <div
             className="flex items-center justify-between"
             style={{
@@ -55,10 +60,15 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle, data 
           </div>
           <div className={"mt-[16px] flex flex-col px-[24px]"}>
             {payoutHistoryData.map((item: any, index: number) => (
-              <div key={index} className={"flex justify-between px-[16px] pb-[24px] pt-[16px]"}>
+              <div
+                key={index}
+                className={"flex justify-between px-[16px] pb-[24px] pt-[16px]"}
+              >
                 <div className={"flex flex-col"}>
                   <p className={"text-[14px] font-medium"}>{item.amount}</p>
-                  <p className={"text-[12px] font-normal text-text-grey"}>{item.date}</p>
+                  <p className={"text-[12px] font-normal text-text-grey"}>
+                    {item.date}
+                  </p>
                 </div>
                 <p
                   className={`h-fit rounded-[8px] px-[8px] py-[4px] text-[12px] font-medium ${renderStyle(item.status)}`}
@@ -69,8 +79,8 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle, data 
             ))}
           </div>
         </div>
-      </div>
-    </>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

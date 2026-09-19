@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PlusIcon, XIcon } from "lucide-react";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
@@ -133,118 +134,142 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
   }, [promotionId, promotionDetail]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <div className="w-[640px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
-        <form onSubmit={formik.handleSubmit}>
-          <div className={"px-[16px] py-[4px]"}>
-            <div className="flex items-center justify-between">
-              <div className={"flex items-center gap-[8px]"}>
-                <XIcon onClick={toggle} className={"cursor-pointer"} />
-                <p className="font-sans text-[18px] font-semibold leading-[27px]">
-                  {promotionTitle}
-                </p>
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">{promotionTitle}</DialogTitle>
+        <div className="w-[640px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+          <form onSubmit={formik.handleSubmit}>
+            <div className={"px-[16px] py-[4px]"}>
+              <div className="flex items-center justify-between">
+                <div className={"flex items-center gap-[8px]"}>
+                  <XIcon onClick={toggle} className={"cursor-pointer"} />
+                  <p className="font-sans text-[18px] font-semibold leading-[27px]">
+                    {promotionTitle}
+                  </p>
+                </div>
+                <div className="cursor-pointer">
+                  <FormikButton
+                    loading={formik.isSubmitting}
+                    title={promotionTitle}
+                    error={formik.isValid}
+                    classes="border-[1px] px-[14px] py-[11px] rounded-[12px] w-full"
+                  />
+                </div>
               </div>
-              <div className="cursor-pointer">
-                <FormikButton
-                  loading={formik.isSubmitting}
-                  title={promotionTitle}
-                  error={formik.isValid}
-                  classes="border-[1px] px-[14px] py-[11px] rounded-[12px] w-full"
+            </div>
+            <div className={"flex flex-col gap-[24px] px-[16px] py-[16px]"}>
+              <div className={"flex flex-col gap-[2px]"}>
+                <p className={"text-[14px] font-normal text-text-grey"}>
+                  Promotion name
+                </p>
+                <input
+                  id="name"
+                  className={
+                    "h-[48px] gap-[12px] rounded-[12px] bg-light-grey p-[12px] text-[14px]"
+                  }
+                  placeholder={""}
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </div>
-            </div>
-          </div>
-          <div className={"flex flex-col gap-[24px] px-[16px] py-[16px]"}>
-            <div className={"flex flex-col gap-[2px]"}>
-              <p className={"text-[14px] font-normal text-text-grey"}>Promotion name</p>
-              <input
-                id="name"
-                className={"h-[48px] gap-[12px] rounded-[12px] bg-light-grey p-[12px] text-[14px]"}
-                placeholder={""}
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-            </div>
-            <div className={"flex flex-col gap-[4px]"}>
-              <p className={"text-[14px] font-normal text-text-grey"}>Price option</p>
-              <div className="flex gap-2">
-                <div
-                  className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
-                  onClick={() => {
-                    setEventType("one-time");
-                    formik.setFieldValue("price_option", "one-time");
-                  }}
-                >
-                  <p className="tracking-custom font-sans text-[14px] font-normal leading-[21px]">
-                    One time
-                  </p>
-                </div>
-                <div
-                  className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
-                  onClick={() => {
-                    setEventType("unit");
-                    formik.setFieldValue("price_option", "unit");
-                  }}
-                >
-                  <p className="tracking-custom font-sans text-[14px] font-normal leading-[21px]">
-                    Unit
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className={"flex flex-col gap-[2px]"}>
-              <p className={"text-[14px] font-normal text-text-grey"}>Promotion Price</p>
-              <input
-                id="price"
-                className={"h-[48px] gap-[12px] rounded-[12px] bg-light-grey p-[12px] text-[14px]"}
-                placeholder={"N0.00"}
-                value={formik.values.price}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-            </div>
-            <div className="flex flex-col gap-[2px]">
-              <p className="text-[14px] font-normal text-text-grey">Breakdown</p>
-              {breakdowns.map((breakdown, index) => (
-                <div key={index} className="flex flex-col gap-[2px]">
-                  <div className="relative">
-                    <input
-                      className="h-[48px] w-full gap-[12px] rounded-[12px] bg-light-grey p-[12px] pr-[40px] text-[14px]"
-                      placeholder="Enter breakdown of promotion"
-                      value={breakdown}
-                      onChange={(e) => handleInputChange(index, e.target.value)}
-                    />
-                    {index > 0 && (
-                      <button
-                        onClick={() => handleRemoveField(index)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 transform text-red-500"
-                      >
-                        <XIcon size={20} />
-                      </button>
-                    )}
+              <div className={"flex flex-col gap-[4px]"}>
+                <p className={"text-[14px] font-normal text-text-grey"}>
+                  Price option
+                </p>
+                <div className="flex gap-2">
+                  <div
+                    className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
+                    onClick={() => {
+                      setEventType("one-time");
+                      formik.setFieldValue("price_option", "one-time");
+                    }}
+                  >
+                    <p className="tracking-custom font-sans text-[14px] font-normal leading-[21px]">
+                      One time
+                    </p>
+                  </div>
+                  <div
+                    className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
+                    onClick={() => {
+                      setEventType("unit");
+                      formik.setFieldValue("price_option", "unit");
+                    }}
+                  >
+                    <p className="tracking-custom font-sans text-[14px] font-normal leading-[21px]">
+                      Unit
+                    </p>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className={"flex flex-col gap-[2px]"}>
+                <p className={"text-[14px] font-normal text-text-grey"}>
+                  Promotion Price
+                </p>
+                <input
+                  id="price"
+                  className={
+                    "h-[48px] gap-[12px] rounded-[12px] bg-light-grey p-[12px] text-[14px]"
+                  }
+                  placeholder={"N0.00"}
+                  value={formik.values.price}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+              </div>
+              <div className="flex flex-col gap-[2px]">
+                <p className="text-[14px] font-normal text-text-grey">
+                  Breakdown
+                </p>
+                {breakdowns.map((breakdown, index) => (
+                  <div key={index} className="flex flex-col gap-[2px]">
+                    <div className="relative">
+                      <input
+                        className="h-[48px] w-full gap-[12px] rounded-[12px] bg-light-grey p-[12px] pr-[40px] text-[14px]"
+                        placeholder="Enter breakdown of promotion"
+                        value={breakdown}
+                        onChange={(e) =>
+                          handleInputChange(index, e.target.value)
+                        }
+                      />
+                      {index > 0 && (
+                        <button
+                          onClick={() => handleRemoveField(index)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 transform text-red-500"
+                        >
+                          <XIcon size={20} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}>
-            <button
-              className={
-                "flex w-full items-center justify-center rounded-[12px] border-[1px] bg-light-green-10 px-[48px] py-[11px]"
-              }
-              onClick={handleAddField}
-              type={"button"}
+            <div
+              className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}
             >
-              <PlusIcon className={"text-light-green"} />
-              <p className={"text-[16px] font-medium text-light-green"}>Add breakdown</p>
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              <button
+                className={
+                  "flex w-full items-center justify-center rounded-[12px] border-[1px] bg-light-green-10 px-[48px] py-[11px]"
+                }
+                onClick={handleAddField}
+                type={"button"}
+              >
+                <PlusIcon className={"text-light-green"} />
+                <p className={"text-[16px] font-medium text-light-green"}>
+                  Add breakdown
+                </p>
+              </button>
+            </div>
+          </form>
+        </div>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

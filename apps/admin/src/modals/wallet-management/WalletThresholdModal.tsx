@@ -1,6 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input } from "@lemonade/ui";
+import { Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
@@ -13,7 +13,10 @@ type WalletMgtInterface = {
   toggle: () => void;
 };
 
-const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) => {
+const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
+  isOpen,
+  toggle,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const updateThreshold = useUpdateWithdrawalThresholdMutation();
   const prodSchema = yup.object({
@@ -53,57 +56,67 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
   if (!isOpen) return null;
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 ${
-        isOpen ? "flex" : "hidden"
-      }`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
-        <div className="flex items-center justify-between">
-          <p className={"text-[18px] font-semiBold"}>Withdrawal Threshold</p>
-          <div className="cursor-pointer" onClick={toggle}>
-            <XIcon />
-          </div>
-        </div>
-        <div style={{ marginTop: "20px" }}>
-          <div className={"flex flex-col gap-[16px]"}>
-            <div style={{ maxWidth: "328px" }}>
-              <p className={"text-[14px] font-normal text-text-grey"}>
-                Set the minimum amount that can be withdrawn from wallet balance.
-              </p>
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Withdrawal Threshold</DialogTitle>
+        <div
+          className="rounded-lg bg-white p-6 shadow-lg"
+          style={{ width: "480px" }}
+        >
+          <div className="flex items-center justify-between">
+            <p className={"text-[18px] font-semiBold"}>Withdrawal Threshold</p>
+            <div className="cursor-pointer" onClick={toggle}>
+              <XIcon />
             </div>
-            <p className={"text-[14px] font-normal text-text-grey"}>Amount</p>
-            <Input
-              className={"h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"}
-              placeholder={"Amount"}
-              value={formik.values.threshold}
-              onChange={formik.handleChange("threshold")}
-              onBlur={formik.handleBlur}
-            />
-            <div className={"flex justify-between gap-[16px]"}>
-              <button
-                onClick={toggle}
-                className={
-                  "h-[48px] w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[14px]"
-                }
-              >
-                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
-              </button>
-              <button
-                onClick={() => formik.handleSubmit()}
-                className={
-                  "h-[48px] w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[14px]"
-                }
-              >
-                <p className={"text-[16px] font-medium text-white"}>
-                  {updateThreshold.isPending ? "Loading..." : "Submit"}
+          </div>
+          <div style={{ marginTop: "20px" }}>
+            <div className={"flex flex-col gap-[16px]"}>
+              <div style={{ maxWidth: "328px" }}>
+                <p className={"text-[14px] font-normal text-text-grey"}>
+                  Set the minimum amount that can be withdrawn from wallet
+                  balance.
                 </p>
-              </button>
+              </div>
+              <p className={"text-[14px] font-normal text-text-grey"}>Amount</p>
+              <Input
+                className={
+                  "h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"
+                }
+                placeholder={"Amount"}
+                value={formik.values.threshold}
+                onChange={formik.handleChange("threshold")}
+                onBlur={formik.handleBlur}
+              />
+              <div className={"flex justify-between gap-[16px]"}>
+                <button
+                  onClick={toggle}
+                  className={
+                    "h-[48px] w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[14px]"
+                  }
+                >
+                  <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                </button>
+                <button
+                  onClick={() => formik.handleSubmit()}
+                  className={
+                    "h-[48px] w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[14px]"
+                  }
+                >
+                  <p className={"text-[16px] font-medium text-white"}>
+                    {updateThreshold.isPending ? "Loading..." : "Submit"}
+                  </p>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 export default WalletThresholdModal;

@@ -1,5 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { affiliateHistoryData } from "@/data/walletData";
 
 type AffiliateHistoryInterface = {
@@ -8,21 +9,25 @@ type AffiliateHistoryInterface = {
   data: any;
 };
 
-const AffiliateHistory: React.FC<AffiliateHistoryInterface> = ({ isOpen, toggle, data }) => {
+const AffiliateHistory: React.FC<AffiliateHistoryInterface> = ({
+  isOpen,
+  toggle,
+  data,
+}) => {
   if (!isOpen) return null;
   return (
-    <>
-      <div
-        className={
-          "fixed inset-0 z-50 flex transform justify-end bg-gray-800 bg-opacity-50 transition-transform"
-        }
-        style={{
-          display: "flex",
-          justifyContent: "end",
-          padding: "20px",
-        }}
-      >
-        <div className="flex h-full flex-col rounded-[12px] bg-white" style={{ width: "585px" }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
+    >
+      <DialogContentBare className="fixed right-5 top-5 bottom-5 left-auto w-fit max-w-none translate-x-0 translate-y-0 gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Affiliate history</DialogTitle>
+        <div
+          className="flex h-full flex-col rounded-[12px] bg-white"
+          style={{ width: "585px" }}
+        >
           <div
             className="flex items-center justify-between"
             style={{
@@ -43,17 +48,22 @@ const AffiliateHistory: React.FC<AffiliateHistoryInterface> = ({ isOpen, toggle,
           </div>
           <div className={"mt-[16px] flex flex-col px-[24px]"}>
             {affiliateHistoryData.map((item: any, index: number) => (
-              <div className={"flex justify-between px-[16px] pb-[24px] pt-[16px]"} key={index}>
+              <div
+                className={"flex justify-between px-[16px] pb-[24px] pt-[16px]"}
+                key={index}
+              >
                 <div className={"flex flex-col"}>
                   <p className={"text-[14px] font-medium"}>{item.amount}</p>
-                  <p className={"text-[12px] font-normal text-text-grey"}>{item.date}</p>
+                  <p className={"text-[12px] font-normal text-text-grey"}>
+                    {item.date}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
-    </>
+      </DialogContentBare>
+    </Dialog>
   );
 };
 

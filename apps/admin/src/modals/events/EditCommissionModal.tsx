@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { XIcon } from "lucide-react";
-import { Input } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, Input } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import * as yup from "yup";
@@ -16,7 +16,12 @@ interface EditCommissionModalProps {
   commissionCharge: number;
 }
 
-function EditCommissionModal({ isOpen, toggle, id, commissionCharge }: EditCommissionModalProps) {
+function EditCommissionModal({
+  isOpen,
+  toggle,
+  id,
+  commissionCharge,
+}: EditCommissionModalProps) {
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const updateCommissionChargeMutation = useUpdateCommissionChargeMutation();
@@ -62,57 +67,67 @@ function EditCommissionModal({ isOpen, toggle, id, commissionCharge }: EditCommi
   }, [commissionCharge]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) toggle();
+      }}
     >
-      <form onSubmit={formik.handleSubmit}>
-        <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
-          <div className={"px-[16px] py-[4px]"}>
-            <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">
-                Commission percentage
+      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+        <DialogTitle className="sr-only">Commission percentage</DialogTitle>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+            <div className={"px-[16px] py-[4px]"}>
+              <div className="flex items-center justify-between">
+                <p className="font-sans text-[18px] font-semibold leading-[27px]">
+                  Commission percentage
+                </p>
+                <div className="cursor-pointer" onClick={toggle}>
+                  <XIcon />
+                </div>
+              </div>
+            </div>
+            <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
+              <p className={"text-[14px] font-normal text-light-black"}>
+                Set the commission to be earned on every ticket sale.
               </p>
-              <div className="cursor-pointer" onClick={toggle}>
-                <XIcon />
+              <p className={"text-[14px] font-normal text-text-grey"}>
+                Commission percentage (%)
+              </p>
+              <Input
+                className={
+                  "h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"
+                }
+                placeholder={"Commission percentage"}
+                value={formik.values.percentage}
+                onChange={formik.handleChange("percentage")}
+                onBlur={formik.handleBlur}
+                type={"number"}
+              />
+              <div className={"flex justify-between gap-[10px]"}>
+                <button
+                  className={
+                    "h-[48px] w-[156px] rounded-[12px] border-[1px] border-light-grey-50 bg-white"
+                  }
+                  onClick={toggle}
+                >
+                  <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                </button>
+                <FormikButton
+                  loading={formik.isSubmitting}
+                  title={"Save"}
+                  error={formik.isValid}
+                  classes="border-[1px] px-[14px] py-[11px] rounded-[12px] w-[156px]"
+                />
+                {/*<button className={"h-[48px] border-[1px] bg-gradient-green rounded-[12px] w-[156px] text-center"}>*/}
+                {/*    <p className={"text-[16px] font-medium text-white"}>Save</p>*/}
+                {/*</button>*/}
               </div>
             </div>
           </div>
-          <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
-            <p className={"text-[14px] font-normal text-light-black"}>
-              Set the commission to be earned on every ticket sale.
-            </p>
-            <p className={"text-[14px] font-normal text-text-grey"}>Commission percentage (%)</p>
-            <Input
-              className={"h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"}
-              placeholder={"Commission percentage"}
-              value={formik.values.percentage}
-              onChange={formik.handleChange("percentage")}
-              onBlur={formik.handleBlur}
-              type={"number"}
-            />
-            <div className={"flex justify-between gap-[10px]"}>
-              <button
-                className={
-                  "h-[48px] w-[156px] rounded-[12px] border-[1px] border-light-grey-50 bg-white"
-                }
-                onClick={toggle}
-              >
-                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
-              </button>
-              <FormikButton
-                loading={formik.isSubmitting}
-                title={"Save"}
-                error={formik.isValid}
-                classes="border-[1px] px-[14px] py-[11px] rounded-[12px] w-[156px]"
-              />
-              {/*<button className={"h-[48px] border-[1px] bg-gradient-green rounded-[12px] w-[156px] text-center"}>*/}
-              {/*    <p className={"text-[16px] font-medium text-white"}>Save</p>*/}
-              {/*</button>*/}
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </DialogContentBare>
+    </Dialog>
   );
 }
 
