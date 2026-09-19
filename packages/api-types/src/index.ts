@@ -65,3 +65,4 @@ export type TokenType =
   | "two_factor";
 
 export * from "./routes";
+export * from "./build-path";
