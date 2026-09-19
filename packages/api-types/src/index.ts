@@ -1,14 +1,16 @@
 // @lemonade/api-types
 //
-// GENERATED PACKAGE — do not hand-edit anything under src/ once generation
-// is wired up. This file is a placeholder describing the shape the
-// generator must produce, sourced from docs/ARCHITECTURE.md §2 and §7.
+// Route constants and request-body types are generated — see ./generated
+// (import from "@lemonade/api-types/generated", not this file) and
+// tooling/generate-api-types/README.md. Every feature domain in both apps
+// migrated off this package's old hand-maintained routes.ts in Phase 2
+// (docs/ARCHITECTURE.md §21); that file is gone now.
 //
-// TODO(Phase 2): replace with output from tooling/generate-api-types, driven
-// by the backend's Postman collection or an OpenAPI export.
-//
-// Until then, the two enums below are hand-mirrored from the backend source
-// of truth (lemonade-backend, checked directly, not guessed):
+// What's still hand-written here: the envelope types and the two enums
+// below, mirrored from the backend source of truth (lemonade-backend,
+// checked directly, not guessed) since response *shapes* aren't
+// introspected yet (only request-side FormRequest rules are — see the
+// generator's own README for why):
 //   app/Enums/Shared/ErrorCode.php  — 18 cases
 //   app/Enums/Shared/TokenType.php  — 10 cases
 
@@ -64,5 +66,4 @@ export type TokenType =
   | "account_deletion"
   | "two_factor";
 
-export * from "./routes";
 export * from "./build-path";
