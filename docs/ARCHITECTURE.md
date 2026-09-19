@@ -2929,7 +2929,7 @@ backend work.
   real backend rows, not the old fixture's fixed "Global tech"/"Unlocking business potentials" text. 33 e2e
   tests passing in total.
 
-#### Conflict 2 — the admin permission model is a single string column **[SHOULD]**
+#### Conflict 2 — the admin permission model is a single string column **[SHOULD]** — **resolved**
 
 - **Conflict** — The admin app has a team-members feature, implying differentiated access. The backend's
   `admins` table carries one `role` column defaulting to `'admin'`, with no roles or permissions enum
@@ -2941,6 +2941,38 @@ backend work.
   as fully privileged, because that is what is true. If differentiated access is a real requirement, the
   backend adds a roles/permissions model and exposes the effective permission set on the session
   endpoint; the frontend then renders from that list and never from a hardcoded map.
+- **Status (2026-09-19) — done, backend only; nothing changes on the frontend side.** `lemonade-backend`
+  (branch `ft_architecture_upgrade`, local, not pushed) adopted spatie/laravel-permission, replacing the
+  `admin-write` Gate's old `$admin->role === 'admin'` string comparison with a real
+  `$admin->hasPermissionTo('admin-write')` check backed by actual role/permission tables. `admins.role`
+  (the plain string column) is gone; every existing admin's role was migrated automatically as part of
+  the same migration sequence that adds it, read off the raw column before it's dropped. The two roles
+  that already existed in the old ad-hoc `roles` lookup table (`admin`, `customer-support`) carry over
+  under the same names, and only `admin` got the new `admin-write` permission — matching exactly what
+  the old string check ever granted, no new granularity invented beyond that (this app has never had a
+  UI or product decision for what a `customer-support` admin should specifically be allowed to do; adding
+  more permissions than the one that already existed would be inventing product scope, not migrating).
+  All 8 `can:admin-write`-gated route groups (wallet, subscriptions, moderation, businesses, tribes,
+  events, users, team-members) are untouched — same middleware name, same routes, only what backs the
+  Gate changed. `GET /admin/team-members/roles` and every `role` field in `AdminResource`/
+  `AdminTeamResource` keep their exact existing shape (`role: string`), so **the admin frontend needed
+  zero changes** — confirmed by grepping for the admin app's "Add Admin" form, which turned out to be a
+  free-text input, not a dropdown reading that endpoint, so there was no consumer to update either way.
+  Live-verified against the real running backend, not just the test suite: created a real
+  `customer-support` admin via the actual `POST /admin/team-members` endpoint, confirmed it gets a real
+  403 on an `admin-write`-gated action and a real 200 on a plain read, then deleted the test admin. 525
+  backend tests pass (522 pre-existing + 3 new), PHPStan and Pint clean.
+
+  **A real, unrelated pre-existing test-infrastructure bug found and fixed along the way**: three
+  `DatabaseTruncation`-based full-text-search tests (`tests/{Unit,Feature}/Discovery/SearchServiceTest.php`,
+  `tests/Feature/Discovery/RoutedSearchActionsTest.php`) truncate every table in the test database,
+  including reference tables — this was silently already true before this change (any test depending on
+  seeded `categories`/`industries`/`tags` rows running after one of these would have hit the same class
+  of bug), but the new `roles`/`permissions` tables made it visible immediately, since `Admin::factory()`
+  now depends on a real `roles` row existing. Diagnosed with a per-test row-count probe (not assumed) after
+  ruling out caching — real data loss via a real `TRUNCATE`, not a stale cache serving empty results.
+  Fixed by excluding spatie's tables from truncation, the same way Laravel's own `DatabaseTruncation` trait
+  already excludes the `migrations` table by default.
 
 #### Conflict 3 — the BFF changes where the backend sees requests from **[SHOULD]** — **resolved**
 
