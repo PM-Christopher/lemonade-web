@@ -12,7 +12,7 @@
 // already-migrated wallet domain's useWalletDetailQuery already calls; the
 // wallet-details consumer page below reuses that hook instead.
 import { browserApi } from "@/lib/browser-api";
-import { adminTransactionRoutes } from "@lemonade/api-types";
+import { adminTransactionRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface TransactionHistoryRow {
   id?: number;
@@ -106,7 +106,7 @@ export const transactionApi = {
 
     switch (trxType) {
       case "plan-subscriptions":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.SUBSCRIPTIONS, { params });
       case "wallet-withdrawals":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS, { params });
       case "boosting":
@@ -122,9 +122,11 @@ export const transactionApi = {
 
   getPlanSubscription: (id: number) =>
     browserApi.get<PlanSubscriptionDetailResponse>(
-      `${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`,
+      buildPath(adminTransactionRoutes.SUBSCRIPTION, { id }),
     ),
 
   getEventDetail: (id: number) =>
-    browserApi.get<TransactionEventDetailResponse>(`${adminTransactionRoutes.EVENT}/${id}`),
+    browserApi.get<TransactionEventDetailResponse>(
+      buildPath(adminTransactionRoutes.EVENT, { id }),
+    ),
 };

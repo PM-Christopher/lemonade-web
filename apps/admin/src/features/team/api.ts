@@ -2,7 +2,7 @@
 // the pattern this follows: the BFF proxy transport (browserApi), not the
 // pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
-import { adminTeamRoutes } from "@lemonade/api-types";
+import { adminTeamMembersRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface TeamMember {
   id: number;
@@ -35,14 +35,14 @@ export interface CreateTeamMemberResponse {
 }
 
 export const teamApi = {
-  getTeamData: () => browserApi.get<TeamListResponse>(adminTeamRoutes.BASE),
+  getTeamData: () => browserApi.get<TeamListResponse>(adminTeamMembersRoutes.LIST),
 
   getTeamDetail: (id: number) =>
-    browserApi.get<TeamDetailResponse>(`${adminTeamRoutes.BASE}/${id}`),
+    browserApi.get<TeamDetailResponse>(buildPath(adminTeamMembersRoutes.SHOW, { id })),
 
-  // No trailing slash — adminTeamRoutes.BASE already has none, and one
-  // here made the proxy 308-redirect every create (harmless since POST
+  // No trailing slash — adminTeamMembersRoutes.CREATE already has none, and
+  // one here made the proxy 308-redirect every create (harmless since POST
   // redirects preserve method+body, but an avoidable extra round trip).
   addTeamMember: (payload: CreateTeamMemberPayload) =>
-    browserApi.post<CreateTeamMemberResponse>(adminTeamRoutes.BASE, payload),
+    browserApi.post<CreateTeamMemberResponse>(adminTeamMembersRoutes.CREATE, payload),
 };

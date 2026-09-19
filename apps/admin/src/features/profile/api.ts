@@ -2,7 +2,7 @@
 // for the pattern this follows: the BFF proxy transport (browserApi), not
 // the pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
-import { adminAccountRoutes } from "@lemonade/api-types";
+import { adminAccountRoutes } from "@lemonade/api-types/generated";
 
 export interface AdminProfile {
   id: string | number;

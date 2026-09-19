@@ -2,7 +2,7 @@
 // the pattern this follows: the BFF proxy transport (browserApi), not the
 // pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
-import { adminWalletRoutes, adminTransactionRoutes } from "@lemonade/api-types";
+import { adminWalletRoutes, adminTransactionRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface WalletData {
   // Pre-formatted decimal strings from the backend (money is formatted
@@ -73,7 +73,7 @@ export interface WalletDetail {
 }
 
 export const walletApi = {
-  getWalletData: () => browserApi.get<WalletData>(adminWalletRoutes.BASE),
+  getWalletData: () => browserApi.get<WalletData>(adminWalletRoutes.DASHBOARD),
 
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
   getWithdrawalRequests: (pagination?: { page?: number; perPage?: number }) =>
@@ -84,20 +84,22 @@ export const walletApi = {
     }),
 
   getWalletDetail: (id: number) =>
-    browserApi.get<WalletDetail>(`${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`),
+    browserApi.get<WalletDetail>(buildPath(adminTransactionRoutes.WALLET_WITHDRAWAL, { id })),
 
   updateWithdrawalThreshold: (threshold: number) =>
     browserApi.patch(adminWalletRoutes.UPDATE_WITHDRAWAL_THRESHOLD, { threshold }),
 
   withdrawalRequestDecision: (id: unknown, type: string) =>
-    browserApi.patch(`${adminWalletRoutes.USER}/${id}/withdrawal-request`, { type }),
+    browserApi.patch(buildPath(adminWalletRoutes.USER_WITHDRAWAL_REQUEST, { id: String(id) }), {
+      type,
+    }),
 
   // amount must go out as a JSON number — the backend's Money::fromUnits()
   // rejects a string outright (found live-testing this migration; the
   // pre-migration thunk had the same bug, sending values.amount as-is).
   addToWallet: (id: unknown, amount: number) =>
-    browserApi.patch(`${adminWalletRoutes.USER}/${id}/add`, { amount }),
+    browserApi.patch(buildPath(adminWalletRoutes.USER_ADD, { id: String(id) }), { amount }),
 
   deductFromWallet: (id: unknown, amount: number) =>
-    browserApi.patch(`${adminWalletRoutes.USER}/${id}/deduct`, { amount }),
+    browserApi.patch(buildPath(adminWalletRoutes.USER_DEDUCT, { id: String(id) }), { amount }),
 };

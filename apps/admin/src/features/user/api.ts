@@ -9,7 +9,7 @@
 // (UserController::userBusiness exists but nothing in routes/v1/admin/users.php
 // wires it up), so falling through to user-logs is the only sensible choice.
 import { browserApi } from "@/lib/browser-api";
-import { adminUserRoutes } from "@lemonade/api-types";
+import { adminUsersRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface AdminUser {
   id: number;
@@ -138,10 +138,10 @@ export const userApi = {
   ): Promise<UserListResponse | AffiliateListResponse> => {
     switch (trxType) {
       case "affiliates":
-        return browserApi.get<AffiliateListResponse>(adminUserRoutes.AFFILIATES_LOG);
+        return browserApi.get<AffiliateListResponse>(adminUsersRoutes.AFFILIATES_LOG);
       case "users":
       default:
-        return browserApi.get<UserListResponse>(adminUserRoutes.BASE, {
+        return browserApi.get<UserListResponse>(adminUsersRoutes.LIST, {
           params: pagination?.page
             ? { page: pagination.page, per_page: pagination.perPage }
             : undefined,
@@ -150,7 +150,7 @@ export const userApi = {
   },
 
   getUserDetail: (id: number) =>
-    browserApi.get<UserDetailResponse>(`${adminUserRoutes.BASE}/${id}`),
+    browserApi.get<UserDetailResponse>(buildPath(adminUsersRoutes.SHOW, { id })),
 
   // NOTE (found live-testing, not fixed — pre-existing backend bug, not
   // introduced by this migration): the affiliates list is built from the
@@ -160,30 +160,30 @@ export const userApi = {
   // request the old axios code sent — needs a backend/product decision on
   // which model is authoritative, not a frontend fix.
   getAffiliateDetail: (id: number) =>
-    browserApi.get<AffiliateDetailResponse>(`${adminUserRoutes.AFFILIATES_DETAIL}/${id}/detail`),
+    browserApi.get<AffiliateDetailResponse>(buildPath(adminUsersRoutes.AFFILIATES_DETAIL, { id })),
 
   // See the NOTE above for the "business" case.
   getAccountInfo: (id: number, infoType: string) => {
     switch (infoType) {
       case "tribes":
-        return browserApi.get<AccountInfoResponse>(`${adminUserRoutes.BASE}/${id}/user-tribes`);
+        return browserApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.TRIBES, { id }));
       case "events":
-        return browserApi.get<AccountInfoResponse>(`${adminUserRoutes.BASE}/${id}/user-events`);
+        return browserApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.EVENTS, { id }));
       case "wallet":
-        return browserApi.get<AccountInfoResponse>(`${adminUserRoutes.BASE}/${id}/user-wallet`);
+        return browserApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.WALLET, { id }));
       case "activities-log":
       case "business":
       default:
-        return browserApi.get<AccountInfoResponse>(`${adminUserRoutes.BASE}/${id}/user-logs`);
+        return browserApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.LOGS, { id }));
     }
   },
 
   suspendUser: (id: number) =>
-    browserApi.patch<UserActionResponse>(`${adminUserRoutes.BASE}/${id}/suspend-user`, {}),
+    browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.SUSPEND, { id }), {}),
 
   deactivateUser: (id: number) =>
-    browserApi.patch<UserActionResponse>(`${adminUserRoutes.BASE}/${id}/deactivate-user`, {}),
+    browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.DEACTIVATE, { id }), {}),
 
   reactivateUser: (id: number) =>
-    browserApi.patch<UserActionResponse>(`${adminUserRoutes.BASE}/${id}/reactivate-user`, {}),
+    browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.REACTIVATE, { id }), {}),
 };

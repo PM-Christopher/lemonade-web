@@ -1,6 +1,6 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { adminTransactionRoutes } from "@lemonade/api-types";
+import { adminTransactionRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   TransactionListResponse,
   PlanSubscriptionDetailResponse,
@@ -9,7 +9,7 @@ import type {
 
 export const transactionServerApi = {
   getPlanSubscriptions: (pagination?: { page?: number; perPage?: number }) =>
-    backendApi.get<TransactionListResponse>(adminTransactionRoutes.PLAN_SUBSCRIPTION, {
+    backendApi.get<TransactionListResponse>(adminTransactionRoutes.SUBSCRIPTIONS, {
       params: pagination?.page
         ? { page: pagination.page, per_page: pagination.perPage }
         : undefined,
@@ -17,11 +17,11 @@ export const transactionServerApi = {
 
   getPlanSubscription: (id: number | string) =>
     backendApi.get<PlanSubscriptionDetailResponse>(
-      `${adminTransactionRoutes.PLAN_SUBSCRIPTION}/${id}`,
+      buildPath(adminTransactionRoutes.SUBSCRIPTION, { id }),
     ),
 
   getEventDetail: (id: number | string) =>
     backendApi.get<TransactionEventDetailResponse>(
-      `${adminTransactionRoutes.EVENT}/${id}`,
+      buildPath(adminTransactionRoutes.EVENT, { id }),
     ),
 };

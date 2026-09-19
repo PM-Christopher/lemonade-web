@@ -6,7 +6,7 @@
 // lemonade-backend's ReportController::markCompleted) — the argument-free
 // PATCH below is correct, not a placeholder.
 import { browserApi } from "@/lib/browser-api";
-import { adminReportRoutes } from "@lemonade/api-types";
+import { adminReportsRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface ReportRow {
   id: number;
@@ -42,18 +42,18 @@ export interface ReportDetailResponse {
 export const reportingApi = {
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
   getReportData: (pagination?: { page?: number; perPage?: number }) =>
-    browserApi.get<ReportListResponse>(adminReportRoutes.BASE, {
+    browserApi.get<ReportListResponse>(adminReportsRoutes.LIST, {
       params: pagination?.page
         ? { page: pagination.page, per_page: pagination.perPage }
         : undefined,
     }),
 
   getReportDetail: (id: number) =>
-    browserApi.get<ReportDetailResponse>(`${adminReportRoutes.BASE}/${id}`),
+    browserApi.get<ReportDetailResponse>(buildPath(adminReportsRoutes.SHOW, { id })),
 
   resolveReport: (id: number) =>
-    browserApi.patch<{ completed: boolean }>(`${adminReportRoutes.BASE}/${id}`),
+    browserApi.patch<{ completed: boolean }>(buildPath(adminReportsRoutes.MARK_COMPLETED, { id })),
 
   deleteReportContent: (id: number, data: unknown) =>
-    browserApi.patch(`${adminReportRoutes.BASE}/${id}/delete-content`, data),
+    browserApi.patch(buildPath(adminReportsRoutes.DELETE_CONTENT, { id }), data),
 };

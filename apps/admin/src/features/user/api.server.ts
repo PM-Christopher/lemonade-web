@@ -4,7 +4,7 @@
 // (direct-to-backend) instead of browserApi (BFF-proxy, client-only).
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { adminUserRoutes } from "@lemonade/api-types";
+import { adminUsersRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   UserListResponse,
   UserDetailResponse,
@@ -18,25 +18,23 @@ export const userServerApi = {
   // filter already in the URL, so client-side filtering has every user to
   // search, not just one page of it.
   getUsers: (pagination?: { page?: number; perPage?: number }) =>
-    backendApi.get<UserListResponse>(adminUserRoutes.BASE, {
+    backendApi.get<UserListResponse>(adminUsersRoutes.LIST, {
       params: pagination?.page
         ? { page: pagination.page, per_page: pagination.perPage }
         : undefined,
     }),
 
   getUserDetail: (id: number | string) =>
-    backendApi.get<UserDetailResponse>(`${adminUserRoutes.BASE}/${id}`),
+    backendApi.get<UserDetailResponse>(buildPath(adminUsersRoutes.SHOW, { id })),
 
   // Mirrors the default-tab case in api.ts's getAccountInfo switch
   // ("activities-log" -> user-logs) — only the default tab is prefetched,
   // same "prefetch only the default tab" rule as the tabbed list pages.
   getAccountInfoDefault: (id: number | string) =>
-    backendApi.get<AccountInfoResponse>(
-      `${adminUserRoutes.BASE}/${id}/user-logs`,
-    ),
+    backendApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.LOGS, { id })),
 
   getAffiliateDetail: (id: number | string) =>
     backendApi.get<AffiliateDetailResponse>(
-      `${adminUserRoutes.AFFILIATES_DETAIL}/${id}/detail`,
+      buildPath(adminUsersRoutes.AFFILIATES_DETAIL, { id }),
     ),
 };

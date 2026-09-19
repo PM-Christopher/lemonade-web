@@ -1,6 +1,6 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { adminAnnouncementRoutes } from "@lemonade/api-types";
+import { adminAnnouncementRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   AnnouncementListResponse,
   AnnouncementDetailResponse,
@@ -8,10 +8,10 @@ import type {
 
 export const announcementsServerApi = {
   getAnnouncements: () =>
-    backendApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.BASE),
+    backendApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.LIST),
 
   getAnnouncement: (id: number | string) =>
     backendApi.get<AnnouncementDetailResponse>(
-      `${adminAnnouncementRoutes.BASE}/${id}`,
+      buildPath(adminAnnouncementRoutes.SHOW, { id }),
     ),
 };

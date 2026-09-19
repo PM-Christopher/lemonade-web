@@ -2,7 +2,7 @@
 // for the pattern this follows: the BFF proxy transport (browserApi), not
 // the pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
-import { adminAnnouncementRoutes } from "@lemonade/api-types";
+import { adminAnnouncementRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface AnnouncementRow {
   id: number;
@@ -25,8 +25,8 @@ export interface AnnouncementDetailResponse {
 }
 
 export const announcementsApi = {
-  getAnnouncements: () => browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.BASE),
+  getAnnouncements: () => browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.LIST),
 
   getAnnouncement: (id: number) =>
-    browserApi.get<AnnouncementDetailResponse>(`${adminAnnouncementRoutes.BASE}/${id}`),
+    browserApi.get<AnnouncementDetailResponse>(buildPath(adminAnnouncementRoutes.SHOW, { id })),
 };

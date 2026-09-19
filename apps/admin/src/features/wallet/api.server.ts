@@ -1,10 +1,10 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { adminWalletRoutes, adminTransactionRoutes } from "@lemonade/api-types";
+import { adminWalletRoutes, adminTransactionRoutes, buildPath } from "@lemonade/api-types/generated";
 import type { WalletData, WithdrawalRequests, WalletDetail } from "./api";
 
 export const walletServerApi = {
-  getWalletData: () => backendApi.get<WalletData>(adminWalletRoutes.BASE),
+  getWalletData: () => backendApi.get<WalletData>(adminWalletRoutes.DASHBOARD),
 
   getWithdrawalRequests: (pagination?: { page?: number; perPage?: number }) =>
     backendApi.get<WithdrawalRequests>(adminTransactionRoutes.WALLET_WITHDRAWALS, {
@@ -15,6 +15,6 @@ export const walletServerApi = {
 
   getWalletDetail: (id: number | string) =>
     backendApi.get<WalletDetail>(
-      `${adminTransactionRoutes.WALLET_WITHDRAWAL}/${id}`,
+      buildPath(adminTransactionRoutes.WALLET_WITHDRAWAL, { id }),
     ),
 };

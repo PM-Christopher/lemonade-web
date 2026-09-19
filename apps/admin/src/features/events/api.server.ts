@@ -1,6 +1,6 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { adminEventRoutes, adminPromotionRoutes } from "@lemonade/api-types";
+import { adminEventsRoutes, adminPromotionsRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {
   EventListResponse,
   EventDetailResponse,
@@ -8,13 +8,13 @@ import type {
 } from "./api";
 
 export const eventsServerApi = {
-  getEvents: () => backendApi.get<EventListResponse>(adminEventRoutes.BASE),
+  getEvents: () => backendApi.get<EventListResponse>(adminEventsRoutes.LIST),
 
   getEventDetail: (id: number | string) =>
-    backendApi.get<EventDetailResponse>(`${adminEventRoutes.BASE}/${id}`),
+    backendApi.get<EventDetailResponse>(buildPath(adminEventsRoutes.SHOW, { id })),
 };
 
 export const promotionsServerApi = {
   getPromotions: () =>
-    backendApi.get<PromotionListResponse>(adminPromotionRoutes.BASE),
+    backendApi.get<PromotionListResponse>(adminPromotionsRoutes.LIST),
 };

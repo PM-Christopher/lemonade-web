@@ -1,11 +1,11 @@
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import { adminTeamRoutes } from "@lemonade/api-types";
+import { adminTeamMembersRoutes, buildPath } from "@lemonade/api-types/generated";
 import type { TeamListResponse, TeamDetailResponse } from "./api";
 
 export const teamServerApi = {
-  getTeamData: () => backendApi.get<TeamListResponse>(adminTeamRoutes.BASE),
+  getTeamData: () => backendApi.get<TeamListResponse>(adminTeamMembersRoutes.LIST),
 
   getTeamDetail: (id: number | string) =>
-    backendApi.get<TeamDetailResponse>(`${adminTeamRoutes.BASE}/${id}`),
+    backendApi.get<TeamDetailResponse>(buildPath(adminTeamMembersRoutes.SHOW, { id })),
 };
