@@ -49,9 +49,9 @@ to update the generated files in the same commit.
 - **Response shapes.** The manifest only knows about request-side
   `FormRequest` rules — API Resources (the backend's response shape) aren't
   introspected, since that needs either running the actual serialization
-  logic or a much deeper static-analysis pass. `packages/api-types/src/routes.ts`'s
-  hand-written response interfaces (`LoginResult`, etc., in each
-  `features/x/api.ts`) still need to be hand-maintained until this exists.
+  logic or a much deeper static-analysis pass. Hand-written response
+  interfaces (`LoginResult`, etc., in each `features/x/api.ts`) still need
+  to be hand-maintained until this exists.
 - **True live-backend drift detection in CI.** The `contract-drift` CI job
   regenerates from the _committed snapshot_ and fails if that differs from
   the committed generated files — it catches "someone hand-edited a
@@ -60,12 +60,10 @@ to update the generated files in the same commit.
   refreshed." Wiring the latter needs `lemonade-backend` checked out in this
   repo's CI (a cross-repo access/secrets decision, not something to
   provision from here).
-- **Replacing `packages/api-types/src/routes.ts`.** The generated route
-  constants live under a separate `@lemonade/api-types/generated` import
-  path specifically so they don't collide with (or silently replace) the
-  hand-maintained, currently-consumed constants — several group names match
-  by design (`adminAuthRoutes` exists in both), which would be an ambiguous
-  `export *` otherwise. Migrating the ~15 features that import from
-  `routes.ts` today over to the generated output is real, separate,
-  mechanical work — worth doing once the generated naming has had a chance
-  to prove itself, not folded into standing this pipeline up.
+
+Every feature in both apps now imports route constants from
+`@lemonade/api-types/generated` — the hand-maintained `packages/api-types/src/routes.ts`
+this section used to describe as a still-consumed parallel source is gone
+(docs/ARCHITECTURE.md §21 Phase 2). `buildPath(template, params)`
+(`packages/api-types/src/build-path.ts`) fills a generated route's `{param}`
+placeholders at the call site.

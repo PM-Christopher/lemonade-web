@@ -28,13 +28,16 @@ the second form (and CI) work without a live backend. Refresh it whenever the ba
 - **Generated:** request-side shapes — route constants and the field types a `FormRequest`'s validation
   rules imply.
 - **Still hand-written:** response shapes. The manifest only sees request-side rules; API Resources
-  (the backend's actual response serialization) aren't introspected. `packages/api-types/src/routes.ts`'s
-  response interfaces (`LoginResult` and friends, defined per `features/x/api.ts`) still need a human to
-  keep them in sync with what the backend actually returns.
-- **Not yet migrated:** the ~15 features still importing route constants from the hand-maintained
-  `packages/api-types/src/routes.ts` rather than the generated output. Both exist side by side
-  deliberately (see the generator's own README for why an `export *` would collide), and migrating them
-  over is real, separate, mechanical work.
+  (the backend's actual response serialization) aren't introspected. Response interfaces (`LoginResult`
+  and friends, defined per `features/x/api.ts`) still need a human to keep them in sync with what the
+  backend actually returns.
+- **Migrated, `routes.ts` deleted:** every feature in both apps now imports route constants from
+  `@lemonade/api-types/generated` (`routes.generated.ts`) — the hand-maintained `packages/api-types/src/routes.ts`
+  this section used to describe as a parallel, not-yet-migrated source is gone. Use `buildPath(template,
+  params)` (`packages/api-types/src/build-path.ts`) to fill a generated route's `{param}` placeholders,
+  e.g. `buildPath(adminUsersRoutes.SHOW, { id })` — a generated parameterized route already contains
+  `{id}` (or whatever the backend's real route parameter is named) baked into the string, so it's never
+  built by concatenating a suffix onto a separate BASE constant the way the old hand-written file worked.
 
 ## When generation and reality disagree
 

@@ -1555,7 +1555,7 @@ which only warned), which would have broken CI the moment it ran. Fixed by setti
 booleans (esbuild/unrs-resolver approved, the other five denied — `next build` and `vitest` both pass
 without them).
 
-### Phase 2 — Monorepo consolidation **[MUST]** **[MOSTLY DONE]**
+### Phase 2 — Monorepo consolidation **[MUST]** **[DONE — only archiving the old pre-monorepo repos remains, a destructive action outside this repo left for direct action]**
 
 Mechanical and low-risk. No behaviour changes in this phase — that is the point.
 
@@ -1608,9 +1608,53 @@ checked out in this repo's CI, a cross-repo access decision, not something to pr
 response shapes (API Resources aren't introspected — only request-side `FormRequest` rules). The
 generated output lives under a separate `@lemonade/api-types/generated` import specifically so it
 doesn't collide with (or silently replace) `routes.ts` — several group names match by design
-(`adminAuthRoutes` exists in both). Migrating the ~15 features that import from `routes.ts` today
-over to the generated output is real, separate, mechanical follow-up work, not folded into standing
-the pipeline up. See `tooling/generate-api-types/README.md` for the full picture.
+(`adminAuthRoutes` exists in both). See `tooling/generate-api-types/README.md` for the full picture.
+
+**Migration to the generated output — done, `routes.ts` deleted.** All 18 feature domains across
+both apps (9 admin, 9 frontend — every `features/*/api.ts`/`api.server.ts` pair, plus the auth-
+critical `lib/server-api.ts` and `app/api/auth/{login,logout}/route.ts` files in both apps) now
+import from `@lemonade/api-types/generated` instead of the hand-maintained `routes.ts`, which is
+gone — confirmed zero remaining importers repo-wide before deleting it, per this doc's own
+Definition of Done ("no feature exists in both the old pattern and the new pattern when a phase
+ends"). Added one small piece of new infrastructure this required: `buildPath(template, params)`
+(`packages/api-types/src/build-path.ts`, 5 unit tests) fills the `{param}` placeholders the
+generated routes bake into the string itself (e.g. `"/admin/users/{id}"`) — `routes.ts`'s old
+pattern of hand-concatenating `` `${BASE}/${id}` `` onto a shared prefix constant doesn't apply to
+generated output, since a parameterized route is already a complete, real path template.
+
+The generated file's shape is meaningfully different from the hand-written one it replaced, not
+just a renaming exercise — three real differences this migration had to handle correctly, not
+paper over: **(1)** naming is per-endpoint, not per-prefix — `adminTransactionRoutes.PLAN_SUBSCRIPTION`
+served both the list and the `+ /:id` detail endpoint before; the generated version has separate
+`SUBSCRIPTIONS`/`SUBSCRIPTION` constants, one already carrying `{id}`. **(2)** some endpoints moved
+to a different, more accurate group entirely — `userAuthRoutes.LOGOUT` and `userSettingsRoutes.PROFILE`/
+`.SUBSCRIPTION`/`.NOTIFICATION_SETTINGS` are grouped by their real backend controller now
+(`userProfileRoutes`), not by the frontend-side domain that happened to consume them; frontend's
+thread/message actions split out of `userTribeRoutes`/`userConnectRoutes` into their own
+`userThreadsRoutes`/`userMessagesRoutes` groups the same way. **(3)** multi-param routes keep their
+real backend parameter names, which don't always match the frontend's local variable names — e.g.
+`userEventsRoutes.EVENT_PROMOTION`'s second placeholder is `{promo_id}`, called `promotionId` at the
+one call site that uses it; `userThreadsRoutes.POST_COMMENT`'s second placeholder is `{id}`, not
+`{thread_id}` as the old hand-rolled suffix implied. Every one of these was resolved by reading the
+real generated route string and the real call site side by side, not by pattern-matching names.
+
+Verified beyond typecheck (which does catch a renamed key or group, but not a wrong route *string*):
+lint and build clean in both apps, then live curl-verified roughly 30 endpoints across every migrated
+domain in both apps against the real backend post-migration, including the trickiest `buildPath`
+cases — admin's wallet add/deduct/withdrawal-request, user suspend/deactivate/reactivate, event
+suspend/activate/delete; frontend's tribe detail/threads (confirmed the route resolves — the first
+attempt used the wrong identifier, `id` instead of `slug`, caught by getting a real `"Tribe not
+found"` back rather than a routing 404, then confirmed again with a real 403 from the actual
+authorization check once the right identifier was used), the multi-param thread/poll actions, and
+the events guest-list/check-in endpoints. Full existing Playwright e2e suite re-run after: 35
+passing, 1 pre-existing flaky test recovered on retry (unrelated — frontend detail-navigation,
+already documented elsewhere in this doc).
+
+Not migrated, and deliberately out of scope: the handful of call sites `routes.ts`'s own original
+header comment already flagged as raw un-migrated strings (OTP/password-reset sub-flows, file
+uploads, a couple of payment-verify endpoints referencing routes that don't exist in the backend
+contract at all) — these never used a route *constant* in the first place, so there was nothing for
+this pass to move off of. They're the same gaps this doc has tracked since Phase 0/4, not a new find.
 
 Not done: archiving the old `lemonade/{admin,frontend}` repos —
 `github.com/PM-Christopher/lemonade-admin` and `github.com/PM-Christopher/lemonade-frontend`, found by
