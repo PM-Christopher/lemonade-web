@@ -8,8 +8,8 @@
 //   node generate.mjs --backend /path/to/lemonade-backend
 //
 // Writes packages/api-types/src/generated/{routes,requests}.generated.ts.
-// These are a SEPARATE, additive output — see this directory's README for
-// why they don't replace packages/api-types/src/routes.ts yet.
+// These are the canonical route-constant source for both apps — see this
+// directory's README.
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -100,9 +100,9 @@ function renderRoutesFile(groups) {
     "// GENERATED FILE — do not hand-edit. Run `node tooling/generate-api-types/generate.mjs`.",
     "// Source: lemonade-backend's registered v1/* routes (introspect.php).",
     "//",
-    "// Additive, not yet consumed by either app — see this directory's README",
-    "// for why packages/api-types/src/routes.ts (the hand-maintained, currently",
-    "// consumed file) hasn't been replaced by this output yet.",
+    "// Canonical route-constant source for both apps — import from",
+    '// "@lemonade/api-types/generated", not the top-level package export.',
+    "// See this directory's README.",
     "",
   ];
 

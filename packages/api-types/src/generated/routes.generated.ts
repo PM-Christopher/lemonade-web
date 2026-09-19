@@ -1,9 +1,9 @@
 // GENERATED FILE — do not hand-edit. Run `node tooling/generate-api-types/generate.mjs`.
 // Source: lemonade-backend's registered v1/* routes (introspect.php).
 //
-// Additive, not yet consumed by either app — see this directory's README
-// for why packages/api-types/src/routes.ts (the hand-maintained, currently
-// consumed file) hasn't been replaced by this output yet.
+// Canonical route-constant source for both apps — import from
+// "@lemonade/api-types/generated", not the top-level package export.
+// See this directory's README.
 
 export const adminAccountRoutes = Object.freeze({
   CHANGE_PASSWORD: "/admin/account/change-password", // PATCH
