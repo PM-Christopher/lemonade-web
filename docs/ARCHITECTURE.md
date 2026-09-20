@@ -2974,6 +2974,28 @@ backend work.
   Fixed by excluding spatie's tables from truncation, the same way Laravel's own `DatabaseTruncation` trait
   already excludes the `migrations` table by default.
 
+- **Status (2026-09-20) — backend split into per-section permissions; frontend gating in progress.**
+  The single `admin-write` permission covered all 8 route groups as one flag, which meant it could never
+  express "this role can manage wallet settings but not suspend users." A follow-up migration
+  (`2026_09_20_120000_split_admin_write_into_per_section_permissions`) replaces it with 8 permissions —
+  one per route group (`wallet.write`, `subscriptions.write`, `moderation.write`, `businesses.write`,
+  `tribes.write`, `events.write`, `users.write`, `team-members.write`) — and every route's
+  `can:admin-write` middleware now reads `can:<section>.write` instead. The `admin` role got all 8,
+  preserving its exact prior access; no new access granted or revoked, only the granularity of what's
+  expressible. `AuthServiceProvider`'s explicit `Gate::define('admin-write', ...)` was removed entirely —
+  turns out it was already dead code, since spatie/laravel-permission registers its own `Gate::before()`
+  at boot that resolves any `can:<permission-name>` check against a real permission row automatically, and
+  that hook runs first. `AdminResource` now exposes a `permissions: string[]` field (every permission the
+  admin holds via any role) alongside the existing `role` field, so the frontend can gate off real
+  capability instead of a hardcoded role-name map. 526 backend tests pass, PHPStan and Pint clean.
+
+  This time the frontend does need to change — reads stay ungated (every admin can read every section
+  today, so hiding read-only pages would invent a restriction the backend doesn't enforce), but
+  write-action controls (buttons, forms) within each section should reflect that section's specific
+  `<section>.write` permission, since a `customer-support` admin can now genuinely lack it. This is the
+  actual point of the original conflict — see the frontend implementation work tracked separately as it
+  lands.
+
 #### Conflict 3 — the BFF changes where the backend sees requests from **[SHOULD]** — **resolved**
 
 - **Conflict** — Today requests reach Laravel from browsers. Under the BFF, they arrive from the Next
