@@ -2989,12 +2989,50 @@ backend work.
   admin holds via any role) alongside the existing `role` field, so the frontend can gate off real
   capability instead of a hardcoded role-name map. 526 backend tests pass, PHPStan and Pint clean.
 
-  This time the frontend does need to change — reads stay ungated (every admin can read every section
-  today, so hiding read-only pages would invent a restriction the backend doesn't enforce), but
-  write-action controls (buttons, forms) within each section should reflect that section's specific
-  `<section>.write` permission, since a `customer-support` admin can now genuinely lack it. This is the
-  actual point of the original conflict — see the frontend implementation work tracked separately as it
-  lands.
+- **Status (2026-09-20) — frontend gating landed; a real pre-existing authorization gap found and
+  closed along the way.** Auditing every admin route for `can:<section>.write` coverage (needed before
+  the frontend could trust it) turned up 13 mutation routes with no permission middleware at all —
+  business approve/reject/suspend/reactivate, event suspend/activate/approve/reject/update-commission,
+  tribe add-thread/remove-member, user change-plan/cancel-plan, team change-password, and moderation
+  forum-status. Any authenticated admin, any role, could call these regardless of permissions — a
+  pre-existing gap, not something this migration introduced (confirmed via `git log` on the affected
+  route files). Closed it: all 13 now carry the same `can:<section>.write` middleware as their siblings,
+  with a regression test (`AdminWriteGapClosureTest`) proving a `customer-support` admin is denied on a
+  representative sample. This mattered directly for the frontend work below — gating a button behind a
+  permission the backend doesn't enforce is exactly the "security theatre" this repo's principles rule
+  out, so the frontend gating below would have been partly cosmetic without this fix.
+
+  On the frontend (`apps/admin`): `CurrentAdmin` now carries `role`/`permissions`, and
+  `ADMIN_SECTION_PERMISSIONS` maps each of the 8 route groups to its permission name. The sidebar/bottom
+  nav filter out any section the admin lacks — reads and writes both, since the backend only models one
+  permission per section (no separate read grant to preserve), and direct navigation to a gated URL
+  gets a real HTTP 404, not just hidden content. That 404 comes from `middleware.ts`, not from each
+  page's own `notFound()` call: Next.js App Router's `notFound()`, thrown from an async Server Component
+  that reads cookies (which every one of these pages must, to know who's asking), renders the correct
+  not-found content but can't correct the response's status code once it starts streaming — confirmed
+  with an isolated minimal reproduction (a bare `cookies()` + `notFound()` page), not assumed. Middleware
+  checks the admin's permissions before any page renders and rewrites the gated request to a path with no
+  matching route, so Next's ordinary "route not found" handling produces a real 404 — the same one an
+  actually-nonexistent URL gets. It forwards the permissions it already fetched via an
+  `x-admin-permissions` request header so the page's own `requireAdminPermission()` (kept as defense in
+  depth) doesn't fetch the same profile a second time, and the client's `useCurrentAdminQuery` a third —
+  found by hitting the backend's 60/min-per-admin `throttle:api` limit while testing this, before that
+  optimization existed.
+
+  Three sections had no real write UI to gate at all, so building it was part of this pass: businesses
+  (list, detail, approve/reject/suspend/reactivate/delete — was a literal empty `<div></div>` stub),
+  subscriptions (plan list, create/edit, activate/deactivate/delete — brand new section, backend routes
+  existed but had zero frontend consumer), and tribes (list and detail were 100% hardcoded fixture data,
+  not wired to the backend at all — now real, plus restrict/reactivate/delete actions on the detail page).
+
+  Verified against the real running backend: `pnpm --filter lemonade-admin typecheck/lint/build` all
+  clean, and a Playwright suite (`permission-gating.spec.ts`) against a real second admin seeded with the
+  `customer-support` role and zero permissions — confirms the sidebar hides every gated section for that
+  admin while a full-permission admin sees all of them, and confirms a real 404 status for direct
+  navigation to every gated route. (Two tests around the heaviest route, `/users` — a 708-row list — flake
+  under the full suite's back-to-back load against the single-threaded `php artisan serve` dev server and
+  the same `throttle:api` limit; both pass cleanly in isolation. Test-environment artifact, not a product
+  bug — same category as this repo's pre-existing `GetTotalSubscriptionRevenueTest` flake.)
 
 #### Conflict 3 — the BFF changes where the backend sees requests from **[SHOULD]** — **resolved**
 
