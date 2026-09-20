@@ -1,58 +1,77 @@
 import React from "react";
 import Image from "next/image";
 import { DotIcon } from "lucide-react";
+import { TribeDetail, TribeMemberItem } from "@/features/tribes/api";
 
-const TribeDetails = () => {
+interface TribeDetailsProps {
+  // Optional — components/users/TribeModal.tsx (an unrelated, still-fixture
+  // consumer outside this migration's scope) renders this with no props at
+  // all. Keeping these optional avoids breaking that file while this
+  // component gets real data from the tribes admin detail page.
+  tribe?: TribeDetail;
+  members?: TribeMemberItem[];
+}
+
+const TribeDetails = ({ tribe, members = [] }: TribeDetailsProps) => {
   return (
     <div className="flex h-fit w-full flex-col gap-6">
-      <h3 className="mb-3 text-lg font-semibold">Tribe details</h3>
-      {/* Tribe Details Card */}
-      <div className="w-[430px] rounded-lg bg-white p-4">
+      <div className="w-full rounded-lg bg-white p-4">
         <div className="mb-4 flex flex-col items-center gap-2">
-          <Image src="/images/tribe_1.png" alt="Tribe" width={96} height={96} className="rounded" />
-          <p className="text-center text-[16px] font-semiBold">Start-ups</p>
-          <p className={"text-[14px] font-medium text-text-grey"}>Business</p>
+          <Image
+            src={tribe?.image || "/images/tribe_1.png"}
+            alt={tribe?.name ?? "Tribe"}
+            width={96}
+            height={96}
+            className="rounded"
+          />
+          <p className="text-center text-[16px] font-semiBold">{tribe?.name}</p>
+          <p className={"text-[14px] font-medium text-text-grey"}>{tribe?.category}</p>
           <div className={"flex items-center"}>
-            <p className={"text-[12px] font-normal text-text-grey"}>3 members</p>
+            <p className={"text-[12px] font-normal text-text-grey"}>
+              {tribe?.members_count ?? 0} members
+            </p>
             <DotIcon className={"text-text-grey"} />
-            <p className={"text-[12px] font-normal text-text-grey"}>1 thread</p>
+            <p className={"text-[12px] font-normal text-text-grey"}>
+              {tribe?.threads_count ?? 0} threads
+            </p>
           </div>
           <div className={"w-[311px]"}>
             <p className="text-center text-[14px] font-normal text-light-black">
-              Share your start-up experiences to teach others on what to do.
+              {tribe?.description}
             </p>
           </div>
           <p className="text-center text-[12px] font-normal text-text-grey">
-            Created on 23 Mar, 2024
+            Created on {tribe?.created_at}
           </p>
         </div>
       </div>
 
-      {/* Private Tribe + Members Card */}
-      <div className="">
-        <div className="mb-4 flex items-center justify-between">
-          <div className={"flex flex-col"}>
-            <p className="text-[16px] font-medium">Private Tribe</p>
-            <p className="text-[12px] font-normal text-text-grey">
-              Available to only added members
-            </p>
-          </div>
-        </div>
+      <div>
+        <p className="mb-4 text-[16px] font-medium">Members</p>
         <div className={"flex flex-col gap-[8px] rounded-[12px] bg-light-grey px-[24px] py-[16px]"}>
-          <p className={"text-[14px] font-medium text-text-grey"}>Members</p>
-          <div className={"flex justify-between border-b-[1px] border-b-grey-20 py-[10px]"}>
-            <div className={"flex items-center gap-2"}>
-              <Image src={"/images/tribe_1.png"} alt={"image"} width={20} height={20} />
-              <p className={"text-[14px] font-medium"}>Samjoe</p>
-            </div>
-            <p className={"text-[14px] font-medium italic text-text-grey"}>Creator</p>
-          </div>
-          <div className={"flex justify-between border-b-[1px] border-b-grey-20 py-[10px]"}>
-            <div className={"flex items-center gap-2"}>
-              <Image src={"/images/tribe_1.png"} alt={"image"} width={20} height={20} />
-              <p className={"text-[14px] font-medium"}>Christojoe</p>
-            </div>
-          </div>
+          {members.length > 0 ? (
+            members.map((member) => (
+              <div
+                key={member.id}
+                className={"flex justify-between border-b-[1px] border-b-grey-20 py-[10px] last:border-b-0"}
+              >
+                <div className={"flex items-center gap-2"}>
+                  <Image
+                    src={member.user?.profile_image || "/images/tribe_1.png"}
+                    alt={member.user?.fullname ?? "member"}
+                    width={20}
+                    height={20}
+                    className="rounded-full"
+                  />
+                  <p className={"text-[14px] font-medium"}>
+                    {member.user?.fullname ?? "Unknown member"}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-[14px] font-normal text-text-grey">No members yet</p>
+          )}
         </div>
       </div>
     </div>

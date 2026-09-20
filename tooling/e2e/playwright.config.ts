@@ -67,10 +67,15 @@ export default defineConfig({
       use: { baseURL: "http://localhost:3001" },
     },
     {
+      name: "admin-restricted-setup",
+      testMatch: /admin\/restricted-auth\.setup\.ts/,
+      use: { baseURL: "http://localhost:3001" },
+    },
+    {
       name: "admin",
       testDir: "./tests/admin",
-      testIgnore: /auth\.setup\.ts/,
-      dependencies: ["admin-setup"],
+      testIgnore: /auth\.setup\.ts|restricted-auth\.setup\.ts/,
+      dependencies: ["admin-setup", "admin-restricted-setup"],
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3001",

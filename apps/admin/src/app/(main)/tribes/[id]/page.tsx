@@ -1,100 +1,142 @@
 "use client";
 import MainLayout from "@/components/layouts/MainLayout";
+import { RequirePermission } from "@/components/global/RequirePermission";
+import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import MainTribeCard from "@/components/tribes/MainTribeCard";
-import ThreadCard from "@/components/tribes/ThreadCard";
 import TribeDetails from "@/components/tribes/TribeDetails";
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
-import {
-  ChevronDown,
-  ChevronLeft,
-  CircleDotIcon,
-  DotIcon,
-  EditIcon,
-  HeartIcon,
-  MessageSquare,
-  MoreVerticalIcon,
-  SearchIcon,
-} from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useTribeDetailQuery } from "@/features/tribes/queries";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { ChevronDown } from "lucide-react";
+import dynamic from "next/dynamic";
+import React, { use, useEffect, useRef, useState } from "react";
 
-const TribeDetailPage = () => {
-  const router = useRouter();
-  const [isExpanded, setIsExpanded] = useState(false); // State to track if text is expanded
-  const charLimit = 200; // Set your desired character limit
+// Off the initial bundle — only needed once the flag/reactivate control
+// fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI"), matching
+// EventDetailsClient's SuspendModal/DeleteModal pattern.
+const RestrictTribeModal = dynamic(() => import("@/modals/tribes/RestrictTribeModal"), {
+  ssr: false,
+});
+const DeleteTribeModal = dynamic(() => import("@/modals/tribes/DeleteTribeModal"), {
+  ssr: false,
+});
+const TribeStatusModal = dynamic(() => import("@/modals/tribes/TribeStatusModal"), {
+  ssr: false,
+});
+
+// A Client Component page (tribes is the one section that stays client-side
+// — see the section-permission migration notes) still receives `params` as
+// a Promise in Next.js 15; `use()` is the documented way to unwrap it here.
+const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
+  const { id } = use(props.params);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { data } = useTribeDetailQuery(id, { enabled: isLoggedIn });
+
+  const [restrictModalOpen, setRestrictModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const tribe = data?.tribe;
+  const threads = data?.threads ?? [];
+  const members = data?.members ?? [];
+  const isRestricted = tribe?.status === "RESTRICTED";
+
   return (
-    <MainLayout>
-      <section className="flex justify-between bg-white">
-        <div className="flex h-[780px] w-[888px] flex-col gap-[24px] border-r-[1px] p-[24px]">
-          <MainTribeCard />
-          <MainTribeCard />
-        </div>
+    <RequirePermission permission={ADMIN_SECTION_PERMISSIONS.tribes}>
+      <MainLayout>
+        <section className="flex justify-between bg-white">
+          <div className="flex h-[780px] w-[888px] flex-col gap-[16px] overflow-y-auto border-r-[1px] p-[24px]">
+            <p className="text-[16px] font-semibold">Tribe threads</p>
+            {threads.length > 0 ? (
+              threads.map((thread) => <MainTribeCard key={thread.id} thread={thread} />)
+            ) : (
+              <p className="text-[14px] font-normal text-text-grey">No threads yet</p>
+            )}
+          </div>
 
-        <div className="flex h-[780px] w-[788px] flex-col gap-[24px] p-[24px]">
-          <div className="flex items-center justify-between">
-            <p className="text-[16px] font-semibold">Tribe details</p>
-            <div className="rounded-[12px] border-[1px] border-light-grey-50 px-[14px] py-[10px]">
-              <div className="flex items-center gap-[8px]">
-                <p className="text-[14px] font-medium">Flag Tribe</p>
-                <ChevronDown />
-              </div>
+          <div className="flex h-[780px] w-[788px] flex-col gap-[24px] overflow-y-auto p-[24px]">
+            <div className="flex items-center justify-between">
+              <p className="text-[16px] font-semibold">Tribe details</p>
+              {isRestricted ? (
+                <button
+                  className="h-[44px] w-[156px] rounded-[12px] border-[1px] bg-gradient-green text-center"
+                  onClick={() => setReactivateModalOpen(true)}
+                >
+                  <p className="text-[16px] font-medium text-white">Reactivate tribe</p>
+                </button>
+              ) : (
+                <div className="relative inline-block" ref={containerRef}>
+                  <div
+                    className="flex cursor-pointer items-center gap-[8px] rounded-[12px] border-[1px] border-light-grey-50 px-[14px] py-[10px]"
+                    onClick={() => setDropdownOpen((prev) => !prev)}
+                  >
+                    <p className="text-[14px] font-medium">Flag tribe</p>
+                    <ChevronDown />
+                  </div>
+                  {dropdownOpen && (
+                    <div className="absolute right-0 top-full z-50 w-[207px] rounded-[12px] bg-white shadow">
+                      <ul>
+                        <li
+                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            setRestrictModalOpen(true);
+                          }}
+                        >
+                          <p className="text-[16px] font-normal">Restrict tribe</p>
+                        </li>
+                        <li
+                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            setDeleteModalOpen(true);
+                          }}
+                        >
+                          <p className="text-[16px] font-normal text-red-1">Delete tribe</p>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+            {tribe ? (
+              <TribeDetails tribe={tribe} members={members} />
+            ) : (
+              <p className="text-[14px] font-normal text-text-grey">Loading tribe...</p>
+            )}
           </div>
-          <div className="mt-[30px] flex flex-col items-center justify-center gap-[8px]">
-            <div className="h-[96px] w-[96px] rounded-[24px] bg-gray-600"></div>
-            <p className="text-[16px] font-semibold">Start-ups</p>
-            <p className="text-[12px] font-semibold text-text-grey">
-              ID: <span className="text-light-black">FR-2322</span>
-            </p>
-            <p className="text-[14px] font-medium italic text-text-grey">Business</p>
-            <div className="flex items-center">
-              <p className="text-[12px] font-normal text-text-grey">3 members</p>
-              <DotIcon className="text-text-grey" />
-              <p className="text-[12px] font-normal text-text-grey">0 thread</p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center">
-            <p className="max-w-[311px] text-center text-[14px] font-normal text-light-black">
-              Share your start-up experiences to teach others on what to do
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            <p className="text-center text-[12px] font-normal text-text-grey">
-              Created on 23 Mar, 2025
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <Button className="h-[60px] rounded-[37px] border-step-color bg-gradient-green p-[14px] px-[24px] shadow-custom-bottom">
-              <div className="flex items-center justify-center gap-1">
-                <EditIcon />
-                <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
-                  Create thread
-                </p>
-              </div>
-            </Button>
-          </div>
-          <div
-            className={"flex flex-col gap-[8px] rounded-[12px] bg-light-grey px-[24px] py-[16px]"}
-          >
-            <p className={"text-[14px] font-medium text-text-grey"}>Members</p>
-            <div className={"flex justify-between border-b-[1px] border-b-grey-20 py-[10px]"}>
-              <div className={"flex items-center gap-2"}>
-                <Image src={"/images/tribe_1.png"} alt={"image"} width={20} height={20} />
-                <p className={"text-[14px] font-medium"}>Samjoe</p>
-              </div>
-              <p className={"text-[14px] font-medium italic text-text-grey"}>Creator</p>
-            </div>
-            <div className={"flex justify-between border-b-[1px] border-b-grey-20 py-[10px]"}>
-              <div className={"flex items-center gap-2"}>
-                <Image src={"/images/tribe_1.png"} alt={"image"} width={20} height={20} />
-                <p className={"text-[14px] font-medium"}>Christojoe</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </MainLayout>
+        </section>
+
+        <RestrictTribeModal
+          isOpen={restrictModalOpen}
+          toggle={() => setRestrictModalOpen(false)}
+          id={id}
+        />
+        <DeleteTribeModal
+          isOpen={deleteModalOpen}
+          toggle={() => setDeleteModalOpen(false)}
+          id={id}
+        />
+        <TribeStatusModal
+          isOpen={reactivateModalOpen}
+          toggle={() => setReactivateModalOpen(false)}
+          id={id}
+        />
+      </MainLayout>
+    </RequirePermission>
   );
 };
 

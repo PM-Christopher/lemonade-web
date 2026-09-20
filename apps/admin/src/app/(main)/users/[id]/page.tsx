@@ -6,11 +6,15 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { userKeys } from "@/features/user/queries";
 import { userServerApi } from "@/features/user/api.server";
+import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
+import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import UserDetailsClient from "./UserDetailsClient";
 
 export default async function UserDetailsPage(props: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.users);
+
   const params = await props.params;
   const id = Number(params.id);
   const queryClient = getQueryClient();

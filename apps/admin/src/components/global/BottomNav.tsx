@@ -4,14 +4,19 @@ import { usePathname } from "next/navigation";
 import { pageLinks } from "@/utils/pageLinks";
 import Link from "next/link";
 import { isActiveLink } from "@/lib/activeLink";
+import { useCurrentAdminQuery } from "@/features/authentication/queries";
 
 const BottomNav = () => {
   const pathname = usePathname();
+  const { data: currentAdmin } = useCurrentAdminQuery();
+  const visibleLinks = pageLinks.filter(
+    (link) => !link.permission || currentAdmin?.permissions?.includes(link.permission),
+  );
 
   return (
     <nav className="fixed bottom-0 left-0 flex w-full flex-wrap items-center justify-center bg-white p-2 px-10">
       <div className="flex items-center justify-between gap-8">
-        {pageLinks.map((link, idx) => (
+        {visibleLinks.map((link, idx) => (
           <Link href={link.path} key={idx}>
             <div
               className={`flex flex-col items-center gap-2 ${isActiveLink(pathname, link.path, true) ? "rounded-[8px] bg-light-green-10 p-[8px] text-light-green" : "text-text-grey"} `}

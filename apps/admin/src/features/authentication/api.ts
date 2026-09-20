@@ -11,6 +11,11 @@ export interface CurrentAdmin {
   id: string | number;
   email: string;
   name: string;
+  role: string | null;
+  // Every permission this admin holds via any role, e.g. "wallet.write" —
+  // see docs/ARCHITECTURE.md §22 Conflict 2. Section-level UI gating reads
+  // from this list, never from a hardcoded role-name map.
+  permissions: string[];
   [key: string]: unknown;
 }
 
@@ -48,5 +53,12 @@ async function postJson<T>(path: string, body?: unknown): Promise<T> {
 export const authApi = {
   login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
   logout: () => postJson<void>("/api/auth/logout"),
-  getCurrentAdmin: () => browserApi.get<CurrentAdmin>(adminAccountRoutes.PROFILE),
+  // GetAdminProfile::execute() (lemonade-backend) returns ['admin' => new
+  // AdminResource($admin)] — the envelope is { admin: {...} }, not the admin
+  // flat. Pre-existing: this was already wrong for `email`/`name` before the
+  // permissions field existed, just never visibly broke anything since
+  // nothing critical read those fields through this path — surfaced now
+  // because sidebar/route gating actually depends on `permissions` resolving.
+  getCurrentAdmin: () =>
+    browserApi.get<{ admin: CurrentAdmin }>(adminAccountRoutes.PROFILE).then((r) => r.admin),
 };

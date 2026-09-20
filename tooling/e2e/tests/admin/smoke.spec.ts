@@ -12,6 +12,7 @@ const ROUTES = [
   "/announcements",
   "/tribes",
   "/businesses",
+  "/subscriptions",
   "/profile",
 ];
 

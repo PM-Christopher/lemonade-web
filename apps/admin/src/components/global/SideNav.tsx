@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
+import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -15,6 +16,10 @@ function SideNav({}) {
   const { user } = useSelector((state: any) => state.auth);
   const router = useRouter();
   const logoutMutation = useLogoutMutation();
+  const { data: currentAdmin } = useCurrentAdminQuery();
+  const visibleLinks = pageLinks.filter(
+    (item) => !item.permission || currentAdmin?.permissions?.includes(item.permission),
+  );
   const handleLogout = () => {
     // Redux/query-cache cleanup happens in useLogoutMutation's
     // onSettled regardless of whether the backend call succeeds.
@@ -40,7 +45,7 @@ function SideNav({}) {
       </div>
       <nav>
         <ul className="space-y-[8px]">
-          {pageLinks.map((item) => {
+          {visibleLinks.map((item) => {
             const isActive =
               pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
 

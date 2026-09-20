@@ -6,11 +6,15 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { walletKeys } from "@/features/wallet/queries";
 import { walletServerApi } from "@/features/wallet/api.server";
+import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
+import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import WalletManagementClient from "./WalletManagementClient";
 
 const DEFAULT_PER_PAGE = 10;
 
 export default async function WalletManagementPage() {
+  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.wallet);
+
   const queryClient = getQueryClient();
 
   await Promise.all([
