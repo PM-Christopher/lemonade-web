@@ -1107,11 +1107,24 @@ and never on message text.
 | server            |    5xx | 3× exponential        | Error boundary with retry; report with correlation id                       |
 | network / timeout |      — | 3× exponential        | Offline-aware banner; queue nothing that moves money                        |
 
-### Error boundaries per route segment
+### Error boundaries per route segment — done (2026-09-21)
 
-Neither app has a single `error.tsx` today; a render failure blanks the page. Every route group gets
-`error.tsx` (recoverable, with retry), `not-found.tsx` and `loading.tsx`, plus a root
-`global-error.tsx`. The blast radius of a failure should be one segment, not the application.
+Both apps now have `error.tsx` (recoverable, with a "Try again" retry) and `not-found.tsx` under both
+`(main)` and `(auth)`, `loading.tsx` under both too, a root `global-error.tsx` for root-layout failures,
+and a root `not-found.tsx`. `(main)`'s boundaries wrap with `MainLayout` so the nav stays usable — the
+blast radius of a failure is one segment, not the app; `(auth)`'s stay unwrapped since `AuthLayout` does
+its own pathname/cookie-based redirects, not something an error boundary should depend on while
+recovering. `loading.tsx` is standalone in both apps too, to avoid an extra profile/current-user fetch
+firing on every navigation.
+
+**A real routing behavior found live, not assumed**: neither the admin app's `middleware.ts` permission-
+gate rewrite (§22 Conflict 2) nor a genuinely unmatched path resolves to a route-group-level
+`not-found.tsx` at all — Next falls back to the root one, since the path doesn't match anything under
+`(main)`/`(auth)` for it to pick a layout tree from. Both apps needed the root-level `not-found.tsx` for
+either case to show custom content instead of Next's generic default; confirmed via a real production
+build (`next build && next start`), not dev mode. Verified the same way for `error.tsx`: a deliberately-
+thrown error in a temporary probe route (removed after) rendered the recoverable UI with the sidebar
+still intact, not a blanked page.
 
 ### Error copy is a mapping, not a passthrough
 
