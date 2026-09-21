@@ -4,7 +4,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import PromotionsCard from "@/components/events/PromotionsCard";
-import { listPromotions } from "@/data/tableData";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";

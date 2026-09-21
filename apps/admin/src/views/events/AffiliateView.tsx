@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import DataCard from "@/components/global/DataCard";
-import GlobalTable from "@/components/global/GlobalTable";
-import {
-  affiliateMainData,
-  affiliateMainHeaders,
-  eventMainData,
-  eventMainHeaders,
-} from "@/data/tableData";
+import { affiliateMainHeaders, eventMainHeaders } from "@/data/tableData";
 import { useRouter } from "next/navigation";
 import PaginationComp from "@/components/global/Pagination";
 

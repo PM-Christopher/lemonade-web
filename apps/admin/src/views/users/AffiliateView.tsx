@@ -1,7 +1,6 @@
 import DataCard from "@/components/global/DataCard";
-import GlobalTable from "@/components/global/GlobalTable";
 import PaginationComp from "@/components/global/Pagination";
-import { affiliateData, affiliateHeaders } from "@/data/tableData";
+import { affiliateHeaders } from "@/data/tableData";
 import useSearchParams from "@/hooks/useSearchParams";
 import { capitalizeWords } from "@/utils/helper";
 import { useRouter } from "next/navigation";
@@ -78,11 +77,6 @@ const AffiliateView = ({ userData, menuOption }: any) => {
       </div>
       <div className={"flex w-full justify-between gap-[24px]"}>
         <div className="flex-1 bg-white">
-          {/* <GlobalTable
-            headers={affiliateHeaders}
-            content={userData?.affiliates || []}
-          /> */}
-
           <table className="min-w-full table-auto border-collapse">
             <thead>
               <tr className="bg-mid-grey">

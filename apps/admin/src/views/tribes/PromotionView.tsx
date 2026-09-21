@@ -1,12 +1,7 @@
 import React from "react";
 import DataCard from "@/components/global/DataCard";
 import GlobalTable from "@/components/global/GlobalTable";
-import {
-  affiliateMainData,
-  affiliateMainHeaders,
-  promotionMainData,
-  promotionMainHeaders,
-} from "@/data/tableData";
+import { promotionMainHeaders } from "@/data/tableData";
 
 const PromotionView = ({ pageData }: any) => {
   return (

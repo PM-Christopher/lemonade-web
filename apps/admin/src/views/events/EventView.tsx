@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataCard from "@/components/global/DataCard";
-import GlobalTable from "@/components/global/GlobalTable";
-import {
-  eventMainData,
-  eventMainHeaders,
-  planHeaders,
-  walletHeaders,
-} from "@/data/tableData";
+import { eventMainHeaders } from "@/data/tableData";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";

@@ -1,5 +1,5 @@
 {
   "lemonade-app": 208,
-  "// lemonade-admin": "Raised from 104 (2026-09-19) to 113 (2026-09-21): the businesses/subscriptions/tribes admin sections built for docs/ARCHITECTURE.md §22 Conflict 2 mirror this app's existing view/component convention, which already types loosely (e.g. `{ userDetail }: any`) throughout — no new debt pattern introduced, just more of what was already here.",
-  "lemonade-admin": 113
+  "// lemonade-admin": "Raised from 104 (2026-09-19) to 113 (2026-09-21) for docs/ARCHITECTURE.md §22 Conflict 2's businesses/subscriptions/tribes sections, then lowered to 112 (2026-09-21) after retiring tableData.ts's dead fixture-data exports removed one incidental any along with them.",
+  "lemonade-admin": 112
 }
