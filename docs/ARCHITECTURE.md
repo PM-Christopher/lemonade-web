@@ -1837,8 +1837,13 @@ paid for itself: it surfaced two real backend bugs meaning the admin wallet cred
 _never actually worked_ from this UI (fixed in `lemonade-backend`, tests added). Forms were **not**
 migrated to React Hook Form + Zod in the same pass as their domain, contra the plan — every migrated
 domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
-`Skeletons.tsx`/`tableData.ts` retirement hasn't started. **All of `apps/admin`'s tracked Phase 5
-domains are now on TanStack Query** — no `features/*/*.slice.ts` files remain under `apps/admin`.
+`tableData.ts` retirement done (2026-09-21) — 16 of its 30 exports had zero real consumers left
+(confirmed per file, not just by export name, since several files imported a live header alongside a
+dead fixture-data array) and were deleted; the rest are real column headers, still rendered, kept.
+`tribeTlnData`/`tribeTlnHeaders` stay too — "TLN Tribes" has no backend equivalent, so it's intentional
+placeholder UI, not dead code. `Skeletons.tsx` no longer exists in the codebase at all — the doc's own
+reference to it was stale. **All of `apps/admin`'s tracked Phase 5 domains are now on TanStack Query**
+— no `features/*/*.slice.ts` files remain under `apps/admin`.
 (`redux/general.slice.ts` was never one of the tracked domains and turned out to be fully dead — no
 importers anywhere, not even wired into `store.ts` — found while checking for stragglers; deleted
 2026-09-21.)
