@@ -1,19 +1,31 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@lemonade/ui";
+import Image from "next/image";
 
 // Next resolves not-found by closest matching layout tree — a genuinely
 // unmatched path (one that doesn't match any real route under (main) or
 // (auth) at all) falls all the way back to this root file, not a
 // route-group one. Confirmed live in the admin app's equivalent case.
-// Kept neutral (no MainLayout/AuthLayout) since this can trigger before
-// there's any way to know which shell, if either, applies.
+//
+// Deliberately NOT wrapped in MainLayout, unlike admin's equivalent file:
+// this app's middleware.ts only protects an allowlist of prefixes
+// (PROTECTED_PREFIXES) — a random unmatched path isn't one of them, so an
+// unauthenticated visitor can genuinely land here. MainLayout assumes an
+// app shell/session context this route can't guarantee.
 export default function RootNotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
-      <h1 className="text-xl font-semibold">This page could not be found</h1>
-      <Button asChild>
-        <Link href="/">Go home</Link>
-      </Button>
-    </div>
+    <section className="flex min-h-screen flex-col items-center justify-center gap-[8px] bg-light_grey p-[24px] text-center">
+      <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+      <p className="mt-[16px] text-[18px] font-semiBold text-light-black">
+        This page could not be found
+      </p>
+      <Link
+        href="/"
+        className="mt-[8px] rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[24px] py-[11px]"
+      >
+        <p className="text-[16px] font-medium text-white">Go home</p>
+      </Link>
+    </section>
   );
 }

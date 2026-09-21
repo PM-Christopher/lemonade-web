@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@lemonade/ui";
 import MainLayout from "@/components/layouts/MainLayout";
 import { logger } from "@/lib/logger";
 
@@ -26,12 +25,17 @@ export default function MainError({
 
   return (
     <MainLayout>
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 p-8 text-center">
-        <h1 className="text-xl font-semibold">Something went wrong</h1>
-        <p className="text-sm text-muted-foreground">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-[8px] p-[24px] text-center">
+        <p className="text-[18px] font-semiBold text-light-black">Something went wrong</p>
+        <p className="text-[14px] font-normal text-text-grey">
           {error.digest ? `Reference: ${error.digest}` : "Please try again."}
         </p>
-        <Button onClick={() => reset()}>Try again</Button>
+        <button
+          onClick={() => reset()}
+          className="mt-[8px] rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[24px] py-[11px]"
+        >
+          <p className="text-[16px] font-medium text-white">Try again</p>
+        </button>
       </div>
     </MainLayout>
   );

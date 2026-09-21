@@ -6,11 +6,11 @@
 // middleware.ts's comment on why extra profile fetches are worth avoiding.
 export default function MainLoading() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-light-grey">
       <div
         role="status"
         aria-label="Loading"
-        className="h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-foreground"
+        className="h-8 w-8 animate-spin rounded-full border-2 border-grey-20 border-t-step-color"
       />
     </div>
   );
