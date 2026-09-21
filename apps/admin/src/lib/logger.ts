@@ -1,7 +1,9 @@
 // Structured logging with redaction — see docs/ARCHITECTURE.md Phase 8.
-// Server-side only for now (Route Handlers, middleware): every call site
-// this ships with today runs there. Emits one JSON line per call so a log
-// aggregator can parse `level`/`message`/`context` without string parsing.
+// Originally server-side only (Route Handlers, middleware); also called
+// from the route-segment error.tsx/global-error.tsx boundaries now — no
+// Node-only APIs here, so that's safe. Emits one JSON line per call so a
+// log aggregator can parse `level`/`message`/`context` without string
+// parsing.
 //
 // Routes through console.warn/console.error only, never console.log or
 // console.info — CLAUDE.md's no-console rule (`allow: ["warn", "error"]`)
