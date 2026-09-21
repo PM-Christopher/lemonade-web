@@ -301,12 +301,14 @@ Ordered by severity. Each is a verified finding with a file reference, not a sty
 | 62 `console.log` calls in shipped code                       | Includes `console.log(status, "status error")` in the admin interceptor                                                                                                                                                                               | **SHOULD** |
 | Deprecated Next image config                                 | Both apps use `images.domains`, superseded by `images.remotePatterns`                                                                                                                                                                                 | **SHOULD** |
 
-> **Backend observation, out of scope.** `app/Exceptions/Handler.php` defines `isApiRoute()` as
-> `str_starts_with($request->path(), 'api/')`, with a comment asserting routes are served under
-> `api/`. Since `apiPrefix` is `''`, that predicate is false for all 288 real routes; JSON rendering
-> currently survives on `expectsJson()` because `ForceJsonResponse` sets the `Accept` header. It
-> works, but for a different reason than the code claims. Worth a backend ticket — flagged here
-> because the frontends depend on the error envelope it produces.
+> **Fixed (2026-09-21).** `app/Exceptions/Handler.php`'s `isApiRoute()` checked for an `'api/'` path
+> prefix, with a comment asserting routes are served under `api/`. Since `apiPrefix` is `''`, that
+> predicate was false for all 288 real routes; JSON rendering survived anyway because
+> `shouldReturnJson()` also checks `expectsJson()`, which `ForceJsonResponse` satisfies
+> unconditionally. Fixed to check what `routes/api.php` actually registers (`v1/*` plus the bare
+> `health`/`ready` routes) instead. A reflection-based unit test
+> (`tests/Unit/Support/HandlerIsApiRouteTest.php`) locks this in, since no real HTTP request can
+> exercise it independently of `ForceJsonResponse` always winning first.
 
 ---
 
@@ -1837,9 +1839,9 @@ migrated to React Hook Form + Zod in the same pass as their domain, contra the p
 domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
 `Skeletons.tsx`/`tableData.ts` retirement hasn't started. **All of `apps/admin`'s tracked Phase 5
 domains are now on TanStack Query** — no `features/*/*.slice.ts` files remain under `apps/admin`.
-(`redux/general.slice.ts` still exists but was never one of the tracked domains and turned out to be
-fully dead — no importers anywhere, not even wired into `store.ts` — found while checking for
-stragglers; left alone since deleting unrelated dead code wasn't asked for, worth a cleanup pass later.)
+(`redux/general.slice.ts` was never one of the tracked domains and turned out to be fully dead — no
+importers anywhere, not even wired into `store.ts` — found while checking for stragglers; deleted
+2026-09-21.)
 `apps/frontend`'s **dashboard** domain is now migrated too (3 queries — tribes/events/businesses, no
 mutations, single consumer `app/(main)/page.tsx`; `staleTime: 5*60_000`, CLAUDE.md's "discovery content"
 bucket, since this is public trending/featured content rather than user-owned data). Reused the existing
@@ -2664,14 +2666,16 @@ threshold modal (the right-anchored-panel-adjacent standard case) does the same;
 existing e2e suite re-run after: 34 passing, 2 flaky-but-recovered (frontend detail-navigation's own
 pre-existing, already-documented single-retry flakiness, unrelated to this change).
 
-**One pre-existing bug found, not fixed, while writing the admin e2e test**: `apps/admin`'s
+**One pre-existing bug found while writing the admin e2e test, fixed later (2026-09-21)**: `apps/admin`'s
 `/users/[id]` page renders an `<Image>` with an empty-string `src` somewhere reachable from its default
 tab, which Next dev's error overlay surfaces as a full-screen blocking panel over the whole page —
 confirmed via a real console-message listener (77 occurrences on that one page load), confirmed unrelated
 to this migration (it fires before any tab is even clicked), and confirmed *not* present on `/wallet-
 management`, `/events/[id]`, or `/events/add-promotions` (checked each directly rather than assumed).
-Root cause not tracked down — out of scope for a modal migration — but real, and worth a look next time
-that page is touched.
+Root cause, found later: `components/users/TribeModal.tsx` (unrelated fixture UI) stays mounted
+off-screen at all times via a CSS transform, not unmounted, and passed an SVG icon component as
+`next/image`'s `src` — `Image` needs a URL/`StaticImageData`, not a component. `views/users/
+BusinessView.tsx` had the identical bug. Both now render the icon directly as a component instead.
 
 **Contrast audit — done for the design system's own tokens, not every call site.** A palette-wide script
 checking every `text`/`bg` pairing actually used together across ~4,000 className strings would need to
