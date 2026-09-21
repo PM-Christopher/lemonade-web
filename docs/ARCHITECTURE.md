@@ -1126,6 +1126,24 @@ build (`next build && next start`), not dev mode. Verified the same way for `err
 thrown error in a temporary probe route (removed after) rendered the recoverable UI with the sidebar
 still intact, not a blanked page.
 
+**Restyled to match each app's real design, not shadcn defaults (2026-09-21).** The first pass used
+`@lemonade/ui`'s `Button` and generic tokens (`bg-primary`, `text-muted-foreground`) — real primitives,
+but nothing either app's actual pages look like: every real page hand-rolls its primary CTA as a
+green-gradient button (`border-step-color` + `bg-gradient-green`) with the app's own `text-grey`/
+`light-black` tokens at pixel sizing, not shadcn's default scale. Caught by screenshotting a boundary
+next to a real page (team members) side by side — visibly generic by comparison. `(main)`'s boundaries
+and the root `not-found.tsx` now wrap with `MainLayout` for the real sidebar/logo; `(auth)` and
+`global-error.tsx` stay unwrapped (no assumed session) but hand-replicate the logo + light-grey shell
+instead of rendering bare.
+
+One real per-app difference surfaced fixing this: admin's root `not-found.tsx` is safe to wrap in
+`MainLayout` because its `middleware.ts` denies by default — any unauthenticated request to a
+non-public path redirects to `/login` before a 404 can ever render. Frontend's `middleware.ts` instead
+allowlists specific prefixes (`PROTECTED_PREFIXES`); a random unmatched path passes through
+unauthenticated, so frontend's root `not-found.tsx` stays deliberately unwrapped, unlike admin's.
+`(main)`'s boundaries in both apps are still safe to wrap, since every real `(main)` route is itself
+behind auth.
+
 ### Error copy is a mapping, not a passthrough
 
 `@lemonade/domain` maps each `ErrorCode` to user-facing copy and a suggested action.
