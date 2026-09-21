@@ -41,10 +41,16 @@
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    /* 44.1%, not the shadcn-default 45.1% — the extra point is the minimum
+       darkening needed to clear WCAG AA's 4.5:1 against --muted (was
+       4.35:1). See docs/ARCHITECTURE.md Phase 7's contrast audit. */
+    --muted-foreground: 0 0% 44.1%;
     --accent: 0 0% 96.1%;
     --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+    /* 48.9%, not the shadcn-default 60.2% — the minimum darkening needed
+       for --destructive-foreground's white text to clear WCAG AA's 4.5:1
+       (was 3.60:1). See docs/ARCHITECTURE.md Phase 7's contrast audit. */
+    --destructive: 0 84.2% 48.9%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;

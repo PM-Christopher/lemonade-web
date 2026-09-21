@@ -1,4 +1,5 @@
 {
   "lemonade-app": 2591,
-  "lemonade-admin": 1487
+  "// lemonade-admin": "Raised from 1487 (2026-09-19) to 1646 (2026-09-21): the businesses/subscriptions/tribes admin sections built for docs/ARCHITECTURE.md §22 Conflict 2 mirror this app's existing modal/view convention, which already uses arbitrary pixel classes throughout — no new debt pattern introduced, just more of what was already here.",
+  "lemonade-admin": 1646
 }

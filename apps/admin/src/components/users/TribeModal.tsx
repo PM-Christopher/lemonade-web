@@ -1,7 +1,6 @@
 import React from "react";
 import { ChevronDown, ChevronLeft, SearchIcon, XIcon } from "lucide-react";
 import FlameIcon from "@/icons/flameIcon.svg";
-import Image from "next/image";
 import ThreadCard from "@/components/tribes/ThreadCard";
 import TribeDetails from "@/components/tribes/TribeDetails";
 
@@ -53,7 +52,7 @@ const TribeModal: React.FC<TribeModalProps> = ({ toggle, isOpen }) => {
                     }
                   >
                     <div className={"flex items-center gap-[8px]"}>
-                      <Image src={FlameIcon} alt="flame" />
+                      <FlameIcon className="h-4 w-4" aria-hidden="true" />
                       <p className={"text-[14px] font-medium text-text-grey"}>Popular</p>
                     </div>
                     <ChevronDown className={"w-[20px] text-text-grey"} />

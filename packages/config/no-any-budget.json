@@ -1,4 +1,5 @@
 {
   "lemonade-app": 208,
-  "lemonade-admin": 104
+  "// lemonade-admin": "Raised from 104 (2026-09-19) to 113 (2026-09-21): the businesses/subscriptions/tribes admin sections built for docs/ARCHITECTURE.md §22 Conflict 2 mirror this app's existing view/component convention, which already types loosely (e.g. `{ userDetail }: any`) throughout — no new debt pattern introduced, just more of what was already here.",
+  "lemonade-admin": 113
 }

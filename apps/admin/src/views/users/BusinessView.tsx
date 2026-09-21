@@ -36,7 +36,7 @@ const BusinessView = ({ userDetail }: any) => {
         </div>
         <div className="absolute right-0 top-0 rounded-bl-[12px] rounded-tr-[12px] bg-light-green-10">
           <div className="flex items-center gap-[4px] p-[4px] px-[8px]">
-            <Image src={RocketGreenIcon} alt="boosted" />
+            <RocketGreenIcon className="h-3.5 w-3.5" aria-hidden="true" />
             <p className="text-[14px] font-medium text-mid-green">Boosted</p>
           </div>
         </div>
