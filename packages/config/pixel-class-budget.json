@@ -1,5 +1,5 @@
 {
   "lemonade-app": 2591,
-  "// lemonade-admin": "Raised from 1487 (2026-09-19) to 1646 (2026-09-21): the businesses/subscriptions/tribes admin sections built for docs/ARCHITECTURE.md §22 Conflict 2 mirror this app's existing modal/view convention, which already uses arbitrary pixel classes throughout — no new debt pattern introduced, just more of what was already here.",
-  "lemonade-admin": 1646
+  "// lemonade-admin": "Raised from 1487 (2026-09-19) to 1646 (2026-09-21) for docs/ARCHITECTURE.md §22 Conflict 2's businesses/subscriptions/tribes sections, then lowered to 1645 (2026-09-21) after retiring ThreadCard.tsx's dead menu markup took one pixel-class occurrence with it.",
+  "lemonade-admin": 1645
 }
