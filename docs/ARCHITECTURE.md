@@ -2621,9 +2621,11 @@ filter), `apps/frontend/.../tribe/[id]/TribeClient.tsx` (sort), `apps/frontend/.
 and `apps/admin/.../CreateTribeModal.tsx` (category), `apps/frontend/.../BusinessFilter.tsx` (business
 category), `apps/frontend/.../BankAccountModal.tsx` (bank name), `apps/frontend/.../profile-step.tsx`
 (industry), `apps/frontend/.../FilterEventModal.tsx` (location). Also found, while auditing every real
-`<Dialog>`/`<SelectTrigger>` usage: `apps/frontend/src/components/ui/command.tsx`'s `CommandDialog` has no
-`DialogTitle` at all (Radix requires one), but it's dead code — never imported anywhere in either app — so
-left it alone rather than fixing a component nothing renders.
+`<Dialog>`/`<SelectTrigger>` usage: `apps/frontend/src/components/ui/command.tsx`'s `CommandDialog` had
+no `DialogTitle` at all (Radix requires one) — not currently imported anywhere in either app, but fixed
+rather than deleted (2026-09-21) since it's a real primitive worth keeping ready for whenever a command
+palette gets built. Screen-reader-only, matching `TermsOfUseModal.tsx`'s existing `sr-only` DialogTitle
+convention, with a `label` prop for a future consumer to override the default "Command menu" text.
 
 **Modal → Dialog migration — done, all 59 real modal files across both apps.** The gap flagged above is
 closed: every hand-built overlay `<div>` (the `fixed inset-0 ... bg-opacity-* ${isOpen ? "flex" :
