@@ -1942,13 +1942,16 @@ This domain surfaced more real bugs than any other this session, of increasing d
    change — left alone. (A characterization test for the `payment` fix was written, then deleted once
    this second bug made it impossible to pass without also fixing the contract — the action can't be
    reached with a real package id via its own typed DTO.)
-3. **Found, not fixed — needs a decision**: `UpdateBusiness` calls `findBusiness($id)` with the default
-   `approvedOnly: true`, so a business owner can only edit their own listing once an admin has approved
-   it — meaning newly-created (`PENDING`) listings can't be edited at all, which is presumably the most
-   common time someone would want to. The trait's own doc comment says "the owner's own views... pass
-   false," suggesting this is a missed argument, not deliberate — but that's a guess, not confirmed.
-   Confirmed live: update 400s ("Business not found") against a real owned `PENDING` listing, succeeds
-   against the same listing flipped to `ACTIVE`.
+3. **Fixed (2026-09-21)**: `UpdateBusiness` called `findBusiness($id)` with the default `approvedOnly:
+   true`, so a business owner could only edit their own listing once an admin had approved it — a
+   newly-created (`PENDING`) listing couldn't be edited at all, the most common time someone would want
+   to. Every sibling action in the same file (approve, reject, suspend, reactivate, delete,
+   get-application) already passed `approvedOnly: false`, matching the trait's own doc comment ("the
+   owner's own views... pass false") — confirming this was a missed argument, not a deliberate
+   restriction, not just a guess. `Gate::authorize('update', ...)` right after is what actually enforces
+   ownership, so the flag was never doing security work here. Fixed with a one-argument change plus a
+   regression test (`owner_can_update_a_pending_business_before_its_approved`) that fails with the
+   old behavior and passes with the fix — confirmed both ways, not just added. 530 backend tests pass.
 4. **Found, not fixed — needs a broader audit, not a guess**: comparing `ServiceRequestJobResource`
    (backend) against what `JobsCard.tsx`/`ServiceDetailsModal.tsx` actually read turned up several
    field-name mismatches (backend `is_owner` vs frontend `job.isOwner`; `additional_info` vs
