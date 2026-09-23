@@ -304,7 +304,18 @@ refactor(tribes): split tribe.slice.ts into queries/mutations
 docs(architecture): record ADR for BFF auth flow
 ```
 
+Prefer a **single-line** subject. Put detail in the PR body, not a long commit body, unless the user asks for a detailed commit.
+
 Never use: `update`, `changes`, `misc fixes`, `stuff`, `work in progress`.
+
+### No AI co-authors
+
+Never attribute commits to an AI model, coding agent, or assistant.
+
+- Do not add `Co-authored-by` for Cursor, Claude, Composer, GPT, Copilot, or any other AI/agent identity.
+- Do not add `Signed-off-by`, `Assisted-by`, `Generated-by`, `Claude-Session`, or similar AI/agent trailers.
+- If a hook or environment injects one, strip it before push. Confirm with `git log -1 --format='%B'`.
+- Human co-authors only when the user explicitly names a person.
 
 When a change spans this repo and the backend, deploy **backend first, additively** — add the new field/endpoint while the old one still works, deploy, update the frontend, deploy, remove the old surface later. Never remove a backend surface before its consumers have moved.
 
@@ -312,10 +323,10 @@ When a change spans this repo and the backend, deploy **backend first, additivel
 
 ## Writing Style
 
-Applies to comments, commit messages, PR text, and any user-facing copy. Code syntax is unchanged.
+Use this for descriptions, explanations, comments, commit messages, PR text, and any user-facing copy. Code syntax is unchanged (types, operators, and required punctuation stay as the language needs).
 
 - Sound human. Clear, concise, honest. Short sentences; casual grammar is fine.
-- Keep every must-keep detail, cut the rest.
+- Keep every must-keep detail. Cut the rest.
 - Avoid hype and filler ("dive into", "unleash", "game-changing", "robust", "seamless", "leverage").
 - Avoid rhetorical questions and engagement bait ("Ready to get started?", "Let's explore").
 - Avoid weak openers/closers ("Basically", "Clearly", "Interestingly") and "X and also Y" padding.
@@ -334,6 +345,6 @@ A task is complete only when:
 ✓ Lint, typecheck, build all passing
 ✓ No `any`, no stray `console.log`, no manual `Authorization` header
 ✓ No feature exists in both the old pattern and the new pattern when the phase ends
-✓ Commit created with a Conventional Commits message
+✓ Commit created with a Conventional Commits one-line message (no AI co-author trailers)
 
 Only then is the task considered finished.
