@@ -16,6 +16,7 @@
     "@lemonade/api-client": "workspace:*",
     "@lemonade/api-types": "workspace:*",
     "@lemonade/domain": "workspace:*",
+    "@lemonade/realtime": "workspace:*",
     "@lemonade/ui": "workspace:*",
     "@tanstack/react-query": "^5.75.7",
     "@bprogress/next": "^3.2.12",

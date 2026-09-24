@@ -15,6 +15,7 @@
   "dependencies": {
     "@lemonade/api-client": "workspace:*",
     "@lemonade/api-types": "workspace:*",
+    "@lemonade/realtime": "workspace:*",
     "@lemonade/ui": "workspace:*",
     "@tanstack/react-query": "^5.75.7",
     "@radix-ui/react-hover-card": "^1.1.4",

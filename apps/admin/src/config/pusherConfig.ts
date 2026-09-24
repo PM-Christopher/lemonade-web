@@ -1,4 +1,5 @@
 import Pusher from "pusher-js";
+import { buildReverbConnectionOptions } from "@lemonade/realtime";
 import { clientEnv } from "@/lib/env.client";
 
 // Was: custom /pusher/auth/{user,channel} endpoints — never registered on
@@ -12,23 +13,21 @@ import { clientEnv } from "@/lib/env.client";
 // unused today (see comment above), and Pusher's constructor requires a
 // string key, not string | undefined.
 //
-// ADR-005: self-hosted Reverb, not Pusher Cloud — wsHost/wsPort point at
-// the Reverb server, and forceTLS follows the configured scheme since local
-// dev talks to Reverb over plain ws. `cluster` is a Pusher Cloud routing
-// concept Reverb has no equivalent for and ignores at runtime, but pusher-js's
-// own Options type still marks it required — the empty string satisfies the
-// type without pusher-js sending it anywhere Reverb would see it.
+// ADR-005: self-hosted Reverb, not Pusher Cloud — connection options (host/
+// port/TLS/cluster) are shared with the frontend app via @lemonade/realtime,
+// since both apps built the exact same options object; only the auth
+// strategy differs per app (this one uses `channelAuthorization`, frontend
+// uses `authEndpoint`), which is why client construction itself stays
+// app-local.
 const app_key = clientEnv.NEXT_PUBLIC_REVERB_KEY ?? "";
-const reverbPort = Number(clientEnv.NEXT_PUBLIC_REVERB_PORT ?? 8080);
-const forceTLS = clientEnv.NEXT_PUBLIC_REVERB_SCHEME === "https";
+const connectionOptions = buildReverbConnectionOptions({
+  host: clientEnv.NEXT_PUBLIC_REVERB_HOST ?? "localhost",
+  port: Number(clientEnv.NEXT_PUBLIC_REVERB_PORT ?? 8080),
+  scheme: clientEnv.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "https" : "http",
+});
 export const pusherConfig = () => {
   return new Pusher(app_key, {
-    cluster: "",
-    wsHost: clientEnv.NEXT_PUBLIC_REVERB_HOST ?? "localhost",
-    wsPort: reverbPort,
-    wssPort: reverbPort,
-    forceTLS,
-    enabledTransports: ["ws", "wss"],
+    ...connectionOptions,
     channelAuthorization: {
       transport: "ajax",
       endpoint: "/api/broadcasting/auth",
@@ -37,12 +36,5 @@ export const pusherConfig = () => {
 };
 
 export const pusherCon = () => {
-  return new Pusher(app_key, {
-    cluster: "",
-    wsHost: clientEnv.NEXT_PUBLIC_REVERB_HOST ?? "localhost",
-    wsPort: reverbPort,
-    wssPort: reverbPort,
-    forceTLS,
-    enabledTransports: ["ws", "wss"],
-  });
+  return new Pusher(app_key, connectionOptions);
 };

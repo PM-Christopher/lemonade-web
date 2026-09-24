@@ -29,6 +29,9 @@ importers:
       '@lemonade/api-types':
         specifier: workspace:*
         version: link:../../packages/api-types
+      '@lemonade/realtime':
+        specifier: workspace:*
+        version: link:../../packages/realtime
       '@lemonade/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -234,6 +237,9 @@ importers:
       '@lemonade/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@lemonade/realtime':
+        specifier: workspace:*
+        version: link:../../packages/realtime
       '@lemonade/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -543,6 +549,18 @@ importers:
       '@types/country-list':
         specifier: ^2.1.4
         version: 2.1.4
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@20.19.43)(jsdom@25.0.1)(sass@1.104.0)
+
+  packages/realtime:
+    devDependencies:
+      '@lemonade/config':
+        specifier: workspace:*
+        version: link:../config
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
