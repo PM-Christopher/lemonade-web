@@ -1969,6 +1969,16 @@ real accepted connection and a real pending invite through the API and exercisin
 > are different channels on the wire, so a message published this way never reaches this subscriber —
 > predates the Reverb migration (identical mismatch existed on Pusher Cloud) and is out of scope for a
 > broker swap; see ADR-005's consequences in `claude-lemonade-architecture-guide.md`.
+>
+> **A second, separate channel gap found 24 September 2026, also not fixed:** `LayoutWrapper.tsx`
+> (mounted in the root layout, so on every authenticated page) unconditionally calls
+> `usePusher(\`request.${user?.id}\`, "request.service")` — a business-service-request notification
+> subscription. The backend's `routes/channels.php` never registers a `request.{id}` channel at all
+> (only `App.Models.User.{id}`, `chat.{receiverId}`, and `payment-success.{userId}` exist), so every
+> page load 403s `/api/broadcasting/auth` for this channel. Non-fatal — it's a real console error, not
+> a crash, and doesn't block rendering — but the feature has silently never worked. Predates today's
+> session; found incidentally while investigating the `/tribe`/`/business` hang above, not chased down
+> since it's a distinct bug (a missing backend channel registration, not a broker or rendering issue).
 **business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
 too — the largest single domain this session by consumer count (16 files). 4 queries
 (businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real
@@ -2852,6 +2862,24 @@ on frontend's `/event` cards — was fixed on follow-up and, in verifying that f
 turned out to be masking a second, worse bug in the same code path: a real (non-empty) `event_image` value
 from seed data pointing at a host `next.config.mjs` doesn't allow-list, which crashes the whole page, not
 just the image. See `tooling/e2e/README.md`'s "Real bugs this suite has already found" for both.
+
+> **Update, checked and fixed 24 September 2026: the same bug on `/tribe` and `/business`.** The
+> `/event` fix above didn't cover every card component with this pattern — `TribeCardList.tsx`,
+> `AllBusinessCard.tsx`, and `FeaturedBusiness.tsx` (the featured-businesses carousel, rendered above
+> the main list) all still passed a possibly-`null` `image` straight to `next/image`'s `src` with no
+> fallback. On real seed data (most tribes/businesses have `image: null`), this wasn't cosmetic: it
+> caused React's own "empty string was passed to src" warning to fire continuously — a genuine
+> infinite re-render loop, not a one-time warning — and both `/tribe` and `/business` hung on the
+> route's loading spinner forever, never rendering real content. Found while chasing down an e2e
+> failure; confirmed pre-existing (reproduces on the pre-session baseline commit, unrelated to any
+> work done today) via a git worktree at that commit. Fixed the same way as `/event`: fall back to an
+> existing placeholder asset (`/images/tribe_1.png`, `/images/business_empty.png`) instead of the raw
+> possibly-null value. **A real gap this surfaced in `smoke.spec.ts`:** that spec passed for both
+> routes throughout the entire time this bug existed — `response.ok()` stays true across the
+> mid-render hang, and the crash never reaches an *uncaught* runtime error (no "Unhandled Runtime
+> Error" text, no `pageerror` event) because nothing here actually throws; it's an infinite render
+> loop, not an exception. `smoke.spec.ts`'s three assertions are structurally blind to this whole bug
+> class. Not hardened further in this pass — flagging the gap rather than silently expanding scope.
 
 **This is the first tool in the whole session that executes real client-side JavaScript in a real
 browser** — every other check (curl-based route verification, `next build`, typecheck) either doesn't run

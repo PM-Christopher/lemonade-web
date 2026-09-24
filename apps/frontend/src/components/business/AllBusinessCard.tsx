@@ -19,7 +19,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
           <div className="flex justify-between">
             <div className="flex flex-row items-center justify-center gap-[8px] laptop:flex-col laptop:items-start laptop:gap-[10px]">
               <Image
-                src={business.image}
+                src={business.image || "/images/business_empty.png"}
                 alt="Overlay Image"
                 className="h-[40px] w-[40px] rounded-xl border border-step-color object-cover"
                 width={40}

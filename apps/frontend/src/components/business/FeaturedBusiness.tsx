@@ -17,7 +17,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
         {/* Use fill to take full card width */}
         <div className="sm:h-[140px] relative h-[130px] w-full bg-gray-100">
           <Image
-            src={business?.image}
+            src={business?.image || "/images/business_empty.png"}
             alt="Main Image"
             fill
             className="object-cover"
@@ -29,7 +29,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
         <div className="absolute -bottom-7 left-4">
           <div className="h-14 w-14 overflow-hidden rounded-xl border border-step-color bg-white shadow">
             <Image
-              src={business?.image}
+              src={business?.image || "/images/business_empty.png"}
               alt="Overlay Image"
               width={56}
               height={56}

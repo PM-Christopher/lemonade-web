@@ -17,7 +17,12 @@ const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
       <div className="flex items-center justify-between rounded-[16px] bg-white p-4">
         <div className="flex items-center gap-2">
           <div>
-            <Image src={tribe?.image} alt="tribe image" width={40} height={40} />
+            <Image
+              src={tribe?.image || "/images/tribe_1.png"}
+              alt="tribe image"
+              width={40}
+              height={40}
+            />
           </div>
           <div className="flex flex-col">
             <div>
