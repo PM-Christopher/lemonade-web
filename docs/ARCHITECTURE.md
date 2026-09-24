@@ -1962,13 +1962,18 @@ real accepted connection and a real pending invite through the API and exercisin
 > against a running `reverb:start` (handshake + a real publish/subscribe round trip). Both apps'
 > `pusherConfig.ts`/`env.client.ts`/CSP were updated to match (`NEXT_PUBLIC_PUSHER_KEY` →
 > `NEXT_PUBLIC_REVERB_KEY`/`_HOST`/`_PORT`/`_SCHEME`), so `sendChat`'s POST should no longer 500 locally.
-> **Separately found, not fixed, during that verification:** `SendChatMessage` publishes on the raw
-> channel `chat.{receiverId}` (via `ReverbService`, bypassing `Broadcast::channel()`), but this hook's
-> `usePusher` subscribes to `private-chat.{receiverId}` — the actual wire name Laravel's private-channel
-> convention produces for the `chat.{receiverId}` pattern in the backend's `routes/channels.php`. These
-> are different channels on the wire, so a message published this way never reaches this subscriber —
-> predates the Reverb migration (identical mismatch existed on Pusher Cloud) and is out of scope for a
-> broker swap; see ADR-005's consequences in `claude-lemonade-architecture-guide.md`.
+> **Separately found during that verification, closed 24 September 2026:** `SendChatMessage` published
+> on the raw channel `chat.{receiverId}` (via `ReverbService`, which — unlike Laravel's `PrivateChannel`
+> — never auto-prefixes `private-`), but this hook's `usePusher` subscribes to `private-chat.{receiverId}`
+> — the actual wire name Laravel's private-channel convention produces for the `chat.{receiverId}`
+> pattern already registered in the backend's `routes/channels.php`. Different channels on the wire, so
+> a message published this way never reached this subscriber — predates the Reverb migration (identical
+> mismatch existed on Pusher Cloud) but is the same fix as the `request.{userId}` one below: pass the
+> `private-` prefix explicitly to `ReverbService`, since it won't add it itself. Live-verified end to
+> end against the real running backend and Reverb — a real receiver-side private-channel subscription
+> (real `/broadcasting/auth` signature, not mocked) now actually receives `message.sent`, with the real
+> message content, when the sender posts to `POST /v1/user/messages`. `SendChatMessageTest` now asserts
+> the exact channel/event instead of just that the mock was called.
 >
 > **A second, separate channel gap found and closed 24 September 2026:** `LayoutWrapper.tsx`
 > (mounted in the root layout, so on every authenticated page) unconditionally calls
