@@ -2459,10 +2459,10 @@ covers both). `users/[id]/page.tsx` needed two prefetches (`getUserDetail` uncon
 `getAccountInfo`'s default "activities-log" tab) via `Promise.all`, matching `tribe/[id]/page.tsx`'s
 concurrent-query pattern in frontend.
 
-Left alone, confirmed genuinely not candidates: the `(auth)` pages (pre-login, not gated, nothing to
-prefetch) and `tribes/page.tsx`/`tribes/[id]/page.tsx` — no `useRequest`, no TanStack Query, no data
-fetching of any kind anywhere in their component tree; local UI state over static mock content, same
-unbuilt-feature class as the fake "server" pages found at the start of this pass.
+Left alone, confirmed genuinely not a Server Component candidate: the `(auth)` pages (pre-login, not
+gated, nothing to prefetch). `tribes/page.tsx`/`tribes/[id]/page.tsx` were also client-only mock pages
+at the time of this pass, but were wired to real data in a later one (§21, 2026-09-24) — see that
+entry rather than this historical note.
 
 All verified the same way as frontend's conversions: lint/typecheck/build plus a real running
 `next start` hit with a syntactically-valid-but-backend-rejected `lemonade_admin_token` cookie,
@@ -2521,6 +2521,40 @@ lands, extending `collect.url` in `lighthouserc.frontend.json` is the only chang
 **Server-side pagination** — done, both sides. See §22 Conflict 1 for the full writeup: backend added
 opt-in `?page=` pagination to the seven largest unbounded admin lists, and admin's query hooks
 (users, reporting, all six transaction tabs, wallet-management) were wired to it.
+
+> **Update, checked and fixed 24 September 2026: admin's tribes feature.** This section's own list/
+> detail data-fetching was already wired in a later pass than the one that wrote it (2026-09-20,
+> `RequirePermission`/`useTribeListQuery`), making the "static mock content" note above stale — but
+> four real actions the backend already supported (`AddAdminTribeThread`, `DeleteAdminTribeThread`,
+> `RemoveAdminTribeMember`, and `CreateAdminTribe`, the last of which had a dead, fully-commented-out
+> Formik form with no submit handler at all despite a stale comment claiming it worked) had no UI. Built:
+> a real Create Tribe form (`react-hook-form` + Zod — the first use of either in this app; both were
+> CLAUDE.md's stated convention but neither existed here yet, so this pass introduces them rather than
+> matching the Formik/Yup every other admin form still uses) with a working image upload, an inline
+> "post as admin" thread composer, and confirm modals for deleting a thread and removing a member,
+> following the existing `RestrictTribeModal`/`DeleteTribeModal` pattern exactly. Backend gained
+> `CreateAdminTribeRequest`/`AddAdminTribeThreadRequest` FormRequests + DTOs (both actions previously
+> read raw `$request->all()` with zero validation) and an eager-loaded `ListAdminTribes` (was a real
+> N+1 — 2 extra queries per tribe row, now flat regardless of row count), plus a new admin-guarded
+> `/admin/utilities/upload` route — the existing `/shared/utilities/upload` is `auth:user`-only and
+> 401s an admin token; `GeneralController::uploadFile` itself is actor-agnostic, so this reuses the
+> same controller method under the admin guard rather than duplicating it.
+>
+> **Found and fixed along the way, not part of the original ask:** every `@lemonade/ui` `Dialog` in
+> both apps was rendering at its unstyled in-flow position — `position: fixed` with no `top`/`left`/
+> `transform` at all — instead of centered, because neither app's `tailwind.config.ts` `content` glob
+> scanned `packages/ui/src/**`. Arbitrary-value classes unique to a shared component (`top-[50%]`,
+> `translate-x-[-50%]`) never get Tailwind-JIT-generated unless the exact string also happens to appear
+> in the consuming app's own scanned source — most of Dialog's other classes are common enough utility
+> names to coincidentally already exist elsewhere in each app, which is exactly why this went unnoticed
+> since the modal-migration pass (Phase 7) landed. Confirmed via `getComputedStyle` on a real, already-
+> "working" modal (`RestrictTribeModal`) before touching anything, not assumed from my own new code.
+> Fixed in both apps' `tailwind.config.ts`. A real image-upload round trip couldn't be live-verified
+> further than the admin-guard/validation boundary — Cloudinary itself has no credentials in this
+> environment (`storage/logs/laravel.json.log`: "Invalid configuration, please set up your
+> environment"), the same class of gap as Connect's `sendChat` noted earlier in this document; the new
+> `tooling/e2e/tests/admin/tribes.spec.ts` mocks only that external call and runs everything else —
+> create, add thread, delete thread — against the real backend.
 
 ### Phase 7 — Design system **[SHOULD]** **[DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, modal→Dialog migration complete (59 files, both apps); token contrast has 2 real findings that need a design decision, not an implementation gap]**
 
