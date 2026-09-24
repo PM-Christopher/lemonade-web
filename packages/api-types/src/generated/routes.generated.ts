@@ -158,6 +158,11 @@ export const adminUsersRoutes = Object.freeze({
   WALLET: "/admin/users/{id}/user-wallet", // GET
 });
 
+export const adminUtilitiesRoutes = Object.freeze({
+  UPLOAD: "/admin/utilities/upload", // POST
+  UPLOAD_MULTIPLE: "/admin/utilities/upload-multiple", // POST
+});
+
 export const adminWalletRoutes = Object.freeze({
   DASHBOARD: "/admin/wallet", // GET
   UPDATE_WITHDRAWAL_THRESHOLD: "/admin/wallet/update-withdrawal-threshold", // PATCH

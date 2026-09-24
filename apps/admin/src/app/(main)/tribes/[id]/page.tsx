@@ -4,6 +4,7 @@ import { RequirePermission } from "@/components/global/RequirePermission";
 import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import MainTribeCard from "@/components/tribes/MainTribeCard";
 import TribeDetails from "@/components/tribes/TribeDetails";
+import AddThreadForm from "@/components/tribes/AddThreadForm";
 import { useTribeDetailQuery } from "@/features/tribes/queries";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -23,6 +24,12 @@ const DeleteTribeModal = dynamic(() => import("@/modals/tribes/DeleteTribeModal"
 const TribeStatusModal = dynamic(() => import("@/modals/tribes/TribeStatusModal"), {
   ssr: false,
 });
+const DeleteThreadModal = dynamic(() => import("@/modals/tribes/DeleteThreadModal"), {
+  ssr: false,
+});
+const RemoveMemberModal = dynamic(() => import("@/modals/tribes/RemoveMemberModal"), {
+  ssr: false,
+});
 
 // A Client Component page (tribes is the one section that stays client-side
 // — see the section-permission migration notes) still receives `params` as
@@ -36,6 +43,10 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [deleteThreadId, setDeleteThreadId] = useState<string | undefined>(undefined);
+  const [removeMemberTarget, setRemoveMemberTarget] = useState<
+    { userId: string; name: string } | undefined
+  >(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,8 +70,11 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
         <section className="flex justify-between bg-white">
           <div className="flex h-[780px] w-[888px] flex-col gap-[16px] overflow-y-auto border-r-[1px] p-[24px]">
             <p className="text-[16px] font-semibold">Tribe threads</p>
+            <AddThreadForm tribeId={id} />
             {threads.length > 0 ? (
-              threads.map((thread) => <MainTribeCard key={thread.id} thread={thread} />)
+              threads.map((thread) => (
+                <MainTribeCard key={thread.id} thread={thread} onDelete={setDeleteThreadId} />
+              ))
             ) : (
               <p className="text-[14px] font-normal text-text-grey">No threads yet</p>
             )}
@@ -113,7 +127,11 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
               )}
             </div>
             {tribe ? (
-              <TribeDetails tribe={tribe} members={members} />
+              <TribeDetails
+                tribe={tribe}
+                members={members}
+                onRemoveMember={(userId, name) => setRemoveMemberTarget({ userId, name })}
+              />
             ) : (
               <p className="text-[14px] font-normal text-text-grey">Loading tribe...</p>
             )}
@@ -134,6 +152,19 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
           isOpen={reactivateModalOpen}
           toggle={() => setReactivateModalOpen(false)}
           id={id}
+        />
+        <DeleteThreadModal
+          isOpen={Boolean(deleteThreadId)}
+          toggle={() => setDeleteThreadId(undefined)}
+          tribeId={id}
+          threadId={deleteThreadId}
+        />
+        <RemoveMemberModal
+          isOpen={Boolean(removeMemberTarget)}
+          toggle={() => setRemoveMemberTarget(undefined)}
+          tribeId={id}
+          userId={removeMemberTarget?.userId}
+          memberName={removeMemberTarget?.name}
         />
       </MainLayout>
     </RequirePermission>

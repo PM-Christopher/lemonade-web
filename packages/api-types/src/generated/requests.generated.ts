@@ -7,6 +7,13 @@
 // "this field can be anything". Dot-notation fields (settings.email,
 // tickets.*.id) become real nested objects/arrays, not literal dotted keys.
 
+export interface AddAdminTribeThreadRequest {
+  topic: string;
+  thoughts: string;
+  media?: {}[];
+  tags?: {}[];
+}
+
 export interface AddForumMemberRequest {
   username: string;
 }
@@ -103,6 +110,13 @@ export interface ChangeSubscriptionPlanRequest {
 export interface CommentOnTribeThreadRequest {
   body: string;
   parent_id?: unknown;
+}
+
+export interface CreateAdminTribeRequest {
+  tribe_name: string;
+  image: string;
+  category: string;
+  description: string;
 }
 
 export interface CreateAdminUserRequest {

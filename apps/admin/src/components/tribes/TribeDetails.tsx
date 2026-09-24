@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { DotIcon } from "lucide-react";
+import { DotIcon, XIcon } from "lucide-react";
 import { TribeDetail, TribeMemberItem } from "@/features/tribes/api";
 
 interface TribeDetailsProps {
@@ -10,9 +10,10 @@ interface TribeDetailsProps {
   // component gets real data from the tribes admin detail page.
   tribe?: TribeDetail;
   members?: TribeMemberItem[];
+  onRemoveMember?: (userId: string, memberName: string) => void;
 }
 
-const TribeDetails = ({ tribe, members = [] }: TribeDetailsProps) => {
+const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps) => {
   return (
     <div className="flex h-fit w-full flex-col gap-6">
       <div className="w-full rounded-lg bg-white p-4">
@@ -67,6 +68,18 @@ const TribeDetails = ({ tribe, members = [] }: TribeDetailsProps) => {
                     {member.user?.fullname ?? "Unknown member"}
                   </p>
                 </div>
+                {onRemoveMember && member.user_id && (
+                  <button
+                    type="button"
+                    aria-label="Remove member"
+                    className="cursor-pointer text-text-grey hover:text-red-1"
+                    onClick={() =>
+                      onRemoveMember(member.user_id, member.user?.fullname ?? "this member")
+                    }
+                  >
+                    <XIcon className="h-[16px] w-[16px]" />
+                  </button>
+                )}
               </div>
             ))
           ) : (

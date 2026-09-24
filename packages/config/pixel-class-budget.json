@@ -1,6 +1,6 @@
 {
   "// lemonade-app": "Raised from 2591 to 2616 (2026-09-21): the new error.tsx/loading.tsx/not-found.tsx/global-error.tsx boundaries match this app's existing hand-styled convention (bg-light_grey, border-step-color, text-[Npx] sizing) rather than generic shadcn defaults — see docs/ARCHITECTURE.md's error-boundaries section.",
   "lemonade-app": 2616,
-  "// lemonade-admin": "Raised from 1487 (2026-09-19) to 1646 (2026-09-21) for docs/ARCHITECTURE.md §22 Conflict 2's businesses/subscriptions/tribes sections, lowered to 1645 (2026-09-21) after retiring ThreadCard.tsx's dead menu markup, then raised again to 1674 (2026-09-21) for the same error/loading/not-found boundary work as lemonade-app above.",
-  "lemonade-admin": 1674
+  "// lemonade-admin": "Raised from 1487 (2026-09-19) to 1646 (2026-09-21) for docs/ARCHITECTURE.md §22 Conflict 2's businesses/subscriptions/tribes sections, lowered to 1645 (2026-09-21) after retiring ThreadCard.tsx's dead menu markup, raised again to 1674 (2026-09-21) for the same error/loading/not-found boundary work as lemonade-app above, then to 1712 (2026-09-24) for the real Create Tribe / Add Thread / Delete Thread / Remove Member UI — bespoke [Npx] sizing to match this app's existing hand-styled tribe modals (RestrictTribeModal/DeleteTribeModal), not a new pattern — then lowered to 1710 the same day after removing CreateTribeModal's duplicate mobile submit button (two buttons with identical accessible names, found while writing its e2e coverage).",
+  "lemonade-admin": 1710
 }
