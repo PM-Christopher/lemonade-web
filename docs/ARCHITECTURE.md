@@ -1952,6 +1952,21 @@ regardless of `BROADCAST_DRIVER`, and local Pusher credentials are empty — sam
 upload's missing Cloudinary credential. Verified its response shape via source instead
 (`OutgoingChatMessageResource`) and live-verified the other 8 endpoints end-to-end, including creating a
 real accepted connection and a real pending invite through the API and exercising accept.
+
+> **Update, checked and fixed 24 September 2026:** this gap is closed on the backend side —
+> `lemonade-backend`'s OPS-5/ADR-005 replaced Pusher Cloud with self-hosted Laravel Reverb (wire-compatible,
+> no client-SDK change needed) and every environment now has real broadcast credentials, where before
+> `PUSHER_APP_ID`/`KEY`/`SECRET` were blank everywhere. `PusherService` is now `ReverbService`, live-verified
+> against a running `reverb:start` (handshake + a real publish/subscribe round trip). Both apps'
+> `pusherConfig.ts`/`env.client.ts`/CSP were updated to match (`NEXT_PUBLIC_PUSHER_KEY` →
+> `NEXT_PUBLIC_REVERB_KEY`/`_HOST`/`_PORT`/`_SCHEME`), so `sendChat`'s POST should no longer 500 locally.
+> **Separately found, not fixed, during that verification:** `SendChatMessage` publishes on the raw
+> channel `chat.{receiverId}` (via `ReverbService`, bypassing `Broadcast::channel()`), but this hook's
+> `usePusher` subscribes to `private-chat.{receiverId}` — the actual wire name Laravel's private-channel
+> convention produces for the `chat.{receiverId}` pattern in the backend's `routes/channels.php`. These
+> are different channels on the wire, so a message published this way never reaches this subscriber —
+> predates the Reverb migration (identical mismatch existed on Pusher Cloud) and is out of scope for a
+> broker swap; see ADR-005's consequences in `claude-lemonade-architecture-guide.md`.
 **business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
 too — the largest single domain this session by consumer count (16 files). 4 queries
 (businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real

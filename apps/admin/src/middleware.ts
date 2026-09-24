@@ -31,18 +31,27 @@ import { adminAccountRoutes } from "@lemonade/api-types/generated";
 // Content-Security-Policy-Report-Only — report-only, so nothing here can
 // break a page; violations land at /api/csp-report (see that route and
 // docs/ARCHITECTURE.md Phase 8). Simpler than frontend's policy: this app
-// has no Firebase or Google OAuth, just Pusher (realtime) and the two
+// has no Firebase or Google OAuth, just Reverb (realtime) and the two
 // image hosts already allow-listed in next.config.mjs. `style-src` still
 // needs 'unsafe-inline' for the same reason as frontend's — see that
 // app's src/middleware.ts. Nothing is enforced yet.
+//
+// ADR-005: self-hosted Reverb, not Pusher Cloud — the browser opens the
+// websocket directly to Reverb's own host:port (not proxied through this
+// app's origin), so 'self' doesn't cover it; the ws(s) target is built from
+// the same NEXT_PUBLIC_REVERB_* vars src/config/pusherConfig.ts uses.
 function buildCsp(nonce: string) {
+  const reverbHost = process.env.NEXT_PUBLIC_REVERB_HOST || "localhost";
+  const reverbPort = process.env.NEXT_PUBLIC_REVERB_PORT || "8080";
+  const reverbWsScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "wss" : "ws";
+
   return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com",
     "font-src 'self' data:",
-    "connect-src 'self' wss://*.pusher.com https://*.pusher.com https://*.pusherapp.com",
+    `connect-src 'self' ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

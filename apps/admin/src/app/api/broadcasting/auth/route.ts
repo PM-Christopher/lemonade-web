@@ -1,8 +1,10 @@
-// Proxies Pusher's private/presence channel authorization to the real
-// backend, attaching the httpOnly session cookie's token server-side —
-// the browser never holds or sends it. Mirrors app/api/v1/[...path]/route.ts,
-// but calls the backend's /broadcasting/auth directly (unversioned, not
-// under /v1, so it can't go through backendApi's /v1-scoped baseURL).
+// Proxies the pusher-js client's private/presence channel authorization
+// (ADR-005: talking to self-hosted Reverb, not Pusher Cloud, but Reverb
+// speaks the same wire protocol) to the real backend, attaching the
+// httpOnly session cookie's token server-side — the browser never holds or
+// sends it. Mirrors app/api/v1/[...path]/route.ts, but calls the backend's
+// /broadcasting/auth directly (unversioned, not under /v1, so it can't go
+// through backendApi's /v1-scoped baseURL).
 //
 // Unused today: nothing in this app currently calls usePusher/pusherConfig,
 // and routes/channels.php on the backend has no admin-guard channel

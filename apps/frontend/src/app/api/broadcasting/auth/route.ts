@@ -1,11 +1,14 @@
-// Proxies Pusher's private/presence channel authorization to the real
-// backend, attaching the httpOnly session cookie's token server-side —
-// the browser never holds or sends it. Mirrors app/api/v1/[...path]/route.ts,
-// but calls the backend's /broadcasting/auth directly (unversioned, not
-// under /v1, so it can't go through backendApi's /v1-scoped baseURL).
+// Proxies the pusher-js client's private/presence channel authorization
+// (ADR-005: talking to self-hosted Reverb, not Pusher Cloud, but Reverb
+// speaks the same wire protocol) to the real backend, attaching the
+// httpOnly session cookie's token server-side — the browser never holds or
+// sends it. Mirrors app/api/v1/[...path]/route.ts, but calls the backend's
+// /broadcasting/auth directly (unversioned, not under /v1, so it can't go
+// through backendApi's /v1-scoped baseURL).
 //
-// Config on the Pusher client side just needs `authEndpoint: "/api/broadcasting/auth"`
-// (see config/pusherConfig.ts) — no token, no manual Authorization header.
+// Config on the pusher-js client side just needs
+// `authEndpoint: "/api/broadcasting/auth"` (see config/pusherConfig.ts) —
+// no token, no manual Authorization header.
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { USER_TOKEN_COOKIE } from "@/lib/cookie-names";

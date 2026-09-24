@@ -11,10 +11,24 @@ import { clientEnv } from "@/lib/env.client";
 // Falls back to "" rather than requiring the var — this whole file is
 // unused today (see comment above), and Pusher's constructor requires a
 // string key, not string | undefined.
-const app_key = clientEnv.NEXT_PUBLIC_PUSHER_KEY ?? "";
+//
+// ADR-005: self-hosted Reverb, not Pusher Cloud — wsHost/wsPort point at
+// the Reverb server, and forceTLS follows the configured scheme since local
+// dev talks to Reverb over plain ws. `cluster` is a Pusher Cloud routing
+// concept Reverb has no equivalent for and ignores at runtime, but pusher-js's
+// own Options type still marks it required — the empty string satisfies the
+// type without pusher-js sending it anywhere Reverb would see it.
+const app_key = clientEnv.NEXT_PUBLIC_REVERB_KEY ?? "";
+const reverbPort = Number(clientEnv.NEXT_PUBLIC_REVERB_PORT ?? 8080);
+const forceTLS = clientEnv.NEXT_PUBLIC_REVERB_SCHEME === "https";
 export const pusherConfig = () => {
   return new Pusher(app_key, {
-    cluster: "eu",
+    cluster: "",
+    wsHost: clientEnv.NEXT_PUBLIC_REVERB_HOST ?? "localhost",
+    wsPort: reverbPort,
+    wssPort: reverbPort,
+    forceTLS,
+    enabledTransports: ["ws", "wss"],
     channelAuthorization: {
       transport: "ajax",
       endpoint: "/api/broadcasting/auth",
@@ -24,6 +38,11 @@ export const pusherConfig = () => {
 
 export const pusherCon = () => {
   return new Pusher(app_key, {
-    cluster: "eu",
+    cluster: "",
+    wsHost: clientEnv.NEXT_PUBLIC_REVERB_HOST ?? "localhost",
+    wsPort: reverbPort,
+    wssPort: reverbPort,
+    forceTLS,
+    enabledTransports: ["ws", "wss"],
   });
 };

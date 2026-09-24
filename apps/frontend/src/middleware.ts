@@ -15,21 +15,30 @@ import { USER_TOKEN_COOKIE } from "@/lib/cookie-names";
 // docs/ARCHITECTURE.md Phase 8). Covers this app's real external
 // integrations: Firebase Cloud Messaging (push notifications + its service
 // worker), Google Identity Services (login/signup's "Sign in with
-// Google"), Pusher (Connect's realtime channel), and the two image hosts
+// Google"), Reverb (Connect's realtime channel), and the two image hosts
 // already allow-listed in next.config.mjs. `style-src` still needs
 // 'unsafe-inline' — much of this app's UI sets the `style` attribute
 // directly rather than a class, and auditing/migrating that is its own
 // pass, not something to silently break by tightening the policy here.
 // Nothing is enforced yet; tightening this from real report-only data is
 // the next step before ever flipping to `Content-Security-Policy`.
+//
+// ADR-005: self-hosted Reverb, not Pusher Cloud — the browser opens the
+// websocket directly to Reverb's own host:port (not proxied through this
+// app's origin), so 'self' doesn't cover it; the ws(s) target is built from
+// the same NEXT_PUBLIC_REVERB_* vars src/config/pusherConfig.ts uses.
 function buildCsp(nonce: string) {
+  const reverbHost = process.env.NEXT_PUBLIC_REVERB_HOST || "localhost";
+  const reverbPort = process.env.NEXT_PUBLIC_REVERB_PORT || "8080";
+  const reverbWsScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "wss" : "ws";
+
   return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com",
     "font-src 'self' data:",
-    "connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com wss://*.pusher.com https://*.pusher.com https://*.pusherapp.com",
+    `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "frame-src https://accounts.google.com",
     "worker-src 'self'",
     "object-src 'none'",

@@ -33,8 +33,12 @@ const clientEnvSchema = z.object({
   // doesn't crash env parsing itself, only that one flow.
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.preprocess(emptyStringAsUndefined, z.string().optional()),
 
-  // Pusher (chat/notifications realtime). Empty string in .env.local today.
-  NEXT_PUBLIC_PUSHER_KEY: z.preprocess(emptyStringAsUndefined, z.string().optional()),
+  // ADR-005: self-hosted Reverb, not Pusher Cloud, for chat/notifications
+  // realtime. Empty string in .env.local today.
+  NEXT_PUBLIC_REVERB_KEY: z.preprocess(emptyStringAsUndefined, z.string().optional()),
+  NEXT_PUBLIC_REVERB_HOST: z.preprocess(emptyStringAsUndefined, z.string().optional()),
+  NEXT_PUBLIC_REVERB_PORT: z.preprocess(emptyStringAsUndefined, z.string().optional()),
+  NEXT_PUBLIC_REVERB_SCHEME: z.preprocess(emptyStringAsUndefined, z.string().optional()),
 
   // Firebase (push notifications). None of these are set locally —
   // src/lib/firebase.ts and FcmContext.tsx already guard on `messaging`
@@ -58,7 +62,10 @@ const parsed = clientEnvSchema.safeParse({
   NEXT_PUBLIC_COUNTDOWN_DURATION: process.env.NEXT_PUBLIC_COUNTDOWN_DURATION,
   NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY: process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY,
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  NEXT_PUBLIC_PUSHER_KEY: process.env.NEXT_PUBLIC_PUSHER_KEY,
+  NEXT_PUBLIC_REVERB_KEY: process.env.NEXT_PUBLIC_REVERB_KEY,
+  NEXT_PUBLIC_REVERB_HOST: process.env.NEXT_PUBLIC_REVERB_HOST,
+  NEXT_PUBLIC_REVERB_PORT: process.env.NEXT_PUBLIC_REVERB_PORT,
+  NEXT_PUBLIC_REVERB_SCHEME: process.env.NEXT_PUBLIC_REVERB_SCHEME,
   NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
