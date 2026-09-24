@@ -1970,15 +1970,21 @@ real accepted connection and a real pending invite through the API and exercisin
 > predates the Reverb migration (identical mismatch existed on Pusher Cloud) and is out of scope for a
 > broker swap; see ADR-005's consequences in `claude-lemonade-architecture-guide.md`.
 >
-> **A second, separate channel gap found 24 September 2026, also not fixed:** `LayoutWrapper.tsx`
+> **A second, separate channel gap found and closed 24 September 2026:** `LayoutWrapper.tsx`
 > (mounted in the root layout, so on every authenticated page) unconditionally calls
 > `usePusher(\`request.${user?.id}\`, "request.service")` — a business-service-request notification
-> subscription. The backend's `routes/channels.php` never registers a `request.{id}` channel at all
-> (only `App.Models.User.{id}`, `chat.{receiverId}`, and `payment-success.{userId}` exist), so every
-> page load 403s `/api/broadcasting/auth` for this channel. Non-fatal — it's a real console error, not
-> a crash, and doesn't block rendering — but the feature has silently never worked. Predates today's
-> session; found incidentally while investigating the `/tribe`/`/business` hang above, not chased down
-> since it's a distinct bug (a missing backend channel registration, not a broker or rendering issue).
+> subscription. Two real bugs, not one: (1) `routes/channels.php` never registered a `request.{id}`
+> channel at all, so every page 403'd on `/api/broadcasting/auth`; (2) even with auth fixed,
+> `RequestBusinessService` published on the raw, unprefixed channel `request.{ownerId}` via
+> `ReverbService` (which — unlike Laravel's `PrivateChannel` — never adds `private-` automatically),
+> while the frontend always subscribes with that prefix. Same mismatch class as `SendChatMessage`'s
+> still-open one, above — but this one's fixed: `routes/channels.php` now registers
+> `request.{userId}`, and `RequestBusinessService` publishes on `private-request.{ownerId}` to match.
+> `RequestBusinessService` had zero test coverage before this — added
+> `tests/Feature/Business/RequestBusinessServiceTest.php` plus two closure-level authorization tests
+> in `BroadcastAuthTest.php`. Live-verified against a real running backend, not just the test suite: a
+> direct `POST /broadcasting/auth` for `private-request.{ownerId}` now returns 200 with a real auth
+> signature for the channel's owner, and 403 for a different real user.
 **business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
 too — the largest single domain this session by consumer count (16 files). 4 queries
 (businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real
