@@ -13,6 +13,14 @@ export default {
     "./src/icons/**/*.{js,ts,jsx,tsx,mdx,svg}",
     "./src/modals/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/views/**/*.{js,ts,jsx,tsx,mdx}",
+    // Without this, arbitrary-value classes unique to a shared component
+    // (e.g. Dialog's top-[50%]/translate-x-[-50%]) never get JIT-generated
+    // unless the exact same string happens to also appear in this app's own
+    // scanned source — real bug found 2026-09-24: every Dialog in this app
+    // rendered at its unstyled in-flow position (position:fixed with no
+    // top/left/transform at all), not centered, invisible on short pages
+    // and badly broken on long ones.
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     screens: {

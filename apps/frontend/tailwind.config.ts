@@ -10,6 +10,12 @@ const config: Config = {
     "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/images/**/*.{js,ts,jsx,tsx,mdx}",
+    // Without this, arbitrary-value classes unique to a shared component
+    // (e.g. Dialog's top-[50%]/translate-x-[-50%]) never get JIT-generated
+    // unless the exact same string happens to also appear in this app's own
+    // scanned source — real bug found 2026-09-24 in the admin app (same
+    // shared package), fixed here too before it's independently rediscovered.
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     screens: {
