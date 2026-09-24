@@ -1982,14 +1982,39 @@ real accepted connection and a real pending invite through the API and exercisin
 > channel at all, so every page 403'd on `/api/broadcasting/auth`; (2) even with auth fixed,
 > `RequestBusinessService` published on the raw, unprefixed channel `request.{ownerId}` via
 > `ReverbService` (which — unlike Laravel's `PrivateChannel` — never adds `private-` automatically),
-> while the frontend always subscribes with that prefix. Same mismatch class as `SendChatMessage`'s
-> still-open one, above — but this one's fixed: `routes/channels.php` now registers
-> `request.{userId}`, and `RequestBusinessService` publishes on `private-request.{ownerId}` to match.
-> `RequestBusinessService` had zero test coverage before this — added
-> `tests/Feature/Business/RequestBusinessServiceTest.php` plus two closure-level authorization tests
-> in `BroadcastAuthTest.php`. Live-verified against a real running backend, not just the test suite: a
-> direct `POST /broadcasting/auth` for `private-request.{ownerId}` now returns 200 with a real auth
-> signature for the channel's owner, and 403 for a different real user.
+> while the frontend always subscribes with that prefix. Same mismatch class as `SendChatMessage`'s,
+> above — `routes/channels.php` now registers `request.{userId}`, and `RequestBusinessService`
+> published on `private-request.{ownerId}` to match. `RequestBusinessService` had zero test coverage
+> before this — added `tests/Feature/Business/RequestBusinessServiceTest.php` plus two closure-level
+> authorization tests in `BroadcastAuthTest.php`. Live-verified against a real running backend, not
+> just the test suite: a direct `POST /broadcasting/auth` for `private-request.{ownerId}` now returns
+> 200 with a real auth signature for the channel's owner, and 403 for a different real user.
+>
+> **Unified onto `Broadcast::channel()` properly, 24 September 2026.** Both fixes above were a
+> `private-` string typed by hand into a raw SDK call — the same manual-prefix mistake was always one
+> edit away from recurring. `SendChatMessage` and `RequestBusinessService` now dispatch real
+> `ShouldBroadcastNow` events (`App\Events\ChatMessageSent`, `App\Events\BusinessServiceRequested`),
+> matching the pattern `BuyTicket`/`MessageSent`/`TypingEvent` already used — a `PrivateChannel` adds
+> `private-` itself, so the whole bug class is now structurally impossible here, not just fixed at the
+> two call sites that happened to be found. `App\Services\Shared\ReverbService` (the raw-SDK wrapper)
+> is deleted — both its consumers are gone, and grep confirms nothing else used it. Both actions'
+> tests moved from mocking a service call to `Event::fake()` + `Event::assertDispatched()`, matching
+> `SendTypingIndicatorTest`'s existing convention. Re-verified live end to end through the new path —
+> same real subscribe/send/receive round trip as above, now via the event dispatcher instead of a
+> direct SDK call.
+>
+> **Found while tracing this, not touched:** `App\Events\MessageSent` already broadcasts on this exact
+> same channel/event pair (`chat.{receiverId}` / `message.sent`) for a second, entirely separate
+> messaging domain — `ConnectController::sendMessage` → `SendConnectMessage` → `UserMessage` (Connect's
+> "current location-based" flow, per that route file's own comment, as opposed to `ChatController`'s
+> flow this section covers). Confirmed via a repo-wide grep: no frontend code in either app calls
+> `/user/connect/send-message` — the generated route constant (`userConnectRoutes.SEND_MESSAGE`)
+> exists but is referenced nowhere. Dead code today, so the channel collision is latent rather than
+> live, but if that endpoint's route ever gets wired to a real UI, `MessageSent` would broadcast into
+> the same `ChatMessageSent` subscribers expect payloads from, with a different shape (`UserMessage`'s
+> raw `toArray()` vs `OutgoingChatMessageResource`'s fields). Not chased down — removing a whole dead
+> Action/Event/Model/Controller-method chain is a bigger, separate decision than a broadcast-pattern
+> unification, and isn't this pass's call to make unasked.
 **business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
 too — the largest single domain this session by consumer count (16 files). 4 queries
 (businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real
