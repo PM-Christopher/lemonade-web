@@ -704,6 +704,7 @@ lemonade-web/
 │  ├─ api-types/     generated · envelope, ErrorCode, resources
 │  ├─ api-client/    transport, refresh, error normalization
 │  ├─ domain/        money · dates · statuses · error copy · predicates
+│  ├─ realtime/      Reverb/pusher-js connection-options builder (ADR-005, lemonade-backend)
 │  ├─ ui/            tokens + primitives (no domain knowledge)
 │  └─ config/        eslint · tsconfig · tailwind · prettier · vitest
 │
@@ -738,6 +739,7 @@ pages.
 | `packages/ui`         | domain, api-types                                    | api-client, any app, any feature                                               |
 | `packages/api-client` | api-types                                            | React, ui, domain, any app                                                     |
 | `packages/domain`     | api-types                                            | everything else — it is pure                                                   |
+| `packages/realtime`   | (nothing)                                            | env reading, vendor client construction, any app — it is pure                  |
 
 Enforced with `eslint-plugin-boundaries` and failing CI. A rule that is only written down is a rule
 that erodes.
