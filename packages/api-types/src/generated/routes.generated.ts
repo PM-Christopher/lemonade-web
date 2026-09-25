@@ -233,9 +233,6 @@ export const userConnectRoutes = Object.freeze({
   INVITES_RESPOND: "/user/connect/invite-response/{id}", // POST
   INVITES_SEND: "/user/connect/send-invite", // POST
   INVITES_SHOW: "/user/connect/get-invite/{id}", // GET
-  MESSAGE_LOGS: "/user/connect/get-message-logs", // GET
-  MESSAGES: "/user/connect/get-messages/{receiver_id}", // GET
-  SEND_MESSAGE: "/user/connect/send-message", // POST
   UPDATE_LOCATION: "/user/connect/update-location", // PATCH
   UPDATE_VISIBILITY: "/user/connect/update-visibility", // PATCH
 });

@@ -386,12 +386,6 @@ export interface SendChatMessageRequest {
   media?: unknown[];
 }
 
-export interface SendConnectMessageRequest {
-  receiver_id: string;
-  content: string;
-  media_path?: string;
-}
-
 export interface SendTypingIndicatorRequest {
   receiver_id: string;
 }
