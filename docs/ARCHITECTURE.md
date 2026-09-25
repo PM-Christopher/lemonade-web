@@ -2611,7 +2611,7 @@ opt-in `?page=` pagination to the seven largest unbounded admin lists, and admin
 > `tooling/e2e/tests/admin/tribes.spec.ts` mocks only that external call and runs everything else —
 > create, add thread, delete thread — against the real backend.
 
-### Phase 7 — Design system **[SHOULD]** **[DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, modal→Dialog migration complete (59 files, both apps); token contrast has 2 real findings that need a design decision, not an implementation gap]**
+### Phase 7 — Design system **[SHOULD]** **[DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, modal→Dialog migration complete (59 files, both apps); all 3 contrast findings resolved, 25 September 2026]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -2837,13 +2837,25 @@ shadcn token block, and the first version of the parser matched that one by mist
 empty token set instead of erroring.
 
 Running it for real found genuine, previously-unmeasured failures, all stock shadcn defaults never
-customized for this project: light mode's `destructive-foreground` on `destructive` is 3.60:1 (needs
-4.5:1 — the "delete" button variant's own text fails contrast against its own background), `muted-foreground`
-on `muted` is 4.35:1 (fails by a hair), and `border`/`input` on `background` are 1.26:1 light / 1.31:1 dark
-(both need 3:1 — though WCAG 1.4.11 exempts purely decorative borders, so this one's a closer call than
-the destructive-button failure). Wired into `.github/workflows/ci.yml` as a new `contrast-audit` job,
-report-only like the Lighthouse job — these are real findings worth a design decision, not something to
-silently "fix" by picking new colors without the user's input.
+customized for this project: light mode's `destructive-foreground` on `destructive` was 3.60:1 (needs
+4.5:1 — the "delete" button variant's own text failed contrast against its own background),
+`muted-foreground` on `muted` was 4.35:1 (failed by a hair), and `border`/`input` on `background` were
+1.26:1 light / 1.31:1 dark (both need 3:1 — WCAG 1.4.11 exempts purely decorative borders, so this one
+was flagged as the closer call of the three). Wired into `.github/workflows/ci.yml` as a new
+`contrast-audit` job, report-only like the Lighthouse job. All three were left as findings for a design
+decision rather than silently "fixed" by picking new colors without the user's input.
+
+> **Update, resolved 25 September 2026.** The user asked for all three findings to be closed, choosing
+> "minimum change to clear the threshold, same hue" over hand-picking exact replacement colors.
+> `--muted-foreground` (44.1%, was 45.1%) and `--destructive` (48.9%, was 60.2%) were already fixed in
+> an earlier pass and now measure 4.51:1 each — this status paragraph just hadn't been updated to say
+> so. `--border`/`--input` were the one still-open finding: light mode moved from 89.8% lightness to
+> 58%, dark mode from 14.9% to 37% (binary-searched against the real formula in
+> `tooling/contrast-audit/contrast.mjs`, both apps' `globals.css`) — now 3.04:1 light / 3.07:1 dark,
+> both just past the 3:1 floor. This is a visibly stronger border than the shadcn default, not a subtle
+> tweak like the text-color fixes — every card, input, and divider in both apps is now more visible.
+> `tooling/contrast-audit/audit.mjs` reports all 11 pairs passing in both modes; both apps' `next build`
+> verified clean.
 
 **Arbitrary pixel values are now a lint warning, with the same declining-budget ratchet already used for
 `no-explicit-any`.** `eslint-plugin-tailwindcss`'s own `no-arbitrary-value` rule turned out to be the
