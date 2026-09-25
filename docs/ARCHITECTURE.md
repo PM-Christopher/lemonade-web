@@ -2003,18 +2003,23 @@ real accepted connection and a real pending invite through the API and exercisin
 > same real subscribe/send/receive round trip as above, now via the event dispatcher instead of a
 > direct SDK call.
 >
-> **Found while tracing this, not touched:** `App\Events\MessageSent` already broadcasts on this exact
-> same channel/event pair (`chat.{receiverId}` / `message.sent`) for a second, entirely separate
+> **Found while tracing this, removed 25 September 2026.** `App\Events\MessageSent` broadcast on this
+> exact same channel/event pair (`chat.{receiverId}` / `message.sent`) for a second, entirely separate
 > messaging domain — `ConnectController::sendMessage` → `SendConnectMessage` → `UserMessage` (Connect's
 > "current location-based" flow, per that route file's own comment, as opposed to `ChatController`'s
-> flow this section covers). Confirmed via a repo-wide grep: no frontend code in either app calls
-> `/user/connect/send-message` — the generated route constant (`userConnectRoutes.SEND_MESSAGE`)
-> exists but is referenced nowhere. Dead code today, so the channel collision is latent rather than
-> live, but if that endpoint's route ever gets wired to a real UI, `MessageSent` would broadcast into
-> the same `ChatMessageSent` subscribers expect payloads from, with a different shape (`UserMessage`'s
-> raw `toArray()` vs `OutgoingChatMessageResource`'s fields). Not chased down — removing a whole dead
-> Action/Event/Model/Controller-method chain is a bigger, separate decision than a broadcast-pattern
-> unification, and isn't this pass's call to make unasked.
+> flow this section covers). Re-verified before removing: a repo-wide grep across both frontend apps'
+> current source, and the older pre-monorepo frontend, found zero calls to `/user/connect/send-message`,
+> `/user/connect/get-messages`, or `/user/connect/get-message-logs` — only `ConnectController::index`,
+> `findUser`, and `updateVisibility` have live frontend consumers (`features/connect/api.ts`). Confirmed
+> dead and removed: `SendConnectMessage`, `GetConnectMessages`, `GetConnectMessageLogs`,
+> `SendConnectMessageData`, `SendConnectMessageRequest`, `ConnectMessageResource`,
+> `ConnectMessageLogResource`, `MessageSent`, `UserMessage`, `UserMessageFactory`, their 3 route
+> registrations, and their 3 tests (13 files deleted total). The `user_messages` migration/table was
+> left in place — schema drops are a separate, more destructive decision from dead-code removal. This
+> closes the latent channel-collision risk noted below: `ChatMessageSent` is now the only publisher on
+> `chat.{receiverId}`/`message.sent`. `packages/api-types` regenerated to drop the now-gone
+> `userConnectRoutes.MESSAGE_LOGS`/`MESSAGES`/`SEND_MESSAGE` constants and the `SendConnectMessageRequest`
+> type; both apps typecheck/lint/build clean against the regenerated types.
 **business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
 too — the largest single domain this session by consumer count (16 files). 4 queries
 (businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real
