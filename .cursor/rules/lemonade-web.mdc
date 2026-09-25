@@ -301,7 +301,7 @@ refactor(tribes): split tribe.slice.ts into queries/mutations
 docs(architecture): record ADR for BFF auth flow
 ```
 
-Prefer a **single-line** subject. Put detail in the PR body, not a long commit body, unless the user asks for a detailed commit.
+Commit messages are **subject line only, no body** — do not add a `-m` body paragraph explaining the "why," even a short one. Put that detail in the PR body instead. Only add a commit body when the user explicitly asks for a detailed commit.
 
 Never use: `update`, `changes`, `misc fixes`, `stuff`, `work in progress`.
 
