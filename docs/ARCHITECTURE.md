@@ -1590,7 +1590,11 @@ which only warned), which would have broken CI the moment it ran. Fixed by setti
 booleans (esbuild/unrs-resolver approved, the other five denied — `next build` and `vitest` both pass
 without them).
 
-### Phase 2 — Monorepo consolidation **[MUST]** **[DONE — only archiving the old pre-monorepo repos remains, a destructive action outside this repo left for direct action]**
+### Phase 2 — Monorepo consolidation **[MUST]** **[DONE]**
+
+**Archiving the old pre-monorepo repos, closed 25 September 2026:** the user confirmed this is considered
+attended to — `lemonade-web` is the actively developed monorepo, and the old pre-monorepo `lemonade/{admin,frontend}`
+repos are deliberately left untouched, not worked on or updated. No further action needed here.
 
 Mechanical and low-risk. No behaviour changes in this phase — that is the point.
 
