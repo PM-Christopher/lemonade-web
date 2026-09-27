@@ -107,6 +107,12 @@ export interface RequestConfig extends AxiosRequestConfig {
   bearerTokenOverride?: string;
 }
 
+/** Raw response alongside the unwrapped data — see `requestWithHeaders` below. */
+export interface RawApiResponse<T> {
+  data: T;
+  headers: Record<string, string | string[] | undefined>;
+}
+
 export interface ApiClient {
   get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
   post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T>;
@@ -115,6 +121,41 @@ export interface ApiClient {
   delete<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
   /** Generic escape hatch for the BFF proxy, which forwards an arbitrary method/path pair. */
   request<T = unknown>(config: RequestConfig): Promise<T>;
+  /**
+   * Same as `request`, but keeps the raw response headers alongside the
+   * unwrapped data — for the handful of callers (the BFF proxy, the login
+   * Route Handlers) that need to read a specific response header (e.g.
+   * Set-Cookie) themselves. Everything else should keep using the plain
+   * methods above; this exists so those callers don't have to reach past
+   * this package's own envelope-unwrapping to get at a header.
+   */
+  requestWithHeaders<T = unknown>(config: RequestConfig): Promise<RawApiResponse<T>>;
+}
+
+/**
+ * Reads one named cookie's value out of a raw Set-Cookie response header
+ * (as `requestWithHeaders` returns it) — not general cookie-attribute
+ * parsing, just "did the server set/clear this specific cookie, and what
+ * value did it use". Returns `undefined` when the header never mentions
+ * this cookie at all (nothing to do), or the cookie's value otherwise
+ * (an empty string for a cleared/expired cookie).
+ */
+export function getSetCookieValue(
+  headers: Record<string, string | string[] | undefined>,
+  cookieName: string,
+): string | undefined {
+  const raw = headers["set-cookie"];
+  const lines = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  const prefix = `${cookieName}=`;
+
+  for (const line of lines) {
+    if (!line.startsWith(prefix)) continue;
+    const rest = line.slice(prefix.length);
+    const end = rest.indexOf(";");
+    return end === -1 ? rest : rest.slice(0, end);
+  }
+
+  return undefined;
 }
 
 function mapKind(status: number): ApiErrorKind {
@@ -274,5 +315,12 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
     put: (url, data, cfg) => unwrap(instance.put(url, data, cfg)),
     delete: (url, cfg) => unwrap(instance.delete(url, cfg)),
     request: (cfg) => unwrap(instance.request(cfg)),
+    requestWithHeaders: async <T>(cfg: RequestConfig) => {
+      const response = await instance.request<ApiSuccess<T>>(cfg);
+      return {
+        data: response.data.data as T,
+        headers: response.headers as Record<string, string | string[] | undefined>,
+      };
+    },
   };
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { createApiClient, ApiError } from "./index";
+import { createApiClient, ApiError, getSetCookieValue } from "./index";
 
 describe("createApiClient", () => {
   let mock: MockAdapter;
@@ -221,5 +221,55 @@ describe("createApiClient", () => {
       status: 401,
     });
     expect(onUnauthorized).toHaveBeenCalledOnce();
+  });
+
+  it("requestWithHeaders keeps the raw response headers alongside the unwrapped data", async () => {
+    mock.onGet("http://api.test/wallet").reply(
+      200,
+      { success: true, message: "ok", data: { balance: 500 } },
+      { "set-cookie": ["lemonade-network-signed-in=1; Path=/; HttpOnly"] },
+    );
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+    const result = await client.requestWithHeaders<{ balance: number }>({
+      url: "/wallet",
+      method: "get",
+    });
+
+    expect(result.data).toEqual({ balance: 500 });
+    expect(result.headers["set-cookie"]).toEqual(["lemonade-network-signed-in=1; Path=/; HttpOnly"]);
+  });
+});
+
+describe("getSetCookieValue", () => {
+  it("returns the cookie's value when present", () => {
+    const headers = { "set-cookie": ["lemonade-network-signed-in=1; Path=/; HttpOnly"] };
+    expect(getSetCookieValue(headers, "lemonade-network-signed-in")).toBe("1");
+  });
+
+  it("returns an empty string for a cleared cookie, not undefined", () => {
+    const headers = { "set-cookie": ["lemonade-network-signed-in=; expires=Thu, 01 Jan 1970 00:00:00 GMT"] };
+    expect(getSetCookieValue(headers, "lemonade-network-signed-in")).toBe("");
+  });
+
+  it("returns undefined when the header never mentions this cookie", () => {
+    const headers = { "set-cookie": ["some_other_cookie=abc; Path=/"] };
+    expect(getSetCookieValue(headers, "lemonade-network-signed-in")).toBeUndefined();
+  });
+
+  it("returns undefined when there is no set-cookie header at all", () => {
+    expect(getSetCookieValue({}, "lemonade-network-signed-in")).toBeUndefined();
+  });
+
+  it("handles a single string set-cookie header, not just an array", () => {
+    const headers = { "set-cookie": "lemonade-network-signed-in=1; Path=/" };
+    expect(getSetCookieValue(headers, "lemonade-network-signed-in")).toBe("1");
+  });
+
+  it("finds the right cookie among several Set-Cookie lines", () => {
+    const headers = {
+      "set-cookie": ["some_other=xyz; Path=/", "lemonade-network-signed-in=1; Path=/"],
+    };
+    expect(getSetCookieValue(headers, "lemonade-network-signed-in")).toBe("1");
   });
 });
