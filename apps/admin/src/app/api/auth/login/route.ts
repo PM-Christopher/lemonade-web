@@ -10,7 +10,7 @@
 import { NextResponse } from "next/server";
 import { ApiError } from "@lemonade/api-client";
 import { adminAuthRoutes } from "@lemonade/api-types/generated";
-import { backendApi, persistAdminSession } from "@/lib/server-api";
+import { backendApi, persistAdminSession, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
 interface LoginAdmin {
   id: string | number;
@@ -41,9 +41,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    const result = await backendApi.post<LoginResponse>(adminAuthRoutes.LOGIN, body);
+    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders<LoginResponse>({
+      url: adminAuthRoutes.LOGIN,
+      method: "post",
+      data: body,
+    });
 
     if (result.admin.status === 0) {
+      // Deliberately not relayed here — see the frontend login route's
+      // identical comment on this branch.
       return NextResponse.json({
         success: true,
         message: "Login successful",
@@ -52,6 +58,7 @@ export async function POST(req: Request) {
     }
 
     await persistAdminSession(result.token, result.refresh_token, result.expires_in);
+    await syncSignedInCookieFromHeaders(responseHeaders);
 
     return NextResponse.json({
       success: true,

@@ -25,7 +25,7 @@
 // in both. See the admin equivalent of this file.
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "@lemonade/api-client";
-import { backendApi, USER_TOKEN_COOKIE } from "@/lib/server-api";
+import { backendApi, USER_TOKEN_COOKIE, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 
 const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
@@ -68,7 +68,7 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
   const onboardingToken = hasSession ? undefined : req.cookies.get(ONBOARDING_TOKEN_COOKIE)?.value;
 
   try {
-    const result = await backendApi.request({
+    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders({
       url: targetUrl,
       method,
       data,
@@ -80,6 +80,11 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
       },
       ...(onboardingToken ? { bearerTokenOverride: onboardingToken } : {}),
     });
+    // Relays the backend's own signed-in indicator cookie onto the browser's
+    // response — see syncSignedInCookieFromHeaders's docblock. Every ordinary
+    // authenticated call goes through here, so this is what actually gives
+    // the cookie its sliding-window renewal.
+    await syncSignedInCookieFromHeaders(responseHeaders);
     return NextResponse.json({ success: true, message: "OK", data: result });
   } catch (err) {
     if (err instanceof ApiError) {

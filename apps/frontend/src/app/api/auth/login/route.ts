@@ -13,7 +13,7 @@
 import { NextResponse } from "next/server";
 import { ApiError } from "@lemonade/api-client";
 import { userAuthRoutes } from "@lemonade/api-types/generated";
-import { backendApi, persistUserSession } from "@/lib/server-api";
+import { backendApi, persistUserSession, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
 interface LoginUser {
   id: string | number;
@@ -46,11 +46,23 @@ export async function POST(req: Request) {
   }
 
   try {
-    const result = await backendApi.post<LoginResponse>(userAuthRoutes.LOGIN, body);
+    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders<LoginResponse>({
+      url: userAuthRoutes.LOGIN,
+      method: "post",
+      data: body,
+    });
 
     const needsOnboarding = result.user.status === 0 || result.user.username === null;
 
     if (needsOnboarding) {
+      // Deliberately not relayed here — an onboarding user has no main
+      // httpOnly session (see this file's own docblock), so a signed-in
+      // cookie would incorrectly tell middleware.ts they can reach
+      // protected routes. The backend still issued a real ACCESS token
+      // (SignInUser has no onboarding branch of its own — that split is
+      // this route's decision, not the backend's), so its response does
+      // carry the Set-Cookie header; it's just the wrong signal for this
+      // branch, so it's read no further.
       return NextResponse.json({
         success: true,
         message: "Login successful",
@@ -59,6 +71,7 @@ export async function POST(req: Request) {
     }
 
     await persistUserSession(result.token, result.refresh_token, result.expires_in);
+    await syncSignedInCookieFromHeaders(responseHeaders);
 
     return NextResponse.json({
       success: true,

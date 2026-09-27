@@ -10,11 +10,11 @@
 // This matters now that lib/axiosInstane.ts routes everything through this
 // proxy, uploads included.
 //
-// Next 15 (this app): route handler `params` are async. Next 14
-// (apps/frontend): sync — see the frontend equivalent of this file.
+// Both apps are on Next 15 now (Phase 3) — route handler `params` are async
+// in both. See the frontend equivalent of this file.
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "@lemonade/api-client";
-import { backendApi } from "@/lib/server-api";
+import { backendApi, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
 const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
 
@@ -53,7 +53,7 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
   }
 
   try {
-    const result = await backendApi.request({
+    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders({
       url: targetUrl,
       method,
       data,
@@ -64,6 +64,11 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
         ...(userAgent ? { "User-Agent": userAgent } : {}),
       },
     });
+    // Relays the backend's own signed-in indicator cookie onto the browser's
+    // response — see syncSignedInCookieFromHeaders's docblock. Every ordinary
+    // authenticated call goes through here, so this is what actually gives
+    // the cookie its sliding-window renewal.
+    await syncSignedInCookieFromHeaders(responseHeaders);
     return NextResponse.json({ success: true, message: "OK", data: result });
   } catch (err) {
     if (err instanceof ApiError) {

@@ -9,9 +9,9 @@ import "server-only";
 // this file and apps/admin/src/lib/server-api.ts are deliberately kept in
 // the same shape.
 import { cookies } from "next/headers";
-import { createApiClient, type ApiClient } from "@lemonade/api-client";
+import { createApiClient, getSetCookieValue, type ApiClient } from "@lemonade/api-client";
 import { userAuthRoutes } from "@lemonade/api-types/generated";
-import { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE } from "@/lib/cookie-names";
+import { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 import { serverEnv } from "@/lib/env.server";
 
 export { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE };
@@ -70,11 +70,64 @@ async function persistRefreshToken(token: string): Promise<void> {
   }
 }
 
+// Same options as the real access-token cookie above — this one just
+// carries no secret, so its only job is presence/absence. See
+// cookie-names.ts's SIGNED_IN_COOKIE comment for the full picture.
+async function persistSignedInCookie(maxAgeSeconds: number): Promise<void> {
+  try {
+    const store = await cookies();
+    store.set(SIGNED_IN_COOKIE, "1", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: maxAgeSeconds,
+    });
+  } catch {
+    // Not in a writable context.
+  }
+}
+
+async function clearSignedInCookie(): Promise<void> {
+  try {
+    const store = await cookies();
+    store.delete(SIGNED_IN_COOKIE);
+  } catch {
+    // Not in a writable context.
+  }
+}
+
+/**
+ * Relays the backend's own Set-Cookie decision for SIGNED_IN_COOKIE onto
+ * this app's outgoing response — called by the BFF proxy and the login
+ * route right after a `requestWithHeaders` call, so the cookie's sliding
+ * window is driven by the backend's real per-request authentication state
+ * (see lemonade-backend's SyncSignedInCookie/SignedInCookieSignal), not
+ * reimplemented here. The header is read, never parsed for attributes —
+ * this app decides its own maxAge/secure/sameSite/path independently,
+ * matching this file's other cookies. A header that never mentions this
+ * cookie at all is left alone (backend not upgraded yet, or an
+ * unauthenticated public endpoint); an empty value means the backend
+ * explicitly cleared it.
+ */
+export async function syncSignedInCookieFromHeaders(
+  headers: Record<string, string | string[] | undefined>,
+): Promise<void> {
+  const value = getSetCookieValue(headers, SIGNED_IN_COOKIE);
+  if (value === undefined) return;
+  if (value === "") {
+    await clearSignedInCookie();
+  } else {
+    await persistSignedInCookie(DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
+  }
+}
+
 export async function clearUserSession(): Promise<void> {
   try {
     const store = await cookies();
     store.delete(USER_TOKEN_COOKIE);
     store.delete(USER_REFRESH_COOKIE);
+    store.delete(SIGNED_IN_COOKIE);
   } catch {
     // Not in a writable context.
   }
@@ -89,6 +142,14 @@ export const backendApi: ApiClient = createApiClient({
     onRefreshed: async (accessToken, refreshToken, expiresIn) => {
       await persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
       if (refreshToken) await persistRefreshToken(refreshToken);
+      // This refresh can happen deep inside the interceptor, servicing an
+      // unrelated Server Component's call — there's no response object here
+      // to relay the backend's own Set-Cookie header onto (see
+      // syncSignedInCookieFromHeaders). A successful refresh is exactly the
+      // condition lemonade-backend's TokenRotationService itself uses to
+      // mark the visitor signed in, so setting it directly here is
+      // correct, not a guess.
+      await persistSignedInCookie(expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
     },
   },
   onUnauthorized: clearUserSession,

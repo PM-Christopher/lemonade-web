@@ -4,13 +4,14 @@ import "server-only";
 // lemonade-backend directly. Use from Server Components, Route Handlers and
 // Server Actions. Never import this into a Client Component.
 //
-// apps/admin is on Next 15, where `cookies()` is ASYNC. apps/frontend is
-// still on Next 14, where it's sync — see apps/frontend/src/lib/server-api.ts.
-// Don't copy this file verbatim between the two apps.
+// Both apps are on Next 15 now (Phase 3), so `cookies()` is ASYNC in both —
+// this file and apps/frontend/src/lib/server-api.ts are deliberately kept in
+// the same shape. (Stale note removed: this used to say frontend was still
+// on Next 14/sync cookies — it wasn't true anymore and had drifted.)
 import { cookies } from "next/headers";
-import { createApiClient, type ApiClient } from "@lemonade/api-client";
+import { createApiClient, getSetCookieValue, type ApiClient } from "@lemonade/api-client";
 import { adminAuthRoutes } from "@lemonade/api-types/generated";
-import { ADMIN_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE } from "@/lib/cookie-names";
+import { ADMIN_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 import { serverEnv } from "@/lib/env.server";
 
 export { ADMIN_TOKEN_COOKIE, ADMIN_REFRESH_COOKIE };
@@ -64,11 +65,64 @@ async function persistRefreshToken(token: string): Promise<void> {
   }
 }
 
+// Same options as the real access-token cookie above — this one just
+// carries no secret, so its only job is presence/absence. See
+// cookie-names.ts's SIGNED_IN_COOKIE comment for the full picture.
+async function persistSignedInCookie(maxAgeSeconds: number): Promise<void> {
+  try {
+    const store = await cookies();
+    store.set(SIGNED_IN_COOKIE, "1", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: maxAgeSeconds,
+    });
+  } catch {
+    // Not in a writable context.
+  }
+}
+
+async function clearSignedInCookie(): Promise<void> {
+  try {
+    const store = await cookies();
+    store.delete(SIGNED_IN_COOKIE);
+  } catch {
+    // Not in a writable context.
+  }
+}
+
+/**
+ * Relays the backend's own Set-Cookie decision for SIGNED_IN_COOKIE onto
+ * this app's outgoing response — called by the BFF proxy and the login
+ * route right after a `requestWithHeaders` call, so the cookie's sliding
+ * window is driven by the backend's real per-request authentication state
+ * (see lemonade-backend's SyncSignedInCookie/SignedInCookieSignal), not
+ * reimplemented here. The header is read, never parsed for attributes —
+ * this app decides its own maxAge/secure/sameSite/path independently,
+ * matching this file's other cookies. A header that never mentions this
+ * cookie at all is left alone (backend not upgraded yet, or an
+ * unauthenticated public endpoint); an empty value means the backend
+ * explicitly cleared it.
+ */
+export async function syncSignedInCookieFromHeaders(
+  headers: Record<string, string | string[] | undefined>,
+): Promise<void> {
+  const value = getSetCookieValue(headers, SIGNED_IN_COOKIE);
+  if (value === undefined) return;
+  if (value === "") {
+    await clearSignedInCookie();
+  } else {
+    await persistSignedInCookie(DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
+  }
+}
+
 export async function clearAdminSession(): Promise<void> {
   try {
     const store = await cookies();
     store.delete(ADMIN_TOKEN_COOKIE);
     store.delete(ADMIN_REFRESH_COOKIE);
+    store.delete(SIGNED_IN_COOKIE);
   } catch {
     // Not in a writable context.
   }
@@ -83,6 +137,10 @@ export const backendApi: ApiClient = createApiClient({
     onRefreshed: async (accessToken, refreshToken, expiresIn) => {
       await persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
       if (refreshToken) await persistRefreshToken(refreshToken);
+      // See apps/frontend's identical comment on this call — this refresh
+      // can happen deep inside the interceptor with no response object
+      // here to relay the backend's Set-Cookie header onto.
+      await persistSignedInCookie(expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
     },
   },
   onUnauthorized: clearAdminSession,

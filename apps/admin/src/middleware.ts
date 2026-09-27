@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ADMIN_TOKEN_COOKIE } from "@/lib/cookie-names";
+import { ADMIN_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import { adminAccountRoutes } from "@lemonade/api-types/generated";
 
@@ -133,7 +133,12 @@ export async function middleware(req: NextRequest) {
   // src/lib/server-api.ts) — a session created before this cutover won't
   // carry it and will be redirected to log in again once.
   const token = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
-  if (!token) {
+  // SIGNED_IN_COOKIE alone is enough to pass this redirect gate (same
+  // non-authoritative UX signal, just backend-driven and non-sensitive) —
+  // but it's never a bearer token, so the permission fetch below still
+  // needs the real `token` value specifically, not this boolean.
+  const signedIn = Boolean(token) || Boolean(req.cookies.get(SIGNED_IN_COOKIE)?.value);
+  if (!signedIn) {
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
@@ -145,7 +150,11 @@ export async function middleware(req: NextRequest) {
 
   const requiredPermission = requiredPermissionFor(pathname);
   if (requiredPermission) {
-    const permissions = await getAdminPermissions(token);
+    // `signedIn` can be true from SIGNED_IN_COOKIE alone (never a bearer
+    // token) — if the real token is genuinely absent here, there's nothing
+    // to fetch permissions with, so this section gates the same as "no
+    // permissions returned" rather than crashing on an undefined token.
+    const permissions = token ? await getAdminPermissions(token) : null;
     if (!permissions?.includes(requiredPermission)) {
       // Rewritten to a path with no matching route, so Next's own ordinary
       // "route not found" handling renders it — a real 404 status, not just
