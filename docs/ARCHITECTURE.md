@@ -1818,6 +1818,41 @@ live Redux bugs found and fixed while in this code: both apps' `resetAuth` reduc
 `isLoggedIn: true` (backwards), and admin's `MainLayout.tsx` synchronously redirected to `/login`
 whenever the _old_ token cookie was absent — which post-cutover is always true.
 
+> **Update, 27 September 2026: a non-sensitive signed-in indicator cookie, backend-driven.**
+> `lemonade-backend`'s `SyncSignedInCookie` middleware (ADR-008) sets/clears
+> `lemonade-network-signed-in` on every `/v1/*` response — value always `1`, HttpOnly, never
+> authoritative. In this app's BFF architecture the browser never talks to Laravel directly, so that
+> Set-Cookie header lands on a server-side axios response inside Next.js and never reaches the browser
+> on its own — it had to be explicitly relayed. `@lemonade/api-client` gained an additive
+> `requestWithHeaders()` method (keeps the raw response headers alongside the unwrapped data; every
+> other existing call site is untouched) plus a small `getSetCookieValue()` helper. Both apps'
+> `lib/server-api.ts` gained `syncSignedInCookieFromHeaders()`, called from the BFF proxy (every ordinary
+> authenticated call — this is what actually gives the cookie its sliding-window renewal) and from the
+> login Route Handler (only on the fully-onboarded branch, not the `needsOnboarding` one — an onboarding
+> user has no main httpOnly session, so marking them "signed in" would be the wrong signal for
+> `middleware.ts`). The one spot that can't relay a header — a refresh triggered deep inside
+> `@lemonade/api-client`'s own interceptor, servicing an unrelated call with no response object to attach
+> a cookie to — sets the cookie directly instead, since a successful refresh is exactly the condition
+> under which the backend's own `TokenRotationService::rotate()` marks the visitor signed in anyway.
+> Logout doesn't need relaying at all: `clearUserSession()`/`clearAdminSession()` now delete this cookie
+> alongside the real token cookies they already cleared. `middleware.ts` in both apps now gates on
+> `SIGNED_IN_COOKIE` **or** the real token cookie's presence — the `or` matters for a smooth rollout: an
+> already-logged-in session has the old cookie but not the new one until its first proxied call sets it,
+> and middleware runs before that call ever happens. Admin's middleware needed one extra bit of care: it
+> also uses the token's *value* (not just presence) to fetch permissions for section-gating, so only the
+> redirect check was widened to the `or`, not the downstream permission fetch, which still requires the
+> real token specifically.
+>
+> Live-verified end to end against the real backend, not just typechecked — real login through both
+> apps' actual Route Handlers (`curl`, not a browser) showed the real `Set-Cookie` line for the new
+> cookie alongside the existing token cookies; a follow-up authenticated proxy call showed its `Expires`
+> moving forward (the sliding window working, not just a one-time set at login); logout showed all three
+> cookies cleared in one response; hitting a protected route with no cookies at all 307-redirected to
+> `/login`, and the same route with fresh cookies returned 200. Also fixed in passing while touching
+> these two files: a stale comment in admin's `server-api.ts` and BFF proxy claiming frontend was "still
+> on Next 14 with sync `cookies()`" — both apps have been on Next 15 (async `cookies()`) since Phase 3;
+> the comment had just never been updated.
+
 ### Phase 5 — Server state, domain by domain **[MUST]** **[COMPLETE — 19 of ~19 domains]**
 
 The largest phase. Migrate in this order — lowest risk first, money last, once the pattern is proven.
