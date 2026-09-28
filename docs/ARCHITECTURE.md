@@ -2916,7 +2916,7 @@ budget step. While in there, the any-type budget script surfaced its own real im
 in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
 `no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
 
-### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP, docs finalization, and a started (not full-ten-journey) Playwright suite all done; only Sentry remains blocked, see below]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP, docs finalization, and a started (not full-ten-journey) Playwright suite all done; Sentry deliberately deferred, see below]**
 
 Closes the loop with the backend, which already reports to Sentry.
 
@@ -2926,9 +2926,15 @@ Closes the loop with the backend, which already reports to Sentry.
 - Playwright e2e for the ten journeys in the merge queue
 - `docs/` finalized: ARCHITECTURE, ADRs, CONTRACT, per-app READMEs, root `CLAUDE.md`
 
-**Status.** Sentry is still blocked — needs a real DSN/account; adding `@sentry/nextjs` against a
+**Status.** Sentry is deliberately deferred, not blocked — the user's own direction (ADR-006 in
+`lemonade-backend`'s architecture guide): file logging is the default error-reporting channel for now,
+with Sentry and Slack built as ready-to-enable options, not a requirement to chase a DSN for
+immediately. `lemonade-backend`'s `ErrorReportingService` already ships a `SentryNotifier` that no-ops
+cleanly until a real DSN is configured — the same shape this phase's frontend bullet would need, so
+there's a real pattern to follow whenever this gets prioritized. Adding `@sentry/nextjs` here against a
 placeholder DSN would silently do nothing, worse than not adding it, since it'd look wired up in a diff
-without being wired up in practice. The Playwright e2e bullet was blocked for the same reason
+without being wired up in practice — so it stays undone until that's a real priority, not "blocked."
+The Playwright e2e bullet was blocked for a different reason
 (`LARAVEL_API_URL=http://127.0.0.1:9900` wasn't reachable — confirmed via a direct request, not assumed)
 until the user started a real backend at `127.0.0.1:9800` and gave real seed credentials for both a user
 and an admin account — see below for what shipped once that was available.
@@ -2993,6 +2999,58 @@ in the same pass:
 Not wired into `.github/workflows/ci.yml` — would need `lemonade-backend` running in CI (a cross-repo
 checkout/secrets decision) plus real seeded credentials as CI secrets, neither of which exist yet. See
 `tooling/e2e/README.md`'s "Wiring into CI" section for exactly what that needs once it's available.
+
+> **Update, 28 September 2026: journeys 1 and 4 added (partial), a real bug found and fixed along the
+> way.** Both were blocked on real infrastructure this repo didn't have until now — a way to read a real
+> signup OTP email, and real Paystack test-mode credentials — both since provided by the user.
+>
+> **Journey 1** (`tests/frontend/signup.spec.ts`): sign up → verify email with a real OTP → land on
+> `/profile-setup`. Needed a real mail catcher to read the OTP at all — there's no API to ask Resend
+> "what did you just send," and the signup flow never returns anything a test could read the code from
+> directly. Installed Mailpit locally (`brew install mailpit`) and pointed `lemonade-backend`'s local
+> `.env` `MAIL_MAILER` at it (`smtp` / `127.0.0.1:1025`) — independent of the production Resend choice
+> (ADR-007), since there's no way to read a real inbox through Resend from a test either way. The test
+> polls Mailpit's REST API for the message, regexes the 4-digit code out of
+> `resources/views/emails/otp.blade.php`'s fixed "Your Lemonade code: NNNN" format, and fills it into the
+> OTP input. Deliberately stops at `/profile-setup` — the 4-step wizard there (bio/address/skills/socials)
+> is its own large surface with its own selectors per step, out of scope for this pass.
+>
+> **Journey 4** (`tests/frontend/ticket-purchase.spec.ts`, partial): buy a ticket → real order created →
+> real Paystack test-mode transaction initialized → browser actually redirected to a live
+> `checkout.paystack.com` session. Verified live before writing the test: called the real
+> `assign-tickets` endpoint directly with a minted token against a real paid seed ticket, got back a real
+> `authorization_url`, then opened it with Playwright to see what was actually there — it's a Cloudflare
+> bot-challenge page ("Just a moment..."), not a form. That's active anti-automation protection on a
+> third party's payment page, not a flakiness problem to retry past — driving the checkout form itself
+> would mean building tooling specifically to defeat that protection, which this suite won't do
+> regardless of effort. "confirmation → ticket appears" therefore isn't automated; it needs either a
+> human completing a real test-card payment or a legitimate server-to-server route (a test-mode webhook
+> simulator, if Paystack ever offers one), neither of which exists in this pass. Every run leaves a real
+> "pending" Order/Attendee/AssignedTicket row behind, same as any real user who abandons checkout before
+> paying — harmless, since those never reach paid/non-pending status and never surface in the UI.
+>
+> **A real, previously-undiscovered bug found and fixed while building journey 4, not deferred:**
+> `apps/frontend/src/app/(auth)/login/page.tsx` and `signup/page.tsx` both called `useGoogleLogin()`
+> unconditionally. `@react-oauth/google`'s hook throws synchronously inside its own effect ("Missing
+> required parameter client_id") when `GoogleOAuthProvider`'s `clientId` is empty — which it is in this
+> local dev environment (`NEXT_PUBLIC_GOOGLE_CLIENT_ID` unset) — crashing the *entire* login/signup page
+> into its error boundary, not just disabling the Google button. First surfaced as the ticket-purchase
+> test failing on an unrelated selector; root-caused by capturing `pageerror`/console output directly,
+> the same technique used for the Firebase crash this doc already documents in this same section. Fixed
+> by extracting the hook into its own component, `apps/frontend/src/components/auth/GoogleAuthButton.tsx`
+> — both pages now only mount it (so the hook only ever runs) when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is
+> actually set, same shape as `lib/firebase.ts`'s existing guard on a missing Firebase config. Confirmed
+> the fix live: the same navigation that used to crash into "Something went wrong" now renders the real
+> page, and both new journeys pass clean afterward. `pnpm --filter lemonade-app typecheck/lint/build` all
+> green.
+>
+> Also set `hello@lemonade-admin-azure.vercel.app` as `MAIL_FROM_ADDRESS` in `lemonade-backend`'s `.env`
+> per the user's direction — flagged, not silently assumed working: live-tested through Resend and it
+> fails with "domain is not verified," and likely can't be verified through Resend's normal flow at all,
+> since `*.vercel.app` is a Vercel-managed subdomain — Resend's DNS verification needs TXT/DKIM/SPF
+> records on a domain the user controls end to end, which a shared Vercel subdomain isn't. Doesn't block
+> anything in this update (Mailpit is what the e2e suite actually reads), but real production email is
+> still not flowing through Resend until a domain the user actually owns is verified there.
 
 Did the rest, all verifiable without either:
 

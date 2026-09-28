@@ -8,11 +8,16 @@ CI environment that's been given both — see "Wiring into CI" below.
 
 ## What's actually covered today
 
-Not the full ten journeys — those assume things this suite doesn't have yet: a payment gateway sandbox
-(journey 4), a second seeded test account (journey 10 needs two parties messaging each other), and a way
-to read a real OTP/verification email (journey 1's email verification step). What's genuinely covered,
-against the real backend:
+Not the full ten journeys — journey 10 still needs a second seeded test account (two parties messaging
+each other). What's genuinely covered, against the real backend:
 
+- **Signup + email verification** (`tests/frontend/signup.spec.ts`) — journey 1, partial: sign up →
+  verify email with a real OTP read from a local Mailpit inbox → land on `/profile-setup`. Doesn't
+  complete the 4-step profile wizard itself — that's its own large surface, out of scope for this pass.
+- **Ticket purchase** (`tests/frontend/ticket-purchase.spec.ts`) — journey 4, partial: buy a paid ticket
+  → real order created → real Paystack test-mode transaction → browser redirected to a live
+  `checkout.paystack.com` session. Doesn't complete the payment itself — Paystack's hosted checkout is
+  behind a Cloudflare bot challenge; see "Why journey 4 stops at the redirect" below.
 - **Auth** (`tests/{frontend,admin}/auth.setup.ts`) — real login for both a regular user and an admin,
   saving `storageState` so the rest of the suite doesn't re-login per test. This is also journey 2's
   login half.
@@ -42,6 +47,23 @@ against the real backend:
   the seed data has real rows.
 - **Admin's `/tribes`** — confirmed elsewhere in this repo (`docs/ARCHITECTURE.md` Phase 6) to be static
   mock content with no real data-driven navigation. Nothing to click into.
+
+### Why journey 4 stops at the redirect
+
+Verified live before writing the test: called the real `assign-tickets` endpoint directly against a real
+paid seed ticket, got back a real Paystack `authorization_url`, then opened it with Playwright to see
+what was actually there. It's a Cloudflare bot-challenge page ("Just a moment..."), not a checkout form —
+confirmed by inspecting the page title and content directly, not assumed from a timeout. That's active
+anti-automation protection on a third party's payment page, not a flakiness problem worth retrying past.
+Driving the checkout form itself would mean building tooling specifically to defeat that protection,
+which this suite won't do regardless of effort. So `ticket-purchase.spec.ts` asserts up through the real
+redirect (`checkout.paystack.com`, a real order created) and stops there — "confirmation → ticket
+appears" needs either a human completing a real test-card payment, or a legitimate server-to-server route
+(a test-mode webhook simulator, if Paystack ever offers one), neither of which exists in this pass.
+
+Each run leaves a real "pending" Order/Attendee/AssignedTicket row behind — same as any real user who
+starts checkout and abandons it before paying. Harmless: those never reach paid/non-pending status, so
+they never surface in "my tickets" or anywhere else in the UI.
 
 ## Real bugs this suite has already found
 
@@ -73,8 +95,26 @@ Fixed in the same pass that added the test that caught them, not left as known-b
   against the same allowlist and falls back for either failure mode. Applied everywhere `event_image`
   reaches `next/image`: the 6 card/list components plus the 5 `[id]` detail pages that already had the
   weaker `||` guard. 4 unit tests in `apps/frontend/src/lib/helper.test.ts`.
+- **`apps/frontend/src/app/(auth)/{login,signup}/page.tsx`** — both called `useGoogleLogin()`
+  unconditionally. `@react-oauth/google`'s hook throws synchronously inside its own effect ("Missing
+  required parameter client_id") when `GoogleOAuthProvider`'s `clientId` is empty, which it is in this
+  local dev environment (`NEXT_PUBLIC_GOOGLE_CLIENT_ID` unset) — crashing the *entire* login/signup page
+  into its error boundary, not just disabling the Google button. First surfaced as
+  `ticket-purchase.spec.ts` failing on an unrelated selector after a redirect to `/login`; root-caused by
+  capturing `pageerror`/console output directly, same technique as the Firebase bug above. Fixed by
+  extracting the hook into its own component, `apps/frontend/src/components/auth/GoogleAuthButton.tsx` —
+  both pages now only mount it (so the hook only ever runs) when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is
+  actually set, same shape as the Firebase guard.
 
 ## Running it
+
+`signup.spec.ts` needs a local Mailpit instance (`brew install mailpit`, then just run `mailpit` — SMTP
+on `1025`, REST API on `8025`, no config needed) and `lemonade-backend`'s local `.env` pointed at it
+(`MAIL_MAILER=smtp`, `MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`) — independent of whatever the production
+mailer is (ADR-007 in that repo), since there's no way to read a real inbox through a real provider from
+a test either way. `ticket-purchase.spec.ts` needs `E2E_PAID_EVENT_ID` (below) and a real
+`PAYSTACK_SECRET_KEY`/`PAYSTACK_PUBLIC_KEY` (test-mode) in `lemonade-backend`'s `.env` — already the case
+if you've followed that repo's own setup.
 
 ```bash
 cd tooling/e2e
