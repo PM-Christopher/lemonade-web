@@ -3012,8 +3012,8 @@ checkout/secrets decision) plus real seeded credentials as CI secrets, neither o
 > (ADR-007), since there's no way to read a real inbox through Resend from a test either way. The test
 > polls Mailpit's REST API for the message, regexes the 4-digit code out of
 > `resources/views/emails/otp.blade.php`'s fixed "Your Lemonade code: NNNN" format, and fills it into the
-> OTP input. Deliberately stops at `/profile-setup` — the 4-step wizard there (bio/address/skills/socials)
-> is its own large surface with its own selectors per step, out of scope for this pass.
+> OTP input. As of 28 September 2026 (see below) it also completes all four `/profile-setup` steps and
+> lands back on `/`, not just the OTP verification.
 >
 > **Journey 4** (`tests/frontend/ticket-purchase.spec.ts`, partial): buy a ticket → real order created →
 > real Paystack test-mode transaction initialized → browser actually redirected to a live
@@ -3051,6 +3051,46 @@ checkout/secrets decision) plus real seeded credentials as CI secrets, neither o
 > records on a domain the user controls end to end, which a shared Vercel subdomain isn't. Doesn't block
 > anything in this update (Mailpit is what the e2e suite actually reads), but real production email is
 > still not flowing through Resend until a domain the user actually owns is verified there.
+
+> **Update, 28 September 2026: journey 1 completed end to end, two more real bugs found and fixed.**
+> `signup.spec.ts` now fills and submits all four `/profile-setup` steps
+> (`components/form-steps/{profile,address,skills,social}-step.tsx`) and asserts the wizard lands back on
+> `/` — a real, previously-nonexistent proof that a brand-new account can actually reach a usable session,
+> not just that the OTP round trip works.
+>
+> **Bug 1, found on the very first attempt: every step silently failed even on a successful API call.**
+> All four steps' submit handlers checked `if (data.status)` before advancing — this backend's envelope
+> has no `status` key at all (it's `{success, message, data}`), so that condition was always falsy and
+> `next_step()` was structurally unreachable, regardless of what the backend actually returned. Confirmed
+> live before touching anything: captured the real network response for `profile-set-up`
+> (`{"success":true,"message":"OK","data":[]}`, a real 200) while the UI stayed on step 1 and showed
+> "Something went wrong." Same bug class this doc already records for `resolveReport`,
+> `OpenedChat.tsx`, and `SettingsModal.tsx` — envelope-key drift, not a new failure mode. Fixed all 5
+> occurrences (4 steps' `next_step()` gates plus `profile-step.tsx`'s own avatar-upload branch, same
+> file, same bug) to check `data.success`.
+>
+> **Bug 2, found immediately after: the wizard's actual final step 500'd for every real user.** Once step
+> 1-3 correctly advanced, submitting step 4 (`social-step.tsx`, "Done") hit a real 500. `storage/logs/
+> laravel.log`: `SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value` inserting
+> into `app_notification_settings`. Root cause in `lemonade-backend`'s `SetupSocialLinks::execute()`:
+> every other row this method creates uses its Eloquent model (`UserSubscription::create()`,
+> `Wallet::create()`, etc.), but the notification-settings row used `DB::table('app_notification_
+> settings')->insert([...])` — a raw query builder call that bypasses `AppNotificationSetting`'s
+> `HasUuids` trait entirely, so `id` (a `uuid` primary key with no DB-level default — confirmed in the
+> migration) was simply never supplied. A pre-existing, already-present backfill console command,
+> `GenerateUserNotificationSettings`, does this correctly via the Eloquent model — the fix mirrors it
+> exactly (`AppNotificationSetting::query()->create([...])`, plain PHP arrays instead of pre-`json_encode`'d
+> strings, since the model's own casts already serialize them). **This means no real user has ever been
+> able to complete signup through this wizard** — bug 1 blocked step 1 from ever advancing, and bug 2 was
+> waiting right behind it on the step every user would eventually reach once bug 1 was fixed. Zero test
+> coverage existed on any of the four backend profile-setup actions before this; added
+> `tests/Feature/Identity/SetupSocialLinksTest.php` (2 tests) — confirmed it actually catches the
+> regression by reverting the fix locally and re-running (500 without it, 200 with it) before committing.
+> `composer test:ci` 571 tests, Pint/PHPStan clean.
+>
+> Also live-verified the domain-ownership concern flagged above was correct, not just theoretical: tried
+> `hello@lemonade.com` next (a real, long-established, unrelated company's domain) — same "domain is not
+> verified" failure from Resend, as expected for a domain the user doesn't control the DNS for either.
 
 Did the rest, all verifiable without either:
 

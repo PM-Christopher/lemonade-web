@@ -11,9 +11,10 @@ CI environment that's been given both — see "Wiring into CI" below.
 Not the full ten journeys — journey 10 still needs a second seeded test account (two parties messaging
 each other). What's genuinely covered, against the real backend:
 
-- **Signup + email verification** (`tests/frontend/signup.spec.ts`) — journey 1, partial: sign up →
-  verify email with a real OTP read from a local Mailpit inbox → land on `/profile-setup`. Doesn't
-  complete the 4-step profile wizard itself — that's its own large surface, out of scope for this pass.
+- **Signup + email verification + profile setup** (`tests/frontend/signup.spec.ts`) — journey 1, in
+  full: sign up → verify email with a real OTP read from a local Mailpit inbox → complete all four
+  `/profile-setup` steps → land on `/` with a real session. Found and fixed two real bugs blocking every
+  real signup, not just this test — see "Real bugs this suite has already found" below.
 - **Ticket purchase** (`tests/frontend/ticket-purchase.spec.ts`) — journey 4, partial: buy a paid ticket
   → real order created → real Paystack test-mode transaction → browser redirected to a live
   `checkout.paystack.com` session. Doesn't complete the payment itself — Paystack's hosted checkout is
@@ -105,6 +106,25 @@ Fixed in the same pass that added the test that caught them, not left as known-b
   extracting the hook into its own component, `apps/frontend/src/components/auth/GoogleAuthButton.tsx` —
   both pages now only mount it (so the hook only ever runs) when `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is
   actually set, same shape as the Firebase guard.
+- **`apps/frontend/src/components/form-steps/{profile,address,skills,social}-step.tsx`** — all four
+  profile-setup steps checked `if (data.status)` before advancing, but this backend's envelope has no
+  `status` key (`{success, message, data}`) — the condition was always false, so `next_step()` was
+  structurally unreachable no matter what the backend returned. Confirmed live: a real `profile-set-up`
+  call returned a real 200 (`{"success":true,...}`) while the UI stayed put and showed "Something went
+  wrong." Same envelope-key-drift bug class this list already had two entries for
+  (`resolveReport`/`OpenedChat.tsx`/`SettingsModal.tsx`, tracked in `docs/ARCHITECTURE.md`). Fixed all 5
+  occurrences (4 steps plus `profile-step.tsx`'s own avatar-upload branch) to check `data.success`.
+- **`lemonade-backend`'s `app/Actions/Identity/SetupSocialLinks.php`** — the wizard's actual last step
+  500'd for every real user, right behind the bug above. It used `DB::table('app_notification_settings')
+  ->insert([...])` instead of the Eloquent model, bypassing `HasUuids` — the table's `id` is a UUID
+  primary key with no DB-level default, so the raw insert always failed with `SQLSTATE[HY000]: ... Field
+  'id' doesn't have a default value`. Every other row this same method creates already went through its
+  model (`UserSubscription::create()`, `Wallet::create()`, etc.); a pre-existing backfill command,
+  `GenerateUserNotificationSettings`, already did this table correctly — the fix mirrors it exactly.
+  Together with the bug above: no real user has ever been able to complete this signup wizard. Zero test
+  coverage existed on any of the four backend profile-setup actions; added
+  `tests/Feature/Identity/SetupSocialLinksTest.php`, confirmed it actually catches the regression (500
+  without the fix, 200 with it) before committing.
 
 ## Running it
 
