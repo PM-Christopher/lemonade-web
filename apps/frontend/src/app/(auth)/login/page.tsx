@@ -15,7 +15,7 @@ import AuthLayout from "@/components/layouts/AuthLayout";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useFcm } from "@/context/FcmContext";
 
@@ -192,24 +192,17 @@ export default function LoginPage() {
     }
   };
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse: any) => {
-      // Send the codeResponse.code to your Laravel backend to exchange for tokens (including ID Token)
-      try {
-        const res = await axiosInstance.post(`/user/auth/google`, {
-          token: tokenResponse.access_token,
-        });
+  const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
+    try {
+      const res = await axiosInstance.post(`/user/auth/google`, {
+        token: tokenResponse.access_token,
+      });
 
-        await handleLoginSuccess(res);
-      } catch (error) {
-        console.error("Error sending code to backend:", error);
-      }
-    },
-    onError: () => {
-      alert("Login Failed");
-    },
-    flow: "implicit", // or 'auth-code' if you’re using code flow
-  });
+      await handleLoginSuccess(res);
+    } catch (error) {
+      console.error("Error sending code to backend:", error);
+    }
+  };
 
   return (
     <AuthLayout>
@@ -307,12 +300,9 @@ export default function LoginPage() {
                   {/*    height={24}*/}
                   {/*  />*/}
                   {/*</div>*/}
-                  <div
-                    className="app-icon-border flex cursor-pointer items-center justify-center"
-                    onClick={() => googleLogin()}
-                  >
-                    <Image src={"/images/google.png"} alt="logo" width={24} height={24} />
-                  </div>
+                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+                    <GoogleAuthButton onSuccess={handleGoogleSuccess} />
+                  )}
                   {/*<div className="app-icon-border flex justify-center items-center">*/}
                   {/*  <Image*/}
                   {/*    src={"/images/facebook.png"}*/}
