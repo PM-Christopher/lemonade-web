@@ -162,8 +162,24 @@ real signal, not noise).
 
 ## Wiring into CI
 
-Not done — would need `lemonade-backend` running in the CI environment (a cross-repo checkout/secrets
-decision, same one `tooling/generate-api-types/README.md` flags for true live-backend contract-drift
-detection) plus `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`/`E2E_ADMIN_EMAIL`/`E2E_ADMIN_PASSWORD` as real CI
-secrets pointing at seeded, low-stakes accounts — never real user credentials. Once both exist, this is a
-normal new job: install, `playwright install chromium --with-deps`, `pnpm --filter @lemonade/e2e test`.
+Written, not enabled yet — `.github/workflows/e2e.yml`, triggered by `workflow_dispatch` only (run it
+manually from the Actions tab), deliberately not on `pull_request`/`push` like `ci.yml`'s other jobs.
+
+It's a complete job, not a stub: MySQL and Mailpit service containers, a real `lemonade-backend` checkout,
+`composer install` + `migrate` + seed (`ReferenceSeeder` then `LocalDemoSeeder`, the same deterministic
+fixtures — see `config/seeding.php` and `database/seeders/E2eFixturesSeeder.php` in that repo — a local
+`php artisan migrate:fresh --seed` in a `local`/`staging` environment produces), `php artisan serve`, then
+the usual `pnpm install` / `playwright install` / `pnpm test` against it. Every credential the suite needs
+(`E2E_USER_EMAIL` and the rest) is set as a **plain env var** in the workflow, not a secret — they're
+`lemonade-backend`'s own deterministic seed defaults, not anything sensitive; the same values are already
+committed in `.env.e2e.example`.
+
+Two real secrets are what's actually missing before this can run automatically:
+
+- **`LEMONADE_BACKEND_TOKEN`** — `lemonade-backend` (`github.com/PM-Christopher/lemonade-backend`) is
+  private. A fine-grained PAT scoped to read-only contents access on just that repo is enough.
+- **`PAYSTACK_SECRET_KEY`/`PAYSTACK_PUBLIC_KEY`** — real Paystack test-mode keys, for
+  `ticket-purchase.spec.ts`'s real transaction-initialize call.
+
+Once both exist as repo secrets: run the workflow manually once to confirm it's green, then flip `on:` in
+`e2e.yml` to include `pull_request` (or fold the job into `ci.yml` directly) to make it a real merge gate.

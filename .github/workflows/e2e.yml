@@ -1,0 +1,150 @@
+name: e2e (manual)
+
+# tooling/e2e/'s Playwright suite, against a REAL lemonade-backend — not
+# wired into ci.yml's normal pull_request/push triggers yet, on purpose.
+# Two things block that:
+#
+#   1. lemonade-backend (github.com/PM-Christopher/lemonade-backend) is
+#      private. This job needs a token with read access to it, stored here
+#      as the LEMONADE_BACKEND_TOKEN repo secret — a fine-grained PAT
+#      scoped to read-only contents access on that one repo is enough.
+#      Without it, the "Check out lemonade-backend" step below fails.
+#   2. Real Paystack TEST-mode keys, as the PAYSTACK_SECRET_KEY /
+#      PAYSTACK_PUBLIC_KEY repo secrets — ticket-purchase.spec.ts needs a
+#      real (test-mode) Paystack transaction to initialize.
+#
+# Everything else this suite needs (demo user/admin/restricted-admin
+# credentials, the paid-ticket event id) is NOT a secret — it's
+# lemonade-backend's own deterministic seed data (config/seeding.php,
+# DemoUserSeeder/AdminSeeder/E2eFixturesSeeder), so this workflow sets it
+# as plain env vars below, matching tooling/e2e/.env.e2e.example exactly.
+#
+# Once both secrets exist: flip `on:` below to also include `pull_request`
+# (or move this job into ci.yml directly) to make it a real gate. Until
+# then, `workflow_dispatch` — run it manually from the Actions tab to check
+# it still works, without it ever blocking a PR on a secret that isn't
+# there yet.
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_DATABASE: lemonade
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      # SMTP on 1025, REST API on 8025 — signup.spec.ts polls the API for
+      # the real OTP email lemonade-backend sends. Same image a local
+      # `brew install mailpit` run gives you; no config needed either way.
+      mailpit:
+        image: axllent/mailpit
+        ports:
+          - 1025:1025
+          - 8025:8025
+
+    steps:
+      - name: Check out lemonade-web
+        uses: actions/checkout@v4
+        with:
+          path: lemonade-web
+
+      - name: Check out lemonade-backend
+        uses: actions/checkout@v4
+        with:
+          repository: PM-Christopher/lemonade-backend
+          token: ${{ secrets.LEMONADE_BACKEND_TOKEN }}
+          path: lemonade-backend
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pdo_mysql, bcmath, intl, gd, redis
+          tools: composer:v2
+
+      - name: Install backend dependencies
+        working-directory: lemonade-backend
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Configure backend environment
+        working-directory: lemonade-backend
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          sed -i "s#^DB_DATABASE=.*#DB_DATABASE=lemonade#" .env
+          sed -i "s#^DB_USERNAME=.*#DB_USERNAME=root#" .env
+          sed -i "s#^MAIL_MAILER=.*#MAIL_MAILER=smtp#" .env
+          sed -i "s#^MAIL_HOST=.*#MAIL_HOST=127.0.0.1#" .env
+          sed -i "s#^MAIL_PORT=.*#MAIL_PORT=1025#" .env
+          echo "PAYSTACK_SECRET_KEY=${{ secrets.PAYSTACK_SECRET_KEY }}" >> .env
+          echo "PAYSTACK_PUBLIC_KEY=${{ secrets.PAYSTACK_PUBLIC_KEY }}" >> .env
+
+      - name: Migrate and seed deterministic e2e fixtures
+        working-directory: lemonade-backend
+        run: |
+          php artisan migrate --force
+          php artisan db:seed --class="Database\Seeders\ReferenceSeeder" --force
+          php artisan db:seed --class="Database\Seeders\LocalDemoSeeder" --force
+
+      - name: Start backend
+        working-directory: lemonade-backend
+        run: |
+          php artisan serve --host=127.0.0.1 --port=9800 &
+          npx --yes wait-on http://127.0.0.1:9800/health --timeout 30000
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: lemonade-web/pnpm-lock.yaml
+
+      - name: Install lemonade-web dependencies
+        working-directory: lemonade-web
+        run: pnpm install --frozen-lockfile
+
+      - name: Set up .env.local for both apps (points at the backend above)
+        working-directory: lemonade-web
+        run: |
+          echo "LARAVEL_API_URL=http://127.0.0.1:9800" > apps/frontend/.env.local
+          echo "LARAVEL_API_URL=http://127.0.0.1:9800" > apps/admin/.env.local
+
+      - name: Install Playwright
+        working-directory: lemonade-web/tooling/e2e
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run e2e suite
+        working-directory: lemonade-web/tooling/e2e
+        # Real, deterministic seed defaults — not secrets, see the header
+        # comment above and tooling/e2e/.env.e2e.example.
+        env:
+          CI: true
+          E2E_USER_EMAIL: user@lemonade.com
+          E2E_USER_PASSWORD: Admin12345#
+          E2E_ADMIN_EMAIL: admin@lemonade.com
+          E2E_ADMIN_PASSWORD: Admin12345#
+          E2E_RESTRICTED_ADMIN_EMAIL: e2e-restricted-admin@lemonade.com
+          E2E_RESTRICTED_ADMIN_PASSWORD: Admin12345#
+          E2E_PAID_EVENT_ID: 00000000-0000-7000-8000-e2e000000001
+          E2E_MAILPIT_URL: http://127.0.0.1:8025
+        run: pnpm test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: lemonade-web/tooling/e2e/playwright-report/
+          retention-days: 14

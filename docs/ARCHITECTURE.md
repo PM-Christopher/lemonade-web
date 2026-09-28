@@ -2996,9 +2996,15 @@ in the same pass:
   the backend — the normal case for an account that hasn't set up social links, including the e2e test
   account itself.
 
-Not wired into `.github/workflows/ci.yml` — would need `lemonade-backend` running in CI (a cross-repo
-checkout/secrets decision) plus real seeded credentials as CI secrets, neither of which exist yet. See
-`tooling/e2e/README.md`'s "Wiring into CI" section for exactly what that needs once it's available.
+Not wired into `.github/workflows/ci.yml`'s normal `pull_request`/`push` triggers yet — but as of
+28 September 2026, `.github/workflows/e2e.yml` is a real, complete, `workflow_dispatch`-only job (MySQL +
+Mailpit service containers, a real `lemonade-backend` checkout, migrate + deterministic seed, `php artisan
+serve`, then the usual Playwright run), not a stub. Two real secrets still block flipping it to a real
+merge gate: `LEMONADE_BACKEND_TOKEN` (a read-only PAT — that repo is private) and real Paystack test-mode
+keys. Everything else the suite needs is a plain env var in the workflow, not a secret — it's
+`lemonade-backend`'s own deterministic seed data (`config/seeding.php`,
+`database/seeders/E2eFixturesSeeder.php`), not anything sensitive. See `tooling/e2e/README.md`'s "Wiring
+into CI" section for the full detail.
 
 > **Update, 28 September 2026: journeys 1 and 4 added (partial), a real bug found and fixed along the
 > way.** Both were blocked on real infrastructure this repo didn't have until now — a way to read a real
