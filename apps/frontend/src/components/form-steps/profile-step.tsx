@@ -64,7 +64,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
         { ...values },
         getHeader(),
       );
-      if (data.status) {
+      if (data.success) {
         next_step();
       } else {
         dispatch(
@@ -107,7 +107,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
             "Content-Type": "multipart/form-data",
           },
         });
-        if (data.status) {
+        if (data.success) {
           setAvatar(data.data.image);
           await formik.setFieldValue("profile_image", data.data.image);
           dispatch(

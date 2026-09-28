@@ -63,7 +63,7 @@ const AddressStep: React.FC<AddressInterface> = ({ loading, next_step, prev_step
         { ...values },
         getHeader(),
       );
-      if (data.status) {
+      if (data.success) {
         next_step();
       } else {
         dispatch(

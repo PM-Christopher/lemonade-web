@@ -117,7 +117,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
         { ...values },
         getHeader(),
       );
-      if (data.status) {
+      if (data.success) {
         next_step();
       } else {
         dispatch(

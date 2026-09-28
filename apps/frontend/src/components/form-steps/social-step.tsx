@@ -88,7 +88,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
         requestBody,
         getHeader(),
       );
-      if (data.status) {
+      if (data.success) {
         dispatch(authSuccess(data.data));
         removeCookie("newToken");
         dispatch(
