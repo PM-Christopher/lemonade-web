@@ -1591,8 +1591,8 @@ booleans (esbuild/unrs-resolver approved, the other five denied — `next build`
 without them).
 
 > **Update, 29 September 2026: the first real push to `origin/main` since this pipeline was built
-> surfaced five genuine gaps, none of them new regressions — this CI pipeline had apparently never
-> actually run against a real push before.** All four confirmed fixed by reproducing them locally first
+> surfaced seven genuine gaps, none of them new regressions — this CI pipeline had apparently never
+> actually run against a real push before.** All confirmed fixed by reproducing them locally first
 > (not guessed from the CI log alone), then re-running the exact failing command clean before pushing
 > again.
 >
@@ -1634,6 +1634,34 @@ without them).
 >    this same failure. Fixed by adding `--filter='!@lemonade/e2e'` to the Test step specifically —
 >    confirmed via the same `--dry-run=json` check that this excludes only that one package, and via a
 >    real (non-dry-run) local run that the other 10 tasks still execute and pass.
+> 6. **Sixth gap, from the actual next push: `build`'s "Lint" step failed with `Unable to query SCM: Git
+>    error: fatal: ambiguous argument 'origin/main': unknown revision or path not in the working tree`.**
+>    `actions/checkout@v4`'s default `fetch-depth: 1` only fetches the triggering commit itself, so
+>    `origin/main` never exists as a resolvable local ref for any of this job's four
+>    `--filter=...[origin/main]` commands (Lint/Typecheck/Test/Build) — the job fails on the first one and
+>    the rest never run. `bundle-budget` already worked around an adjacent version of this same problem
+>    (it needs the PR base SHA for a worktree checkout) by setting `fetch-depth: 0`; applied the identical
+>    fix to the `build` job's checkout step.
+> 7. **Seventh gap, same push: the `bundle-budget` job's own build step failed with the identical
+>    `Invalid server environment variables: LARAVEL_API_URL Required` error as gap 2 above** —
+>    `pnpm --filter lemonade-app build | node tooling/bundle-budget/parse-build-output.mjs` calls `next
+>    build` directly, not through `pnpm turbo run build`, so neither the `build` job's env fix nor
+>    `turbo.json`'s env allowlist (gap 3) reaches it; it needs its own copy of the three vars. The
+>    downstream symptom — `parsed zero routes from stdin` from the bundle-budget parser — is just empty
+>    stdin from the failed build, not a separate parser bug. The `lighthouse` job has the exact same
+>    shape (two direct `next build` calls, no env block at all) and would fail identically the first time
+>    it ran; fixed both jobs the same way, by giving each its own job-level `env:` block matching the
+>    `build` job's. Verified locally: `LARAVEL_API_URL=... NEXT_PUBLIC_APP_URL=... NEXT_PUBLIC_BASE_URL=...
+>    pnpm --filter lemonade-app build | node tooling/bundle-budget/parse-build-output.mjs` now emits real
+>    per-route JSON instead of an empty array.
+>
+> **A separate, non-pipeline finding from the same verification pass**: the admin pixel-class budget
+> (gap-adjacent, not a CI-gap) was pushed from 1710 to 1762 by that day's event-approve/reject and
+> `/forum` moderation UI — both deliberately match this app's existing hand-styled `[Npx]` modal
+> convention (`SuspendModal.tsx`/`DeleteModal.tsx`/`ReportingClient.tsx`), not a new pattern, so raised
+> rather than fixed — see `packages/config/pixel-class-budget.json`'s own note. Confirmed this was a real
+> regression, not pre-existing debt: checked out the prior commit into a separate worktree and measured
+> 1710/1710 there before raising anything.
 >
 > Also locked in a real, already-earned improvement surfaced while re-running the full local sweep:
 > `packages/config/no-any-budget.json`'s `lemonade-app` budget lowered 208 → 207 (the Google-auth-button
