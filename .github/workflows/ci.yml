@@ -25,7 +25,17 @@ jobs:
       NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
       NEXT_PUBLIC_BASE_URL: http://127.0.0.1:3000
     steps:
+      # fetch-depth: 0, not the default shallow clone — every `--filter=...
+      # [origin/main]` below needs `origin/main` to actually resolve as a
+      # git ref. The default fetch-depth of 1 only fetches the triggering
+      # commit itself, so `git rev-parse origin/main` fails with "ambiguous
+      # argument 'origin/main': unknown revision" the moment this job runs
+      # against a push (there's no PR base ref to piggyback on either).
+      # bundle-budget below already does this for its own, different reason
+      # (a worktree checkout of the PR base SHA).
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -136,6 +146,15 @@ jobs:
   bundle-budget:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    # Same reason as the `build` job above: apps/*/src/lib/env.server.ts and
+    # env.client.ts throw at build time if these are missing. This job calls
+    # `next build` directly (not through turbo), so turbo.json's env
+    # allowlist doesn't apply here — but the Zod validation inside the app
+    # still runs either way.
+    env:
+      LARAVEL_API_URL: http://127.0.0.1:9800
+      NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
+      NEXT_PUBLIC_BASE_URL: http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
         with:
@@ -184,6 +203,12 @@ jobs:
   # status: that's a deferred product decision, not a frontend gap).
   lighthouse:
     runs-on: ubuntu-latest
+    # Same reason as bundle-budget above: this job also calls `next build`
+    # directly, outside turbo, so it needs its own copy of these.
+    env:
+      LARAVEL_API_URL: http://127.0.0.1:9800
+      NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
+      NEXT_PUBLIC_BASE_URL: http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
 
