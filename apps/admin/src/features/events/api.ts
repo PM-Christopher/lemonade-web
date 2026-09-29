@@ -141,6 +141,12 @@ export const eventsApi = {
   deleteEvent: (id: number) =>
     browserApi.delete<{ deleted: boolean }>(buildPath(adminEventsRoutes.DELETE, { id })),
 
+  approveEvent: (id: number) =>
+    browserApi.patch<{ event: EventDetail }>(buildPath(adminEventsRoutes.APPROVE, { id }), {}),
+
+  rejectEvent: (id: number, reason: string) =>
+    browserApi.patch<{ event: EventDetail }>(buildPath(adminEventsRoutes.REJECT, { id }), { reason }),
+
   updateCommissionCharge: (commissionCharge: number) =>
     browserApi.patch<{ setting: { commission_charge: number } }>(
       adminEventsRoutes.UPDATE_COMMISSION_CHARGE,

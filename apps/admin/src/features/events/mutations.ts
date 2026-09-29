@@ -26,6 +26,30 @@ export function useActivateEventMutation(id: number | undefined) {
   });
 }
 
+export function useApproveEventMutation(id: number | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => eventsApi.approveEvent(id as number),
+    onSuccess: () => {
+      if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
+    },
+  });
+}
+
+export function useRejectEventMutation(id: number | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (reason: string) => eventsApi.rejectEvent(id as number, reason),
+    onSuccess: () => {
+      if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
+    },
+  });
+}
+
 export function useDeleteEventMutation(id: number | undefined) {
   const queryClient = useQueryClient();
 

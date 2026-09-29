@@ -11,7 +11,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEventDetailQuery } from "@/features/events/queries";
-import { useActivateEventMutation } from "@/features/events/mutations";
+import { useActivateEventMutation, useApproveEventMutation } from "@/features/events/mutations";
 import { capitalizeWords } from "@/utils/helper";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -24,12 +24,16 @@ const SuspendModal = dynamic(() => import("@/modals/events/SuspendModal"), {
 const DeleteModal = dynamic(() => import("@/modals/events/DeleteModal"), {
   ssr: false,
 });
+const RejectEventModal = dynamic(() => import("@/modals/events/RejectEventModal"), {
+  ssr: false,
+});
 
 const EventDetailsClient = ({ id }: { id: number | undefined }) => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: event } = useEventDetailQuery(id, { enabled: isLoggedIn });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
 
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,13 +69,28 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
     setDeleteModalOpen(!deleteModalOpen);
   };
 
+  const toggleRejectModalOpen = () => {
+    setRejectModalOpen(!rejectModalOpen);
+  };
+
   const activateEventMutation = useActivateEventMutation(id);
+  const approveEventMutation = useApproveEventMutation(id);
 
   const unsuspendEvent = () => {
     if (isLoggedIn && id) {
       activateEventMutation.mutate();
     }
   };
+
+  const approveEvent = () => {
+    if (isLoggedIn && id) {
+      approveEventMutation.mutate();
+    }
+  };
+
+  const status = event?.event?.status;
+  const isPending = status === "PENDING";
+  const isRejected = status === "REJECTED";
 
   return (
     <MainLayout>
@@ -85,7 +104,29 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
             }
           >
             <p className={"text-[16px] font-semiBold"}>Event summary</p>
-            {event?.event?.status !== "ACTIVE" ? (
+            {isPending || isRejected ? (
+              <div className={"flex gap-[12px]"}>
+                {isPending && (
+                  <button
+                    className={
+                      "h-[44px] w-[124px] rounded-[12px] border-[1px] border-red-2 bg-red-1 text-center"
+                    }
+                    onClick={toggleRejectModalOpen}
+                  >
+                    <p className={"text-[16px] font-medium text-white"}>Reject</p>
+                  </button>
+                )}
+                <button
+                  className={
+                    "h-[44px] w-[124px] rounded-[12px] border-[1px] bg-gradient-green text-center"
+                  }
+                  onClick={approveEvent}
+                  disabled={approveEventMutation.isPending}
+                >
+                  <p className={"text-[16px] font-medium text-white"}>Approve</p>
+                </button>
+              </div>
+            ) : event?.event?.status !== "ACTIVE" ? (
               <button
                 className={
                   "h-[44px] w-[156px] rounded-[12px] border-[1px] bg-gradient-green text-center"
@@ -396,6 +437,11 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
       <DeleteModal
         isOpen={deleteModalOpen}
         toggle={toggleDeleteModalOpen}
+        id={id}
+      />
+      <RejectEventModal
+        isOpen={rejectModalOpen}
+        toggle={toggleRejectModalOpen}
         id={id}
       />
     </MainLayout>
