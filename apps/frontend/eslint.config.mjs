@@ -1,7 +1,8 @@
 // Extends the shared @lemonade/config flat config with:
-//   - eslint-config-next (via FlatCompat, since it's still eslintrc-shaped),
-//     pinned to this app's own Next major (15) through the workspace's
-//     eslint-config-next devDependency version, not @lemonade/config's.
+//   - eslint-config-next 16's native flat config (core-web-vitals +
+//     typescript). The Next app stays on 15.1.11; v16 of this package drops
+//     @rushstack/eslint-patch, which refuses to load under ESLint 10, and
+//     does not depend on the `next` runtime.
 //   - eslint-plugin-boundaries element paths for THIS app's src/ layout,
 //     encoding docs/ARCHITECTURE.md's import-rules table (see §9):
 //       * a feature may not reach into another feature's internals
@@ -23,24 +24,18 @@
 //         whole, though: it also bans axios, which is NOT resolved (still
 //         real debt) — ESLint's severity is per-rule, not per-pattern, so
 //         one shared "warn" is the honest level until axios is migrated too.
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import boundaries from "eslint-plugin-boundaries";
 import baseConfig from "@lemonade/config/eslint";
 
-const compat = new FlatCompat({
-  baseDirectory: dirname(fileURLToPath(import.meta.url)),
-});
-
 // Scoped to src/** — root-level config files (next.config.mjs,
 // eslint.config.mjs itself, tailwind/postcss config) were never meant to be
-// subject to Next's page/document rules, and some of those rules crash on
-// ESLint 9's flat-config runtime when they fire outside app source
-// (context.getAncestors() is legacy-eslintrc-only).
-const nextConfigs = compat
-  .extends("next/core-web-vitals", "next/typescript")
+// subject to Next's page/document rules. Ignore-only blocks stay unscoped so
+// `.next/**` still gets dropped.
+const nextConfigs = [...nextVitals, ...nextTs]
+  .filter((config) => !config.ignores)
   .map((config) => ({
     ...config,
     files: ["src/**/*.{js,jsx,ts,tsx}"],
@@ -50,6 +45,15 @@ const nextConfigs = compat
 export default [
   ...baseConfig,
   ...nextConfigs,
+  {
+    files: ["src/**/*.{js,jsx,ts,tsx}"],
+    settings: {
+      // eslint-plugin-react 7.37 still calls context.getFilename() when
+      // version is "detect", and that method is gone in ESLint 10.
+      // Pin the version so it never tries to detect.
+      react: { version: "19.0" },
+    },
+  },
   {
     // eslint-config-next's `extends` chain resolves @next/eslint-plugin-next
     // via FlatCompat's single baseDirectory rather than per-package

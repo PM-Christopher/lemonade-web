@@ -6,34 +6,39 @@
 //
 // Parses (and throws with a clear message) at import time rather than at
 // each call site — see docs/ARCHITECTURE.md Phase 1.
-import { z } from "zod";
+//
+// Same checks as before, without importing Zod. Zod on this module ships
+// to every page that reads config/url.ts.
 
-const emptyStringAsUndefined = (value: unknown) => (value === "" ? undefined : value);
+function blankAsUndefined(value: string | undefined): string | undefined {
+  return value === "" || value === undefined ? undefined : value;
+}
 
-const clientEnvSchema = z.object({
-  // The BFF's own base URL — see config/url.ts.
-  NEXT_PUBLIC_BASE_URL: z.string().url(),
-
-  // ADR-005: self-hosted Reverb, not Pusher Cloud, for moderation/withdrawal
-  // realtime updates. Empty string in .env.local today.
-  NEXT_PUBLIC_REVERB_KEY: z.preprocess(emptyStringAsUndefined, z.string().optional()),
-  NEXT_PUBLIC_REVERB_HOST: z.preprocess(emptyStringAsUndefined, z.string().optional()),
-  NEXT_PUBLIC_REVERB_PORT: z.preprocess(emptyStringAsUndefined, z.string().optional()),
-  NEXT_PUBLIC_REVERB_SCHEME: z.preprocess(emptyStringAsUndefined, z.string().optional()),
-});
-
-const parsed = clientEnvSchema.safeParse({
-  NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-  NEXT_PUBLIC_REVERB_KEY: process.env.NEXT_PUBLIC_REVERB_KEY,
-  NEXT_PUBLIC_REVERB_HOST: process.env.NEXT_PUBLIC_REVERB_HOST,
-  NEXT_PUBLIC_REVERB_PORT: process.env.NEXT_PUBLIC_REVERB_PORT,
-  NEXT_PUBLIC_REVERB_SCHEME: process.env.NEXT_PUBLIC_REVERB_SCHEME,
-});
-
-if (!parsed.success) {
+function fail(name: string, message: string): never {
   throw new Error(
-    `Invalid client environment variables:\n${JSON.stringify(parsed.error.flatten().fieldErrors, null, 2)}`,
+    `Invalid client environment variables:\n${JSON.stringify({ [name]: [message] }, null, 2)}`,
   );
 }
 
-export const clientEnv = parsed.data;
+function requiredUrl(name: string, value: string | undefined): string {
+  const raw = blankAsUndefined(value);
+  if (!raw) fail(name, "Invalid url");
+  try {
+    new URL(raw);
+  } catch {
+    fail(name, "Invalid url");
+  }
+  return raw;
+}
+
+export const clientEnv = {
+  // The BFF's own base URL — see config/url.ts.
+  NEXT_PUBLIC_BASE_URL: requiredUrl("NEXT_PUBLIC_BASE_URL", process.env.NEXT_PUBLIC_BASE_URL),
+
+  // ADR-005: self-hosted Reverb, not Pusher Cloud, for moderation/withdrawal
+  // realtime updates. Empty string in .env.local today.
+  NEXT_PUBLIC_REVERB_KEY: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_KEY),
+  NEXT_PUBLIC_REVERB_HOST: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_HOST),
+  NEXT_PUBLIC_REVERB_PORT: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_PORT),
+  NEXT_PUBLIC_REVERB_SCHEME: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_SCHEME),
+};

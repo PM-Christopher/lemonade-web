@@ -3,7 +3,7 @@ import sharedPreset from "@lemonade/config/tailwind-preset";
 
 export default {
   presets: [sharedPreset],
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -46,6 +46,7 @@ export default {
         thin: "100", // Extra Light or Thin
         extraLight: "200", // Ultra Light or Extra Light
         light: "300", // Light
+        regular: "400", // Same weight as `normal`; `.font-label` applies it
         normal: "400", // Regular or Normal
         medium: "500", // Medium
         semiBold: "600", // Semi-Bold

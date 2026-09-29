@@ -1,30 +1,38 @@
 // Extends the shared @lemonade/config flat config — see
-// apps/frontend/eslint.config.mjs for the full rationale, identical here
-// except this app's eslint-config-next is pinned to Next 15 (this app's own
-// major) instead of frontend's 14.
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { FlatCompat } from "@eslint/eslintrc";
+// apps/frontend/eslint.config.mjs for the full rationale.
+// eslint-config-next 16 ships a native flat config and no longer loads
+// @rushstack/eslint-patch, which cannot run under ESLint 10. The Next app
+// itself stays on 15.1.11; this config package does not require the `next`
+// runtime.
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import boundaries from "eslint-plugin-boundaries";
 import baseConfig from "@lemonade/config/eslint";
 
-const compat = new FlatCompat({ baseDirectory: dirname(fileURLToPath(import.meta.url)) });
-
 // Scoped to src/** — root-level config files (next.config.mjs,
 // eslint.config.mjs itself, tailwind/postcss config) were never meant to be
-// subject to Next's page/document rules, and some of those rules crash on
-// ESLint 9's flat-config runtime when they fire outside app source
-// (context.getAncestors() is legacy-eslintrc-only).
-const nextConfigs = compat.extends("next/core-web-vitals", "next/typescript").map((config) => ({
-    ...config,
-    files: ["src/**/*.{js,jsx,ts,tsx}"],
-}));
+// subject to Next's page/document rules.
+const nextConfigs = [...nextVitals, ...nextTs]
+    .filter((config) => !config.ignores)
+    .map((config) => ({
+        ...config,
+        files: ["src/**/*.{js,jsx,ts,tsx}"],
+    }));
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
     ...baseConfig,
     ...nextConfigs,
+    {
+        files: ["src/**/*.{js,jsx,ts,tsx}"],
+        settings: {
+            // eslint-plugin-react 7.37 still calls context.getFilename() when
+            // version is "detect", and that method is gone in ESLint 10.
+            // Pin the version so it never tries to detect.
+            react: { version: "19.0" },
+        },
+    },
     {
         // eslint-config-next's `extends` chain resolves @next/eslint-plugin-next
         // via FlatCompat's single baseDirectory rather than per-package
