@@ -17,7 +17,7 @@ const CheckInsClient = ({ id }: { id: number }) => {
   const guestList = guestListData?.guest_list ?? [];
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedGuest, setSelectedGuest] = useState<any>(null);
+  const [selectedGuest, setSelectedGuest] = useState<GuestListCardProps | null>(null);
 
   const { data: guestDetailsData, isLoading: guestDetailLoading } = useGuestDetailsQuery(
     id,
@@ -30,7 +30,7 @@ const CheckInsClient = ({ id }: { id: number }) => {
     if (isOpen) setSelectedGuest(null);
   };
 
-  const [seenGuest, setSeenGuest] = useState<any>(null);
+  const [seenGuest, setSeenGuest] = useState<GuestListCardProps | null>(null);
   if (selectedGuest && selectedGuest !== seenGuest) {
     setSeenGuest(selectedGuest);
     setIsOpen(true);

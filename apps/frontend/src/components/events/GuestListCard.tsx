@@ -7,7 +7,7 @@ import { formatStringUCFirst } from "@/lib/helper";
 type SideMenuInterface = {
   toggleMenu: () => void;
   isOpen: boolean;
-  setSelectedGuest: (guest: any) => void;
+  setSelectedGuest: (guest: GuestListCardProps) => void;
 };
 
 const GuestListCard = ({ guest, data }: { guest: GuestListCardProps; data: SideMenuInterface }) => {

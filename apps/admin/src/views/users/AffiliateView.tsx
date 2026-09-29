@@ -42,7 +42,7 @@ const AffiliateView = ({ userData, menuOption }: any) => {
   }
 
   // Calculate pagination from filtered data
-  const totalPages = Math.ceil(data?.length / perPage);
+  const totalPages = Math.ceil((data?.length ?? 0) / perPage);
   const startIndex = (currentPage - 1) * perPage;
   const paginatedData = data?.slice(startIndex, startIndex + perPage);
 

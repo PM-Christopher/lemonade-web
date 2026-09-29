@@ -73,7 +73,7 @@ function TeamClient() {
   }, [debouncedValue]);
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(data?.length / perPage);
+  const totalPages = Math.ceil((data?.length ?? 0) / perPage);
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;

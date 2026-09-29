@@ -16,7 +16,7 @@ import RocketIconGreen from "@/images/icons/rocketIconGreen.svg";
 import RocketIconGrey from "@/images/icons/rocketIconGrey.svg";
 
 import RatingsBar from "@/components/global/RatingsBar";
-import Reviews from "@/components/global/Reviews";
+import Reviews, { type Review } from "@/components/global/Reviews";
 import ReviewModal from "@/components/business/Modals/ReviewModal";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
@@ -106,7 +106,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   const { data: reviewData, loading: reviewLoading } = useRequest(
     `/user/business/${id}/business-reviews`,
   );
-  const reviews = reviewData?.reviews ?? [];
+  const reviews: Review[] = reviewData?.reviews ?? [];
 
   useEffect(() => {
     const verifyBusinessBoost = async () => {

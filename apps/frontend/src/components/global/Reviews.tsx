@@ -10,7 +10,7 @@ interface User {
   avatar: string;
 }
 
-interface Review {
+export interface Review {
   user: User;
   title: string;
   description: string;

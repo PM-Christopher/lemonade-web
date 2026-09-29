@@ -62,7 +62,7 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
 
   const totalPages = isServerPaginated
     ? userData.meta.last_page
-    : Math.ceil(data?.length / perPage);
+    : Math.ceil((data?.length ?? 0) / perPage);
   const currentPage = isServerPaginated ? (page ?? 1) : localPage;
   const paginatedData = isServerPaginated
     ? data
