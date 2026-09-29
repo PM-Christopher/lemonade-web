@@ -76,7 +76,7 @@
     "eslint": "^9.17.0",
     "eslint-config-next": "15.1.11",
     "eslint-plugin-boundaries": "^5.0.1",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "jsdom": "^25.0.1",
     "postcss": "^8",
     "sass": "^1.105.0",
