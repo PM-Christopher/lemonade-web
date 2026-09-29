@@ -167,3 +167,12 @@ export const teamHeaders = [
   "DATE ADDED",
   "STATUS",
 ];
+
+export const moderationContentHeaders = [
+  "ID",
+  "CONTENT",
+  "AUTHOR",
+  "DATE CREATED",
+  "STATUS",
+  "",
+];

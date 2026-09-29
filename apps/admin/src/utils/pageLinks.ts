@@ -19,6 +19,7 @@ export const pageLinks: PageLink[] = [
   { name: "Events", path: "/events", permission: ADMIN_SECTION_PERMISSIONS.events },
   { name: "Subscriptions", path: "/subscriptions", permission: ADMIN_SECTION_PERMISSIONS.subscriptions },
   { name: "Reporting", path: "/reporting", permission: ADMIN_SECTION_PERMISSIONS.moderation },
+  { name: "Forum moderation", path: "/forum", permission: ADMIN_SECTION_PERMISSIONS.moderation },
   { name: "Announcements", path: "/announcements" },
   { name: "Team members", path: "/team", permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
 ];

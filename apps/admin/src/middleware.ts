@@ -79,6 +79,7 @@ const GATED_PATH_PERMISSIONS: ReadonlyArray<{ prefix: string; permission: string
   { prefix: "/events", permission: ADMIN_SECTION_PERMISSIONS.events },
   { prefix: "/subscriptions", permission: ADMIN_SECTION_PERMISSIONS.subscriptions },
   { prefix: "/reporting", permission: ADMIN_SECTION_PERMISSIONS.moderation },
+  { prefix: "/forum", permission: ADMIN_SECTION_PERMISSIONS.moderation },
   { prefix: "/team", permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
 ];
 
