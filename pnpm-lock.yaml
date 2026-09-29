@@ -69,8 +69,8 @@ importers:
         specifier: ^1.0.4
         version: 1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       country-codes-list:
-        specifier: ^1.6.11
-        version: 1.6.12
+        specifier: ^3.2.0
+        version: 3.2.0
       country-list:
         specifier: ^2.3.0
         version: 2.4.1
@@ -298,8 +298,8 @@ importers:
         specifier: ^3.8.0
         version: 3.10.0
       country-codes-list:
-        specifier: ^1.6.11
-        version: 1.6.12
+        specifier: ^3.2.0
+        version: 3.2.0
       country-list:
         specifier: ^2.3.0
         version: 2.4.1
@@ -3714,8 +3714,9 @@ packages:
     resolution: {integrity: sha512-HQ1GtXWNZy0r5MnZMLF9xmBmFNmtDVBeKQgX/5DY+RVmcZTODA+EPN/JLPCYRNP86nHG0QQrb1yJwGzXeqCCXw==}
     engines: {node: '>=8.x', npm: '>=5.x'}
 
-  country-codes-list@1.6.12:
-    resolution: {integrity: sha512-YWrbBkUvWXRV9K7/0HQ8himHeXemjv3Bo/3y/0uoZdmoXJCstqXuMjRLRYZZqwG9tOVdIHoZa0qUzm0eZu1ApA==}
+  country-codes-list@3.2.0:
+    resolution: {integrity: sha512-gR0IFGPRtqOSifQfFYlUodjJLCuRg36wBCYRpR81rZ2Z2swwVZF9v1If2z18bWuhXmOZhmIw9+L/Ikw1ojpkNw==}
+    engines: {node: '>=18'}
 
   country-list-with-dial-code-and-flag@5.1.1:
     resolution: {integrity: sha512-dj93ztplLEV2svD4+oOKTnR+8+cQSNf8kB051w+kYIoxcW6K0BPLgWYqwJjEpvoee60FTBufmi7jvcLPEgfpjg==}
@@ -9762,7 +9763,7 @@ snapshots:
 
   countries-and-timezones@3.10.0: {}
 
-  country-codes-list@1.6.12: {}
+  country-codes-list@3.2.0: {}
 
   country-list-with-dial-code-and-flag@5.1.1: {}
 

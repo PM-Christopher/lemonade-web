@@ -35,7 +35,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "countries-and-timezones": "^3.8.0",
-    "country-codes-list": "^1.6.11",
+    "country-codes-list": "^3.2.0",
     "country-list": "^2.3.0",
     "country-list-with-dial-code-and-flag": "^5.0.6",
     "dayjs": "^1.11.13",
