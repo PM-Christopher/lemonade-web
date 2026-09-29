@@ -1591,7 +1591,7 @@ booleans (esbuild/unrs-resolver approved, the other five denied — `next build`
 without them).
 
 > **Update, 29 September 2026: the first real push to `origin/main` since this pipeline was built
-> surfaced four genuine gaps, none of them new regressions — this CI pipeline had apparently never
+> surfaced five genuine gaps, none of them new regressions — this CI pipeline had apparently never
 > actually run against a real push before.** All four confirmed fixed by reproducing them locally first
 > (not guessed from the CI log alone), then re-running the exact failing command clean before pushing
 > again.
@@ -1624,6 +1624,16 @@ without them).
 >    array to model a real multi-`Set-Cookie` response. Fixed to a plain string for that one mock call —
 >    `getSetCookieValue`'s own array-handling is separately and directly unit-tested without going
 >    through this mock library at all, so nothing lost coverage.
+> 5. **A fifth, structural gap found right after fixing the first four and re-verifying locally**:
+>    `pnpm turbo run test --filter=...[origin/main]` (`ci.yml`'s real "Test" step, not the broader
+>    unfiltered `pnpm turbo run test` used to sanity-check the rest of this list) picks up
+>    `@lemonade/e2e#test` too, confirmed via `--dry-run=json`, since e2e spec files are genuinely part of
+>    this push's diff. That task is a real Playwright run against a live `lemonade-backend` — MySQL,
+>    Mailpit, `php artisan serve` — infrastructure only `.github/workflows/e2e.yml`'s manual job sets up;
+>    `ci.yml`'s `build` job has none of it. Left as-is, every future PR touching any e2e file would hit
+>    this same failure. Fixed by adding `--filter='!@lemonade/e2e'` to the Test step specifically —
+>    confirmed via the same `--dry-run=json` check that this excludes only that one package, and via a
+>    real (non-dry-run) local run that the other 10 tasks still execute and pass.
 >
 > Also locked in a real, already-earned improvement surfaced while re-running the full local sweep:
 > `packages/config/no-any-budget.json`'s `lemonade-app` budget lowered 208 → 207 (the Google-auth-button
