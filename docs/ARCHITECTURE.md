@@ -1590,6 +1590,50 @@ which only warned), which would have broken CI the moment it ran. Fixed by setti
 booleans (esbuild/unrs-resolver approved, the other five denied — `next build` and `vitest` both pass
 without them).
 
+> **Update, 29 September 2026: the first real push to `origin/main` since this pipeline was built
+> surfaced four genuine gaps, none of them new regressions — this CI pipeline had apparently never
+> actually run against a real push before.** All four confirmed fixed by reproducing them locally first
+> (not guessed from the CI log alone), then re-running the exact failing command clean before pushing
+> again.
+>
+> 1. **`contract-drift` failed for real.** `tooling/generate-api-types/manifest.snapshot.json` (the
+>    committed snapshot `generate:from-snapshot` regenerates from) was stale — an earlier session
+>    regenerated `packages/api-types/src/generated/*` directly against the live backend
+>    (`generate:from-backend`) when removing the dead Connect-messaging routes, but never re-ran
+>    `refresh-snapshot` to update the snapshot file those two generation paths are supposed to agree on.
+>    Re-ran `php introspect.php <backend path> > manifest.snapshot.json`, confirmed
+>    `git diff --exit-code -- packages/api-types/src/generated` now passes clean.
+> 2. **`build` failed: `Invalid server environment variables: LARAVEL_API_URL Required`.** Both apps'
+>    `lib/env.server.ts` validate `LARAVEL_API_URL` with Zod at import time and throw if it's missing —
+>    `next build`'s page-data collection imports that module chain for every Route Handler even though no
+>    real backend is ever called during a build. `ci.yml`'s `build` job never set it. The value itself
+>    doesn't matter (nothing during a build calls it), only that it parses as a URL.
+> 3. **Same error persisted even after adding the env var to the job — a second, independent cause.**
+>    Turborepo's strict env mode strips any var not declared in a task's `env` array in `turbo.json`,
+>    even when it's genuinely present in the job's environment — confirmed by reproducing locally:
+>    `LARAVEL_API_URL=... pnpm turbo run build` still failed until `turbo.json`'s `build` task declared
+>    `"env": ["LARAVEL_API_URL", "NEXT_PUBLIC_APP_URL", "NEXT_PUBLIC_BASE_URL"]` (the three vars both
+>    apps' `env.server.ts`/`env.client.ts` require, not optional). `NEXT_PUBLIC_*` vars get some
+>    framework-aware inference from Turbo automatically; `LARAVEL_API_URL` (server-only, no
+>    `NEXT_PUBLIC_` prefix) does not, which is why only it showed up in the error even though all three
+>    were missing.
+> 4. **A real, pre-existing type error in `@lemonade/api-client`'s own test suite**, introduced during
+>    the signed-in-cookie work and missed at the time because only `vitest run` (which doesn't
+>    typecheck) was run against that change, not `tsc --noEmit` — `axios-mock-adapter`'s `reply()` typing
+>    only accepts a single string per header, not an array; the `requestWithHeaders` test had passed an
+>    array to model a real multi-`Set-Cookie` response. Fixed to a plain string for that one mock call —
+>    `getSetCookieValue`'s own array-handling is separately and directly unit-tested without going
+>    through this mock library at all, so nothing lost coverage.
+>
+> Also locked in a real, already-earned improvement surfaced while re-running the full local sweep:
+> `packages/config/no-any-budget.json`'s `lemonade-app` budget lowered 208 → 207 (the Google-auth-button
+> extraction earlier this session replaced one `tokenResponse: any` with a real type, dropping the count
+> for free — the budget just hadn't been told).
+>
+> Full local verification before pushing again: `pnpm turbo run lint/typecheck/test/build` (all green,
+> 9/9 tasks), both apps' any-type and pixel-class budgets within budget, `composer test:ci` in
+> `lemonade-backend` unaffected (571 tests).
+
 ### Phase 2 — Monorepo consolidation **[MUST]** **[DONE]**
 
 **Archiving the old pre-monorepo repos, closed 25 September 2026:** the user confirmed this is considered
