@@ -12,6 +12,18 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Required by apps/*/src/lib/env.server.ts and env.client.ts (zod,
+    # throws at import time if missing) — `next build` collects page data
+    # for every Route Handler, which imports that validation module chain
+    # even though no real backend is ever called during a build. The
+    # values themselves don't matter (nothing here talks to them), only
+    # that they parse as valid URLs. Also declared in turbo.json's `build`
+    # task `env` allowlist — Turbo's strict env mode strips anything not
+    # listed there even when it's genuinely set here.
+    env:
+      LARAVEL_API_URL: http://127.0.0.1:9800
+      NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
+      NEXT_PUBLIC_BASE_URL: http://127.0.0.1:3000
     steps:
       - uses: actions/checkout@v4
 

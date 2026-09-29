@@ -4,6 +4,14 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      // Required by apps/*/src/lib/env.server.ts and env.client.ts (zod,
+      // throws at build time if missing) — Turbo's strict env mode strips
+      // any var not declared here, even if it's genuinely set in the
+      // shell/CI job. NEXT_PUBLIC_* vars get some framework-aware inference
+      // from Turbo automatically, but LARAVEL_API_URL (server-only, no
+      // NEXT_PUBLIC_ prefix) does not — declaring all three explicitly
+      // rather than relying on which ones happen to be auto-inferred.
+      "env": ["LARAVEL_API_URL", "NEXT_PUBLIC_APP_URL", "NEXT_PUBLIC_BASE_URL"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
