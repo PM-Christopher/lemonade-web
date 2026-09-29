@@ -61,8 +61,16 @@ jobs:
       - name: Typecheck
         run: pnpm turbo run typecheck --filter=...[origin/main]
 
+      # Excludes @lemonade/e2e deliberately — its `test` script is a real
+      # Playwright run against a live lemonade-backend (MySQL, Mailpit,
+      # `php artisan serve`), infrastructure only .github/workflows/e2e.yml
+      # sets up. Without this exclusion, turbo's `...[origin/main]` scope
+      # picks it up whenever any e2e spec file is part of the diff (true
+      # for this push) and this job — which has none of that — fails
+      # trying to run it. Confirmed via `turbo run test --filter=...
+      # [origin/main] --dry-run=json` before adding this.
       - name: Test
-        run: pnpm turbo run test --filter=...[origin/main]
+        run: pnpm turbo run test --filter=...[origin/main] --filter='!@lemonade/e2e'
 
       - name: Build
         run: pnpm turbo run build --filter=...[origin/main]
