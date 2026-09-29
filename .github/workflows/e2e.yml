@@ -103,9 +103,9 @@ jobs:
           php artisan serve --host=127.0.0.1 --port=9800 &
           npx --yes wait-on http://127.0.0.1:9800/health --timeout 30000
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
