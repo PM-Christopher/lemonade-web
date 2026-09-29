@@ -224,10 +224,15 @@ describe("createApiClient", () => {
   });
 
   it("requestWithHeaders keeps the raw response headers alongside the unwrapped data", async () => {
+    // A plain string here, not an array — axios-mock-adapter's own reply()
+    // typing only accepts single string header values. Real multi-Set-
+    // Cookie-header array handling is covered separately and directly by
+    // getSetCookieValue's own tests below, which don't go through this
+    // mock library at all.
     mock.onGet("http://api.test/wallet").reply(
       200,
       { success: true, message: "ok", data: { balance: 500 } },
-      { "set-cookie": ["lemonade-network-signed-in=1; Path=/; HttpOnly"] },
+      { "set-cookie": "lemonade-network-signed-in=1; Path=/; HttpOnly" },
     );
 
     const client = createApiClient({ baseURL: "http://api.test" });
@@ -237,7 +242,7 @@ describe("createApiClient", () => {
     });
 
     expect(result.data).toEqual({ balance: 500 });
-    expect(result.headers["set-cookie"]).toEqual(["lemonade-network-signed-in=1; Path=/; HttpOnly"]);
+    expect(result.headers["set-cookie"]).toEqual("lemonade-network-signed-in=1; Path=/; HttpOnly");
   });
 });
 
