@@ -1053,16 +1053,57 @@
         "uri": "/v1/admin/tribes/{id}/add-thread",
         "name": "v1.admin.tribes.add-thread",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\AddAdminTribeThreadRequest",
+        "fields": {
+            "topic": [
+                "required",
+                "string"
+            ],
+            "thoughts": [
+                "required",
+                "string"
+            ],
+            "media": [
+                "array",
+                "sometimes"
+            ],
+            "media.*": [
+                "string"
+            ],
+            "tags": [
+                "array",
+                "sometimes"
+            ],
+            "tags.*": [
+                "string"
+            ]
+        }
     },
     {
         "method": "POST",
         "uri": "/v1/admin/tribes/create-tribe",
         "name": "v1.admin.tribes.create",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\CreateAdminTribeRequest",
+        "fields": {
+            "tribe_name": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "image": [
+                "required",
+                "string"
+            ],
+            "category": [
+                "required",
+                "string"
+            ],
+            "description": [
+                "required",
+                "string"
+            ]
+        }
     },
     {
         "method": "DELETE",
@@ -1239,6 +1280,37 @@
         "guard": "admin",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/utilities/upload",
+        "name": "v1.admin.utilities.upload",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Shared\\UploadFileRequest",
+        "fields": {
+            "file": [
+                "required",
+                "file",
+                "mimes:jpeg,png,jpg,mp4,avi,mov",
+                "max:10240"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/utilities/upload-multiple",
+        "name": "v1.admin.utilities.upload-multiple",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Shared\\UploadMultipleFilesRequest",
+        "fields": {
+            "files": [
+                "required"
+            ],
+            "files.*": [
+                "file",
+                "max:10240"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1838,43 +1910,6 @@
         "guard": "user",
         "formRequest": null,
         "fields": null
-    },
-    {
-        "method": "GET",
-        "uri": "/v1/user/connect/get-message-logs",
-        "name": "v1.user.connect.message-logs",
-        "guard": "user",
-        "formRequest": null,
-        "fields": null
-    },
-    {
-        "method": "GET",
-        "uri": "/v1/user/connect/get-messages/{receiver_id}",
-        "name": "v1.user.connect.messages",
-        "guard": "user",
-        "formRequest": null,
-        "fields": null
-    },
-    {
-        "method": "POST",
-        "uri": "/v1/user/connect/send-message",
-        "name": "v1.user.connect.send-message",
-        "guard": "user",
-        "formRequest": "App\\Http\\Requests\\Connect\\SendConnectMessageRequest",
-        "fields": {
-            "receiver_id": [
-                "uuid",
-                "required"
-            ],
-            "content": [
-                "string",
-                "required"
-            ],
-            "media_path": [
-                "string",
-                "nullable"
-            ]
-        }
     },
     {
         "method": "PATCH",
