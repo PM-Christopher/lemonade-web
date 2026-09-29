@@ -22,18 +22,17 @@ const MultipleFileUploader = ({
   length: string | null;
 }) => {
   const dispatch = useAppDispatch();
-  const [portfolioImages, setPortfolioImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [portfolioImages, setPortfolioImages] = useState<string[]>(images ?? []);
+  const [seenImages, setSeenImages] = useState(images);
+  if (images && images.length > 0 && images !== seenImages) {
+    setSeenImages(images);
+    setPortfolioImages(images);
+  }
 
   const removeImage = (imageToRemove: string) => {
     setPortfolioImages((prevImages) => prevImages.filter((image) => image !== imageToRemove));
   };
-
-  useEffect(() => {
-    if (images && images.length > 0) {
-      setPortfolioImages(images);
-    }
-  }, [images]);
 
   const handleFileChange = async (files: File[]) => {
     setLoading(true);

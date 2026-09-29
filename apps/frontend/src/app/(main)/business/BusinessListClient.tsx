@@ -28,10 +28,11 @@ const BusinessListClient = () => {
   const persistedMenuOption = getActive("business") ?? "business";
 
   const [menuOption, setMenuOption] = useState(persistedMenuOption);
-  // ✅ Sync local state when persisted value changes
-  useEffect(() => {
+  const [seenMenu, setSeenMenu] = useState(persistedMenuOption);
+  if (persistedMenuOption !== seenMenu) {
+    setSeenMenu(persistedMenuOption);
     setMenuOption(persistedMenuOption);
-  }, [persistedMenuOption]);
+  }
 
   const [isOpen, setIsOpen] = useState(false);
   const [isServiceOpen, setItServiceOpen] = useState(false);

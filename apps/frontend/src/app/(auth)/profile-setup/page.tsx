@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileStep from "@/components/form-steps/profile-step";
@@ -22,6 +22,22 @@ export default function ProfileStepsPage() {
   // app/api/v1/[...path]/route.ts's onboardingToken handling).
   const { data } = useUserProfileQuery();
 
+  const suggestedStep =
+    data?.bio === null
+      ? 1
+      : data?.address === null
+        ? 2
+        : data?.skills === null
+          ? 3
+          : data?.socials === null
+            ? 4
+            : null;
+  const [seenProfile, setSeenProfile] = useState(data);
+  if (data !== seenProfile && suggestedStep !== null) {
+    setSeenProfile(data);
+    setStep(suggestedStep);
+  }
+
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
@@ -43,22 +59,6 @@ export default function ProfileStepsPage() {
         return <ProfileStep next_step={nextStep} loading={loading} />;
     }
   };
-
-  const checkStep = useCallback(() => {
-    if (data?.bio === null) {
-      setStep(1);
-    } else if (data?.address === null) {
-      setStep(2);
-    } else if (data?.skills === null) {
-      setStep(3);
-    } else if (data?.socials === null) {
-      setStep(4);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    checkStep();
-  }, [checkStep]);
 
   return (
     <section>

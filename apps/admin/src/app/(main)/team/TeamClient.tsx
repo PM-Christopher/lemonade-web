@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
@@ -43,7 +43,23 @@ function TeamClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: teamData } = useTeamQuery({ enabled: isLoggedIn });
 
-  const [data, setData] = useState<any>(teamData?.admins || []);
+  const data = useMemo(() => {
+    const admins = teamData?.admins;
+    const q = query?.toLowerCase()?.trim();
+    if (!q) return admins;
+    return admins?.filter((user: any) => {
+      return (
+        user?.name?.toLowerCase().includes(q) ||
+        user?.email?.toLowerCase().includes(q)
+      );
+    });
+  }, [query, teamData]);
+
+  const [seenList, setSeenList] = useState({ query, teamData });
+  if (query !== seenList.query || teamData !== seenList.teamData) {
+    setSeenList({ query, teamData });
+    setCurrentPage(1);
+  }
 
   const { debouncedValue } = useDebounce(searchValue, 500);
   const { setSearchParams } = useSearchParams();
@@ -55,25 +71,6 @@ function TeamClient() {
     // push again, in a loop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
-
-  useEffect(() => {
-    if (query?.trim() === "") {
-      setData(teamData?.admins);
-    } else {
-      const q = query?.toLowerCase()?.trim();
-      const filtered = teamData?.admins.filter((user: any) => {
-        return (
-          !q ||
-          user?.name?.toLowerCase().includes(q) ||
-          user?.email?.toLowerCase().includes(q)
-        );
-      });
-
-      setData(filtered);
-    }
-
-    setCurrentPage(1); // Reset to first page on search
-  }, [query, teamData]);
 
   // Calculate total pages based on the data length and perPage value
   const totalPages = Math.ceil(data?.length / perPage);

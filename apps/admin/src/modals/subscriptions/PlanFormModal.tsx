@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { XIcon } from "lucide-react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -128,7 +128,7 @@ const checkboxFields: Array<{ name: keyof PlanFormValues; label: string }> = [
 
 const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [title, setTitle] = useState("Create plan");
+  const title = plan ? "Edit plan" : "Create plan";
   const createPlanMutation = useCreatePlanMutation();
   const updatePlanMutation = useUpdatePlanMutation(plan?.id);
 
@@ -183,14 +183,6 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
       });
     },
   });
-
-  useEffect(() => {
-    setTitle(plan ? "Edit plan" : "Create plan");
-    // Only the identity of the record being edited should retitle the modal
-    // — formik's own object is recreated every keystroke and would re-run
-    // this on every render otherwise.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plan?.id]);
 
   return (
     <Dialog

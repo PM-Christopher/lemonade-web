@@ -100,13 +100,6 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
     },
   });
 
-  useEffect(() => {
-    if (accountNumber.length === 10) {
-      getAccount();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountNumber]);
-
   const getAccount = () => {
     verifyAccountMutation.mutate(
       { bankCode, accountNumber },
@@ -120,6 +113,13 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
       },
     );
   };
+
+  useEffect(() => {
+    if (accountNumber.length === 10) {
+      getAccount();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountNumber]);
 
   return (
     <Dialog

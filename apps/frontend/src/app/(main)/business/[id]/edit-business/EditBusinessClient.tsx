@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -51,13 +51,23 @@ const EditBusinessClient = ({ id }: { id: number }) => {
   const [reviews, setReviews] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
-  const [frameworksList, setFrameworksList] = useState<businessCategories[]>(
-    [],
-  );
 
   const { data } = useBusinessQuery(id);
+  const business = data?.business;
+  const [seenBusinessId, setSeenBusinessId] = useState(business?.id);
+  if (business && business.id !== seenBusinessId) {
+    setSeenBusinessId(business.id);
+    setSelectedFrameworks([...(business.categories ?? [])]);
+  }
   const updateListingMutation = useUpdateListingMutation(id);
   const { data: categories } = useBusinessCategoriesQuery();
+  const frameworksList = useMemo<businessCategories[]>(() => {
+    if (!categories?.categories) return [];
+    return categories.categories.map((category: { name: string }) => ({
+      label: category.name,
+      value: category.name,
+    }));
+  }, [categories]);
 
   const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
@@ -151,18 +161,6 @@ const EditBusinessClient = ({ id }: { id: number }) => {
   });
 
   useEffect(() => {
-    if (categories?.categories) {
-      const updatedFrameworksList = categories.categories.map(
-        (category: { name: string; slug: string }) => ({
-          label: category.name,
-          value: category.name,
-        }),
-      );
-      setFrameworksList(updatedFrameworksList);
-    }
-  }, [categories]);
-
-  useEffect(() => {
     if (data?.business) {
       formik.setFieldValue("image", data?.business?.image);
       formik.setFieldValue("name", data?.business?.name);
@@ -176,8 +174,6 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       formik.setFieldValue("email", data?.business?.email);
       formik.setFieldValue("phone_number", data?.business?.phone_number);
       formik.setFieldValue("website_url", data?.business?.website_url);
-
-      setSelectedFrameworks([...data?.business?.categories]);
     }
 
     // formik's returned object is recreated on every keystroke (it embeds

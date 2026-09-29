@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import { eventMainHeaders } from "@/data/tableData";
 import { capitalizeWords } from "@/utils/helper";
@@ -32,28 +32,25 @@ const EventView = ({ pageData }: any) => {
     setCurrentPage(page);
   };
 
-  const [data, setData] = useState<any>(pageData?.events || []);
+  const events = pageData?.events;
+  const data = useMemo(() => {
+    const q = query?.toLowerCase()?.trim();
+    if (!q) return events;
+    return events?.filter((event: any) => {
+      return (
+        event?.event_name?.toLowerCase().includes(q) ||
+        event?.category?.toLowerCase().includes(q) ||
+        event?.unique_id?.toLowerCase().includes(q) ||
+        event?.event_type?.toLowerCase().includes(q)
+      );
+    });
+  }, [query, events]);
 
-  useEffect(() => {
-    if (query?.trim() === "") {
-      setData(pageData?.events);
-    } else {
-      const q = query?.toLowerCase()?.trim();
-      const filtered = pageData?.events.filter((event: any) => {
-        return (
-          !q ||
-          event?.event_name?.toLowerCase().includes(q) ||
-          event?.category?.toLowerCase().includes(q) ||
-          event?.unique_id?.toLowerCase().includes(q) ||
-          event?.event_type?.toLowerCase().includes(q)
-        );
-      });
-
-      setData(filtered);
-    }
-
-    setCurrentPage(1); // Reset to first page on search
-  }, [query, pageData?.events]);
+  const [seenList, setSeenList] = useState({ query, events });
+  if (query !== seenList.query || events !== seenList.events) {
+    setSeenList({ query, events });
+    setCurrentPage(1);
+  }
 
   // Calculate total pages based on the data length and perPage value
   const totalPages = Math.ceil(data?.length / perPage);

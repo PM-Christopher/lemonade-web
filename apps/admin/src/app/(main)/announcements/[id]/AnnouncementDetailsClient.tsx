@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useHydrated } from "@/hooks/useHydrated";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -12,14 +13,7 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
     enabled: isLoggedIn,
   });
   const announcement = detail?.announcement;
-
-  // Add hydration protection
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    // Set hydrated state after component mounts
-    setIsHydrated(true);
-  }, []);
+  const isHydrated = useHydrated();
 
   // Don't render dynamic content until hydrated
   if (!isHydrated) {

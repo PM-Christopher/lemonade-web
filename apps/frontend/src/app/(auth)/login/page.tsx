@@ -49,16 +49,6 @@ export default function LoginPage() {
     }),
   });
 
-  useEffect(() => {
-    if (fcmToken) {
-      formik.setFieldValue("notification.device_token", fcmToken);
-    }
-    // formik's returned object is recreated on every keystroke (it embeds
-    // current values/errors), so adding it here would re-run this sync
-    // on every render, fighting the user's own edits.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fcmToken]);
-
   const next = useMemo(() => safeNext(searchParams.get("next")), [searchParams]);
 
   const formik = useFormik({
@@ -113,6 +103,16 @@ export default function LoginPage() {
       }
     },
   });
+
+  useEffect(() => {
+    if (fcmToken) {
+      formik.setFieldValue("notification.device_token", fcmToken);
+    }
+    // formik's returned object is recreated on every keystroke (it embeds
+    // current values/errors), so adding it here would re-run this sync
+    // on every render, fighting the user's own edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fcmToken]);
 
   // Google OAuth flow — deliberately NOT covered by the httpOnly cutover.
   // It still calls the backend directly and sets a JS-readable "token"

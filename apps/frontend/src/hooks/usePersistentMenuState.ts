@@ -75,13 +75,16 @@ const usePersistentMenuState = () => {
   const hydrated = React.useRef(false);
 
   React.useEffect(() => {
-    const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
-    if (saved) {
-      const merged = mergeWithDefaults(saved);
-      setMenuState(merged.menuState);
-      setSelectedMenu(merged.selectedMenu);
-    }
-    hydrated.current = true;
+    const frame = window.setTimeout(() => {
+      const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
+      if (saved) {
+        const merged = mergeWithDefaults(saved);
+        setMenuState(merged.menuState);
+        setSelectedMenu(merged.selectedMenu);
+      }
+      hydrated.current = true;
+    }, 0);
+    return () => window.clearTimeout(frame);
   }, []);
 
   React.useEffect(() => {

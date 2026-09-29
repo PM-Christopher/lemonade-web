@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { usersHeaders } from "@/data/tableData";
 import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
@@ -20,49 +20,45 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
 
   const [localPage, setLocalPage] = useState(1);
   const perPage = 10;
-  const [data, setData] = useState<any>(userData?.users || []);
 
   const isServerPaginated = Boolean(userData?.meta);
 
-  // Update data when userData changes
-  useEffect(() => {
-    if (userData) {
-      setData(userData.users);
-    }
-  }, [userData]);
+  const data = useMemo(() => {
+    const users = userData?.users;
+    if (!userData) return [];
+    if (menuOption !== "users" || isServerPaginated) return users;
 
-  // Search + reset pagination — only runs the client-side filter path when
-  // the backend didn't already paginate (see the file header comment).
-  useEffect(() => {
-    if (menuOption !== "users") return;
-    if (!userData) return;
-    if (isServerPaginated) return;
+    if ((!query && !status) || query?.trim() === "") return users;
 
-    if ((!query && !status) || query?.trim() === "") {
-      setData(userData.users);
-    } else {
-      const q = query?.toLowerCase()?.trim();
-      const s = status?.toLowerCase()?.trim();
+    const q = query?.toLowerCase()?.trim();
+    const s = status?.toLowerCase()?.trim();
 
-      const filtered = userData.users.filter((user: any) => {
-        const matchesQuery =
-          !q ||
-          user?.unique_id?.toLowerCase().includes(q) ||
-          user?.location?.toLowerCase().includes(q) ||
-          user?.fullname?.toLowerCase().includes(q) ||
-          user?.email?.toLowerCase().includes(q);
+    return users.filter((user: any) => {
+      const matchesQuery =
+        !q ||
+        user?.unique_id?.toLowerCase().includes(q) ||
+        user?.location?.toLowerCase().includes(q) ||
+        user?.fullname?.toLowerCase().includes(q) ||
+        user?.email?.toLowerCase().includes(q);
 
-        const matchesStatus = !s || user?.status?.toLowerCase() === s;
+      const matchesStatus = !s || user?.status?.toLowerCase() === s;
 
-        return matchesQuery && matchesStatus;
-      });
+      return matchesQuery && matchesStatus;
+    });
+  }, [userData, menuOption, isServerPaginated, query, status]);
 
-      setData(filtered);
-    }
-
-    setLocalPage(1); // Reset to first page on search
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, status, userData, menuOption, isServerPaginated]);
+  const resetPage =
+    menuOption === "users" && userData && !isServerPaginated
+      ? `${query ?? ""}|${status ?? ""}`
+      : null;
+  const [seenPage, setSeenPage] = useState({ resetPage, userData });
+  if (
+    resetPage !== null &&
+    (seenPage.resetPage !== resetPage || seenPage.userData !== userData)
+  ) {
+    setSeenPage({ resetPage, userData });
+    setLocalPage(1);
+  }
 
   const totalPages = isServerPaginated
     ? userData.meta.last_page

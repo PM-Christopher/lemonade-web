@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useHydrated } from "@/hooks/useHydrated";
 import MainLayout from "@/components/layouts/MainLayout";
 import { usersDetailPageViews } from "@/utils/pageViews";
 import { CalendarIcon, ChevronDown } from "lucide-react";
@@ -14,14 +15,7 @@ function TeamDetailsClient({ id }: { id: number | undefined }) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: detail } = useTeamDetailQuery(id, { enabled: isLoggedIn });
   const team = detail?.team;
-
-  // Add hydration protection
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    // Set hydrated state after component mounts
-    setIsHydrated(true);
-  }, []);
+  const isHydrated = useHydrated();
 
   // Don't render dynamic content until hydrated
   if (!isHydrated) {

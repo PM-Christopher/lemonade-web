@@ -15,12 +15,13 @@ function FindEventSubMenu() {
 
   const isEmpty = search.trim().length === 0;
 
-  // ✅ When cleared, reset UI + results
+  if (isEmpty && hasSearched) {
+    setHasSearched(false);
+  }
+
   useEffect(() => {
-    if (isEmpty) {
-      setHasSearched(false);
-      searchAffiliateEventsMutation.reset();
-    }
+    if (isEmpty) searchAffiliateEventsMutation.reset();
+    // reset()'s identity changes with the mutation object.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEmpty]);
 

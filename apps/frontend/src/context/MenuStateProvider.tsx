@@ -89,30 +89,31 @@ const MenuCtx = React.createContext<Ctx | null>(null);
 
 export function MenuStateProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const fromPath = pathname ? menuTitleFromPathname(pathname) : "home";
 
   const [menuState, setMenuState] = React.useState<MenuItem[]>(DEFAULT_MENU_STATE);
-  const [selectedMenu, setSelectedMenu] = React.useState<MenuTitle>("home");
+  const [selectedMenu, setSelectedMenu] = React.useState<MenuTitle>(fromPath);
 
   // ✅ IMPORTANT: state gate, not ref
   const [hydrated, setHydrated] = React.useState(false);
 
-  // Hydrate once
   React.useEffect(() => {
-    const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
-    if (saved) {
-      const merged = mergeWithDefaults(saved);
-      setMenuState(merged.menuState);
-      // selectedMenu is driven by route below, but you can keep this if you want:
-      // setSelectedMenu(merged.selectedMenu);
-    }
-    setHydrated(true); // ✅ only after reading storage
+    const frame = window.setTimeout(() => {
+      const saved = safeParse(window.localStorage.getItem(STORAGE_KEY));
+      if (saved) {
+        const merged = mergeWithDefaults(saved);
+        setMenuState(merged.menuState);
+      }
+      setHydrated(true);
+    }, 0);
+    return () => window.clearTimeout(frame);
   }, []);
 
-  // Always sync selectedMenu from route
-  React.useEffect(() => {
-    if (!pathname) return;
-    setSelectedMenu(menuTitleFromPathname(pathname));
-  }, [pathname]);
+  const [seenPath, setSeenPath] = React.useState(pathname);
+  if (pathname !== seenPath) {
+    setSeenPath(pathname);
+    setSelectedMenu(fromPath);
+  }
 
   // ✅ Persist ONLY after hydration finished
   React.useEffect(() => {

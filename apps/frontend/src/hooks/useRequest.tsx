@@ -11,7 +11,7 @@ export const useRequest = (
   headers: Record<string, string> = {}, // flat object
 ) => {
   const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(start);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -50,8 +50,11 @@ export const useRequest = (
   };
 
   useLayoutEffect(() => {
-    if (start) getData();
-    else setLoading(false);
+    if (!start) return;
+    const frame = window.setTimeout(() => {
+      void getData();
+    }, 0);
+    return () => window.clearTimeout(frame);
     // getData closes over method/body/headers, which callers commonly
     // pass as fresh literals on every render (e.g. useRequest(url) with
     // the {} defaults) — this hook is deliberately designed to refetch

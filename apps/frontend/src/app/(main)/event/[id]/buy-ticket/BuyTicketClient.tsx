@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -28,21 +28,23 @@ const BuyTicketClient = ({ id }: { id: number }) => {
   const { event, tickets } = ticket_data || {};
   const searchParams = useSearchParams();
 
-  const [quantities, setQuantities] = useState<TicketDetails[]>([]);
-
-  useEffect(() => {
-    if (tickets) {
-      const initialQuantities = tickets.map((ticket: TicketInterface) => ({
-        id: ticket.id,
-        ticket_name: ticket.name,
-        ticket_description: ticket.description,
-        quantity: 0,
-        price: ticket.price,
-        purchase_limit: ticket.purchase_limit,
-      }));
-      setQuantities(initialQuantities);
-    }
+  const initialQuantities = useMemo(() => {
+    if (!tickets) return [];
+    return tickets.map((ticket: TicketInterface) => ({
+      id: ticket.id,
+      ticket_name: ticket.name,
+      ticket_description: ticket.description,
+      quantity: 0,
+      price: ticket.price,
+      purchase_limit: ticket.purchase_limit,
+    }));
   }, [tickets]);
+  const [quantities, setQuantities] = useState<TicketDetails[]>(initialQuantities);
+  const [seenTickets, setSeenTickets] = useState(tickets);
+  if (tickets !== seenTickets) {
+    setSeenTickets(tickets);
+    setQuantities(initialQuantities);
+  }
 
   const handleIncrement = (index: number) => {
     setQuantities((prevQuantities) =>

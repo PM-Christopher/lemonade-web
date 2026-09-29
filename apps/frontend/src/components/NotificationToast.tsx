@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 type Notification = {
@@ -7,12 +7,8 @@ type Notification = {
 };
 
 const NotificationToast = ({ payload }: { payload: Notification }) => {
-  const [notification, setNotification] = useState<Notification | null>(null);
-
   useEffect(() => {
     if (payload) {
-      setNotification(payload);
-
       toast.custom((t) => (
         <div
           className={`pointer-events-auto flex w-full max-w-sm rounded-xl bg-gradient-green p-4 shadow-lg ring-1 ring-black ring-opacity-5 transition-all ${

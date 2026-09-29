@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PlusIcon, XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useFormik } from "formik";
@@ -24,7 +24,6 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
   toggle,
   promotionId,
 }) => {
-  const [eventType, setEventType] = React.useState("");
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const createPromotionMutation = useCreatePromotionMutation();
@@ -32,9 +31,13 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
   const { data: promotionDetail } = usePromotionDetailQuery(promotionId, {
     enabled: Boolean(promotionId),
   });
-  const [promotionTitle, setPromotionTitle] = useState("Create Promotion");
 
-  const [breakdowns, setBreakdowns] = useState<string[]>([""]);
+  const editing =
+    promotionId !== 0 && promotionId !== undefined
+      ? promotionDetail?.promotion
+      : undefined;
+  const promotionTitle = editing ? "Edit Promotion" : "Create Promotion";
+  const recordKey = editing ? String(promotionId) : promotionId === 0 ? "create" : "idle";
 
   const handleAddField = () => {
     setBreakdowns([...breakdowns, ""]);
@@ -59,10 +62,11 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      price_option: "",
-      price: "",
+      name: editing?.name ?? "",
+      price_option: editing?.price_option ?? "",
+      price: editing ? String(editing.price ?? "") : "",
     },
+    enableReinitialize: true,
     validationSchema: createPromotionSchema,
     onSubmit: async (values) => {
       if (isLoggedIn) {
@@ -109,29 +113,21 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
     },
   });
 
-  useEffect(() => {
-    if (promotionId !== 0 && promotionDetail) {
-      const data = promotionDetail.promotion;
-      setEventType(data.price_option);
-      setPromotionTitle("Edit Promotion");
-      formik.setFieldValue("name", data.name);
-      formik.setFieldValue("price", data.price);
-      formik.setFieldValue("price_option", data.price_option);
-      setBreakdowns(data.breakdown ?? []);
-    } else if (promotionId === 0) {
-      setPromotionTitle("Create Promotion");
-      formik.setFieldValue("name", "");
-      formik.setFieldValue("price", "");
-      formik.setFieldValue("price_option", "");
-      setBreakdowns([""]);
-    }
-    // formik's returned object is recreated on every keystroke (it embeds
-    // current values/errors), so adding it here would re-run this sync
-    // — and re-run setFieldValue — on every render, fighting the user's
-    // own edits. This effect must only fire when the target record
-    // changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [promotionId, promotionDetail]);
+  const [eventType, setEventType] = useState(editing?.price_option ?? "");
+  const [eventTypeKey, setEventTypeKey] = useState(recordKey);
+  if (recordKey !== eventTypeKey) {
+    setEventTypeKey(recordKey);
+    setEventType(editing?.price_option ?? "");
+  }
+
+  const [breakdowns, setBreakdowns] = useState<string[]>(
+    editing ? (editing.breakdown ?? []) : [""],
+  );
+  const [breakdownKey, setBreakdownKey] = useState(recordKey);
+  if (recordKey !== breakdownKey) {
+    setBreakdownKey(recordKey);
+    setBreakdowns(editing ? (editing.breakdown ?? []) : [""]);
+  }
 
   return (
     <Dialog

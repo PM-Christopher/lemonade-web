@@ -40,10 +40,11 @@ const EventListClient: React.FC = () => {
   const persistedMenuOption = getActive("event") ?? "events";
 
   const [menuOption, setMenuOption] = useState(persistedMenuOption);
-  // ✅ Sync local state when persisted value changes
-  useEffect(() => {
+  const [seenMenu, setSeenMenu] = useState(persistedMenuOption);
+  if (persistedMenuOption !== seenMenu) {
+    setSeenMenu(persistedMenuOption);
     setMenuOption(persistedMenuOption);
-  }, [persistedMenuOption]);
+  }
 
   const [togglePaymentModel, setTogglePaymentModel] = useState(false);
   const [toggleVPaymentModel, setToggleVPaymentModel] = useState(false);
@@ -61,20 +62,23 @@ const EventListClient: React.FC = () => {
   const verifyTransactionMutation = useVerifyTransactionMutation();
   const transaction_data = verifyTransactionMutation.data;
 
+  const bookingCompleted = Boolean(free_event?.completed);
+  const [seenBookingCompleted, setSeenBookingCompleted] = useState(bookingCompleted);
+  if (bookingCompleted !== seenBookingCompleted) {
+    setSeenBookingCompleted(bookingCompleted);
+    if (bookingCompleted) setToggleVPaymentModel(true);
+  }
+
   useEffect(() => {
-    if (free_event) {
-      if (free_event.completed) {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Event booked successfully",
-            type: "success",
-          }),
-        );
-        setToggleVPaymentModel(true);
-        dispatch(resetFreeEventState());
-      }
-    }
+    if (!free_event?.completed) return;
+    dispatch(
+      updateToastifyReducer({
+        show: true,
+        message: "Event booked successfully",
+        type: "success",
+      }),
+    );
+    dispatch(resetFreeEventState());
   }, [free_event, dispatch]);
 
   useEffect(() => {

@@ -32,21 +32,16 @@ const GuestListClient = ({ id }: { id: number }) => {
   );
   const guestDetails = guestDetailsData?.guest_details;
 
-  useEffect(() => {
-    if (!selectedGuest) return;
-    toggleMenu();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedGuest]);
-
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((open) => !open);
+    if (isOpen) setSelectedGuest(null);
   };
 
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedGuest(null);
-    }
-  }, [isOpen]);
+  const [seenGuest, setSeenGuest] = useState<any>(null);
+  if (selectedGuest && selectedGuest !== seenGuest) {
+    setSeenGuest(selectedGuest);
+    setIsOpen(true);
+  }
 
   const { debouncedValue: debouncedSearchTerm } = useDebounce(searchTerm, 350);
   const { data: guestSearchData, isLoading: guestSearchLoading } = useGuestSearchQuery(

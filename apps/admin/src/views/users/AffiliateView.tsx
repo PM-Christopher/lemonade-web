@@ -4,7 +4,7 @@ import { affiliateHeaders } from "@/data/tableData";
 import useSearchParams from "@/hooks/useSearchParams";
 import { capitalizeWords } from "@/utils/helper";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const AffiliateView = ({ userData, menuOption }: any) => {
   const router = useRouter();
@@ -13,37 +13,33 @@ const AffiliateView = ({ userData, menuOption }: any) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [data, setData] = useState<any>(userData?.affiliates || []);
 
-  useEffect(() => {
-    if (userData) {
-      setData(userData.users);
-    }
-  }, [userData]);
+  const data = useMemo(() => {
+    if (!userData) return [];
+    if (menuOption !== "affiliates") return userData.users;
+    if (!query || query.trim() === "") return userData.affiliates;
 
-  useEffect(() => {
-    if (menuOption !== "affiliates") return;
-    if (!userData) return;
+    const q = query.toLowerCase().trim();
+    return userData.affiliates.filter((affiliate: any) => {
+      return (
+        affiliate?.unique_id?.toLowerCase().includes(q) ||
+        affiliate?.fullname?.toLowerCase().includes(q)
+      );
+    });
+  }, [userData, menuOption, query]);
 
-    if (!query || query?.trim() === "") {
-      setData(userData.affiliates);
-    } else {
-      const q = query?.toLowerCase()?.trim();
-
-      const filtered = userData.affiliates.filter((affiliate: any) => {
-        const matchesQuery =
-          !q ||
-          affiliate?.unique_id?.toLowerCase().includes(q) ||
-          affiliate?.fullname?.toLowerCase().includes(q);
-
-        return matchesQuery;
-      });
-
-      setData(filtered);
-    }
-
-    setCurrentPage(1); // Reset to first page on search
-  }, [query, userData, menuOption]);
+  const resetPage =
+    menuOption === "affiliates" && userData
+      ? `${query ?? ""}`
+      : null;
+  const [seenPage, setSeenPage] = useState({ resetPage, userData });
+  if (
+    resetPage !== null &&
+    (seenPage.resetPage !== resetPage || seenPage.userData !== userData)
+  ) {
+    setSeenPage({ resetPage, userData });
+    setCurrentPage(1);
+  }
 
   // Calculate pagination from filtered data
   const totalPages = Math.ceil(data?.length / perPage);

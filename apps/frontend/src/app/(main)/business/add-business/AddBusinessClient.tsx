@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
@@ -70,11 +70,15 @@ const AddBusinessClient = () => {
   };
 
   const { data } = useBusinessCategoriesQuery();
+  const frameworksList = useMemo<businessCategories[]>(() => {
+    if (!data?.categories) return [];
+    return data.categories.map((category: { name: string }) => ({
+      label: category.name,
+      value: category.name,
+    }));
+  }, [data]);
 
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
-  const [frameworksList, setFrameworksList] = useState<businessCategories[]>(
-    [],
-  );
 
   const createBusinessSchema = yup.object({
     image: yup.string().required("Business image is required"),
@@ -145,19 +149,6 @@ const AddBusinessClient = () => {
       });
     },
   });
-
-  useEffect(() => {
-    if (data?.categories) {
-      const updatedFrameworksList = data.categories.map(
-        (category: { name: string; slug: string }) => ({
-          label: category.name,
-          value: category.name,
-        }),
-      );
-
-      setFrameworksList(updatedFrameworksList);
-    }
-  }, [data]);
 
   return (
     <MainLayout>

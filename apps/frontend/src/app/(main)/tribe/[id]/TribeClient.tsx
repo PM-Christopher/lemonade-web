@@ -96,6 +96,16 @@ const TribeClient = ({ id }: { id: string }) => {
   const { setSearchParams, nxtSearchParams } = useNxtSearchParams();
 
   const query = nxtSearchParams?.get("search");
+  const data = useMemo(() => {
+    const q = query?.toLowerCase()?.trim();
+    if (!q) return threads;
+    return threads.filter((thread: Thread) => {
+      return (
+        thread?.topic?.toLowerCase().includes(q) ||
+        thread?.thoughts?.toLowerCase().includes(q)
+      );
+    });
+  }, [threads, query]);
   const [searchValue, setSearchValue] = useState("");
   const { debouncedValue } = useDebounce(searchValue, 500);
   useEffect(() => {
@@ -106,30 +116,6 @@ const TribeClient = ({ id }: { id: string }) => {
     // effect after every push and push again, in a loop.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
-
-  const [data, setData] = useState<Thread[] | undefined>(undefined);
-
-  useEffect(() => {
-    setData(threads);
-  }, [threads]);
-
-  useEffect(() => {
-    if (query?.trim() === "") {
-      setData(threads);
-    } else {
-      const q = query?.toLowerCase()?.trim();
-      const filtered = threads.filter((thread: Thread) => {
-        return (
-          !q ||
-          thread?.topic?.toLowerCase().includes(q) ||
-          thread?.thoughts?.toLowerCase().includes(q)
-        );
-      });
-
-      setData(filtered);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
 
   const trxref = searchParams.get("trxref");
 
@@ -320,9 +306,9 @@ const TribeClient = ({ id }: { id: string }) => {
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
-                  {data.map((thread: Thread) => (
+                  {data.map((thread: Thread, index: number) => (
                     <ThreadCard
-                      key={thread.id ?? Math.random()}
+                      key={thread.id ?? `thread-${index}`}
                       tribe_id={tribe?.id}
                       tribe={tribe}
                       thread={thread}

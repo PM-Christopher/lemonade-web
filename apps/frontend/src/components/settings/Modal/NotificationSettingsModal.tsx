@@ -25,8 +25,14 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
   const dispatch = useAppDispatch();
   const updateNotificationSettingsMutation =
     useUpdateNotificationSettingsMutation();
-  const [emailChecked, setEmailChecked] = useState(false);
-  const [inAppChecked, setInAppChecked] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(Boolean(settings.email));
+  const [inAppChecked, setInAppChecked] = useState(Boolean(settings.in_app_notification));
+  const [seenSettings, setSeenSettings] = useState(settings);
+  if (settings !== seenSettings) {
+    setSeenSettings(settings);
+    setEmailChecked(Boolean(settings.email));
+    setInAppChecked(Boolean(settings.in_app_notification));
+  }
 
   const handleChange = (type: string) => {
     if (type === "email") {
@@ -67,11 +73,6 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
       },
     });
   };
-
-  useEffect(() => {
-    setEmailChecked(settings.email);
-    setInAppChecked(settings.in_app_notification);
-  }, [settings]);
 
   return (
     <Dialog

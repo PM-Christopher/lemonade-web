@@ -32,30 +32,28 @@ export default function VerifyPage() {
   const [canResend, setCanResend] = useState<boolean>(false);
 
   useEffect(() => {
-    const savedStartTime = localStorage.getItem(STORAGE_KEY);
+    const frame = window.setTimeout(() => {
+      const savedStartTime = localStorage.getItem(STORAGE_KEY);
 
-    if (savedStartTime) {
-      // calculate how much time has passed
-      const elapsed = Math.floor((Date.now() - parseInt(savedStartTime, 10)) / 1000);
-      const remaining = COUNTDOWN_DURATION - elapsed;
+      if (savedStartTime) {
+        const elapsed = Math.floor((Date.now() - parseInt(savedStartTime, 10)) / 1000);
+        const remaining = COUNTDOWN_DURATION - elapsed;
 
-      if (remaining > 0) {
-        // Continue from where it left off
-        setSeconds(remaining);
-        setCanResend(false);
+        if (remaining > 0) {
+          setSeconds(remaining);
+          setCanResend(false);
+        } else {
+          setSeconds(0);
+          setCanResend(true);
+          localStorage.removeItem(STORAGE_KEY);
+        }
       } else {
-        // Timer already expired
-        setSeconds(0);
-        setCanResend(true);
-        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem(STORAGE_KEY, Date.now().toString());
+        setSeconds(COUNTDOWN_DURATION);
+        setCanResend(false);
       }
-    } else {
-      // No key yet, start a fresh countdown
-      const startTime = Date.now();
-      localStorage.setItem(STORAGE_KEY, startTime.toString());
-      setSeconds(COUNTDOWN_DURATION);
-      setCanResend(false);
-    }
+    }, 0);
+    return () => window.clearTimeout(frame);
   }, [COUNTDOWN_DURATION, STORAGE_KEY]);
 
   useEffect(() => {

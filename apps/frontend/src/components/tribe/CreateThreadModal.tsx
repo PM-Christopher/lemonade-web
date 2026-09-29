@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import ImageIcon from "@/images/icons/image.svg";
 import VideoIcon from "@/images/icons/video-camera.svg";
@@ -263,15 +263,9 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     formik.setFieldValue("polls", !poll);
   };
 
-  const addDefaultOption = () => {
+  if (pollOptions.length === 0) {
     setPollOptions([""]);
-  };
-
-  useEffect(() => {
-    if (pollOptions.length === 0) {
-      addDefaultOption();
-    }
-  }, [pollOptions]);
+  }
 
   return (
     <Dialog

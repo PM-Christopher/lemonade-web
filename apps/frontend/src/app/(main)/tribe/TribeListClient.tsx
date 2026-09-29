@@ -31,11 +31,11 @@ export default function TribeListClient() {
   // Always read tribe tab state from the "tribe" menu
   const persistedTribeType = getActive("tribe") ?? "discover";
   const [tribeType, setTribeType] = useState(persistedTribeType);
-
-  // ✅ Sync local state when persisted value changes (e.g. after refresh hydration)
-  useEffect(() => {
+  const [seenTribeType, setSeenTribeType] = useState(persistedTribeType);
+  if (persistedTribeType !== seenTribeType) {
+    setSeenTribeType(persistedTribeType);
     setTribeType(persistedTribeType);
-  }, [persistedTribeType]);
+  }
 
   const [search, setSearch] = useState("");
 

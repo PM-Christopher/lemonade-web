@@ -20,7 +20,12 @@ export const SingleFileUploader = ({
   length: string | null;
 }) => {
   const dispatch = useAppDispatch();
-  const [elementImage, setElementImage] = useState("");
+  const [elementImage, setElementImage] = useState(image ?? "");
+  const [seenImage, setSeenImage] = useState(image);
+  if (image && image !== seenImage) {
+    setSeenImage(image);
+    setElementImage(image);
+  }
 
   const handleRemoveImage = async () => {
     if (type === "event") {
@@ -29,12 +34,6 @@ export const SingleFileUploader = ({
       await setField.setFieldValue("image", "");
     }
   };
-
-  useEffect(() => {
-    if (image) {
-      setElementImage(image);
-    }
-  }, [image]);
 
   const handleFileChange = async (files: File[]) => {
     if (files.length > 0) {

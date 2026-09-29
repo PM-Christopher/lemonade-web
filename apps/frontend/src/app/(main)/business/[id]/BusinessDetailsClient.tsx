@@ -52,7 +52,6 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [displayCount, setDisplayCount] = useState(4); // Initial number of reviews to show
-  const [reviews, setReviews] = useState([]);
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
   const [verifyLoading, setVerifyLoading] = useState(false);
@@ -92,24 +91,22 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
     setIsSubmitDisputeOpen(!isSubmitDisputeOpen);
   };
 
+  const shouldOpenDispute = searchParams.get("modal") === "disputeOpen";
+  const [openedDisputeFromUrl, setOpenedDisputeFromUrl] = useState(false);
+  if (shouldOpenDispute && !openedDisputeFromUrl) {
+    setOpenedDisputeFromUrl(true);
+    setIsDisputeOpen(true);
+  }
+
   useEffect(() => {
-    const shouldOpen = searchParams.get("modal");
-    if (shouldOpen === "disputeOpen") {
-      toggleDisputeModal();
-      router.replace(pathname);
-    }
-  }, [searchParams, pathname, router, toggleDisputeModal]);
+    if (shouldOpenDispute) router.replace(pathname);
+  }, [shouldOpenDispute, router, pathname]);
 
   // business reviews
   const { data: reviewData, loading: reviewLoading } = useRequest(
     `/user/business/${id}/business-reviews`,
   );
-
-  useEffect(() => {
-    if (reviewData) {
-      setReviews(reviewData?.reviews);
-    }
-  }, [reviewData]);
+  const reviews = reviewData?.reviews ?? [];
 
   useEffect(() => {
     const verifyBusinessBoost = async () => {
