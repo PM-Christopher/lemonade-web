@@ -8,6 +8,6 @@
     "admin": "lhci autorun --config=./lighthouserc.admin.json"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.14.0"
+    "@lhci/cli": "^0.15.1"
   }
 }
