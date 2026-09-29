@@ -56,12 +56,12 @@ jobs:
 
     steps:
       - name: Check out lemonade-web
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: lemonade-web
 
       - name: Check out lemonade-backend
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: PM-Christopher/lemonade-backend
           token: ${{ secrets.LEMONADE_BACKEND_TOKEN }}
