@@ -37,6 +37,9 @@ export function buildReverbConnectionOptions(
     wsPort: config.port,
     wssPort: config.port,
     forceTLS: config.scheme === "https",
-    enabledTransports: ["ws", "wss"],
+    // One transport. Offering both makes pusher-js open two sockets and
+    // close the loser while it is still connecting, which the browser logs
+    // as "WebSocket is closed before the connection is established."
+    enabledTransports: config.scheme === "https" ? ["wss"] : ["ws"],
   };
 }

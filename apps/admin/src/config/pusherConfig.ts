@@ -25,16 +25,32 @@ const connectionOptions = buildReverbConnectionOptions({
   port: Number(clientEnv.NEXT_PUBLIC_REVERB_PORT ?? 8080),
   scheme: clientEnv.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "https" : "http",
 });
+// Singletons, not a new WebSocket per call — see the frontend app's
+// identical fix in its own pusherConfig.ts for the leak this avoids
+// (usePusher.ts's cleanup only unsubscribes the channel, not the
+// connection, so a fresh `new Pusher()` per call leaks a socket on every
+// effect re-run). Unused today per the file comment above, but the same
+// structural bug exists here — fixed now so it doesn't resurface the
+// moment this gets wired to a real component.
+let authenticatedClient: Pusher | null = null;
+let publicClient: Pusher | null = null;
+
 export const pusherConfig = () => {
-  return new Pusher(app_key, {
-    ...connectionOptions,
-    channelAuthorization: {
-      transport: "ajax",
-      endpoint: "/api/broadcasting/auth",
-    },
-  });
+  if (!authenticatedClient) {
+    authenticatedClient = new Pusher(app_key, {
+      ...connectionOptions,
+      channelAuthorization: {
+        transport: "ajax",
+        endpoint: "/api/broadcasting/auth",
+      },
+    });
+  }
+  return authenticatedClient;
 };
 
 export const pusherCon = () => {
-  return new Pusher(app_key, connectionOptions);
+  if (!publicClient) {
+    publicClient = new Pusher(app_key, connectionOptions);
+  }
+  return publicClient;
 };

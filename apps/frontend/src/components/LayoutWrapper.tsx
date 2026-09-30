@@ -8,7 +8,7 @@ import "@/app/globals.css";
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const { user } = useSelector((state: any) => state.auth);
-  usePusher(`request.${user?.id}`, "request.service");
+  usePusher(user?.id ? `request.${user.id}` : null, "request.service");
   return (
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       {children}

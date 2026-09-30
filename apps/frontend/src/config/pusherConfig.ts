@@ -26,13 +26,32 @@ const connectionOptions = buildReverbConnectionOptions({
   scheme: clientEnv.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "https" : "http",
 });
 Pusher.logToConsole = false;
+
+// Singletons, not a new WebSocket per call. usePusher() re-runs this
+// constructor on every effect re-run (Fast Refresh, Strict Mode's
+// mount-cleanup-mount, any dependency change), and its cleanup only
+// unsubscribes the channel, not the connection — so a fresh `new Pusher()`
+// here used to leak one permanently-open socket per re-run. Over an active
+// dev session that accumulates into dozens of live connections, enough to
+// hang the tab. pusher-js's own subscribe()/unsubscribe() are already
+// idempotent against a shared client, so returning the same instance here
+// is safe even when multiple components call these concurrently.
+let authenticatedClient: Pusher | null = null;
+let publicClient: Pusher | null = null;
+
 export const pusherConfig = () => {
-  return new Pusher(app_key, {
-    ...connectionOptions,
-    authEndpoint: "/api/broadcasting/auth",
-  });
+  if (!authenticatedClient) {
+    authenticatedClient = new Pusher(app_key, {
+      ...connectionOptions,
+      authEndpoint: "/api/broadcasting/auth",
+    });
+  }
+  return authenticatedClient;
 };
 
 export const pusherCon = () => {
-  return new Pusher(app_key, connectionOptions);
+  if (!publicClient) {
+    publicClient = new Pusher(app_key, connectionOptions);
+  }
+  return publicClient;
 };

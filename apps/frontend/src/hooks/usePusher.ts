@@ -6,13 +6,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { appendIncomingChatMessage } from "@/features/connect/queries";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
-export const usePusher = (channelName: string, eventName: string) => {
+export const usePusher = (channelName: string | null, eventName: string) => {
   const [data, setData] = useState<any>(null);
   const { user } = useAppSelector((state: any) => state.auth);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    if (!channelName) return;
+
     const isUserChannel = channelName === "user";
     const pusher = isUserChannel ? pusherCon() : pusherConfig();
     // Backend broadcasts on the "private-"-prefixed wire name (see

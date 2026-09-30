@@ -32,7 +32,7 @@ const ConnectClient = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const [chatOpened, setChatOpened] = useState(false);
   const { user } = useSelector((state: any) => state.auth);
-  usePusher(`chat.${user?.id}`, "message.sent");
+  usePusher(user?.id ? `chat.${user.id}` : null, "message.sent");
 
   const { data: chatHistory, isLoading: loadingChat } = useChatHistoryQuery({
     enabled: Boolean(user?.id),

@@ -9,7 +9,7 @@ describe("buildReverbConnectionOptions", () => {
       wsPort: 8080,
       wssPort: 8080,
       forceTLS: false,
-      enabledTransports: ["ws", "wss"],
+      enabledTransports: ["ws"],
     });
   });
 
@@ -24,6 +24,7 @@ describe("buildReverbConnectionOptions", () => {
     expect(options.wsHost).toBe("reverb.example.com");
     expect(options.wsPort).toBe(443);
     expect(options.wssPort).toBe(443);
+    expect(options.enabledTransports).toEqual(["wss"]);
   });
 
   it("always sends an empty cluster, never Pusher Cloud's", () => {
