@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi, type LoginPayload } from "./api";
+import { authApi, type LoginPayload, type RegisterDeviceTokenPayload } from "./api";
 import { authKeys } from "./queries";
 import { useAppDispatch } from "@/redux/hook";
 import { authSuccess, resetAuth } from "./authSlice";
@@ -40,5 +40,13 @@ export function useLogoutMutation() {
       dispatch(resetAuth());
       queryClient.removeQueries({ queryKey: authKeys.all() });
     },
+  });
+}
+
+// No query to invalidate — this just hands the browser's FCM token to the
+// backend, fire-and-forget from FcmContext.tsx's point of view.
+export function useRegisterDeviceTokenMutation() {
+  return useMutation({
+    mutationFn: (data: RegisterDeviceTokenPayload) => authApi.registerDeviceToken(data),
   });
 }

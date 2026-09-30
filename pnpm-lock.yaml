@@ -80,6 +80,9 @@ importers:
       dayjs:
         specifier: ^1.11.13
         version: 1.11.23
+      firebase:
+        specifier: ^12.2.1
+        version: 12.19.0
       formik:
         specifier: ^2.4.6
         version: 2.4.9(@types/react@19.3.0)(react@19.3.0)

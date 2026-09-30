@@ -41,4 +41,24 @@ export const clientEnv = {
   NEXT_PUBLIC_REVERB_HOST: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_HOST),
   NEXT_PUBLIC_REVERB_PORT: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_PORT),
   NEXT_PUBLIC_REVERB_SCHEME: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_SCHEME),
+
+  // Firebase (admin push notifications) — same project as the frontend
+  // app's equivalent vars (src/lib/env.client.ts), since both apps read
+  // notifications from the same backend. Not set locally — firebase.ts
+  // already guards on `messaging` being falsy, so the feature degrades
+  // rather than crashing.
+  NEXT_PUBLIC_FIREBASE_API_KEY: blankAsUndefined(process.env.NEXT_PUBLIC_FIREBASE_API_KEY),
+  NEXT_PUBLIC_FIREBASE_APP_ID: blankAsUndefined(process.env.NEXT_PUBLIC_FIREBASE_APP_ID),
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: blankAsUndefined(process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN),
+  NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: blankAsUndefined(
+    process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  ),
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: blankAsUndefined(
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  ),
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: blankAsUndefined(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID),
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: blankAsUndefined(
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  ),
+  NEXT_PUBLIC_FIREBASE_VAPID_KEY: blankAsUndefined(process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY),
 };

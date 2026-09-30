@@ -39,6 +39,27 @@
         "fields": null
     },
     {
+        "method": "POST",
+        "uri": "/v1/admin/account/device-token",
+        "name": "v1.admin.account.device-token",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Notification\\RegisterAdminDeviceTokenRequest",
+        "fields": {
+            "device_token": [
+                "string",
+                "required"
+            ],
+            "device_type": [
+                "string",
+                "nullable"
+            ],
+            "platform": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
         "method": "GET",
         "uri": "/v1/admin/account/export",
         "name": "v1.admin.account.export",

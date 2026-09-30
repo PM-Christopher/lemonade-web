@@ -318,6 +318,12 @@ export interface PushNotificationSettingsRequest {
   push_notification: boolean;
 }
 
+export interface RegisterAdminDeviceTokenRequest {
+  device_token: string;
+  device_type?: string;
+  platform?: string;
+}
+
 export interface RegisterDeviceTokenRequest {
   device_token: string;
   device_type?: string;

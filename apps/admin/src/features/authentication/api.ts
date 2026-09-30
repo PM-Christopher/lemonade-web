@@ -30,6 +30,15 @@ export interface LoginResult {
   token?: string; // only present when needsOnboarding — see app/api/auth/login/route.ts
 }
 
+// Mirrors backend's RegisterAdminDeviceTokenRequest (app/Http/Requests/
+// Notification/RegisterAdminDeviceTokenRequest.php): device_token
+// required, device_type/platform nullable strings.
+export interface RegisterDeviceTokenPayload {
+  device_token: string;
+  device_type?: string | null;
+  platform?: string | null;
+}
+
 async function postJson<T>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(path, {
     method: "POST",
@@ -61,4 +70,10 @@ export const authApi = {
   // because sidebar/route gating actually depends on `permissions` resolving.
   getCurrentAdmin: () =>
     browserApi.get<{ admin: CurrentAdmin }>(adminAccountRoutes.PROFILE).then((r) => r.admin),
+
+  // The real endpoint for handing the browser's FCM token to the backend
+  // (app/Actions/Notification/RegisterAdminDeviceToken.php). See
+  // FcmContext.tsx's FcmProvider for when this is actually called.
+  registerDeviceToken: (data: RegisterDeviceTokenPayload) =>
+    browserApi.post<{ device_token: unknown }>(adminAccountRoutes.DEVICE_TOKEN, data),
 };

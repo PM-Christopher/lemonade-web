@@ -9,6 +9,7 @@ export const adminAccountRoutes = Object.freeze({
   CHANGE_PASSWORD: "/admin/account/change-password", // PATCH
   CHANGE_PROFILE_IMAGE: "/admin/account/change-profile-image", // PATCH
   DASHBOARD: "/admin/account/dashboard", // GET
+  DEVICE_TOKEN: "/admin/account/device-token", // POST
   EXPORT: "/admin/account/export", // GET
   GET_TABLES: "/admin/account/get-tables", // GET
   PROFILE: "/admin/account/profile", // GET
