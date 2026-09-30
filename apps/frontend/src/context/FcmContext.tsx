@@ -1,8 +1,10 @@
 "use client";
-import { useContext, createContext, useEffect, useState } from "react";
+import { useContext, createContext, useEffect, useRef, useState } from "react";
 import { messaging, onMessage, getToken } from "@/lib/firebase";
 import type { MessagePayload } from "firebase/messaging";
 import { toast, Toaster } from "react-hot-toast";
+import { useAppSelector } from "@/redux/hook";
+import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutations";
 
 interface FcmContextProps {
   fcmToken: string | null;
@@ -48,6 +50,37 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [notification, setNotification] = useState<any | null>(null);
   const [showToaster, setShowToaster] = useState(false);
+  const { isLoggedIn, user } = useAppSelector((state) => state.auth);
+  const registerDeviceTokenMutation = useRegisterDeviceTokenMutation();
+  // The device-token endpoint requires a real access-token session
+  // (auth:user + ability:access) — registering before login 401s, and
+  // registering again on every render would spam the backend for no
+  // reason, so this tracks the (token, user) pair already sent.
+  const registeredFor = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!fcmToken || !isLoggedIn || !user?.id) return;
+
+    const registrationKey = `${user.id}:${fcmToken}`;
+    if (registeredFor.current === registrationKey) return;
+    registeredFor.current = registrationKey;
+
+    registerDeviceTokenMutation.mutate(
+      { device_token: fcmToken, device_type: "web" },
+      {
+        onError: () => {
+          // Allow a retry on the next render (e.g. after reconnecting)
+          // instead of permanently giving up on this token/user pair.
+          registeredFor.current = null;
+        },
+      },
+    );
+    // registerDeviceTokenMutation's identity changes on every render (a
+    // fresh useMutation() object) — depending on it here would re-run
+    // this effect in a loop. The ref guard above is what actually
+    // prevents duplicate sends, not the dependency array.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fcmToken, isLoggedIn, user?.id]);
 
   useEffect(() => {
     if (!messaging) return;

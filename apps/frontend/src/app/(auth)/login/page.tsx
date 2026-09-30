@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
@@ -17,7 +17,6 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { axiosInstance } from "@/lib/axiosInstane";
-import { useFcm } from "@/context/FcmContext";
 
 function safeNext(raw: string | null) {
   // Prevent open redirects: only allow relative paths
@@ -36,17 +35,11 @@ export default function LoginPage() {
   // "token" here is only for the Google OAuth flow below (handleLoginSuccess),
   // which isn't covered by this cutover — see its own comment.
   const [cookie, setCookie] = useCookies(["newToken", "token"]);
-  const { fcmToken, notification } = useFcm();
   const loginMutation = useLoginMutation();
 
   const loginSchema = yup.object({
     email: yup.string().email("Please enter a valid email").required("Email is required"),
     password: yup.string().min(8).required("Password is required"),
-    notification: yup.object({
-      device_token: yup.string().nullable(),
-      device_type: yup.string().nullable(),
-      platform: yup.string().nullable(),
-    }),
   });
 
   const next = useMemo(() => safeNext(searchParams.get("next")), [searchParams]);
@@ -55,11 +48,6 @@ export default function LoginPage() {
     initialValues: {
       email: "",
       password: "",
-      notification: {
-        device_token: fcmToken,
-        device_type: "desktop",
-        platform: "",
-      },
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
@@ -103,16 +91,6 @@ export default function LoginPage() {
       }
     },
   });
-
-  useEffect(() => {
-    if (fcmToken) {
-      formik.setFieldValue("notification.device_token", fcmToken);
-    }
-    // formik's returned object is recreated on every keystroke (it embeds
-    // current values/errors), so adding it here would re-run this sync
-    // on every render, fighting the user's own edits.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fcmToken]);
 
   // Google OAuth flow — deliberately NOT covered by the httpOnly cutover.
   // It still calls the backend directly and sets a JS-readable "token"

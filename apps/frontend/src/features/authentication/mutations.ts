@@ -7,6 +7,7 @@ import {
   type ForgotPasswordPayload,
   type LoginPayload,
   type NotificationSettingsPayload,
+  type RegisterDeviceTokenPayload,
   type ResetPasswordPayload,
   type VerifyOtpPayload,
 } from "./api";
@@ -160,6 +161,14 @@ export function useUpdateNotificationSettingsMutation() {
         queryKey: authKeys.notificationSettings(),
       });
     },
+  });
+}
+
+// No query to invalidate — this just hands the browser's FCM token to the
+// backend, fire-and-forget from FcmContext.tsx's point of view.
+export function useRegisterDeviceTokenMutation() {
+  return useMutation({
+    mutationFn: (data: RegisterDeviceTokenPayload) => authApi.registerDeviceToken(data),
   });
 }
 
