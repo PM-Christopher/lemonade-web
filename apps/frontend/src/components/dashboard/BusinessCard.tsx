@@ -5,6 +5,7 @@ import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatCountry } from "@lemonade/domain";
+import { getSafeImageSrc } from "@/lib/helper";
 
 type BusinessIF = {
   business: BusinessInterface;
@@ -15,19 +16,21 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
     <>
       <div className="relative">
         <Image
-          src={business?.image}
+          src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
           alt="Main Image"
-          className="h-[105px] w-[319px] rounded-lg"
+          className="rounded-lg object-cover"
           width={319}
           height={105}
+          style={{ width: 319, height: 105 }}
         />
         <div className="absolute bottom-[-35px] left-4 h-16 w-16 tablet:left-auto tablet:right-[260px]">
           <Image
-            src={business?.image}
+            src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
             alt="Overlay Image"
-            className="h-[56px] w-[56px] rounded-xl border border-step-color"
+            className="rounded-xl border border-step-color object-cover"
             height={56}
             width={56}
+            style={{ width: 56, height: 56 }}
           />
         </div>
       </div>

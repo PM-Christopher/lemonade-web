@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { TribeInterface } from "@/interfaces/TribeInterface";
+import { getSafeImageSrc } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 
 type TribeIF = {
@@ -13,7 +14,7 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
     <div className="flex h-[200px] w-[422px] flex-col rounded-2xl bg-light-yellow p-4 shadow-none">
       <div className="flex-shrink-0">
         <Image
-          src={tribe?.image}
+          src={getSafeImageSrc(tribe?.image, "/images/tribe_1.png")}
           alt="forum_icon"
           width={48}
           height={48}

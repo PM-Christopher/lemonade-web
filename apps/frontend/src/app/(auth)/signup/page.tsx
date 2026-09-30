@@ -204,6 +204,7 @@ export default function SignupPage() {
                 alt="signup image"
                 width={511.06}
                 height={519.77}
+                priority
               />
             </div>
           </div>

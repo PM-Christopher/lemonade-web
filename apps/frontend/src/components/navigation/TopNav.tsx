@@ -35,13 +35,14 @@ const TopNav = () => {
       <nav className="relative flex flex-wrap items-center justify-between bg-white p-2 px-10">
         <div>
           {isMobile ? (
-            <Image src={"/images/logo.png"} alt="logo" width={73} height={32} />
+            <Image src={"/images/logo.png"} alt="logo" width={73} height={32} priority />
           ) : (
             <Image
               src={"/images/logo.png"}
               alt="logo"
               width={127}
               height={56}
+              priority
             />
           )}
         </div>

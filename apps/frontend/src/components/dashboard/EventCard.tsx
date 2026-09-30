@@ -4,6 +4,7 @@ import CalendarIcon from "@/images/icons/calendarIcon.svg";
 import DotIcon from "@/images/icons/dot.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatDate, formatTime } from "@/lib/dateTimeFormatter";
+import { getSafeImageSrc } from "@/lib/helper";
 
 type EventIF = {
   event: EventInterface;
@@ -14,7 +15,7 @@ const EventCard: React.FC<EventIF> = ({ event }) => {
     <div className="flex h-[280px] w-[200px] flex-col overflow-hidden rounded-2xl shadow-sm">
       <div className="h-[200px] flex-shrink-0">
         <Image
-          src={event?.event_image}
+          src={getSafeImageSrc(event?.event_image, "/images/event_images/event_1.png")}
           alt="event_1"
           width={200}
           height={200}
