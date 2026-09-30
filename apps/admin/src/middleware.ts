@@ -31,7 +31,8 @@ import { adminAccountRoutes } from "@lemonade/api-types/generated";
 // Content-Security-Policy-Report-Only — report-only, so nothing here can
 // break a page; violations land at /api/csp-report (see that route and
 // docs/ARCHITECTURE.md Phase 8). Simpler than frontend's policy: this app
-// has no Firebase or Google OAuth, just Reverb (realtime) and the two
+// has no Firebase or Google OAuth, just Reverb (realtime), Google Fonts
+// (Work Sans and Russo One, in globals.css), and the two
 // image hosts already allow-listed in next.config.mjs. `style-src` still
 // needs 'unsafe-inline' for the same reason as frontend's — see that
 // app's src/middleware.ts. Nothing is enforced yet.
@@ -45,12 +46,19 @@ function buildCsp(nonce: string) {
   const reverbPort = process.env.NEXT_PUBLIC_REVERB_PORT || "8080";
   const reverbWsScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "wss" : "ws";
 
+  const scriptSrc = [
+    "'self'",
+    `'nonce-${nonce}'`,
+    "'strict-dynamic'",
+    ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
+  ];
+
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
-    "style-src 'self' 'unsafe-inline'",
+    `script-src ${scriptSrc.join(" ")}`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com",
-    "font-src 'self' data:",
+    "font-src 'self' data: https://fonts.gstatic.com",
     `connect-src 'self' ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "object-src 'none'",
     "base-uri 'self'",

@@ -15,7 +15,8 @@ import { USER_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 // docs/ARCHITECTURE.md Phase 8). Covers this app's real external
 // integrations: Firebase Cloud Messaging (push notifications + its service
 // worker), Google Identity Services (login/signup's "Sign in with
-// Google"), Reverb (Connect's realtime channel), and the two image hosts
+// Google"), Google Fonts (Work Sans and Russo One, in globals.css),
+// Reverb (Connect's realtime channel), and the two image hosts
 // already allow-listed in next.config.mjs. `style-src` still needs
 // 'unsafe-inline' — much of this app's UI sets the `style` attribute
 // directly rather than a class, and auditing/migrating that is its own
@@ -32,12 +33,23 @@ function buildCsp(nonce: string) {
   const reverbPort = process.env.NEXT_PUBLIC_REVERB_PORT || "8080";
   const reverbWsScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "wss" : "ws";
 
+  // Next's development compiler evaluates strings (webpack and React
+  // refresh). That is not shipped, so 'unsafe-eval' stays off the
+  // production header.
+  const scriptSrc = [
+    "'self'",
+    `'nonce-${nonce}'`,
+    "'strict-dynamic'",
+    "https://accounts.google.com",
+    ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
+  ];
+
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://accounts.google.com`,
-    "style-src 'self' 'unsafe-inline'",
+    `script-src ${scriptSrc.join(" ")}`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com",
-    "font-src 'self' data:",
+    "font-src 'self' data: https://fonts.gstatic.com",
     `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "frame-src https://accounts.google.com",
     "worker-src 'self'",
@@ -95,7 +107,13 @@ export function middleware(req: NextRequest) {
 
   const loginUrl = req.nextUrl.clone();
   loginUrl.pathname = "/login";
-  loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
+  loginUrl.search = "";
+  // Login already sends a successful sign-in to "/". A return path of
+  // exactly home just leaves `?next=%2F` in the address bar.
+  const returnTo = `${pathname}${search || ""}`;
+  if (returnTo !== "/") {
+    loginUrl.searchParams.set("next", returnTo);
+  }
 
   const res = NextResponse.redirect(loginUrl);
   res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
