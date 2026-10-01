@@ -34,7 +34,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
   const publishEventMutation = usePublishEventMutation();
   const loading = publishEventMutation.isPending;
 
-  const handleMoreIconClick = (e: React.MouseEvent) => {
+  const handleMoreIconClick = () => {
     if (moreIconRef.current) {
       const rect = moreIconRef.current.getBoundingClientRect();
       const position: ModalPosition = {

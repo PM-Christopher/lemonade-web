@@ -3,10 +3,17 @@ import CloseIcon from "@/images/icons/close.svg";
 import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
+interface Promotion {
+  name?: string;
+  status?: string;
+  promotion_date?: string;
+  breakdown?: string[];
+}
+
 type PDInterface = {
   toggle: () => void;
   isOpen: boolean;
-  promotion: any;
+  promotion: Promotion | null;
 };
 
 const PromotionDetailsModal: React.FC<PDInterface> = ({ toggle, isOpen, promotion }) => {
@@ -53,8 +60,8 @@ const PromotionDetailsModal: React.FC<PDInterface> = ({ toggle, isOpen, promotio
               <div className="bg-mid-grey mt-4 rounded-xl p-6">
                 <p className="font-sans text-[16px] font-semibold">BREAKDOWN</p>
                 <div className="mt-3 flex flex-col">
-                  {promotion?.breakdown.length > 0 &&
-                    promotion?.breakdown.map((item: any, index: number) => (
+                  {promotion?.breakdown && promotion.breakdown.length > 0 &&
+                    promotion.breakdown.map((item, index: number) => (
                       <div className="my-2.5 flex items-center gap-2" key={index}>
                         <ChevronRightFilled />
                         <p className="tracking-custom text-black-light font-sans text-[14px] leading-[21px] font-normal">

@@ -10,7 +10,7 @@ import GuestListCard from "@/components/events/GuestListCard";
 import { useGuestListQuery, useGuestDetailsQuery } from "@/features/events/queries";
 import { GuestListSkeleton } from "@/components/Skeletons";
 import { GuestListCardProps } from "@/interfaces/EventInterface";
-import GuestSideMenu from "@/components/events/GuestSideMenu";
+import GuestSideMenu, { type GuestDetails } from "@/components/events/GuestSideMenu";
 
 const CheckInsClient = ({ id }: { id: number }) => {
   const { data: guestListData, isLoading: loading } = useGuestListQuery(id);
@@ -42,7 +42,7 @@ const CheckInsClient = ({ id }: { id: number }) => {
         <GuestSideMenu
           toggleMenu={toggleMenu}
           isOpen={isOpen}
-          guestDetails={guestDetails}
+          guestDetails={guestDetails as GuestDetails}
           loading={guestDetailLoading}
           id={id}
         />

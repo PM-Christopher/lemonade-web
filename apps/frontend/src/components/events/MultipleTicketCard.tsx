@@ -2,10 +2,39 @@
 import React, { useEffect } from "react";
 import { Label, Input } from "@lemonade/ui";
 import { TicketDetails } from "@/interfaces/EventInterface";
-import { useFormikContext } from "formik";
 
-const MultipleTicketCard = ({ ticket, index, formik }: any) => {
+interface AssignedTicket {
+  id?: number | string;
+  quantity?: number;
+  fullname?: string;
+  email?: string;
+}
+
+interface AssignTicketFormik {
+  values: { assigned_tickets: AssignedTicket[] };
+  touched: { assigned_tickets?: unknown };
+  errors: { assigned_tickets?: unknown };
+  setFieldValue: (field: string, value: unknown) => unknown;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+}
+
+const MultipleTicketCard = ({
+  ticket,
+  index,
+  formik,
+}: {
+  ticket: TicketDetails;
+  index: number;
+  formik: AssignTicketFormik;
+}) => {
   const namePrefix = `assigned_tickets[${index}]`;
+  const touchedTickets = formik.touched.assigned_tickets as
+    | Array<{ fullname?: boolean; email?: boolean }>
+    | undefined;
+  const errorTickets = formik.errors.assigned_tickets as
+    | Array<{ fullname?: string; email?: string }>
+    | undefined;
 
   useEffect(() => {
     formik.setFieldValue(`assigned_tickets[${index}].id`, ticket.id);
@@ -36,12 +65,9 @@ const MultipleTicketCard = ({ ticket, index, formik }: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        {formik.touched.assigned_tickets?.[index]?.fullname &&
-          formik.errors.assigned_tickets?.[index]?.fullname && (
-            <div className="text-sm text-red-500">
-              {formik.errors.assigned_tickets[index].fullname}
-            </div>
-          )}
+        {touchedTickets?.[index]?.fullname && errorTickets?.[index]?.fullname && (
+          <div className="text-sm text-red-500">{errorTickets[index].fullname}</div>
+        )}
       </div>
       <div className="mt-4 grid gap-2">
         <Label
@@ -59,12 +85,9 @@ const MultipleTicketCard = ({ ticket, index, formik }: any) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        {formik.touched.assigned_tickets?.[index]?.email &&
-          formik.errors.assigned_tickets?.[index]?.email && (
-            <div className="text-sm text-red-500">
-              {formik.errors.assigned_tickets[index].email}
-            </div>
-          )}
+        {touchedTickets?.[index]?.email && errorTickets?.[index]?.email && (
+          <div className="text-sm text-red-500">{errorTickets[index].email}</div>
+        )}
       </div>
       <div className="bg-light_grey mt-4 flex items-center justify-between rounded-xl px-3 py-2.5">
         <div>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import Image from "next/image";
 import {
   Label,
   Select,
@@ -14,7 +13,6 @@ import {
 } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
 import { useRequest } from "@/hooks/useRequest";
-import { useSelector } from "react-redux";
 import CalendarIcon from "@/images/icons/eventCalendarIcon.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,7 +26,7 @@ type FilterEventInterface = {
 
 const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventInterface) => {
   const [clickedCategory, setClickedCategory] = useState("");
-  const [timeOptions, setTimeOption] = useState(["This week", "This Month"]);
+  const [timeOptions] = useState(["This week", "This Month"]);
   const [timeType, setTimeType] = useState("");
 
   const [from, setFrom] = useState("");

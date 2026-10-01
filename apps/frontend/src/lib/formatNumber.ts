@@ -5,7 +5,7 @@ export const formatNumber = (number: number, places: number) => {
   return 0;
 };
 
-export const formatNumberWithCommas = (number: number) => {
+export const formatNumberWithCommas = (number: number | undefined | null) => {
   if (number) {
     if (number <= 1) {
       return number;

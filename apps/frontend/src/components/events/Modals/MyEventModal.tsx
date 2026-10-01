@@ -5,6 +5,19 @@ import { formatDate, formatTime } from "@/lib/dateTimeFormatter";
 import { MyTicketSkeleton } from "@/components/Skeletons";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
+interface TicketDetail {
+  event_name?: string;
+  date?: string | Date;
+  ticket_type?: string;
+  ticket_code?: string;
+  venue?: string;
+  qr_code?: string;
+}
+
+interface MyTicket {
+  ticket?: TicketDetail[];
+}
+
 const MyEventModal = ({
   toggle,
   isOpen,
@@ -13,7 +26,7 @@ const MyEventModal = ({
 }: {
   toggle: () => void;
   isOpen: boolean;
-  ticket: any;
+  ticket: MyTicket | undefined;
   loading: boolean;
 }) => {
   return (
@@ -43,19 +56,19 @@ const MyEventModal = ({
                 <div className="flex justify-center">
                   <div className="flex w-[340px] flex-col gap-4">
                     <p className="font-semi-normal font-sans text-[20px] leading-[21px]">
-                      {ticket?.ticket[0]?.event_name}
+                      {ticket?.ticket?.[0]?.event_name}
                     </p>
                     <div className="flex justify-between">
                       <div className="flex flex-col">
                         <p className="text-text-grey text-[14px] font-normal">Date</p>
                         <p className="font-semi-normal text-[14px]">
-                          {formatDate(ticket?.ticket[0]?.date)}
+                          {formatDate(ticket?.ticket?.[0]?.date)}
                         </p>
                       </div>
                       <div className="flex flex-col">
                         <p className="text-text-grey text-right text-[14px] font-normal">Time</p>
                         <p className="font-semi-normal text-right text-[14px]">
-                          {formatTime(ticket?.ticket[0]?.date)}
+                          {formatTime(ticket?.ticket?.[0]?.date)}
                         </p>
                       </div>
                     </div>
@@ -63,7 +76,7 @@ const MyEventModal = ({
                       <div className="flex flex-col">
                         <p className="text-text-grey text-[14px] font-normal">Ticket type</p>
                         <p className="font-semi-normal text-[14px]">
-                          {ticket?.ticket[0]?.ticket_type}
+                          {ticket?.ticket?.[0]?.ticket_type}
                         </p>
                       </div>
                       <div className="flex flex-col">
@@ -71,20 +84,20 @@ const MyEventModal = ({
                           Ticket ID
                         </p>
                         <p className="font-semi-normal text-right text-[14px]">
-                          {ticket?.ticket[0]?.ticket_code}
+                          {ticket?.ticket?.[0]?.ticket_code}
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between">
                       <div className="flex flex-col">
                         <p className="text-text-grey text-[14px] font-normal">Venue</p>
-                        <p className="font-semi-normal text-[14px]">{ticket?.ticket[0]?.venue}</p>
+                        <p className="font-semi-normal text-[14px]">{ticket?.ticket?.[0]?.venue}</p>
                       </div>
                     </div>
-                    {ticket?.ticket[0]?.qr_code && (
+                    {ticket?.ticket?.[0]?.qr_code && (
                       <div className="laptop:mt-12 mt-[94px] flex items-center justify-center">
                         <Image
-                          src={ticket.ticket[0].qr_code}
+                          src={ticket.ticket?.[0]?.qr_code ?? ""}
                           alt="qr_code"
                           width={240}
                           height={240}

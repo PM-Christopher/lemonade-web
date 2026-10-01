@@ -31,8 +31,9 @@ export const getSafeImageSrc = (url: string | null | undefined, fallback: string
   }
 };
 
-export const formatStringUCFirst = (value: string) => {
-  return value?.charAt(0)?.toUpperCase() + value?.slice(1)?.toLowerCase();
+export const formatStringUCFirst = (value: string | undefined) => {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
 export const formatDecimal = (value: number, places: number) => {

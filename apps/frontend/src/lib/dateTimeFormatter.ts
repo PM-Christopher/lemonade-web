@@ -37,7 +37,7 @@ export const formatLongDate = (
   return null;
 };
 
-export const formatTime = (value: Date | string | null) => {
+export const formatTime = (value: Date | string | null | undefined) => {
   if (!value) return null;
 
   const date = value instanceof Date ? value : new Date(value);

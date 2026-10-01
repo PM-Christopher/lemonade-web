@@ -26,7 +26,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
 
   const [bankCode, setBankCode] = useState<string>("");
   const [accountNumber, setAccountNumber] = useState("");
-  const [error, setError] = useState("");
+  const [, setError] = useState("");
 
   const { event, newTickets } = useSelector((state: RootState) => state.event);
   const { data: banksData, isLoading: loading } = useBanksQuery({
@@ -163,7 +163,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                     <>
                       <option value="">Select Bank</option>
                       {banks &&
-                        banks.map((bank: any, index: number) => (
+                        banks.map((bank, index: number) => (
                           <option value={bank.code} key={index}>
                             {bank?.name}
                           </option>

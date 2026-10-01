@@ -10,8 +10,8 @@ const AgentEventCard = ({
 }: {
   image?: string;
   name?: string;
-  amount?: any;
-  commission: string;
+  amount?: number;
+  commission: number;
 }) => {
   return (
     <div className="mb-6 flex flex-col">

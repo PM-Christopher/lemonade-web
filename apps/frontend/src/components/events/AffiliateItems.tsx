@@ -3,7 +3,6 @@ import { EventInterface } from "@/interfaces/EventInterface";
 import Link from "next/link";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import { formatDate, formatLongTime } from "@/lib/dateTimeFormatter";
-import { DotFilledIcon } from "@radix-ui/react-icons";
 import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import Image from "next/image";

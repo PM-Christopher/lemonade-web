@@ -12,10 +12,18 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { ColorRing } from "react-loader-spinner";
 import CheckIcon from "@/images/icons/checkedFilledIcon.svg";
 
+export interface GuestDetails {
+  id?: number;
+  checked_in?: boolean;
+  event?: { name?: string; start_date?: string; start_time?: string; end_time?: string };
+  user?: { name?: string; email?: string };
+  ticket?: { ticket_id?: string; ticket_name?: string };
+}
+
 type SideMenuInterface = {
   toggleMenu: () => void;
   isOpen: boolean;
-  guestDetails: any;
+  guestDetails: GuestDetails;
   loading: boolean;
   id: number;
 };
@@ -37,7 +45,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
   };
 
   const handleCheckInGuest = () => {
-    checkInGuestMutation.mutate(guestDetails?.id, {
+    checkInGuestMutation.mutate(guestDetails?.id as number, {
       onSuccess: () => {
         // toggleMenu()
         toggleModal();
@@ -98,7 +106,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
                 <div className={"flex flex-col text-right"}>
                   <p className={"text-text-grey text-[14px] font-normal"}>Ticket ID</p>
                   <p className={"text-light-black text-[14px] font-medium"}>
-                    {guestDetails?.ticket?.ticket_id.toUpperCase()}
+                    {guestDetails?.ticket?.ticket_id?.toUpperCase()}
                   </p>
                 </div>
               </div>

@@ -1,8 +1,6 @@
 import React from "react";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
-import Link from "next/link";
 import { GuestListCardProps } from "@/interfaces/EventInterface";
-import { formatStringUCFirst } from "@/lib/helper";
 
 type SideMenuInterface = {
   toggleMenu: () => void;

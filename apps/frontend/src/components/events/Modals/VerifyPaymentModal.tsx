@@ -4,11 +4,20 @@ import Image from "next/image";
 import moment from "moment";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
+export interface VerifiedEvent {
+  data?: {
+    event?: {
+      event_name?: string;
+      start_date?: string;
+    };
+  };
+}
+
 type VPInterface = {
   toggle: () => void;
   toggleMore: () => void;
   isOpen: boolean;
-  event: any;
+  event: VerifiedEvent | undefined;
 };
 
 const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, toggleMore }) => {

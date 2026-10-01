@@ -2,11 +2,12 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import type { GuestDetails } from "@/components/events/GuestSideMenu";
 
 type CheckedInInterface = {
   toggle: () => void;
   isOpen: boolean;
-  guestDetails: any;
+  guestDetails: GuestDetails;
 };
 
 const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDetails }) => {
@@ -38,7 +39,7 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
                 Check in Successful!
               </p>
               <p className="tracking-custom text-light-black text-center font-sans text-[16px] leading-[24px] font-normal">
-                Guest with ticket ID {guestDetails?.ticket?.ticket_id.toUpperCase()} has been
+                Guest with ticket ID {guestDetails?.ticket?.ticket_id?.toUpperCase()} has been
                 successfully checked in.
               </p>
             </div>

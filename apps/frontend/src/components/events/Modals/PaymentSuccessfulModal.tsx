@@ -1,15 +1,20 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import PromotionImage from "@/images/promoteEventIcon.png";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
+interface Promotion {
+  name?: string;
+  promotion_date?: string;
+  price?: number;
+}
+
 type PSInterface = {
   toggle: () => void;
   isOpen: boolean;
-  promotion: any;
+  promotion: Promotion | null;
 };
 
 const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promotion }) => {

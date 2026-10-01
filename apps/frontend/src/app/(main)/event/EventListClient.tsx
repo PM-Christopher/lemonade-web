@@ -18,7 +18,9 @@ import { useSearchEventsMutation, useFilterEventsMutation } from "@/features/eve
 import { useRouter, useSearchParams } from "next/navigation";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
-import VerifyPaymentModal from "@/components/events/Modals/VerifyPaymentModal";
+import VerifyPaymentModal, {
+  type VerifiedEvent,
+} from "@/components/events/Modals/VerifyPaymentModal";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 
 // Off the initial bundle — only needed once the filter button is clicked
@@ -252,7 +254,7 @@ const EventListClient: React.FC = () => {
       <VerifyPaymentModal
         toggle={toggleVerifyPayment}
         isOpen={toggleVPaymentModel}
-        event={transaction_data}
+        event={transaction_data as VerifiedEvent | undefined}
         toggleMore={toggleMoreTickets}
       />
     </MainLayout>

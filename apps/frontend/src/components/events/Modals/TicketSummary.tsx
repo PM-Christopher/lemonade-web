@@ -1,6 +1,5 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import Image from "next/image";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { Button } from "@lemonade/ui";
@@ -13,12 +12,11 @@ const TicketSummary = ({
   quantities,
   subtotal,
   total,
-  proceed,
 }: {
   toggle: () => void;
   proceed: () => void;
   isOpen: boolean;
-  quantities: any;
+  quantities: TicketDetails[];
   subtotal: number;
   total: number;
 }) => {

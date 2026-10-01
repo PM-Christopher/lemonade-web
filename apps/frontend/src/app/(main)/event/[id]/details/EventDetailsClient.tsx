@@ -41,7 +41,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
   const [promotionData, setPromotionData] = useState<PromotionInterface | null>(null);
-  const [eventPromotion, setEventPromotion] = useState(null);
+  const [eventPromotion, setEventPromotion] = useState<PromotionInterface | null>(null);
   const verifyTransactionMutation = useVerifyTransactionMutation();
   const eventPromotionMutation = useEventPromotionMutation();
 
@@ -87,7 +87,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
       { id: id, promotionId: event?.promotion?.[0]?.id ?? 0 },
       {
         onSuccess: (result) => {
-          setEventPromotion(result.promotion as any);
+          setEventPromotion(result.promotion as PromotionInterface);
           activateDetailsModal();
         },
       },
