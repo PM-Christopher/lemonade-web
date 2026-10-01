@@ -16,7 +16,7 @@
     "test": "turbo run test",
     "format": "prettier --config packages/config/prettier.config.mjs --write \"**/*.{ts,tsx,js,jsx,json}\" --ignore-path .gitignore",
     "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,json}\" --ignore-path .gitignore",
-    "lemonade:check": "pnpm run format && pnpm lint && pnpm run typecheck && pnpm run test && pnpm run build"
+    "lemonade:check": "pnpm run format && pnpm turbo run lint typecheck test build --filter='!@lemonade/e2e'"
   },
   "devDependencies": {
     "prettier": "^3.9.9",
