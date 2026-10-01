@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { axiosInstance } from "@/lib/axiosInstane";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import { FormikButton } from "@/components/global/FormikButton";
@@ -19,10 +18,9 @@ interface SubmitDisputeModalProps {
 
 const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle }) => {
   const { selectedJob: job } = useSelector((state: RootState) => state.temp) as {
-    selectedJob: any;
+    selectedJob: { id?: number } | null;
   };
-  const disputeJobMutation = useDisputeJobMutation(job?.id);
-  const disputeLoading = disputeJobMutation.isPending;
+  const disputeJobMutation = useDisputeJobMutation(job?.id ?? 0);
   const disputeJobSchema = yup.object({
     dispute: yup.string().trim().required("Dispute is required"),
     attachments: yup.array().of(yup.string()),
@@ -41,7 +39,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
     },
   });
 
-  const handleDispute = (values: any) => {
+  const handleDispute = (values: { dispute: string; attachments: string[] }) => {
     disputeJobMutation.mutate(values, {
       onSuccess: (result) => {
         toggle();

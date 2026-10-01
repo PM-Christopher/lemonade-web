@@ -1,5 +1,4 @@
 import React from "react";
-import empty_business from "@/image/business_empty.png";
 import Image from "next/image";
 import { Button } from "@lemonade/ui";
 import { useRouter } from "next/navigation";

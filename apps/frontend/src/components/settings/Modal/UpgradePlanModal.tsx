@@ -8,12 +8,20 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useChangePlanMutation } from "@/features/authentication/mutations";
 import * as yup from "yup";
 
+interface MembershipOption {
+  id: number;
+  title?: string;
+  amount?: number | string;
+  pay_by?: string;
+  type?: string;
+}
+
 interface UpgradePlanProps {
   isOpen: boolean;
   toggle: () => void;
   sub_id: number | null;
   subMode: string | null;
-  pricing: any[];
+  pricing: MembershipOption[];
 }
 
 const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradePlanProps) => {
@@ -23,10 +31,10 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
   const changePlanMutation = useChangePlanMutation();
   const upgradeLoading = changePlanMutation.isPending;
 
-  const handleSelectedPlan = (membership: { id: number; type: string }) => {
+  const handleSelectedPlan = (membership: MembershipOption) => {
     setSelected((prevSelected) => (prevSelected === membership.id ? null : membership.id));
 
-    setSubType((prevSelected) => (selected === membership.id ? null : membership.type));
+    setSubType((prevSelected) => (selected === membership.id ? null : (membership.type ?? null)));
   };
 
   const handleSubUpgrade = async () => {
@@ -73,7 +81,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
           );
         }
       },
-      onError: (error: any) => {
+      onError: (error: { message?: string }) => {
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -148,7 +156,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
             </div>
             <div className="mt-10">
               <div className={"flex flex-col gap-4"}>
-                {pricing?.map((membership: any) => (
+                {pricing?.map((membership) => (
                   <div
                     className={`cursor-pointer rounded-xl p-4 ${selected === membership.id ? "border-step-color bg-light-green-10 border" : "bg-mid-grey"}`}
                     key={membership.id}
@@ -159,7 +167,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
                         {membership.title}
                       </p>
                       <p className={"font-semiBold text-black-light text-[16px]"}>
-                        ₦{formatNumberWithCommas(membership.amount)}/{membership.pay_by}
+                        ₦{formatNumberWithCommas(Number(membership.amount))}/{membership.pay_by}
                       </p>
                     </div>
                     <p className={"text-text-grey text-[14px] font-normal"}>

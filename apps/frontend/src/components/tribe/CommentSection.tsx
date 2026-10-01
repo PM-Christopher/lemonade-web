@@ -36,7 +36,7 @@ interface CommentsProps {
 }
 
 const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
-  const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
+  const [expandedReplies] = useState<Set<number>>(new Set());
 
   // This state forces re-render every minute
   const [, setTick] = useState(0);

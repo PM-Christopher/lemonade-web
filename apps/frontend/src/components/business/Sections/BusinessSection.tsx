@@ -26,7 +26,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
   const router = useRouter();
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
-  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [, setVerifyLoading] = useState(false);
   const [isVerifyJob, setIsVerifyJob] = useState(false);
   const { selectedJob: job } = useSelector((state: RootState) => state.temp);
 
@@ -52,7 +52,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
               router.replace(`?${params.toString()}`);
             }
           }
-        } catch (error) {
+        } catch {
         } finally {
           setVerifyLoading(false);
         }

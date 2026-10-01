@@ -3,8 +3,15 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button } from "@lemonade/ui";
 import Image from "next/image";
-import PromoteEvent from "@/image/PromoteEventIcon.png";
 import { useRouter } from "next/navigation";
+
+interface Boost {
+  full_start_date?: string;
+  full_end_date?: string;
+  start_date?: string;
+  start_time?: string;
+  duration?: number | null;
+}
 
 const VerifyBoost = ({
   isOpen,
@@ -13,7 +20,7 @@ const VerifyBoost = ({
 }: {
   isOpen: boolean;
   toggleMenu: () => void;
-  boost: any;
+  boost: Boost;
 }) => {
   const router = useRouter();
   const backToBusiness = () => {

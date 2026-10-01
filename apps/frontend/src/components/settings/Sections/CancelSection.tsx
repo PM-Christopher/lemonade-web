@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 const CancelSection = ({}) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { plan, subscription, downgradeData } = useSelector((state: RootState) => state.auth);
+  const { subscription, downgradeData } = useSelector((state: RootState) => state.auth);
   const changePlanMutation = useChangePlanMutation();
   const upgradeLoading = changePlanMutation.isPending;
 
@@ -43,7 +43,7 @@ const CancelSection = ({}) => {
         dispatch(clearReason());
         router.push("/settings/plan");
       },
-      onError: (error: any) => {
+      onError: (error: { message?: string }) => {
         dispatch(
           updateToastifyReducer({
             show: true,

@@ -17,9 +17,7 @@ type SideMenuInterface = {
 
 const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
   const [option, setOption] = useState("upcoming");
-  const [myEventSelected, setMyEventSelected] = useState(null);
   const [myEvent, setMyEvent] = useState(false);
-  const [ticket, setTicket] = useState({});
   const [ticketId, setTicketId] = useState<number | null>();
 
   const toggleOption = (option: string) => {

@@ -13,10 +13,10 @@ import { FormikButton } from "@/components/global/FormikButton";
 type UpdatePasswordInterface = {
   toggle: () => void;
   isOpen: boolean;
-  user: any;
+  user: unknown;
 };
 
-const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen, user }) => {
+const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen }) => {
   const dispatch = useAppDispatch();
   const changePasswordMutation = useChangePasswordMutation();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -62,7 +62,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
           );
           toggle();
         },
-        onError: (error: any) => {
+        onError: (error: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
