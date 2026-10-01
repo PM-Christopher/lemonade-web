@@ -16,11 +16,12 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import type { VerifyOtpPayload } from "@/features/authentication/api";
 
 export default function VerifyPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, code } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const resendOtpMutation = useResendOtpMutation();
   const verifyAccountOtpMutation = useVerifyAccountOtpMutation();
   const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
@@ -87,7 +88,7 @@ export default function VerifyPage() {
         setSeconds(COUNTDOWN_DURATION);
         setCanResend(false);
       },
-      onError: (error: any) => {
+      onError: (error: { message?: string }) => {
         setCanResend(true);
         dispatch(
           updateToastifyReducer({
@@ -113,9 +114,9 @@ export default function VerifyPage() {
     },
   });
 
-  const [otp, setOtp] = useState(formik.values.code);
+  const [, setOtp] = useState(formik.values.code);
 
-  const verifyOtp = (values: any) => {
+  const verifyOtp = (values: VerifyOtpPayload) => {
     verifyAccountOtpMutation.mutate(values, {
       onSuccess: () => {
         dispatch(

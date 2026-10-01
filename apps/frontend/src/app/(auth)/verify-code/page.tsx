@@ -15,8 +15,10 @@ import {
   useResendOtpMutation,
   useVerifyPasswordResetOtpMutation,
 } from "@/features/authentication/mutations";
+import type { VerifyOtpPayload } from "@/features/authentication/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { FormikButton } from "@/components/global/FormikButton";
+import type { RootState } from "@/redux/store";
 
 export default function VerifyCodePage() {
   const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
@@ -24,7 +26,7 @@ export default function VerifyCodePage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [cookie, setCookie] = useCookies(["newToken", "email"]);
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
   const [canResend, setCanResend] = useState<boolean>(false);
   const resendOtpMutation = useResendOtpMutation();
@@ -88,7 +90,7 @@ export default function VerifyCodePage() {
         setSeconds(COUNTDOWN_DURATION);
         setCanResend(false);
       },
-      onError: (error: any) => {
+      onError: (error: { message?: string }) => {
         setCanResend(true);
         dispatch(
           updateToastifyReducer({
@@ -114,9 +116,9 @@ export default function VerifyCodePage() {
     },
   });
 
-  const [otp, setOtp] = useState(formik.values.code);
+  const [, setOtp] = useState(formik.values.code);
 
-  const verifyOtp = (values: any) => {
+  const verifyOtp = (values: VerifyOtpPayload) => {
     verifyPasswordResetOtpMutation.mutate(values, {
       onSuccess: (result) => {
         // check-otp deletes the forgot-password token it was called
@@ -141,7 +143,7 @@ export default function VerifyCodePage() {
         formik.resetForm();
         router.push("/reset-password");
       },
-      onError: (error: any) => {
+      onError: (error: { message?: string }) => {
         setCanResend(true);
         dispatch(
           updateToastifyReducer({
