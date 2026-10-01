@@ -44,26 +44,26 @@ const AddThreadForm = ({ tribeId }: AddThreadFormProps) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-[8px] border-b-[1px] border-grey-20 pb-[16px]"
+      className="border-grey-20 flex flex-col gap-[8px] border-b-[1px] pb-[16px]"
     >
       <p className="text-[14px] font-medium">Post as admin</p>
       <Input
         placeholder="Topic"
-        className="h-[40px] rounded-[12px] border-[1px] border-grey-20"
+        className="border-grey-20 h-[40px] rounded-[12px] border-[1px]"
         {...register("topic")}
       />
-      {errors.topic && <p className="text-[12px] text-red-1">{errors.topic.message}</p>}
+      {errors.topic && <p className="text-red-1 text-[12px]">{errors.topic.message}</p>}
       <Textarea
         placeholder="Write something..."
-        className="min-h-[80px] resize-none rounded-[12px] border-[1px] border-grey-20"
+        className="border-grey-20 min-h-[80px] resize-none rounded-[12px] border-[1px]"
         {...register("thoughts")}
       />
-      {errors.thoughts && <p className="text-[12px] text-red-1">{errors.thoughts.message}</p>}
+      {errors.thoughts && <p className="text-red-1 text-[12px]">{errors.thoughts.message}</p>}
       <div className="flex justify-end">
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-[36px] rounded-[12px] border-step-color bg-gradient-green px-[16px]"
+          className="border-step-color bg-gradient-green h-[36px] rounded-[12px] px-[16px]"
         >
           <p className="text-[14px] font-medium text-white">
             {isSubmitting ? "Posting..." : "Post thread"}

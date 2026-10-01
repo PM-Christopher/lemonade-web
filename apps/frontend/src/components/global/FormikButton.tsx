@@ -20,11 +20,7 @@ export const FormikButton = ({
           ? "flex h-[48px] w-fit items-center justify-center rounded-xl px-[14px] py-[10px]"
           : classes
       } ${loading && "opacity-70"} ${bgColor && !error ? errorColor : bgColor} ${
-        bgColor === null
-          ? !error
-            ? "bg-mid-green"
-            : "bg-gradient-green"
-          : ""
+        bgColor === null ? (!error ? "bg-mid-green" : "bg-gradient-green") : ""
       } ${loading && "bg-light-green cursor-not-allowed opacity-70"} ${
         !error && "cursor-not-allowed"
       } `}

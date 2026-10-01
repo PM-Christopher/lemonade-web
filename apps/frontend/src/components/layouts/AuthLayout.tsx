@@ -55,7 +55,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       <section className={`${surface} flex h-dvh max-h-dvh flex-col overflow-hidden`}>
-        <header className="static flex shrink-0 items-center justify-between px-4 py-3 phone:px-10">
+        <header className="phone:px-10 static flex shrink-0 items-center justify-between px-4 py-3">
           <Link href="/login">
             <Image
               src="/images/logo.png"
@@ -63,14 +63,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
               width={127}
               height={56}
               priority
-              className="h-8 w-auto phone:h-12"
+              className="phone:h-12 h-8 w-auto"
             />
           </Link>
           {action ? (
-            <Link
-              href={action.href}
-              className="btn-quiet text-primary-black font-sans text-body-s"
-            >
+            <Link href={action.href} className="btn-quiet text-primary-black text-body-s font-sans">
               {action.label}
             </Link>
           ) : null}

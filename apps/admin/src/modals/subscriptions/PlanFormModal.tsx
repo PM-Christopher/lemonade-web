@@ -194,11 +194,11 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{title}</DialogTitle>
-        <div className="w-[480px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+        <div className="w-[480px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
           <form onSubmit={formik.handleSubmit}>
             <div className={"px-[16px] py-[4px]"}>
               <div className="flex items-center justify-between">
-                <p className="font-sans text-[18px] font-semibold leading-[27px]">{title}</p>
+                <p className="font-sans text-[18px] leading-[27px] font-semibold">{title}</p>
                 <div className="cursor-pointer" onClick={toggle}>
                   <XIcon />
                 </div>
@@ -210,13 +210,13 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
               }
             >
               <div className="grid gap-2">
-                <Label htmlFor="title" className="font-sans text-[14px] font-normal text-text-grey">
+                <Label htmlFor="title" className="text-text-grey font-sans text-[14px] font-normal">
                   Title
                 </Label>
                 <Input
                   id="title"
                   type="text"
-                  className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                  className="form-font bg-light-grey h-12 rounded-xl border-0"
                   value={formik.values.title}
                   onChange={formik.handleChange("title")}
                   onBlur={formik.handleBlur}
@@ -226,7 +226,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
               <div className="grid gap-2">
                 <Label
                   htmlFor="access_type"
-                  className="font-sans text-[14px] font-normal text-text-grey"
+                  className="text-text-grey font-sans text-[14px] font-normal"
                 >
                   Access type
                 </Label>
@@ -234,7 +234,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   id="access_type"
                   type="text"
                   placeholder="e.g. Limited, Unlimited"
-                  className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                  className="form-font bg-light-grey h-12 rounded-xl border-0"
                   value={formik.values.access_type}
                   onChange={formik.handleChange("access_type")}
                   onBlur={formik.handleBlur}
@@ -245,7 +245,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="monthly_charge"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Monthly charge
                   </Label>
@@ -254,7 +254,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     type="number"
                     min={0}
                     step="0.01"
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.monthly_charge}
                     onChange={formik.handleChange("monthly_charge")}
                     onBlur={formik.handleBlur}
@@ -263,7 +263,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="yearly_charge"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Yearly charge
                   </Label>
@@ -272,7 +272,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     type="number"
                     min={0}
                     step="0.01"
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.yearly_charge}
                     onChange={formik.handleChange("yearly_charge")}
                     onBlur={formik.handleBlur}
@@ -284,7 +284,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="event_creation"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Event creation limit
                   </Label>
@@ -292,7 +292,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     id="event_creation"
                     type="number"
                     min={0}
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.event_creation}
                     onChange={formik.handleChange("event_creation")}
                     onBlur={formik.handleBlur}
@@ -301,7 +301,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="connection_range"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Connection range
                   </Label>
@@ -309,7 +309,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     id="connection_range"
                     type="text"
                     placeholder="e.g. Limited, Global"
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.connection_range}
                     onChange={formik.handleChange("connection_range")}
                     onBlur={formik.handleBlur}
@@ -321,7 +321,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="sales_commission"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Sales commission (%)
                   </Label>
@@ -330,7 +330,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     type="number"
                     min={0}
                     max={100}
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.sales_commission}
                     onChange={formik.handleChange("sales_commission")}
                     onBlur={formik.handleBlur}
@@ -339,7 +339,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="service_commission"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Service commission (%)
                   </Label>
@@ -348,7 +348,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     type="number"
                     min={0}
                     max={100}
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.service_commission}
                     onChange={formik.handleChange("service_commission")}
                     onBlur={formik.handleBlur}
@@ -361,7 +361,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   <label
                     key={field.name}
                     htmlFor={field.name}
-                    className="flex items-center gap-2 text-[14px] font-normal text-light-black"
+                    className="text-light-black flex items-center gap-2 text-[14px] font-normal"
                   >
                     <input
                       id={field.name}
@@ -379,7 +379,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 type="button"
                 onClick={toggle}
                 className={
-                  "w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[11px]"
+                  "border-light-grey-50 w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[11px]"
                 }
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>

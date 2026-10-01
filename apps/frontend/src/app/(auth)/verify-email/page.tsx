@@ -139,11 +139,12 @@ export default function VerifyPage() {
   return (
     <AuthLayout>
       <div className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10">
-        <div className="hidden min-w-0 flex-col tablet:flex">
+        <div className="tablet:flex hidden min-w-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Verify email address</p>
-          <p className="text-body-xl mt-2 max-w-[26rem] font-sans font-normal text-text-grey">
-            Enter the 4-digit code sent <span className="font-semibold text-primary-black">{user?.email}</span>{" "}
-            to verify your account
+          <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
+            Enter the 4-digit code sent{" "}
+            <span className="text-primary-black font-semibold">{user?.email}</span> to verify your
+            account
           </p>
           <Image
             src="/images/verification.png"
@@ -154,12 +155,12 @@ export default function VerifyPage() {
           />
         </div>
         <div className="flex h-full min-h-0 w-full max-w-[440px] flex-col justify-center">
-          <div className="mb-4 text-center tablet:hidden">
+          <div className="tablet:hidden mb-4 text-center">
             <p className="font-ruso text-title-xl font-bold">Verify email address</p>
-            <p className="text-body-l mt-2 font-sans font-normal text-text-grey">
+            <p className="text-body-l text-text-grey mt-2 font-sans font-normal">
               Enter the 4-digit code sent{" "}
-              <span className="font-semibold text-primary-black">{user?.email}</span> to verify
-              your account
+              <span className="text-primary-black font-semibold">{user?.email}</span> to verify your
+              account
             </p>
           </div>
           <form onSubmit={formik.handleSubmit} className="w-full">
@@ -199,7 +200,10 @@ export default function VerifyPage() {
                   />
                   {invalidCode ? (
                     <p className="text-meta mt-3 flex items-center gap-1 text-[#E24B4B]">
-                      <span aria-hidden className="inline-block h-3.5 w-3.5 rounded-full border border-[#E24B4B] text-center text-[10px] leading-[12px]">
+                      <span
+                        aria-hidden
+                        className="inline-block h-3.5 w-3.5 rounded-full border border-[#E24B4B] text-center text-[10px] leading-[12px]"
+                      >
                         !
                       </span>
                       Invalid code
@@ -210,13 +214,13 @@ export default function VerifyPage() {
                   {canResend ? (
                     <button
                       type="button"
-                      className="text-light-green cursor-pointer font-sans text-body-s font-semibold"
+                      className="text-light-green text-body-s cursor-pointer font-sans font-semibold"
                       onClick={handleResend}
                     >
                       Resend code
                     </button>
                   ) : (
-                    <p className="text-light-green font-sans text-body-s font-semibold">
+                    <p className="text-light-green text-body-s font-sans font-semibold">
                       Resend code in {seconds} secs
                     </p>
                   )}

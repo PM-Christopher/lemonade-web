@@ -62,10 +62,10 @@ export default function ProfileStepsPage() {
   return (
     <AuthLayout>
       <div className="flex h-full w-full max-w-[1180px] items-center justify-center gap-10">
-        <div className="hidden min-w-0 flex-col tablet:flex">
-          <p className="font-sans text-title-l font-semibold">Welcome,</p>
+        <div className="tablet:flex hidden min-w-0 flex-col">
+          <p className="text-title-l font-sans font-semibold">Welcome,</p>
           <p className="font-ruso text-mid-green text-display-xs font-bold">{user?.fullname}</p>
-          <p className="text-body-xl mt-3 max-w-[26rem] font-sans font-normal text-text-grey">
+          <p className="text-body-xl text-text-grey mt-3 max-w-[26rem] font-sans font-normal">
             Set up your account to optimize your experience on the Lemonade network. Don&apos;t
             worry this will take less than a minute.
           </p>
@@ -78,8 +78,8 @@ export default function ProfileStepsPage() {
           />
         </div>
         <div className="flex h-full min-h-0 w-full max-w-[480px] flex-col justify-center overflow-y-auto">
-          <div className="mb-2 tablet:hidden">
-            <p className="font-sans text-title-l font-semibold">Welcome,</p>
+          <div className="tablet:hidden mb-2">
+            <p className="text-title-l font-sans font-semibold">Welcome,</p>
             <p className="font-ruso text-mid-green text-title-xl font-bold">{user?.fullname}</p>
           </div>
           {renderStep()}

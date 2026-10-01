@@ -96,23 +96,23 @@ function ConfirmPlanActionModal({ isOpen, toggle, plan, action }: ConfirmPlanAct
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{copy.title}</DialogTitle>
-        <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+        <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
           <div className={"px-[16px] py-[4px]"}>
             <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">{copy.title}</p>
+              <p className="font-sans text-[18px] leading-[27px] font-semibold">{copy.title}</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
             </div>
           </div>
           <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
-            <p className={"text-[14px] font-normal text-light-black"}>
+            <p className={"text-light-black text-[14px] font-normal"}>
               {plan ? copy.body(plan.title) : ""}
             </p>
             <div className={"flex justify-between gap-[10px]"}>
               <button
                 className={
-                  "h-[48px] w-[156px] rounded-[12px] border-[1px] border-light-grey-50 bg-white"
+                  "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white"
                 }
                 onClick={toggle}
               >
@@ -121,8 +121,8 @@ function ConfirmPlanActionModal({ isOpen, toggle, plan, action }: ConfirmPlanAct
               <button
                 className={
                   copy.danger
-                    ? "h-[48px] w-[156px] rounded-[12px] border-[1px] border-red-2 bg-red-1 text-center"
-                    : "h-[48px] w-[156px] rounded-[12px] border-[1px] border-step-color bg-gradient-green text-center"
+                    ? "border-red-2 bg-red-1 h-[48px] w-[156px] rounded-[12px] border-[1px] text-center"
+                    : "border-step-color bg-gradient-green h-[48px] w-[156px] rounded-[12px] border-[1px] text-center"
                 }
                 onClick={handleConfirm}
                 disabled={mutation.isPending}

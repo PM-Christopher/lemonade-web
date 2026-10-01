@@ -119,11 +119,11 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create Tribe</DialogTitle>
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex h-screen w-full flex-col overflow-y-auto rounded-lg bg-white p-6 px-[48px] pb-[48px] shadow-lg tablet:max-h-[90vh] tablet:h-auto tablet:w-[640px]">
+          <div className="tablet:max-h-[90vh] tablet:h-auto tablet:w-[640px] flex h-screen w-full flex-col overflow-y-auto rounded-lg bg-white p-6 px-[48px] pb-[48px] shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
                 <XIcon onClick={closeAndReset} className="cursor-pointer" />
-                <p className="text-[18px] font-semiBold">Create Tribe</p>
+                <p className="font-semiBold text-[18px]">Create Tribe</p>
               </div>
               <Button type="submit" disabled={isSubmitting || isUploading}>
                 <p className="text-[16px] font-medium text-white">
@@ -131,7 +131,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 </p>
               </Button>
             </div>
-            <div className="mt-[48px] flex flex-col items-center tablet:mt-[24px]">
+            <div className="tablet:mt-[24px] mt-[48px] flex flex-col items-center">
               {image ? (
                 <Image
                   src={image}
@@ -158,18 +158,16 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 style={{ display: "none" }}
                 onChange={handleFileChange}
               />
-              {isUploading && (
-                <p className="mt-2 text-[12px] text-text-grey">Uploading...</p>
-              )}
+              {isUploading && <p className="text-text-grey mt-2 text-[12px]">Uploading...</p>}
               {errors.image && (
-                <p className="mt-2 text-[12px] text-red-1">{errors.image.message}</p>
+                <p className="text-red-1 mt-2 text-[12px]">{errors.image.message}</p>
               )}
             </div>
             <div className="mt-[16px] flex flex-col">
               <div className="grid gap-2">
                 <Label
                   htmlFor="tribe-name"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Tribe name
                 </Label>
@@ -180,13 +178,13 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   {...register("tribe_name")}
                 />
                 {errors.tribe_name && (
-                  <p className="text-[12px] text-red-1">{errors.tribe_name.message}</p>
+                  <p className="text-red-1 text-[12px]">{errors.tribe_name.message}</p>
                 )}
               </div>
               <div className="mt-4 grid gap-2">
                 <Label
                   htmlFor="category"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Category
                 </Label>
@@ -213,14 +211,14 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   )}
                 />
                 {errors.category && (
-                  <p className="text-[12px] text-red-1">{errors.category.message}</p>
+                  <p className="text-red-1 text-[12px]">{errors.category.message}</p>
                 )}
               </div>
               <div className="mt-4 grid gap-2">
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="description"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Description
                   </Label>
@@ -232,7 +230,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   {...register("description")}
                 />
                 {errors.description && (
-                  <p className="text-[12px] text-red-1">{errors.description.message}</p>
+                  <p className="text-red-1 text-[12px]">{errors.description.message}</p>
                 )}
               </div>
             </div>

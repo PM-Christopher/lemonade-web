@@ -11,13 +11,21 @@ export interface PageLink {
 
 export const pageLinks: PageLink[] = [
   { name: "Overview", path: "/" },
-  { name: "Wallet management", path: "/wallet-management", permission: ADMIN_SECTION_PERMISSIONS.wallet },
+  {
+    name: "Wallet management",
+    path: "/wallet-management",
+    permission: ADMIN_SECTION_PERMISSIONS.wallet,
+  },
   { name: "Transactions", path: "/transactions" },
   { name: "Users", path: "/users", permission: ADMIN_SECTION_PERMISSIONS.users },
   { name: "Businesses", path: "/businesses", permission: ADMIN_SECTION_PERMISSIONS.businesses },
   { name: "Tribes", path: "/tribes", permission: ADMIN_SECTION_PERMISSIONS.tribes },
   { name: "Events", path: "/events", permission: ADMIN_SECTION_PERMISSIONS.events },
-  { name: "Subscriptions", path: "/subscriptions", permission: ADMIN_SECTION_PERMISSIONS.subscriptions },
+  {
+    name: "Subscriptions",
+    path: "/subscriptions",
+    permission: ADMIN_SECTION_PERMISSIONS.subscriptions,
+  },
   { name: "Reporting", path: "/reporting", permission: ADMIN_SECTION_PERMISSIONS.moderation },
   { name: "Forum moderation", path: "/forum", permission: ADMIN_SECTION_PERMISSIONS.moderation },
   { name: "Announcements", path: "/announcements" },

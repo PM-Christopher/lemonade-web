@@ -29,7 +29,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
                 alt=""
                 width={48}
                 height={48}
-                className="h-[48px] w-[48px] rounded-[16px] border-[1px] border-grey-90"
+                className="border-grey-90 h-[48px] w-[48px] rounded-[16px] border-[1px]"
               />
             </div>
             <div>
@@ -42,7 +42,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
               <DotIcon className="h-[3px] w-[3px]" />
             </div>
             <div>
-              <p className="font-sans text-[12px] font-normal leading-[14.4px]">
+              <p className="font-sans text-[12px] leading-[14.4px] font-normal">
                 {thread?.created_at}
               </p>
             </div>
@@ -50,15 +50,15 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
           <MoreVerticalIcon className="cursor-pointer" />
         </div>
         <div className="mt-[4px]">
-          <p className="font-sans text-[14px] font-semibold leading-[21px]">{thread?.topic}</p>
-          <p className="mt-[30px] font-sans text-[14px] font-normal leading-[21px] text-light-black">
+          <p className="font-sans text-[14px] leading-[21px] font-semibold">{thread?.topic}</p>
+          <p className="text-light-black mt-[30px] font-sans text-[14px] leading-[21px] font-normal">
             {isExpanded || content || content.length <= charLimit
               ? content
               : `${content.slice(0, charLimit)}...`}
           </p>
           {content && content.length > charLimit && (
             <p
-              className="font-semi-normal cursor-pointer font-sans text-[14px] text-light-green"
+              className="font-semi-normal text-light-green cursor-pointer font-sans text-[14px]"
               onClick={handleToggle}
             >
               {isExpanded ? "see less" : "see more"}

@@ -53,7 +53,7 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
       {!isMobile && <SideNav />}
 
       {/* Main Content */}
-      <main className={`min-h-screen flex-1 bg-light-grey ${isMobile ? "flex flex-col" : ""}`}>
+      <main className={`bg-light-grey min-h-screen flex-1 ${isMobile ? "flex flex-col" : ""}`}>
         <TopNav />
 
         {/* Content (ensure it takes available height) */}

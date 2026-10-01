@@ -35,7 +35,9 @@ function RejectModal({ isOpen, toggle, id }: RejectModalProps) {
       { reason: reason.trim() },
       {
         onSuccess: () => {
-          dispatch(updateToastifyReducer({ show: true, message: "Business rejected", type: "success" }));
+          dispatch(
+            updateToastifyReducer({ show: true, message: "Business rejected", type: "success" }),
+          );
           setReason("");
           toggle();
         },
@@ -61,22 +63,22 @@ function RejectModal({ isOpen, toggle, id }: RejectModalProps) {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Reject business</DialogTitle>
-        <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+        <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
           <div className={"px-[16px] py-[4px]"}>
             <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">Reject business</p>
+              <p className="font-sans text-[18px] leading-[27px] font-semibold">Reject business</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
             </div>
           </div>
           <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
-            <p className={"text-[14px] font-normal text-light-black"}>
+            <p className={"text-light-black text-[14px] font-normal"}>
               Are you sure you want to reject this listing? The owner will see your reason.
             </p>
-            <p className={"text-[14px] font-normal text-text-grey"}>Reason</p>
+            <p className={"text-text-grey text-[14px] font-normal"}>Reason</p>
             <Textarea
-              className="min-h-[96px] rounded-[12px] bg-light-grey"
+              className="bg-light-grey min-h-[96px] rounded-[12px]"
               placeholder="Explain why this listing is being rejected..."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -84,14 +86,16 @@ function RejectModal({ isOpen, toggle, id }: RejectModalProps) {
             />
             <div className={"flex justify-between gap-[10px]"}>
               <button
-                className={"h-[48px] w-[156px] rounded-[12px] border-[1px] border-light-grey-50 bg-white"}
+                className={
+                  "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white"
+                }
                 onClick={toggle}
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
               <button
                 className={
-                  "h-[48px] w-[156px] rounded-[12px] border-[1px] border-red-2 bg-red-1 text-center disabled:opacity-50"
+                  "border-red-2 bg-red-1 h-[48px] w-[156px] rounded-[12px] border-[1px] text-center disabled:opacity-50"
                 }
                 onClick={submitAction}
                 disabled={!isReasonValid}

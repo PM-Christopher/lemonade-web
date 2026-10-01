@@ -62,7 +62,10 @@ const updateUserData = createAsyncThunk(
 
 const changePassword = createAsyncThunk(
   "auth/changePassword",
-  async ({ data, token }: { data: Record<string, unknown>; token: string }, { rejectWithValue }) => {
+  async (
+    { data, token }: { data: Record<string, unknown>; token: string },
+    { rejectWithValue },
+  ) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -86,7 +89,10 @@ const changePassword = createAsyncThunk(
 
 const deleteAccount = createAsyncThunk(
   "auth/deleteAccount",
-  async ({ data, token }: { data: Record<string, unknown>; token: string }, { rejectWithValue }) => {
+  async (
+    { data, token }: { data: Record<string, unknown>; token: string },
+    { rejectWithValue },
+  ) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -110,7 +116,10 @@ const deleteAccount = createAsyncThunk(
 
 const updateAppSettings = createAsyncThunk(
   "auth/updateAppSettings",
-  async ({ data, token }: { data: Record<string, unknown>; token: string }, { rejectWithValue }) => {
+  async (
+    { data, token }: { data: Record<string, unknown>; token: string },
+    { rejectWithValue },
+  ) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",

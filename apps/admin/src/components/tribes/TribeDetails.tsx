@@ -25,23 +25,23 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
             height={96}
             className="rounded"
           />
-          <p className="text-center text-[16px] font-semiBold">{tribe?.name}</p>
-          <p className={"text-[14px] font-medium text-text-grey"}>{tribe?.category}</p>
+          <p className="font-semiBold text-center text-[16px]">{tribe?.name}</p>
+          <p className={"text-text-grey text-[14px] font-medium"}>{tribe?.category}</p>
           <div className={"flex items-center"}>
-            <p className={"text-[12px] font-normal text-text-grey"}>
+            <p className={"text-text-grey text-[12px] font-normal"}>
               {tribe?.members_count ?? 0} members
             </p>
             <DotIcon className={"text-text-grey"} />
-            <p className={"text-[12px] font-normal text-text-grey"}>
+            <p className={"text-text-grey text-[12px] font-normal"}>
               {tribe?.threads_count ?? 0} threads
             </p>
           </div>
           <div className={"w-[311px]"}>
-            <p className="text-center text-[14px] font-normal text-light-black">
+            <p className="text-light-black text-center text-[14px] font-normal">
               {tribe?.description}
             </p>
           </div>
-          <p className="text-center text-[12px] font-normal text-text-grey">
+          <p className="text-text-grey text-center text-[12px] font-normal">
             Created on {tribe?.created_at}
           </p>
         </div>
@@ -49,12 +49,14 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
 
       <div>
         <p className="mb-4 text-[16px] font-medium">Members</p>
-        <div className={"flex flex-col gap-[8px] rounded-[12px] bg-light-grey px-[24px] py-[16px]"}>
+        <div className={"bg-light-grey flex flex-col gap-[8px] rounded-[12px] px-[24px] py-[16px]"}>
           {members.length > 0 ? (
             members.map((member) => (
               <div
                 key={member.id}
-                className={"flex justify-between border-b-[1px] border-b-grey-20 py-[10px] last:border-b-0"}
+                className={
+                  "border-b-grey-20 flex justify-between border-b-[1px] py-[10px] last:border-b-0"
+                }
               >
                 <div className={"flex items-center gap-2"}>
                   <Image
@@ -72,7 +74,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
                   <button
                     type="button"
                     aria-label="Remove member"
-                    className="cursor-pointer text-text-grey hover:text-red-1"
+                    className="text-text-grey hover:text-red-1 cursor-pointer"
                     onClick={() =>
                       onRemoveMember(member.user_id, member.user?.fullname ?? "this member")
                     }
@@ -83,7 +85,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
               </div>
             ))
           ) : (
-            <p className="text-[14px] font-normal text-text-grey">No members yet</p>
+            <p className="text-text-grey text-[14px] font-normal">No members yet</p>
           )}
         </div>
       </div>

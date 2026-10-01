@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={isPasswordType ? (showPassword ? "text" : "password") : type}
           className={cn(
-            "field file:text-foreground file:text-label file:border-0 file:bg-transparent file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+            "field file:text-foreground file:text-label placeholder:text-muted-foreground file:border-0 file:bg-transparent file:font-medium disabled:cursor-not-allowed disabled:opacity-50",
             isPasswordType && "pr-10",
             className,
           )}

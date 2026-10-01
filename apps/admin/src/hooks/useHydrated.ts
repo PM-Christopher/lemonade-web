@@ -9,5 +9,9 @@ const emptySubscribe = () => () => {};
  * setState.
  */
 export function useHydrated(): boolean {
-  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 }

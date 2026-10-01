@@ -36,18 +36,18 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
       <div className="px-[10px] pt-10 pb-[10px]">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <p className="text-light-black truncate font-sans text-body-s font-semibold">
+            <p className="text-light-black text-body-s truncate font-sans font-semibold">
               {business.name}
             </p>
             <DotIcon className="w-1 shrink-0" />
-            <p className="text-light-black truncate font-sans text-meta font-normal">
+            <p className="text-light-black text-meta truncate font-sans font-normal">
               {business.city}, {formatCountry(business.country)}
             </p>
           </div>
 
           <div className="bg-mid-grey flex shrink-0 items-center gap-1 rounded-xl p-2">
             <Image src={medal} alt="medal" width={16} />
-            <p className="font-semi-normal text-primary-black font-sans text-body-s">
+            <p className="font-semi-normal text-primary-black text-body-s font-sans">
               {formatNumber(business.rating, 1)}
             </p>
           </div>
@@ -56,20 +56,20 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
         <div className="mt-2 flex items-center justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <div className="bg-grey-20 max-w-full rounded-full p-2 px-3">
-              <p className="font-semi-normal text-text-grey truncate font-sans text-label">
+              <p className="font-semi-normal text-text-grey text-label truncate font-sans">
                 {business.services[0]}
               </p>
             </div>
             {business.services.length > 1 && (
               <div className="bg-grey-20 shrink-0 rounded-full p-2 px-3">
-                <p className="font-semi-normal text-text-grey font-sans text-label">
+                <p className="font-semi-normal text-text-grey text-label font-sans">
                   +{business.services.length}
                 </p>
               </div>
             )}
           </div>
 
-          <p className="shrink-0 font-sans text-body-l font-semibold whitespace-nowrap">
+          <p className="text-body-l shrink-0 font-sans font-semibold whitespace-nowrap">
             ₦{formatNumberWithCommas(business.service_rate)}/hr
           </p>
         </div>

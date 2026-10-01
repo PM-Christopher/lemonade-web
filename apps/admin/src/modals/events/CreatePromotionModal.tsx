@@ -33,9 +33,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
   });
 
   const editing =
-    promotionId !== 0 && promotionId !== undefined
-      ? promotionDetail?.promotion
-      : undefined;
+    promotionId !== 0 && promotionId !== undefined ? promotionDetail?.promotion : undefined;
   const promotionTitle = editing ? "Edit Promotion" : "Create Promotion";
   const recordKey = editing ? String(promotionId) : promotionId === 0 ? "create" : "idle";
 
@@ -139,13 +137,13 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{promotionTitle}</DialogTitle>
-        <div className="w-[640px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+        <div className="w-[640px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
           <form onSubmit={formik.handleSubmit}>
             <div className={"px-[16px] py-[4px]"}>
               <div className="flex items-center justify-between">
                 <div className={"flex items-center gap-[8px]"}>
                   <XIcon onClick={toggle} className={"cursor-pointer"} />
-                  <p className="font-sans text-[18px] font-semibold leading-[27px]">
+                  <p className="font-sans text-[18px] leading-[27px] font-semibold">
                     {promotionTitle}
                   </p>
                 </div>
@@ -161,13 +159,11 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
             </div>
             <div className={"flex flex-col gap-[24px] px-[16px] py-[16px]"}>
               <div className={"flex flex-col gap-[2px]"}>
-                <p className={"text-[14px] font-normal text-text-grey"}>
-                  Promotion name
-                </p>
+                <p className={"text-text-grey text-[14px] font-normal"}>Promotion name</p>
                 <input
                   id="name"
                   className={
-                    "h-[48px] gap-[12px] rounded-[12px] bg-light-grey p-[12px] text-[14px]"
+                    "bg-light-grey h-[48px] gap-[12px] rounded-[12px] p-[12px] text-[14px]"
                   }
                   placeholder={""}
                   value={formik.values.name}
@@ -176,9 +172,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                 />
               </div>
               <div className={"flex flex-col gap-[4px]"}>
-                <p className={"text-[14px] font-normal text-text-grey"}>
-                  Price option
-                </p>
+                <p className={"text-text-grey text-[14px] font-normal"}>Price option</p>
                 <div className="flex gap-2">
                   <div
                     className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
@@ -187,7 +181,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                       formik.setFieldValue("price_option", "one-time");
                     }}
                   >
-                    <p className="tracking-custom font-sans text-[14px] font-normal leading-[21px]">
+                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       One time
                     </p>
                   </div>
@@ -198,20 +192,18 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                       formik.setFieldValue("price_option", "unit");
                     }}
                   >
-                    <p className="tracking-custom font-sans text-[14px] font-normal leading-[21px]">
+                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       Unit
                     </p>
                   </div>
                 </div>
               </div>
               <div className={"flex flex-col gap-[2px]"}>
-                <p className={"text-[14px] font-normal text-text-grey"}>
-                  Promotion Price
-                </p>
+                <p className={"text-text-grey text-[14px] font-normal"}>Promotion Price</p>
                 <input
                   id="price"
                   className={
-                    "h-[48px] gap-[12px] rounded-[12px] bg-light-grey p-[12px] text-[14px]"
+                    "bg-light-grey h-[48px] gap-[12px] rounded-[12px] p-[12px] text-[14px]"
                   }
                   placeholder={"N0.00"}
                   value={formik.values.price}
@@ -220,24 +212,20 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                 />
               </div>
               <div className="flex flex-col gap-[2px]">
-                <p className="text-[14px] font-normal text-text-grey">
-                  Breakdown
-                </p>
+                <p className="text-text-grey text-[14px] font-normal">Breakdown</p>
                 {breakdowns.map((breakdown, index) => (
                   <div key={index} className="flex flex-col gap-[2px]">
                     <div className="relative">
                       <input
-                        className="h-[48px] w-full gap-[12px] rounded-[12px] bg-light-grey p-[12px] pr-[40px] text-[14px]"
+                        className="bg-light-grey h-[48px] w-full gap-[12px] rounded-[12px] p-[12px] pr-[40px] text-[14px]"
                         placeholder="Enter breakdown of promotion"
                         value={breakdown}
-                        onChange={(e) =>
-                          handleInputChange(index, e.target.value)
-                        }
+                        onChange={(e) => handleInputChange(index, e.target.value)}
                       />
                       {index > 0 && (
                         <button
                           onClick={() => handleRemoveField(index)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 transform text-red-500"
+                          className="absolute top-1/2 right-3 -translate-y-1/2 transform text-red-500"
                         >
                           <XIcon size={20} />
                         </button>
@@ -247,20 +235,16 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                 ))}
               </div>
             </div>
-            <div
-              className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}
-            >
+            <div className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}>
               <button
                 className={
-                  "flex w-full items-center justify-center rounded-[12px] border-[1px] bg-light-green-10 px-[48px] py-[11px]"
+                  "bg-light-green-10 flex w-full items-center justify-center rounded-[12px] border-[1px] px-[48px] py-[11px]"
                 }
                 onClick={handleAddField}
                 type={"button"}
               >
                 <PlusIcon className={"text-light-green"} />
-                <p className={"text-[16px] font-medium text-light-green"}>
-                  Add breakdown
-                </p>
+                <p className={"text-light-green text-[16px] font-medium"}>Add breakdown</p>
               </button>
             </div>
           </form>

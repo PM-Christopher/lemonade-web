@@ -159,10 +159,10 @@ export default function VerifyCodePage() {
   return (
     <AuthLayout>
       <div className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10">
-        <div className="hidden min-w-0 flex-col tablet:flex">
+        <div className="tablet:flex hidden min-w-0 flex-col">
           <div>
             <p className="font-ruso text-display-s font-bold">Verification code</p>
-            <p className="text-body-xl mt-2 max-w-[26rem] font-sans font-normal text-text-grey">
+            <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
               Enter the 4-digit code sent to {cookie.email} to verify your account
             </p>
           </div>
@@ -176,82 +176,82 @@ export default function VerifyCodePage() {
         </div>
         <form onSubmit={formik.handleSubmit} className="w-full max-w-[440px]">
           <Card className="w-full p-6">
-              <CardContent className="flex justify-center">
-                <div className="flex flex-col items-center justify-center">
-                  <OtpInput
-                    value={formik.values.code}
-                    onChange={(e) => {
-                      setOtp(e);
-                      formik.setFieldValue("code", e, true);
-                      // Automatically submit when OTP is fully entered
-                      if (e.length === 4) {
-                        setTimeout(() => {
-                          formik.submitForm();
-                        }, 0);
-                      }
-                    }}
-                    numInputs={4}
-                    renderSeparator={<span style={{ width: "12px" }}></span>}
-                    renderInput={(props) => (
-                      <div
-                        style={{
-                          borderRadius: "12px",
-                          padding: "2px", // thickness of gradient border
-                          background: "linear-gradient(90deg, #9BE303, #7FBB00)", // gradient green
-                        }}
-                      >
-                        <input
-                          {...props}
-                          style={{
-                            width: "56px",
-                            height: "56px",
-                            borderRadius: "10px", // slightly smaller to show gradient
-                            border: "none",
-                            backgroundColor: "#E5E7EB", // gray background
-                            color: "#111827",
-                            textAlign: "center",
-                            fontSize: "20px",
-                            fontWeight: 500,
-                            outline: "none",
-                          }}
-                        />
-                      </div>
-                    )}
-                    containerStyle={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "12px",
-                    }}
-                  />
-                  {checkError("code", formik) ? (
-                    <p className="mt-[8px] text-[12px] text-[#FF8D8D]">{formik.errors.code}</p>
-                  ) : null}
-                </div>
-              </CardContent>
-              <CardContent className="mt-[10px] mb-[10px] flex justify-center">
-                <div className="mt-[10px] mb-[5px] flex cursor-pointer justify-center">
-                  {canResend ? (
-                    <p
-                      className="font-semi-normal text-light-green cursor-pointer font-sans text-[16px]"
-                      onClick={handleResend}
+            <CardContent className="flex justify-center">
+              <div className="flex flex-col items-center justify-center">
+                <OtpInput
+                  value={formik.values.code}
+                  onChange={(e) => {
+                    setOtp(e);
+                    formik.setFieldValue("code", e, true);
+                    // Automatically submit when OTP is fully entered
+                    if (e.length === 4) {
+                      setTimeout(() => {
+                        formik.submitForm();
+                      }, 0);
+                    }
+                  }}
+                  numInputs={4}
+                  renderSeparator={<span style={{ width: "12px" }}></span>}
+                  renderInput={(props) => (
+                    <div
+                      style={{
+                        borderRadius: "12px",
+                        padding: "2px", // thickness of gradient border
+                        background: "linear-gradient(90deg, #9BE303, #7FBB00)", // gradient green
+                      }}
                     >
-                      Send code again
-                    </p>
-                  ) : (
-                    <p className="font-semi-normal text-light-green font-sans text-[16px]">
-                      Resend code in {seconds} secs
-                    </p>
+                      <input
+                        {...props}
+                        style={{
+                          width: "56px",
+                          height: "56px",
+                          borderRadius: "10px", // slightly smaller to show gradient
+                          border: "none",
+                          backgroundColor: "#E5E7EB", // gray background
+                          color: "#111827",
+                          textAlign: "center",
+                          fontSize: "20px",
+                          fontWeight: 500,
+                          outline: "none",
+                        }}
+                      />
+                    </div>
                   )}
-                </div>
-              </CardContent>
-              <CardContent className="flex flex-col space-y-2">
-                <FormikButton
-                  loading={formik.isSubmitting}
-                  title="Verify"
-                  error={formik.isValid}
-                  classes="w-full h-[48px] rounded-[12px]"
+                  containerStyle={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "12px",
+                  }}
                 />
-              </CardContent>
+                {checkError("code", formik) ? (
+                  <p className="mt-[8px] text-[12px] text-[#FF8D8D]">{formik.errors.code}</p>
+                ) : null}
+              </div>
+            </CardContent>
+            <CardContent className="mt-[10px] mb-[10px] flex justify-center">
+              <div className="mt-[10px] mb-[5px] flex cursor-pointer justify-center">
+                {canResend ? (
+                  <p
+                    className="font-semi-normal text-light-green cursor-pointer font-sans text-[16px]"
+                    onClick={handleResend}
+                  >
+                    Send code again
+                  </p>
+                ) : (
+                  <p className="font-semi-normal text-light-green font-sans text-[16px]">
+                    Resend code in {seconds} secs
+                  </p>
+                )}
+              </div>
+            </CardContent>
+            <CardContent className="flex flex-col space-y-2">
+              <FormikButton
+                loading={formik.isSubmitting}
+                title="Verify"
+                error={formik.isValid}
+                classes="w-full h-[48px] rounded-[12px]"
+              />
+            </CardContent>
           </Card>
         </form>
       </div>

@@ -16,11 +16,11 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   return (
-    <div className="flex items-center justify-between rounded-bl-lg rounded-br-lg bg-mid-grey p-4 px-10">
+    <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
       <button
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+        className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
       >
         Previous
       </button>
@@ -40,7 +40,7 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
       <button
         disabled={Number(currentPage) === Number(totalPages)}
         onClick={() => onPageChange(currentPage + 1)}
-        className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+        className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
       >
         Next
       </button>

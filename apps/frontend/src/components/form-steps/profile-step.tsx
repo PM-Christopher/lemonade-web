@@ -194,7 +194,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
           {formik.touched.profile_image && formik.errors.profile_image ? (
             <p className="text-center text-[12px] text-[#FF8D8D]">{formik.errors.profile_image}</p>
           ) : null}
-          <p className="text-meta text-center text-text-grey">Snap shot</p>
+          <p className="text-meta text-text-grey text-center">Snap shot</p>
         </CardContent>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">

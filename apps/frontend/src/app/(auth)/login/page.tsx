@@ -21,7 +21,7 @@ import { axiosInstance } from "@/lib/axiosInstane";
 function SocialMark({ src, label }: { src: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
-      <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-border-grey bg-white">
+      <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
         <Image src={src} alt="" width={24} height={24} />
       </span>
       <span className="text-meta text-text-grey">{label}</span>
@@ -191,7 +191,7 @@ export default function LoginPage() {
   return (
     <AuthLayout>
       <div className="mx-auto flex w-full max-w-[1180px] items-center justify-center gap-8">
-        <div className="hidden min-w-0 flex-col tablet:flex">
+        <div className="tablet:flex hidden min-w-0 flex-col">
           <div>
             <p className="font-ruso text-display-s font-bold">Login</p>
             <p className="text-body-xl mt-2 font-sans font-normal">
@@ -208,9 +208,9 @@ export default function LoginPage() {
           />
         </div>
         <div className="flex w-full max-w-[440px] flex-col">
-          <div className="mb-4 shrink-0 text-center tablet:hidden">
-            <p className="font-ruso text-title-xl font-bold text-primary-black">Login</p>
-            <p className="text-body-l mt-1 font-sans font-normal text-text-grey">
+          <div className="tablet:hidden mb-4 shrink-0 text-center">
+            <p className="font-ruso text-title-xl text-primary-black font-bold">Login</p>
+            <p className="text-body-l text-text-grey mt-1 font-sans font-normal">
               Let&apos;s get you back into your account
             </p>
           </div>
@@ -282,6 +282,6 @@ export default function LoginPage() {
           </form>
         </div>
       </div>
-      </AuthLayout>
+    </AuthLayout>
   );
 }

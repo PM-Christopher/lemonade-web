@@ -119,8 +119,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               Wallet balance:{" "}
               <span className={"text-[14px] font-bold"}>
                 {" "}
-                ₦{" "}
-                {formatNumberWithCommas(balance || 0)}
+                ₦ {formatNumberWithCommas(balance || 0)}
               </span>
             </p>
 

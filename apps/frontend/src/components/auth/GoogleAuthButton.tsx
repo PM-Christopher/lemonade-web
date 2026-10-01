@@ -22,8 +22,12 @@ export function GoogleAuthButton({ onSuccess }: GoogleAuthButtonProps) {
   });
 
   return (
-    <button type="button" className="flex flex-col items-center gap-2" onClick={() => googleLogin()}>
-      <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-border-grey bg-white">
+    <button
+      type="button"
+      className="flex flex-col items-center gap-2"
+      onClick={() => googleLogin()}
+    >
+      <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
         <Image src="/images/google.png" alt="" width={24} height={24} />
       </span>
       <span className="text-meta text-text-grey">Google</span>

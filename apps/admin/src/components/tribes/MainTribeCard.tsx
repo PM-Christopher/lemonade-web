@@ -10,7 +10,7 @@ interface MainTribeCardProps {
 
 const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
   return (
-    <div className="flex flex-col gap-[8px] border-b-[1px] border-grey-20 pb-[16px]">
+    <div className="border-grey-20 flex flex-col gap-[8px] border-b-[1px] pb-[16px]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-[8px]">
           <Image
@@ -22,15 +22,15 @@ const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
           />
           <div className="flex items-center gap-[8px]">
             <p className="text-[14px] font-normal">{thread.user?.fullname ?? "Unknown member"}</p>
-            <DotIcon className="px-[0px] text-light-grey-50" />
-            <p className="text-[12px] font-normal text-text-grey">{thread.created_at}</p>
+            <DotIcon className="text-light-grey-50 px-[0px]" />
+            <p className="text-text-grey text-[12px] font-normal">{thread.created_at}</p>
           </div>
         </div>
         {onDelete && (
           <button
             type="button"
             aria-label="Delete thread"
-            className="cursor-pointer text-text-grey hover:text-red-1"
+            className="text-text-grey hover:text-red-1 cursor-pointer"
             onClick={() => onDelete(thread.id)}
           >
             <Trash2Icon className="h-[16px] w-[16px]" />
@@ -38,7 +38,7 @@ const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
         )}
       </div>
       <p className="text-[14px] font-medium">{thread.topic}</p>
-      <p className="font-sans text-[14px] font-normal leading-[21px] text-light-black">
+      <p className="text-light-black font-sans text-[14px] leading-[21px] font-normal">
         {thread.thoughts}
       </p>
     </div>
