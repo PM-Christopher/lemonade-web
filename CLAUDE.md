@@ -290,6 +290,26 @@ All commands must pass. Never consider a feature complete if any command fails.
 
 Format with Prettier before completion. Remove dead code, unused imports, unused variables.
 
+### Never run Prettier (or `pnpm run format`) on Markdown files in this repo
+
+`pnpm run format` / `format:check` are scoped to `**/*.{ts,tsx,js,jsx,json}` deliberately —
+`.md` is excluded. Found 2026-10-01: Prettier 3.9.9's Markdown printer has a reproducible bug
+against this repo's long-form, hand-wrapped docs (`docs/ARCHITECTURE.md`, `docs/CONTRACT.md`,
+`tooling/*/README.md`) — a blockquote or list-item continuation line that's long and contains an
+inline code span gets silently corrupted: the leading `>` / indent is dropped, and spaces around
+backticks collapse (`` `routes/channels.php`never registered`` instead of `` `routes/channels.php`
+never registered``). Reproduced directly — `prettier --write` on `docs/ARCHITECTURE.md` alone
+produces this corruption byte-for-byte, with or without an explicit `proseWrap` setting (verified
+both `"preserve"` and the default). Not a config bug on this repo's side to fix; a formatter
+limitation to route around.
+
+If an editor, IDE, or agent runs its own format-on-save using this repo's `prettier.config.mjs`
+(or any Prettier invocation) against a `.md` file, disable it for Markdown specifically. If you
+need to edit one of these docs, edit the prose directly and preserve the existing line-wrapping
+and `>`/indent prefixes by hand — do not run a formatter over the file afterward. If corruption is
+ever found in a committed doc, recover the original text from `git diff`'s `-` side rather than
+guessing at the intended wrapping.
+
 ---
 
 ## Git Rules

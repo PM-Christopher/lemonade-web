@@ -14,8 +14,8 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "prettier --config packages/config/prettier.config.mjs --write \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore",
-    "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore",
+    "format": "prettier --config packages/config/prettier.config.mjs --write \"**/*.{ts,tsx,js,jsx,json}\" --ignore-path .gitignore",
+    "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,json}\" --ignore-path .gitignore",
     "lemonade:check": "pnpm run format && pnpm lint && pnpm run typecheck && pnpm run test && pnpm run build"
   },
   "devDependencies": {
