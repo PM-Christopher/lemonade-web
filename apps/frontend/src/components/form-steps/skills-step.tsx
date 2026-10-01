@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { skillsInterestsSchema } from "@lemonade/validation";
 import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";
 import { useCookies } from "react-cookie";
 
@@ -84,25 +84,13 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
   };
 
   //form validation
-  const addressStepSchema = yup.object({
-    skills: yup
-      .array()
-      .of(yup.string()) // Ensure it's an array of strings
-      .min(3, "At least three skills are required") // Add min length validation to prevent empty arrays
-      .required("Skills is required"), // Required field
-    interests: yup
-      .array()
-      .of(yup.string()) // Ensure it's an array of strings
-      .min(3, "At least three interests are required") // Add min length validation to prevent empty arrays
-      .required("Interests is required"), // Required field
-  });
-
   const formik = useFormik<FormValues>({
     initialValues: {
       skills: [],
       interests: [],
     },
-    validationSchema: addressStepSchema,
+    validationSchema: skillsInterestsSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await skillsStep(values);
     },
@@ -144,17 +132,17 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="w-full rounded-[16px] border-none shadow-none tablet:w-[480px]">
+      <Card className="tablet:w-[480px] w-full rounded-[16px] border-none shadow-none">
         <CardHeader className="grid gap-4">
           <div className="flex gap-2">
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-border-grey" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-border-grey h-[2px] w-[15px]" />
           </div>
           <div>
             <p className="font-sans text-[24px] font-semibold">Skills & Interests</p>
-            <p className="font-sans text-[14px] font-normal leading-[21px] text-text-grey">
+            <p className="text-text-grey font-sans text-[14px] leading-[21px] font-normal">
               Maximize your connections and experience by telling us <br />
               about your skills and interests.
             </p>
@@ -168,7 +156,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
             {skills.map((item, idx) => (
               <div
                 key={idx}
-                className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${
+                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${
                   Array.isArray(formik.values.skills) && formik.values.skills.includes(item)
                     ? "bg-gradient-green text-white"
                     : "bg-light_grey"
@@ -188,7 +176,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
           <div className="grid grid-cols-[repeat(4,auto)] gap-3">
             {interests.map((item, idx) => (
               <div
-                className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
                 key={idx}
                 onClick={() => handleInterestClick(item)}
               >

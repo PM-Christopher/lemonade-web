@@ -10,11 +10,7 @@ import SettingsModal from "@/components/connect/Modal/SettingsModal";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { ChatInterface } from "@/interfaces/ChatInterface";
-import {
-  useChatHistoryQuery,
-  useChatQuery,
-  useConnectionQuery,
-} from "@/features/connect/queries";
+import { useChatHistoryQuery, useChatQuery, useConnectionQuery } from "@/features/connect/queries";
 import OpenedChat from "@/components/connect/OpenedChat";
 import EmptyChat from "@/components/connect/EmptyChat";
 import { usePusher } from "@/hooks/usePusher";
@@ -26,9 +22,7 @@ const ConnectClient = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(0);
-  const [selectedReceiverId, setSelectedReceiverId] = useState<
-    number | undefined
-  >(undefined);
+  const [selectedReceiverId, setSelectedReceiverId] = useState<number | undefined>(undefined);
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const [chatOpened, setChatOpened] = useState(false);
   const { user } = useSelector((state: any) => state.auth);
@@ -72,39 +66,39 @@ const ConnectClient = () => {
   };
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
           <div>
             <p className="text-[14px] font-semibold">Connect</p>
           </div>
           <div className="flex items-center gap-2">
             <Link href={"/connect/requests"}>
-              <div className="flex cursor-pointer items-center gap-2 rounded-[12px] border-[1px] border-light-grey-50 p-[8px] px-[14px]">
+              <div className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-[12px] border-[1px] p-[8px] px-[14px]">
                 <RequestIcon />
-                <p className="hidden font-sans text-[16px] font-semi-normal text-black-light laptop:block">
+                <p className="font-semi-normal text-black-light laptop:block hidden font-sans text-[16px]">
                   Requests
                 </p>
               </div>
             </Link>
             <div
-              className="flex cursor-pointer items-center gap-2 rounded-[12px] border-[1px] border-light-grey-50 p-[8px] px-[14px]"
+              className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-[12px] border-[1px] p-[8px] px-[14px]"
               onClick={toggleSettingsModal}
             >
               <SettingsIcon />
-              <p className="hidden font-sans text-[16px] font-semi-normal text-black-light laptop:block">
+              <p className="font-semi-normal text-black-light laptop:block hidden font-sans text-[16px]">
                 Settings
               </p>
             </div>
           </div>
         </div>
-        <section className="mt-0 flex flex-col items-center laptop:mt-4">
+        <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           {isMobile && (
             <div className="flex flex-col">
               <div
                 className={`${chatOpened ? "hidden" : "flex"} h-[648px] w-screen flex-col bg-white`}
               >
                 <div className="p-[8px] px-[16px]">
-                  <div className="flex items-center gap-3 rounded-2xl bg-light_grey px-4 py-3 shadow-sm ring-1 ring-black/5">
+                  <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
                     {/* Icon */}
                     <span className="shrink-0 text-gray-500">
                       <SearchIcon />
@@ -141,12 +135,8 @@ const ConnectClient = () => {
                       />
                     ))
                   ) : (
-                    <div
-                      className={
-                        "mt-32 flex w-full flex-col items-center justify-center"
-                      }
-                    >
-                      <p className={"text-center font-ruso"}>
+                    <div className={"mt-32 flex w-full flex-col items-center justify-center"}>
+                      <p className={"font-ruso text-center"}>
                         Connect with someone new today to start chatting
                       </p>
                       <button
@@ -176,15 +166,13 @@ const ConnectClient = () => {
               </div>
             </div>
           )}
-          <div className="hidden laptop:flex">
-            <div className="flex h-[648px] w-[375px] flex-col rounded-bl-[16px] rounded-tl-[16px] border-[1px] bg-white">
+          <div className="laptop:flex hidden">
+            <div className="flex h-[648px] w-[375px] flex-col rounded-tl-[16px] rounded-bl-[16px] border-[1px] bg-white">
               <div className="p-[16px]">
-                <p className="font-ruso text-[18px] font-bold text-black-light">
-                  Chats
-                </p>
+                <p className="font-ruso text-black-light text-[18px] font-bold">Chats</p>
               </div>
               <div className="p-[8px] px-[16px]">
-                <div className="flex items-center gap-3 rounded-2xl bg-light_grey px-4 py-3 shadow-sm ring-1 ring-black/5">
+                <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
                   {/* Icon */}
                   <span className="shrink-0 text-gray-500">
                     <SearchIcon />
@@ -225,18 +213,14 @@ const ConnectClient = () => {
                   ))
                 ) : (
                   <Link href={"/connect/requests"}>
-                    <div
-                      className={
-                        "mt-32 flex w-full flex-col items-center justify-center gap-4"
-                      }
-                    >
-                      <p className={"text-center font-ruso"}>
+                    <div className={"mt-32 flex w-full flex-col items-center justify-center gap-4"}>
+                      <p className={"font-ruso text-center"}>
                         Connect with someone new today to start chatting
                       </p>
                       <button
                         type={"button"}
                         className={
-                          "h-[48px] rounded-[12px] bg-gradient-green px-[12px] shadow-green-inset hover:shadow-green-inset-strong"
+                          "bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[48px] rounded-[12px] px-[12px]"
                         }
                       >
                         <p className={"font-ruso text-white"}>Send request</p>
@@ -260,11 +244,7 @@ const ConnectClient = () => {
           </div>
         </section>
 
-        <UserInfoModal
-          userInfo={chatData}
-          toggle={toggleModal}
-          isOpen={isOpen}
-        />
+        <UserInfoModal userInfo={chatData} toggle={toggleModal} isOpen={isOpen} />
         <SettingsModal
           user_connect={connection_info}
           toggle={toggleSettingsModal}

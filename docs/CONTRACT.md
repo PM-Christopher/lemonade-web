@@ -52,7 +52,7 @@ and either widen `rules-to-type.mjs`'s rule vocabulary (if the rule is common en
 the generator) or type the field by hand at the call site with a comment explaining why.
 
 **The live backend has changed but the snapshot hasn't:** `contract-drift` only catches drift against the
-*committed* snapshot, not the live backend — there's no live-backend check in CI today (would need
+_committed_ snapshot, not the live backend — there's no live-backend check in CI today (would need
 `lemonade-backend` checked out in this repo's CI, a cross-repo access decision, not something to
 provision unilaterally). If a PR's manual testing turns up a real request/response shape mismatch against
 the actual running backend, that's a signal to refresh the snapshot, not evidence the generator is wrong.

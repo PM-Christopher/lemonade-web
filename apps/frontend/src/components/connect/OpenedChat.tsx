@@ -183,27 +183,27 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   };
 
   return (
-    <div className="flex h-[648px] w-screen flex-col border-none bg-white laptop:w-[560px] laptop:rounded-br-[16px] laptop:rounded-tr-[16px] laptop:border-b-[1px] laptop:border-r-[1px] laptop:border-t-[1px]">
+    <div className="laptop:w-[560px] laptop:rounded-br-[16px] laptop:rounded-tr-[16px] laptop:border-b-[1px] laptop:border-r-[1px] laptop:border-t-[1px] flex h-[648px] w-screen flex-col border-none bg-white">
       {/* Header */}
-      <div className="flex h-[48px] w-full items-center justify-between bg-grey-20 px-[8px] py-[12px] text-white laptop:rounded-tr-[16px]">
+      <div className="bg-grey-20 laptop:rounded-tr-[16px] flex h-[48px] w-full items-center justify-between px-[8px] py-[12px] text-white">
         <div className="flex items-center gap-2 px-[16px]">
-          <ChevronLeft className="flex cursor-pointer laptop:hidden" onClick={toggleOpenedChat} />
+          <ChevronLeft className="laptop:hidden flex cursor-pointer" onClick={toggleOpenedChat} />
           {userType?.avatar ? (
             <Image
               src={userType?.avatar}
               alt="avatar"
               width={24}
               height={24}
-              className="h-[24px] w-[24px] rounded-[8px] border-[1px] border-grey-90"
+              className="border-grey-90 h-[24px] w-[24px] rounded-[8px] border-[1px]"
             />
           ) : (
-            <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] bg-gradient-green text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+            <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
               <p className="font-ruso text-[18px]">{getInitials(userType?.username)}</p>
             </div>
           )}
-          <p className="text-[14px] font-semibold text-black-light">{userType?.username}</p>
+          <p className="text-black-light text-[14px] font-semibold">{userType?.username}</p>
           <DotIcon className="w-[4px]" />
-          <p className="text-[14px] font-semibold text-text-grey">L{userType?.lemon_id}</p>
+          <p className="text-text-grey text-[14px] font-semibold">L{userType?.lemon_id}</p>
         </div>
         <MoreIcon className="cursor-pointer" onClick={toggleModal} />
       </div>
@@ -218,7 +218,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               }`}
               key={index}
             >
-              <p className="whitespace-pre-wrap text-[14px] font-normal">{message?.message}</p>
+              <p className="text-[14px] font-normal whitespace-pre-wrap">{message?.message}</p>
               {message?.media && message?.media.length > 0 && (
                 <>
                   <Image
@@ -230,7 +230,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                   />
                 </>
               )}
-              <p className="text-right text-[12px] text-text-grey">
+              <p className="text-text-grey text-right text-[12px]">
                 {formatSingleTime(message?.created_at)}
               </p>
             </div>
@@ -241,14 +241,14 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
       {/* Mobile Input */}
       {isMobile && (
-        <div className="w-full bg-light_grey p-[16px] px-[13px] text-white">
+        <div className="bg-light_grey w-full p-[16px] px-[13px] text-white">
           <div className="flex w-full items-center gap-[8px]">
-            <div className="flex w-full flex-col justify-between gap-3 rounded-[20px] border-[1px] bg-light_grey p-2 px-[12px]">
+            <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-[20px] border-[1px] p-2 px-[12px]">
               <div className={"flex items-center"}>
                 <div className="w-full">
                   <textarea
                     ref={textareaRef}
-                    className="mt-1 max-h-[120px] min-h-[20px] w-full resize-none overflow-hidden rounded-xl border-0 bg-light_grey px-[10px] text-[14px] text-black-light focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey text-black-light mt-1 max-h-[120px] min-h-[20px] w-full resize-none overflow-hidden rounded-xl border-0 px-[10px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Reply..."
                     onChange={(e) => setText(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -259,7 +259,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 {text.trim() && (
                   <div className="flex-shrink-0">
                     {mediaLoading ? (
-                      <Loader2 className="h-5 w-5 animate-spin text-light-green-90" />
+                      <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
                     ) : (
                       <SendIcon
                         className="h-[19.25px] w-[19.72px] cursor-pointer"
@@ -321,14 +321,14 @@ const OpenedChat: React.FC<OpenChatProps> = ({
       )}
 
       {/* Desktop Input */}
-      <div className="hidden w-full bg-light_grey p-[16px] px-[13px] text-white laptop:flex">
+      <div className="bg-light_grey laptop:flex hidden w-full p-[16px] px-[13px] text-white">
         <div className="flex w-full items-center gap-[8px]">
-          <div className="flex w-full flex-col justify-between gap-3 rounded-[20px] border-[1px] bg-light_grey p-2 px-[12px]">
+          <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-[20px] border-[1px] p-2 px-[12px]">
             <div className={"flex items-center"}>
               <div className="w-full">
                 <textarea
                   ref={textareaRef}
-                  className="mt-1 max-h-[120px] min-h-[20px] w-full resize-none overflow-hidden rounded-xl border-0 bg-light_grey px-[10px] text-[14px] text-black-light focus:border-transparent focus:outline-none focus:ring-0"
+                  className="bg-light_grey text-black-light mt-1 max-h-[120px] min-h-[20px] w-full resize-none overflow-hidden rounded-xl border-0 px-[10px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Reply..."
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -340,7 +340,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 (mediaFiles.length > 0 && (
                   <div className="flex-shrink-0">
                     {mediaLoading ? (
-                      <Loader2 className="h-5 w-5 animate-spin text-light-green-90" />
+                      <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
                     ) : (
                       <SendIcon
                         className="h-[19.25px] w-[19.72px] cursor-pointer"

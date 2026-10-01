@@ -30,21 +30,19 @@ const JobsClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Jobs
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Jobs</p>
           </div>
         </div>
         <section className="mt-6 flex flex-col items-center">
-          <div className="flex w-full max-w-[1280px] flex-col gap-6 laptop:flex-row">
+          <div className="laptop:flex-row flex w-full max-w-[1280px] flex-col gap-6">
             {/* Stats Card */}
-            <div className="w-full laptop:w-[580px]">
+            <div className="laptop:w-[580px] w-full">
               <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
                 {[
                   {
@@ -56,11 +54,9 @@ const JobsClient = ({ id }: { id: number }) => {
                   { label: "Requests", value: data?.count?.sent_offers },
                 ].map((item, index, arr) => (
                   <div key={item.label} className="py-3">
-                    <p className="text-[14px] font-normal text-text-grey">
-                      {item.label}
-                    </p>
+                    <p className="text-text-grey text-[14px] font-normal">{item.label}</p>
 
-                    <p className="mt-1 text-[22px] font-semibold leading-[32px] tracking-custom">
+                    <p className="tracking-custom mt-1 text-[22px] leading-[32px] font-semibold">
                       {item.value}
                     </p>
 
@@ -74,19 +70,17 @@ const JobsClient = ({ id }: { id: number }) => {
             </div>
 
             {/* Jobs Section */}
-            <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm laptop:w-[684px]">
+            <div className="laptop:w-[684px] flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               {/* Tabs */}
-              <div className="relative flex-shrink-0 border-b border-grey-20 px-6 pt-5">
+              <div className="border-grey-20 relative flex-shrink-0 border-b px-6 pt-5">
                 <div className="relative flex justify-between">
                   {/* Animated Underline */}
                   <div
-                    className="absolute bottom-0 h-[3px] rounded-full bg-step-color transition-all duration-300"
+                    className="bg-step-color absolute bottom-0 h-[3px] rounded-full transition-all duration-300"
                     style={{
                       width: "33.33%",
                       transform: `translateX(${
-                        ["in-progress", "completed", "sent-offers"].indexOf(
-                          jobType,
-                        ) * 100
+                        ["in-progress", "completed", "sent-offers"].indexOf(jobType) * 100
                       }%)`,
                     }}
                   />
@@ -102,10 +96,10 @@ const JobsClient = ({ id }: { id: number }) => {
                       <button
                         key={tab.key}
                         onClick={() => setJobType(tab.key)}
-                        className={`flex h-10 w-full cursor-pointer items-center justify-center bg-transparent transition-all duration-200 laptop:w-[33%]`}
+                        className={`laptop:w-[33%] flex h-10 w-full cursor-pointer items-center justify-center bg-transparent transition-all duration-200`}
                       >
                         <p
-                          className={`font-sans text-[14px] leading-[21px] tracking-custom transition-all duration-200 ${isActive ? "font-semibold text-black" : "text-text-grey hover:text-black"}`}
+                          className={`tracking-custom font-sans text-[14px] leading-[21px] transition-all duration-200 ${isActive ? "font-semibold text-black" : "text-text-grey hover:text-black"}`}
                         >
                           {tab.label}
                         </p>
@@ -116,9 +110,7 @@ const JobsClient = ({ id }: { id: number }) => {
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto px-6 py-6">
-                {renderCards()}
-              </div>
+              <div className="flex-1 overflow-y-auto px-6 py-6">{renderCards()}</div>
             </div>
           </div>
         </section>

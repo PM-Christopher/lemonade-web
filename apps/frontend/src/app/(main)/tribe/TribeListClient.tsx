@@ -16,12 +16,9 @@ import dynamic from "next/dynamic";
 
 // Off the initial bundle — only needed once "Create tribe" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const CreateTribeModal = dynamic(
-  () => import("@/components/tribe/CreateTribeModal"),
-  {
-    ssr: false,
-  },
-);
+const CreateTribeModal = dynamic(() => import("@/components/tribe/CreateTribeModal"), {
+  ssr: false,
+});
 
 export default function TribeListClient() {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -66,8 +63,8 @@ export default function TribeListClient() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col items-center justify-between gap-4 border-y border-gray-200 bg-white px-6 py-3 tablet:flex-row">
-        <div className="sm:gap-6 flex gap-4">
+      <div className="tablet:flex-row flex flex-col items-center justify-between gap-4 border-y border-gray-200 bg-white px-6 py-3">
+        <div className="flex gap-4 sm:gap-6">
           {[
             { key: "discover", label: "Discover" },
             { key: "tln", label: "TLN Tribes" },
@@ -88,9 +85,7 @@ export default function TribeListClient() {
                 <span
                   className={[
                     "font-sans text-sm leading-[21px] transition-colors duration-200",
-                    isActive
-                      ? "font-semibold text-black-light"
-                      : "font-normal text-text-grey",
+                    isActive ? "text-black-light font-semibold" : "text-text-grey font-normal",
                   ].join(" ")}
                 >
                   {tab.label}
@@ -99,7 +94,7 @@ export default function TribeListClient() {
                 {/* centered underline */}
                 <span
                   className={[
-                    "h-[2px] rounded-full bg-step-color transition-all duration-300 ease-out",
+                    "bg-step-color h-[2px] rounded-full transition-all duration-300 ease-out",
                     isActive
                       ? "w-full opacity-100"
                       : "w-0 opacity-0 group-hover:w-full group-hover:opacity-60",
@@ -113,33 +108,31 @@ export default function TribeListClient() {
         {/* Search & Create Button */}
         <div className="flex items-center gap-3">
           {/* Mobile Search */}
-          <div className="block tablet:hidden">
-            <div className="flex h-[44px] w-[260px] items-center gap-3 rounded-xl bg-light_grey p-2">
+          <div className="tablet:hidden block">
+            <div className="bg-light_grey flex h-[44px] w-[260px] items-center gap-3 rounded-xl p-2">
               <SearchIcon className="text-gray-500" />
               <input
                 type="text"
                 placeholder="Search tribe"
-                className="w-full border-0 bg-light_grey text-sm placeholder-gray-500 focus:outline-none"
+                className="bg-light_grey w-full border-0 text-sm placeholder-gray-500 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Create Button */}
           <Button
-            className="auth-button flex items-center gap-2 rounded-xl border-step-color px-4 py-2 shadow-custom-bottom"
+            className="auth-button border-step-color shadow-custom-bottom flex items-center gap-2 rounded-xl px-4 py-2"
             onClick={activateModal}
           >
-            <span className="text-base font-medium">
-              {isMobile ? "+" : "+ Create Tribe"}
-            </span>
+            <span className="text-base font-medium">{isMobile ? "+" : "+ Create Tribe"}</span>
           </Button>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="mt-4 flex flex-col justify-center gap-6 px-4 tablet:flex-row tablet:px-10">
+      <div className="tablet:flex-row tablet:px-10 mt-4 flex flex-col justify-center gap-6 px-4">
         {/* Tribe List Section */}
-        <section className="min-h-[200px] w-full rounded-xl bg-white p-6 shadow-div-shadow-2 tablet:w-[700px]">
+        <section className="shadow-div-shadow-2 tablet:w-[700px] min-h-[200px] w-full rounded-xl bg-white p-6">
           {loading ? (
             <TribeListSkeleton count={4} />
           ) : tribes?.length > 0 ? (
@@ -152,25 +145,23 @@ export default function TribeListClient() {
             </div>
           ) : (
             <div className="flex h-full items-center justify-center">
-              <p className="text-lg font-medium text-gray-500">
-                No tribes found
-              </p>
+              <p className="text-lg font-medium text-gray-500">No tribes found</p>
             </div>
           )}
         </section>
 
         {/* Search Sidebar (Desktop) */}
-        <section className="hidden h-fit w-[420px] rounded-xl bg-white p-6 tablet:block">
+        <section className="tablet:block hidden h-fit w-[420px] rounded-xl bg-white p-6">
           <div className="flex flex-col gap-4">
             {/* Search Input */}
             <div className="relative w-full">
               {/* Search Input */}
-              <div className="flex items-center gap-3 rounded-xl bg-light_grey p-2">
+              <div className="bg-light_grey flex items-center gap-3 rounded-xl p-2">
                 <SearchIcon className="text-gray-500" />
                 <input
                   id="search"
                   type="text"
-                  className="w-full border-0 bg-light_grey text-sm placeholder-gray-500 focus:outline-none"
+                  className="bg-light_grey w-full border-0 text-sm placeholder-gray-500 focus:outline-none"
                   placeholder="Search tribe"
                   value={search}
                   onChange={handleTribeSearch}
@@ -248,9 +239,7 @@ export default function TribeListClient() {
                       />
                     </svg>
                   </div>
-                  <p className="mb-1 text-sm font-medium text-gray-900">
-                    No tribes found
-                  </p>
+                  <p className="mb-1 text-sm font-medium text-gray-900">No tribes found</p>
                   <p className="text-center text-xs text-gray-500">
                     Try a different name or keyword.
                   </p>
@@ -273,9 +262,7 @@ export default function TribeListClient() {
                       />
                     </svg>
                   </div>
-                  <p className="mb-1 text-sm font-medium text-gray-900">
-                    No recent searches
-                  </p>
+                  <p className="mb-1 text-sm font-medium text-gray-900">No recent searches</p>
                   <p className="text-center text-xs text-gray-500">
                     Your search history will appear here.
                   </p>

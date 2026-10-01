@@ -229,11 +229,13 @@ describe("createApiClient", () => {
     // Cookie-header array handling is covered separately and directly by
     // getSetCookieValue's own tests below, which don't go through this
     // mock library at all.
-    mock.onGet("http://api.test/wallet").reply(
-      200,
-      { success: true, message: "ok", data: { balance: 500 } },
-      { "set-cookie": "lemonade-network-signed-in=1; Path=/; HttpOnly" },
-    );
+    mock
+      .onGet("http://api.test/wallet")
+      .reply(
+        200,
+        { success: true, message: "ok", data: { balance: 500 } },
+        { "set-cookie": "lemonade-network-signed-in=1; Path=/; HttpOnly" },
+      );
 
     const client = createApiClient({ baseURL: "http://api.test" });
     const result = await client.requestWithHeaders<{ balance: number }>({
@@ -253,7 +255,9 @@ describe("getSetCookieValue", () => {
   });
 
   it("returns an empty string for a cleared cookie, not undefined", () => {
-    const headers = { "set-cookie": ["lemonade-network-signed-in=; expires=Thu, 01 Jan 1970 00:00:00 GMT"] };
+    const headers = {
+      "set-cookie": ["lemonade-network-signed-in=; expires=Thu, 01 Jan 1970 00:00:00 GMT"],
+    };
     expect(getSetCookieValue(headers, "lemonade-network-signed-in")).toBe("");
   });
 

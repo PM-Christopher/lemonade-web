@@ -11,9 +11,24 @@
 // is the target every migrated feature's queries/mutations should call.
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
 
+// Same list as middleware.ts PUBLIC_PATHS. A 401 on one of these (a stale
+// persisted session posting a device token from the login page) must not
+// navigate to /login again, or the page reloads forever.
+const AUTH_PATHS = new Set([
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
+  "/verify-code",
+  "/profile-setup",
+]);
+
 export const browserApi: ApiClient = createApiClient({
   baseURL: "/api/v1",
   onUnauthorized: () => {
-    if (typeof window !== "undefined") window.location.href = "/login";
+    if (typeof window === "undefined") return;
+    if (AUTH_PATHS.has(window.location.pathname)) return;
+    window.location.href = "/login";
   },
 });

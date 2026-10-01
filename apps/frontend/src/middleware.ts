@@ -102,7 +102,8 @@ export function middleware(req: NextRequest) {
   // fallback so a session that predates this cookie isn't redirected once
   // just because it hasn't made an authenticated call yet to pick it up.
   const signedIn =
-    Boolean(req.cookies.get(SIGNED_IN_COOKIE)?.value) || Boolean(req.cookies.get(USER_TOKEN_COOKIE)?.value);
+    Boolean(req.cookies.get(SIGNED_IN_COOKIE)?.value) ||
+    Boolean(req.cookies.get(USER_TOKEN_COOKIE)?.value);
   if (signedIn) return next();
 
   const loginUrl = req.nextUrl.clone();

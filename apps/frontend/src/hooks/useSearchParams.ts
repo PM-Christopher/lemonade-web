@@ -31,9 +31,14 @@ const useNxtSearchParams = () => {
   const setSearchParams = useCallback(
     (paramsObject: Record<string, string | undefined>) => {
       const newQueryString = createQueryString(paramsObject);
-      router.push(`${pathname}?${newQueryString}`);
+      // Already there — a push of the current path refreshes the page, and
+      // the search effects call this on mount with an empty value.
+      if (newQueryString === searchParams.toString()) return;
+      // An empty query must be the bare path. Pushing a trailing "?" leaves
+      // the previous search params in place.
+      router.push(newQueryString ? `${pathname}?${newQueryString}` : pathname);
     },
-    [createQueryString, router, pathname],
+    [createQueryString, router, pathname, searchParams],
   );
 
   return { nxtSearchParams: searchParams, setSearchParams };

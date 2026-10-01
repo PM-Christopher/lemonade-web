@@ -27,6 +27,6 @@ export interface AnnouncementDetailResponse {
 export const announcementsApi = {
   getAnnouncements: () => browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.LIST),
 
-  getAnnouncement: (id: number) =>
+  getAnnouncement: (id: string | number) =>
     browserApi.get<AnnouncementDetailResponse>(buildPath(adminAnnouncementRoutes.SHOW, { id })),
 };

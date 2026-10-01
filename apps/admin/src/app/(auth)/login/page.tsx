@@ -1,13 +1,12 @@
 "use client";
-import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import Image from "next/image";
 import { Card, CardContent, Input, Label } from "@lemonade/ui";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { loginSchema } from "@lemonade/validation";
 import { useLoginMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
@@ -16,13 +15,8 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 function LoginPage({}) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [cookie, setCookie] = useCookies(["newToken"]);
+  const [, setCookie] = useCookies(["newToken"]);
   const loginMutation = useLoginMutation();
-
-  const loginSchema = yup.object({
-    email: yup.string().email("Please enter a valid email").required("Email is required"),
-    password: yup.string().min(8).required("Password is required"),
-  });
 
   const formik = useFormik({
     initialValues: {
@@ -30,6 +24,7 @@ function LoginPage({}) {
       password: "",
     },
     validationSchema: loginSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       try {
         const result = await loginMutation.mutateAsync(values);
@@ -59,11 +54,13 @@ function LoginPage({}) {
         setTimeout(() => {
           router.push("/");
         }, 500);
-      } catch (error: any) {
+      } catch (error) {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: error?.message || "Something went wrong. Please try again.",
+            message:
+              (error instanceof Error && error.message) ||
+              "Something went wrong. Please try again.",
             type: "error",
           }),
         );
@@ -72,26 +69,26 @@ function LoginPage({}) {
   });
   return (
     <AuthLayout>
-      <section className="h-full min-h-screen overflow-hidden bg-light-grey">
+      <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
             <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
           </div>
         </div>
-        <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
+        <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
           <form onSubmit={formik.handleSubmit}>
-            <Card className="w-full rounded-[16px] border-none p-[24px] shadow-sm tablet:w-[480px]">
-              <CardContent className="grid gap-[24px] tablet:gap-[40px]">
+            <Card className="tablet:w-[480px] w-full rounded-[16px] border-none p-[24px] shadow-sm">
+              <CardContent className="tablet:gap-[40px] grid gap-[24px]">
                 <div>
                   <p className="font-ruso text-[24px] font-normal">Login</p>
-                  <p className="text-[14px] font-normal text-text-grey">
+                  <p className="text-text-grey text-[14px] font-normal">
                     Login with your email address and password.
                   </p>
                 </div>
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Email address
                   </Label>
@@ -99,7 +96,7 @@ function LoginPage({}) {
                     id="email"
                     type="email"
                     placeholder="e.g. Janedoe@example.com"
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -108,20 +105,20 @@ function LoginPage({}) {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="password"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Password
                   </Label>
                   <Input
                     id="password"
                     type="password"
-                    className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
                 </div>
-                <p className="text-[16px] font-medium text-light-green underline">
+                <p className="text-light-green text-[16px] font-medium underline">
                   Forgot password
                 </p>
                 <FormikButton

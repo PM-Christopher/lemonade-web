@@ -8,7 +8,7 @@ import { useDeleteEventMutation } from "@/features/events/mutations";
 interface DeactivateModalProps {
   isOpen: boolean;
   toggle: () => void;
-  id?: number;
+  id?: string | number;
 }
 
 function DeleteModal({ isOpen, toggle, id }: DeactivateModalProps) {

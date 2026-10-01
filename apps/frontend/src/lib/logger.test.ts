@@ -20,7 +20,11 @@ describe("logger", () => {
 
     expect(errorSpy).not.toHaveBeenCalled();
     const entry = JSON.parse(warnSpy.mock.calls[0][0] as string);
-    expect(entry).toMatchObject({ level: "info", message: "cache warmed", context: { route: "/event" } });
+    expect(entry).toMatchObject({
+      level: "info",
+      message: "cache warmed",
+      context: { route: "/event" },
+    });
     expect(typeof entry.timestamp).toBe("string");
   });
 
@@ -29,7 +33,11 @@ describe("logger", () => {
 
     expect(warnSpy).not.toHaveBeenCalled();
     const entry = JSON.parse(errorSpy.mock.calls[0][0] as string);
-    expect(entry).toMatchObject({ level: "error", message: "refresh failed", context: { status: 401 } });
+    expect(entry).toMatchObject({
+      level: "error",
+      message: "refresh failed",
+      context: { status: 401 },
+    });
   });
 
   it("redacts sensitive keys at the top level and nested", () => {

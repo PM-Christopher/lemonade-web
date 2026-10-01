@@ -9,10 +9,7 @@ import { useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import BusinessFilter from "@/components/business/Modals/BusinessFilter";
 import { RootState } from "@/redux/store";
-import {
-  useBusinessesQuery,
-  useListingsQuery,
-} from "@/features/business/queries";
+import { useBusinessesQuery, useListingsQuery } from "@/features/business/queries";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import dynamic from "next/dynamic";
 
@@ -39,18 +36,16 @@ const BusinessListClient = () => {
   const [businessFilter, setBusinessFilter] = useState(false);
 
   const { selectedJob: job } = useSelector((state: RootState) => state.temp);
-  const { data: businessesData, isLoading: businessesLoading } =
-    useBusinessesQuery({
-      enabled: menuOption === "business",
-    });
+  const { data: businessesData, isLoading: businessesLoading } = useBusinessesQuery({
+    enabled: menuOption === "business",
+  });
   const { data: listingsData, isLoading: listingsLoading } = useListingsQuery({
     enabled: menuOption === "listings",
   });
   const businesses = businessesData?.businesses ?? [];
   const featured = businessesData?.featured ?? [];
   const listings = listingsData?.listings ?? [];
-  const loading =
-    menuOption === "business" ? businessesLoading : listingsLoading;
+  const loading = menuOption === "business" ? businessesLoading : listingsLoading;
   const jobLoading = false;
 
   const switchOption = (option: string) => {
@@ -72,44 +67,22 @@ const BusinessListClient = () => {
   const renderView = () => {
     switch (menuOption) {
       case "business":
-        return (
-          <BusinessSection
-            businesses={businesses}
-            loading={loading}
-            featured={featured}
-          />
-        );
+        return <BusinessSection businesses={businesses} loading={loading} featured={featured} />;
       case "listings":
         return <ListingSection businesses={listings} loading={loading} />;
       default:
-        return (
-          <BusinessSection
-            businesses={businesses}
-            featured={featured}
-            loading={loading}
-          />
-        );
+        return <BusinessSection businesses={businesses} featured={featured} loading={loading} />;
     }
   };
 
   const renderSubMenu = () => {
     switch (menuOption) {
       case "business":
-        return (
-          <BusinessSubMenu
-            toggle={toggleMenu}
-            toggleBusiness={toggleBusinessFilter}
-          />
-        );
+        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
       case "listings":
         return <></>;
       default:
-        return (
-          <BusinessSubMenu
-            toggle={toggleMenu}
-            toggleBusiness={toggleBusinessFilter}
-          />
-        );
+        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
     }
   };
 
@@ -121,16 +94,14 @@ const BusinessListClient = () => {
           isOpen={isOpen}
           detailsToggle={toggleServiceDetailsMenu}
         />
-        <div className="flex flex-col justify-between gap-2 border-b-[1px] border-t-[1px] bg-white p-5 px-10 laptop:flex-row laptop:items-center">
-          <div className="sm:text-base relative inline-flex rounded-xl bg-mid-grey p-[0.35em] text-sm">
+        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between gap-2 border-t-[1px] border-b-[1px] bg-white p-5 px-10">
+          <div className="bg-mid-grey relative inline-flex rounded-xl p-[0.35em] text-sm sm:text-base">
             {/* Sliding pill */}
             <span
               className={[
                 "absolute inset-[0.35em] w-[calc(50%-0.35em)] rounded-[0.7em] bg-white",
                 "transition-transform duration-300 ease-out",
-                menuOption === "listings"
-                  ? "translate-x-full"
-                  : "translate-x-0",
+                menuOption === "listings" ? "translate-x-full" : "translate-x-0",
               ].join(" ")}
             />
 
@@ -153,9 +124,7 @@ const BusinessListClient = () => {
                   <span
                     className={[
                       "font-sans leading-none transition-colors duration-200",
-                      isActive
-                        ? "font-semibold text-gray-900"
-                        : "font-normal text-text-grey",
+                      isActive ? "font-semibold text-gray-900" : "text-text-grey font-normal",
                     ].join(" ")}
                   >
                     {tab.label}

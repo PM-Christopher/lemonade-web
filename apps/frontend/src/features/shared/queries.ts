@@ -4,8 +4,7 @@ import { sharedApi } from "./api";
 export const sharedKeys = {
   all: () => ["shared"] as const,
   banks: () => [...sharedKeys.all(), "banks"] as const,
-  businessCategories: () =>
-    [...sharedKeys.all(), "businessCategories"] as const,
+  businessCategories: () => [...sharedKeys.all(), "businessCategories"] as const,
 };
 
 // Reference data (the servicing-bank list) — CLAUDE.md's "reference data"

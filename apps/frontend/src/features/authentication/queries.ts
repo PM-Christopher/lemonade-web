@@ -8,8 +8,7 @@ export const authKeys = {
   all: () => ["auth"] as const,
   currentUser: () => [...authKeys.all(), "currentUser"] as const,
   subscriptionPlans: () => [...authKeys.all(), "subscriptionPlans"] as const,
-  notificationSettings: () =>
-    [...authKeys.all(), "notificationSettings"] as const,
+  notificationSettings: () => [...authKeys.all(), "notificationSettings"] as const,
   subscription: () => [...authKeys.all(), "subscription"] as const,
   billingHistory: () => [...authKeys.all(), "billingHistory"] as const,
 };

@@ -23,10 +23,10 @@ interface MailpitMessage {
   HTML?: string;
 }
 
-// The signup response comes back before SendOtpNotification's queued mail
-// actually lands in Mailpit — poll for it rather than assuming it's
-// instant. app/Listeners/Shared/SendOtpNotification.php sends
-// "Your Lemonade code: 1234" (resources/views/emails/otp.blade.php).
+// The signup response comes back before the mail is visible in Mailpit —
+// poll for it rather than assuming it's instant. The shared layout
+// (resources/views/emails/layout.blade.php) prints the code on its own
+// line after "If you have a code".
 async function readSignupOtp(toEmail: string): Promise<string> {
   const deadline = Date.now() + 15_000;
 
@@ -38,7 +38,8 @@ async function readSignupOtp(toEmail: string): Promise<string> {
     if (match) {
       const full = await fetch(`${MAILPIT_URL}/api/v1/message/${match.ID}`);
       const message = (await full.json()) as MailpitMessage;
-      const code = /Your Lemonade code:\s*(\d{4})/.exec(message.Text ?? message.HTML ?? "");
+      const source = message.Text ?? message.HTML ?? "";
+      const code = /If you have a code\s+(\d{4})/.exec(source);
       if (code) return code[1];
     }
 
@@ -51,6 +52,7 @@ async function readSignupOtp(toEmail: string): Promise<string> {
 }
 
 test("sign up, verify email with a real OTP, and complete profile setup", async ({ page }) => {
+  test.setTimeout(90_000);
   const uniqueSuffix = Date.now();
   const email = `e2e-signup-${uniqueSuffix}@example.com`;
   const password = "TestPass123!";

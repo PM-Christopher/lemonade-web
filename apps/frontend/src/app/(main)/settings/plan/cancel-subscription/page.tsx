@@ -28,13 +28,13 @@ const CancelSubscriptionPage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
+        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
+            <p className="tracking-custom font-sans text-[16px] font-semibold">
               Cancel subscription
             </p>
           </div>

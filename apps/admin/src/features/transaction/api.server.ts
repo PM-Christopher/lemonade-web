@@ -21,7 +21,5 @@ export const transactionServerApi = {
     ),
 
   getEventDetail: (id: number | string) =>
-    backendApi.get<TransactionEventDetailResponse>(
-      buildPath(adminTransactionRoutes.EVENT, { id }),
-    ),
+    backendApi.get<TransactionEventDetailResponse>(buildPath(adminTransactionRoutes.EVENT, { id })),
 };

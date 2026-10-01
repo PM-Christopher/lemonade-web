@@ -9,10 +9,7 @@
         "preset": "desktop",
         "onlyCategories": ["performance"]
       },
-      "url": [
-        "http://localhost:4101/login",
-        "http://localhost:4101/forgot-password"
-      ]
+      "url": ["http://localhost:4101/login", "http://localhost:4101/forgot-password"]
     },
     "assert": {
       "assertions": {

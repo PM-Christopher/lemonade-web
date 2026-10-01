@@ -5,6 +5,7 @@ import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatCountry } from "@lemonade/domain";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { getSafeImageSrc } from "@/lib/helper";
 
 type BusinessCardIF = {
   business: BusinessInterface;
@@ -12,32 +13,32 @@ type BusinessCardIF = {
 
 const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
   return (
-    <div className="flex h-full flex-col rounded-xl border-2 border-mid-grey shadow-lg">
+    <div className="border-mid-grey flex h-full flex-col rounded-xl border-2 shadow-lg">
       <div className="flex flex-1 flex-col gap-[20px] p-[16px]">
         {/* Top Section - Business Info */}
         <div className="">
           <div className="flex justify-between">
-            <div className="flex flex-row items-center justify-center gap-[8px] laptop:flex-col laptop:items-start laptop:gap-[10px]">
+            <div className="laptop:flex-col laptop:items-start laptop:gap-[10px] flex flex-row items-center justify-center gap-[8px]">
               <Image
-                src={business.image || "/images/business_empty.png"}
+                src={getSafeImageSrc(business.image, "/images/business_empty.png")}
                 alt="Overlay Image"
-                className="h-[40px] w-[40px] rounded-xl border border-step-color object-cover"
+                className="border-step-color h-[40px] w-[40px] rounded-xl border object-cover"
                 width={40}
                 height={40}
               />
               <div className="flex flex-col">
-                <p className="text-[14px] font-semi-normal">{business.name}</p>
-                <p className="text-[12px] font-normal text-text-grey">
+                <p className="font-semi-normal text-[14px]">{business.name}</p>
+                <p className="text-text-grey text-[12px] font-normal">
                   {business.city}, {formatCountry(business.country)}
                 </p>
               </div>
             </div>
-            <div className="flex h-fit items-center gap-1 rounded-xl bg-mid-grey p-2">
+            <div className="bg-mid-grey flex h-fit items-center gap-1 rounded-xl p-2">
               <div>
                 <Image src={medal} alt="medal" width={16} />
               </div>
               <div>
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-primary-black">
+                <p className="font-semi-normal text-primary-black font-sans text-[14px] leading-[21px]">
                   {business.rating}
                 </p>
               </div>
@@ -73,14 +74,14 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
           {business.services?.length > 0 && (
             <>
-              <div className="flex-shrink-0 rounded-xl bg-grey-20 px-2 py-0.5">
-                <p className="truncate text-sm font-semi-normal text-text-grey">
+              <div className="bg-grey-20 flex-shrink-0 rounded-xl px-2 py-0.5">
+                <p className="font-semi-normal text-text-grey truncate text-sm">
                   {business.services[0]}
                 </p>
               </div>
               {business.services.length > 1 && (
-                <div className="flex-shrink-0 rounded-xl bg-grey-20 px-2 py-0.5">
-                  <p className="text-sm font-semi-normal text-text-grey">
+                <div className="bg-grey-20 flex-shrink-0 rounded-xl px-2 py-0.5">
+                  <p className="font-semi-normal text-text-grey text-sm">
                     {"+" + (business.services.length - 1)}
                   </p>
                 </div>
@@ -90,7 +91,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
 
           {/* ...existing service_rate code... */}
           {business.service_rate && (
-            <p className="flex-shrink-0 whitespace-nowrap text-sm font-semibold">
+            <p className="flex-shrink-0 text-sm font-semibold whitespace-nowrap">
               {"N " + formatNumberWithCommas(business.service_rate) + "/hr"}
             </p>
           )}

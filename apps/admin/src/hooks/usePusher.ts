@@ -1,12 +1,9 @@
 "use client";
 import { pusherCon, pusherConfig } from "@/config/pusherConfig";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 
 export const usePusher = (channelName: string, eventName: string) => {
-  const [data, setData] = useState<any>(null);
-  const { user } = useAppSelector((state: any) => state.auth);
-  const dispatch = useAppDispatch();
+  const [data, setData] = useState<unknown>(null);
 
   useEffect(() => {
     const isUserChannel = channelName === "user";
@@ -16,7 +13,7 @@ export const usePusher = (channelName: string, eventName: string) => {
     const subscribeName = isUserChannel ? channelName : `private-${channelName}`;
     const channel = pusher.subscribe(subscribeName);
 
-    const eventHandler = (receivedData: any) => {
+    const eventHandler = (receivedData: unknown) => {
       setData(receivedData);
       if (channelName === "chat-channel") {
       }

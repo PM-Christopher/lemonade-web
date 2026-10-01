@@ -6,7 +6,7 @@ export const eventKeys = {
   lists: () => [...eventKeys.all(), "list"] as const,
   list: (trxType: string) => [...eventKeys.lists(), trxType] as const,
   details: () => [...eventKeys.all(), "detail"] as const,
-  detail: (id: number) => [...eventKeys.details(), id] as const,
+  detail: (id: string | number) => [...eventKeys.details(), id] as const,
 };
 
 export const promotionKeys = {
@@ -27,10 +27,13 @@ export function useEventListQuery(trxType: string, options?: { enabled?: boolean
   });
 }
 
-export function useEventDetailQuery(id: number | undefined, options?: { enabled?: boolean }) {
+export function useEventDetailQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: eventKeys.detail(id ?? 0),
-    queryFn: () => eventsApi.getEventDetail(id as number),
+    queryFn: () => eventsApi.getEventDetail(id as string | number),
     staleTime: 30_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });

@@ -7,9 +7,9 @@ export const transactionKeys = {
     page
       ? ([...transactionKeys.all(), "list", trxType, page] as const)
       : ([...transactionKeys.all(), "list", trxType] as const),
-  subscriptionDetail: (id: number) =>
+  subscriptionDetail: (id: string | number) =>
     [...transactionKeys.all(), "subscription-detail", id] as const,
-  eventDetail: (id: number) => [...transactionKeys.all(), "event-detail", id] as const,
+  eventDetail: (id: string | number) => [...transactionKeys.all(), "event-detail", id] as const,
 };
 
 /** Financial reporting data, not a live balance — but still money-adjacent, staleTime 0 like wallet. */
@@ -30,24 +30,24 @@ export function useTransactionDataQuery(
 }
 
 export function usePlanSubscriptionDetailQuery(
-  id: number | undefined,
+  id: string | number | undefined,
   options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: transactionKeys.subscriptionDetail(id ?? 0),
-    queryFn: () => transactionApi.getPlanSubscription(id as number),
+    queryFn: () => transactionApi.getPlanSubscription(id as string | number),
     staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
   });
 }
 
 export function useTransactionEventDetailQuery(
-  id: number | undefined,
+  id: string | number | undefined,
   options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: transactionKeys.eventDetail(id ?? 0),
-    queryFn: () => transactionApi.getEventDetail(id as number),
+    queryFn: () => transactionApi.getEventDetail(id as string | number),
     staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
   });

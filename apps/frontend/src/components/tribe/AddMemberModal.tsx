@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import {
-  Button,
-  Label,
-  Input,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { PlusIcon, XIcon } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { useAddTribeMemberMutation } from "@/features/tribes/mutations";
@@ -82,18 +75,14 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">
-                Add member
-              </p>
+              <p className="font-sans text-[18px] leading-[27px] font-semibold">Add member</p>
             </div>
             <div>
               <Button
-                className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
                 onClick={handleAddTribeMember}
               >
-                <p className="font-sans text-[12px] font-semi-normal">
-                  Add member
-                </p>
+                <p className="font-semi-normal font-sans text-[12px]">Add member</p>
               </Button>
             </div>
           </div>
@@ -101,39 +90,34 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
             <div className="mt-[24px] grid gap-1">
               <Label
                 htmlFor="username"
-                className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                className="text-text-grey text-[14px] leading-[16.8px] font-normal"
               >
                 Username
               </Label>
-              <div className="flex h-[48px] items-center rounded-[12px] border-[1.5px] border-step-color bg-light_grey px-2">
+              <div className="border-step-color bg-light_grey flex h-[48px] items-center rounded-[12px] border-[1.5px] px-2">
                 <input
                   id="username"
                   type="text"
                   placeholder="Enter username"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  className="w-full border-none bg-transparent shadow-none focus:border-transparent focus:outline-none focus:ring-0"
+                  className="w-full border-none bg-transparent shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
                 />
-                <PlusIcon
-                  className="cursor-pointer text-step-color"
-                  onClick={handleAddUsername}
-                />
+                <PlusIcon className="text-step-color cursor-pointer" onClick={handleAddUsername} />
               </div>
             </div>
-            <div className="border-b-[2px] border-b-grey-20 py-4"></div>
+            <div className="border-b-grey-20 border-b-[2px] py-4"></div>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {usernames.map((username, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-[8px] rounded-[8px] bg-grey-20 px-[12px] py-[8px]"
+                  className="bg-grey-20 flex items-center gap-[8px] rounded-[8px] px-[12px] py-[8px]"
                 >
-                  <p className="text-[14px] font-medium text-text-grey">
-                    {username}
-                  </p>
+                  <p className="text-text-grey text-[14px] font-medium">{username}</p>
                   {/* Clicking the XIcon removes the username */}
                   <XIcon
                     onClick={() => handleRemoveUsername(index)}
-                    className="w-[16px] cursor-pointer text-text-grey"
+                    className="text-text-grey w-[16px] cursor-pointer"
                   />
                 </div>
               ))}

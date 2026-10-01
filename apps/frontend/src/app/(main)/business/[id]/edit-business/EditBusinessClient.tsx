@@ -73,10 +73,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
       if (!formik.values.services.includes(inputValue.trim())) {
         // Update Formik field for services
-        formik.setFieldValue("services", [
-          ...formik.values.services,
-          inputValue.trim(),
-        ]);
+        formik.setFieldValue("services", [...formik.values.services, inputValue.trim()]);
       }
       setInputValue(""); // Clear input field
     }
@@ -84,9 +81,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
 
   const removeService = (serviceToRemove: string) => {
     // Remove service and update Formik field
-    const updatedServices = formik.values.services.filter(
-      (service) => service !== serviceToRemove,
-    );
+    const updatedServices = formik.values.services.filter((service) => service !== serviceToRemove);
     formik.setFieldValue("services", updatedServices);
   };
 
@@ -107,10 +102,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       .required("Services is required")
       .min(1, "At least one service is required"),
     service_rate: yup.number().nullable(),
-    gallery: yup
-      .array()
-      .of(yup.string())
-      .required("Portfolio gallery is required"),
+    gallery: yup.array().of(yup.string()).required("Portfolio gallery is required"),
     email: yup.string().email().required("Email is required"),
     phone_number: yup.string().required("Phone number is required"),
     website_url: yup
@@ -135,6 +127,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       website_url: "",
     },
     validationSchema: editBusinessSchema,
+    validateOnMount: true,
     onSubmit: (values) => {
       updateListingMutation.mutate(values, {
         onSuccess: () => {
@@ -185,22 +178,20 @@ const EditBusinessClient = ({ id }: { id: number }) => {
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Edit business
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Edit business</p>
           </div>
         </div>
-        <section className="mt-0 flex flex-col items-center laptop:mt-4">
+        <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           <form onSubmit={formik.handleSubmit}>
-            <div className="mt-0 flex w-full flex-col rounded-[12px] bg-white p-[48px] laptop:mt-10 laptop:w-[640px]">
-              <p className="font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+            <div className="laptop:mt-10 laptop:w-[640px] mt-0 flex w-full flex-col rounded-[12px] bg-white p-[48px]">
+              <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                 BUSINESS DETAILS
               </p>
               <SingleFileUploader
@@ -211,14 +202,12 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 title="Upload business image"
               />
               {formik.errors.image ? (
-                <p className="text-[12px] text-[#FF8D8D]">
-                  {formik.errors.image}
-                </p>
+                <p className="text-[12px] text-[#FF8D8D]">{formik.errors.image}</p>
               ) : null}
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="business_name"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Business name
                 </Label>
@@ -226,7 +215,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   id="business_name"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   name="business_name"
                   value={formik.values.name}
                   onChange={(e) => {
@@ -234,15 +223,13 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   }}
                 />
                 {formik.errors.name ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.name}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.name}</p>
                 ) : null}
               </div>
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Business category
                 </Label>
@@ -253,41 +240,37 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   }}
                   defaultValue={selectedFrameworks}
                   placeholder="Select Category"
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey shadow-none"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0 shadow-none"
                 />
                 {formik.errors.categories ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.categories}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.categories}</p>
                 ) : null}
               </div>
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Business description
                 </Label>
                 <textarea
-                  className="form-font h-[131px] resize-none rounded-xl border-0 bg-light_grey p-4"
+                  className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
                   value={formik.values.description}
                   onChange={(e) => {
                     formik.setFieldValue("description", e.target.value);
                   }}
                 ></textarea>
                 {formik.errors.description ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.description}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.description}</p>
                 ) : null}
               </div>
-              <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                 BUSINESS ADDRESS
               </p>
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="city"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   City
                 </Label>
@@ -295,28 +278,26 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   id="city"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   value={formik.values.city}
                   onChange={(e) => {
                     formik.setFieldValue("city", e.target.value);
                   }}
                 />
                 {formik.errors.city ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.city}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
                 ) : null}
               </div>
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="country"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Country
                 </Label>
                 <select
                   id="country"
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                   value={formik.values.country}
                   onChange={(e) => {
                     formik.setFieldValue("country", e.target.value);
@@ -330,18 +311,16 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   ))}
                 </select>
                 {formik.errors.country ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.country}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
                 ) : null}
               </div>
-              <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                 SERVICE DETAILS
               </p>
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="services"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Services
                 </Label>
@@ -350,27 +329,23 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   type="text"
                   placeholder=""
                   value={inputValue}
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={addService}
                 />
                 {formik.errors.services ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.services}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.services}</p>
                 ) : null}
-                <p className="my-[5px] text-[12px] text-text-grey">
+                <p className="text-text-grey my-[5px] text-[12px]">
                   Click <i>enter</i> to add service
                 </p>
                 <div className="mt-[8px] flex flex-wrap gap-[4px]">
                   {formik.values.services.map((service, index) => (
                     <div
-                      className="flex items-center gap-[8px] rounded-[8px] bg-grey-20 p-[8px] px-[12px]"
+                      className="bg-grey-20 flex items-center gap-[8px] rounded-[8px] p-[8px] px-[12px]"
                       key={index}
                     >
-                      <p className="text-[14px] font-semi-normal text-text-grey">
-                        {service}
-                      </p>
+                      <p className="font-semi-normal text-text-grey text-[14px]">{service}</p>
                       <CloseIcon
                         className="h-[8px] w-[8px] cursor-pointer"
                         onClick={() => removeService(service)}
@@ -382,7 +357,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="city"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Service Rate (Optional)
                 </Label>
@@ -390,14 +365,14 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   id="city"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   value={formik.values.service_rate}
                   onChange={(e) => {
                     formik.setFieldValue("service_rate", e.target.value);
                   }}
                 />
               </div>
-              <p className="mt-[24px] text-[14px] font-normal text-text-grey">
+              <p className="text-text-grey mt-[24px] text-[14px] font-normal">
                 Portfolio gallery <span>(Optional)</span>
               </p>
               <MultipleFileUploader
@@ -407,11 +382,11 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 images={formik.values.gallery}
                 title="Upload multiple images"
               />
-              <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                 CONTACT DETAILS
               </p>
               <div className="grid grid-cols-1">
-                <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                   <div>
                     <MessageIcon />
                   </div>
@@ -419,7 +394,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full rounded-xl border-0 bg-light_grey font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                      className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Email address"
                       value={formik.values.email}
                       onChange={(e) => {
@@ -429,13 +404,11 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </div>
                 </div>
                 {formik.errors.email ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.email}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
                 ) : null}
               </div>
               <div className="grid grid-cols-1">
-                <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                   <div>
                     <PhoneIcon />
                   </div>
@@ -443,7 +416,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full rounded-xl border-0 bg-light_grey font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                      className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Phone number"
                       value={formik.values.phone_number}
                       onChange={(e) => {
@@ -453,13 +426,11 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </div>
                 </div>
                 {formik.errors.phone_number ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.phone_number}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.phone_number}</p>
                 ) : null}
               </div>
               <div className="grid grid-cols-1">
-                <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                   <div>
                     <WebIcon />
                   </div>
@@ -467,7 +438,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full rounded-xl border-0 bg-light_grey font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                      className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Website URL"
                       value={formik.values.website_url}
                       onChange={(e) => {
@@ -477,9 +448,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </div>
                 </div>
                 {formik.errors.website_url ? (
-                  <p className="text-[12px] text-[#FF8D8D]">
-                    {formik.errors.website_url}
-                  </p>
+                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.website_url}</p>
                 ) : null}
               </div>
               <FormikButton

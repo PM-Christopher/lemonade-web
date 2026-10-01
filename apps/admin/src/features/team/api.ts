@@ -37,7 +37,7 @@ export interface CreateTeamMemberResponse {
 export const teamApi = {
   getTeamData: () => browserApi.get<TeamListResponse>(adminTeamMembersRoutes.LIST),
 
-  getTeamDetail: (id: number) =>
+  getTeamDetail: (id: string | number) =>
     browserApi.get<TeamDetailResponse>(buildPath(adminTeamMembersRoutes.SHOW, { id })),
 
   // No trailing slash — adminTeamMembersRoutes.CREATE already has none, and

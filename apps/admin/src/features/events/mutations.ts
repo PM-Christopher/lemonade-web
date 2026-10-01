@@ -2,11 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { eventsApi, promotionsApi, type PromotionPayload } from "./api";
 import { eventKeys, promotionKeys } from "./queries";
 
-export function useSuspendEventMutation(id: number | undefined) {
+export function useSuspendEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => eventsApi.suspendEvent(id as number),
+    mutationFn: () => eventsApi.suspendEvent(id as string | number),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
@@ -14,11 +14,11 @@ export function useSuspendEventMutation(id: number | undefined) {
   });
 }
 
-export function useActivateEventMutation(id: number | undefined) {
+export function useActivateEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => eventsApi.activateEvent(id as number),
+    mutationFn: () => eventsApi.activateEvent(id as string | number),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
@@ -26,11 +26,11 @@ export function useActivateEventMutation(id: number | undefined) {
   });
 }
 
-export function useApproveEventMutation(id: number | undefined) {
+export function useApproveEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => eventsApi.approveEvent(id as number),
+    mutationFn: () => eventsApi.approveEvent(id as string | number),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
@@ -38,11 +38,11 @@ export function useApproveEventMutation(id: number | undefined) {
   });
 }
 
-export function useRejectEventMutation(id: number | undefined) {
+export function useRejectEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (reason: string) => eventsApi.rejectEvent(id as number, reason),
+    mutationFn: (reason: string) => eventsApi.rejectEvent(id as string | number, reason),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
@@ -50,11 +50,11 @@ export function useRejectEventMutation(id: number | undefined) {
   });
 }
 
-export function useDeleteEventMutation(id: number | undefined) {
+export function useDeleteEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => eventsApi.deleteEvent(id as number),
+    mutationFn: () => eventsApi.deleteEvent(id as string | number),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
     },

@@ -1,13 +1,22 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { UserInterface } from "@/interfaces/SystemInterface";
+import type { CurrentAdmin } from "./api";
+
+// Shaped like the one axios error field these catch blocks actually read
+// — importing AxiosError itself would trip this app's own
+// no-restricted-imports rule (axios is only allowed inside
+// lib/axiosInstane.ts's wrapper).
+interface RequestError {
+  response?: { data: unknown };
+}
 
 interface authState {
   user: UserInterface | null;
   loading: boolean;
   error: boolean;
   authToken: string | null;
-  admin: any;
+  admin: CurrentAdmin | null;
   adminToken: string | null;
   isLoggedIn: boolean;
   plan: Record<string, unknown> | null;
@@ -28,7 +37,10 @@ const initialState: authState = {
 
 const updateUserData = createAsyncThunk(
   "auth/updateUser",
-  async ({ data, token, url }: { data: any; token: string; url: string }, { rejectWithValue }) => {
+  async (
+    { data, token, url }: { data: Record<string, unknown>; token: string; url: string },
+    { rejectWithValue },
+  ) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -38,18 +50,19 @@ const updateUserData = createAsyncThunk(
     try {
       const response = await axiosInstance.patch(`${url}`, data, { headers });
       return response.data;
-    } catch (err: any) {
-      if (!err.response) {
+    } catch (err: unknown) {
+      const requestError = err as RequestError;
+      if (!requestError.response) {
         throw err;
       }
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(requestError.response.data);
     }
   },
 );
 
 const changePassword = createAsyncThunk(
   "auth/changePassword",
-  async ({ data, token }: { data: any; token: string }, { rejectWithValue }) => {
+  async ({ data, token }: { data: Record<string, unknown>; token: string }, { rejectWithValue }) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -61,18 +74,19 @@ const changePassword = createAsyncThunk(
         headers,
       });
       return response.data;
-    } catch (err: any) {
-      if (!err.response) {
+    } catch (err: unknown) {
+      const requestError = err as RequestError;
+      if (!requestError.response) {
         throw err;
       }
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(requestError.response.data);
     }
   },
 );
 
 const deleteAccount = createAsyncThunk(
   "auth/deleteAccount",
-  async ({ data, token }: { data: any; token: string }, { rejectWithValue }) => {
+  async ({ data, token }: { data: Record<string, unknown>; token: string }, { rejectWithValue }) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -84,18 +98,19 @@ const deleteAccount = createAsyncThunk(
         headers,
       });
       return response.data;
-    } catch (err: any) {
-      if (!err.response) {
+    } catch (err: unknown) {
+      const requestError = err as RequestError;
+      if (!requestError.response) {
         throw err;
       }
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(requestError.response.data);
     }
   },
 );
 
 const updateAppSettings = createAsyncThunk(
   "auth/updateAppSettings",
-  async ({ data, token }: { data: any; token: string }, { rejectWithValue }) => {
+  async ({ data, token }: { data: Record<string, unknown>; token: string }, { rejectWithValue }) => {
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -108,11 +123,12 @@ const updateAppSettings = createAsyncThunk(
         { headers },
       );
       return response.data;
-    } catch (err: any) {
-      if (!err.response) {
+    } catch (err: unknown) {
+      const requestError = err as RequestError;
+      if (!requestError.response) {
         throw err;
       }
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(requestError.response.data);
     }
   },
 );
@@ -158,9 +174,9 @@ const authSlice = createSlice({
       state.error = false;
       state.user = action.payload.user;
     },
-    updateHasPin: (state) => {},
-    updateProfileImage: (state, action) => {},
-    updateCreatedAccount: (state) => {},
+    updateHasPin: () => {},
+    updateProfileImage: () => {},
+    updateCreatedAccount: () => {},
     adminUser: (state, action) => {
       state.loading = false;
       state.error = false;
@@ -188,7 +204,7 @@ const authSlice = createSlice({
     builder.addCase(changePassword.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(changePassword.fulfilled, (state, { payload }) => {
+    builder.addCase(changePassword.fulfilled, (state) => {
       state.loading = false;
     });
     builder.addCase(changePassword.rejected, (state) => {
@@ -198,7 +214,7 @@ const authSlice = createSlice({
     builder.addCase(deleteAccount.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(deleteAccount.fulfilled, (state, { payload }) => {
+    builder.addCase(deleteAccount.fulfilled, (state) => {
       state.loading = false;
       state.user = null;
       state.authToken = null;

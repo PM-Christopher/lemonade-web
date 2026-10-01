@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import { EventInterface } from "@/interfaces/EventInterface";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useMediaQuery } from "react-responsive";
 import { RootState } from "@/redux/store";
 import {
   useDashboardBusinessesQuery,
@@ -15,32 +14,33 @@ import {
 } from "@/features/dashboard/queries";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import BusinessCard from "@/components/dashboard/BusinessCard";
-import {
-  BusinessesSkeleton,
-  EventsSkeleton,
-  TribesSkeleton,
-} from "@/components/Skeletons";
+import { BusinessesSkeleton, EventsSkeleton, TribesSkeleton } from "@/components/Skeletons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ChevronRight from "@/images/icons/chevronRight.svg";
+
+const SeeMore = ({ href }: { href: string }) => (
+  <Link
+    href={href}
+    className="text-light-green text-body-s flex shrink-0 items-center gap-1 font-sans font-semibold"
+  >
+    See more
+    <ChevronRight className="h-4 w-4" />
+  </Link>
+);
 
 const DashboardClient = () => {
-  const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
   const router = useRouter();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: tribesData, isLoading: tribeLoading } = useDashboardTribesQuery(
-    {
-      enabled: isLoggedIn,
-    },
-  );
-  const { data: eventsData, isLoading: eventLoading } = useDashboardEventsQuery(
-    {
-      enabled: isLoggedIn,
-    },
-  );
-  const { data: businessesData, isLoading: businessLoading } =
-    useDashboardBusinessesQuery({
-      enabled: isLoggedIn,
-    });
+  const { data: tribesData, isLoading: tribeLoading } = useDashboardTribesQuery({
+    enabled: isLoggedIn,
+  });
+  const { data: eventsData, isLoading: eventLoading } = useDashboardEventsQuery({
+    enabled: isLoggedIn,
+  });
+  const { data: businessesData, isLoading: businessLoading } = useDashboardBusinessesQuery({
+    enabled: isLoggedIn,
+  });
   const tribes = tribesData?.tribes ?? [];
   const events = eventsData?.events ?? [];
   const businesses = businessesData?.businesses ?? [];
@@ -49,42 +49,42 @@ const DashboardClient = () => {
     <MainLayout>
       {/*<NotificationToast payload={{title: "This is a test", body: "This is the body of the test"}} />*/}
       <div className="w-full">
-        <section id="forums" className="m-4 mx-10 rounded-lg bg-white p-4">
-          <p className="font-sans font-semibold leading-[27px]">
-            Tribe activities
-          </p>
-          <div className="scrollbar-hide mt-3 flex space-x-2 overflow-x-auto py-4 shadow-none">
+        <section id="forums" className="phone:mx-10 m-4 mx-4 rounded-lg bg-white p-4">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-title-r font-sans font-semibold">Tribe activities</p>
+            <SeeMore href="/tribe" />
+          </div>
+          <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto py-4 shadow-none">
             {tribeLoading ? (
               <TribesSkeleton count={4} />
             ) : tribes.length > 0 ? (
               tribes.map((tribe: TribeInterface, idx: number) => (
-                <div className="w-[422px]" key={idx}>
+                <div className="phone:w-[422px] w-[80vw] max-w-[422px] shrink-0" key={idx}>
                   <TribeCard tribe={tribe} />
                 </div>
               ))
             ) : (
               <div className="flex w-full flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-10">
-                <p className="font-sans text-sm font-medium text-gray-600">
+                <p className="text-body-s font-sans font-medium text-gray-600">
                   No featured tribes available right now.
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
-                  Check back later for updates.
-                </p>
+                <p className="text-meta mt-1 text-gray-400">Check back later for updates.</p>
               </div>
             )}
           </div>
         </section>
-        <section id="events" className="m-4 mx-10 rounded-lg bg-white p-4">
-          <p className="font-sans font-semibold leading-[27px]">
-            Trending events
-          </p>
-          <div className="mt-3 grid grid-cols-6 gap-2">
+        <section id="events" className="phone:mx-10 m-4 mx-4 rounded-lg bg-white p-4">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-title-r font-sans font-semibold">Trending events</p>
+            <SeeMore href="/event" />
+          </div>
+          <div className="scrollbar-hide phone:max-w-[1280px] mt-3 flex gap-4 overflow-x-auto py-4">
             {eventLoading ? (
               <EventsSkeleton count={6} />
             ) : events?.length > 0 ? (
               events?.map((event: EventInterface, idx: number) => (
                 <div
-                  className={"cursor-pointer"}
+                  className="phone:w-[200px] w-[78vw] shrink-0 cursor-pointer"
                   key={idx}
                   onClick={() => router.push(`/event/${event.id}`)}
                 >
@@ -93,30 +93,26 @@ const DashboardClient = () => {
               ))
             ) : (
               <div className="col-span-6 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-10">
-                <p className="font-sans text-sm font-medium text-gray-600">
+                <p className="text-body-s font-sans font-medium text-gray-600">
                   No trending events available right now.
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
-                  Check back later for updates.
-                </p>
+                <p className="text-meta mt-1 text-gray-400">Check back later for updates.</p>
               </div>
             )}
           </div>
         </section>
-        <section
-          id="business"
-          className="mx-10 my-10 rounded-lg bg-white p-4 pb-7"
-        >
-          <p className="font-sans font-semibold leading-[27px]">
-            Featured businesses
-          </p>
-          <div className="scrollbar-hide mt-3 flex space-x-2 overflow-x-auto py-4 shadow-none">
+        <section id="business" className="phone:mx-10 mx-4 my-10 rounded-lg bg-white p-4 pb-7">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-title-r font-sans font-semibold">Featured businesses</p>
+            <SeeMore href="/business" />
+          </div>
+          <div className="scrollbar-hide mt-3 flex gap-4 overflow-x-auto py-4 shadow-none">
             {businessLoading ? (
               <BusinessesSkeleton count={3} />
             ) : businesses?.length > 0 ? (
               businesses?.map((business: BusinessInterface, idx: number) => (
                 <div
-                  className="w-[343px] cursor-pointer tablet:w-[422px]"
+                  className="tablet:w-[320px] w-[78vw] max-w-[320px] shrink-0 cursor-pointer"
                   key={idx}
                   onClick={() => router.push(`/business/${business.id}`)}
                 >
@@ -125,12 +121,10 @@ const DashboardClient = () => {
               ))
             ) : (
               <div className="flex w-full flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-10">
-                <p className="font-sans text-sm font-medium text-gray-600">
+                <p className="text-body-s font-sans font-medium text-gray-600">
                   No businesses available right now.
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
-                  Check back later for updates.
-                </p>
+                <p className="text-meta mt-1 text-gray-400">Check back later for updates.</p>
               </div>
             )}
           </div>

@@ -200,7 +200,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
               className="h-12 w-12 rounded-2xl border border-gray-200"
             />
           ) : (
-            <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] bg-gradient-green text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+            <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
               <p className="font-ruso text-[18px]">
                 {getInitials(thread?.created_by?.user?.fullname)}
               </p>
@@ -226,7 +226,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         <p className="mt-2 text-sm text-gray-700">{isExpanded ? thread.thoughts : truncatedText}</p>
         {thread?.thoughts && thread.thoughts.length > charLimit && (
           <button
-            className="mt-1 text-sm text-light-green"
+            className="text-light-green mt-1 text-sm"
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {isExpanded ? "See less" : "See more"}
@@ -247,7 +247,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
               onClick={() => pollVote(opt.id)}
             >
               <div
-                className="absolute left-0 top-0 h-full bg-light-green-90 transition-all"
+                className="bg-light-green-90 absolute top-0 left-0 h-full transition-all"
                 style={{ width: `${opt.vote_percentage}%` }}
               />
               <div className="relative z-10 flex h-full items-center justify-between px-3">
@@ -302,7 +302,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write a comment..."
-            className="h-20 w-full resize-none rounded-md border border-gray-300 p-2 focus:ring-1 focus:ring-light-green"
+            className="focus:ring-light-green h-20 w-full resize-none rounded-md border border-gray-300 p-2 focus:ring-1"
           />
           <div className="flex justify-end gap-2">
             <button
@@ -315,7 +315,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
             <button
               type="submit"
               disabled={submitting || !comment.trim()}
-              className="rounded-md bg-light-green px-4 py-1.5 text-sm text-white disabled:opacity-60"
+              className="bg-light-green rounded-md px-4 py-1.5 text-sm text-white disabled:opacity-60"
             >
               {submitting ? "Posting..." : "Post"}
             </button>

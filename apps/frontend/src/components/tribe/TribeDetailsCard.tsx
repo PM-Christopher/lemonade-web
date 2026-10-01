@@ -40,7 +40,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
       ) : (
         <div className="flex h-fit w-[496px] flex-col gap-2 rounded-[12px] bg-white p-4 py-4">
           <div>
-            <p className="font-sans text-[16px] font-semibold leading-[24px]">Tribe details</p>
+            <p className="font-sans text-[16px] leading-[24px] font-semibold">Tribe details</p>
           </div>
           <div className="mt-10 flex justify-center">
             <div className="h-[96px] w-[96px] overflow-hidden rounded-[24px] border-[2px]">
@@ -54,32 +54,32 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
             </div>
           </div>
           <div className="flex flex-col items-center">
-            <p className="font-sans text-[16px] font-semibold leading-[24px]">
+            <p className="font-sans text-[16px] leading-[24px] font-semibold">
               {tribe?.tribe_name}
             </p>
 
-            <i className="mt-1 font-sans text-[14px] font-semi-normal leading-[16.8px] text-text-grey">
+            <i className="font-semi-normal text-text-grey mt-1 font-sans text-[14px] leading-[16.8px]">
               {tribe?.category}
             </i>
 
             <div className="mt-1 flex items-center justify-center gap-1">
-              <p className="font-sans text-[12px] font-normal text-text-grey">
+              <p className="text-text-grey font-sans text-[12px] font-normal">
                 {tribe?.members} members
               </p>
 
               <DotIcon className="h-[3px] w-[3px]" />
 
-              <p className="font-sans text-[12px] font-normal text-text-grey">
+              <p className="text-text-grey font-sans text-[12px] font-normal">
                 {threads.length} threads
               </p>
             </div>
 
             <div className="flex w-[311px] flex-col items-center">
               <>
-                <p className="my-4 text-center font-sans text-[14px] font-normal leading-[21px] text-light-black">
+                <p className="text-light-black my-4 text-center font-sans text-[14px] leading-[21px] font-normal">
                   {tribe?.description}
                 </p>
-                <p className="my-2 font-sans text-[12px] font-normal text-text-grey">
+                <p className="text-text-grey my-2 font-sans text-[12px] font-normal">
                   Created by <span className="font-semibold">{tribe?.created_by}</span> on{" "}
                   {formatLongDate(tribe?.created_at)}
                 </p>
@@ -91,10 +91,10 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                 className="flex cursor-pointer flex-col items-center"
                 onClick={() => share(tribe)}
               >
-                <div className="flex flex-col items-center rounded-[16px] bg-light_grey p-[24px]">
+                <div className="bg-light_grey flex flex-col items-center rounded-[16px] p-[24px]">
                   <ShareIcon />
                 </div>
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-black-light">
+                <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
                   Share
                 </p>
               </div>
@@ -104,10 +104,10 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                   className="flex cursor-pointer flex-col items-center"
                   onClick={toggleAddMember}
                 >
-                  <div className="flex flex-col items-center rounded-[16px] bg-light_grey p-[24px]">
+                  <div className="bg-light_grey flex flex-col items-center rounded-[16px] p-[24px]">
                     <AddUserIcon />
                   </div>
-                  <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-black-light">
+                  <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
                     Add member
                   </p>
                 </div>
@@ -117,23 +117,23 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           <div className="my-2 flex justify-center">
             {tribe?.has_joined || tribe?.owner ? (
               <Button
-                className="h-[60px] rounded-[37px] border border-step-color bg-gradient-green p-[14px] px-[24px] shadow-green-inset hover:shadow-green-inset-strong"
+                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] rounded-[37px] border p-[14px] px-[24px]"
                 onClick={toggle}
               >
                 <div className="flex items-center justify-center gap-1">
                   <EditIcon />
-                  <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">
+                  <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
                     Create thread
                   </p>
                 </div>
               </Button>
             ) : (
               <Button
-                className="h-[60px] rounded-[37px] border border-step-color bg-gradient-green p-[14px] px-[24px] shadow-green-inset hover:shadow-green-inset-strong"
+                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] rounded-[37px] border p-[14px] px-[24px]"
                 onClick={toggleJoin}
               >
                 <div className="flex justify-center gap-1">
-                  <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">
+                  <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
                     Join tribe
                   </p>
                 </div>
@@ -143,15 +143,15 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           {tribe?.monetized ? (
             <div className="my-4 flex items-center justify-between">
               <div className="flex flex-col">
-                <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
+                <p className="font-semi-normal text-black-light font-sans text-[16px] leading-[24px]">
                   Monetized Tribe
                 </p>
-                <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                   Only paid users are allowed.
                 </p>
               </div>
               <div>
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-light-black">
+                <p className="font-semi-normal text-light-black font-sans text-[14px] leading-[21px]">
                   N {formatNumberWithCommas(tribe?.membership_fee)}
                 </p>
               </div>
@@ -159,8 +159,8 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           ) : (
             <></>
           )}
-          <div className="flex flex-col rounded-[12px] bg-light_grey p-3">
-            <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-text-grey">
+          <div className="bg-light_grey flex flex-col rounded-[12px] p-3">
+            <p className="font-semi-normal text-text-grey font-sans text-[14px] leading-[21px]">
               Members
             </p>
             <div className="mt-4">
@@ -186,7 +186,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                           </div>
                         </div>
                         <div>
-                          <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-black-light">
+                          <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
                             {member?.user?.username}
                           </p>
                         </div>
@@ -201,7 +201,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                   </React.Fragment>
                 ))
               ) : (
-                <p className={"text-[14px] font-normal leading-[21px] text-text-grey"}>
+                <p className={"text-text-grey text-[14px] leading-[21px] font-normal"}>
                   No members yet.
                 </p>
               )}

@@ -3,9 +3,10 @@ import DataCard from "@/components/global/DataCard";
 import { paymentTransactionHeaders } from "@/data/tableData";
 import PaginationComp from "@/components/global/Pagination";
 import dayjs from "dayjs";
+import type { TransactionListResponse } from "@/features/transaction/api";
 
 interface ServicesIF {
-  trx_data: any;
+  trx_data: TransactionListResponse | undefined;
   page: number;
   onPageChange: (page: number) => void;
 }
@@ -21,7 +22,7 @@ function ServicesViews({ trx_data, page, onPageChange }: ServicesIF) {
 
   return (
     <>
-      <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
+      <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
         <DataCard
           styles={"w-full"}
           title={"Service Revenue"}
@@ -39,7 +40,7 @@ function ServicesViews({ trx_data, page, onPageChange }: ServicesIF) {
           <thead>
             <tr className="bg-mid-grey">
               {paymentTransactionHeaders.map((header, idx) => (
-                <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
+                <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
                   {header}
                 </th>
               ))}
@@ -47,22 +48,16 @@ function ServicesViews({ trx_data, page, onPageChange }: ServicesIF) {
           </thead>
           <tbody>
             {paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((row: any, index: any) => (
-                <tr key={index} className="h-[72px] border-b border-grey-20">
+              paginatedData.map((row, index) => (
+                <tr key={index} className="border-grey-20 h-[72px] border-b">
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.reference}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>
-                    {row.user?.name ?? "N/A"}
-                  </td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{row.user?.name ?? "N/A"}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.amount}</td>
-                  <td className={"p-4 font-sans text-sm font-medium capitalize"}>
-                    {row.provider}
-                  </td>
+                  <td className={"p-4 font-sans text-sm font-medium capitalize"}>{row.provider}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>
                     {row.paid_at ? dayjs(row.paid_at).format("DD MMM, YYYY hh:mmA") : "—"}
                   </td>
-                  <td className={"p-4 font-sans text-sm font-medium capitalize"}>
-                    {row.status}
-                  </td>
+                  <td className={"p-4 font-sans text-sm font-medium capitalize"}>{row.status}</td>
                 </tr>
               ))
             ) : (

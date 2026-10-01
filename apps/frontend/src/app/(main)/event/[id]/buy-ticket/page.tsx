@@ -8,9 +8,7 @@ import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import BuyTicketClient from "./BuyTicketClient";
 
-export default async function BuyTicketPage(props: {
-  params: Promise<{ id: number }>;
-}) {
+export default async function BuyTicketPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const queryClient = getQueryClient();
 

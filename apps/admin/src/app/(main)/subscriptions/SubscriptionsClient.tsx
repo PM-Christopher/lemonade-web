@@ -71,10 +71,10 @@ function SubscriptionsClient() {
     <MainLayout>
       <section className="mt-[24px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
-          <p className={"text-[16px] font-semiBold"}>{plans.length} Plans</p>
+          <p className={"font-semiBold text-[16px]"}>{plans.length} Plans</p>
           <div>
             <Button
-              className={"flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"}
+              className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
               onClick={openCreateModal}
             >
               <PlusIcon className={"h-[15px] w-[15px] text-white"} />
@@ -83,14 +83,14 @@ function SubscriptionsClient() {
           </div>
         </div>
         <div className={"flex flex-col px-[20px]"}>
-          <div className={"flex flex-col rounded-[12px] border-[1px] border-grey-20"}>
+          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-mid-grey">
                     {headers.map((header) => (
                       <th
-                        className="p-4 text-left text-[12px] font-semiBold text-text-grey"
+                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
                         key={header}
                       >
                         {header}
@@ -101,12 +101,12 @@ function SubscriptionsClient() {
                 <tbody>
                   {plans.length > 0 ? (
                     plans.map((plan) => (
-                      <tr key={plan.id} className="h-[72px] border-b border-grey-20">
+                      <tr key={plan.id} className="border-grey-20 h-[72px] border-b">
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           <div className="flex items-center gap-2">
                             {plan.title}
                             {plan.recommended && (
-                              <span className="rounded-full bg-light-green-10 px-2 py-[2px] text-[11px] font-semiBold text-light-green">
+                              <span className="bg-light-green-10 font-semiBold text-light-green rounded-full px-2 py-[2px] text-[11px]">
                                 Recommended
                               </span>
                             )}
@@ -122,11 +122,7 @@ function SubscriptionsClient() {
                           {plan.yearly_charge}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          <span
-                            className={
-                              plan.active ? "text-light-green-70" : "text-red-1"
-                            }
-                          >
+                          <span className={plan.active ? "text-light-green-70" : "text-red-1"}>
                             {plan.active ? "Active" : "Inactive"}
                           </span>
                         </td>
@@ -146,7 +142,7 @@ function SubscriptionsClient() {
                             {plan.active ? (
                               <button
                                 type="button"
-                                className="text-[13px] font-medium text-red-1"
+                                className="text-red-1 text-[13px] font-medium"
                                 onClick={() => openConfirmModal(plan, "deactivate")}
                               >
                                 Deactivate
@@ -154,7 +150,7 @@ function SubscriptionsClient() {
                             ) : (
                               <button
                                 type="button"
-                                className="text-[13px] font-medium text-light-green-70"
+                                className="text-light-green-70 text-[13px] font-medium"
                                 onClick={() => openConfirmModal(plan, "activate")}
                               >
                                 Activate
@@ -162,7 +158,7 @@ function SubscriptionsClient() {
                             )}
                             <button
                               type="button"
-                              className="text-[13px] font-medium text-red-1"
+                              className="text-red-1 text-[13px] font-medium"
                               onClick={() => openConfirmModal(plan, "delete")}
                             >
                               Delete
@@ -173,7 +169,10 @@ function SubscriptionsClient() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={headers.length} className="p-4 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={headers.length}
+                        className="p-4 text-center text-sm text-gray-500"
+                      >
                         No plans yet
                       </td>
                     </tr>

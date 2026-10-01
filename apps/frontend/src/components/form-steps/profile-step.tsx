@@ -1,13 +1,25 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Card, CardContent, CardHeader, Label, Input, Textarea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Label,
+  Input,
+  Textarea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@lemonade/ui";
 import avatar_url from "@/image/avatar_1.png";
 import Image from "next/image";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { profileSetupSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { useCookies } from "react-cookie";
@@ -33,14 +45,6 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
   };
 
   //form validation
-  const profileStepSchema = yup.object({
-    profile_image: yup.string(),
-    bio: yup.string().required("Bio is required"),
-    username: yup.string().required("Username is required"),
-    industry: yup.string().required("Industry is required"),
-    referral_code: yup.string(),
-  });
-
   const formik = useFormik({
     initialValues: {
       profile_image: "",
@@ -49,7 +53,8 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
       industry: "",
       referral_code: "",
     },
-    validationSchema: profileStepSchema,
+    validationSchema: profileSetupSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await profileStep(values);
     },
@@ -140,17 +145,17 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="w-full rounded-[16px] border-none shadow-none tablet:w-[480px]">
+      <Card className="tablet:w-[480px] w-full rounded-[16px] border-none shadow-none">
         <CardHeader className="grid gap-4">
           <div className="flex gap-2">
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-border-grey" />
-            <div className="h-[2px] w-[15px] bg-border-grey" />
-            <div className="h-[2px] w-[15px] bg-border-grey" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-border-grey h-[2px] w-[15px]" />
+            <div className="bg-border-grey h-[2px] w-[15px]" />
+            <div className="bg-border-grey h-[2px] w-[15px]" />
           </div>
           <div>
             <p className="font-sans text-[24px] font-semibold">Profile set up</p>
-            <p className="font-sans text-[14px] font-normal leading-[21px] text-text-grey">
+            <p className="text-text-grey font-sans text-[14px] leading-[21px] font-normal">
               Share a brief introduction about yourself, and your <br /> professional background.
             </p>
           </div>
@@ -189,6 +194,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
           {formik.touched.profile_image && formik.errors.profile_image ? (
             <p className="text-center text-[12px] text-[#FF8D8D]">{formik.errors.profile_image}</p>
           ) : null}
+          <p className="text-meta text-center text-text-grey">Snap shot</p>
         </CardContent>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
@@ -199,7 +205,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
               id="username"
               type="text"
               placeholder="Username"
-              className="form-font h-12 rounded-xl border-0 bg-light_grey"
+              className="form-font bg-light_grey h-12 rounded-xl border-0"
               value={formik.values.username}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
@@ -209,13 +215,16 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
             ) : null}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="username" className="font-label">
-              Bio
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="username" className="font-label">
+                Bio
+              </Label>
+              <span className="text-meta text-text-grey">200 characters</span>
+            </div>
             <Textarea
               id="bio"
               placeholder="A short bio about yourself..."
-              className="form-font h-[99px] gap-[10px] rounded-xl border-0 bg-light_grey"
+              className="form-font bg-light_grey h-[99px] gap-[10px] rounded-xl border-0"
               value={formik.values.bio}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
@@ -253,7 +262,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
             <Input
               id="referral_code"
               type="text"
-              className="form-font h-12 rounded-xl border-0 bg-light_grey"
+              className="form-font bg-light_grey h-12 rounded-xl border-0"
               value={formik.values.referral_code}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}

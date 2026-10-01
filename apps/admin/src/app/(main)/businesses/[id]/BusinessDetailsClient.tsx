@@ -13,7 +13,9 @@ import { capitalizeWords } from "@/utils/helper";
 const ApproveModal = dynamic(() => import("@/modals/businesses/ApproveModal"), { ssr: false });
 const RejectModal = dynamic(() => import("@/modals/businesses/RejectModal"), { ssr: false });
 const SuspendModal = dynamic(() => import("@/modals/businesses/SuspendModal"), { ssr: false });
-const ReactivateModal = dynamic(() => import("@/modals/businesses/ReactivateModal"), { ssr: false });
+const ReactivateModal = dynamic(() => import("@/modals/businesses/ReactivateModal"), {
+  ssr: false,
+});
 const DeleteModal = dynamic(() => import("@/modals/businesses/DeleteModal"), { ssr: false });
 
 function Field({ label, value }: { label: string; value?: string | null }) {
@@ -21,7 +23,7 @@ function Field({ label, value }: { label: string; value?: string | null }) {
   return (
     <div className={"items-center-center flex gap-[24px]"}>
       <div className={"w-[140px]"}>
-        <p className={"text-[12px] font-medium text-text-grey"}>{label}:</p>
+        <p className={"text-text-grey text-[12px] font-medium"}>{label}:</p>
       </div>
       <p className={"text-[14px] font-medium"}>{value}</p>
     </div>
@@ -43,21 +45,29 @@ function BusinessDetailsClient({ id }: { id: string }) {
 
   return (
     <MainLayout>
-      <section className="md:p-5 flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4">
+      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:p-5">
         <div className={"flex h-fit w-full max-w-[720px] flex-col rounded-[12px] bg-white"}>
-          <div className={"flex flex-wrap items-center justify-between gap-[12px] border-b-[1px] p-[24px]"}>
-            <p className={"text-[16px] font-semiBold"}>Business summary</p>
+          <div
+            className={
+              "flex flex-wrap items-center justify-between gap-[12px] border-b-[1px] p-[24px]"
+            }
+          >
+            <p className={"font-semiBold text-[16px]"}>Business summary</p>
             <div className={"flex gap-[8px]"}>
               {status === "PENDING" && (
                 <>
                   <button
-                    className={"h-[44px] rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[20px] text-center"}
+                    className={
+                      "border-step-color bg-gradient-green h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
+                    }
                     onClick={() => setApproveModalOpen(true)}
                   >
                     <p className={"text-[16px] font-medium text-white"}>Approve</p>
                   </button>
                   <button
-                    className={"h-[44px] rounded-[12px] border-[1px] border-red-2 bg-red-1 px-[20px] text-center"}
+                    className={
+                      "border-red-2 bg-red-1 h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
+                    }
                     onClick={() => setRejectModalOpen(true)}
                   >
                     <p className={"text-[16px] font-medium text-white"}>Reject</p>
@@ -66,7 +76,9 @@ function BusinessDetailsClient({ id }: { id: string }) {
               )}
               {status === "ACTIVE" && (
                 <button
-                  className={"h-[44px] rounded-[12px] border-[1px] border-red-2 bg-red-1 px-[20px] text-center"}
+                  className={
+                    "border-red-2 bg-red-1 h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
+                  }
                   onClick={() => setSuspendModalOpen(true)}
                 >
                   <p className={"text-[16px] font-medium text-white"}>Suspend</p>
@@ -74,7 +86,9 @@ function BusinessDetailsClient({ id }: { id: string }) {
               )}
               {(status === "SUSPENDED" || status === "REJECTED" || status === "INACTIVE") && (
                 <button
-                  className={"h-[44px] rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[20px] text-center"}
+                  className={
+                    "border-step-color bg-gradient-green h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
+                  }
                   onClick={() => setReactivateModalOpen(true)}
                 >
                   <p className={"text-[16px] font-medium text-white"}>Reactivate</p>
@@ -114,13 +128,13 @@ function BusinessDetailsClient({ id }: { id: string }) {
             <Field label="Rejection reason" value={business?.rejection_reason} />
             {business?.description && (
               <div className={"flex flex-col gap-[8px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>Description</p>
-                <p className={"text-[14px] font-normal text-light-black"}>{business.description}</p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Description</p>
+                <p className={"text-light-black text-[14px] font-normal"}>{business.description}</p>
               </div>
             )}
             {business?.gallery && business.gallery.length > 0 && (
               <div className={"flex flex-col gap-[8px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>Gallery</p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Gallery</p>
                 <div className={"flex flex-wrap gap-[12px]"}>
                   {business.gallery.map((src) => (
                     <Image
@@ -136,9 +150,15 @@ function BusinessDetailsClient({ id }: { id: string }) {
               </div>
             )}
           </div>
-          <div className={"mt-[20px] flex items-center justify-between gap-[24px] border-t-[1px] border-t-grey-20 p-[24px]"}>
+          <div
+            className={
+              "border-t-grey-20 mt-[20px] flex items-center justify-between gap-[24px] border-t-[1px] p-[24px]"
+            }
+          >
             <button
-              className={"w-full rounded-[12px] border-[1px] border-light-grey-50 px-[48px] py-[11px] font-sans text-[14px] font-medium text-red-1"}
+              className={
+                "border-light-grey-50 text-red-1 w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+              }
               type={"button"}
               onClick={() => setDeleteModalOpen(true)}
             >
@@ -150,7 +170,11 @@ function BusinessDetailsClient({ id }: { id: string }) {
       <ApproveModal isOpen={approveModalOpen} toggle={() => setApproveModalOpen(false)} id={id} />
       <RejectModal isOpen={rejectModalOpen} toggle={() => setRejectModalOpen(false)} id={id} />
       <SuspendModal isOpen={suspendModalOpen} toggle={() => setSuspendModalOpen(false)} id={id} />
-      <ReactivateModal isOpen={reactivateModalOpen} toggle={() => setReactivateModalOpen(false)} id={id} />
+      <ReactivateModal
+        isOpen={reactivateModalOpen}
+        toggle={() => setReactivateModalOpen(false)}
+        id={id}
+      />
       <DeleteModal isOpen={deleteModalOpen} toggle={() => setDeleteModalOpen(false)} id={id} />
     </MainLayout>
   );

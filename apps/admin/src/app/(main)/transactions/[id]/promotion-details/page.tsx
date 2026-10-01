@@ -14,7 +14,7 @@ function EventDetailsPage({}) {
         >
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Event name:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Event name:</p>
             </div>
             <div className={"flex gap-[4px]"}>
               <p className={"text-[14px] font-medium"}>Unlocking business potentials</p>
@@ -23,7 +23,7 @@ function EventDetailsPage({}) {
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Event owner:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Event owner:</p>
             </div>
             <div className={"flex gap-[4px]"}>
               <p className={"text-[14px] font-medium"}>Adebayo Akintoye</p>
@@ -32,39 +32,39 @@ function EventDetailsPage({}) {
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Transaction Id:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
             </div>
             <p className={"text-[14px] font-medium"}>PR112332</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Promotion name:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Promotion name:</p>
             </div>
             <p className={"text-[14px] font-medium"}>Instagram Feed Post</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Amount:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
             </div>
             <p className={"text-[14px] font-medium"}>N30,000</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Date paid:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Date paid:</p>
             </div>
             <p className={"text-[14px] font-medium"}>23 Apr, 2024 09:45 PM</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Promotion Date:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Promotion Date:</p>
             </div>
             <p className={"text-[14px] font-medium"}>N/A</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Status:</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
             </div>
-            <p className={"text-[14px] font-medium text-light-green-70"}>Successful</p>
+            <p className={"text-light-green-70 text-[14px] font-medium"}>Successful</p>
           </div>
         </div>
         <div className={"flex flex-col"}>
@@ -74,49 +74,49 @@ function EventDetailsPage({}) {
           >
             <div
               className={
-                "flex items-center justify-between border-b-[1px] border-b-grey-20 p-[24px]"
+                "border-b-grey-20 flex items-center justify-between border-b-[1px] p-[24px]"
               }
             >
-              <p className={"text-[16px] font-semiBold"}>Boosting history</p>
+              <p className={"font-semiBold text-[16px]"}>Boosting history</p>
               <div
                 className={
-                  "flex items-center gap-[10px] rounded-[12px] border-[1px] border-light-grey-50 px-[12px] py-[10px]"
+                  "border-light-grey-50 flex items-center gap-[10px] rounded-[12px] border-[1px] px-[12px] py-[10px]"
                 }
               >
                 <PrinterIcon className={"w-[20px]"} />
-                <p className={"text-[16px] font-medium text-black-light"}>Print</p>
+                <p className={"text-black-light text-[16px] font-medium"}>Print</p>
               </div>
             </div>
 
             <div className={"flex flex-col px-[24px]"}>
-              <div className="px-[16px] pb-[24px] pt-[16px]">
+              <div className="px-[16px] pt-[16px] pb-[24px]">
                 <div className="flex justify-between">
                   <div className="flex flex-col">
                     <p className={"text-[14px] font-medium"}>
                       PR12343 - IG Feed <span className={"font-semiBold"}>₦2,000</span>
                     </p>
-                    <p className={"text-[12px] font-normal text-text-grey"}>
+                    <p className={"text-text-grey text-[12px] font-normal"}>
                       23, Mar 2023. 05:00PM
                     </p>
                   </div>
                   <div
-                    className={"h-fit gap-[4px] rounded-[8px] bg-light-green-60 px-[8px] py-[4px]"}
+                    className={"bg-light-green-60 h-fit gap-[4px] rounded-[8px] px-[8px] py-[4px]"}
                   >
-                    <p className={"text-[12px] font-medium text-light-green-70"}>Successful</p>
+                    <p className={"text-light-green-70 text-[12px] font-medium"}>Successful</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div
-            className={"h-[62px] rounded-bl-[12px] rounded-br-[12px] bg-mid-grey"}
+            className={"bg-mid-grey h-[62px] rounded-br-[12px] rounded-bl-[12px]"}
             style={{ width: "908px" }}
           >
-            <div className="flex items-center justify-between rounded-bl-lg rounded-br-lg bg-mid-grey p-4 px-10">
+            <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
               <button
                 disabled={currentPage === 1}
                 // onClick={() => onPageChange(currentPage - 1)}
-                className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+                className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
               >
                 Previous
               </button>
@@ -136,7 +136,7 @@ function EventDetailsPage({}) {
               <button
                 disabled={currentPage === totalPages}
                 // onClick={() => onPageChange(currentPage + 1)}
-                className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+                className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
               >
                 Next
               </button>

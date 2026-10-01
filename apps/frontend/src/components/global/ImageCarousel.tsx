@@ -22,7 +22,7 @@ export default function ImageCarousel({ images }: { images: string[] }) {
       {/* ======= CAROUSEL ======= */}
       <div className="group relative mx-auto mt-4 w-full max-w-[736px] overflow-hidden rounded-xl">
         <div
-          className="sm:h-[400px] md:h-[450px] lg:h-[500px] relative h-[300px] cursor-pointer"
+          className="relative h-[300px] cursor-pointer sm:h-[400px] md:h-[450px] lg:h-[500px]"
           onClick={() => setLightboxOpen(true)}
         >
           <Image
@@ -38,13 +38,13 @@ export default function ImageCarousel({ images }: { images: string[] }) {
         {/* Navigation buttons */}
         <button
           onClick={prevSlide}
-          className="absolute left-3 top-1/2 -translate-y-1/2 transform rounded-full bg-white/70 p-2 text-gray-800 opacity-0 shadow-md transition hover:bg-white group-hover:opacity-100"
+          className="absolute top-1/2 left-3 -translate-y-1/2 transform rounded-full bg-white/70 p-2 text-gray-800 opacity-0 shadow-md transition group-hover:opacity-100 hover:bg-white"
         >
           <ChevronLeft size={22} />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-3 top-1/2 -translate-y-1/2 transform rounded-full bg-white/70 p-2 text-gray-800 opacity-0 shadow-md transition hover:bg-white group-hover:opacity-100"
+          className="absolute top-1/2 right-3 -translate-y-1/2 transform rounded-full bg-white/70 p-2 text-gray-800 opacity-0 shadow-md transition group-hover:opacity-100 hover:bg-white"
         >
           <ChevronRight size={22} />
         </button>
@@ -69,7 +69,7 @@ export default function ImageCarousel({ images }: { images: string[] }) {
       {/* ======= LIGHTBOX ======= */}
       {lightboxOpen && (
         <div
-          className="sm:p-6 fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm sm:p-6"
           onClick={() => setLightboxOpen(false)}
         >
           <div
@@ -88,7 +88,7 @@ export default function ImageCarousel({ images }: { images: string[] }) {
               {/* X icon inside the image */}
               <button
                 onClick={() => setLightboxOpen(false)}
-                className="absolute right-3 top-3 rounded-full bg-black/50 p-2 text-white transition hover:bg-black/70"
+                className="absolute top-3 right-3 rounded-full bg-black/50 p-2 text-white transition hover:bg-black/70"
               >
                 <X size={18} />
               </button>

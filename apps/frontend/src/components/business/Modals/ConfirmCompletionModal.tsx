@@ -13,11 +13,7 @@ interface ConfirmCompletionModalProps {
   toggle: () => void;
   job: any;
 }
-const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({
-  isOpen,
-  toggle,
-  job,
-}) => {
+const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen, toggle, job }) => {
   const dispatch = useAppDispatch();
   const markJobCompletedMutation = useMarkJobCompletedMutation(job?.id);
   const completedLoading = markJobCompletedMutation.isPending;
@@ -58,7 +54,7 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({
         <DialogTitle className="sr-only">{"Confirm completion"}</DialogTitle>
         <div className="w-[360px] rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="font-sans text-[16px] font-semibold leading-[27px] tracking-custom">
+            <p className="tracking-custom font-sans text-[16px] leading-[27px] font-semibold">
               Confirm completion
             </p>
             <div className="flex items-center gap-2">
@@ -69,13 +65,12 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({
           </div>
           <div className="mt-2 flex w-[328px] flex-col items-center">
             <p className="mt-[16px] text-[14px] font-normal">
-              Are you sure this service has been completed? If so, the payment
-              will be released to the vendor and the order will be marked as
-              completed.
+              Are you sure this service has been completed? If so, the payment will be released to
+              the vendor and the order will be marked as completed.
             </p>
             <div className="mt-[16px] flex w-full justify-center gap-3">
               <Button
-                className="h-[48px] w-full rounded-[12px] bg-gradient-green p-[14px] px-[48px] shadow-custom-bottom"
+                className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
                 onClick={markCompleted}
                 disabled={completedLoading}
               >
@@ -106,15 +101,11 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({
                           d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                         />
                       </svg>
-                      <p className="text-[16px] font-medium text-light-white">
-                        Loading...
-                      </p>
+                      <p className="text-light-white text-[16px] font-medium">Loading...</p>
                     </div>
                   </>
                 ) : (
-                  <p className="text-[16px] font-medium text-light-white">
-                    Confirm
-                  </p>
+                  <p className="text-light-white text-[16px] font-medium">Confirm</p>
                 )}
               </Button>
             </div>

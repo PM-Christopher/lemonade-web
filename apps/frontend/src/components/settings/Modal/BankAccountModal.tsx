@@ -27,10 +27,7 @@ type BankAccountInterface = {
   toggle: () => void;
 };
 
-const BankAccountModal: React.FC<BankAccountInterface> = ({
-  isOpen,
-  toggle,
-}) => {
+const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) => {
   const [bankCode, setBankCode] = useState<string>("");
   const [accountNumber, setAccountNumber] = useState("");
   const [error, setError] = useState("");
@@ -56,6 +53,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
       account_name: "",
     },
     validationSchema: bankAccountSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       createBankAccountMutation.mutate(values, {
         onSuccess: () => {
@@ -126,23 +124,19 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                 <div className="cursor-pointer" onClick={toggle}>
                   <CloseIcon />
                 </div>
-                <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+                <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
                   Bank Account
                 </p>
               </div>
               <div>
-                <FormikButton
-                  loading={formik.isSubmitting}
-                  title="Submit"
-                  error={formik.isValid}
-                />
+                <FormikButton loading={formik.isSubmitting} title="Submit" error={formik.isValid} />
               </div>
             </div>
             <div className="mt-10">
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Bank Name
                 </Label>
@@ -168,7 +162,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Account number
                 </Label>
@@ -176,7 +170,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                   id="fullname"
                   type="number"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   onChange={(e) => {
                     setAccountNumber(e.target.value);
                     formik.setFieldValue("account_number", e.target.value);
@@ -186,7 +180,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Account name
                 </Label>
@@ -194,11 +188,11 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                   id="fullname"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   readOnly={true}
                   value={formik.values.account_name}
                 />
-                {error && <p className={"text-[13px] text-red-2"}>{error}</p>}
+                {error && <p className={"text-red-2 text-[13px]"}>{error}</p>}
               </div>
             </div>
           </div>

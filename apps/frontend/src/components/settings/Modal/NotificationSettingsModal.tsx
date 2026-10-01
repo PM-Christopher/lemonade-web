@@ -23,8 +23,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
   type,
 }) => {
   const dispatch = useAppDispatch();
-  const updateNotificationSettingsMutation =
-    useUpdateNotificationSettingsMutation();
+  const updateNotificationSettingsMutation = useUpdateNotificationSettingsMutation();
   const [emailChecked, setEmailChecked] = useState(Boolean(settings.email));
   const [inAppChecked, setInAppChecked] = useState(Boolean(settings.in_app_notification));
   const [seenSettings, setSeenSettings] = useState(settings);
@@ -87,7 +86,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
           {isOpen && (
             <motion.div
               key="modal"
-              className="w-full rounded-none bg-white p-6 shadow-lg laptop:w-[640px] laptop:rounded-lg"
+              className="laptop:w-[640px] laptop:rounded-lg w-full rounded-none bg-white p-6 shadow-lg"
               initial={{ y: "50%" }}
               animate={{ y: 0 }}
               exit={{ y: "50%" }}
@@ -100,10 +99,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
                       <CloseIcon className="w-[11.25px]" />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[16px] font-semibold">
-                        {renderHeader()?.title}
-                      </p>
-                      <p className="text-[14px] font-normal text-text-grey">
+                      <p className="text-[16px] font-semibold">{renderHeader()?.title}</p>
+                      <p className="text-text-grey text-[14px] font-normal">
                         {renderHeader()?.description}
                       </p>
                     </div>
@@ -112,9 +109,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
                 <div className="mt-[24px]">
                   <div className="flex flex-col gap-[12px]">
                     <div className="flex items-center justify-between">
-                      <p className="text-[16px] font-normal">
-                        In-app notification
-                      </p>
+                      <p className="text-[16px] font-normal">In-app notification</p>
                       <Switch
                         onChange={(change) => {
                           handleChange("in-app");

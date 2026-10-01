@@ -42,13 +42,10 @@ export interface BusinessCategoriesResponse {
 }
 
 export const sharedApi = {
-  getBanks: () =>
-    browserApi.get<GetAllBanksResponse>(sharedUtilitiesRoutes.ALL_BANKS),
+  getBanks: () => browserApi.get<GetAllBanksResponse>(sharedUtilitiesRoutes.ALL_BANKS),
 
   getBusinessCategories: () =>
-    browserApi.get<BusinessCategoriesResponse>(
-      sharedUtilitiesRoutes.BUSINESS_CATEGORIES,
-    ),
+    browserApi.get<BusinessCategoriesResponse>(sharedUtilitiesRoutes.BUSINESS_CATEGORIES),
 
   verifyAccount: (bankCode: string, accountNumber: string) =>
     browserApi.post<VerifyAccountResponse>(sharedUtilitiesRoutes.VERIFY_ACCOUNT, {

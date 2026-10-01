@@ -3,9 +3,10 @@ import DataCard from "@/components/global/DataCard";
 import { walletHeaders } from "@/data/tableData";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
+import type { TransactionListResponse } from "@/features/transaction/api";
 
 interface WalletIF {
-  trx_data: any;
+  trx_data: TransactionListResponse | undefined;
   page: number;
   onPageChange: (page: number) => void;
 }
@@ -21,7 +22,7 @@ function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
 
   return (
     <>
-      <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
+      <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
         <DataCard
           styles={"w-full"}
           title={"Wallet Revenue"}
@@ -39,7 +40,7 @@ function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
           <thead>
             <tr className="bg-mid-grey">
               {walletHeaders.map((header, idx) => (
-                <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
+                <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
                   {header}
                 </th>
               ))}
@@ -47,10 +48,10 @@ function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
           </thead>
           <tbody>
             {paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((row: any, index: any) => (
+              paginatedData.map((row, index) => (
                 <tr
                   key={index}
-                  className="h-[72px] cursor-pointer border-b border-grey-20"
+                  className="border-grey-20 h-[72px] cursor-pointer border-b"
                   onClick={() => router.push(`/transactions/${row.id}/wallet-details`)}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.txn_id}</td>

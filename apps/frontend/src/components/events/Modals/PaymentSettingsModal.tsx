@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import {
-  Button,
-  Label,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch } from "@/redux/hook";
 import { usePaymentSettingQuery } from "@/features/events/queries";
@@ -18,10 +12,7 @@ type PaymentSettingsInterface = {
   option: boolean;
 };
 
-const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({
-  toggle,
-  option,
-}) => {
+const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, option }) => {
   const dispatch = useAppDispatch();
   const { data: paymentSettingData } = usePaymentSettingQuery({
     enabled: option,
@@ -72,42 +63,36 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+              <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
                 Payment settings
               </p>
             </div>
             <div>
               <Button
-                className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
                 onClick={handleUpdate}
               >
-                <p className="font-sans text-[12px] font-semi-normal">
-                  Save Changes
-                </p>
+                <p className="font-semi-normal font-sans text-[12px]">Save Changes</p>
               </Button>
             </div>
           </div>
           <div className="mt-10">
-            <RadioGroup
-              value={paymentType}
-              onValueChange={(val) => setPaymentType(val)}
-            >
+            <RadioGroup value={paymentType} onValueChange={(val) => setPaymentType(val)}>
               <div className="flex gap-2">
                 <RadioGroupItem
                   value="weekly"
                   id="weekly"
-                  className="border-[2.5px] border-light-grey-60 text-green-500 checked:border-step-color checked:bg-gradient-green focus:border-step-color"
+                  className="border-light-grey-60 checked:border-step-color checked:bg-gradient-green focus:border-step-color border-[2.5px] text-green-500"
                 />
                 <div className="flex flex-col">
                   <Label
                     htmlFor="weekly"
-                    className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-black-light"
+                    className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]"
                   >
                     Weekly payment
                   </Label>
-                  <span className="font-sans text-[12px] font-normal leading-[16.8px] text-text-grey">
-                    Ticket earnings will be transferred in batch to the account
-                    details every Friday
+                  <span className="text-text-grey font-sans text-[12px] leading-[16.8px] font-normal">
+                    Ticket earnings will be transferred in batch to the account details every Friday
                   </span>
                 </div>
               </div>
@@ -115,18 +100,18 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({
                 <RadioGroupItem
                   value="monthly"
                   id="monthly"
-                  className="border-[2.5px] border-light-grey-60 text-green-500 checked:border-step-color checked:bg-gradient-green focus:border-step-color"
+                  className="border-light-grey-60 checked:border-step-color checked:bg-gradient-green focus:border-step-color border-[2.5px] text-green-500"
                 />
                 <div className="flex flex-col">
                   <Label
                     htmlFor="monthly"
-                    className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-black-light"
+                    className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]"
                   >
                     Monthly payment
                   </Label>
-                  <span className="font-sans text-[12px] font-normal leading-[16.8px] text-text-grey">
-                    Ticket earnings will be transferred in batch to the account
-                    details on the last Friday of the <br /> month
+                  <span className="text-text-grey font-sans text-[12px] leading-[16.8px] font-normal">
+                    Ticket earnings will be transferred in batch to the account details on the last
+                    Friday of the <br /> month
                   </span>
                 </div>
               </div>

@@ -1,8 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import { DotIcon, MoreVerticalIcon } from "lucide-react";
 
-function EventView({ event }: { event: any }) {
+function EventView() {
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -33,8 +32,8 @@ function EventView({ event }: { event: any }) {
         </div>
       </div>
       <div className="mt-[4px]">
-        <p className="font-sans text-[14px] font-semibold leading-[21px]">{/*{thread?.topic}*/}</p>
-        <p className="mt-[30px] font-sans text-[14px] font-normal leading-[21px] text-light-black">
+        <p className="font-sans text-[14px] leading-[21px] font-semibold">{/*{thread?.topic}*/}</p>
+        <p className="text-light-black mt-[30px] font-sans text-[14px] leading-[21px] font-normal">
           {/*{isExpanded || !thread?.thoughts || thread.thoughts.length <= charLimit*/}
           {/*    ? thread?.thoughts*/}
           {/*    : `${thread.thoughts.slice(0, charLimit)}...`}*/}

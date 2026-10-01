@@ -8,12 +8,15 @@
   "packageManager": "pnpm@11.10.0",
   "scripts": {
     "dev": "turbo run dev",
+    "dev:admin": "pnpm --filter lemonade-admin dev",
+    "dev:frontend": "pnpm --filter lemonade-app dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "format": "prettier --config packages/config/prettier.config.mjs --write \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore",
-    "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore"
+    "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,md,json}\" --ignore-path .gitignore",
+    "lemonade:check": "pnpm run format && pnpm lint && pnpm run typecheck && pnpm run test && pnpm run build"
   },
   "devDependencies": {
     "prettier": "^3.9.9",

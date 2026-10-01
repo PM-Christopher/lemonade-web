@@ -74,6 +74,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
       })),
     },
     validationSchema: ticketSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       const allTickets: { id: string; quantity: number }[] = [];
       tickets.map((ticket: TicketDetails) => {
@@ -208,21 +209,21 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[12px] px-10">
+        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft className="cursor-pointer" />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Assign ticket</p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Assign ticket</p>
           </div>
         </div>
         <section className="mt-4">
           <form onSubmit={formik.handleSubmit}>
             <div className="mt-[16px] flex justify-center">
               <section className="w-[640px] gap-[24px] rounded-[12px] bg-white p-[48px]">
-                <div className="rounded-[8px] bg-light-green-10 px-[16px] py-[8px]">
-                  <p className="font-sans text-[14px] font-normal leading-[21px]">
+                <div className="bg-light-green-10 rounded-[8px] px-[16px] py-[8px]">
+                  <p className="font-sans text-[14px] leading-[21px] font-normal">
                     Your tickets has been reserved for{" "}
                     <span className="font-semiBold text-light-tint-2">{formatTime(timeLeft)}</span>{" "}
                     mins. Complete your purchase to secure your spot.
@@ -236,7 +237,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                     id="fullname"
                     type="text"
                     placeholder="e.g. Jano doe"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.fullname}
                     onChange={formik.handleChange}
                   />
@@ -249,7 +250,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                     id="email"
                     type="email"
                     placeholder="e.g. Janodoe@email.com"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.email}
                     onChange={formik.handleChange}
                   />
@@ -258,10 +259,10 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                   <div className="flex gap-2">
                     <UserIcon />
                     <div>
-                      <p className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-black-light">
+                      <p className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]">
                         Assign multiple people
                       </p>
-                      <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                         Tickets will be sent to their email address
                       </p>
                     </div>

@@ -59,7 +59,7 @@ const ConfirmPaymentModal = ({
         <DialogTitle className="sr-only">{"Request payment"}</DialogTitle>
         <div className="w-[360px] rounded-lg bg-white px-6 pt-4 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="font-sans text-[16px] font-semibold leading-[27px] tracking-custom">
+            <p className="tracking-custom font-sans text-[16px] leading-[27px] font-semibold">
               Request payment
             </p>
             <div className="cursor-pointer" onClick={toggleMenu}>
@@ -68,9 +68,9 @@ const ConfirmPaymentModal = ({
           </div>
           <div className="mt-10 flex flex-col items-center pb-[10px]">
             <p className="w-[328px] text-[14px] font-normal">
-              To ensure a smooth process, please mark the job as completed only
-              after it&apos;s finished. Your payment will be released only when
-              the client confirms completion. You may dispute delayed payments.
+              To ensure a smooth process, please mark the job as completed only after it&apos;s
+              finished. Your payment will be released only when the client confirms completion. You
+              may dispute delayed payments.
             </p>
             <div className="mt-[40px] flex w-full justify-center gap-3">
               <Button
@@ -100,14 +100,10 @@ const ConfirmPaymentModal = ({
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       />
                     </svg>
-                    <p className="text-[16px] font-semi-normal text-light-white">
-                      Loading...
-                    </p>
+                    <p className="font-semi-normal text-light-white text-[16px]">Loading...</p>
                   </div>
                 ) : (
-                  <p className="text-[16px] font-semi-normal">
-                    Request payment
-                  </p>
+                  <p className="font-semi-normal text-[16px]">Request payment</p>
                 )}
               </Button>
             </div>

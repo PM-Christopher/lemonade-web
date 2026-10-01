@@ -11,10 +11,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
-import {
-  TransactionHistorySkeleton,
-  WalletDetailSkeleton,
-} from "@/components/Skeletons";
+import { TransactionHistorySkeleton, WalletDetailSkeleton } from "@/components/Skeletons";
 import dynamic from "next/dynamic";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
@@ -25,10 +22,9 @@ import { ColorRing } from "react-loader-spinner";
 
 // Off the initial bundle — only needed once "Request payout" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const RequestPayoutModal = dynamic(
-  () => import("@/components/settings/Modal/RequestPayoutModal"),
-  { ssr: false },
-);
+const RequestPayoutModal = dynamic(() => import("@/components/settings/Modal/RequestPayoutModal"), {
+  ssr: false,
+});
 
 function WalletSettingsClient() {
   const router = useRouter();
@@ -102,81 +98,57 @@ function WalletSettingsClient() {
       <section className="bg-light_grey pb-10">
         <ReferralSideMenu toggleMenu={toggleRefMenu} isOpen={isRefOpen} />
         <AffiliateSideMenu isOpen={isAfOpen} toggleMenu={toggleAfMenu} />
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
+        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.push("/settings")}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Wallet
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Wallet</p>
           </div>
         </div>
 
-        <section className="mt-4 flex flex-col justify-center gap-[20px] px-[10px] laptop:flex-row laptop:px-0">
+        <section className="laptop:flex-row laptop:px-0 mt-4 flex flex-col justify-center gap-[20px] px-[10px]">
           {loading ? (
             <WalletDetailSkeleton />
           ) : (
-            <div className="flex w-full flex-col laptop:w-[580px]">
+            <div className="laptop:w-[580px] flex w-full flex-col">
               <div className="flex flex-col rounded-[12px] bg-white p-[16px]">
-                <div className="flex flex-col border-b-[1px] border-b-mid-grey p-[16px]">
-                  <p className="text-[14px] font-normal text-text-grey">
-                    Total Amount Earned
-                  </p>
-                  <p className="text-[18px] font-semibold tracking-custom">
-                    N
-                    {formatNumberWithCommas(
-                      Number(data?.total_amount_earned) || 0,
-                    )}
+                <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+                  <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
+                  <p className="tracking-custom text-[18px] font-semibold">
+                    N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                   </p>
                 </div>
-                <div className="flex justify-between border-b-[1px] border-b-mid-grey p-[16px]">
+                <div className="border-b-mid-grey flex justify-between border-b-[1px] p-[16px]">
                   <div className="flex flex-col">
-                    <p className="text-[14px] font-normal text-text-grey">
-                      Referral earnings
-                    </p>
-                    <p className="text-[18px] font-semibold tracking-custom">
-                      N
-                      {formatNumberWithCommas(
-                        Number(data?.referral_earnings) || 0,
-                      )}
+                    <p className="text-text-grey text-[14px] font-normal">Referral earnings</p>
+                    <p className="tracking-custom text-[18px] font-semibold">
+                      N{formatNumberWithCommas(Number(data?.referral_earnings) || 0)}
                     </p>
                   </div>
-                  <ChevronRight
-                    onClick={toggleRefMenu}
-                    className="cursor-pointer"
-                  />
+                  <ChevronRight onClick={toggleRefMenu} className="cursor-pointer" />
                 </div>
                 <div className="flex justify-between p-[16px]">
                   <div className="flex flex-col">
-                    <p className="text-[14px] font-normal text-text-grey">
-                      Affiliate earnings
-                    </p>
-                    <p className="text-[18px] font-semibold tracking-custom">
-                      N
-                      {formatNumberWithCommas(
-                        Number(data?.affiliate_earnings) || 0,
-                      )}
+                    <p className="text-text-grey text-[14px] font-normal">Affiliate earnings</p>
+                    <p className="tracking-custom text-[18px] font-semibold">
+                      N{formatNumberWithCommas(Number(data?.affiliate_earnings) || 0)}
                     </p>
                   </div>
-                  <ChevronRight
-                    onClick={toggleAfMenu}
-                    className="cursor-pointer"
-                  />
+                  <ChevronRight onClick={toggleAfMenu} className="cursor-pointer" />
                 </div>
               </div>
               {data?.payout_request && (
-                <div className="mt-[24px] flex flex-col rounded-[12px] bg-light-tint p-[16px]">
-                  <p className="text-[16px] font-normal text-light-black">
-                    Commission payouts are available when you&apos;ve earned
-                    over ₦100,000
+                <div className="bg-light-tint mt-[24px] flex flex-col rounded-[12px] p-[16px]">
+                  <p className="text-light-black text-[16px] font-normal">
+                    Commission payouts are available when you&apos;ve earned over ₦100,000
                   </p>
                   <Button
-                    className={`mt-[16px] h-[48px] w-fit rounded-[12px] bg-gradient-green p-[14px] px-[48px] ${
+                    className={`bg-gradient-green mt-[16px] h-[48px] w-fit rounded-[12px] p-[14px] px-[48px] ${
                       !profileLoading
-                        ? "border border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
-                        : "cursor-not-allowed bg-mid-green opacity-70"
+                        ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
+                        : "bg-mid-green cursor-not-allowed opacity-70"
                     } `}
                     onClick={handlePayoutRequest}
                     disabled={profileLoading}
@@ -203,14 +175,10 @@ function WalletSettingsClient() {
                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                           />
                         </svg>
-                        <p className={"text-[16px] font-semi-normal"}>
-                          Loading...
-                        </p>
+                        <p className={"font-semi-normal text-[16px]"}>Loading...</p>
                       </>
                     ) : (
-                      <p className={"text-[16px] font-semi-normal"}>
-                        Request pay out
-                      </p>
+                      <p className={"font-semi-normal text-[16px]"}>Request pay out</p>
                     )}
                   </Button>
                 </div>
@@ -218,7 +186,7 @@ function WalletSettingsClient() {
             </div>
           )}
           <div>
-            <div className="flex w-full flex-col rounded-[12px] bg-white laptop:min-w-[684px]">
+            <div className="laptop:min-w-[684px] flex w-full flex-col rounded-[12px] bg-white">
               <div className="border-b-[1px] p-[16px]">
                 <p className="text-[16px] font-semibold">Payout history</p>
               </div>
@@ -228,45 +196,38 @@ function WalletSettingsClient() {
                 <div className="px-[24px]">
                   {data?.payout_history?.map((history: any, index: number) => (
                     <div
-                      className="flex items-center justify-between pb-[24px] pt-[16px]"
+                      className="flex items-center justify-between pt-[16px] pb-[24px]"
                       key={index}
                     >
                       <div className="flex flex-col">
-                        <p className="text-[14px] font-semi-normal">
-                          N
-                          {formatNumberWithCommas(Number(history?.amount) || 0)}
+                        <p className="font-semi-normal text-[14px]">
+                          N{formatNumberWithCommas(Number(history?.amount) || 0)}
                         </p>
-                        <p className="text-[12px] font-normal text-text-grey">
-                          {history?.date}
-                        </p>
+                        <p className="text-text-grey text-[12px] font-normal">{history?.date}</p>
                       </div>
                       {history?.status === "processing" && (
-                        <div className="rounded-[8px] bg-warning px-[8px] py-[4px]">
-                          <p className="text-[12px] font-semi-normal text-warning-bold">
+                        <div className="bg-warning rounded-[8px] px-[8px] py-[4px]">
+                          <p className="font-semi-normal text-warning-bold text-[12px]">
                             Processing
                           </p>
                         </div>
                       )}
                       {history?.status === "completed" ||
                         (history?.status === "successful" && (
-                          <div className="rounded-[8px] bg-light-green-60 px-[8px] py-[4px]">
-                            <p className="text-[12px] font-semi-normal text-light-green-70">
+                          <div className="bg-light-green-60 rounded-[8px] px-[8px] py-[4px]">
+                            <p className="font-semi-normal text-light-green-70 text-[12px]">
                               Completed
                             </p>
                           </div>
                         ))}
                       {history?.status === "failed" && (
-                        <div className="rounded-[8px] bg-red-3 px-[8px] py-[4px]">
-                          <p className="text-[12px] font-semi-normal text-red-1">
-                            Failed
-                          </p>
+                        <div className="bg-red-3 rounded-[8px] px-[8px] py-[4px]">
+                          <p className="font-semi-normal text-red-1 text-[12px]">Failed</p>
                         </div>
                       )}
                       {history?.status === "pending" && (
-                        <div className="rounded-[8px] bg-warning px-[8px] py-[4px]">
-                          <p className="text-[12px] font-semi-normal text-warning-bold">
-                            Pending
-                          </p>
+                        <div className="bg-warning rounded-[8px] px-[8px] py-[4px]">
+                          <p className="font-semi-normal text-warning-bold text-[12px]">Pending</p>
                         </div>
                       )}
                     </div>

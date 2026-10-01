@@ -33,17 +33,20 @@ test("buying a paid ticket creates a real order and redirects to a live Paystack
     );
   }
 
-  await page.goto(`/event/${eventId}/buy-ticket`);
+  test.setTimeout(90_000);
+  await page.goto(`/event/${eventId}/buy-ticket`, { waitUntil: "domcontentloaded" });
 
-  await page.locator("p", { hasText: "+" }).first().click();
+  await page.getByText("+", { exact: true }).first().click();
   await page.getByRole("button", { name: "Assign ticket" }).last().click();
 
-  await expect(page).toHaveURL(new RegExp(`/event/${eventId}/assign-ticket`), { timeout: 15_000 });
+  await expect(page).toHaveURL(new RegExp(`/event/${eventId}/assign-ticket`), { timeout: 20_000 });
 
   await page.locator("#fullname").fill("E2E Ticket Test");
   await page.locator("#email").fill(`e2e-ticket-${Date.now()}@example.com`);
   await page.getByRole("button", { name: "Pay now" }).click();
 
-  await page.waitForURL(/checkout\.paystack\.com/, { timeout: 20_000 });
+  // Paystack's checkout sits behind a challenge page that often never fires
+  // "load". Arriving at the host is the assertion this test owns.
+  await page.waitForURL(/checkout\.paystack\.com/, { timeout: 45_000, waitUntil: "commit" });
   expect(page.url()).toContain("checkout.paystack.com");
 });

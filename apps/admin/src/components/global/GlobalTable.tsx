@@ -3,7 +3,7 @@ import React from "react";
 // Define the type for table props
 interface TableProps {
   headers: string[];
-  content: Array<Record<string, any>>;
+  content: Array<Record<string, string | number | null | undefined>>;
   onPageChange?: (page: number) => void;
   currentPage?: number;
   totalPages?: number;
@@ -12,7 +12,6 @@ interface TableProps {
 const GlobalTable: React.FC<TableProps> = ({
   headers,
   content,
-  onPageChange = () => {},
   currentPage = 1,
   totalPages = 1,
 }) => {
@@ -51,7 +50,7 @@ const GlobalTable: React.FC<TableProps> = ({
         <thead>
           <tr className="bg-mid-grey">
             {headers.map((header, idx) => (
-              <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
+              <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
                 {header}
               </th>
             ))}
@@ -60,18 +59,18 @@ const GlobalTable: React.FC<TableProps> = ({
         <tbody>
           {content?.length > 0 ? (
             content.map((row, index) => (
-              <tr key={index} className="h-[72px] border-b border-grey-20">
+              <tr key={index} className="border-grey-20 h-[72px] border-b">
                 {Object.keys(row).map((key, cellIdx) => (
                   <td
                     className={`p-4 font-sans text-sm font-medium ${
-                      key === "status" || "STATUS" ? getStatusClass(row[key]) : ""
+                      key === "status" || "STATUS" ? getStatusClass(String(row[key])) : ""
                     }`}
                     key={cellIdx}
                   >
                     {key === "avatar" ? (
                       <div className="flex items-center gap-2">
                         <img
-                          src={row[key] || "https://via.placeholder.com/40"}
+                          src={(row[key] as string) || "https://via.placeholder.com/40"}
                           alt="avatar"
                           className="h-8 w-8 rounded-full"
                         />
@@ -95,11 +94,11 @@ const GlobalTable: React.FC<TableProps> = ({
       </table>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between rounded-bl-lg rounded-br-lg bg-mid-grey p-4 px-10">
+      <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
         <button
           disabled={currentPage === 1}
           // onClick={() => onPageChange(currentPage - 1)}
-          className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+          className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
         >
           Previous
         </button>
@@ -119,7 +118,7 @@ const GlobalTable: React.FC<TableProps> = ({
         <button
           disabled={currentPage === totalPages}
           // onClick={() => onPageChange(currentPage + 1)}
-          className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+          className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
         >
           Next
         </button>

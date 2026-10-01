@@ -17,13 +17,8 @@ interface SubmitDisputeModalProps {
   toggle: () => void;
 }
 
-const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({
-  isOpen,
-  toggle,
-}) => {
-  const { selectedJob: job } = useSelector(
-    (state: RootState) => state.temp,
-  ) as {
+const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle }) => {
+  const { selectedJob: job } = useSelector((state: RootState) => state.temp) as {
     selectedJob: any;
   };
   const disputeJobMutation = useDisputeJobMutation(job?.id);
@@ -40,6 +35,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({
       attachments: [],
     },
     validationSchema: disputeJobSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       handleDispute(values);
     },
@@ -80,10 +76,10 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({
         <DialogTitle className="sr-only">{"Dispute Job"}</DialogTitle>
         <form
           onSubmit={formik.handleSubmit}
-          className="hide-scrollbar max-h-[90vh] w-full max-w-[640px] overflow-y-auto scroll-smooth rounded-2xl bg-white p-6 shadow-xl laptop:p-8"
+          className="hide-scrollbar laptop:p-8 max-h-[90vh] w-full max-w-[640px] overflow-y-auto scroll-smooth rounded-2xl bg-white p-6 shadow-xl"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 mb-6 flex items-center justify-between bg-white pb-4 pt-2">
+          <div className="sticky top-0 z-10 mb-6 flex items-center justify-between bg-white pt-2 pb-4">
             <div className="flex items-center gap-3">
               <div
                 className="cursor-pointer rounded-full p-1 transition hover:bg-gray-100"
@@ -91,7 +87,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({
               >
                 <CloseIcon />
               </div>
-              <h2 className="font-sans text-[16px] font-semibold text-black laptop:text-[18px]">
+              <h2 className="laptop:text-[18px] font-sans text-[16px] font-semibold text-black">
                 Dispute Job
               </h2>
             </div>
@@ -109,41 +105,32 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({
             {/* Dispute Textarea */}
             <div className="flex w-full flex-col gap-2">
               <div className="flex justify-between">
-                <label
-                  htmlFor="dispute"
-                  className="text-[14px] font-normal text-text-grey"
-                >
+                <label htmlFor="dispute" className="text-text-grey text-[14px] font-normal">
                   Dispute
                 </label>
-                <span className="text-[12px] font-normal text-text-grey">
-                  200 characters
-                </span>
+                <span className="text-text-grey text-[12px] font-normal">200 characters</span>
               </div>
               <textarea
                 id="dispute"
                 name="dispute"
-                className={`h-[130px] w-full rounded-xl border bg-light_grey p-4 ${
+                className={`bg-light_grey h-[130px] w-full rounded-xl border p-4 ${
                   formik.touched.dispute && formik.errors.dispute
                     ? "border-red-500"
                     : "border-gray-200"
-                } text-[14px] transition placeholder:text-[14px] placeholder:font-normal placeholder:text-grey-40 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-step-color`}
+                } placeholder:text-grey-40 focus:ring-step-color text-[14px] transition placeholder:text-[14px] placeholder:font-normal focus:border-transparent focus:ring-2 focus:outline-none`}
                 placeholder="Dispute details"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.dispute}
               />
               {formik.touched.dispute && formik.errors.dispute && (
-                <p className="mt-1 text-[12px] text-red-500">
-                  {formik.errors.dispute}
-                </p>
+                <p className="mt-1 text-[12px] text-red-500">{formik.errors.dispute}</p>
               )}
             </div>
 
             {/* Attachments */}
             <div className="flex w-full flex-col gap-2">
-              <label className="text-[14px] font-normal text-text-grey">
-                Attachments
-              </label>
+              <label className="text-text-grey text-[14px] font-normal">Attachments</label>
               <MultipleFileUploader
                 length="multiple"
                 type="dispute"

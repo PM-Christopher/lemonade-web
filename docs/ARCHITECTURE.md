@@ -192,13 +192,13 @@ Ordered by severity. Each is a verified finding with a file reference, not a sty
 
 #### 3.2 Request payloads drift from the new contract **[MUST]**
 
-- **Evidence** — `API-BREAKING-CHANGES.md` documents changes the frontends never adopted: the
-  refresh token moved from the `Authorization` header into the JSON body; `callback_url` was renamed
-  to `redirect_url` on tribe-join and job-pay.
+- **Evidence** — `lemonade-backend/docs/API-BREAKING-CHANGES.md` documents changes the frontends
+  never adopted: the refresh token moved from the `Authorization` header into the JSON body;
+  `callback_url` was renamed to `redirect_url` on tribe-join and job-pay.
 - **Impact** — These fail _after_ the prefix is corrected, and two of them fail silently rather than
   loudly — a renamed field is simply absent.
-- **Fix** — Work through `API-MIGRATION-AUDIT.md` endpoint by endpoint. This is the single
-  highest-value document in the backend repo for this phase.
+- **Fix** — Work through `lemonade-backend/docs/API-MIGRATION-AUDIT.md` endpoint by endpoint. This is
+  the single highest-value document in the backend repo for this phase.
 
 #### 3.3 The shared request hook tests the wrong envelope key **[MUST]**
 
@@ -957,7 +957,7 @@ See §22, Conflict 1.
 - **Trade-off** — 45 files use Formik. Migrate per feature alongside that feature's query migration —
   never as a separate sweep. Both libraries coexist without conflict during the transition. Note `zod`
   is already a dependency in admin (currently unused), so this is partly adopting a decision already
-  made.
+  made. The leftover split is Phase 9.
 
 ### Validation is mirrored, never authoritative
 
@@ -1030,8 +1030,9 @@ actions and payout approval stay app-local: only one app submits them.
 - **Refresh on 401, not 403.** The backend returns 401 for expired or absent credentials and 403 for
   policy denial. Refreshing on 403 (as the user app does) retries a request that will always fail, and
   never refreshes one that would succeed.
-- **Refresh sends the token in the JSON body.** `API-BREAKING-CHANGES.md` is explicit: no auth header
-  is read on that route. The user app's current call would fail even if the URL were right.
+- **Refresh sends the token in the JSON body.** `lemonade-backend/docs/API-BREAKING-CHANGES.md` is
+  explicit: no auth header is read on that route. The user app's current call would fail even if the
+  URL were right.
 - **Refresh once, then fail.** One in-flight refresh, with concurrent requests queued behind it — the
   user app's queue logic is correct and should be preserved in the shared transport. On refresh
   failure, clear cookies and redirect once.
@@ -1513,7 +1514,7 @@ build on different asset pipelines.
 
 ## 21. Phased Implementation Roadmap
 
-Nine phases. Each ends in a shippable state; none requires a freeze. Effort is indicative for a small
+Ten phases. Each ends in a shippable state; none requires a freeze. Effort is indicative for a small
 team and should be re-estimated against actual capacity.
 
 > **How to read the status tags below.** Each phase heading now carries one of: **[DONE]**
@@ -1530,8 +1531,9 @@ Nothing else can be verified until the apps can reach the backend. Days, not wee
 system a new developer can actually run.
 
 - Repoint `baseUrl` from `/api` to `/v1` (3 files per app) and split admin vs user base paths
-- Work `API-MIGRATION-AUDIT.md` endpoint by endpoint; apply every change in `API-BREAKING-CHANGES.md` —
-  refresh token to body, `callback_url` → `redirect_url`
+- Work `lemonade-backend/docs/API-MIGRATION-AUDIT.md` endpoint by endpoint; apply every change in
+  `lemonade-backend/docs/API-BREAKING-CHANGES.md` — refresh token to body, `callback_url` →
+  `redirect_url`
 - Add `.env.example` and a README setup section to both apps
 - Delete confirmed-dead dependencies; settle on one lockfile per repo
 - Fix or remove the Turbopack/SVGR mismatch in admin
@@ -1759,7 +1761,7 @@ one call site that uses it; `userThreadsRoutes.POST_COMMENT`'s second placeholde
 `{thread_id}` as the old hand-rolled suffix implied. Every one of these was resolved by reading the
 real generated route string and the real call site side by side, not by pattern-matching names.
 
-Verified beyond typecheck (which does catch a renamed key or group, but not a wrong route *string*):
+Verified beyond typecheck (which does catch a renamed key or group, but not a wrong route _string_):
 lint and build clean in both apps, then live curl-verified roughly 30 endpoints across every migrated
 domain in both apps against the real backend post-migration, including the trickiest `buildPath`
 cases — admin's wallet add/deduct/withdrawal-request, user suspend/deactivate/reactivate, event
@@ -1774,7 +1776,7 @@ already documented elsewhere in this doc).
 Not migrated, and deliberately out of scope: the handful of call sites `routes.ts`'s own original
 header comment already flagged as raw un-migrated strings (OTP/password-reset sub-flows, file
 uploads, a couple of payment-verify endpoints referencing routes that don't exist in the backend
-contract at all) — these never used a route *constant* in the first place, so there was nothing for
+contract at all) — these never used a route _constant_ in the first place, so there was nothing for
 this pass to move off of. They're the same gaps this doc has tracked since Phase 0/4, not a new find.
 
 Not done: archiving the old `lemonade/{admin,frontend}` repos —
@@ -1921,7 +1923,7 @@ whenever the _old_ token cookie was absent — which post-cutover is always true
 > `SIGNED_IN_COOKIE` **or** the real token cookie's presence — the `or` matters for a smooth rollout: an
 > already-logged-in session has the old cookie but not the new one until its first proxied call sets it,
 > and middleware runs before that call ever happens. Admin's middleware needed one extra bit of care: it
-> also uses the token's *value* (not just presence) to fetch permissions for section-gating, so only the
+> also uses the token's _value_ (not just presence) to fetch permissions for section-gating, so only the
 > redirect check was widened to the `or`, not the downstream permission fetch, which still requires the
 > real token specifically.
 >
@@ -1990,7 +1992,8 @@ domains regardless (staleTime 0, invalidate-not-optimistic on every mutation), a
 paid for itself: it surfaced two real backend bugs meaning the admin wallet credit/debit feature had
 _never actually worked_ from this UI (fixed in `lemonade-backend`, tests added). Forms were **not**
 migrated to React Hook Form + Zod in the same pass as their domain, contra the plan — every migrated
-domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use.
+domain kept its existing Formik + Yup forms untouched; `checkError.ts` is still in use. That leftover
+is Phase 9, not an open item inside this phase.
 `tableData.ts` retirement done (2026-09-21) — 16 of its 30 exports had zero real consumers left
 (confirmed per file, not just by export name, since several files imported a live header alongside a
 dead fixture-data array) and were deleted; the rest are real column headers, still rendered, kept.
@@ -2141,19 +2144,19 @@ real accepted connection and a real pending invite through the API and exercisin
 > `chat.{receiverId}`/`message.sent`. `packages/api-types` regenerated to drop the now-gone
 > `userConnectRoutes.MESSAGE_LOGS`/`MESSAGES`/`SEND_MESSAGE` constants and the `SendConnectMessageRequest`
 > type; both apps typecheck/lint/build clean against the regenerated types.
-**business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
-too — the largest single domain this session by consumer count (16 files). 4 queries
-(businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real
-consumers — dropped rather than migrated, same rule as every other dead-code find this session. The
-slice's `job`/`addJob` global state (set from several independent places — a job lookup, a payment-
-verification redirect, a completion action — read from others) isn't server data, so it moved to
-`redux/tempSlice.ts` as `selectedJob` rather than into a query cache; `useGetJobMutation`'s callers
-`dispatch(setSelectedJob(...))` where the old code dispatched `addJob`. Deduplicated one real duplicate
-read along the way — `edit-business/page.tsx`'s own `useRequest('/user/business/:id')` was the exact
-`getBusiness` endpoint, now shares `useBusinessQuery`. Left `business-categories`, `business-reviews`,
-`listing/boosts`, and the business/listing `verify-payment`/`verify-business-boost` raw-axios calls on
-the legacy path — none are wired to `business.slice.ts`, same scoping rule as settings' ~30 leftover
-`ProfileController` routes.
+> **business** (the job-marketplace domain: business listings, job requests, job payments) is migrated
+> too — the largest single domain this session by consumer count (16 files). 4 queries
+> (businesses/listings/detail/jobs-data), 12 mutations. `getListing`/`GetBusinessListing` had zero real
+> consumers — dropped rather than migrated, same rule as every other dead-code find this session. The
+> slice's `job`/`addJob` global state (set from several independent places — a job lookup, a payment-
+> verification redirect, a completion action — read from others) isn't server data, so it moved to
+> `redux/tempSlice.ts` as `selectedJob` rather than into a query cache; `useGetJobMutation`'s callers
+> `dispatch(setSelectedJob(...))` where the old code dispatched `addJob`. Deduplicated one real duplicate
+> read along the way — `edit-business/page.tsx`'s own `useRequest('/user/business/:id')` was the exact
+> `getBusiness` endpoint, now shares `useBusinessQuery`. Left `business-categories`, `business-reviews`,
+> `listing/boosts`, and the business/listing `verify-payment`/`verify-business-boost` raw-axios calls on
+> the legacy path — none are wired to `business.slice.ts`, same scoping rule as settings' ~30 leftover
+> `ProfileController` routes.
 
 This domain surfaced more real bugs than any other this session, of increasing depth:
 
@@ -2659,7 +2662,7 @@ import site: 17 modals across 14 files in frontend (`UpdateModal` 575 lines down
 `WalletThresholdModal`). Verified with a real `next build`: First Load JS dropped meaningfully on the
 pages that carried the heaviest modals — frontend's `tribe/[id]` 473 KB → 369 KB, admin's `/events`
 218 KB → 182 KB, `/team` 204 KB → 179 KB, `/wallet-management` 207 KB → 183 KB — all comfortably inside
-the §15 budgets (350 KB frontend authenticated, 500 KB admin). One page's own-chunk size *grew* in the
+the §15 budgets (350 KB frontend authenticated, 500 KB admin). One page's own-chunk size _grew_ in the
 build output (`event/[id]/buy-ticket`, 7.6 KB → 43 KB) — investigated rather than dismissed: its actual
 First Load JS (the number the budget cares about) moved by about 1 KB, confirming webpack just
 reshuffled what counts as "shared" vs "page-specific" once other pages' modals left the synchronous
@@ -2742,7 +2745,7 @@ methodology as every dead-dependency find this session, including deep subpath i
 `@mui/material/Alert` a bare-package grep would miss). `@mui/material` had **zero real usage in either
 app** — pure dead weight, likely left over from an early scaffold. `antd` had exactly three real call
 sites total: `apps/frontend/src/redux/Provider.tsx` (`AntdRegistry` + `ConfigProvider`, wrapping the
-*entire app*, not a specific page — theming setup for antd's `Modal` component specifically),
+_entire app_, not a specific page — theming setup for antd's `Modal` component specifically),
 `apps/frontend/src/components/navigation/TopNav.tsx` (`Button`, `Empty`, `Modal` — the notification
 bell's dropdown, rendered on every authenticated page via `MainLayout`), and
 `apps/admin/src/app/(main)/users/UsersClient.tsx` (a `Select` for the status filter). Migrated all
@@ -2845,7 +2848,7 @@ real layout behavior at that exact width. Frontend's shared color key is `light_
 as `bg-light_grey` at real call sites); admin's is `light-grey` (hyphen) — same value, different key,
 so sharing it under either spelling would break the other app's existing class names. Also found, while
 diffing: admin's `card-shadow` in `boxShadow` is a real pre-existing bug — its value is a full
-`"box-shadow: 0px 0px 1px 1.5px #EDEDED4D"` declaration string, not a shadow *value*, so the utility
+`"box-shadow: 0px 0px 1px 1.5px #EDEDED4D"` declaration string, not a shadow _value_, so the utility
 Tailwind generates from it never actually applies anywhere it's used. Left it as-is and commented in
 place rather than fixing it silently, same reasoning as the rest of this paragraph.
 
@@ -2897,7 +2900,7 @@ buttons on every single one of these 59 files.
 The conversion is mechanical and uniform: the outer overlay div becomes `<Dialog open={isOpen}
 onOpenChange={...}>`, a `<DialogTitle className="sr-only">` is added (Radix requires one; every one of
 these modals already had a visible heading to source the text from, so this is invisible — screen-reader
-accessibility, not a visual change) as the *first child of* `DialogContentBare` (getting this nesting
+accessibility, not a visual change) as the _first child of_ `DialogContentBare` (getting this nesting
 wrong — putting `DialogTitle` as a sibling of `DialogContentBare` instead of inside it — was a mistake
 this pass caught and fixed itself: since `DialogTitle` wasn't gated by the Portal's own open/closed
 mounting, every closed dialog's sr-only title was rendering into the DOM unconditionally, and the open
@@ -2931,7 +2934,7 @@ pre-existing, already-documented single-retry flakiness, unrelated to this chang
 `/users/[id]` page renders an `<Image>` with an empty-string `src` somewhere reachable from its default
 tab, which Next dev's error overlay surfaces as a full-screen blocking panel over the whole page —
 confirmed via a real console-message listener (77 occurrences on that one page load), confirmed unrelated
-to this migration (it fires before any tab is even clicked), and confirmed *not* present on `/wallet-
+to this migration (it fires before any tab is even clicked), and confirmed _not_ present on `/wallet-
 management`, `/events/[id]`, or `/events/add-promotions` (checked each directly rather than assumed).
 Root cause, found later: `components/users/TribeModal.tsx` (unrelated fixture UI) stays mounted
 off-screen at all times via a CSS transform, not unmounted, and passed an SVG icon component as
@@ -3056,7 +3059,7 @@ just the image. See `tooling/e2e/README.md`'s "Real bugs this suite has already 
 > existing placeholder asset (`/images/tribe_1.png`, `/images/business_empty.png`) instead of the raw
 > possibly-null value. **A real gap this surfaced in `smoke.spec.ts`:** that spec passed for both
 > routes throughout the entire time this bug existed — `response.ok()` stays true across the
-> mid-render hang, and the crash never reaches an *uncaught* runtime error (no "Unhandled Runtime
+> mid-render hang, and the crash never reaches an _uncaught_ runtime error (no "Unhandled Runtime
 > Error" text, no `pageerror` event) because nothing here actually throws; it's an infinite render
 > loop, not an exception. `smoke.spec.ts`'s three assertions are structurally blind to this whole bug
 > class. Not hardened further in this pass — flagging the gap rather than silently expanding scope.
@@ -3121,7 +3124,7 @@ into CI" section for the full detail.
 > `apps/frontend/src/app/(auth)/login/page.tsx` and `signup/page.tsx` both called `useGoogleLogin()`
 > unconditionally. `@react-oauth/google`'s hook throws synchronously inside its own effect ("Missing
 > required parameter client_id") when `GoogleOAuthProvider`'s `clientId` is empty — which it is in this
-> local dev environment (`NEXT_PUBLIC_GOOGLE_CLIENT_ID` unset) — crashing the *entire* login/signup page
+> local dev environment (`NEXT_PUBLIC_GOOGLE_CLIENT_ID` unset) — crashing the _entire_ login/signup page
 > into its error boundary, not just disabling the Google button. First surfaced as the ticket-purchase
 > test failing on an unrelated selector; root-caused by capturing `pageerror`/console output directly,
 > the same technique used for the Firebase crash this doc already documents in this same section. Fixed
@@ -3214,7 +3217,7 @@ Did the rest, all verifiable without either:
   hosts; admin's is the same minus Firebase and Google OAuth, which it doesn't use. Both still need
   `style-src 'unsafe-inline'` — neither app's inline `style` attribute usage has been audited or migrated,
   and tightening that blind would just break real pages. Nothing is enforced; the plan's own "report-only
-  first, then enforced" order means the *next* step is watching real `/api/csp-report` data for a while
+  first, then enforced" order means the _next_ step is watching real `/api/csp-report` data for a while
   before ever switching the header name to `Content-Security-Policy`.
 
 **`docs/` finalization — done except the one piece that's off-limits.** `CLAUDE.md` itself is mid-edit by
@@ -3239,6 +3242,18 @@ edit already in flight. Everything else in that bullet was genuinely stale, not 
   and hard-to-reverse enough to be worth one: which shadcn style `@lemonade/ui` standardized on, why (two
   of new-york's differences are objectively better independent of which app "started" with them), and
   what shipped as a side effect (admin's `Input` gained a password-visibility toggle it never had).
+
+### Phase 9 — One form library **[SHOULD]** **[NOT STARTED]**
+
+Left behind when Phase 5 migrated server state and kept the existing forms. Most screens are still Formik + Yup. Zod is already used for boot-time env validation and for forms written after the §12 decision (admin tribe creation is the first). Both are allowed only until this phase finishes.
+
+- Migrate a form to React Hook Form + Zod when that feature is next touched. Not a repo-wide sweep.
+- One schema per action, with a comment naming the backend `FormRequest` it mirrors. `z.infer` is the form's value type. Server 422 field errors map onto the field with `setError`.
+- Password rules mirror `App\Support\PasswordRules`. Do not invent a stricter client rule than the endpoint it calls.
+- `@lemonade/validation` is the interim shared Yup layer (fields and schemas for auth and profile setup, used by both apps). Rewrite that package to Zod in this phase, or replace it. It must not stay as a second schema library once Formik is gone.
+- Delete `checkError.ts` when the last Formik form is gone.
+
+**Status:** Not started (2026-10-01). Recorded so the Formik/Yup and React Hook Form/Zod split is an explicit phase, not an undocumented leftover.
 
 ---
 
@@ -3286,7 +3301,7 @@ backend work.
   client-side slicing over the full unbounded fetch. `page` lives in `searchParams` (per CLAUDE.md's "URL
   state for anything shareable"), not `useState`, for every list that didn't already have real
   client-side search to preserve. `PaginationComp` — a fully-built pager component that already existed
-  in every one of these tables, wired to *local* page math — needed no changes at all, just a real
+  in every one of these tables, wired to _local_ page math — needed no changes at all, just a real
   `meta.last_page`/`onPageChange` instead of `Math.ceil(data.length / perPage)`.
 
   Two lists (`/users`, `/wallet-management`) have real, working client-side search/filter UI wired to
@@ -3505,25 +3520,25 @@ backend work.
 
 ### Measurable targets
 
-| Metric                            | Baseline |                                                                                                                                                                      Current |                Target | Phase  | How verified                                 |
-| --------------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------: | ------ | -------------------------------------------- |
-| Endpoints reachable against `/v1` |        0 |                                                                                                                              All except 3 (flagged, need a product decision) |                   All | P0     | Smoke pass over the ten journeys             |
-| `: any` annotations               |      574 |                                                                                                                                                                          499 |                  < 50 | P3–P5  | `grep`, tracked per PR                       |
-| `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed |
-| Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                       |
-| Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule              |
-| Client-side pagination sites      |        7 |                                                          All 7 wired to real server pagination (users, reporting, all six transaction tabs, wallet-management) |                     0 | P6     | Requires Conflict 1 resolved — **done**      |
-| Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                   |
-| `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                        |
-| Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                    |
-| Unimported runtime deps           |       50 |                                                                                                                                                not re-measured this revision |                     0 | P0, P7 | `knip` in CI                                 |
-| UI component systems              |        4 |                                                                                                                                                not re-measured this revision |                     1 | P7     | Import ban lint rule                         |
-| Test files                        |        0 |                                                                                                                                          1 (`packages/api-client`, 15 tests) | ≥ 90% on `packages/*` | P1–P8  | Vitest coverage gate                         |
-| Apps with CI                      |        0 |                                                                                                                                                                            0 |                     2 | P1     | Required checks on `main`                    |
-| Apps with lint config             |        0 |                                                                                                                                                                            0 |                     2 | P1     | CI fails on warnings                         |
-| Apps with route protection        | 1 (weak) |                                                                           2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated |         2 (validated) | P4     | e2e: unauthenticated deep link redirects     |
-| Public routes server-rendered     |        0 |                                                                                                                                                                            0 |     All in `(public)` | P6     | View source shows content pre-hydration      |
-| Hardcoded pixel classes           |    7,041 |                                                    4,078 (2,591 frontend + 1,487 admin) — measured fresh via the new `local/no-hardcoded-pixel-class` rule, not the stale count |     Declining, no new | P7     | Lint warning; ratchet on the count — **done** |
+| Metric                            | Baseline |                                                                                                                                                                      Current |                Target | Phase  | How verified                                  |
+| --------------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------: | ------ | --------------------------------------------- |
+| Endpoints reachable against `/v1` |        0 |                                                                                                                              All except 3 (flagged, need a product decision) |                   All | P0     | Smoke pass over the ten journeys              |
+| `: any` annotations               |      574 |                                                                                                                                                                          499 |                  < 50 | P3–P5  | `grep`, tracked per PR                        |
+| `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed  |
+| Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                        |
+| Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule               |
+| Client-side pagination sites      |        7 |                                                                        All 7 wired to real server pagination (users, reporting, all six transaction tabs, wallet-management) |                     0 | P6     | Requires Conflict 1 resolved — **done**       |
+| Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                    |
+| `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                         |
+| Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                     |
+| Unimported runtime deps           |       50 |                                                                                                                                                not re-measured this revision |                     0 | P0, P7 | `knip` in CI                                  |
+| UI component systems              |        4 |                                                                                                                                                not re-measured this revision |                     1 | P7     | Import ban lint rule                          |
+| Test files                        |        0 |                                                                                                                                          1 (`packages/api-client`, 15 tests) | ≥ 90% on `packages/*` | P1–P8  | Vitest coverage gate                          |
+| Apps with CI                      |        0 |                                                                                                                                                                            0 |                     2 | P1     | Required checks on `main`                     |
+| Apps with lint config             |        0 |                                                                                                                                                                            0 |                     2 | P1     | CI fails on warnings                          |
+| Apps with route protection        | 1 (weak) |                                                                           2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated |         2 (validated) | P4     | e2e: unauthenticated deep link redirects      |
+| Public routes server-rendered     |        0 |                                                                                                                                                                            0 |     All in `(public)` | P6     | View source shows content pre-hydration       |
+| Hardcoded pixel classes           |    7,041 |                                                 4,078 (2,591 frontend + 1,487 admin) — measured fresh via the new `local/no-hardcoded-pixel-class` rule, not the stale count |     Declining, no new | P7     | Lint warning; ratchet on the count — **done** |
 
 **Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
 remaining `Authorization`-header files) was real on both sides. Frontend read a `token` cookie that
@@ -3549,7 +3564,8 @@ built, only that the plumbing that would carry it is no longer broken.
 | **P2** | One repo builds both apps with Turborepo affected-graph CI. `@lemonade/config`, `@lemonade/domain` and generated `@lemonade/api-types` are consumed by both. Boundary lint rules pass. Contract-drift check is green and demonstrably fails when the backend changes. Old repos archived.                                                              |
 | **P3** | Both apps on the same Next major and React 19. No hydration warnings in development. No dependency pinned to React 18. Full smoke pass green.                                                                                                                                                                                                          |
 | **P4** | No token is reachable from browser JavaScript. Zero manual `Authorization` headers. Refresh triggers on 401, sends the token in the body, coalesces concurrent requests, and fails cleanly once. Both apps gate routes in middleware. The global GET cache and `useRequest` are deleted. Rate limiting verified correct behind the proxy (Conflict 3). |
-| **P5** | Zero `createAsyncThunk`. Every domain's slice is deleted, not merely unused. redux-persist holds no server data. Every form uses RHF + Zod with server 422s mapped onto fields. `checkError.ts`, `Skeletons.tsx` and `tableData.ts` are gone.                                                                                                          |
+| **P5** | Zero `createAsyncThunk`. Every domain's slice is deleted, not merely unused. redux-persist holds no server data. `Skeletons.tsx` and `tableData.ts` are gone. Form migration was pulled out of this phase; it is Phase 9.                                                                                                                                                            |
+| **P9** | No Formik or Yup imports remain. `@lemonade/validation` exports Zod schemas only. Every form uses React Hook Form, and a 422 lands on the field that failed. `checkError.ts` is deleted.                                                                                                                                                                                       |
 | **P6** | Public user-app routes render meaningful HTML before hydration and carry correct metadata. Table state lives in `searchParams`. Bundle budgets enforced in CI and met. LCP under 2.5s on a throttled mobile profile for public pages.                                                                                                                  |
 | **P7** | One component system, one token set, one shadcn style. MUI, antd and Evergreen removed and import-banned. No serious or critical axe violations on forms, dialogs, tables and navigation.                                                                                                                                                              |
 | **P8** | Frontend errors reach Sentry with a correlation id that joins the backend's log for the same request. CSP enforced. Ten Playwright journeys green in the merge queue. `docs/` complete, including a root `CLAUDE.md` an agent can follow.                                                                                                              |

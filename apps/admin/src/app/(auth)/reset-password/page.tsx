@@ -18,22 +18,23 @@ function ResetPasswordPage({}) {
       confirmPassword: "",
     },
     validationSchema: resetPasswordSchema,
-    onSubmit: async (values) => {},
+    validateOnMount: true,
+    onSubmit: async () => {},
   });
   return (
     <AuthLayout>
-      <section className="h-full min-h-screen overflow-hidden bg-light-grey">
+      <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
             <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
           </div>
         </div>
-        <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
-          <Card className="w-full rounded-[16px] border-none p-[24px] shadow-sm tablet:w-[480px]">
-            <CardContent className="grid gap-[24px] tablet:gap-[40px]">
+        <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
+          <Card className="tablet:w-[480px] w-full rounded-[16px] border-none p-[24px] shadow-sm">
+            <CardContent className="tablet:gap-[40px] grid gap-[24px]">
               <div>
                 <p className="font-ruso text-[24px] font-normal">Reset Password</p>
-                <p className="text-[14px] font-normal text-text-grey">
+                <p className="text-text-grey text-[14px] font-normal">
                   Stronger password, stronger protection! Combine uppercase, lowercase, numbers, and
                   symbols to protect your account.
                 </p>
@@ -41,33 +42,33 @@ function ResetPasswordPage({}) {
               <div className="grid gap-2">
                 <Label
                   htmlFor="password"
-                  className="font-sans text-[14px] font-normal text-text-grey"
+                  className="text-text-grey font-sans text-[14px] font-normal"
                 >
                   Password
                 </Label>
                 <Input
                   id="password"
                   type="password"
-                  className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                  className="form-font bg-light-grey h-12 rounded-xl border-0"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                <p className={"text-[12px] font-normal text-grey-40"}>
+                <p className={"text-grey-40 text-[12px] font-normal"}>
                   Password must be at least 8 character long
                 </p>
               </div>
               <div className="grid gap-2">
                 <Label
                   htmlFor="confirmPassword"
-                  className="font-sans text-[14px] font-normal text-text-grey"
+                  className="text-text-grey font-sans text-[14px] font-normal"
                 >
                   Confirm password
                 </Label>
                 <Input
                   id="confirmPassword"
                   type="password"
-                  className="form-font h-12 rounded-xl border-0 bg-light-grey"
+                  className="form-font bg-light-grey h-12 rounded-xl border-0"
                   value={formik.values.confirmPassword}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

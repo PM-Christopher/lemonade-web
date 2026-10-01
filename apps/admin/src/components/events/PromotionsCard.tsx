@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDeletePromotionMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { Promotion } from "@/features/events/api";
 
 function PromotionsCard({
   promotion,
-  promotionId,
   setPromotionId,
   toggle,
 }: {
-  promotion: any;
+  promotion: Promotion;
   promotionId: number;
   setPromotionId: (promotionId: number) => void;
   toggle: () => void;
@@ -45,22 +45,22 @@ function PromotionsCard({
   return (
     <div className={"flex flex-col gap-[16px] rounded-[12px] bg-white p-[24px]"}>
       <div className={"flex justify-between"}>
-        <p className={"text-[16px] font-semiBold"}>{promotion?.name}</p>
+        <p className={"font-semiBold text-[16px]"}>{promotion?.name}</p>
         <div className={"flex gap-[4px]"}>
           <PencilIcon
             className={"cursor-pointer"}
             onClick={() => handleEditPromotion(promotion?.id)}
           />
           <TrashIcon
-            className={"cursor-pointer text-red-1"}
+            className={"text-red-1 cursor-pointer"}
             onClick={() => handleDeletePromotion(promotion?.id)}
           />
         </div>
       </div>
-      <p className={"text-[20px] font-semiBold"}>N{formatThousandSeparator(promotion?.price)}</p>
+      <p className={"font-semiBold text-[20px]"}>N{formatThousandSeparator(promotion?.price)}</p>
       <div className={"flex flex-col gap-[8px]"}>
-        {promotion?.breakdown?.map((item: any, index: number) => (
-          <p key={index} className={"text-[14px] font-normal text-light-black"}>
+        {promotion?.breakdown?.map((item: string, index: number) => (
+          <p key={index} className={"text-light-black text-[14px] font-normal"}>
             {item}
           </p>
         ))}

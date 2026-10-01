@@ -79,19 +79,17 @@ const AccountSettingsPage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[64px]">
+        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[64px]">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Account settings
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Account settings</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center px-5">
-          <div className="flex w-full flex-col gap-4 rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
+          <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-[12px] bg-white p-[16px]">
             {settingsItems.map((item, index) => (
               <div
                 key={item.id}
@@ -100,9 +98,7 @@ const AccountSettingsPage = () => {
               >
                 <div className="flex items-center gap-[8px]">
                   {item.icon}
-                  <p className={`text-[16px] font-normal ${item.textColor}`}>
-                    {item.label}
-                  </p>
+                  <p className={`text-[16px] font-normal ${item.textColor}`}>{item.label}</p>
                 </div>
                 <ChevronRight className="text-gray-400" />
               </div>

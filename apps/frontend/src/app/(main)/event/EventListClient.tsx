@@ -15,10 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { resetFreeEventState } from "@/features/events/event.slice";
-import {
-  useSearchEventsMutation,
-  useFilterEventsMutation,
-} from "@/features/events/mutations";
+import { useSearchEventsMutation, useFilterEventsMutation } from "@/features/events/mutations";
 import { useRouter, useSearchParams } from "next/navigation";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
@@ -27,12 +24,9 @@ import { usePersistentMenuState } from "@/context/MenuStateProvider";
 
 // Off the initial bundle — only needed once the filter button is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const FilterEventModal = dynamic(
-  () => import("@/components/events/Modals/FilterEventModal"),
-  {
-    ssr: false,
-  },
-);
+const FilterEventModal = dynamic(() => import("@/components/events/Modals/FilterEventModal"), {
+  ssr: false,
+});
 
 const EventListClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -188,9 +182,9 @@ const EventListClient: React.FC = () => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} />
-        <div className="flex flex-col justify-between border-b-[1px] border-t-[1px] bg-white px-[64px] py-[8px] laptop:flex-row laptop:items-center">
+        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between border-t-[1px] border-b-[1px] bg-white px-[64px] py-[8px]">
           <div className="flex items-center justify-between px-[16px]">
-            <div className="sm:text-base relative inline-flex rounded-xl bg-mid-grey p-[0.35em] text-sm">
+            <div className="bg-mid-grey relative inline-flex rounded-xl p-[0.35em] text-sm sm:text-base">
               {/* Sliding pill */}
               <span
                 className={[
@@ -224,9 +218,7 @@ const EventListClient: React.FC = () => {
                     <span
                       className={[
                         "font-sans leading-none transition-colors duration-200",
-                        isActive
-                          ? "font-semibold text-gray-900"
-                          : "font-normal text-text-grey",
+                        isActive ? "font-semibold text-gray-900" : "text-text-grey font-normal",
                       ].join(" ")}
                     >
                       {tab.label}
@@ -237,18 +229,12 @@ const EventListClient: React.FC = () => {
             </div>
 
             {menuOption === "events" ? (
-              <div
-                className="flex cursor-pointer laptop:hidden"
-                onClick={toggleMenu}
-              >
+              <div className="laptop:hidden flex cursor-pointer" onClick={toggleMenu}>
                 <TicketIcon className="h-[16px] w-[23px]" />
               </div>
             ) : (
               menuOption === "organizer" && (
-                <div
-                  className="flex cursor-pointer laptop:hidden"
-                  onClick={toggleMenu}
-                >
+                <div className="laptop:hidden flex cursor-pointer" onClick={toggleMenu}>
                   <SettingsIcon className="h-[21px] w-[23px]" />
                 </div>
               )

@@ -8,9 +8,7 @@ import { businessKeys } from "@/features/business/queries";
 import { businessServerApi } from "@/features/business/api.server";
 import JobsClient from "./JobsClient";
 
-export default async function JobsPage(props: {
-  params: Promise<{ id: number }>;
-}) {
+export default async function JobsPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const queryClient = getQueryClient();
 

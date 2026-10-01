@@ -41,11 +41,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders<LoginResponse>({
-      url: adminAuthRoutes.LOGIN,
-      method: "post",
-      data: body,
-    });
+    const { data: result, headers: responseHeaders } =
+      await backendApi.requestWithHeaders<LoginResponse>({
+        url: adminAuthRoutes.LOGIN,
+        method: "post",
+        data: body,
+      });
 
     if (result.admin.status === 0) {
       // Deliberately not relayed here — see the frontend login route's

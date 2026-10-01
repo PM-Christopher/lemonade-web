@@ -62,19 +62,19 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
   };
 
   return (
-    <div className="mb-[16px] rounded-[12px] border-[1px] border-grey-20 bg-white p-[4px]">
+    <div className="border-grey-20 mb-[16px] rounded-[12px] border-[1px] bg-white p-[4px]">
       <div className="flex flex-col">
         <div className="relative">
           <Image
             src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
             alt="event_1"
-            className="h-[150px] w-full rounded-[8px] laptop:h-[230px] laptop:w-[230px]"
+            className="laptop:h-[230px] laptop:w-[230px] h-[150px] w-full rounded-[8px]"
             width={230}
             height={230}
           />
           {draft && (
-            <div className="absolute right-0 top-0 rounded-bl-[8px] rounded-br-[8px] rounded-tl-[0px] rounded-tr-[8px] bg-warning p-[4px] px-[8px]">
-              <p className="text-center font-sans text-[14px] font-semibold leading-[16.8px] text-warning-bold">
+            <div className="bg-warning absolute top-0 right-0 rounded-tl-[0px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px] p-[4px] px-[8px]">
+              <p className="text-warning-bold text-center font-sans text-[14px] leading-[16.8px] font-semibold">
                 Draft
               </p>
             </div>
@@ -82,16 +82,16 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
         </div>
         <div className="mt-2 flex justify-between px-2">
           <div className="">
-            <p className="max-w-[150px] truncate font-sans text-[14px] font-semibold leading-[27px] tracking-custom laptop:text-[18px]">
+            <p className="tracking-custom laptop:text-[18px] max-w-[150px] truncate font-sans text-[14px] leading-[27px] font-semibold">
               {event?.event_name}
             </p>
             <div className="my-2 flex items-center gap-1">
               <CalendarIcon className="h-[12px] w-[12px]" />
-              <p className="font-sans text-[12px] font-normal leading-[16.8px] text-text-grey laptop:text-[14px]">
+              <p className="text-text-grey laptop:text-[14px] font-sans text-[12px] leading-[16.8px] font-normal">
                 {formatLongDate(event?.start_date, "mid")}
               </p>
               <DotIcon className="w-[3px]" />
-              <p className="font-sans text-[12px] font-normal leading-[16.8px] text-text-grey laptop:text-[14px]">
+              <p className="text-text-grey laptop:text-[14px] font-sans text-[12px] leading-[16.8px] font-normal">
                 {formatTime(event?.start_date)}
               </p>
             </div>

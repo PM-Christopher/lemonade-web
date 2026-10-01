@@ -8,9 +8,7 @@ import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import PromoteEventClient from "./PromoteEventClient";
 
-export default async function PromoteEventPage(props: {
-  params: Promise<{ id: number }>;
-}) {
+export default async function PromoteEventPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const queryClient = getQueryClient();
 

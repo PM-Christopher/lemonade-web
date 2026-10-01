@@ -72,8 +72,7 @@ export function useVerifyAccountOtpMutation() {
 
 export function useVerifyPasswordResetOtpMutation() {
   return useMutation({
-    mutationFn: (data: VerifyOtpPayload) =>
-      authApi.verifyPasswordResetOtp(data),
+    mutationFn: (data: VerifyOtpPayload) => authApi.verifyPasswordResetOtp(data),
   });
 }
 
@@ -131,8 +130,7 @@ export function useChangeProfileImageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { profile_image: string }) =>
-      authApi.changeProfileImage(data),
+    mutationFn: (data: { profile_image: string }) => authApi.changeProfileImage(data),
     onSuccess: (result) => syncUser(dispatch, queryClient, result.user),
   });
 }
@@ -154,8 +152,7 @@ export function useUpdateNotificationSettingsMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: NotificationSettingsPayload) =>
-      authApi.updateNotificationSettings(data),
+    mutationFn: (data: NotificationSettingsPayload) => authApi.updateNotificationSettings(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: authKeys.notificationSettings(),

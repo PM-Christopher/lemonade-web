@@ -57,7 +57,7 @@ const PayNowModal = ({
         <DialogTitle className="sr-only">{"Make Payment"}</DialogTitle>
         <div className="w-[360px] rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="font-sans text-[16px] font-semibold leading-[27px] tracking-custom">
+            <p className="tracking-custom font-sans text-[16px] leading-[27px] font-semibold">
               Make Payment
             </p>
             <div className="flex items-center gap-2">
@@ -67,18 +67,17 @@ const PayNowModal = ({
             </div>
           </div>
           <div className="mt-2 flex flex-col items-center py-[16px]">
-            <div className="gap-[8px] rounded-[8px] border-[1px] border-dashed border-mid-green bg-light-green-10 p-[31px] px-[102px]">
-              <p className="text-[24px] font-semiBold text-mid-green">
+            <div className="border-mid-green bg-light-green-10 gap-[8px] rounded-[8px] border-[1px] border-dashed p-[31px] px-[102px]">
+              <p className="font-semiBold text-mid-green text-[24px]">
                 ₦{formatNumberWithCommas(job?.amount)}
               </p>
             </div>
             <p className="mt-[16px] text-[14px] font-normal">
-              Your payment will be held securely in escrow until you mark the
-              service as completed.
+              Your payment will be held securely in escrow until you mark the service as completed.
             </p>
             <div className="mt-[16px] flex w-full justify-center gap-3">
               <Button
-                className="h-[48px] w-full rounded-[12px] bg-gradient-green p-[14px] px-[48px] shadow-custom-bottom"
+                className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
                 onClick={handlePayNow}
                 disabled={payLoading}
               >
@@ -104,12 +103,10 @@ const PayNowModal = ({
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       />
                     </svg>
-                    <p className="text-[16px] font-semi-normal text-light-white">
-                      Loading...
-                    </p>
+                    <p className="font-semi-normal text-light-white text-[16px]">Loading...</p>
                   </div>
                 ) : (
-                  <p className="text-[16px] font-semi-normal">Pay now</p>
+                  <p className="font-semi-normal text-[16px]">Pay now</p>
                 )}
               </Button>
             </div>

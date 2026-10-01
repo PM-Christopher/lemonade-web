@@ -4,11 +4,9 @@ import { userKeys } from "@/features/user/queries";
 import { userServerApi } from "@/features/user/api.server";
 import AffiliateUserClient from "./AffiliateUserClient";
 
-export default async function AffiliateUserPage(props: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function AffiliateUserPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const id = Number(params.id);
+  const id = params.id;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({

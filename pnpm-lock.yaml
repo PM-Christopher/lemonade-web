@@ -38,6 +38,9 @@ importers:
       '@lemonade/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@lemonade/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@radix-ui/react-hover-card':
         specifier: ^1.1.4
         version: 1.1.23(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -258,6 +261,9 @@ importers:
       '@lemonade/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@lemonade/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@radix-ui/react-hover-card':
         specifier: ^1.1.1
         version: 1.1.23(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -670,6 +676,22 @@ importers:
       vite:
         specifier: ^8.0.0
         version: 8.3.1(@types/node@20.19.43)(jiti@2.7.0)(sass@1.105.0)
+      vitest:
+        specifier: ^4.1.0
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.11)(jsdom@25.0.1)(vite@8.3.1(@types/node@20.19.43)(jiti@2.7.0)(sass@1.105.0))
+
+  packages/validation:
+    dependencies:
+      yup:
+        specifier: ^1.6.1
+        version: 1.7.1
+    devDependencies:
+      '@lemonade/config':
+        specifier: workspace:*
+        version: link:../config
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
       vitest:
         specifier: ^4.1.0
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.11)(jsdom@25.0.1)(vite@8.3.1(@types/node@20.19.43)(jiti@2.7.0)(sass@1.105.0))

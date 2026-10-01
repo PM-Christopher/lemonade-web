@@ -46,11 +46,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders<LoginResponse>({
-      url: userAuthRoutes.LOGIN,
-      method: "post",
-      data: body,
-    });
+    const { data: result, headers: responseHeaders } =
+      await backendApi.requestWithHeaders<LoginResponse>({
+        url: userAuthRoutes.LOGIN,
+        method: "post",
+        data: body,
+      });
 
     const needsOnboarding = result.user.status === 0 || result.user.username === null;
 

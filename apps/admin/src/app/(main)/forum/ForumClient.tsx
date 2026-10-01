@@ -75,17 +75,29 @@ function ForumClient() {
     <MainLayout>
       <section className="mt-[24px] flex flex-col gap-[20px]">
         <div className={"flex gap-[16px] px-[20px]"}>
-          <div className={"flex flex-col gap-[4px] rounded-[12px] border-[1px] border-grey-20 p-[16px]"}>
-            <p className={"text-[12px] font-semiBold text-text-grey"}>PENDING EVENTS</p>
-            <p className={"text-[20px] font-semiBold"}>{queue?.pending_events.count ?? 0}</p>
+          <div
+            className={
+              "border-grey-20 flex flex-col gap-[4px] rounded-[12px] border-[1px] p-[16px]"
+            }
+          >
+            <p className={"font-semiBold text-text-grey text-[12px]"}>PENDING EVENTS</p>
+            <p className={"font-semiBold text-[20px]"}>{queue?.pending_events.count ?? 0}</p>
           </div>
-          <div className={"flex flex-col gap-[4px] rounded-[12px] border-[1px] border-grey-20 p-[16px]"}>
-            <p className={"text-[12px] font-semiBold text-text-grey"}>PENDING BUSINESSES</p>
-            <p className={"text-[20px] font-semiBold"}>{queue?.pending_businesses.count ?? 0}</p>
+          <div
+            className={
+              "border-grey-20 flex flex-col gap-[4px] rounded-[12px] border-[1px] p-[16px]"
+            }
+          >
+            <p className={"font-semiBold text-text-grey text-[12px]"}>PENDING BUSINESSES</p>
+            <p className={"font-semiBold text-[20px]"}>{queue?.pending_businesses.count ?? 0}</p>
           </div>
-          <div className={"flex flex-col gap-[4px] rounded-[12px] border-[1px] border-grey-20 p-[16px]"}>
-            <p className={"text-[12px] font-semiBold text-text-grey"}>OPEN REPORTS</p>
-            <p className={"text-[20px] font-semiBold"}>{queue?.open_reports.count ?? 0}</p>
+          <div
+            className={
+              "border-grey-20 flex flex-col gap-[4px] rounded-[12px] border-[1px] p-[16px]"
+            }
+          >
+            <p className={"font-semiBold text-text-grey text-[12px]"}>OPEN REPORTS</p>
+            <p className={"font-semiBold text-[20px]"}>{queue?.open_reports.count ?? 0}</p>
           </div>
         </div>
 
@@ -106,19 +118,21 @@ function ForumClient() {
             ))}
           </div>
           <div className={"flex gap-[12px]"}>
-            <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
-              <SearchIcon className={"h-[12px] w-[12px] text-grey-40"} />
+            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
+              <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
               <input
                 id="search"
                 type="text"
-                className="w-full rounded-xl bg-light-grey py-4 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                 placeholder="Search content..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
               />
             </div>
             <button
-              onClick={() => setSearchParams({ deleted: showRemoved ? undefined : "1", page: undefined })}
+              onClick={() =>
+                setSearchParams({ deleted: showRemoved ? undefined : "1", page: undefined })
+              }
               className={`h-[40px] rounded-[12px] border-[1px] px-[16px] text-[14px] font-medium ${
                 showRemoved ? "border-light-green-tint bg-light-tint" : "border-grey-20 bg-white"
               }`}
@@ -129,14 +143,14 @@ function ForumClient() {
         </div>
 
         <div className={"flex flex-col px-[20px]"}>
-          <div className={"flex flex-col rounded-[12px] border-[1px] border-grey-20"}>
+          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-mid-grey">
                     {moderationContentHeaders.map((header, idx) => (
                       <th
-                        className="p-4 text-left text-[12px] font-semiBold text-text-grey"
+                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
                         key={idx}
                       >
                         {header}
@@ -150,9 +164,11 @@ function ForumClient() {
                       const isDeleted = row.deleted_at !== null;
 
                       return (
-                        <tr key={row.id} className="h-[72px] border-b border-grey-20">
+                        <tr key={row.id} className="border-grey-20 h-[72px] border-b">
                           <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>
-                          <td className={"max-w-[320px] truncate p-4 font-sans text-sm font-medium"}>
+                          <td
+                            className={"max-w-[320px] truncate p-4 font-sans text-sm font-medium"}
+                          >
                             {row.title ?? row.body ?? "—"}
                           </td>
                           <td className={"p-4 font-sans text-sm font-medium"}>

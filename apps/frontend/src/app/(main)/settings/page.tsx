@@ -55,15 +55,15 @@ function SettingsPage() {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
-          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]">
+        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">User Details</p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">User Details</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
           <div className="flex flex-col items-center">
-            <div className="flex w-full items-center justify-between rounded-[12px] bg-step-color p-[16px] laptop:w-[640px]">
+            <div className="bg-step-color laptop:w-[640px] flex w-full items-center justify-between rounded-[12px] p-[16px]">
               <div className="flex items-center gap-[8px]">
                 {user?.profile_image ? (
                   <Image
@@ -74,13 +74,13 @@ function SettingsPage() {
                     className="h-[40px] w-[40px] rounded-full border-[2px] border-[#3B4152] transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
                   />
                 ) : (
-                  <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] bg-gradient-green text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+                  <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
                     <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
                   </div>
                 )}
                 <div className="flex flex-col">
-                  <p className="text-[18px] font-semibold text-black-light">{user?.fullname}</p>
-                  <p className="text-[14px] font-semi-normal text-light-black">{user?.username}</p>
+                  <p className="text-black-light text-[18px] font-semibold">{user?.fullname}</p>
+                  <p className="font-semi-normal text-light-black text-[14px]">{user?.username}</p>
                 </div>
               </div>
               <div className="relative flex items-center justify-center">
@@ -90,17 +90,17 @@ function SettingsPage() {
                 </p>
               </div>
             </div>
-            <div className="w-full rounded-bl-[16px] rounded-br-[16px] bg-white p-[16px] laptop:w-[632px]">
-              <p className="text-[12px] font-semi-normal text-text-grey">Industry</p>
-              <p className="text-[14px] font-normal text-black-light">
+            <div className="laptop:w-[632px] w-full rounded-br-[16px] rounded-bl-[16px] bg-white p-[16px]">
+              <p className="font-semi-normal text-text-grey text-[12px]">Industry</p>
+              <p className="text-black-light text-[14px] font-normal">
                 {formatString(user?.industry)}
               </p>
-              <p className="mt-[8x] text-[12px] font-semi-normal text-text-grey">Bio</p>
-              <p className="max-w-[600px] text-[14px] font-normal text-black-light">{user?.bio}</p>
+              <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Bio</p>
+              <p className="text-black-light max-w-[600px] text-[14px] font-normal">{user?.bio}</p>
               {user?.socials && user.socials.length > 0 && (
                 <>
-                  <p className="mt-[8x] text-[12px] font-semi-normal text-text-grey">Socials</p>
-                  <div className="flex w-fit gap-[8px] rounded-[16px] bg-mid-grey p-[4px]">
+                  <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Socials</p>
+                  <div className="bg-mid-grey flex w-fit gap-[8px] rounded-[16px] p-[4px]">
                     {user.socials.map((link: any) => (
                       <a
                         href={link.value}
@@ -120,8 +120,8 @@ function SettingsPage() {
               )}
             </div>
 
-            <div className="mt-[24px] w-full rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
-              <p className="text-[12px] font-bold text-black-light">ACCOUNT</p>
+            <div className="laptop:w-[640px] mt-[24px] w-full rounded-[12px] bg-white p-[16px]">
+              <p className="text-black-light text-[12px] font-bold">ACCOUNT</p>
               <div>
                 {accountSettings.map((item) => (
                   <div
@@ -139,8 +139,8 @@ function SettingsPage() {
               </div>
             </div>
 
-            <div className="mt-[24px] w-full rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
-              <p className="text-[12px] font-bold text-black-light">EARN</p>
+            <div className="laptop:w-[640px] mt-[24px] w-full rounded-[12px] bg-white p-[16px]">
+              <p className="text-black-light text-[12px] font-bold">EARN</p>
               <div>
                 {earnSettings.map((item) => (
                   <div
@@ -158,8 +158,8 @@ function SettingsPage() {
               </div>
             </div>
 
-            <div className="mt-[24px] w-full rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
-              <p className="text-[12px] font-bold text-black-light">MORE</p>
+            <div className="laptop:w-[640px] mt-[24px] w-full rounded-[12px] bg-white p-[16px]">
+              <p className="text-black-light text-[12px] font-bold">MORE</p>
               <div>
                 {moreSettings.map((item) => (
                   <div

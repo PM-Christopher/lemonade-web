@@ -11,7 +11,24 @@ import {
 import { capitalizeWords } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
-function ReportDetailsClient({ id }: { id: number | undefined }) {
+// report.content isn't a JSON string despite old code here treating it like
+// one (see api.ts's own comment on ReportDetail.content) — the backend
+// returns the reported model already decoded, so JSON.parse(report.content)
+// always threw and silently fell into the catch block below, never actually
+// rendering a preview. Reading it directly instead.
+interface ReportedEventPreview {
+  event_image?: string;
+  event_name?: string;
+  category?: string;
+  location?: string;
+  event_date?: string;
+  event_time?: string;
+  created_at?: string;
+  description?: string;
+  owner?: { image?: string; fullname?: string };
+}
+
+function ReportDetailsClient({ id }: { id: string }) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
@@ -21,14 +38,11 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
   const resolveMutation = useResolveReportMutation(id);
   const deleteMutation = useDeleteReportContentMutation(id);
 
-  let event = null;
-
-  try {
-    const parsedContent = JSON.parse(report?.content || "{}");
-    event = parsedContent.events;
-  } catch (error) {
-    console.error("Failed to parse report content", error);
-  }
+  const content = report?.content;
+  const event: ReportedEventPreview | null =
+    content && typeof content === "object" && "events" in content
+      ? ((content as { events: ReportedEventPreview }).events ?? null)
+      : null;
 
   const resolve = () => {
     resolveMutation.mutate(undefined, {
@@ -55,7 +69,7 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
   const handleDelete = () => {
     const data = {
       category: report?.category,
-      category_id: (report?.content as any)?.id,
+      category_id: (report?.content as { id?: string | number } | undefined)?.id,
     };
     deleteMutation.mutate(data, {
       onSuccess: () => {
@@ -81,50 +95,32 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
 
   return (
     <MainLayout>
-      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
-        <div
-          className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}
-        >
-          <div
-            className={
-              "flex flex-col gap-[20px] border-b-[1px] border-b-grey-20 p-[24px]"
-            }
-          >
+      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
+        <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
+          <div className={"border-b-grey-20 flex flex-col gap-[20px] border-b-[1px] p-[24px]"}>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Reported By:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Reported By:</p>
               </div>
               <div className={"flex gap-[4px]"}>
-                <p className={"text-[14px] font-medium"}>
-                  {report?.reported_by?.name}
-                </p>
+                <p className={"text-[14px] font-medium"}>{report?.reported_by?.name}</p>
               </div>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Report ID:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Report ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>RE112332</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Category:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Category:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {capitalizeWords(report?.category)}
-              </p>
+              <p className={"text-[14px] font-medium"}>{capitalizeWords(report?.category)}</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Case:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Case:</p>
               </div>
               <div className={"flex gap-[4px]"}>
                 <p className={"text-[14px] font-medium"}>{report?.case}</p>
@@ -132,21 +128,15 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Date Submitted:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Date Submitted:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {report?.date_submitted}
-              </p>
+              <p className={"text-[14px] font-medium"}>{report?.date_submitted}</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Status:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
               </div>
-              <p className={"text-[14px] font-medium text-warning-bold"}>
+              <p className={"text-warning-bold text-[14px] font-medium"}>
                 {capitalizeWords(report?.status)}
               </p>
             </div>
@@ -155,7 +145,7 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
             <button
               onClick={resolve}
               className={
-                "w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[11px] font-sans text-[16px] font-medium text-white"
+                "border-step-color bg-gradient-green w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[16px] font-medium text-white"
               }
               type={"button"}
             >
@@ -163,21 +153,13 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
             </button>
           </div>
         </div>
-        <div
-          className={
-            "lg:w-2/3 flex h-[762px] w-full flex-col rounded-[12px] bg-white"
-          }
-        >
+        <div className={"flex h-[762px] w-full flex-col rounded-[12px] bg-white lg:w-2/3"}>
           <div
-            className={
-              "flex items-center justify-between border-b-[1px] border-b-grey-20 p-[18px]"
-            }
+            className={"border-b-grey-20 flex items-center justify-between border-b-[1px] p-[18px]"}
           >
-            <p className={"text-[16px] font-semiBold"}>Content</p>
+            <p className={"font-semiBold text-[16px]"}>Content</p>
             <div
-              className={
-                "cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"
-              }
+              className={"cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"}
               onClick={handleDelete}
             >
               <p className={"text-[14px] font-medium"}>Delete</p>
@@ -196,9 +178,7 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
 
                 {/* Event Info */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {event.event_name}
-                  </h2>
+                  <h2 className="text-2xl font-bold text-gray-800">{event.event_name}</h2>
                   <p className="text-sm text-gray-500">
                     {event.category} • {event.location}
                   </p>
@@ -207,13 +187,11 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
                 {/* Organizer */}
                 <div className="flex items-center gap-3">
                   <img
-                    src={event.owner.image}
-                    alt={event.owner.fullname}
+                    src={event.owner?.image}
+                    alt={event.owner?.fullname}
                     className="h-10 w-10 rounded-full object-cover"
                   />
-                  <p className="font-medium text-gray-700">
-                    {event.owner.fullname}
-                  </p>
+                  <p className="font-medium text-gray-700">{event.owner?.fullname}</p>
                 </div>
 
                 {/* Date and Time */}
@@ -226,7 +204,7 @@ function ReportDetailsClient({ id }: { id: number | undefined }) {
                   </p>
                   <p>
                     <strong>Created At:</strong>{" "}
-                    {new Date(event.created_at).toLocaleString()}
+                    {event.created_at ? new Date(event.created_at).toLocaleString() : "—"}
                   </p>
                 </div>
 

@@ -46,13 +46,13 @@ const CheckInsClient = ({ id }: { id: number }) => {
           loading={guestDetailLoading}
           id={id}
         />
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Guest list</p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Guest list</p>
           </div>
         </div>
 
@@ -60,20 +60,20 @@ const CheckInsClient = ({ id }: { id: number }) => {
           <div
             className={"flex w-[800px] justify-between gap-[8px] rounded-[12px] bg-white p-[24px]"}
           >
-            <div className="flex h-[48px] w-full items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+            <div className="bg-light_grey flex h-[48px] w-full items-center gap-3 rounded-[12px] p-2 px-[12px]">
               <SearchIcon className="shrink-0" />
               <input
                 id="search"
                 type="text"
-                className="flex-1 border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                className="bg-light_grey flex-1 border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                 placeholder="Search guest name, email address"
               />
             </div>
-            <div className="flex cursor-pointer items-center justify-center rounded-[12px] bg-light_grey p-3 transition-all duration-200 hover:bg-gray-200">
+            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-[12px] p-3 transition-all duration-200 hover:bg-gray-200">
               <UploadIcon className="h-5 w-5 text-gray-700" />
             </div>
 
-            <div className="flex cursor-pointer items-center justify-center rounded-[12px] bg-light_grey p-3 transition-all duration-200 hover:bg-gray-200">
+            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-[12px] p-3 transition-all duration-200 hover:bg-gray-200">
               <ScanIcon className="h-5 w-5 text-gray-700" />
             </div>
           </div>

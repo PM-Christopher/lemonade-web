@@ -24,7 +24,7 @@ const TicketSummary = ({
 }) => {
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+      className={`bg-opacity-50 fixed inset-0 z-50 flex items-end justify-center bg-gray-800 ${isOpen ? "flex" : "hidden"}`}
     >
       <motion.div
         className="w-[480px] rounded-tl-lg rounded-tr-lg bg-white p-6 shadow-lg"
@@ -49,12 +49,12 @@ const TicketSummary = ({
                   quantity.quantity > 0 && (
                     <div className="mt-[16px] flex justify-between" key={index}>
                       <div>
-                        <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                        <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                           {quantity.quantity} {quantity.ticket_name}
                         </p>
                       </div>
                       <div>
-                        <p className="font-sans text-[14px] font-semibold leading-[21px] tracking-custom text-light-black">
+                        <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
                           {quantity.price * quantity.quantity === 0 ? (
                             <>₦ {quantity.price * quantity.quantity}</>
                           ) : (
@@ -65,40 +65,40 @@ const TicketSummary = ({
                     </div>
                   ),
               )}
-              <div className="my-4 border-t-[1px] border-grey-20"></div>
+              <div className="border-grey-20 my-4 border-t-[1px]"></div>
               <div className="mt-[16px] flex justify-between">
                 <div>
-                  <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                  <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                     Subtotal
                   </p>
                 </div>
                 <div>
-                  <p className="font-sans text-[14px] font-semibold leading-[21px] tracking-custom text-light-black">
+                  <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
                     {subtotal === 0 ? <>₦ {subtotal}</> : <>₦ {formatNumberWithCommas(subtotal)}</>}
                   </p>
                 </div>
               </div>
               <div className="mt-[24px] flex justify-between">
                 <div>
-                  <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                  <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                     Fee
                   </p>
                 </div>
                 <div>
-                  <p className="font-sans text-[14px] font-semibold leading-[21px] tracking-custom text-light-black">
+                  <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
                     ₦ 2,000
                   </p>
                 </div>
               </div>
-              <div className="my-4 border-t-[1px] border-grey-20"></div>
+              <div className="border-grey-20 my-4 border-t-[1px]"></div>
               <div className="mt-[16px] flex justify-between">
                 <div>
-                  <p className="font-sans text-[18px] font-normal leading-[27px] tracking-custom text-text-grey">
+                  <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[27px] font-normal">
                     Total
                   </p>
                 </div>
                 <div>
-                  <p className="font-sans text-[18px] font-semibold leading-[27px] tracking-custom text-light-black">
+                  <p className="tracking-custom text-light-black font-sans text-[18px] leading-[27px] font-semibold">
                     {total === 0 ? <>₦ {total}</> : <>₦ {formatNumberWithCommas(total)}</>}
                   </p>
                 </div>
@@ -107,13 +107,13 @@ const TicketSummary = ({
             <div className="mt-[20px] flex items-center justify-between">
               <div className="flex items-center justify-center gap-[16px]">
                 <div className="flex w-[147px] items-center gap-[16px]">
-                  <p className="text-[20px] font-bold text-mid-green">
+                  <p className="text-mid-green text-[20px] font-bold">
                     {total === 0 ? <>₦ {total}</> : <>₦ {formatNumberWithCommas(total)}</>}
                   </p>
-                  <ChevronDown className="cursor-pointer text-mid-green" onClick={toggle} />
+                  <ChevronDown className="text-mid-green cursor-pointer" onClick={toggle} />
                 </div>
-                <Button className="h-[48px] w-[180px] rounded-[12px] border-b-[2px] bg-gradient-green px-[48px] py-[14px] shadow-none">
-                  <p className="text-[16px] font-semi-normal">Assign ticket</p>
+                <Button className="bg-gradient-green h-[48px] w-[180px] rounded-[12px] border-b-[2px] px-[48px] py-[14px] shadow-none">
+                  <p className="font-semi-normal text-[16px]">Assign ticket</p>
                 </Button>
               </div>
             </div>

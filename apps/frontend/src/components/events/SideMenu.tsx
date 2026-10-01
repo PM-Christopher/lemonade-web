@@ -41,14 +41,14 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
   return (
     <>
       <div
-        className={`fixed right-0 top-0 z-50 h-full transform bg-gray-800 bg-opacity-50 transition-transform ${
+        className={`bg-opacity-50 fixed top-0 right-0 z-50 h-full transform bg-gray-800 transition-transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="h-full w-screen bg-white p-[48px] px-[20px] laptop:w-[585px]">
+        <div className="laptop:w-[585px] h-full w-screen bg-white p-[48px] px-[20px]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-sans text-[16px] font-semibold leading-[24px] tracking-custom">
+              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
                 My tickets
               </p>
             </div>
@@ -56,22 +56,22 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
             </div>
           </div>
-          <div className="mt-[10px] flex justify-between border-b-[1px] border-b-light-grey-50">
+          <div className="border-b-light-grey-50 mt-[10px] flex justify-between border-b-[1px]">
             <div
-              className={`h-10 w-full px-[16px] py-[8px] laptop:w-[276.5px] ${option === "upcoming" && "border-b-2 border-b-step-color"}`}
+              className={`laptop:w-[276.5px] h-10 w-full px-[16px] py-[8px] ${option === "upcoming" && "border-b-step-color border-b-2"}`}
             >
               <p
-                className="cursor-pointer text-center font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom"
+                className="font-semi-normal tracking-custom cursor-pointer text-center font-sans text-[14px] leading-[21px]"
                 onClick={() => toggleOption("upcoming")}
               >
                 Upcoming events
               </p>
             </div>
             <div
-              className={`h-10 w-full px-[16px] py-[8px] laptop:w-[276.5px] ${option === "past" && "border-b-2 border-b-step-color"}`}
+              className={`laptop:w-[276.5px] h-10 w-full px-[16px] py-[8px] ${option === "past" && "border-b-step-color border-b-2"}`}
             >
               <p
-                className="cursor-pointer text-center font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom"
+                className="font-semi-normal tracking-custom cursor-pointer text-center font-sans text-[14px] leading-[21px]"
                 onClick={() => toggleOption("past")}
               >
                 Past events
@@ -115,7 +115,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
       {isOpen && (
         <div
           className={`fixed inset-0 z-10 transition-all duration-300 ${
-            isOpen ? "bg-black bg-opacity-50 backdrop-blur-sm" : "bg-transparent"
+            isOpen ? "bg-opacity-50 bg-black backdrop-blur-sm" : "bg-transparent"
           }`}
           onClick={toggleMenu}
         ></div>

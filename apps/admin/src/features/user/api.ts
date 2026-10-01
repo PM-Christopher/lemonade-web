@@ -149,7 +149,7 @@ export const userApi = {
     }
   },
 
-  getUserDetail: (id: number) =>
+  getUserDetail: (id: string | number) =>
     browserApi.get<UserDetailResponse>(buildPath(adminUsersRoutes.SHOW, { id })),
 
   // NOTE (found live-testing, not fixed — pre-existing backend bug, not
@@ -159,11 +159,11 @@ export const userApi = {
   // the Referrer id, so most clicks 400 with "Affiliate not found." Same
   // request the old axios code sent — needs a backend/product decision on
   // which model is authoritative, not a frontend fix.
-  getAffiliateDetail: (id: number) =>
+  getAffiliateDetail: (id: string | number) =>
     browserApi.get<AffiliateDetailResponse>(buildPath(adminUsersRoutes.AFFILIATES_DETAIL, { id })),
 
   // See the NOTE above for the "business" case.
-  getAccountInfo: (id: number, infoType: string) => {
+  getAccountInfo: (id: string | number, infoType: string) => {
     switch (infoType) {
       case "tribes":
         return browserApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.TRIBES, { id }));
@@ -178,12 +178,12 @@ export const userApi = {
     }
   },
 
-  suspendUser: (id: number) =>
+  suspendUser: (id: string | number) =>
     browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.SUSPEND, { id }), {}),
 
-  deactivateUser: (id: number) =>
+  deactivateUser: (id: string | number) =>
     browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.DEACTIVATE, { id }), {}),
 
-  reactivateUser: (id: number) =>
+  reactivateUser: (id: string | number) =>
     browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.REACTIVATE, { id }), {}),
 };

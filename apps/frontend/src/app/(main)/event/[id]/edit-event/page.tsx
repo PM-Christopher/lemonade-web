@@ -8,9 +8,7 @@ import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import EditEventClient from "./EditEventClient";
 
-export default async function EditEventPage(props: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function EditEventPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const eventId = Number(params.id);
   const queryClient = getQueryClient();

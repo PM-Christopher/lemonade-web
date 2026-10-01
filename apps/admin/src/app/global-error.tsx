@@ -30,17 +30,17 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body>
-        <section className="flex min-h-screen flex-col items-center justify-center gap-[8px] bg-light-grey p-[24px] text-center">
+        <section className="bg-light-grey flex min-h-screen flex-col items-center justify-center gap-[8px] p-[24px] text-center">
           <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-          <p className="mt-[16px] text-[18px] font-semiBold text-light-black">
+          <p className="font-semiBold text-light-black mt-[16px] text-[18px]">
             Something went wrong
           </p>
-          <p className="text-[14px] font-normal text-text-grey">
+          <p className="text-text-grey text-[14px] font-normal">
             {error.digest ? `Reference: ${error.digest}` : "Please try reloading the page."}
           </p>
           <button
             onClick={() => reset()}
-            className="mt-[8px] rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[24px] py-[11px]"
+            className="border-step-color bg-gradient-green mt-[8px] rounded-[12px] border-[1px] px-[24px] py-[11px]"
           >
             <p className="text-[16px] font-medium text-white">Try again</p>
           </button>

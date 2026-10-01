@@ -15,14 +15,10 @@ export const businessServerApi = {
   getBusiness: (id: number | string) =>
     backendApi.get<BusinessDetailResponse>(buildPath(userBusinessRoutes.SHOW, { id })),
 
-  getBusinesses: () =>
-    backendApi.get<BusinessListResponse>(userBusinessRoutes.LIST),
+  getBusinesses: () => backendApi.get<BusinessListResponse>(userBusinessRoutes.LIST),
 
-  getBoostPackages: () =>
-    backendApi.get<BoostPackagesResponse>(userListingRoutes.BOOSTS),
+  getBoostPackages: () => backendApi.get<BoostPackagesResponse>(userListingRoutes.BOOSTS),
 
   getBusinessJobData: (id: number | string) =>
-    backendApi.get<JobsDataResponse>(
-      buildPath(userListingRoutes.JOB_DATA, { id }),
-    ),
+    backendApi.get<JobsDataResponse>(buildPath(userListingRoutes.JOB_DATA, { id })),
 };

@@ -1,22 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "@/redux/Provider";
 import { AlertMessage } from "@/components/global/AlertMessage";
 import { WebVitalsReporter } from "@/components/global/WebVitalsReporter";
 import { FcmProvider } from "@/context/FcmContext";
-
-// export const dynamic = 'force-dynamic';
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const inter = Inter({ subsets: ["latin"] });
 

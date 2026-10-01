@@ -257,10 +257,13 @@ export const eventsApi = {
   searchEvents: (data: { search: string }) =>
     browserApi.post<SearchEventsResponse>(userEventsRoutes.SEARCH, data),
 
-  getAffiliateEvents: () => browserApi.get<AffiliateEventsResponse>(userEventsRoutes.AFFILIATE_LIST),
+  getAffiliateEvents: () =>
+    browserApi.get<AffiliateEventsResponse>(userEventsRoutes.AFFILIATE_LIST),
 
   getAffiliateEvent: (id: number | string) =>
-    browserApi.get<AffiliateEventDetailResponse>(buildPath(userEventsRoutes.AFFILIATE_SHOW, { id })),
+    browserApi.get<AffiliateEventDetailResponse>(
+      buildPath(userEventsRoutes.AFFILIATE_SHOW, { id }),
+    ),
 
   getAffiliateData: () =>
     browserApi.get<AffiliateDashboardResponse>(userEventsRoutes.AFFILIATE_DATA),

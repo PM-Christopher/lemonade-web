@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
-import {
-  Label,
-  Input,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -22,13 +16,7 @@ interface UpgradePlanProps {
   pricing: any[];
 }
 
-const UpgradePlanModal = ({
-  isOpen,
-  toggle,
-  sub_id,
-  subMode,
-  pricing,
-}: UpgradePlanProps) => {
+const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradePlanProps) => {
   const [selected, setSelected] = useState<number | null>(null);
   const dispatch = useAppDispatch();
   const [subType, setSubType] = useState<string | null>("");
@@ -36,13 +24,9 @@ const UpgradePlanModal = ({
   const upgradeLoading = changePlanMutation.isPending;
 
   const handleSelectedPlan = (membership: { id: number; type: string }) => {
-    setSelected((prevSelected) =>
-      prevSelected === membership.id ? null : membership.id,
-    );
+    setSelected((prevSelected) => (prevSelected === membership.id ? null : membership.id));
 
-    setSubType((prevSelected) =>
-      selected === membership.id ? null : membership.type,
-    );
+    setSubType((prevSelected) => (selected === membership.id ? null : membership.type));
   };
 
   const handleSubUpgrade = async () => {
@@ -93,8 +77,7 @@ const UpgradePlanModal = ({
         dispatch(
           updateToastifyReducer({
             show: true,
-            message:
-              error?.message || "Something went wrong. Please try again!!!",
+            message: error?.message || "Something went wrong. Please try again!!!",
             type: "error",
           }),
         );
@@ -118,7 +101,7 @@ const UpgradePlanModal = ({
                 <div className="cursor-pointer" onClick={toggle}>
                   <CloseIcon />
                 </div>
-                <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+                <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
                   Membership
                 </p>
               </div>
@@ -129,8 +112,8 @@ const UpgradePlanModal = ({
                   disabled={!selected || upgradeLoading}
                   className={`flex h-[39px] w-fit items-center justify-center gap-2 rounded-xl px-4 py-2 font-sans text-[16px] font-medium text-white transition-all duration-300 ${
                     selected && !upgradeLoading
-                      ? "border border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
-                      : "cursor-not-allowed bg-mid-green opacity-70"
+                      ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
+                      : "bg-mid-green cursor-not-allowed opacity-70"
                   }`}
                 >
                   {upgradeLoading ? (
@@ -167,24 +150,19 @@ const UpgradePlanModal = ({
               <div className={"flex flex-col gap-[16px]"}>
                 {pricing?.map((membership: any) => (
                   <div
-                    className={`cursor-pointer rounded-[12px] p-[16px] ${selected === membership.id ? "border-[1px] border-step-color bg-light-green-10" : "bg-mid-grey"}`}
+                    className={`cursor-pointer rounded-[12px] p-[16px] ${selected === membership.id ? "border-step-color bg-light-green-10 border-[1px]" : "bg-mid-grey"}`}
                     key={membership.id}
                     onClick={() => handleSelectedPlan(membership)}
                   >
                     <div className={"flex items-center justify-between"}>
-                      <p
-                        className={"text-[16px] font-semiBold text-black-light"}
-                      >
+                      <p className={"font-semiBold text-black-light text-[16px]"}>
                         {membership.title}
                       </p>
-                      <p
-                        className={"text-[16px] font-semiBold text-black-light"}
-                      >
-                        ₦{formatNumberWithCommas(membership.amount)}/
-                        {membership.pay_by}
+                      <p className={"font-semiBold text-black-light text-[16px]"}>
+                        ₦{formatNumberWithCommas(membership.amount)}/{membership.pay_by}
                       </p>
                     </div>
-                    <p className={"text-[14px] font-normal text-text-grey"}>
+                    <p className={"text-text-grey text-[14px] font-normal"}>
                       Billed {membership.type}
                     </p>
                   </div>

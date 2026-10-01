@@ -65,6 +65,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
       additional_information: "",
     },
     validationSchema: requestServiceSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       requestServiceMutation.mutate(values, {
         onSuccess: () => {
@@ -100,18 +101,18 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Request a service"}</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="w-full px-4 py-[5vh] laptop:w-[640px]">
+          <div className="laptop:w-[640px] w-full px-4 py-[5vh]">
             <div className="hide-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="cursor-pointer" onClick={toggleMenu}>
                     <CloseIcon />
                   </div>
-                  <p className="font-sans text-[18px] font-semibold leading-[27px] tracking-custom">
+                  <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
                     Request a service
                   </p>
                 </div>
-                <div className="hidden laptop:block">
+                <div className="laptop:block hidden">
                   <FormikButton
                     title="Send quote"
                     error={formik.isValid}
@@ -124,19 +125,19 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="amount"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       I want to book you for
                     </Label>
-                    <div className="flex h-[48px] w-full items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                    <div className="bg-light_grey flex h-[48px] w-full items-center gap-3 rounded-[12px] p-2 px-[12px]">
                       <div>
-                        <p className="text-[14px] font-semi-normal">₦</p>
+                        <p className="font-semi-normal text-[14px]">₦</p>
                       </div>
                       <div className="w-full">
                         <input
                           id="amount"
                           type="text"
-                          className="w-full border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                          className="bg-light_grey w-full border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                           value={formik.values.amount}
                           onChange={(e) => {
                             // Only digits, no leading 0
@@ -157,7 +158,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="fullname"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Required services
                     </Label>
@@ -174,7 +175,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                             key={index}
                             onClick={() => handleServicesClick(service)}
                           >
-                            <p className="text-[14px] font-normal text-text-grey">
+                            <p className="text-text-grey text-[14px] font-normal">
                               {formatStringUCFirst(service)}
                             </p>
                           </div>
@@ -186,18 +187,16 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                     <div className="flex justify-between">
                       <Label
                         htmlFor="additional-information"
-                        className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                       >
                         Additional information
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        200 characters
-                      </p>
+                      <p className="text-text-grey text-[12px] font-normal">200 characters</p>
                     </div>
                     <textarea
                       id="additional-information"
                       placeholder=""
-                      className="h-[128px] resize-none rounded-xl border-0 bg-light_grey p-4 text-[14px] font-normal"
+                      className="bg-light_grey h-[128px] resize-none rounded-xl border-0 p-4 text-[14px] font-normal"
                       readOnly={false}
                       value={formik.values.additional_information}
                       onChange={formik.handleChange}

@@ -1,14 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import {
-  Button,
-  Label,
-  Input,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -27,10 +20,7 @@ type BankAccountInterface = {
   option: boolean;
 };
 
-const BankAccountModal: React.FC<BankAccountInterface> = ({
-  toggle,
-  option,
-}) => {
+const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -59,6 +49,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
       account_name: "",
     },
     validationSchema: createEventSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       // Find the selected bank by matching the code
       const selectedBank = banks.find((bank) => bank.code === values.bank_name);
@@ -131,13 +122,13 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Bank Account"}</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="h-screen w-full rounded-lg bg-white p-6 shadow-lg laptop:h-full laptop:w-[640px]">
+          <div className="laptop:h-full laptop:w-[640px] h-screen w-full rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="cursor-pointer" onClick={toggle}>
                   <CloseIcon />
                 </div>
-                <p className="font-sans font-semibold leading-[27px] tracking-custom text-[18p]">
+                <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
                   Bank Account
                 </p>
               </div>
@@ -154,13 +145,13 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Bank Name
                 </Label>
                 <select
                   value={formik.values.bank_name}
-                  className="form-font h-12 w-full rounded-xl border-0 bg-light_grey p-2"
+                  className="form-font bg-light_grey h-12 w-full rounded-xl border-0 p-2"
                   onChange={(e) => {
                     setBankCode(e.target.value);
                     formik.setFieldValue("bank_name", e.target.value);
@@ -184,7 +175,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Account number
                 </Label>
@@ -192,7 +183,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                   id="fullname"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   value={formik.values.account_number}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -207,7 +198,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Account name
                 </Label>
@@ -215,7 +206,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({
                   id="fullname"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   readOnly={true}
                   value={formik.values.account_name}
                 />

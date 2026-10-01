@@ -9,7 +9,8 @@ import { userTribesRoutes, userThreadsRoutes, buildPath } from "@lemonade/api-ty
 import type { TribeDetailResponse, ThreadsResponse, TribesListResponse } from "./api";
 
 export const tribesServerApi = {
-  getTribe: (id: string) => backendApi.get<TribeDetailResponse>(buildPath(userTribesRoutes.SHOW, { id })),
+  getTribe: (id: string) =>
+    backendApi.get<TribeDetailResponse>(buildPath(userTribesRoutes.SHOW, { id })),
 
   getTribes: (tribeType: string) =>
     backendApi.get<TribesListResponse>(`${userTribesRoutes.LIST}?type=${tribeType}`),

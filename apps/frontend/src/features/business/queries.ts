@@ -5,11 +5,9 @@ export const businessKeys = {
   all: () => ["business"] as const,
   businesses: () => [...businessKeys.all(), "businesses"] as const,
   listings: () => [...businessKeys.all(), "listings"] as const,
-  detail: (id: number | string) =>
-    [...businessKeys.all(), "detail", id] as const,
+  detail: (id: number | string) => [...businessKeys.all(), "detail", id] as const,
   jobsData: () => [...businessKeys.all(), "jobsData"] as const,
-  businessJobData: (id: number | string) =>
-    [...businessKeys.all(), "businessJobData", id] as const,
+  businessJobData: (id: number | string) => [...businessKeys.all(), "businessJobData", id] as const,
   boostPackages: () => [...businessKeys.all(), "boostPackages"] as const,
 };
 
@@ -34,10 +32,7 @@ export function useListingsQuery(options?: { enabled?: boolean }) {
   });
 }
 
-export function useBusinessQuery(
-  id: number | string | undefined,
-  options?: { enabled?: boolean },
-) {
+export function useBusinessQuery(id: number | string | undefined, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: businessKeys.detail(id ?? 0),
     queryFn: () => businessApi.getBusiness(id as number),

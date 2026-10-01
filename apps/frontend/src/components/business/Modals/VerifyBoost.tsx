@@ -23,9 +23,9 @@ const VerifyBoost = ({
   };
   return (
     <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+      className={`bg-opacity-50 fixed inset-0 z-50 items-center justify-center bg-gray-800 ${isOpen ? "flex" : "hidden"}`}
     >
-      <div className="h-full w-screen rounded-lg bg-white p-6 shadow-lg laptop:h-screen laptop:w-[480px]">
+      <div className="laptop:h-screen laptop:w-[480px] h-full w-screen rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggleMenu}>
@@ -39,7 +39,7 @@ const VerifyBoost = ({
           </div>
           <div className="px-[10px]">
             <div className="mt-[24px] flex flex-col items-center">
-              <p className="text-center text-[20px] font-semiBold text-light-green">
+              <p className="font-semiBold text-light-green text-center text-[20px]">
                 Payment successful
               </p>
               <p className="w-[416px] text-center text-[14px] font-normal">
@@ -50,28 +50,28 @@ const VerifyBoost = ({
               </p>
             </div>
             <div className="mt-[24px]">
-              <p className="text-[20px] font-semiBold">Featured</p>
+              <p className="font-semiBold text-[20px]">Featured</p>
             </div>
             <div className="mt-[24px] flex flex-col">
-              <p className="text-[14px] font-normal text-text-grey">Start date</p>
-              <p className="text-[14px] font-semi-normal text-light-black">{boost?.start_date}</p>
+              <p className="text-text-grey text-[14px] font-normal">Start date</p>
+              <p className="font-semi-normal text-light-black text-[14px]">{boost?.start_date}</p>
             </div>
 
             <div className="mt-[16px] flex flex-col">
-              <p className="text-[14px] font-normal text-text-grey">Start time</p>
-              <p className="text-[14px] font-semi-normal text-light-black">{boost?.start_time}</p>
+              <p className="text-text-grey text-[14px] font-normal">Start time</p>
+              <p className="font-semi-normal text-light-black text-[14px]">{boost?.start_time}</p>
             </div>
 
             <div className="mt-[16px] flex flex-col">
-              <p className="text-[14px] font-normal text-text-grey">Duration</p>
-              <p className="text-[14px] font-semi-normal text-light-black">
+              <p className="text-text-grey text-[14px] font-normal">Duration</p>
+              <p className="font-semi-normal text-light-black text-[14px]">
                 {boost?.duration} days
               </p>
             </div>
           </div>
 
           <Button
-            className="mt-[24px] h-[48px] w-full bg-gradient-green"
+            className="bg-gradient-green mt-[24px] h-[48px] w-full"
             onClick={backToBusiness}
             type="button"
           >

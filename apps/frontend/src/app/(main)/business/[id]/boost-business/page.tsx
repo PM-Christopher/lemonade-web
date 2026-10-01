@@ -11,9 +11,7 @@ import { businessKeys } from "@/features/business/queries";
 import { businessServerApi } from "@/features/business/api.server";
 import BoostBusinessClient from "./BoostBusinessClient";
 
-export default async function BoostBusinessPage(props: {
-  params: Promise<{ id: number }>;
-}) {
+export default async function BoostBusinessPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const queryClient = getQueryClient();
 

@@ -4,7 +4,7 @@ import { teamApi } from "./api";
 export const teamKeys = {
   all: () => ["team"] as const,
   list: () => [...teamKeys.all(), "list"] as const,
-  detail: (id: number) => [...teamKeys.all(), "detail", id] as const,
+  detail: (id: string | number) => [...teamKeys.all(), "detail", id] as const,
 };
 
 export function useTeamQuery(options?: { enabled?: boolean }) {
@@ -16,10 +16,13 @@ export function useTeamQuery(options?: { enabled?: boolean }) {
   });
 }
 
-export function useTeamDetailQuery(id: number | undefined, options?: { enabled?: boolean }) {
+export function useTeamDetailQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: teamKeys.detail(id ?? 0),
-    queryFn: () => teamApi.getTeamDetail(id as number),
+    queryFn: () => teamApi.getTeamDetail(id as string | number),
     staleTime: 60_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });

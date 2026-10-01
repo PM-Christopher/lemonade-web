@@ -1,9 +1,10 @@
 import React from "react";
-import { CalendarIcon, ChevronDown, Dot, DotIcon } from "lucide-react";
+import { CalendarIcon, ChevronDown, Dot } from "lucide-react";
 import Image from "next/image";
+import type { AccountInfoResponse } from "@/features/user/api";
 
 interface EventViewProps {
-  userDetail: any;
+  userDetail: AccountInfoResponse | undefined;
 }
 
 const EventView: React.FC<EventViewProps> = ({ userDetail }) => {
@@ -12,32 +13,32 @@ const EventView: React.FC<EventViewProps> = ({ userDetail }) => {
       <div className={"p-[16px] px-[24px] pt-[24px]"}>
         <div
           className={
-            "flex h-[40px] items-center justify-between rounded-[12px] border-[1px] border-grey-20 bg-light-grey px-[16px] py-[10px]"
+            "border-grey-20 bg-light-grey flex h-[40px] items-center justify-between rounded-[12px] border-[1px] px-[16px] py-[10px]"
           }
         >
           <div className={"flex items-center justify-between"}>
-            <div className={"flex items-center gap-[8px] text-text-grey"}>
+            <div className={"text-text-grey flex items-center gap-[8px]"}>
               <CalendarIcon className={"w-[15px]"} />
-              <p className={"text-[12px] font-semiBold text-text-grey"}>ALL EVENTS</p>
+              <p className={"font-semiBold text-text-grey text-[12px]"}>ALL EVENTS</p>
             </div>
           </div>
-          <ChevronDown className={"w-[20px] text-text-grey"} />
+          <ChevronDown className={"text-text-grey w-[20px]"} />
         </div>
       </div>
       <div className={"p-[24px]"}>
         <div className={"flex flex-wrap gap-[24px]"}>
-          {userDetail?.events?.map((item: any) => (
+          {userDetail?.events?.map((item) => (
             <div
               key={item?.id}
               className={"flex w-fit flex-col gap-[4px] rounded-[12px] border-[1px] p-[4px]"}
             >
-              <Image src={item?.image} alt={""} width={155.5} height={155.5} />
-              <p className={"text-[14px] font-semiBold"}>{item?.name}</p>
+              <Image src={item?.image ?? ""} alt={""} width={155.5} height={155.5} />
+              <p className={"font-semiBold text-[14px]"}>{item?.name}</p>
               <div className={"flex items-center gap-[4px]"}>
                 <CalendarIcon className={"w-[12px]"} />
-                <p className={"text-[12px] font-normal text-text-grey"}>{item?.date}</p>
+                <p className={"text-text-grey text-[12px] font-normal"}>{item?.date}</p>
                 <Dot className={"text-text-grey"} />
-                <p className={"text-[12px] font-normal text-text-grey"}>{item?.time}</p>
+                <p className={"text-text-grey text-[12px] font-normal"}>{item?.time}</p>
               </div>
             </div>
           ))}

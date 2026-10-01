@@ -65,6 +65,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
       socials: [],
     },
     validationSchema: socialStepSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await socialsStep(socials);
     },
@@ -124,24 +125,24 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="w-full rounded-[16px] border-none shadow-none tablet:w-[480px]">
+      <Card className="tablet:w-[480px] w-full rounded-[16px] border-none shadow-none">
         <CardHeader className="grid gap-4">
           <div className="flex gap-2">
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-step-color" />
-            <div className="h-[2px] w-[15px] bg-step-color" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-step-color h-[2px] w-[15px]" />
           </div>
           <div>
             <p className="font-sans text-[24px] font-semibold">Link your social profiles</p>
-            <p className="font-sans text-[14px] font-normal leading-[21px] text-text-grey">
+            <p className="text-text-grey font-sans text-[14px] leading-[21px] font-normal">
               Good job! Now add your social profile usernames to <br />
               stay connected with others.
             </p>
           </div>
         </CardHeader>
         <CardContent className="mt-[30px] grid gap-4">
-          <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
             <div className="">
               <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -155,7 +156,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
               onChange={handleChange}
             />
           </div>
-          <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
             <div className="">
               <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -169,7 +170,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
               onChange={handleChange}
             />
           </div>
-          <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
             <div className="">
               <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -183,7 +184,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
               onChange={handleChange}
             />
           </div>
-          <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
             <div className="">
               <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -199,10 +200,10 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
           </div>
         </CardContent>
         <CardContent className="flex flex-col">
-          <div className="mb-6 mt-2 flex justify-center">
+          <div className="mt-2 mb-6 flex justify-center">
             <button
               type="submit"
-              className="cursor-pointer border-none bg-transparent text-center font-sans text-[16px] font-semi-normal text-light-green"
+              className="font-semi-normal text-light-green cursor-pointer border-none bg-transparent text-center font-sans text-[16px]"
             >
               Skip
             </button>

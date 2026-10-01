@@ -16,62 +16,60 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
     <>
       <div className="relative">
         <Image
-          src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
+          src={getSafeImageSrc(business?.image, "/images/business_images/business_1.png")}
           alt="Main Image"
-          className="rounded-lg object-cover"
-          width={319}
+          className="h-[105px] w-full rounded-lg object-cover"
+          width={320}
           height={105}
-          style={{ width: 319, height: 105 }}
         />
-        <div className="absolute bottom-[-35px] left-4 h-16 w-16 tablet:left-auto tablet:right-[260px]">
+        <div className="absolute bottom-[-28px] left-4 h-14 w-14">
           <Image
             src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
             alt="Overlay Image"
-            className="rounded-xl border border-step-color object-cover"
+            className="border-step-color h-14 w-14 rounded-xl border object-cover"
             height={56}
             width={56}
-            style={{ width: 56, height: 56 }}
           />
         </div>
       </div>
 
-      <div className="p-[10px]">
-        <div className="sm:flex-row mt-10 flex flex-col justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="font-sans text-[14px] font-semibold leading-[21px] text-light-black">
+      <div className="px-[10px] pt-10 pb-[10px]">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <p className="text-light-black truncate font-sans text-body-s font-semibold">
               {business.name}
             </p>
-            <DotIcon className="w-1" />
-            <p className="font-sans text-[12px] font-normal text-light-black">
+            <DotIcon className="w-1 shrink-0" />
+            <p className="text-light-black truncate font-sans text-meta font-normal">
               {business.city}, {formatCountry(business.country)}
             </p>
           </div>
 
-          <div className="sm:self-center flex items-center gap-1 self-start rounded-xl bg-mid-grey p-2">
+          <div className="bg-mid-grey flex shrink-0 items-center gap-1 rounded-xl p-2">
             <Image src={medal} alt="medal" width={16} />
-            <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-primary-black">
+            <p className="font-semi-normal text-primary-black font-sans text-body-s">
               {formatNumber(business.rating, 1)}
             </p>
           </div>
         </div>
 
-        <div className="sm:flex-row sm:items-center mt-2 flex flex-col items-start justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-full bg-grey-20 p-2 px-3">
-              <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-text-grey">
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <div className="bg-grey-20 max-w-full rounded-full p-2 px-3">
+              <p className="font-semi-normal text-text-grey truncate font-sans text-label">
                 {business.services[0]}
               </p>
             </div>
             {business.services.length > 1 && (
-              <div className="rounded-full bg-grey-20 p-2 px-3">
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-text-grey">
+              <div className="bg-grey-20 shrink-0 rounded-full p-2 px-3">
+                <p className="font-semi-normal text-text-grey font-sans text-label">
                   +{business.services.length}
                 </p>
               </div>
             )}
           </div>
 
-          <p className="whitespace-nowrap font-sans text-[16px] font-semibold">
+          <p className="shrink-0 font-sans text-body-l font-semibold whitespace-nowrap">
             ₦{formatNumberWithCommas(business.service_rate)}/hr
           </p>
         </div>

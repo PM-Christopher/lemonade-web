@@ -3,36 +3,51 @@ import DataCard from "@/components/global/DataCard";
 import { affiliateMainHeaders, eventMainHeaders } from "@/data/tableData";
 import { useRouter } from "next/navigation";
 import PaginationComp from "@/components/global/Pagination";
+import type {
+  EventAffiliatesResponse,
+  EventListResponse,
+  EventPromotionsQueueResponse,
+} from "@/features/events/api";
 
-const AffiliateView = ({ pageData }: any) => {
+interface AffiliateViewProps {
+  pageData: EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | undefined;
+}
+
+const AffiliateView = ({ pageData }: AffiliateViewProps) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const perPage = 10;
+
+  // EventsClient.tsx only renders this view for the "affiliates" tab, where
+  // getEventData always resolves to EventAffiliatesResponse — the union
+  // prop type comes from eventData being shared across three sibling views
+  // that each render for exactly one tab.
+  const data = pageData as EventAffiliatesResponse | undefined;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil(pageData?.affiliates?.length / perPage);
+  const totalPages = Math.ceil((data?.affiliates?.length ?? 0) / perPage);
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = pageData?.affiliates?.slice(startIndex, startIndex + perPage);
+  const paginatedData = data?.affiliates?.slice(startIndex, startIndex + perPage);
   return (
     <>
       <>
-        <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
+        <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
           <DataCard
             styles={"w-full"}
             title={"Ticket Affiliate Earning"}
-            count={pageData?.total_affiliate_earning}
+            count={data?.total_affiliate_earning ?? 0}
             isPrice={true}
           />
           <DataCard
             styles={"w-full"}
             title={"Total Affiliates"}
-            count={pageData?.total_affiliates}
+            count={data?.total_affiliates ?? 0}
           />
         </div>
         <div className="rounded-lg bg-white shadow-md">
@@ -40,7 +55,7 @@ const AffiliateView = ({ pageData }: any) => {
             <thead>
               <tr className="bg-mid-grey">
                 {affiliateMainHeaders.map((header, idx) => (
-                  <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
+                  <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
                     {header}
                   </th>
                 ))}
@@ -48,10 +63,10 @@ const AffiliateView = ({ pageData }: any) => {
             </thead>
             <tbody>
               {paginatedData && paginatedData.length > 0 ? (
-                paginatedData.map((row: any, index: any) => (
+                paginatedData.map((row, index) => (
                   <tr
                     key={index}
-                    className="h-[72px] cursor-pointer border-b border-grey-20"
+                    className="border-grey-20 h-[72px] cursor-pointer border-b"
                     onClick={() => router.push(`/events/${row.id}/affiliates`)}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>

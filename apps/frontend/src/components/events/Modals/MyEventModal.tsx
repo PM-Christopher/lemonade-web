@@ -27,8 +27,8 @@ const MyEventModal = ({
         <DialogTitle className="sr-only">
           {ticket?.ticket?.[0]?.event_name || "My ticket"}
         </DialogTitle>
-        <div className="max-h-[90vh] w-[480px] overflow-y-auto rounded-lg bg-light_grey p-0 shadow-none laptop:bg-white laptop:p-6 laptop:shadow-lg">
-          <div className="mt-10 flex items-center justify-between bg-white p-6 laptop:bg-none laptop:p-0">
+        <div className="bg-light_grey laptop:bg-white laptop:p-6 laptop:shadow-lg max-h-[90vh] w-[480px] overflow-y-auto rounded-lg p-0 shadow-none">
+          <div className="laptop:bg-none laptop:p-0 mt-10 flex items-center justify-between bg-white p-6">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
@@ -38,61 +38,51 @@ const MyEventModal = ({
           {loading ? (
             <MyTicketSkeleton />
           ) : (
-            <div className="p-6 laptop:p-0">
-              <div className="mt-[16px] flex flex-col items-center rounded-[16px] bg-white p-6 laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0">
+            <div className="laptop:p-0 p-6">
+              <div className="laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0 mt-[16px] flex flex-col items-center rounded-[16px] bg-white p-6">
                 <div className="flex justify-center">
                   <div className="flex w-[340px] flex-col gap-[16px]">
-                    <p className="font-sans text-[20px] font-semi-normal leading-[21px]">
+                    <p className="font-semi-normal font-sans text-[20px] leading-[21px]">
                       {ticket?.ticket[0]?.event_name}
                     </p>
                     <div className="flex justify-between">
                       <div className="flex flex-col">
-                        <p className="text-[14px] font-normal text-text-grey">
-                          Date
-                        </p>
-                        <p className="text-[14px] font-semi-normal">
+                        <p className="text-text-grey text-[14px] font-normal">Date</p>
+                        <p className="font-semi-normal text-[14px]">
                           {formatDate(ticket?.ticket[0]?.date)}
                         </p>
                       </div>
                       <div className="flex flex-col">
-                        <p className="text-right text-[14px] font-normal text-text-grey">
-                          Time
-                        </p>
-                        <p className="text-right text-[14px] font-semi-normal">
+                        <p className="text-text-grey text-right text-[14px] font-normal">Time</p>
+                        <p className="font-semi-normal text-right text-[14px]">
                           {formatTime(ticket?.ticket[0]?.date)}
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between">
                       <div className="flex flex-col">
-                        <p className="text-[14px] font-normal text-text-grey">
-                          Ticket type
-                        </p>
-                        <p className="text-[14px] font-semi-normal">
+                        <p className="text-text-grey text-[14px] font-normal">Ticket type</p>
+                        <p className="font-semi-normal text-[14px]">
                           {ticket?.ticket[0]?.ticket_type}
                         </p>
                       </div>
                       <div className="flex flex-col">
-                        <p className="text-right text-[14px] font-normal text-text-grey">
+                        <p className="text-text-grey text-right text-[14px] font-normal">
                           Ticket ID
                         </p>
-                        <p className="text-right text-[14px] font-semi-normal">
+                        <p className="font-semi-normal text-right text-[14px]">
                           {ticket?.ticket[0]?.ticket_code}
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between">
                       <div className="flex flex-col">
-                        <p className="text-[14px] font-normal text-text-grey">
-                          Venue
-                        </p>
-                        <p className="text-[14px] font-semi-normal">
-                          {ticket?.ticket[0]?.venue}
-                        </p>
+                        <p className="text-text-grey text-[14px] font-normal">Venue</p>
+                        <p className="font-semi-normal text-[14px]">{ticket?.ticket[0]?.venue}</p>
                       </div>
                     </div>
                     {ticket?.ticket[0]?.qr_code && (
-                      <div className="mt-[94px] flex items-center justify-center laptop:mt-[48px]">
+                      <div className="laptop:mt-[48px] mt-[94px] flex items-center justify-center">
                         <Image
                           src={ticket.ticket[0].qr_code}
                           alt="qr_code"

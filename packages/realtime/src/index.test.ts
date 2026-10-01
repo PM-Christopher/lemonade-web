@@ -3,14 +3,16 @@ import { buildReverbConnectionOptions } from "./index";
 
 describe("buildReverbConnectionOptions", () => {
   it("builds plain-ws options for the http scheme", () => {
-    expect(buildReverbConnectionOptions({ host: "localhost", port: 8080, scheme: "http" })).toEqual({
-      cluster: "",
-      wsHost: "localhost",
-      wsPort: 8080,
-      wssPort: 8080,
-      forceTLS: false,
-      enabledTransports: ["ws"],
-    });
+    expect(buildReverbConnectionOptions({ host: "localhost", port: 8080, scheme: "http" })).toEqual(
+      {
+        cluster: "",
+        wsHost: "localhost",
+        wsPort: 8080,
+        wssPort: 8080,
+        forceTLS: false,
+        enabledTransports: ["ws"],
+      },
+    );
   });
 
   it("forces TLS for the https scheme", () => {

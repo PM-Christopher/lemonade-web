@@ -91,70 +91,50 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
       case "PENDING":
         return (
           <div>
-            <p className="text-[14px] font-normal text-text-grey">
-              Service status
-            </p>
-            <div className="mt-[8px] flex w-fit items-center gap-2 rounded-[12px] bg-warning p-[2px] px-[8px]">
+            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <div className="bg-warning mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
               <ClockIconOrange />
-              <p className="text-[14px] font-semi-normal text-warning-bold">
-                Awaiting
-              </p>
+              <p className="font-semi-normal text-warning-bold text-[14px]">Awaiting</p>
             </div>
           </div>
         );
       case "ACCEPTED":
         return (
           <div>
-            <p className="text-[14px] font-normal text-text-grey">
-              Service status
-            </p>
-            <div className="mt-[8px] flex w-fit items-center gap-2 rounded-[12px] bg-purple-1 p-[2px] px-[8px]">
+            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <div className="bg-purple-1 mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
               <CheckPIcon />
-              <p className="text-[14px] font-semi-normal text-blue-accent-1">
-                Accepted
-              </p>
+              <p className="font-semi-normal text-blue-accent-1 text-[14px]">Accepted</p>
             </div>
           </div>
         );
       case "REJECTED":
         return (
           <div>
-            <p className="text-[14px] font-normal text-text-grey">
-              Service status
-            </p>
-            <div className="mt-[8px] flex w-fit items-center gap-2 rounded-[12px] bg-red-accent-1 p-[2px] px-[8px]">
+            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <div className="bg-red-accent-1 mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
               <CloseRedIcon />
-              <p className="text-[14px] font-semi-normal text-red-1">
-                Rejected
-              </p>
+              <p className="font-semi-normal text-red-1 text-[14px]">Rejected</p>
             </div>
           </div>
         );
       case "IN_PROGRESS":
         return (
           <div>
-            <p className="text-[14px] font-normal text-text-grey">
-              Service status
-            </p>
-            <div className="mt-[8px] flex w-fit items-center gap-2 rounded-[12px] bg-warning p-[2px] px-[8px]">
+            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <div className="bg-warning mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
               <ClockIconOrange />
-              <p className="text-[14px] font-semi-normal text-warning-bold">
-                In progress
-              </p>
+              <p className="font-semi-normal text-warning-bold text-[14px]">In progress</p>
             </div>
           </div>
         );
       case "COMPLETED":
         return (
           <div>
-            <p className="text-[14px] font-normal text-text-grey">
-              Service status
-            </p>
-            <div className="mt-[8px] flex w-fit items-center gap-2 rounded-[12px] bg-light-green-60 p-[2px] px-[8px]">
+            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <div className="bg-light-green-60 mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
               <CheckGIcon />
-              <p className="text-[14px] font-semi-normal text-light-green-70">
-                Completed
-              </p>
+              <p className="font-semi-normal text-light-green-70 text-[14px]">Completed</p>
             </div>
           </div>
         );
@@ -176,7 +156,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Service Details"}</DialogTitle>
-        <div className="w-full px-4 py-[5vh] laptop:w-[640px]">
+        <div className="laptop:w-[640px] w-full px-4 py-[5vh]">
           <div className="hide-scrollbar relative max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white shadow-lg">
             {/* Header */}
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
@@ -223,7 +203,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                       alt="job logo"
                       width={72}
                       height={72}
-                      className="h-[64px] rounded-xl border border-step-color object-cover"
+                      className="border-step-color h-[64px] rounded-xl border object-cover"
                     />
                     <p className="mt-3 text-center text-[16px] font-semibold text-black">
                       {job?.name}
@@ -241,9 +221,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
               </div>
 
               {/* Payment Requested */}
-              {job?.payment_requested &&
-              job?.isOwner &&
-              job?.status === "ACCEPTED" ? (
+              {job?.payment_requested && job?.isOwner && job?.status === "ACCEPTED" ? (
                 <div className="w-full rounded-xl bg-purple-50 px-4 py-2 text-center font-medium text-purple-700">
                   Payment requested. Awaiting confirmation
                 </div>
@@ -255,9 +233,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
               {/* Amount */}
               <div>
                 <p className="text-[14px] text-gray-500">Amount</p>
-                <p className="text-[18px] font-semibold">
-                  N{formatNumberWithCommas(job?.amount)}
-                </p>
+                <p className="text-[18px] font-semibold">N{formatNumberWithCommas(job?.amount)}</p>
               </div>
 
               {/* Required Services */}
@@ -278,37 +254,29 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
               {/* Additional Info */}
               {job?.additional_information && (
                 <div>
-                  <p className="text-[14px] text-gray-500">
-                    Additional Information
-                  </p>
-                  <p className="mt-1 text-[16px] text-black">
-                    {job?.additional_information}
-                  </p>
+                  <p className="text-[14px] text-gray-500">Additional Information</p>
+                  <p className="mt-1 text-[16px] text-black">{job?.additional_information}</p>
                 </div>
               )}
 
               {/* Remark */}
               {job?.remark && job?.status === "ACCEPTED" && (
                 <div className="rounded-2xl bg-gray-100 p-4">
-                  <p className="text-[14px] font-semibold text-gray-500">
-                    Remark
-                  </p>
+                  <p className="text-[14px] font-semibold text-gray-500">Remark</p>
                   <p className="mt-1 text-[16px] text-black">{job?.remark}</p>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="mt-6 flex w-full flex-col gap-3 laptop:flex-row">
+              <div className="laptop:flex-row mt-6 flex w-full flex-col gap-3">
                 {/* Owner vs User Actions */}
                 {!job?.isOwner && job?.status === "IN_PROGRESS" && (
                   <>
                     <Button
-                      className={`h-[48px] w-full rounded-2xl bg-gradient-green shadow-md`}
+                      className={`bg-gradient-green h-[48px] w-full rounded-2xl shadow-md`}
                       onClick={markCompleted}
                     >
-                      <p className="text-[16px] font-medium text-light-white">
-                        Mark as Completed
-                      </p>
+                      <p className="text-light-white text-[16px] font-medium">Mark as Completed</p>
                     </Button>
                     <Button
                       className="h-[48px] w-full rounded-2xl border border-gray-300 bg-white font-medium text-black"
@@ -319,36 +287,30 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                   </>
                 )}
 
-                {!job?.isOwner &&
-                  job?.status === "ACCEPTED" &&
-                  job?.payment_requested && (
-                    <Button
-                      className="h-[48px] w-full rounded-2xl bg-gradient-green font-semibold text-light-white shadow-md"
-                      onClick={togglePayNow}
-                    >
-                      Make Payment
-                    </Button>
-                  )}
+                {!job?.isOwner && job?.status === "ACCEPTED" && job?.payment_requested && (
+                  <Button
+                    className="bg-gradient-green text-light-white h-[48px] w-full rounded-2xl font-semibold shadow-md"
+                    onClick={togglePayNow}
+                  >
+                    Make Payment
+                  </Button>
+                )}
 
                 {job?.isOwner &&
                   job?.status === "ACCEPTED" &&
                   (job?.payment_made ? (
-                    <div className="mb-[10px] mt-[40px] flex w-full justify-center gap-3 laptop:w-[544px]">
-                      <Button className="h-[48px] w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white p-[14px] px-[48px] shadow-none">
-                        <p className="text-[16px] font-semi-normal text-black-light">
-                          Dispute Job
-                        </p>
+                    <div className="laptop:w-[544px] mt-[40px] mb-[10px] flex w-full justify-center gap-3">
+                      <Button className="border-light-grey-50 h-[48px] w-full rounded-[12px] border-[1px] bg-white p-[14px] px-[48px] shadow-none">
+                        <p className="font-semi-normal text-black-light text-[16px]">Dispute Job</p>
                       </Button>
                     </div>
                   ) : (
-                    <div className="mb-[10px] mt-[40px] flex w-full justify-center gap-3 laptop:w-[544px]">
+                    <div className="laptop:w-[544px] mt-[40px] mb-[10px] flex w-full justify-center gap-3">
                       <Button
-                        className="h-[48px] w-full rounded-[12px] bg-gradient-green p-[14px] px-[48px] shadow-custom-bottom"
+                        className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
                         onClick={toggleConfirmPayment}
                       >
-                        <p className="text-[16px] font-semi-normal">
-                          Request payment
-                        </p>
+                        <p className="font-semi-normal text-[16px]">Request payment</p>
                       </Button>
                     </div>
                   ))}
@@ -369,7 +331,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                     {markLoading ? (
                       <div
                         className={
-                          "mt-4 flex h-[48px] w-full items-center justify-center gap-[8px] rounded-2xl bg-gradient-green font-semibold shadow-md"
+                          "bg-gradient-green mt-4 flex h-[48px] w-full items-center justify-center gap-[8px] rounded-2xl font-semibold shadow-md"
                         }
                       >
                         <svg
@@ -392,21 +354,19 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                           />
                         </svg>
-                        <p className="text-[16px] font-semi-normal text-light-white">
-                          Loading...
-                        </p>
+                        <p className="font-semi-normal text-light-white text-[16px]">Loading...</p>
                       </div>
                     ) : (
                       <div className="mt-4 flex gap-3">
                         <Button
-                          className="h-[48px] w-full rounded-2xl bg-gradient-green font-semibold shadow-md"
+                          className="bg-gradient-green h-[48px] w-full rounded-2xl font-semibold shadow-md"
                           onClick={() => markJob("accepted")}
                           disabled={markLoading}
                         >
                           Accept
                         </Button>
                         <Button
-                          className="h-[48px] w-full rounded-2xl border border-gray-300 bg-white font-semibold text-black hover:text-light-white"
+                          className="hover:text-light-white h-[48px] w-full rounded-2xl border border-gray-300 bg-white font-semibold text-black"
                           onClick={() => markJob("rejected")}
                           disabled={markLoading}
                         >
@@ -429,11 +389,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                 sMenu={toggleMenu}
                 job={job}
               />
-              <PayNowModal
-                job={job}
-                isOpen={isPayNowOpen}
-                toggleMenu={togglePayNow}
-              />
+              <PayNowModal job={job} isOpen={isPayNowOpen} toggleMenu={togglePayNow} />
               <ConfirmCompletionModal
                 isOpen={isCompletionOpen}
                 toggle={toggleCompletion}

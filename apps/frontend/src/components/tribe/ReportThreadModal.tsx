@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import {
-  Button,
-  Label,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch } from "@/redux/hook";
@@ -19,11 +13,7 @@ type ReportThreadIF = {
   threadId: null | number;
 };
 
-const ReportThreadModal: React.FC<ReportThreadIF> = ({
-  toggle,
-  isOpen,
-  threadId,
-}) => {
+const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId }) => {
   const dispatch = useAppDispatch();
   const reportThreadMutation = useReportThreadMutation();
 
@@ -62,22 +52,20 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">
-                Report thread
-              </p>
+              <p className="font-sans text-[18px] leading-[27px] font-semibold">Report thread</p>
             </div>
             <div>
               <Button
-                className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
                 type="button"
                 onClick={submitThread}
               >
-                <p className="font-sans text-[12px] font-semi-normal">Submit</p>
+                <p className="font-semi-normal font-sans text-[12px]">Submit</p>
               </Button>
             </div>
           </div>
           <div className="mt-[24px] flex flex-col gap-[16px] p-6">
-            <p className="text-[20px] font-semiBold text-black-light">
+            <p className="font-semiBold text-black-light text-[20px]">
               What is wrong with this thread?
             </p>
             <div className="flex flex-col">
@@ -86,108 +74,93 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({
                 onValueChange={(value) => setSelectedReport(value)}
               >
                 <div className="flex flex-col gap-[20px]">
-                  <div className="flex items-center space-x-2 rounded-[12px] border-[2px] border-grey-20 p-[12px] px-[16px]">
-                    <RadioGroupItem
-                      value="Inappropriate_content"
-                      id="option-one"
-                    />
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                    <RadioGroupItem value="Inappropriate_content" id="option-one" />
                     <div className="flex flex-col">
                       <Label
-                        className="font-sans text-[16px] font-normal text-black-light"
+                        className="text-black-light font-sans text-[16px] font-normal"
                         htmlFor="option-one"
                       >
                         Inappropriate content
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        Posts containing nudity, pornography, or other sexually
-                        suggestive content
+                      <p className="text-text-grey text-[12px] font-normal">
+                        Posts containing nudity, pornography, or other sexually suggestive content
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 rounded-[12px] border-[2px] border-grey-20 p-[12px] px-[16px]">
-                    <RadioGroupItem
-                      value="Abuse & Harassment"
-                      id="option-two"
-                    />
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                    <RadioGroupItem value="Abuse & Harassment" id="option-two" />
                     <div className="flex flex-col">
                       <Label
-                        className="font-sans text-[16px] font-normal text-black-light"
+                        className="text-black-light font-sans text-[16px] font-normal"
                         htmlFor="option-one"
                       >
                         Abuse & Harassment
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        Attacks, insults, threats, or other malicious behavior
-                        directed towards another user.
+                      <p className="text-text-grey text-[12px] font-normal">
+                        Attacks, insults, threats, or other malicious behavior directed towards
+                        another user.
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 rounded-[12px] border-[2px] border-grey-20 p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
                     <RadioGroupItem value="Hate speech" id="option-three" />
                     <div className="flex flex-col">
                       <Label
-                        className="font-sans text-[16px] font-normal text-black-light"
+                        className="text-black-light font-sans text-[16px] font-normal"
                         htmlFor="option-one"
                       >
                         Hate speech
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        Content that attacks a person or group on the basis of
-                        attributes like race, religion, ethnic origin, national
-                        origin, sex, disability, sexual orientation, or gender
-                        identity.
+                      <p className="text-text-grey text-[12px] font-normal">
+                        Content that attacks a person or group on the basis of attributes like race,
+                        religion, ethnic origin, national origin, sex, disability, sexual
+                        orientation, or gender identity.
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 rounded-[12px] border-[2px] border-grey-20 p-[12px] px-[16px]">
-                    <RadioGroupItem
-                      value="Spam or irrelevant content"
-                      id="option-four"
-                    />
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                    <RadioGroupItem value="Spam or irrelevant content" id="option-four" />
                     <div className="flex flex-col">
                       <Label
-                        className="font-sans text-[16px] font-normal text-black-light"
+                        className="text-black-light font-sans text-[16px] font-normal"
                         htmlFor="option-one"
                       >
                         Spam or irrelevant content
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        Posts promoting unrelated products or services,
-                        excessive self-promotion, or repetitive messages.
+                      <p className="text-text-grey text-[12px] font-normal">
+                        Posts promoting unrelated products or services, excessive self-promotion, or
+                        repetitive messages.
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 rounded-[12px] border-[2px] border-grey-20 p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
                     <RadioGroupItem value="Illegal activity" id="option-five" />
                     <div className="flex flex-col">
                       <Label
-                        className="font-sans text-[16px] font-normal text-black-light"
+                        className="text-black-light font-sans text-[16px] font-normal"
                         htmlFor="option-one"
                       >
                         Illegal activity
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        Posts promoting or encouraging illegal activity. Threats
-                        of violence: Any content that threatens violence against
-                        oneself or others.
+                      <p className="text-text-grey text-[12px] font-normal">
+                        Posts promoting or encouraging illegal activity. Threats of violence: Any
+                        content that threatens violence against oneself or others.
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 rounded-[12px] border-[2px] border-grey-20 p-[12px] px-[16px]">
-                    <RadioGroupItem
-                      value="Misinformation or disinformation"
-                      id="option-six"
-                    />
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                    <RadioGroupItem value="Misinformation or disinformation" id="option-six" />
                     <div className="flex flex-col">
                       <Label
-                        className="font-sans text-[16px] font-normal text-black-light"
+                        className="text-black-light font-sans text-[16px] font-normal"
                         htmlFor="option-one"
                       >
                         Misinformation or disinformation
                       </Label>
-                      <p className="text-[12px] font-normal text-text-grey">
-                        The sharing of false or misleading information intended
-                        to deceive or manipulate others.
+                      <p className="text-text-grey text-[12px] font-normal">
+                        The sharing of false or misleading information intended to deceive or
+                        manipulate others.
                       </p>
                     </div>
                   </div>

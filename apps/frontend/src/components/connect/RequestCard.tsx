@@ -21,7 +21,7 @@ const RequestCard: React.FC<RequestInterface> = ({
   return (
     <>
       <div
-        className="mb-8 flex cursor-pointer items-center justify-between rounded-lg border-b border-mid-grey p-4 transition-all duration-200 hover:bg-gray-50"
+        className="border-mid-grey mb-8 flex cursor-pointer items-center justify-between rounded-lg border-b p-4 transition-all duration-200 hover:bg-gray-50"
         onClick={() => {
           toggle();
           toggleInviteIndex(index);
@@ -55,7 +55,7 @@ const RequestCard: React.FC<RequestInterface> = ({
                 km away
               </p>
               <span className="text-gray-300">|</span>
-              <p className="max-w-[180px] truncate laptop:max-w-full">{invite?.message}</p>
+              <p className="laptop:max-w-full max-w-[180px] truncate">{invite?.message}</p>
             </div>
           </div>
         </div>

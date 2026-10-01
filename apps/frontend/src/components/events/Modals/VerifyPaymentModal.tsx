@@ -11,12 +11,7 @@ type VPInterface = {
   event: any;
 };
 
-const VerifyPaymentModal: React.FC<VPInterface> = ({
-  toggle,
-  isOpen,
-  event,
-  toggleMore,
-}) => {
+const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, toggleMore }) => {
   return (
     <Dialog
       open={isOpen}
@@ -36,53 +31,43 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({
           </div>
           <div className="mt-[24px]">
             <div className="flex justify-center">
-              <Image
-                src={"/images/tickets.png"}
-                alt="promotion_payment"
-                width={160}
-                height={160}
-              />
+              <Image src={"/images/tickets.png"} alt="promotion_payment" width={160} height={160} />
             </div>
           </div>
           <div className="mt-[24px]">
             <div className="flex flex-col">
-              <p className="text-center font-sans text-[20px] font-semibold leading-[28px] text-light-green">
+              <p className="text-light-green text-center font-sans text-[20px] leading-[28px] font-semibold">
                 Payment successful!
               </p>
-              <p className="text-center font-sans text-[14px] font-normal leading-[24px] tracking-custom text-light-black">
-                Tickets have been sent to the email addresses of all the
-                attending guests.
+              <p className="tracking-custom text-light-black text-center font-sans text-[14px] leading-[24px] font-normal">
+                Tickets have been sent to the email addresses of all the attending guests.
               </p>
             </div>
           </div>
           <div className="mt-[24px]">
             <div className="flex flex-col">
-              <p className="font-sans text-[20px] font-semibold leading-[20px]">
+              <p className="font-sans text-[20px] leading-[20px] font-semibold">
                 {event?.data?.event?.event_name}
               </p>
             </div>
           </div>
           <div className="mt-[24px]">
             <div className="flex flex-col">
-              <p className="font-sans text-[14px] font-normal leading-[20px] text-text-grey">
+              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Date
               </p>
-              <p className="text-light-black-[20px] font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom">
-                {moment(event?.data?.event?.start_date)
-                  .format("ddd, MMM DD")
-                  .toUpperCase()}
+              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                {moment(event?.data?.event?.start_date).format("ddd, MMM DD").toUpperCase()}
               </p>
             </div>
           </div>
           <div className="mt-[24px]">
             <div className="flex flex-col">
-              <p className="font-sans text-[14px] font-normal leading-[20px] text-text-grey">
+              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Time
               </p>
-              <p className="text-light-black-[20px] font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom">
-                {moment(event?.data?.event?.start_date)
-                  .format("h A")
-                  .toUpperCase()}
+              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                {moment(event?.data?.event?.start_date).format("h A").toUpperCase()}
               </p>
             </div>
           </div>
@@ -100,20 +85,16 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({
           {/*</div>*/}
           <div className="mt-[40px] flex gap-[4px]">
             <button
-              className="w-full rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+              className="border-light-grey-50 w-full rounded-[12px] border-[1px] p-[10px] px-[14px]"
               onClick={toggle}
             >
-              <p className="font-sans text-[16px] font-semi-normal text-black-light">
-                More events
-              </p>
+              <p className="font-semi-normal text-black-light font-sans text-[16px]">More events</p>
             </button>
             <button
-              className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+              className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
               onClick={toggleMore}
             >
-              <p className="font-sans text-[16px] font-semi-normal text-white">
-                My tickets
-              </p>
+              <p className="font-semi-normal font-sans text-[16px] text-white">My tickets</p>
             </button>
           </div>
         </div>

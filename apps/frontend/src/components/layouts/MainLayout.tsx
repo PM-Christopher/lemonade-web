@@ -34,7 +34,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isSuccess, currentUser, dispatch]);
 
   return (
-    <div className="h-full min-h-screen w-full overflow-hidden bg-light_grey pb-10">
+    <div className="bg-light_grey min-h-screen w-full pb-10">
       <TopNav />
       {children}
       {isMobile && <BottomNav />}

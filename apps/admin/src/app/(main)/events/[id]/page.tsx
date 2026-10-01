@@ -6,13 +6,11 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import EventDetailsClient from "./EventDetailsClient";
 
-export default async function EventDetailsPage(props: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function EventDetailsPage(props: { params: Promise<{ id: string }> }) {
   await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.events);
 
   const params = await props.params;
-  const id = Number(params.id);
+  const id = params.id;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({

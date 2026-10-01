@@ -4,29 +4,17 @@
 // instead of browserApi (BFF-proxy, client-only).
 import "server-only";
 import { backendApi } from "@/lib/server-api";
-import {
-  userProfileRoutes,
-  userSubscriptionRoutes,
-} from "@lemonade/api-types/generated";
-import type {
-  AppSettingsResponse,
-  SubscriptionResponse,
-  BillingHistoryResponse,
-} from "./api";
+import { userProfileRoutes, userSubscriptionRoutes } from "@lemonade/api-types/generated";
+import type { AppSettingsResponse, SubscriptionResponse, BillingHistoryResponse } from "./api";
 
 export const authServerApi = {
   getNotificationSettings: () =>
-    backendApi.get<AppSettingsResponse>(
-      userProfileRoutes.NOTIFICATION_SETTINGS_SHOW,
-    ),
+    backendApi.get<AppSettingsResponse>(userProfileRoutes.NOTIFICATION_SETTINGS_SHOW),
 
-  getSubscription: () =>
-    backendApi.get<SubscriptionResponse>(userProfileRoutes.SUBSCRIPTION_SHOW),
+  getSubscription: () => backendApi.get<SubscriptionResponse>(userProfileRoutes.SUBSCRIPTION_SHOW),
 
   getBillingHistory: () =>
-    backendApi.get<BillingHistoryResponse>(
-      userProfileRoutes.SUBSCRIPTION_BILLING_HISTORY,
-    ),
+    backendApi.get<BillingHistoryResponse>(userProfileRoutes.SUBSCRIPTION_BILLING_HISTORY),
 
   getSubscriptionPlans: () =>
     backendApi.get<{ subscriptions: unknown[] }>(userSubscriptionRoutes.LIST),

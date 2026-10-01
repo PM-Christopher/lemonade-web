@@ -50,13 +50,11 @@ const EventClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-5 px-10">
+        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-5 px-10">
           <Link href="/event">
-            <div className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]">
+            <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
               <ChevronLeft />
-              <p className="font-sans text-[16px] font-semibold tracking-custom">
-                Event details
-              </p>
+              <p className="tracking-custom font-sans text-[16px] font-semibold">Event details</p>
             </div>
           </Link>
         </div>
@@ -66,23 +64,23 @@ const EventClient = ({ id }: { id: number }) => {
         ) : (
           <section className="mt-4 flex flex-col items-center">
             <div className="flex w-full justify-center px-4">
-              <section className="flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow duration-300 hover:shadow-md laptop:max-w-[1100px] laptop:flex-row laptop:items-center">
+              <section className="laptop:max-w-[1100px] laptop:flex-row laptop:items-center flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
                 {/* Event Image */}
-                <div className="w-full laptop:w-[480px]">
+                <div className="laptop:w-[480px] w-full">
                   <Image
                     src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
                     alt={event?.event_name || "Event image"}
                     width={496}
                     height={532}
                     loading="lazy"
-                    className="h-auto w-full object-cover laptop:rounded-l-2xl"
+                    className="laptop:rounded-l-2xl h-auto w-full object-cover"
                   />
                 </div>
 
                 {/* Event Details */}
-                <article className="flex w-full flex-col justify-between space-y-4 px-6 py-8 laptop:px-10 laptop:py-10">
+                <article className="laptop:px-10 laptop:py-10 flex w-full flex-col justify-between space-y-4 px-6 py-8">
                   {/* Event Title */}
-                  <h1 className="font-sans text-[22px] font-semibold leading-snug text-gray-900 laptop:text-[32px]">
+                  <h1 className="laptop:text-[32px] font-sans text-[22px] leading-snug font-semibold text-gray-900">
                     {event?.event_name}
                   </h1>
 
@@ -99,8 +97,7 @@ const EventClient = ({ id }: { id: number }) => {
                   <div className="flex items-center gap-3 text-gray-600">
                     <ClockIcon className="text-gray-500" />
                     <p className="font-sans text-[16px]">
-                      {formatLongTime(event?.start_date)} –{" "}
-                      {formatLongTime(event?.end_date)}
+                      {formatLongTime(event?.start_date)} – {formatLongTime(event?.end_date)}
                     </p>
                   </div>
 
@@ -111,10 +108,8 @@ const EventClient = ({ id }: { id: number }) => {
                   </div>
 
                   {/* Contact & Socials */}
-                  <div className="hidden flex-col space-y-3 pt-4 laptop:flex">
-                    <p className="font-sans text-[18px] font-semibold text-gray-800">
-                      Contact Us
-                    </p>
+                  <div className="laptop:flex hidden flex-col space-y-3 pt-4">
+                    <p className="font-sans text-[18px] font-semibold text-gray-800">Contact Us</p>
                     <div className="flex items-center gap-4">
                       {[
                         { name: "facebook", icon: <FacebookIcon /> },
@@ -124,9 +119,7 @@ const EventClient = ({ id }: { id: number }) => {
                         { name: "website", icon: <AttachmentIcon /> },
                       ].map((social, i) => {
                         const link =
-                          event?.socials?.find(
-                            (s: any) => s.name === social.name,
-                          )?.value ?? "#";
+                          event?.socials?.find((s: any) => s.name === social.name)?.value ?? "#";
                         return (
                           <a
                             key={i}
@@ -144,10 +137,10 @@ const EventClient = ({ id }: { id: number }) => {
                   </div>
 
                   {/* CTA */}
-                  <div className="hidden pt-6 laptop:flex">
+                  <div className="laptop:flex hidden pt-6">
                     <Link href={buyTicketHref} passHref>
-                      <Button className="flex h-[56px] w-[231px] items-center justify-center rounded-[12px] border-b-2 border-transparent bg-gradient-green shadow-green-inset transition-all duration-300 hover:opacity-90 hover:shadow-green-inset-strong">
-                        <span className="font-sans text-[16px] font-medium leading-[19.2px] text-white">
+                      <Button className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-[56px] w-[231px] items-center justify-center rounded-[12px] border-b-2 border-transparent transition-all duration-300 hover:opacity-90">
+                        <span className="font-sans text-[16px] leading-[19.2px] font-medium text-white">
                           Buy ticket from ₦{event?.minimum_price}
                         </span>
                       </Button>
@@ -157,19 +150,19 @@ const EventClient = ({ id }: { id: number }) => {
               </section>
             </div>
 
-            <div className="mt-[40px] w-full laptop:max-w-[1100px]">
-              <p className="font-sans text-[24px] font-semibold leading-[33.6px] text-gray-900">
+            <div className="laptop:max-w-[1100px] mt-[40px] w-full">
+              <p className="font-sans text-[24px] leading-[33.6px] font-semibold text-gray-900">
                 About Event
               </p>
               <div className="mt-[16px] w-full rounded-xl bg-gray-50">
-                <p className="font-sans text-[16px] font-normal leading-[24px] text-gray-700">
+                <p className="font-sans text-[16px] leading-[24px] font-normal text-gray-700">
                   {event?.event_description}
                 </p>
               </div>
 
               {/* Contact + CTA (Mobile Only) */}
-              <div className="mt-[40px] block laptop:hidden">
-                <p className="font-sans text-[18px] font-semibold leading-[27px] text-gray-900">
+              <div className="laptop:hidden mt-[40px] block">
+                <p className="font-sans text-[18px] leading-[27px] font-semibold text-gray-900">
                   Contact Us
                 </p>
 
@@ -182,8 +175,7 @@ const EventClient = ({ id }: { id: number }) => {
                     { name: "website", icon: <AttachmentIcon /> },
                   ].map((social, i) => {
                     const link =
-                      event?.socials?.find((s: any) => s.name === social.name)
-                        ?.value ?? "#";
+                      event?.socials?.find((s: any) => s.name === social.name)?.value ?? "#";
                     return (
                       <a
                         key={i}
@@ -199,8 +191,8 @@ const EventClient = ({ id }: { id: number }) => {
 
                 <div className="mt-[40px]">
                   <Link href={buyTicketHref}>
-                    <Button className="shadow-custom-bottomtransition-all h-[56px] w-[231px] gap-2 rounded-[12px] border-b-2 border-transparent bg-gradient-green px-6 py-3.5 duration-300 hover:opacity-90">
-                      <p className="font-sans text-[16px] font-medium leading-[19.2px] text-white">
+                    <Button className="shadow-custom-bottomtransition-all bg-gradient-green h-[56px] w-[231px] gap-2 rounded-[12px] border-b-2 border-transparent px-6 py-3.5 duration-300 hover:opacity-90">
+                      <p className="font-sans text-[16px] leading-[19.2px] font-medium text-white">
                         Buy ticket from ₦{event?.minimum_price ?? "2,000"}
                       </p>
                     </Button>

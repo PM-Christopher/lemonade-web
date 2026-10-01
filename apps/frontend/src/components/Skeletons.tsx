@@ -7,39 +7,39 @@ export const TribesSkeleton = ({ count }: { count: number }) => {
       {[...Array(count)].map((_, i) => (
         <div
           key={i}
-          className="sm:p-4 sm:h-[200px] flex h-[180px] w-[422px] flex-shrink-0 animate-pulse flex-col rounded-2xl bg-light-yellow p-3 shadow-none"
+          className="bg-light-yellow flex h-[180px] w-[422px] flex-shrink-0 animate-pulse flex-col rounded-2xl p-3 shadow-none sm:h-[200px] sm:p-4"
         >
           {/* Image placeholder */}
           <div className="flex-shrink-0">
-            <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-lg bg-gray-300" />
+            <div className="h-10 w-10 rounded-lg bg-gray-300 sm:h-12 sm:w-12" />
           </div>
 
           {/* Text placeholders */}
           <div className="mt-2 flex flex-1 justify-between">
             <div className="min-w-0 flex-1">
-              <div className="sm:h-3 mb-2 h-2.5 w-1/2 rounded bg-gray-300" />
-              <div className="sm:h-3 h-2.5 w-3/4 rounded bg-gray-300" />
+              <div className="mb-2 h-2.5 w-1/2 rounded bg-gray-300 sm:h-3" />
+              <div className="h-2.5 w-3/4 rounded bg-gray-300 sm:h-3" />
             </div>
             <div className="ml-2 flex-shrink-0">
-              <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-lg bg-gray-200" />
+              <div className="h-10 w-10 rounded-lg bg-gray-200 sm:h-12 sm:w-12" />
             </div>
           </div>
 
           {/* Footer placeholders */}
           <div className="mt-auto flex justify-between pt-2">
-            <div className="sm:gap-2 flex gap-1.5">
+            <div className="flex gap-1.5 sm:gap-2">
               <div className="flex items-center gap-1">
-                <div className="sm:w-4 sm:h-4 h-3.5 w-3.5 rounded bg-gray-300" />
-                <div className="sm:w-6 sm:h-3 h-2.5 w-5 rounded bg-gray-300" />
+                <div className="h-3.5 w-3.5 rounded bg-gray-300 sm:h-4 sm:w-4" />
+                <div className="h-2.5 w-5 rounded bg-gray-300 sm:h-3 sm:w-6" />
               </div>
               <div className="flex items-center gap-1">
-                <div className="sm:w-4 sm:h-4 h-3.5 w-3.5 rounded bg-gray-300" />
-                <div className="sm:w-6 sm:h-3 h-2.5 w-5 rounded bg-gray-300" />
+                <div className="h-3.5 w-3.5 rounded bg-gray-300 sm:h-4 sm:w-4" />
+                <div className="h-2.5 w-5 rounded bg-gray-300 sm:h-3 sm:w-6" />
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <div className="sm:w-10 sm:h-3 h-2.5 w-8 rounded bg-gray-300" />
-              <div className="sm:w-3 sm:h-3 h-2.5 w-2.5 rounded bg-gray-300" />
+              <div className="h-2.5 w-8 rounded bg-gray-300 sm:h-3 sm:w-10" />
+              <div className="h-2.5 w-2.5 rounded bg-gray-300 sm:h-3 sm:w-3" />
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@ export const TribeDetailsSkeleton = () => {
     <div className="flex h-fit w-[496px] animate-pulse flex-col gap-2 rounded-[12px] bg-white p-4 py-4">
       {/* Header */}
       <div>
-        <p className="font-sans text-[16px] font-semibold leading-[24px]">Tribe details</p>
+        <p className="font-sans text-[16px] leading-[24px] font-semibold">Tribe details</p>
       </div>
 
       {/* Tribe Image */}
@@ -82,7 +82,7 @@ export const TribeDetailsSkeleton = () => {
         <div className="mt-4 flex gap-[16px]">
           {/* Share */}
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-[16px] bg-light_grey p-[24px]">
+            <div className="bg-light_grey flex h-[64px] w-[64px] items-center justify-center rounded-[16px] p-[24px]">
               <div className="h-6 w-6 rounded-full bg-gray-200"></div>
             </div>
             <div className="h-4 w-[60px] rounded bg-gray-200"></div>
@@ -90,7 +90,7 @@ export const TribeDetailsSkeleton = () => {
 
           {/* Add member */}
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-[16px] bg-light_grey p-[24px]">
+            <div className="bg-light_grey flex h-[64px] w-[64px] items-center justify-center rounded-[16px] p-[24px]">
               <div className="h-6 w-6 rounded-full bg-gray-200"></div>
             </div>
             <div className="h-4 w-[60px] rounded bg-gray-200"></div>
@@ -113,7 +113,7 @@ export const TribeDetailsSkeleton = () => {
       </div>
 
       {/* Members List */}
-      <div className="flex flex-col gap-4 rounded-[12px] bg-light_grey p-3">
+      <div className="bg-light_grey flex flex-col gap-4 rounded-[12px] p-3">
         <div className="h-4 w-[80px] rounded bg-gray-200"></div>
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="flex items-center justify-between gap-2">
@@ -135,32 +135,32 @@ export const SubscriptionsSkeleton = ({ count, dataList }: { count: number; data
       {Array.from({ length: count }).map((_, i) => (
         <div className="flex animate-pulse flex-col items-center" key={i}>
           {/* Header Section */}
-          <div className="w-[260px] rounded-tl-[16px] rounded-tr-[16px] bg-grey-20 px-[48px] pt-[16px]">
-            <div className="mx-auto mb-2 h-[24px] w-[120px] rounded-md bg-light-grey-70"></div>
-            <div className="mx-auto h-[20px] w-[100px] rounded-md bg-light-grey-70"></div>
+          <div className="bg-grey-20 w-[260px] rounded-tl-[16px] rounded-tr-[16px] px-[48px] pt-[16px]">
+            <div className="bg-light-grey-70 mx-auto mb-2 h-[24px] w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 mx-auto h-[20px] w-[100px] rounded-md"></div>
           </div>
 
           {/* Card Section */}
-          <div className="mt-1 w-[311px] rounded-[12px] border-[2px] border-light-grey-60">
-            <div className="rounded-tl-[12px] rounded-tr-[12px] bg-grey-20 p-[12px]">
-              <div className="h-[20px] w-[140px] rounded-md bg-light-grey-70"></div>
+          <div className="border-light-grey-60 mt-1 w-[311px] rounded-[12px] border-[2px]">
+            <div className="bg-grey-20 rounded-tl-[12px] rounded-tr-[12px] p-[12px]">
+              <div className="bg-light-grey-70 h-[20px] w-[140px] rounded-md"></div>
             </div>
 
-            <div className="flex flex-col gap-[20px] rounded-bl-[12px] rounded-br-[12px] bg-white p-4">
+            <div className="flex flex-col gap-[20px] rounded-br-[12px] rounded-bl-[12px] bg-white p-4">
               {Array.from({ length: dataList }).map((_, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="h-[20px] w-[20px] rounded-md bg-light-grey-70"></div>
-                    <div className="h-[14px] w-[120px] rounded-md bg-light-grey-70"></div>
+                    <div className="bg-light-grey-70 h-[20px] w-[20px] rounded-md"></div>
+                    <div className="bg-light-grey-70 h-[14px] w-[120px] rounded-md"></div>
                   </div>
-                  <div className="h-[14px] w-[40px] rounded-md bg-light-grey-70"></div>
+                  <div className="bg-light-grey-70 h-[14px] w-[40px] rounded-md"></div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Button Section */}
-          <div className="mt-[56px] h-[48px] w-[250px] rounded-[12px] bg-light-grey-70"></div>
+          <div className="bg-light-grey-70 mt-[56px] h-[48px] w-[250px] rounded-[12px]"></div>
         </div>
       ))}
     </>
@@ -173,7 +173,7 @@ export const TribeListSkeleton = ({ count }: { count: number }) => {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="mb-2 overflow-hidden rounded-[16px] border-[1px] border-grey-30 bg-mid-grey"
+          className="border-grey-30 bg-mid-grey mb-2 overflow-hidden rounded-[16px] border-[1px]"
         >
           {/* Top Section */}
           <div className="flex items-center justify-between rounded-[16px] bg-white p-4">
@@ -196,7 +196,7 @@ export const TribeListSkeleton = ({ count }: { count: number }) => {
           </div>
 
           {/* Bottom Section */}
-          <div className="flex items-center justify-between rounded-b-[16px] bg-mid-grey p-4 py-6">
+          <div className="bg-mid-grey flex items-center justify-between rounded-b-[16px] p-4 py-6">
             <div className="h-[10px] w-[60px] rounded bg-gray-200"></div>
             <div className="h-[10px] w-[80px] rounded bg-gray-200"></div>
             <div className="flex items-center gap-2">
@@ -298,7 +298,7 @@ export const EventsSkeleton = ({ count }: { count: number }) => {
       {[...Array(count)].map((_, i) => (
         <div
           key={i}
-          className="sm:w-[200px] flex h-[280px] w-full animate-pulse flex-col overflow-hidden rounded-2xl shadow-sm"
+          className="phone:w-[200px] flex h-[280px] w-[78vw] shrink-0 animate-pulse flex-col overflow-hidden rounded-2xl shadow-sm"
         >
           {/* Image placeholder */}
           <div className="h-[200px] flex-shrink-0 rounded-t-2xl bg-gray-300" />
@@ -330,12 +330,12 @@ export const EventDetailsSkeleton = () => {
     <section className="mt-4 flex animate-pulse flex-col items-center">
       {/* Main Container */}
       <div className="flex w-full justify-center">
-        <div className="flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white p-[20px] shadow-sm laptop:max-w-[1100px] laptop:flex-row laptop:items-center">
+        <div className="laptop:max-w-[1100px] laptop:flex-row laptop:items-center flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white p-[20px] shadow-sm">
           {/* Image Skeleton */}
-          <div className="h-[320px] w-full rounded-2xl bg-gray-200 laptop:w-[480px]"></div>
+          <div className="laptop:w-[480px] h-[320px] w-full rounded-2xl bg-gray-200"></div>
 
           {/* Event Details Skeleton */}
-          <div className="flex w-full flex-col justify-between space-y-5 px-6 py-6 laptop:px-10 laptop:py-8">
+          <div className="laptop:px-10 laptop:py-8 flex w-full flex-col justify-between space-y-5 px-6 py-6">
             {/* Title */}
             <div className="h-8 w-[70%] rounded bg-gray-200"></div>
 
@@ -358,7 +358,7 @@ export const EventDetailsSkeleton = () => {
             </div>
 
             {/* Contact Us */}
-            <div className="hidden flex-col space-y-3 laptop:flex">
+            <div className="laptop:flex hidden flex-col space-y-3">
               <div className="h-5 w-[100px] rounded bg-gray-200"></div>
               <div className="flex items-center gap-4">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -368,7 +368,7 @@ export const EventDetailsSkeleton = () => {
             </div>
 
             {/* CTA Button */}
-            <div className="mt-10 hidden laptop:flex">
+            <div className="laptop:flex mt-10 hidden">
               <div className="h-[56px] w-[231px] rounded-[12px] bg-gray-200"></div>
             </div>
           </div>
@@ -376,12 +376,12 @@ export const EventDetailsSkeleton = () => {
       </div>
 
       {/* About Section */}
-      <div className="mt-[40px] w-full laptop:max-w-[1100px]">
+      <div className="laptop:max-w-[1100px] mt-[40px] w-full">
         <div className="mb-4 h-6 w-[150px] rounded bg-gray-200"></div>
         <div className="h-[120px] w-full rounded-xl bg-gray-200"></div>
 
         {/* Mobile Contact & CTA */}
-        <div className="mt-[40px] block space-y-4 laptop:hidden">
+        <div className="laptop:hidden mt-[40px] block space-y-4">
           <div className="h-5 w-[100px] rounded bg-gray-200"></div>
 
           <div className="flex items-center gap-[16px]">
@@ -403,14 +403,14 @@ export const EventTicketDetailSkeleton = () => {
   return (
     <div className="animate-pulse space-y-6">
       {/* Event Header Skeleton */}
-      <div className="flex gap-4 rounded-[8px] bg-green-tint p-3 px-4">
+      <div className="bg-green-tint flex gap-4 rounded-[8px] p-3 px-4">
         {/* Event Image Skeleton */}
-        <div className="h-[72px] w-[72px] rounded-[12px] bg-gray-200 laptop:h-[120px] laptop:w-[120px]"></div>
+        <div className="laptop:h-[120px] laptop:w-[120px] h-[72px] w-[72px] rounded-[12px] bg-gray-200"></div>
 
         {/* Event Info Skeleton */}
         <div className="flex flex-1 flex-col gap-2">
           {/* Event Name */}
-          <div className="h-5 w-[200px] rounded bg-gray-200 laptop:h-6 laptop:w-[300px]"></div>
+          <div className="laptop:h-6 laptop:w-[300px] h-5 w-[200px] rounded bg-gray-200"></div>
 
           {/* Date */}
           <div className="flex items-center gap-2">
@@ -460,7 +460,7 @@ export const EventProgramDetailSkeleton = () => {
         <div>
           <div className="flex w-[640px] flex-col rounded-[12px] bg-white p-[24px]">
             {/* Event Card Skeleton */}
-            <div className="flex items-center gap-3 rounded-[8px] bg-green-tint p-[8px] px-[16px]">
+            <div className="bg-green-tint flex items-center gap-3 rounded-[8px] p-[8px] px-[16px]">
               <div className="h-[120px] w-[120px] rounded-[8px] bg-gray-200"></div>
               <div className="flex w-full flex-col gap-2">
                 <div className="h-5 w-1/2 rounded bg-gray-200"></div>
@@ -474,14 +474,14 @@ export const EventProgramDetailSkeleton = () => {
             <div className="mt-[24px] flex items-center justify-center gap-8">
               {[1, 2, 3, 4].map((_, i) => (
                 <div key={i} className="flex flex-col items-center gap-[8px]">
-                  <div className="h-[48px] w-[48px] rounded-[16px] border-[1px] border-grey-20 bg-gray-100 p-[16px]"></div>
+                  <div className="border-grey-20 h-[48px] w-[48px] rounded-[16px] border-[1px] bg-gray-100 p-[16px]"></div>
                   <div className="h-3 w-12 rounded bg-gray-200"></div>
                 </div>
               ))}
             </div>
 
             {/* Guest List */}
-            <div className="mt-[24px] flex items-center justify-between rounded-[12px] border-[2px] border-mid-grey p-[12px] px-[16px]">
+            <div className="border-mid-grey mt-[24px] flex items-center justify-between rounded-[12px] border-[2px] p-[12px] px-[16px]">
               <div className="flex items-center gap-2">
                 <div className="h-5 w-5 rounded-full bg-gray-200"></div>
                 <div className="h-4 w-20 rounded bg-gray-200"></div>
@@ -490,12 +490,12 @@ export const EventProgramDetailSkeleton = () => {
             </div>
 
             {/* Breakdown Boxes */}
-            <div className="mt-[24px] flex flex-col gap-4 rounded-[12px] border-[2px] border-mid-grey p-[16px]">
+            <div className="border-mid-grey mt-[24px] flex flex-col gap-4 rounded-[12px] border-[2px] p-[16px]">
               {[1, 2, 3].map((_, i) => (
                 <div key={i}>
                   <div className="mb-2 h-3 w-24 rounded bg-gray-200"></div>
                   <div className="h-5 w-32 rounded bg-gray-200"></div>
-                  {i < 2 && <div className="my-4 border-t-[1px] border-t-grey-20"></div>}
+                  {i < 2 && <div className="border-t-grey-20 my-4 border-t-[1px]"></div>}
                 </div>
               ))}
             </div>
@@ -564,15 +564,15 @@ export const TransactionHistorySkeleton = ({ count }: { count: 4 }) => {
   return (
     <div className="animate-pulse px-[24px]">
       {[...Array(count)].map((_, index) => (
-        <div key={index} className="flex items-center justify-between pb-[24px] pt-[16px]">
+        <div key={index} className="flex items-center justify-between pt-[16px] pb-[24px]">
           {/* Left side: Amount + message */}
           <div className="flex w-[60%] flex-col gap-2">
-            <div className="h-[16px] w-[120px] rounded-md bg-light-grey-70"></div>
-            <div className="h-[12px] w-[80px] rounded-md bg-light-grey-70"></div>
+            <div className="bg-light-grey-70 h-[16px] w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-[12px] w-[80px] rounded-md"></div>
           </div>
 
           {/* Right side: Status badge */}
-          <div className="h-[20px] w-[80px] rounded-[8px] bg-light-grey-70"></div>
+          <div className="bg-light-grey-70 h-[20px] w-[80px] rounded-[8px]"></div>
         </div>
       ))}
     </div>
@@ -581,38 +581,38 @@ export const TransactionHistorySkeleton = ({ count }: { count: 4 }) => {
 
 export const WalletDetailSkeleton = () => {
   return (
-    <div className="flex w-full animate-pulse flex-col gap-4 laptop:w-[580px]">
+    <div className="laptop:w-[580px] flex w-full animate-pulse flex-col gap-4">
       {/* Earnings Card */}
       <div className="flex flex-col gap-4 rounded-[12px] bg-white p-[16px]">
         {/* Total Amount Earned */}
-        <div className="flex flex-col gap-2 border-b-[1px] border-b-mid-grey p-[16px]">
-          <div className="h-[14px] w-[140px] rounded-md bg-light-grey-70"></div>
-          <div className="h-[20px] w-[100px] rounded-md bg-light-grey-70"></div>
+        <div className="border-b-mid-grey flex flex-col gap-2 border-b-[1px] p-[16px]">
+          <div className="bg-light-grey-70 h-[14px] w-[140px] rounded-md"></div>
+          <div className="bg-light-grey-70 h-[20px] w-[100px] rounded-md"></div>
         </div>
 
         {/* Referral Earnings */}
-        <div className="flex items-center justify-between border-b-[1px] border-b-mid-grey p-[16px]">
+        <div className="border-b-mid-grey flex items-center justify-between border-b-[1px] p-[16px]">
           <div className="flex flex-col gap-2">
-            <div className="h-[14px] w-[120px] rounded-md bg-light-grey-70"></div>
-            <div className="h-[20px] w-[80px] rounded-md bg-light-grey-70"></div>
+            <div className="bg-light-grey-70 h-[14px] w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-[20px] w-[80px] rounded-md"></div>
           </div>
-          <div className="h-[24px] w-[24px] rounded-full bg-light-grey-70"></div>
+          <div className="bg-light-grey-70 h-[24px] w-[24px] rounded-full"></div>
         </div>
 
         {/* Affiliate Earnings */}
         <div className="flex items-center justify-between p-[16px]">
           <div className="flex flex-col gap-2">
-            <div className="h-[14px] w-[120px] rounded-md bg-light-grey-70"></div>
-            <div className="h-[20px] w-[80px] rounded-md bg-light-grey-70"></div>
+            <div className="bg-light-grey-70 h-[14px] w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-[20px] w-[80px] rounded-md"></div>
           </div>
-          <div className="h-[24px] w-[24px] rounded-full bg-light-grey-70"></div>
+          <div className="bg-light-grey-70 h-[24px] w-[24px] rounded-full"></div>
         </div>
       </div>
 
       {/* Payout Request */}
-      <div className="flex flex-col gap-4 rounded-[12px] bg-light-tint p-[16px]">
-        <div className="h-[14px] w-[80%] rounded-md bg-light-grey-70"></div>
-        <div className="h-[48px] w-[200px] rounded-[12px] bg-light-grey-70"></div>
+      <div className="bg-light-tint flex flex-col gap-4 rounded-[12px] p-[16px]">
+        <div className="bg-light-grey-70 h-[14px] w-[80%] rounded-md"></div>
+        <div className="bg-light-grey-70 h-[48px] w-[200px] rounded-[12px]"></div>
       </div>
     </div>
   );
@@ -622,54 +622,54 @@ export const GuestDetailSkeleton = () => {
   return (
     <div className="mt-4 flex animate-pulse flex-col gap-[24px] px-[64px] py-[24px]">
       {/* Event title */}
-      <div className="h-[20px] w-[200px] rounded-md bg-grey-20"></div>
+      <div className="bg-grey-20 h-[20px] w-[200px] rounded-md"></div>
 
       {/* Date and time */}
       <div className="flex items-center gap-[8px]">
-        <div className="h-[16px] w-[16px] rounded-md bg-grey-20"></div>
-        <div className="h-[14px] w-[80px] rounded-md bg-grey-20"></div>
-        <div className="h-[4px] w-[4px] rounded-full bg-grey-20"></div>
-        <div className="h-[14px] w-[60px] rounded-md bg-grey-20"></div>
+        <div className="bg-grey-20 h-[16px] w-[16px] rounded-md"></div>
+        <div className="bg-grey-20 h-[14px] w-[80px] rounded-md"></div>
+        <div className="bg-grey-20 h-[4px] w-[4px] rounded-full"></div>
+        <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
       </div>
 
       {/* Guest name & Ticket ID */}
       <div className="flex justify-between">
         <div className="flex flex-col gap-[6px]">
-          <div className="h-[12px] w-[80px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[120px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[12px] w-[80px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[120px] rounded-md"></div>
         </div>
         <div className="flex flex-col gap-[6px]">
-          <div className="h-[12px] w-[60px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[100px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[12px] w-[60px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
         </div>
       </div>
 
       {/* Email & Ticket type */}
       <div className="flex justify-between">
         <div className="flex flex-col gap-[6px]">
-          <div className="h-[12px] w-[100px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[160px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[12px] w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[160px] rounded-md"></div>
         </div>
         <div className="flex flex-col gap-[6px]">
-          <div className="h-[12px] w-[80px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[60px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[12px] w-[80px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
         </div>
       </div>
 
       {/* Check-in status */}
       <div className="flex justify-between">
         <div className="flex flex-col gap-[6px]">
-          <div className="h-[12px] w-[120px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[100px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[12px] w-[120px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
         </div>
         <div className="flex flex-col gap-[6px]">
-          <div className="h-[12px] w-[100px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[80px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[12px] w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[80px] rounded-md"></div>
         </div>
       </div>
 
       {/* Check-in button */}
-      <div className="h-[48px] w-full rounded-[12px] bg-grey-20"></div>
+      <div className="bg-grey-20 h-[48px] w-full rounded-[12px]"></div>
     </div>
   );
 };
@@ -680,20 +680,20 @@ export const BusinessesSkeleton = ({ count }: { count: number }) => {
       {[...Array(count)].map((_, i) => (
         <div
           key={i}
-          className="sm:w-[343px] w-full animate-pulse rounded-lg bg-white p-[4px] tablet:w-[422px]"
+          className="tablet:w-[320px] w-[78vw] max-w-[320px] shrink-0 animate-pulse rounded-lg bg-white p-[4px]"
         >
           {/* Main image placeholder */}
           <div className="relative">
             <div className="h-[105px] w-full rounded-lg bg-gray-300" />
 
             {/* Overlay logo */}
-            <div className="sm:right-[260px] sm:left-auto absolute bottom-[-35px] left-4 h-16 w-16 rounded-xl border border-gray-200 bg-gray-300" />
+            <div className="absolute bottom-[-28px] left-4 h-14 w-14 rounded-xl border border-gray-200 bg-gray-300" />
           </div>
 
           {/* Content */}
           <div className="p-[10px]">
             {/* Name + city + rating */}
-            <div className="sm:flex-nowrap mt-10 flex flex-wrap justify-between gap-2">
+            <div className="mt-10 flex flex-wrap justify-between gap-2 sm:flex-nowrap">
               <div className="flex flex-wrap items-center gap-2">
                 <div className="h-4 w-20 rounded bg-gray-300" />
                 <div className="h-1 w-1 rounded-full bg-gray-300" />
@@ -706,7 +706,7 @@ export const BusinessesSkeleton = ({ count }: { count: number }) => {
             </div>
 
             {/* Services + rate */}
-            <div className="sm:flex-nowrap mt-2 flex flex-wrap items-center justify-between gap-2">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 sm:flex-nowrap">
               <div className="flex flex-wrap items-center gap-2">
                 <div className="rounded-full bg-gray-200 p-2 px-3">
                   <div className="h-3 w-12 rounded bg-gray-300" />
@@ -729,7 +729,7 @@ export const AllBusinessSkeleton = ({ count }: { count: number }) => {
     <>
       {[...Array(count)].map((_, i) => (
         <div
-          className="animate-pulse rounded-[12px] border-[2px] border-mid-grey shadow-lg"
+          className="border-mid-grey animate-pulse rounded-[12px] border-[2px] shadow-lg"
           key={i}
         >
           <div className="flex flex-col">
@@ -737,30 +737,30 @@ export const AllBusinessSkeleton = ({ count }: { count: number }) => {
             <div className="p-[16px]">
               <div className="flex justify-between">
                 {/* Logo & Name */}
-                <div className="flex flex-row items-center justify-center gap-[8px] laptop:flex-col laptop:items-start laptop:gap-[10px]">
-                  <div className="h-[40px] w-[40px] rounded-xl border border-grey-30 bg-grey-20"></div>
+                <div className="laptop:flex-col laptop:items-start laptop:gap-[10px] flex flex-row items-center justify-center gap-[8px]">
+                  <div className="border-grey-30 bg-grey-20 h-[40px] w-[40px] rounded-xl border"></div>
                   <div className="flex flex-col gap-[4px]">
-                    <div className="h-[14px] w-[100px] rounded-md bg-grey-20"></div>
-                    <div className="h-[12px] w-[80px] rounded-md bg-grey-20"></div>
+                    <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
+                    <div className="bg-grey-20 h-[12px] w-[80px] rounded-md"></div>
                   </div>
                 </div>
 
                 {/* Rating */}
-                <div className="flex h-[28px] items-center gap-1 rounded-xl bg-mid-grey p-2">
-                  <div className="h-[16px] w-[16px] rounded-full bg-grey-20"></div>
-                  <div className="h-[14px] w-[24px] rounded-md bg-grey-20"></div>
+                <div className="bg-mid-grey flex h-[28px] items-center gap-1 rounded-xl p-2">
+                  <div className="bg-grey-20 h-[16px] w-[16px] rounded-full"></div>
+                  <div className="bg-grey-20 h-[14px] w-[24px] rounded-md"></div>
                 </div>
               </div>
             </div>
 
             {/* Services & Rate */}
-            <div className="rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-[12px] px-[16px]">
+            <div className="bg-mid-grey rounded-br-[12px] rounded-bl-[12px] p-[12px] px-[16px]">
               <div className="mt-[8px] flex items-center justify-between">
                 <div className="flex gap-2">
-                  <div className="h-[14px] w-[60px] rounded-[12px] bg-grey-20"></div>
-                  <div className="h-[14px] w-[40px] rounded-[12px] bg-grey-20"></div>
+                  <div className="bg-grey-20 h-[14px] w-[60px] rounded-[12px]"></div>
+                  <div className="bg-grey-20 h-[14px] w-[40px] rounded-[12px]"></div>
                 </div>
-                <div className="h-[14px] w-[60px] rounded-md bg-grey-20"></div>
+                <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
               </div>
             </div>
           </div>
@@ -773,14 +773,14 @@ export const AllBusinessSkeleton = ({ count }: { count: number }) => {
 export const BusinessCarouselSkeleton = ({ count }: { count: number }) => {
   return (
     <div className="relative w-full overflow-hidden rounded-[12px]">
-      <div className="mt-3 grid grid-cols-1 gap-4 tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4">
+      <div className="tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 mt-3 grid grid-cols-1 gap-4">
         {[...Array(count)].map((_, i) => (
           <div key={i} className="w-full animate-pulse rounded-lg bg-white p-[4px] shadow-sm">
             {/* Main Image */}
             <div className="relative">
-              <div className="h-[105px] w-full rounded-lg bg-grey-20"></div>
+              <div className="bg-grey-20 h-[105px] w-full rounded-lg"></div>
               <div className="absolute bottom-[-35px] left-[16px] h-16 w-16">
-                <div className="h-full w-full rounded-xl border border-grey-40 bg-grey-30"></div>
+                <div className="border-grey-40 bg-grey-30 h-full w-full rounded-xl border"></div>
               </div>
             </div>
 
@@ -788,24 +788,24 @@ export const BusinessCarouselSkeleton = ({ count }: { count: number }) => {
               {/* Business name and location */}
               <div className="mt-10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-[14px] w-[80px] rounded-md bg-grey-20"></div>
-                  <div className="h-1 w-1 rounded-full bg-grey-20"></div>
-                  <div className="h-[12px] w-[60px] rounded-md bg-grey-20"></div>
+                  <div className="bg-grey-20 h-[14px] w-[80px] rounded-md"></div>
+                  <div className="bg-grey-20 h-1 w-1 rounded-full"></div>
+                  <div className="bg-grey-20 h-[12px] w-[60px] rounded-md"></div>
                 </div>
                 {/* Rating */}
-                <div className="flex h-[28px] items-center gap-1 rounded-xl bg-mid-grey p-2">
-                  <div className="h-[16px] w-[16px] rounded-full bg-grey-20"></div>
-                  <div className="h-[14px] w-[24px] rounded-md bg-grey-20"></div>
+                <div className="bg-mid-grey flex h-[28px] items-center gap-1 rounded-xl p-2">
+                  <div className="bg-grey-20 h-[16px] w-[16px] rounded-full"></div>
+                  <div className="bg-grey-20 h-[14px] w-[24px] rounded-md"></div>
                 </div>
               </div>
 
               {/* Services and rate */}
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-[14px] w-[60px] rounded-full bg-grey-20"></div>
-                  <div className="h-[14px] w-[40px] rounded-full bg-grey-20"></div>
+                  <div className="bg-grey-20 h-[14px] w-[60px] rounded-full"></div>
+                  <div className="bg-grey-20 h-[14px] w-[40px] rounded-full"></div>
                 </div>
-                <div className="h-[14px] w-[60px] rounded-md bg-grey-20"></div>
+                <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
               </div>
             </div>
           </div>
@@ -817,23 +817,23 @@ export const BusinessCarouselSkeleton = ({ count }: { count: number }) => {
 
 export const BusinessDetailSkeleton = () => {
   return (
-    <div className="relative w-full animate-pulse rounded-[12px] bg-white p-[16px] laptop:w-[640px]">
+    <div className="laptop:w-[640px] relative w-full animate-pulse rounded-[12px] bg-white p-[16px]">
       {/* Header with logo */}
       <div className="flex flex-col items-center">
-        <div className="h-[64px] w-[64px] rounded-[16px] border border-grey-30 bg-grey-20"></div>
+        <div className="border-grey-30 bg-grey-20 h-[64px] w-[64px] rounded-[16px] border"></div>
         <div className="mt-[8px] flex flex-col items-center gap-[4px]">
-          <div className="h-[16px] w-[120px] rounded-md bg-grey-20"></div>
-          <div className="h-[14px] w-[100px] rounded-md bg-grey-20"></div>
-          <div className="mt-[4px] h-[16px] w-[80px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 h-[16px] w-[120px] rounded-md"></div>
+          <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 mt-[4px] h-[16px] w-[80px] rounded-md"></div>
         </div>
         <div className="mt-[8px] flex justify-center">
           <div className="bg-grey-10 flex items-center gap-1 rounded-xl p-2">
-            <div className="h-[16px] w-[16px] rounded-full bg-grey-20"></div>
-            <div className="h-[14px] w-[24px] rounded-md bg-grey-20"></div>
+            <div className="bg-grey-20 h-[16px] w-[16px] rounded-full"></div>
+            <div className="bg-grey-20 h-[14px] w-[24px] rounded-md"></div>
           </div>
         </div>
         <div className="mt-[16px]">
-          <div className="h-[40px] w-[140px] rounded-[12px] bg-grey-20"></div>
+          <div className="bg-grey-20 h-[40px] w-[140px] rounded-[12px]"></div>
         </div>
       </div>
 
@@ -841,55 +841,55 @@ export const BusinessDetailSkeleton = () => {
       <div className="mt-[24px] flex items-center justify-center gap-8">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex flex-col items-center gap-[8px]">
-            <div className="bg-grey-10 rounded-[16px] border border-grey-20 p-[16px]">
-              <div className="h-[24px] w-[24px] rounded-md bg-grey-20"></div>
+            <div className="bg-grey-10 border-grey-20 rounded-[16px] border p-[16px]">
+              <div className="bg-grey-20 h-[24px] w-[24px] rounded-md"></div>
             </div>
-            <div className="h-[12px] w-[40px] rounded-md bg-grey-20"></div>
+            <div className="bg-grey-20 h-[12px] w-[40px] rounded-md"></div>
           </div>
         ))}
       </div>
 
       {/* Info Section */}
-      <div className="bg-grey-10 mt-[24px] w-full rounded-tl-[24px] rounded-tr-[24px] laptop:w-[640px]">
+      <div className="bg-grey-10 laptop:w-[640px] mt-[24px] w-full rounded-tl-[24px] rounded-tr-[24px]">
         <div className="p-[16px]">
           {/* About business */}
-          <div className="mb-[12px] h-[16px] w-[120px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 mb-[12px] h-[16px] w-[120px] rounded-md"></div>
           <div className="mb-[16px] space-y-2">
-            <div className="h-[12px] w-full rounded-md bg-grey-20"></div>
-            <div className="h-[12px] w-[80%] rounded-md bg-grey-20"></div>
+            <div className="bg-grey-20 h-[12px] w-full rounded-md"></div>
+            <div className="bg-grey-20 h-[12px] w-[80%] rounded-md"></div>
           </div>
 
           {/* Business Categories */}
-          <div className="mb-[12px] h-[16px] w-[150px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 mb-[12px] h-[16px] w-[150px] rounded-md"></div>
           <div className="mb-[16px] space-y-2">
-            <div className="h-[12px] w-[70%] rounded-md bg-grey-20"></div>
+            <div className="bg-grey-20 h-[12px] w-[70%] rounded-md"></div>
           </div>
 
           {/* Services */}
-          <div className="mb-[12px] h-[16px] w-[100px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 mb-[12px] h-[16px] w-[100px] rounded-md"></div>
           <div className="mb-[16px] space-y-2">
-            <div className="h-[12px] w-[60%] rounded-md bg-grey-20"></div>
+            <div className="bg-grey-20 h-[12px] w-[60%] rounded-md"></div>
           </div>
 
           {/* Portfolio Gallery */}
-          <div className="mb-[12px] h-[16px] w-[160px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 mb-[12px] h-[16px] w-[160px] rounded-md"></div>
           <div className="mb-[16px] flex flex-wrap gap-2">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-[170px] w-[170px] rounded-[4px] bg-grey-20"></div>
+              <div key={i} className="bg-grey-20 h-[170px] w-[170px] rounded-[4px]"></div>
             ))}
           </div>
 
           {/* Reviews */}
-          <div className="mb-[16px] h-[16px] w-[100px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 mb-[16px] h-[16px] w-[100px] rounded-md"></div>
           <div className="flex justify-between">
             <div className="bg-grey-10 flex flex-col rounded-[12px] p-[12px] px-[20px]">
-              <div className="mx-auto mb-[8px] h-[20px] w-[20px] rounded-full bg-grey-20"></div>
-              <div className="mx-auto mb-[4px] h-[20px] w-[60px] rounded-md bg-grey-20"></div>
-              <div className="mx-auto h-[12px] w-[80px] rounded-md bg-grey-20"></div>
+              <div className="bg-grey-20 mx-auto mb-[8px] h-[20px] w-[20px] rounded-full"></div>
+              <div className="bg-grey-20 mx-auto mb-[4px] h-[20px] w-[60px] rounded-md"></div>
+              <div className="bg-grey-20 mx-auto h-[12px] w-[80px] rounded-md"></div>
             </div>
             <div className="flex w-[60%] flex-col justify-between gap-2">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-[12px] w-full rounded-md bg-grey-20"></div>
+                <div key={i} className="bg-grey-20 h-[12px] w-full rounded-md"></div>
               ))}
             </div>
           </div>
@@ -897,12 +897,12 @@ export const BusinessDetailSkeleton = () => {
           {/* Reviews List */}
           <div className="mt-[24px] space-y-4">
             {[...Array(2)].map((_, i) => (
-              <div key={i} className="h-[60px] rounded-md bg-grey-20"></div>
+              <div key={i} className="bg-grey-20 h-[60px] rounded-md"></div>
             ))}
           </div>
 
           {/* Load More */}
-          <div className="mx-auto mt-[24px] h-[16px] w-[100px] rounded-md bg-grey-20"></div>
+          <div className="bg-grey-20 mx-auto mt-[24px] h-[16px] w-[100px] rounded-md"></div>
         </div>
       </div>
     </div>
@@ -1016,7 +1016,7 @@ export const InviteSkeleton = ({ count }: { count: number }) => {
     <>
       {[...Array(count)].map((_, i) => (
         <div
-          className="mb-[32px] flex animate-pulse justify-between border-b-[1px] border-b-mid-grey pb-[16px]"
+          className="border-b-mid-grey mb-[32px] flex animate-pulse justify-between border-b-[1px] pb-[16px]"
           key={i}
         >
           <div className="flex gap-2">
@@ -1053,7 +1053,7 @@ export const BoostPackagesSkeleton = ({ count }: { count: number }) => {
     <>
       {[...Array(count)].map((_, i) => (
         <div
-          className={`flex w-fit animate-pulse flex-col items-center justify-center rounded-[12px] bg-light-tint p-[16px]`}
+          className={`bg-light-tint flex w-fit animate-pulse flex-col items-center justify-center rounded-[12px] p-[16px]`}
           key={i}
         >
           <div className="h-[74px] w-[74px] rounded-[8px] bg-gray-200" />
@@ -1068,46 +1068,46 @@ export const BoostPackagesSkeleton = ({ count }: { count: number }) => {
 
 export const BillingHistorySkeleton = ({ count }: { count: number }) => {
   return (
-    <div className="flex w-full animate-pulse flex-col gap-10 laptop:w-[640px]">
+    <div className="laptop:w-[640px] flex w-full animate-pulse flex-col gap-10">
       {/* Current Plan Skeleton */}
-      <div className="sm:flex-row sm:items-center flex flex-col items-start justify-between gap-6 rounded-2xl border-b-4 border-b-step-color bg-green-tint p-6">
-        <div className="sm:w-[60%] flex w-full flex-col gap-2">
-          <div className="h-[20px] w-[100px] rounded-md bg-light-grey-70"></div>
-          <div className="h-[28px] w-[140px] rounded-md bg-light-grey-70"></div>
-          <div className="w-[180px] rounded-lg bg-light-green-50 px-3 py-2">
-            <div className="h-[16px] w-[120px] rounded-md bg-light-grey-70"></div>
+      <div className="border-b-step-color bg-green-tint flex flex-col items-start justify-between gap-6 rounded-2xl border-b-4 p-6 sm:flex-row sm:items-center">
+        <div className="flex w-full flex-col gap-2 sm:w-[60%]">
+          <div className="bg-light-grey-70 h-[20px] w-[100px] rounded-md"></div>
+          <div className="bg-light-grey-70 h-[28px] w-[140px] rounded-md"></div>
+          <div className="bg-light-green-50 w-[180px] rounded-lg px-3 py-2">
+            <div className="bg-light-grey-70 h-[16px] w-[120px] rounded-md"></div>
           </div>
         </div>
-        <div className="h-[20px] w-[100px] rounded-md bg-light-grey-70"></div>
+        <div className="bg-light-grey-70 h-[20px] w-[100px] rounded-md"></div>
       </div>
 
       {/* Payment Info Skeleton */}
       <div className="flex flex-col gap-4">
-        <div className="h-[16px] w-[120px] rounded-md bg-light-grey-70"></div>
+        <div className="bg-light-grey-70 h-[16px] w-[120px] rounded-md"></div>
 
-        <div className="flex w-fit items-center gap-3 rounded-lg bg-light-green-10 px-2 py-1">
-          <div className="flex items-center gap-2 rounded-xl bg-light-green-50 px-3 py-2">
-            <div className="h-[24px] w-[33px] rounded-md bg-light-grey-70"></div>
-            <div className="h-[16px] w-[60px] rounded-md bg-light-grey-70"></div>
+        <div className="bg-light-green-10 flex w-fit items-center gap-3 rounded-lg px-2 py-1">
+          <div className="bg-light-green-50 flex items-center gap-2 rounded-xl px-3 py-2">
+            <div className="bg-light-grey-70 h-[24px] w-[33px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-[16px] w-[60px] rounded-md"></div>
           </div>
-          <div className="h-[16px] w-[100px] rounded-md bg-light-grey-70"></div>
+          <div className="bg-light-grey-70 h-[16px] w-[100px] rounded-md"></div>
         </div>
       </div>
 
       {/* Payment History Skeleton */}
       <div className="flex flex-col gap-4">
-        <div className="h-[16px] w-[140px] rounded-md bg-light-grey-70"></div>
+        <div className="bg-light-grey-70 h-[16px] w-[140px] rounded-md"></div>
 
         {/* 3 Dummy History Rows */}
         <div className="divide-light-green-20 border-light-green-20 flex flex-col divide-y overflow-hidden rounded-xl border">
           {Array.from({ length: count }).map((_, i) => (
             <div
               key={i}
-              className="flex flex-col items-start justify-between bg-white px-4 py-3 laptop:flex-row laptop:items-center"
+              className="laptop:flex-row laptop:items-center flex flex-col items-start justify-between bg-white px-4 py-3"
             >
-              <div className="h-[18px] w-[150px] rounded-md bg-light-grey-70"></div>
-              <div className="mt-2 h-[16px] w-[100px] rounded-md bg-light-grey-70 laptop:mt-0"></div>
-              <div className="mt-2 h-[18px] w-[80px] rounded-md bg-light-grey-70 laptop:mt-0"></div>
+              <div className="bg-light-grey-70 h-[18px] w-[150px] rounded-md"></div>
+              <div className="bg-light-grey-70 laptop:mt-0 mt-2 h-[16px] w-[100px] rounded-md"></div>
+              <div className="bg-light-grey-70 laptop:mt-0 mt-2 h-[18px] w-[80px] rounded-md"></div>
             </div>
           ))}
         </div>
@@ -1127,7 +1127,7 @@ export const ImagesLoadingSkeleton = ({ count }: { count: number }) => {
             <div className="h-full w-full rounded-[12px] bg-gray-200" />
 
             {/* Remove Button Skeleton */}
-            <div className="absolute right-0 top-0 m-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-300 shadow">
+            <div className="absolute top-0 right-0 m-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-300 shadow">
               <div className="h-3 w-3 rounded-full bg-gray-400"></div>
             </div>
           </div>
@@ -1186,7 +1186,7 @@ export const ChatListCardSkeleton = ({ count }: { count: number }) => {
         <div className="h-[48px] w-[48px] rounded-[16px] bg-gray-200 shadow-sm" />
 
         {/* Chat Info Skeleton */}
-        <div className="flex w-full flex-col border-b border-grey-20 pb-2">
+        <div className="border-grey-20 flex w-full flex-col border-b pb-2">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -1213,8 +1213,8 @@ export const ChatListCardSkeleton = ({ count }: { count: number }) => {
 
 export const MyTicketSkeleton = () => {
   return (
-    <div className="animate-pulse p-6 laptop:p-0">
-      <div className="mt-[16px] flex flex-col items-center rounded-[16px] bg-white p-6 laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0">
+    <div className="laptop:p-0 animate-pulse p-6">
+      <div className="laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0 mt-[16px] flex flex-col items-center rounded-[16px] bg-white p-6">
         <div className="flex justify-center">
           <div className="flex w-[340px] flex-col gap-[16px]">
             {/* Event name */}
@@ -1253,7 +1253,7 @@ export const MyTicketSkeleton = () => {
             </div>
 
             {/* QR Code */}
-            <div className="mt-[94px] flex items-center justify-center laptop:mt-[48px]">
+            <div className="laptop:mt-[48px] mt-[94px] flex items-center justify-center">
               <div className="h-[240px] w-[240px] rounded-[12px] bg-gray-200" />
             </div>
           </div>

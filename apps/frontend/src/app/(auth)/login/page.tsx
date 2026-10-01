@@ -6,7 +6,7 @@ import { Card, CardContent, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
 
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { loginSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
@@ -17,6 +17,17 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { axiosInstance } from "@/lib/axiosInstane";
+
+function SocialMark({ src, label }: { src: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-border-grey bg-white">
+        <Image src={src} alt="" width={24} height={24} />
+      </span>
+      <span className="text-meta text-text-grey">{label}</span>
+    </div>
+  );
+}
 
 function safeNext(raw: string | null) {
   // Prevent open redirects: only allow relative paths
@@ -36,12 +47,6 @@ export default function LoginPage() {
   // which isn't covered by this cutover — see its own comment.
   const [cookie, setCookie] = useCookies(["newToken", "token"]);
   const loginMutation = useLoginMutation();
-
-  const loginSchema = yup.object({
-    email: yup.string().email("Please enter a valid email").required("Email is required"),
-    password: yup.string().min(8).required("Password is required"),
-  });
-
   const next = useMemo(() => safeNext(searchParams.get("next")), [searchParams]);
 
   const formik = useFormik({
@@ -50,6 +55,7 @@ export default function LoginPage() {
       password: "",
     },
     validationSchema: loginSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       try {
         const result = await loginMutation.mutateAsync(values);
@@ -184,45 +190,37 @@ export default function LoginPage() {
 
   return (
     <AuthLayout>
-      <section className="h-full min-h-screen overflow-hidden bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
+      <div className="mx-auto flex w-full max-w-[1180px] items-center justify-center gap-8">
+        <div className="hidden min-w-0 flex-col tablet:flex">
           <div>
-            <Link href={"/login"}>
-              <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-            </Link>
+            <p className="font-ruso text-display-s font-bold">Login</p>
+            <p className="text-body-xl mt-2 font-sans font-normal">
+              Let&apos;s get you back into your account
+            </p>
           </div>
-          <div>
-            <Link href="/signup">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">Sign up</p>
-            </Link>
-          </div>
+          <Image
+            src={"/images/signup_image.png"}
+            alt=""
+            width={511}
+            height={520}
+            priority
+            className="mt-2 h-auto max-h-[42vh] w-auto object-contain"
+          />
         </div>
-        <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
-          <div className="flex flex-col phone:mb-[16px]">
-            <div className="text-center phone:text-left">
-              <p className="font-ruso text-[40px] font-bold leading-[48px]">Login</p>
-              <p className="mt-2 font-sans text-[18px] font-normal leading-[27px]">
-                Let&apos;s get you back into your account
-              </p>
-            </div>
-            {/* Show image only on desktop and laptop screens */}
-            <div className="hidden tablet:flex">
-              <Image
-                src={"/images/signup_image.png"}
-                alt="signup image"
-                width={511.06}
-                height={519.77}
-                priority
-              />
-            </div>
+        <div className="flex w-full max-w-[440px] flex-col">
+          <div className="mb-4 shrink-0 text-center tablet:hidden">
+            <p className="font-ruso text-title-xl font-bold text-primary-black">Login</p>
+            <p className="text-body-l mt-1 font-sans font-normal text-text-grey">
+              Let&apos;s get you back into your account
+            </p>
           </div>
-          <form onSubmit={formik.handleSubmit}>
-            <Card className="w-full rounded-[16px] border-none p-[24px] shadow-none tablet:w-[480px]">
-              <CardContent className="grid gap-[24px] tablet:gap-[40px]">
+          <form onSubmit={formik.handleSubmit} className="w-full">
+            <Card className="w-full rounded-[16px] border-none p-6 shadow-none">
+              <CardContent className="grid gap-4">
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Email address
                   </Label>
@@ -230,7 +228,7 @@ export default function LoginPage() {
                     id="email"
                     type="email"
                     placeholder="e.g. Janedoe@example.com"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -239,21 +237,21 @@ export default function LoginPage() {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="password"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Password
                   </Label>
                   <Input
                     id="password"
                     type="password"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
                 </div>
                 <Link href="/forgot-password">
-                  <p className="text-bl cursor-pointer font-sans text-light-green underline">
+                  <p className="text-bl text-light-green cursor-pointer font-sans underline">
                     Forgot password?
                   </p>
                 </Link>
@@ -264,38 +262,26 @@ export default function LoginPage() {
                   classes="w-full h-[48px] rounded-[12px]"
                 />
                 <div className="flex items-center justify-around">
-                  <div className="h-[2px] w-[60px] bg-border-grey" />
-                  <p className="text-center text-[14px] font-normal text-grey-light">
+                  <div className="bg-border-grey h-[2px] w-[60px]" />
+                  <p className="text-grey-light text-body-s text-center font-normal">
                     Or continue with
                   </p>
-                  <div className="h-[2px] w-[60px] bg-border-grey" />
+                  <div className="bg-border-grey h-[2px] w-[60px]" />
                 </div>
-                <div className="mt-4 flex items-center justify-center gap-[24px]">
-                  {/*<div className="app-icon-border flex justify-center items-center">*/}
-                  {/*  <Image*/}
-                  {/*    src={"/images/apple.png"}*/}
-                  {/*    alt="logo"*/}
-                  {/*    width={24}*/}
-                  {/*    height={24}*/}
-                  {/*  />*/}
-                  {/*</div>*/}
-                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+                <div className="mt-4 flex items-start justify-center gap-6">
+                  <SocialMark src="/images/apple.png" label="Apple" />
+                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
+                  ) : (
+                    <SocialMark src="/images/google.png" label="Google" />
                   )}
-                  {/*<div className="app-icon-border flex justify-center items-center">*/}
-                  {/*  <Image*/}
-                  {/*    src={"/images/facebook.png"}*/}
-                  {/*    alt="logo"*/}
-                  {/*    width={24}*/}
-                  {/*    height={24}*/}
-                  {/*  />*/}
-                  {/*</div>*/}
+                  <SocialMark src="/images/facebook.png" label="Facebook" />
                 </div>
               </CardContent>
             </Card>
           </form>
         </div>
-      </section>
-    </AuthLayout>
+      </div>
+      </AuthLayout>
   );
 }

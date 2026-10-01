@@ -1,12 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
-import {
-  CalendarIcon,
-  ChevronDown,
-  SearchIcon,
-  UploadIcon,
-} from "lucide-react";
+import { UploadIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { transactionPageViews } from "@/utils/pageViews";
 import PlansViews from "@/views/transactions/PlansViews";
@@ -76,11 +71,12 @@ function TransactionsClient() {
     <MainLayout>
       <section className="mt-[20px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
-          <p className={"text-[16px] font-semiBold"}>
+          <p className={"font-semiBold text-[16px]"}>
             {/* subscribers (real subscriber count) still wins for plan-subscriptions
                 — it's a different number from meta.total (total history rows),
                 not just a fallback for it. */}
-            {trxData?.subscribers ?? trxData?.meta?.total ?? trxData?.history?.length ?? 0} Transactions
+            {trxData?.subscribers ?? trxData?.meta?.total ?? trxData?.history?.length ?? 0}{" "}
+            Transactions
           </p>
           <div className={"flex justify-between gap-[12px]"}>
             {/* <div
@@ -117,9 +113,7 @@ function TransactionsClient() {
             <div>
               <Button
                 onClick={exportCSV}
-                className={
-                  "flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"
-                }
+                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
               >
                 <UploadIcon className={"h-[15px] w-[15px] text-white"} />
                 <p className={"text-[16px] font-medium text-white"}>Export</p>
@@ -128,17 +122,9 @@ function TransactionsClient() {
           </div>
         </div>
         <div className={"flex flex-col px-[20px]"}>
-          <div
-            className={
-              "flex flex-col rounded-[12px] border-[1px] border-grey-20"
-            }
-          >
+          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
             <div className={"w-fit px-[12px] pt-[8px]"}>
-              <div
-                className={
-                  "flex items-center gap-6 rounded-[12px] bg-mid-grey p-[4px]"
-                }
-              >
+              <div className={"bg-mid-grey flex items-center gap-6 rounded-[12px] p-[4px]"}>
                 {transactionPageViews.map((item, index) => (
                   <div
                     className={`cursor-pointer p-[4px] px-[8px] ${
@@ -151,7 +137,7 @@ function TransactionsClient() {
                       className={`font-sans leading-[24px] ${
                         menuOption === item.key
                           ? "text-[16px] font-semibold"
-                          : "font-semi-normal text-[16px] text-text-grey"
+                          : "font-semi-normal text-text-grey text-[16px]"
                       }`}
                     >
                       {item.title}

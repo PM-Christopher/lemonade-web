@@ -17,7 +17,10 @@ export const formatName = (name: string) => {
 // example.com (clearly placeholder, not a real image host), which doesn't
 // need adding to the allowlist since it will never actually serve an
 // image — treat it the same as a missing image instead.
-const ALLOWED_IMAGE_HOSTS = ["dev-lemonade-bucket.lon1.digitaloceanspaces.com", "res.cloudinary.com"];
+const ALLOWED_IMAGE_HOSTS = [
+  "dev-lemonade-bucket.lon1.digitaloceanspaces.com",
+  "res.cloudinary.com",
+];
 
 export const getSafeImageSrc = (url: string | null | undefined, fallback: string) => {
   if (!url) return fallback;

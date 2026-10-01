@@ -18,14 +18,14 @@ const RatingsBar = ({ ratings, max_count }: Ratings) => {
 
         return (
           <div className="mb-[2px] flex items-center justify-between gap-[8px]" key={index}>
-            <p className="text-center text-[12px] font-semi-normal">{rating.rating}</p>
-            <div className="h-[6px] w-[130px] rounded-[20px] bg-mid-grey">
+            <p className="font-semi-normal text-center text-[12px]">{rating.rating}</p>
+            <div className="bg-mid-grey h-[6px] w-[130px] rounded-[20px]">
               <div
-                className="h-[6px] rounded-full bg-yellow-tint-2"
+                className="bg-yellow-tint-2 h-[6px] rounded-full"
                 style={{ width: `${barWidth}%` }}
               ></div>
             </div>
-            <p className="text-center text-[12px] font-normal text-text-grey">{rating.count}</p>
+            <p className="text-text-grey text-center text-[12px] font-normal">{rating.count}</p>
           </div>
         );
       })}

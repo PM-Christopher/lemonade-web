@@ -31,7 +31,11 @@ export interface ReportListResponse {
 }
 
 export interface ReportDetail extends ReportRow {
-  content: string;
+  // Not a string despite the name — the backend stores the reported model
+  // itself here (Report::create(['content' => $thread, ...]) in
+  // lemonade-backend's ReportTribeThread), so this is an arbitrary,
+  // report-category-dependent object, same as `meta`.
+  content: unknown;
   meta: unknown;
 }
 
@@ -48,12 +52,12 @@ export const reportingApi = {
         : undefined,
     }),
 
-  getReportDetail: (id: number) =>
+  getReportDetail: (id: string | number) =>
     browserApi.get<ReportDetailResponse>(buildPath(adminReportsRoutes.SHOW, { id })),
 
-  resolveReport: (id: number) =>
+  resolveReport: (id: string | number) =>
     browserApi.patch<{ completed: boolean }>(buildPath(adminReportsRoutes.MARK_COMPLETED, { id })),
 
-  deleteReportContent: (id: number, data: unknown) =>
+  deleteReportContent: (id: string | number, data: unknown) =>
     browserApi.patch(buildPath(adminReportsRoutes.DELETE_CONTENT, { id }), data),
 };

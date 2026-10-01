@@ -9,9 +9,7 @@ import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import AgentDetailsClient from "./AgentDetailsClient";
 
-export default async function AgentDetailsPage(props: {
-  params: Promise<{ id: number }>;
-}) {
+export default async function AgentDetailsPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const queryClient = getQueryClient();
 

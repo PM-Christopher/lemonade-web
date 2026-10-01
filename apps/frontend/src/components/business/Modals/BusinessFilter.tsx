@@ -45,6 +45,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
       service_type: "",
     },
     validationSchema: businessFilterSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       filterBusinessMutation.mutate(values);
       toggle();
@@ -58,9 +59,9 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${isOpen ? "flex" : "hidden"}`}
+      className={`bg-opacity-50 fixed inset-0 z-50 items-center justify-center bg-gray-800 ${isOpen ? "flex" : "hidden"}`}
     >
-      <div className="hide-scrollbar w-[480px] overflow-y-auto rounded-lg bg-white p-6 shadow-lg laptop:h-auto laptop:max-h-[90vh]">
+      <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] w-[480px] overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggle}>
@@ -74,18 +75,18 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal uppercase leading-[16.8px] text-black-light"
+                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
               >
                 Location
               </Label>
               <div className="mt-2">
-                <div className="flex h-[48px] w-full items-center gap-[8px] rounded-lg bg-light_grey p-[12px]">
+                <div className="bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]">
                   <LocationIcon />
                   <input
                     id="search"
                     type="text"
                     value={formik.values.location}
-                    className="w-full rounded-xl border-0 bg-light_grey px-[4px] text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-[4px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Enter location"
                     onChange={(e) => {
                       formik.setFieldValue("location", e.target.value);
@@ -99,7 +100,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal uppercase leading-[16.8px] text-black-light"
+                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
               >
                 Business Category
               </Label>
@@ -107,11 +108,11 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 <Select onValueChange={handleCategoryChange}>
                   <SelectTrigger
                     aria-label="Business Category"
-                    className="h-[48px] w-full rounded-xl border-0 bg-light_grey px-[16px] font-sans focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey h-[48px] w-full rounded-xl border-0 px-[16px] font-sans focus:border-transparent focus:ring-0 focus:outline-none"
                   >
                     <SelectValue
                       placeholder={
-                        <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">
+                        <span className="text-text-grey font-sans text-[12px] leading-[14.4px] font-semibold">
                           Category
                         </span>
                       }
@@ -119,13 +120,11 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   </SelectTrigger>
                   <SelectContent className="form-font">
                     <SelectItem value="all">All Locations</SelectItem>
-                    {data?.categories?.map(
-                      (item: { name: string; slug: string }, idx: number) => (
-                        <SelectItem value={item.slug} key={idx}>
-                          {item.name}
-                        </SelectItem>
-                      ),
-                    )}
+                    {data?.categories?.map((item: { name: string; slug: string }, idx: number) => (
+                      <SelectItem value={item.slug} key={idx}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -135,17 +134,17 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal uppercase leading-[16.8px] text-black-light"
+                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
               >
                 Service Type
               </Label>
               <div className="mt-2">
-                <div className="flex h-[48px] w-full items-center gap-[8px] rounded-lg bg-light_grey p-[12px]">
+                <div className="bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]">
                   <input
                     id="search"
                     type="text"
                     value={formik.values.service_type}
-                    className="w-full rounded-xl border-0 bg-light_grey px-[4px] font-sans text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-[4px] font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Service Type"
                     onChange={(e) => {
                       formik.setFieldValue("service_type", e.target.value);
@@ -158,14 +157,14 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-[24px] grid">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal uppercase leading-[16.8px] text-black-light"
+                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
               >
                 Budget Range
               </Label>
               <div className="mt-2 flex items-center justify-between gap-[12px]">
                 <div
                   className={
-                    "flex h-[48px] w-full items-center gap-[8px] rounded-lg bg-light_grey p-[12px]"
+                    "bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]"
                   }
                 >
                   <NairaIcon />
@@ -186,7 +185,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 <span>-</span>
                 <div
                   className={
-                    "flex h-[48px] w-full items-center gap-[8px] rounded-lg bg-light_grey p-[12px]"
+                    "bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]"
                   }
                 >
                   <NairaIcon />
@@ -209,10 +208,10 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
 
             <div className="mt-[30px] flex gap-[4px]">
               <button
-                className="w-full rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+                className="border-light-grey-50 w-full rounded-[12px] border-[1px] p-[10px] px-[14px]"
                 onClick={handleResetFilter}
               >
-                <p className="font-sans text-[16px] font-semi-normal text-black-light">
+                <p className="font-semi-normal text-black-light font-sans text-[16px]">
                   Reset filter
                 </p>
               </button>

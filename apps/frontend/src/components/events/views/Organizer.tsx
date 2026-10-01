@@ -42,9 +42,9 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
 
   return (
     <>
-      <div className="flex items-center justify-center border-b-[1px] bg-white px-[16px] pb-[1px] pt-[8px] laptop:justify-between">
+      <div className="laptop:justify-between flex items-center justify-center border-b-[1px] bg-white px-[16px] pt-[8px] pb-[1px]">
         <div className="flex gap-10">
-          <div className="sm:gap-6 flex gap-4">
+          <div className="flex gap-4 sm:gap-6">
             {[
               { label: "Upcoming", key: "upcoming" },
               { label: "Past Events", key: "past" },
@@ -62,7 +62,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
                   <span
                     className={[
                       "font-sans text-sm leading-[21px] transition-colors duration-200",
-                      isActive ? "font-semibold text-black-light" : "font-normal text-text-grey",
+                      isActive ? "text-black-light font-semibold" : "text-text-grey font-normal",
                     ].join(" ")}
                   >
                     {tab.label}
@@ -71,7 +71,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
                   {/* centered underline */}
                   <span
                     className={[
-                      "h-[2px] rounded-full bg-step-color transition-all duration-300 ease-out",
+                      "bg-step-color h-[2px] rounded-full transition-all duration-300 ease-out",
                       isActive
                         ? "w-full opacity-100"
                         : "w-0 opacity-0 group-hover:w-full group-hover:opacity-60",
@@ -91,7 +91,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
       </section>
       {isMobile && (
         <div
-          className="fixed bottom-[250px] right-4 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full bg-gradient-green p-4 text-white shadow-custom-bottom"
+          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-[250px] flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full p-4 text-white"
           onClick={() => router.push("/event/create-event")}
         >
           <PlusIcon className="h-[19px] w-[19px]" />

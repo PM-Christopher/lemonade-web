@@ -3,6 +3,8 @@
 
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
+@import "../../../../packages/config/typography.css";
+@import "../../../../packages/config/controls.css";
 
 /* In styles/globals.css */
 
@@ -107,10 +109,10 @@
     @apply bg-background text-foreground;
   }
   .font-label {
-    @apply font-sans font-regular text-[14px] text-text-grey
+    @apply font-sans font-regular text-label text-text-grey
   }
   .form-font {
-    @apply font-sans font-medium text-[14px] text-text-grey border-0
+    @apply font-sans font-medium text-field text-text-grey shadow-none
   }
   .app-icon-border {
     @apply w-[56px] h-[56px] border-[1px] rounded-[12px]

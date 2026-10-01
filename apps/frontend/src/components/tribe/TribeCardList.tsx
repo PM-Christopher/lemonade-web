@@ -13,7 +13,7 @@ type TribeCardIF = {
 const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
   const router = useRouter();
   return (
-    <div className="mb-2 rounded-[16px] border-[1px] border-grey-30 bg-mid-grey">
+    <div className="border-grey-30 bg-mid-grey mb-2 rounded-[16px] border-[1px]">
       <div className="flex items-center justify-between rounded-[16px] bg-white p-4">
         <div className="flex items-center gap-2">
           <div>
@@ -29,7 +29,7 @@ const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
               <p className="font-sans text-[14px] font-semibold">{tribe.tribe_name}</p>
             </div>
             <div>
-              <p className="font-sans text-[12px] font-normal text-text-grey">
+              <p className="text-text-grey font-sans text-[12px] font-normal">
                 Created on {formatLongDate(tribe.created_at)}
               </p>
             </div>
@@ -38,28 +38,28 @@ const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
         {tribe.has_joined ||
           (!tribe.owner && (
             <button
-              className="flex items-center gap-1 rounded-xl border border-light-green/20 px-4 py-1 transition-all duration-200 hover:border-light-green/40 hover:bg-light-green/10 hover:shadow-sm active:scale-95"
+              className="border-light-green/20 hover:border-light-green/40 hover:bg-light-green/10 flex items-center gap-1 rounded-xl border px-4 py-1 transition-all duration-200 hover:shadow-sm active:scale-95"
               onClick={() => router.push(`tribe/${tribe.slug}`)}
             >
-              <span className="font-sans text-sm font-semibold text-light-green">Join</span>
-              {tribe.monetized && <MoneyIcon className="h-4 w-4 text-light-green" />}
+              <span className="text-light-green font-sans text-sm font-semibold">Join</span>
+              {tribe.monetized && <MoneyIcon className="text-light-green h-4 w-4" />}
             </button>
           ))}
       </div>
-      <div className="flex justify-between rounded-b-[16px] bg-mid-grey p-4 py-6">
+      <div className="bg-mid-grey flex justify-between rounded-b-[16px] p-4 py-6">
         <div>
-          <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-black-light">
+          <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
             {tribe.category}
           </p>
         </div>
         <div>
-          <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-black-light">
+          <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
             {tribe.members} Members
           </p>
         </div>
         <div className="flex items-center gap-2">
           <ChatsIcon />
-          <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-black-light">
+          <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
             {tribe.threads} threads
           </p>
         </div>

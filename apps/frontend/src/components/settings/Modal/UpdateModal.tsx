@@ -2,13 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import {
-  Label,
-  Input,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -44,12 +38,7 @@ interface SocialMediaHandles {
   twitter: string;
 }
 
-const UpdateModal: React.FC<UpdateInterface> = ({
-  toggle,
-  isOpen,
-  type,
-  user,
-}) => {
+const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) => {
   const dispatch = useAppDispatch();
   const updateProfileFieldMutation = useUpdateProfileFieldMutation();
   const [socials, setSocials] = useState<SocialMediaHandles>({
@@ -83,13 +72,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
     }
   };
 
-  const skills = [
-    "Creativity",
-    "Leadership",
-    "Problem-solving",
-    "Critical thinking",
-    "Work ethic",
-  ];
+  const skills = ["Creativity", "Leadership", "Problem-solving", "Critical thinking", "Work ethic"];
   const interests = [
     "Arts",
     "Entertainment",
@@ -221,6 +204,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
   const formik = useFormik<FormValues>({
     initialValues: profileTypeSchema(type).initialValues,
     validationSchema: profileTypeSchema(type).schema,
+    validateOnMount: true,
     enableReinitialize: true,
     onSubmit: async (values) => {
       updateProfileFieldMutation.mutate(
@@ -316,21 +300,17 @@ const UpdateModal: React.FC<UpdateInterface> = ({
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">
-          Change {profileTypeHeader()}
-        </DialogTitle>
+        <DialogTitle className="sr-only">Change {profileTypeHeader()}</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="h-screen w-screen rounded-none bg-white p-6 shadow-lg laptop:h-full laptop:w-[480px] laptop:rounded-lg">
+          <div className="laptop:h-full laptop:w-[480px] laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="cursor-pointer" onClick={toggle}>
                   <CloseIcon className="w-[11.25px]" />
                 </div>
-                <p className="text-[16px] font-semibold">
-                  Change {profileTypeHeader()}
-                </p>
+                <p className="text-[16px] font-semibold">Change {profileTypeHeader()}</p>
               </div>
-              <div className="hidden laptop:block">
+              <div className="laptop:block hidden">
                 <FormikButton
                   title="Save changes"
                   error={formik.isValid}
@@ -346,7 +326,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                     <div className="mt-[24px] grid gap-1">
                       <Label
                         htmlFor="username"
-                        className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey text-[14px] leading-[16.8px] font-normal"
                       >
                         Username
                       </Label>
@@ -354,7 +334,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         id="username"
                         type="text"
                         placeholder=""
-                        className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
+                        className="border-step-color bg-light_grey h-[48px] rounded-[12px] border-[1.5px]"
                         value={formik.values.username}
                         onChange={formik.handleChange}
                       />
@@ -365,7 +345,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                     <div className="mt-[24px] grid gap-1">
                       <Label
                         htmlFor="bio"
-                        className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey text-[14px] leading-[16.8px] font-normal"
                       >
                         Bio
                       </Label>
@@ -373,7 +353,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         id="bio"
                         type="text"
                         placeholder=""
-                        className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
+                        className="border-step-color bg-light_grey h-[48px] rounded-[12px] border-[1.5px]"
                         value={formik.values.bio}
                         onChange={formik.handleChange}
                       />
@@ -384,7 +364,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                     <div className="mt-[24px] grid gap-1">
                       <Label
                         htmlFor="industry"
-                        className="text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey text-[14px] leading-[16.8px] font-normal"
                       >
                         Profession
                       </Label>
@@ -392,7 +372,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         id="industry"
                         type="text"
                         placeholder=""
-                        className="h-[48px] rounded-[12px] border-[1.5px] border-step-color bg-light_grey"
+                        className="border-step-color bg-light_grey h-[48px] rounded-[12px] border-[1.5px]"
                         value={formik.values.industry}
                         onChange={formik.handleChange}
                       />
@@ -408,15 +388,13 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         <Input
                           id="address"
                           type="text"
-                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0"
                           value={formik.values.address}
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                         />
                         {checkError("address", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">
-                            {formik.errors.address}
-                          </p>
+                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.address}</p>
                         ) : null}
                       </div>
                       <div className="grid gap-2">
@@ -426,15 +404,13 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         <Input
                           id="city"
                           type="text"
-                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0"
                           value={formik.values.city}
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                         />
                         {checkError("city", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">
-                            {formik.errors.city}
-                          </p>
+                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
                         ) : null}
                       </div>
 
@@ -444,7 +420,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         </Label>
                         <select
                           id="country"
-                          className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                           value={formik.values.country}
                           onChange={(e) => {
                             formik.setFieldValue("country", e.target.value);
@@ -458,9 +434,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                           ))}
                         </select>
                         {checkError("country", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">
-                            {formik.errors.country}
-                          </p>
+                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
                         ) : null}
                       </div>
                       <div className="my-2 grid gap-2">
@@ -470,15 +444,13 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         <Input
                           id="state"
                           type="text"
-                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0"
                           value={formik.values.state}
                           onBlur={formik.handleBlur}
                           onChange={formik.handleChange}
                         />
                         {checkError("state", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">
-                            {formik.errors.state}
-                          </p>
+                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.state}</p>
                         ) : null}
                       </div>
                     </>
@@ -487,15 +459,13 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                   {type === "skills-interest" && (
                     <div className="mt-[24px] grid gap-1">
                       <div>
-                        <p className="font-sans text-[18px] font-semibold">
-                          Skills
-                        </p>
+                        <p className="font-sans text-[18px] font-semibold">Skills</p>
                       </div>
                       <div className="grid grid-cols-[repeat(3,auto)] gap-3">
                         {skills.map((item, idx) => (
                           <div
                             key={idx}
-                            className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${
+                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${
                               Array.isArray(formik.values.skills) &&
                               formik.values.skills.includes(item)
                                 ? "bg-gradient-green text-white"
@@ -508,19 +478,15 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         ))}
                       </div>
                       {checkError("skills", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">
-                          {formik.errors.skills}
-                        </p>
+                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.skills}</p>
                       ) : null}
                       <div className="mt-2">
-                        <p className="font-sans text-[18px] font-semibold">
-                          Interests
-                        </p>
+                        <p className="font-sans text-[18px] font-semibold">Interests</p>
                       </div>
                       <div className="grid grid-cols-[repeat(4,auto)] gap-3">
                         {interests.map((item, idx) => (
                           <div
-                            className={`inline-block cursor-pointer whitespace-nowrap rounded-lg p-2 py-[12px] text-center text-[14px] font-normal text-text-grey ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
                             key={idx}
                             onClick={() => handleInterestClick(item)}
                           >
@@ -529,23 +495,16 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                         ))}
                       </div>
                       {checkError("interests", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">
-                          {formik.errors.interests}
-                        </p>
+                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.interests}</p>
                       ) : null}
                     </div>
                   )}
 
                   {type === "socials" && (
                     <div className="mt-[24px] grid gap-1">
-                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
                         <div className="">
-                          <Image
-                            src={"/images/facebook.png"}
-                            alt=""
-                            width={19.2}
-                            height={19.2}
-                          />
+                          <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
                         </div>
                         <Input
                           name="facebook"
@@ -557,14 +516,9 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                           onChange={handleChange}
                         />
                       </div>
-                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
                         <div className="">
-                          <Image
-                            src={"/images/linkedin.png"}
-                            alt=""
-                            width={19.2}
-                            height={19.2}
-                          />
+                          <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
                         </div>
                         <Input
                           name="linkedin"
@@ -576,14 +530,9 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                           onChange={handleChange}
                         />
                       </div>
-                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
                         <div className="">
-                          <Image
-                            src={"/images/twitter.png"}
-                            alt=""
-                            width={19.2}
-                            height={19.2}
-                          />
+                          <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
                         </div>
                         <Input
                           name="twitter"
@@ -595,14 +544,9 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                           onChange={handleChange}
                         />
                       </div>
-                      <div className="flex h-[56px] items-center gap-2 rounded-xl border-0 bg-light_grey p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
                         <div className="">
-                          <Image
-                            src={"/images/instagram.png"}
-                            alt=""
-                            width={19.2}
-                            height={19.2}
-                          />
+                          <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
                         </div>
                         <Input
                           name="instagram"
@@ -617,7 +561,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({
                     </div>
                   )}
                 </div>
-                <div className="flex laptop:hidden">
+                <div className="laptop:hidden flex">
                   <FormikButton
                     title="Save changes"
                     error={formik.isValid}

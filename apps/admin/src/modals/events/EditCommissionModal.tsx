@@ -12,17 +12,11 @@ import { FormikButton } from "@/components/global/FormikButton";
 interface EditCommissionModalProps {
   isOpen: boolean;
   toggle: () => void;
-  id?: number;
   commissionCharge: number;
 }
 
-function EditCommissionModal({
-  isOpen,
-  toggle,
-  id,
-  commissionCharge,
-}: EditCommissionModalProps) {
-  const [isLoading, setLoading] = useState(false);
+function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissionModalProps) {
+  const [, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const updateCommissionChargeMutation = useUpdateCommissionChargeMutation();
   const commSchema = yup.object({
@@ -34,6 +28,7 @@ function EditCommissionModal({
       percentage: "",
     },
     validationSchema: commSchema,
+    validateOnMount: true,
     onSubmit: (values) => {
       setLoading(true);
       updateCommissionChargeMutation.mutate(Number(values.percentage), {
@@ -76,10 +71,10 @@ function EditCommissionModal({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Commission percentage</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+          <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
             <div className={"px-[16px] py-[4px]"}>
               <div className="flex items-center justify-between">
-                <p className="font-sans text-[18px] font-semibold leading-[27px]">
+                <p className="font-sans text-[18px] leading-[27px] font-semibold">
                   Commission percentage
                 </p>
                 <div className="cursor-pointer" onClick={toggle}>
@@ -88,16 +83,12 @@ function EditCommissionModal({
               </div>
             </div>
             <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
-              <p className={"text-[14px] font-normal text-light-black"}>
+              <p className={"text-light-black text-[14px] font-normal"}>
                 Set the commission to be earned on every ticket sale.
               </p>
-              <p className={"text-[14px] font-normal text-text-grey"}>
-                Commission percentage (%)
-              </p>
+              <p className={"text-text-grey text-[14px] font-normal"}>Commission percentage (%)</p>
               <Input
-                className={
-                  "h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"
-                }
+                className={"bg-light-grey h-[48px] rounded-[12px] border-none px-[12px] py-[12px]"}
                 placeholder={"Commission percentage"}
                 value={formik.values.percentage}
                 onChange={formik.handleChange("percentage")}
@@ -107,7 +98,7 @@ function EditCommissionModal({
               <div className={"flex justify-between gap-[10px]"}>
                 <button
                   className={
-                    "h-[48px] w-[156px] rounded-[12px] border-[1px] border-light-grey-50 bg-white"
+                    "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white"
                   }
                   onClick={toggle}
                 >

@@ -113,14 +113,8 @@ export const settingsApi = {
   getWallet: () => browserApi.get<WalletSettings>(userProfileRoutes.WALLET_SHOW),
 
   requestPayout: (data: RequestPayoutPayload) =>
-    browserApi.post<RequestPayoutResponse>(
-      userProfileRoutes.WALLET_REQUEST_PAYOUT,
-      data,
-    ),
+    browserApi.post<RequestPayoutResponse>(userProfileRoutes.WALLET_REQUEST_PAYOUT, data),
 
   createBankAccount: (data: CreateBankAccountPayload) =>
-    browserApi.post<CreateBankAccountResponse>(
-      userProfileRoutes.BANK_ACCOUNT_CREATE,
-      data,
-    ),
+    browserApi.post<CreateBankAccountResponse>(userProfileRoutes.BANK_ACCOUNT_CREATE, data),
 };

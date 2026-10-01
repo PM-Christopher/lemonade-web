@@ -9,7 +9,5 @@ import type { BusinessCategoriesResponse } from "./api";
 
 export const sharedServerApi = {
   getBusinessCategories: () =>
-    backendApi.get<BusinessCategoriesResponse>(
-      sharedUtilitiesRoutes.BUSINESS_CATEGORIES,
-    ),
+    backendApi.get<BusinessCategoriesResponse>(sharedUtilitiesRoutes.BUSINESS_CATEGORIES),
 };

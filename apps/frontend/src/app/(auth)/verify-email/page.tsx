@@ -4,9 +4,8 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@lemonade/ui";
 import Image from "next/image";
 import OtpInput from "react-otp-input";
-import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { otpSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
 import {
   useResendOtpMutation,
@@ -16,7 +15,6 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useSelector } from "react-redux";
-import Link from "next/link";
 import { RootState } from "@/redux/store";
 
 export default function VerifyPage() {
@@ -103,15 +101,12 @@ export default function VerifyPage() {
   };
 
   //form validation
-  const verifySchema = yup.object({
-    code: yup.string().length(4, "Code must be 4 characters").required("Code is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       code: "",
     },
-    validationSchema: verifySchema,
+    validationSchema: otpSchema,
+    validateOnMount: true,
     validateOnChange: false,
     onSubmit: async (values) => {
       await verifyOtp(values);
@@ -133,117 +128,95 @@ export default function VerifyPage() {
         formik.resetForm();
         router.push("/profile-setup");
       },
-      onError: (error: any) => {
+      onError: () => {
         setCanResend(true);
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error?.message,
-            type: "error",
-          }),
-        );
-        formik.setFieldValue("code", null);
+        formik.setFieldError("code", "Invalid code");
       },
     });
   };
+  const invalidCode = Boolean(formik.errors.code);
+
   return (
     <AuthLayout>
-      <section className="h-full min-h-screen overflow-hidden bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
-          <div>
-            <Link href={"/login"}>
-              <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-            </Link>
-          </div>
-          <div>
-            <Link href="/login">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">Login</p>
-            </Link>
-          </div>
+      <div className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10">
+        <div className="hidden min-w-0 flex-col tablet:flex">
+          <p className="font-ruso text-display-s font-bold">Verify email address</p>
+          <p className="text-body-xl mt-2 max-w-[26rem] font-sans font-normal text-text-grey">
+            Enter the 4-digit code sent <span className="font-semibold text-primary-black">{user?.email}</span>{" "}
+            to verify your account
+          </p>
+          <Image
+            src="/images/verification.png"
+            alt=""
+            width={320}
+            height={258}
+            className="mt-6 h-auto max-h-[36vh] w-auto object-contain"
+          />
         </div>
-        <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
-          <div className="flex flex-col phone:mb-[16px]">
-            <div className="text-center phone:text-left">
-              <p className="font-ruso text-[24px] font-bold leading-[48px] tablet:text-[40px]">
-                Verify email address
-              </p>
-              <p className="w-[327px] text-[14px] font-normal leading-[27px] tablet:w-[421px] tablet:text-[18px]">
-                Enter the 4-digit code sent to {user?.email} to verify your account
-              </p>
-            </div>
-            <div className="mt-[24px] hidden tablet:flex">
-              <Image
-                src={"/images/verification.png"}
-                alt="signup image"
-                width={320}
-                height={257.55}
-              />
-            </div>
+        <div className="flex h-full min-h-0 w-full max-w-[440px] flex-col justify-center">
+          <div className="mb-4 text-center tablet:hidden">
+            <p className="font-ruso text-title-xl font-bold">Verify email address</p>
+            <p className="text-body-l mt-2 font-sans font-normal text-text-grey">
+              Enter the 4-digit code sent{" "}
+              <span className="font-semibold text-primary-black">{user?.email}</span> to verify
+              your account
+            </p>
           </div>
-          <form onSubmit={formik.handleSubmit}>
-            <Card className="w-full rounded-[16px] border-none p-[24px] shadow-none tablet:w-[480px]">
-              <CardContent className="grid gap-[24px] tablet:gap-[40px]">
-                <div className="flex flex-col items-center justify-center">
+          <form onSubmit={formik.handleSubmit} className="w-full">
+            <Card className="w-full rounded-[16px] border-none p-6 shadow-none">
+              <CardContent className="grid gap-6">
+                <div className="flex flex-col items-center">
                   <OtpInput
-                    value={formik.values.code}
-                    onChange={(e) => {
-                      setOtp(e);
-                      formik.setFieldValue("code", e, true);
-                      // Automatically submit when OTP is fully entered
-                      // if (e.length === 4) {
-                      //     setTimeout(() => {
-                      //         formik.submitForm();
-                      //     }, 0);
-                      // }
+                    value={formik.values.code || ""}
+                    onChange={(value) => {
+                      setOtp(value);
+                      formik.setFieldValue("code", value, false);
+                      if (formik.errors.code) formik.setFieldError("code", undefined);
                     }}
                     numInputs={4}
-                    renderSeparator={<span style={{ width: "12px" }}></span>}
+                    renderSeparator={<span className="w-3" />}
                     renderInput={(props) => (
-                      <div
+                      <input
+                        {...props}
                         style={{
+                          width: "56px",
+                          height: "56px",
                           borderRadius: "12px",
-                          padding: "2px", // thickness of gradient border
-                          background: "linear-gradient(90deg, #9BE303, #7FBB00)", // gradient green
+                          border: invalidCode ? "1px solid #E24B4B" : "1px solid transparent",
+                          backgroundColor: invalidCode ? "#fff" : "#F3F4F6",
+                          color: invalidCode ? "#E24B4B" : "#111827",
+                          textAlign: "center",
+                          fontSize: "20px",
+                          fontWeight: 500,
+                          outline: "none",
                         }}
-                      >
-                        <input
-                          {...props}
-                          style={{
-                            width: "56px",
-                            height: "56px",
-                            borderRadius: "10px", // slightly smaller to show gradient
-                            border: "none",
-                            backgroundColor: "#E5E7EB", // gray background
-                            color: "#111827",
-                            textAlign: "center",
-                            fontSize: "20px",
-                            fontWeight: 500,
-                            outline: "none",
-                          }}
-                        />
-                      </div>
+                      />
                     )}
                     containerStyle={{
                       display: "flex",
                       justifyContent: "center",
-                      gap: "12px",
                     }}
                   />
-
-                  {checkError("code", formik) ? (
-                    <p className="mt-[8px] text-[12px] text-[#FF8D8D]">{formik.errors.code}</p>
+                  {invalidCode ? (
+                    <p className="text-meta mt-3 flex items-center gap-1 text-[#E24B4B]">
+                      <span aria-hidden className="inline-block h-3.5 w-3.5 rounded-full border border-[#E24B4B] text-center text-[10px] leading-[12px]">
+                        !
+                      </span>
+                      Invalid code
+                    </p>
                   ) : null}
                 </div>
-                <div className="mb-[5px] flex justify-center">
+                <div className="flex justify-center">
                   {canResend ? (
-                    <p
-                      className="cursor-pointer font-sans text-[16px] font-semi-normal text-light-green"
+                    <button
+                      type="button"
+                      className="text-light-green cursor-pointer font-sans text-body-s font-semibold"
                       onClick={handleResend}
                     >
-                      Send code again
-                    </p>
+                      Resend code
+                    </button>
                   ) : (
-                    <p className="font-sans text-[16px] font-semi-normal text-light-green">
+                    <p className="text-light-green font-sans text-body-s font-semibold">
                       Resend code in {seconds} secs
                     </p>
                   )}
@@ -251,14 +224,14 @@ export default function VerifyPage() {
                 <FormikButton
                   loading={formik.isSubmitting}
                   title="Verify"
-                  error={formik.isValid}
+                  error={(formik.values.code?.length ?? 0) === 4 && !invalidCode}
                   classes="w-full h-[48px] rounded-[12px]"
                 />
               </CardContent>
             </Card>
           </form>
         </div>
-      </section>
+      </div>
     </AuthLayout>
   );
 }

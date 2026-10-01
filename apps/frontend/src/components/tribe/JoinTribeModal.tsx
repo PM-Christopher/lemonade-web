@@ -14,11 +14,7 @@ type JoinTribeInterface = {
   tribe: any;
 };
 
-const JoinTribeModal: React.FC<JoinTribeInterface> = ({
-  toggle,
-  isOpen,
-  tribe,
-}) => {
+const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe }) => {
   const dispatch = useAppDispatch();
   const joinTribeMutation = useJoinTribeMutation(tribe?.slug ?? "");
   const tribeLoading = joinTribeMutation.isPending;
@@ -60,13 +56,13 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">
+              <p className="font-sans text-[18px] leading-[27px] font-semibold">
                 Unlock Exclusive content!
               </p>
             </div>
             <div>
               <Button
-                className="auth-button rounded-[12px] p-[10px] px-[14px] shadow-green-inset hover:shadow-green-inset-strong"
+                className="auth-button shadow-green-inset hover:shadow-green-inset-strong rounded-[12px] p-[10px] px-[14px]"
                 onClick={() => handleJoinTribe(tribe.slug)}
                 disabled={tribeLoading}
               >
@@ -78,16 +74,10 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({
                     ariaLabel="color-ring-loading"
                     wrapperStyle={{}}
                     wrapperClass="color-ring-wrapper"
-                    colors={[
-                      "#e15b64",
-                      "#f47e60",
-                      "#f8b26a",
-                      "#abbd81",
-                      "#849b87",
-                    ]}
+                    colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
                   />
                 ) : (
-                  <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">
+                  <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
                     Join Tribe now
                   </p>
                 )}
@@ -96,11 +86,11 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({
           </div>
           <div className="mt-10 flex flex-col items-center">
             <div className="flex justify-center">
-              <div className="flex w-[544px] flex-col items-center rounded-[12px] border-2 border-step-color bg-light-green-10 p-[16px]">
-                <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+              <div className="border-step-color bg-light-green-10 flex w-[544px] flex-col items-center rounded-[12px] border-2 p-[16px]">
+                <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
                   Membership fee
                 </p>
-                <p className="mt-2 font-sans text-[24px] font-semibold leading-[33.6px]">
+                <p className="mt-2 font-sans text-[24px] leading-[33.6px] font-semibold">
                   N {formatNumberWithCommas(tribe?.membership_fee)}
                 </p>
               </div>
@@ -108,34 +98,33 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({
 
             <div className="my-6 flex justify-center">
               <div className="flex w-[544px] justify-center">
-                <p className="text-center font-sans text-[14px] font-semibold leading-[21px]">
+                <p className="text-center font-sans text-[14px] leading-[21px] font-semibold">
                   {tribe?.tribe_name}{" "}
                   <span className="font-semi-normal">
-                    offers exclusive content and discussions for a membership
-                    fee set by the Tribe creator. Join now and enjoy this
-                    exclusive benefits
+                    offers exclusive content and discussions for a membership fee set by the Tribe
+                    creator. Join now and enjoy this exclusive benefits
                   </span>
                 </p>
               </div>
             </div>
 
-            <div className="flex justify-center rounded-[12px] bg-light_grey">
+            <div className="bg-light_grey flex justify-center rounded-[12px]">
               <div className="flex w-[544px] flex-col gap-4 p-4 py-[24px]">
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
-                  <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                  <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
                     Access to in-depth content
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
-                  <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                  <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
                     Gain valuable knowledge
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
-                  <p className="font-sans text-[14px] font-semi-normal leading-[21px]">
+                  <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
                     Connect with your community
                   </p>
                 </div>

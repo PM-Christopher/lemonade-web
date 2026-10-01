@@ -32,7 +32,7 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
 
   return (
     <div
-      className={`fixed inset-0 z-50 items-center justify-center bg-gray-800 bg-opacity-50 ${
+      className={`bg-opacity-50 fixed inset-0 z-50 items-center justify-center bg-gray-800 ${
         isOpen ? "flex" : "hidden"
       }`}
     >
@@ -46,26 +46,26 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
           </div>
         </div>
         <div className="mt-[24px]">
-          <div className="flex flex-col rounded-[12px] border-[2px] border-mid-grey p-[16px]">
-            <div className="flex flex-col border-b-[1px] border-b-mid-grey p-[16px]">
-              <p className="text-[14px] font-normal text-text-grey">Total Amount Earned</p>
-              <p className="text-[18px] font-semibold tracking-custom">
+          <div className="border-mid-grey flex flex-col rounded-[12px] border-[2px] p-[16px]">
+            <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+              <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
+              <p className="tracking-custom text-[18px] font-semibold">
                 ₦{Number(totalEarned)?.toLocaleString() ?? 0}
               </p>
             </div>
-            <div className="flex flex-col border-b-[1px] border-b-mid-grey p-[16px]">
-              <p className="text-[14px] font-normal text-text-grey">Total referrals</p>
-              <p className="text-[18px] font-semibold tracking-custom">{total_referrals ?? 0}</p>
+            <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+              <p className="text-text-grey text-[14px] font-normal">Total referrals</p>
+              <p className="tracking-custom text-[18px] font-semibold">{total_referrals ?? 0}</p>
             </div>
-            <div className="flex flex-col border-b-[1px] border-b-mid-grey p-[16px]">
-              <p className="text-[14px] font-normal text-text-grey">Total subscribed referrals</p>
-              <p className="text-[18px] font-semibold tracking-custom">{total_subscribed ?? 0}</p>
+            <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+              <p className="text-text-grey text-[14px] font-normal">Total subscribed referrals</p>
+              <p className="tracking-custom text-[18px] font-semibold">{total_subscribed ?? 0}</p>
             </div>
             <div
               className="flex cursor-pointer items-center gap-[8px] p-[12px] px-[16px]"
               onClick={() => router.push("/settings/wallet")}
             >
-              <p className="text-[16px] font-semi-normal text-light-green">Go to wallet</p>
+              <p className="font-semi-normal text-light-green text-[16px]">Go to wallet</p>
               <ChevronRight />
             </div>
           </div>

@@ -17,11 +17,7 @@ type ShareTribeInterface = {
   tribe: TribeInterface | any;
 };
 
-const ShareTribeModal: React.FC<ShareTribeInterface> = ({
-  toggle,
-  isOpen,
-  tribe,
-}) => {
+const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe }) => {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const dispatch = useAppDispatch();
@@ -78,7 +74,7 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Share tribe</DialogTitle>
-        <div className="flex w-screen flex-col rounded-[12px] bg-white laptop:w-[480px]">
+        <div className="laptop:w-[480px] flex w-screen flex-col rounded-[12px] bg-white">
           <div className={`p-6`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -93,47 +89,45 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({
             <p>Share this tribe via</p>
             <div className="flex justify-between">
               <div
-                className="flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px] hover:bg-grey-20"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px]"
                 onClick={() => shareToSocial("facebook")}
               >
                 <FacebookIcon className="" />
               </div>
               <div
-                className="flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px] hover:bg-grey-20"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px]"
                 onClick={() => shareToSocial("twitter")}
               >
                 <TwitterIcon className="" />
               </div>
               <div
-                className="flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px] hover:bg-grey-20"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px]"
                 onClick={() => shareToSocial("whatsapp")}
               >
                 <WhatsAppIcon className="" />
               </div>
               <div
-                className="flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px] hover:bg-grey-20"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px]"
                 onClick={() => shareToSocial("instagram")}
               >
                 <InstagramIcon className="" />
               </div>
               <div
-                className="flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px] hover:bg-grey-20"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border-[1px] p-[15px]"
                 onClick={() => shareToSocial("telegram")}
               >
                 <TelegramIcon className="" />
               </div>
             </div>
             <p>Or copy link</p>
-            <div className="flex w-full items-center justify-between rounded-[12px] border-[1px] border-grey-90 p-[8px]">
+            <div className="border-grey-90 flex w-full items-center justify-between rounded-[12px] border-[1px] p-[8px]">
               <div className="w-[full]">
                 <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`}</p>
               </div>
               <Button
-                className="h-[35px] w-[80px] bg-gradient-green"
+                className="bg-gradient-green h-[35px] w-[80px]"
                 onClick={() =>
-                  handleCopy(
-                    `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`,
-                  )
+                  handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`)
                 }
               >
                 <p>{copied ? "Copied!" : "Copy"}</p>

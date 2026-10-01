@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useWalletDetailQuery } from "@/features/wallet/queries";
+import type { WalletDetail } from "@/features/wallet/api";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 
-function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
+function TransactionWalletDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage] = useState(10);
   const router = useRouter();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   // Same endpoint the already-migrated wallet domain uses — reused rather
@@ -24,10 +25,7 @@ function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = wallet?.history?.slice(
-    startIndex,
-    startIndex + perPage,
-  );
+  const paginatedData = wallet?.history?.slice(startIndex, startIndex + perPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -40,20 +38,22 @@ function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
     }
 
     // Define CSV headers
-    const headers = [
-      "ID",
-      "User Id",
-      "Full Name",
-      "Amount",
-      "Status",
-      "Wallet Id",
-      "Created At",
-    ];
+    const headers = ["ID", "User Id", "Full Name", "Amount", "Status", "Wallet Id", "Created At"];
 
     // Convert data to CSV rows
     const csvRows = [
       headers.join(","), // Header row
-      ...wallet.history.map((item: any) => {
+      // NOTE (found, not fixed — pre-existing, predates this pass):
+      // `item.user.fullname` below doesn't match WalletDetail["history"]'s
+      // defined shape, which has no `user` field — either the type is
+      // missing a real field or this throws at runtime for any row without
+      // one. Typing `user` as always-present here (rather than optional)
+      // to keep the exact original runtime behavior — including the
+      // crash-if-absent — unchanged, instead of guessing which side is wrong.
+      ...wallet.history.map((historyItem) => {
+        const item = historyItem as WalletDetail["history"][number] & {
+          user: { fullname?: string };
+        };
         return [
           item.id,
           item.user_id,
@@ -76,10 +76,7 @@ function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
 
     // Set up download link
     link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `payment_history_${new Date().toISOString().split("T")[0]}.csv`,
-    );
+    link.setAttribute("download", `payment_history_${new Date().toISOString().split("T")[0]}.csv`);
     link.style.visibility = "hidden";
 
     // Append to document, trigger download and clean up
@@ -89,29 +86,19 @@ function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
   };
   return (
     <MainLayout>
-      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
+      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
         <div
-          className={
-            "flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"
-          }
+          className={"flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"}
         >
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Full name:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Full name:</p>
             </div>
             <div className={"flex gap-[4px]"}>
-              <p className={"text-[14px] font-medium"}>
-                {wallet?.info?.fullname}
-              </p>
+              <p className={"text-[14px] font-medium"}>{wallet?.info?.fullname}</p>
               <p
-                className={
-                  "cursor-pointer text-[14px] font-medium text-light-green"
-                }
-                onClick={() =>
-                  router.push(`/users/${wallet?.history[0]?.user_id}`)
-                }
+                className={"text-light-green cursor-pointer text-[14px] font-medium"}
+                onClick={() => router.push(`/users/${wallet?.history[0]?.user_id}`)}
               >
                 View profile
               </p>
@@ -119,29 +106,19 @@ function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Transaction Id:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
-              {wallet?.history[0]?.wallet_id}
-            </p>
+            <p className={"text-[14px] font-medium"}>{wallet?.history[0]?.wallet_id}</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Date Paid:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Date Paid:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
-              {wallet?.info?.date_paid}
-            </p>
+            <p className={"text-[14px] font-medium"}>{wallet?.info?.date_paid}</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Amount:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
             </div>
             <p className={"text-[14px] font-medium"}>
               N{formatNumberWithCommas(Number(wallet?.info?.amount) || 0)}
@@ -149,71 +126,58 @@ function TransactionWalletDetailsClient({ id }: { id: number | undefined }) {
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Subscription Type:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Subscription Type:</p>
             </div>
             <p className={"text-[14px] font-medium"}>Yearly</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Status:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
             </div>
-            <p className={"text-[14px] font-medium text-light-green-70"}>
+            <p className={"text-light-green-70 text-[14px] font-medium"}>
               {capitalizeWords(wallet?.info?.status)}
             </p>
           </div>
         </div>
 
         {/* payout history */}
-        <div className="lg:w-2/3 flex w-full flex-col">
-          <div
-            className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}
-          >
+        <div className="flex w-full flex-col lg:w-2/3">
+          <div className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}>
             <div
               className={
-                "flex items-center justify-between border-b-[1px] border-b-grey-20 p-[24px]"
+                "border-b-grey-20 flex items-center justify-between border-b-[1px] p-[24px]"
               }
             >
-              <p className={"text-[16px] font-semiBold"}>Payout history</p>
+              <p className={"font-semiBold text-[16px]"}>Payout history</p>
               <div
                 className={
-                  "flex items-center gap-[10px] rounded-[12px] border-[1px] border-light-grey-50 px-[12px] py-[10px]"
+                  "border-light-grey-50 flex items-center gap-[10px] rounded-[12px] border-[1px] px-[12px] py-[10px]"
                 }
                 onClick={printCSV}
               >
                 <PrinterIcon className={"w-[20px]"} />
-                <p className={"text-[16px] font-medium text-black-light"}>
-                  Print
-                </p>
+                <p className={"text-black-light text-[16px] font-medium"}>Print</p>
               </div>
             </div>
 
             <div className={"flex flex-col px-[24px]"}>
-              {paginatedData?.map((item: any, index: number) => (
-                <div className="px-[16px] pb-[24px] pt-[16px]" key={index}>
+              {paginatedData?.map((item: WalletDetail["history"][number], index: number) => (
+                <div className="px-[16px] pt-[16px] pb-[24px]" key={index}>
                   <div className="flex justify-between">
                     <div className="flex flex-col">
                       <p className={"text-[14px] font-medium"}>
-                        {item?.wallet?.wallet_id} - ₦
-                        {formatNumberWithCommas(item?.amount)}
+                        {item?.wallet?.wallet_id} - ₦{formatNumberWithCommas(item?.amount ?? 0)}
                       </p>
-                      <p className={"text-[12px] font-normal text-text-grey"}>
+                      <p className={"text-text-grey text-[12px] font-normal"}>
                         23, Mar 2023. 05:00PM
                       </p>
                     </div>
                     <div
                       className={
-                        "h-fit gap-[4px] rounded-[8px] bg-light-green-60 px-[8px] py-[4px]"
+                        "bg-light-green-60 h-fit gap-[4px] rounded-[8px] px-[8px] py-[4px]"
                       }
                     >
-                      <p
-                        className={
-                          "text-[12px] font-medium text-light-green-70"
-                        }
-                      >
+                      <p className={"text-light-green-70 text-[12px] font-medium"}>
                         {capitalizeWords(item?.status)}
                       </p>
                     </div>

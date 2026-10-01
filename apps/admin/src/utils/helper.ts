@@ -78,7 +78,7 @@ export const downloadCSV = (csvString: string, filename: string = "data.csv") =>
   URL.revokeObjectURL(url);
 };
 
-export const manualTransactionsExport = (data: any, type: any) => {
+export const manualTransactionsExport = (data: Array<Record<string, unknown>>, type: string) => {
   if (!data || !Array.isArray(data) || data.length === 0) {
     console.error("No data to export");
     return;
@@ -160,7 +160,7 @@ export const manualTransactionsExport = (data: any, type: any) => {
     } else if (type === "boosting" || type === "services" || type === "promotions") {
       row = [
         item.reference || "",
-        item.user?.name || "",
+        (item.user as { name?: string } | undefined)?.name || "",
         item.amount || "",
         item.provider || "",
         item.paid_at || "",

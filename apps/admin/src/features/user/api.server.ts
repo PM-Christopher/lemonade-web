@@ -34,7 +34,5 @@ export const userServerApi = {
     backendApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.LOGS, { id })),
 
   getAffiliateDetail: (id: number | string) =>
-    backendApi.get<AffiliateDetailResponse>(
-      buildPath(adminUsersRoutes.AFFILIATES_DETAIL, { id }),
-    ),
+    backendApi.get<AffiliateDetailResponse>(buildPath(adminUsersRoutes.AFFILIATES_DETAIL, { id })),
 };

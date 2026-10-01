@@ -5,13 +5,13 @@ import { EventsSkeleton } from "@/components/Skeletons";
 
 const Draft = ({ events, loading }: { events: EventInterface[]; loading: boolean }) => {
   return (
-    <div className="mt-[10px] grid w-full grid-cols-2 gap-[16px] rounded-[12px] bg-white p-[16px] laptop:w-[780px] laptop:grid-cols-3">
+    <div className="laptop:w-[780px] laptop:grid-cols-3 mt-[10px] grid w-full grid-cols-2 gap-[16px] rounded-[12px] bg-white p-[16px]">
       {loading ? (
         <EventsSkeleton count={3} />
       ) : events.length > 0 ? (
         events.map((event, index) => <OrganizerEventCard key={index} event={event} draft={true} />)
       ) : (
-        <div className="col-span-2 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-12 laptop:col-span-3">
+        <div className="laptop:col-span-3 col-span-2 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-12">
           <svg
             className="mb-3 h-12 w-12 text-gray-300"
             fill="none"

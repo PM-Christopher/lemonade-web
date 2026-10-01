@@ -103,10 +103,7 @@ export const tribesApi = {
     browserApi.patch<{ restricted: boolean }>(buildPath(adminTribesRoutes.RESTRICT, { id }), {}),
 
   reactivateTribe: (id: string) =>
-    browserApi.patch<{ reactivated: boolean }>(
-      buildPath(adminTribesRoutes.REACTIVATE, { id }),
-      {},
-    ),
+    browserApi.patch<{ reactivated: boolean }>(buildPath(adminTribesRoutes.REACTIVATE, { id }), {}),
 
   deleteTribe: (id: string) =>
     browserApi.delete<{ deleted: boolean }>(buildPath(adminTribesRoutes.DELETE, { id })),

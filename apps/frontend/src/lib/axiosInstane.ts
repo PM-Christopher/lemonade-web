@@ -36,7 +36,19 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       clearLegacyCookies();
-      if (typeof window !== "undefined") window.location.href = "/login";
+      if (typeof window === "undefined") return Promise.reject(error);
+      const authPaths = [
+        "/login",
+        "/signup",
+        "/forgot-password",
+        "/reset-password",
+        "/verify-email",
+        "/verify-code",
+        "/profile-setup",
+      ];
+      if (!authPaths.includes(window.location.pathname)) {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   },

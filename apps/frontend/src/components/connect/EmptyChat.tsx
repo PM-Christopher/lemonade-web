@@ -8,10 +8,10 @@ import ImageIcon from "@/image/icons/ImageIcon.svg";
 
 const EmptyChat = () => {
   return (
-    <div className="relative flex h-[648px] w-[560px] flex-col rounded-br-[16px] rounded-tr-[16px] border-b-[1px] border-r-[1px] border-t-[1px] bg-white">
-      <div className="absolute left-0 top-0 w-full rounded-tr-[16px] p-[8px] text-white"></div>
+    <div className="relative flex h-[648px] w-[560px] flex-col rounded-tr-[16px] rounded-br-[16px] border-t-[1px] border-r-[1px] border-b-[1px] bg-white">
+      <div className="absolute top-0 left-0 w-full rounded-tr-[16px] p-[8px] text-white"></div>
 
-      <div className="mb-16 flex h-screen items-center justify-center rounded-br-[16px] rounded-tr-[16px] bg-white p-[16px]">
+      <div className="mb-16 flex h-screen items-center justify-center rounded-tr-[16px] rounded-br-[16px] bg-white p-[16px]">
         <p className="font-ruso text-[20px] font-semibold">Open chat to begin messaging</p>
       </div>
 

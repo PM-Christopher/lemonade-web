@@ -66,19 +66,19 @@ const GuestListClient = ({ id }: { id: number }) => {
           loading={guestDetailLoading}
           id={id}
         />
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Guest list</p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Guest list</p>
           </div>
         </div>
 
         <div className={"mt-4 flex flex-col items-center gap-[8px]"}>
           <div className="mx-auto w-full max-w-[880px]">
-            <div className="sm:p-4 flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+            <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm sm:p-4">
               {/* Search */}
               <div className="flex w-full items-center gap-3 rounded-xl bg-gray-50 px-4 py-3 ring-1 ring-transparent transition focus-within:ring-2 focus-within:ring-gray-900/10">
                 <SearchIcon className="h-5 w-5 shrink-0 text-gray-500" />

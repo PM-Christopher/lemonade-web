@@ -8,12 +8,12 @@ const EmptyEvent: React.FC = () => {
     <div className="mt-[101px] flex items-center justify-center">
       <div className="flex flex-col items-center">
         <Image src={organizer_image} alt="organizer image" />
-        <p className="mt-[24px] font-sans text-[20px] font-semibold leading-[28px]">List event</p>
-        <p className="text-center font-sans text-[14px] font-normal leading-[21px] tracking-custom text-light-black">
+        <p className="mt-[24px] font-sans text-[20px] leading-[28px] font-semibold">List event</p>
+        <p className="tracking-custom text-light-black text-center font-sans text-[14px] leading-[21px] font-normal">
           Your event list is currently empty. List your <br /> events to see them here
         </p>
-        <Button className="mt-[24px] h-[48px] w-[207px] rounded-[12px] border-b-2 border-transparent bg-gradient-green shadow-custom-bottom shadow-custom-top">
-          <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">Add event</p>
+        <Button className="bg-gradient-green shadow-custom-bottom shadow-custom-top mt-[24px] h-[48px] w-[207px] rounded-[12px] border-b-2 border-transparent">
+          <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">Add event</p>
         </Button>
       </div>
     </div>

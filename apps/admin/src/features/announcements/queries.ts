@@ -4,7 +4,7 @@ import { announcementsApi } from "./api";
 export const announcementKeys = {
   all: () => ["announcements"] as const,
   list: () => [...announcementKeys.all(), "list"] as const,
-  detail: (id: number) => [...announcementKeys.all(), "detail", id] as const,
+  detail: (id: string | number) => [...announcementKeys.all(), "detail", id] as const,
 };
 
 export function useAnnouncementsQuery(options?: { enabled?: boolean }) {
@@ -17,12 +17,12 @@ export function useAnnouncementsQuery(options?: { enabled?: boolean }) {
 }
 
 export function useAnnouncementDetailQuery(
-  id: number | undefined,
+  id: string | number | undefined,
   options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: announcementKeys.detail(id ?? 0),
-    queryFn: () => announcementsApi.getAnnouncement(id as number),
+    queryFn: () => announcementsApi.getAnnouncement(id as string | number),
     staleTime: 60_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });

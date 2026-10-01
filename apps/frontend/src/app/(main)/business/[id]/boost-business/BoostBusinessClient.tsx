@@ -58,6 +58,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
       start_date: "",
     },
     validationSchema: editBusinessSchema,
+    validateOnMount: true,
     onSubmit: (values) => {
       const formData = {
         ...values,
@@ -120,30 +121,26 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
-          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Boost business
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Boost business</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
           <form onSubmit={formik.handleSubmit}>
-            <div className="flex flex-col gap-10 gap-y-[154px] laptop:flex-row laptop:justify-between">
+            <div className="laptop:flex-row laptop:justify-between flex flex-col gap-10 gap-y-[154px]">
               <div className="flex flex-col">
-                <div className="w-screen rounded-[12px] bg-none p-[24px] px-[48px] laptop:w-[640px] laptop:bg-white">
-                  <p className="mb-[10px] text-[14px] font-normal text-text-grey">
-                    Select Package
-                  </p>
+                <div className="laptop:w-[640px] laptop:bg-white w-screen rounded-[12px] bg-none p-[24px] px-[48px]">
+                  <p className="text-text-grey mb-[10px] text-[14px] font-normal">Select Package</p>
                   <div className="flex flex-wrap items-center gap-2">
                     {loading ? (
                       <BoostPackagesSkeleton count={4} />
                     ) : (
                       data?.packages?.map((pkg: any, index: number) => (
                         <div
-                          className={`flex w-fit cursor-pointer flex-col items-center justify-center rounded-[12px] bg-light-tint p-[16px] ${pkgIndex === index && "border-[2px] border-step-color"}`}
+                          className={`bg-light-tint flex w-fit cursor-pointer flex-col items-center justify-center rounded-[12px] p-[16px] ${pkgIndex === index && "border-step-color border-[2px]"}`}
                           key={index}
                           onClick={() => handleSelectPackage(index)}
                         >
@@ -153,11 +150,9 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                             width={74}
                             height={74}
                           />
-                          <p className="text-[12px] font-semi-normal text-mid-green">
-                            Featured
-                          </p>
+                          <p className="font-semi-normal text-mid-green text-[12px]">Featured</p>
                           <p className="text-[16px] font-bold">₦{pkg.title}</p>
-                          <p className="mt-[4px] w-[121.72px] text-center text-[12px] font-normal text-text-grey">
+                          <p className="text-text-grey mt-[4px] w-[121.72px] text-center text-[12px] font-normal">
                             {pkg.description}
                           </p>
                         </div>
@@ -169,13 +164,13 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                       <div className="mt-[32px] grid gap-2">
                         <Label
                           htmlFor="fullname"
-                          className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                          className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                         >
                           Duration
                         </Label>
                         <select
                           id="fullname"
-                          className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                           onChange={(e) => {
                             handleSelectedPackage(parseInt(e.target.value));
                           }}
@@ -190,8 +185,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                               index: number,
                             ) => (
                               <option value={index} key={index}>
-                                {pkg.duration}{" "}
-                                {pkg.duration > 1 ? "days" : "day"}
+                                {pkg.duration} {pkg.duration > 1 ? "days" : "day"}
                               </option>
                             ),
                           )}
@@ -201,13 +195,13 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                         <div className="flex flex-col">
                           <Label
                             htmlFor="fullname"
-                            className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                            className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                           >
                             Start date
                           </Label>
                           <div className="flex justify-between gap-3">
                             <div className={"flex w-full flex-col gap-[4px]"}>
-                              <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                              <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                                 <div>
                                   <CalendarIcon />
                                 </div>
@@ -222,39 +216,31 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                       if (date) {
                                         // Update start date
                                         const localDate = new Date(
-                                          date.getTime() -
-                                            date.getTimezoneOffset() * 60000,
+                                          date.getTime() - date.getTimezoneOffset() * 60000,
                                         )
                                           .toISOString()
                                           .split("T")[0];
-                                        formik.setFieldValue(
-                                          "start_date",
-                                          localDate,
-                                        );
+                                        formik.setFieldValue("start_date", localDate);
                                       } else {
-                                        formik.setFieldValue(
-                                          "start_date",
-                                          null,
-                                        );
+                                        formik.setFieldValue("start_date", null);
                                       }
                                     }}
                                     minDate={now}
                                     showTimeSelect={false}
                                     dateFormat="yyyy-MM-dd"
-                                    className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:border-none focus:outline-none focus:ring-0"
+                                    className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                                     placeholderText="Click to select date"
                                   />
                                 </div>
                               </div>
-                              {formik.touched.start_date &&
-                              formik.errors.start_date ? (
+                              {formik.touched.start_date && formik.errors.start_date ? (
                                 <p className="text-left text-[12px] text-[#FF8D8D]">
                                   {formik.errors.start_date}
                                 </p>
                               ) : null}
                             </div>
                             <div className={"flex w-full flex-col gap-[4px]"}>
-                              <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                              <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                                 <div>
                                   <ClockIcon />
                                 </div>
@@ -262,9 +248,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                   <DatePicker
                                     selected={
                                       formik.values.start_time
-                                        ? timeStringToDate(
-                                            formik.values.start_time,
-                                          )
+                                        ? timeStringToDate(formik.values.start_time)
                                         : null
                                     }
                                     onChange={(date: Date | null) => {
@@ -274,10 +258,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                           .toTimeString()
                                           .split(" ")[0]
                                           .slice(0, 5);
-                                        formik.setFieldValue(
-                                          "start_time",
-                                          formated_time,
-                                        );
+                                        formik.setFieldValue("start_time", formated_time);
                                       }
                                     }}
                                     showTimeSelect={true}
@@ -285,13 +266,12 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                     timeCaption={"Start Time"}
                                     timeIntervals={15}
                                     dateFormat="h:mm aa"
-                                    className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:border-none focus:outline-none focus:ring-0"
+                                    className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                                     placeholderText="Click to select time"
                                     minTime={
                                       formik.values.start_date &&
-                                      new Date(
-                                        formik.values.start_date,
-                                      ).toDateString() === now.toDateString()
+                                      new Date(formik.values.start_date).toDateString() ===
+                                        now.toDateString()
                                         ? now
                                         : startOfDay
                                     }
@@ -299,8 +279,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                   />
                                 </div>
                               </div>
-                              {formik.touched.start_time &&
-                              formik.errors.start_time ? (
+                              {formik.touched.start_time && formik.errors.start_time ? (
                                 <p className="text-left text-[12px] text-[#FF8D8D]">
                                   {formik.errors.start_time}
                                 </p>
@@ -315,48 +294,46 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                   )}
                 </div>
               </div>
-              <div className="hidden flex-col laptop:flex">
+              <div className="laptop:flex hidden flex-col">
                 <div className="w-[480px] rounded-[12px] bg-white p-[24px] px-[48px]">
-                  <p className="font-sans text-[20px] font-semibold leading-[28px]">
-                    Summary
-                  </p>
+                  <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
                   <div className="mt-[16px] flex justify-between">
-                    <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                       Featured
                     </p>
-                    <p className="font-sans text-[14px] font-semibold leading-[21px]">
+                    <p className="font-sans text-[14px] leading-[21px] font-semibold">
                       ₦ {packageTitle}
                     </p>
                   </div>
                   <div className="mt-[16px] flex justify-between">
-                    <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                       {selectedPackage.duration} days
                     </p>
-                    <p className="font-sans text-[14px] font-semibold leading-[21px]">
+                    <p className="font-sans text-[14px] leading-[21px] font-semibold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>
-                  <div className="my-[16px] border-t-[1px] border-t-mid-grey"></div>
+                  <div className="border-t-mid-grey my-[16px] border-t-[1px]"></div>
                   <div className="mt-[16px] flex justify-between">
-                    <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                       Subtotal
                     </p>
-                    <p className="font-sans text-[14px] font-semibold leading-[21px]">
+                    <p className="font-sans text-[14px] leading-[21px] font-semibold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>
-                  <div className="my-[16px] border-t-[1px] border-t-mid-grey"></div>
+                  <div className="border-t-mid-grey my-[16px] border-t-[1px]"></div>
                   <div className="mt-[16px] flex justify-between">
-                    <p className="font-sans text-[18px] font-normal leading-[21px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[21px] font-normal">
                       Total
                     </p>
-                    <p className="font-sans text-[18px] font-semibold leading-[21px]">
+                    <p className="font-sans text-[18px] leading-[21px] font-semibold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>
-                  <div className="mt-[24px] flex items-center justify-around gap-[16px] pl-[16px] pr-[16px] pt-[16px]">
+                  <div className="mt-[24px] flex items-center justify-around gap-[16px] pt-[16px] pr-[16px] pl-[16px]">
                     <div className="">
-                      <p className="font-sans font-bold text-mid-green">
+                      <p className="text-mid-green font-sans font-bold">
                         ₦ {formatNumberWithCommas(selectedPackage.price)}
                       </p>
                     </div>
@@ -369,10 +346,10 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                   </div>
                 </div>
               </div>
-              <div className="border-t-[1px] laptop:hidden">
-                <div className="mt-[24px] flex items-center justify-around gap-[16px] pl-[16px] pr-[16px] pt-[16px]">
+              <div className="laptop:hidden border-t-[1px]">
+                <div className="mt-[24px] flex items-center justify-around gap-[16px] pt-[16px] pr-[16px] pl-[16px]">
                   <div className="">
-                    <p className="font-sans font-bold text-mid-green">
+                    <p className="text-mid-green font-sans font-bold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>

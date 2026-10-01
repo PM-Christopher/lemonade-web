@@ -66,6 +66,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       polls: false,
     },
     validationSchema: createThreadSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await handleCreateThread(values);
     },
@@ -83,9 +84,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     }
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
       const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
@@ -152,14 +151,10 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
   };
 
   const removeImage = (imageToRemove: string) => {
-    setMediaFiles((prevImages) =>
-      prevImages.filter((image) => image !== imageToRemove),
-    );
+    setMediaFiles((prevImages) => prevImages.filter((image) => image !== imageToRemove));
   };
 
-  const handleVideoChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
       const formData = new FormData();
@@ -200,9 +195,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
   };
 
   const removeVideo = (videoToRemove: string) => {
-    setVideoFiles((prevVideos) =>
-      prevVideos.filter((video) => video !== videoToRemove),
-    );
+    setVideoFiles((prevVideos) => prevVideos.filter((video) => video !== videoToRemove));
   };
 
   const handleCreateThread = async (values: any) => {
@@ -277,18 +270,14 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create thread</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="flex h-screen w-screen flex-col rounded-[12px] bg-white laptop:h-full laptop:w-[800px]">
+          <div className="laptop:h-full laptop:w-[800px] flex h-screen w-screen flex-col rounded-[12px] bg-white">
             <div className={`p-6`}>
               <div className="flex items-center justify-between">
                 <div className="cursor-pointer" onClick={toggle}>
                   <CloseIcon />
                 </div>
                 <div>
-                  <FormikButton
-                    loading={formik.isSubmitting}
-                    title="Post"
-                    error={formik.isValid}
-                  />
+                  <FormikButton loading={formik.isSubmitting} title="Post" error={formik.isValid} />
                 </div>
               </div>
               <div className="mt-2">
@@ -296,7 +285,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   <input
                     id="tribe-name"
                     type="text"
-                    className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:outline-none focus:ring-0"
+                    className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Topic"
                     onChange={(e) => {
                       formik.setFieldValue("topic", e.target.value);
@@ -304,15 +293,13 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                     value={formik.values.topic}
                   />
                   {formik.touched.topic && formik.errors.topic ? (
-                    <p className="text-[12px] text-[#FF8D8D]">
-                      {formik.errors.topic}
-                    </p>
+                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.topic}</p>
                   ) : null}
                 </div>
                 <div className="mt-4 grid gap-2">
                   <textarea
                     id="tribe-name"
-                    className="h-[160px] resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:outline-none focus:ring-0"
+                    className="h-[160px] resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Share your thoughts..."
                     value={formik.values.thoughts}
                     onChange={(e) => {
@@ -320,9 +307,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                     }}
                   />
                   {formik.touched.thoughts && formik.errors.thoughts ? (
-                    <p className="text-[12px] text-[#FF8D8D]">
-                      {formik.errors.thoughts}
-                    </p>
+                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.thoughts}</p>
                   ) : null}
                 </div>
                 <div className="flex flex-col gap-[40px]">
@@ -330,10 +315,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                     {mediaFiles &&
                       mediaFiles.length > 0 &&
                       mediaFiles.map((media: any, index: number) => (
-                        <div
-                          key={index}
-                          className="relative inline-block h-[200px] w-[200px]"
-                        >
+                        <div key={index} className="relative inline-block h-[200px] w-[200px]">
                           <Image
                             src={media}
                             alt="event_image"
@@ -343,7 +325,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           />
 
                           <div
-                            className="absolute right-2 top-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
+                            className="absolute top-2 right-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
                             onClick={() => removeImage(media)}
                           >
                             <span className="font-semibold text-black">X</span>
@@ -354,10 +336,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   {videoFiles &&
                     videoFiles.length > 0 &&
                     videoFiles.map((media: any, index: number) => (
-                      <div
-                        className="relative inline-block h-[200px] w-[200px]"
-                        key={index}
-                      >
+                      <div className="relative inline-block h-[200px] w-[200px]" key={index}>
                         <video
                           src={media}
                           controls
@@ -367,7 +346,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                         />
 
                         <div
-                          className="absolute right-2 top-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
+                          className="absolute top-2 right-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
                           onClick={() => removeVideo(media)}
                         >
                           <span className="font-semibold text-black">X</span>
@@ -379,7 +358,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                       <input
                         id="tribe-name"
                         type="text"
-                        className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:outline-none focus:ring-0"
+                        className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Poll title"
                         onChange={(e) => {
                           setPollTitle(e.target.value);
@@ -392,11 +371,9 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           <div key={index} className="flex items-center gap-2">
                             <input
                               type="text"
-                              className="w-[300px] rounded-md border border-gray-300 px-3 py-2 font-sans text-[16px] shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="w-[300px] rounded-md border border-gray-300 px-3 py-2 font-sans text-[16px] shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                               placeholder={`Option ${index + 1}`}
-                              onChange={(e) =>
-                                updatePollOption(index, e.target.value)
-                              }
+                              onChange={(e) => updatePollOption(index, e.target.value)}
                               value={option}
                             />
                             {pollOptions.length > 1 && index > 0 && (
@@ -411,7 +388,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
 
                       <button
                         type="button"
-                        className="w-[100px] rounded-md bg-gradient-green py-2 font-sans font-semibold text-white shadow-sm hover:bg-indigo-600"
+                        className="bg-gradient-green w-[100px] rounded-md py-2 font-sans font-semibold text-white shadow-sm hover:bg-indigo-600"
                         onClick={addPollOption}
                       >
                         Add Option
@@ -434,7 +411,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           timeFormat="HH:mm"
                           timeIntervals={15}
                           dateFormat="yyyy-MM-dd HH:mm"
-                          className="w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          className="font-semi-normal w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] shadow-none"
                           placeholderText="Poll start date and time"
                         />
 
@@ -450,7 +427,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           timeFormat="HH:mm"
                           timeIntervals={15}
                           dateFormat="yyyy-MM-dd HH:mm"
-                          className="w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          className="font-semi-normal w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] shadow-none"
                           placeholderText="Poll end date and time"
                         />
                       </div>
@@ -460,30 +437,18 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
               </div>
             </div>
             {isMobile ? (
-              <div className="fixed bottom-0 flex w-full items-center gap-6 rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-4">
-                <ImageIcon
-                  className="cursor-pointer"
-                  onClick={handleImageInput}
-                />
-                <VideoIcon
-                  className="cursor-pointer"
-                  onClick={handleVideoInput}
-                />
+              <div className="bg-mid-grey fixed bottom-0 flex w-full items-center gap-6 rounded-br-[12px] rounded-bl-[12px] p-4">
+                <ImageIcon className="cursor-pointer" onClick={handleImageInput} />
+                <VideoIcon className="cursor-pointer" onClick={handleVideoInput} />
                 <PollIcon className="cursor-pointer" onClick={handlePolls} />
                 <div className="ml-4 flex cursor-pointer">
                   <p>+ Add tags</p>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-6 rounded-bl-[12px] rounded-br-[12px] bg-mid-grey p-4">
-                <ImageIcon
-                  className="cursor-pointer"
-                  onClick={handleImageInput}
-                />
-                <VideoIcon
-                  className="cursor-pointer"
-                  onClick={handleVideoInput}
-                />
+              <div className="bg-mid-grey flex items-center gap-6 rounded-br-[12px] rounded-bl-[12px] p-4">
+                <ImageIcon className="cursor-pointer" onClick={handleImageInput} />
+                <VideoIcon className="cursor-pointer" onClick={handleVideoInput} />
                 <PollIcon className="cursor-pointer" onClick={handlePolls} />
                 <div className="ml-4 flex cursor-pointer">
                   <p>+ Add tags</p>

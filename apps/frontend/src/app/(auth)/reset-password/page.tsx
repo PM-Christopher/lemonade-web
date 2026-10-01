@@ -6,11 +6,10 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useAppDispatch } from "@/redux/hook";
-import Link from "next/link";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useResetPasswordMutation } from "@/features/authentication/mutations";
-import * as yup from "yup";
 import { useFormik } from "formik";
+import { resetPasswordSchema } from "@lemonade/validation";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -18,21 +17,13 @@ export default function ResetPasswordPage() {
   const resetPasswordMutation = useResetPasswordMutation();
   const loading = resetPasswordMutation.isPending;
 
-  const resetPasswordSchema = yup.object({
-    password: yup.string().required("Password is required"),
-
-    confirm_password: yup
-      .string()
-      .oneOf([yup.ref("password")], "Passwords must match")
-      .required("Confirm password is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       password: "",
       confirm_password: "",
     },
     validationSchema: resetPasswordSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await onSignup(values);
     },
@@ -67,39 +58,27 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout>
-      <section className="bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10"
+      >
+        <div className="hidden min-w-0 flex-col tablet:flex">
           <div>
-            <Link href={"/login"}>
-              <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-            </Link>
+            <p className="font-ruso text-display-s font-bold">Reset password</p>
+            <p className="text-body-xl mt-2 max-w-[26rem] font-sans font-normal text-text-grey">
+              Stronger password, stronger protection! Combine uppercase, lowercase, numbers, and
+              symbols to protect your account.
+            </p>
           </div>
-          <div>
-            <Link href="/login">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">Login</p>
-            </Link>
-          </div>
+          <Image
+            src={"/images/reset_password.png"}
+            alt=""
+            width={511}
+            height={520}
+            className="mt-2 h-auto max-h-[36vh] w-auto object-contain"
+          />
         </div>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="mt-10 flex min-h-screen flex-wrap items-start justify-center gap-16">
-            <div className="flex flex-col">
-              <div>
-                <p className="font-ruso text-[40px] font-bold leading-[48px]">Reset password</p>
-                <p className="mt-2 font-sans text-[18px] font-normal leading-[27px]">
-                  Stronger password, stronger protection! Combine <br /> uppercase, lowercase,
-                  numbers, and symbols to <br /> protect your account.
-                </p>
-              </div>
-              <div>
-                <Image
-                  src={"/images/reset_password.png"}
-                  alt="signup image"
-                  width={511.06}
-                  height={519.77}
-                />
-              </div>
-            </div>
-            <Card className="w-[480px] p-10">
+        <Card className="w-full max-w-[440px] p-6">
               <CardContent className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="password" className="font-label">
@@ -108,12 +87,12 @@ export default function ResetPasswordPage() {
                   <Input
                     id="password"
                     type="password"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  <span className="font-sans text-[12px] text-grey-40">
+                  <span className="text-grey-40 font-sans text-[12px]">
                     Password must be at least 8 character long
                   </span>
                   {formik.touched.password && formik.errors.password ? (
@@ -127,7 +106,7 @@ export default function ResetPasswordPage() {
                   <Input
                     id="confirm_password"
                     type="password"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.confirm_password}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -161,10 +140,8 @@ export default function ResetPasswordPage() {
                   )}
                 </Button>
               </CardContent>
-            </Card>
-          </div>
-        </form>
-      </section>
+        </Card>
+      </form>
     </AuthLayout>
   );
 }

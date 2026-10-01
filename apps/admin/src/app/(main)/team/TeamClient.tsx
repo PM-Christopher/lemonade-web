@@ -10,6 +10,7 @@ import { RootState } from "@/redux/store";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useTeamQuery } from "@/features/team/queries";
+import type { TeamMember } from "@/features/team/api";
 import dynamic from "next/dynamic";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
@@ -24,7 +25,7 @@ function TeamClient() {
   const router = useRouter();
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage] = useState(10);
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("search");
 
@@ -47,11 +48,8 @@ function TeamClient() {
     const admins = teamData?.admins;
     const q = query?.toLowerCase()?.trim();
     if (!q) return admins;
-    return admins?.filter((user: any) => {
-      return (
-        user?.name?.toLowerCase().includes(q) ||
-        user?.email?.toLowerCase().includes(q)
-      );
+    return admins?.filter((user: TeamMember) => {
+      return user?.name?.toLowerCase().includes(q) || user?.email?.toLowerCase().includes(q);
     });
   }, [query, teamData]);
 
@@ -83,19 +81,19 @@ function TeamClient() {
     <MainLayout>
       <section className="mt-[24px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
-          <p className={"text-[16px] font-semiBold"}>
+          <p className={"font-semiBold text-[16px]"}>
             {teamData?.admins?.length || 0} Team Members
           </p>
           <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
+            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
               <div>
-                <SearchIcon className={"h-[12px] w-[12px] text-grey-40"} />
+                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
               </div>
               <div className="w-full">
                 <input
                   id="search"
                   type="text"
-                  className="w-full rounded-xl bg-light-grey py-4 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search member, ID..."
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -103,32 +101,24 @@ function TeamClient() {
             </div>
             <div>
               <Button
-                className={
-                  "flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"
-                }
+                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
                 onClick={toggelModal}
               >
                 <PlusIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"}>
-                  Add Member
-                </p>
+                <p className={"text-[16px] font-medium text-white"}>Add Member</p>
               </Button>
             </div>
           </div>
         </div>
         <div className={"flex flex-col px-[20px]"}>
-          <div
-            className={
-              "flex flex-col rounded-[12px] border-[1px] border-grey-20"
-            }
-          >
+          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-mid-grey">
                     {teamHeaders.map((header, idx) => (
                       <th
-                        className="p-4 text-left text-[12px] font-semiBold text-text-grey"
+                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
                         key={idx}
                       >
                         {header}
@@ -138,27 +128,19 @@ function TeamClient() {
                 </thead>
                 <tbody>
                   {paginatedData && paginatedData.length > 0 ? (
-                    paginatedData.map((row: any, index: any) => (
+                    paginatedData.map((row: TeamMember, index: number) => (
                       <tr
                         key={index}
-                        className="h-[72px] cursor-pointer border-b border-grey-20"
+                        className="border-grey-20 h-[72px] cursor-pointer border-b"
                         onClick={() => router.push(`/team/${row.id}`)}
                       >
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {row.unique_id}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {row.name}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {row.email}
-                        </td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>{row.name}</td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {capitalizeWords(row.role)}
                         </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {row.created_at}
-                        </td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>{row.created_at}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {capitalizeWords(row.status)}
                         </td>

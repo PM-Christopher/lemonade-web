@@ -10,7 +10,7 @@ const TribeCard = ({
   threads,
   members,
 }: {
-  image: any;
+  image: string;
   title: string;
   date: string;
   category: string;
@@ -19,7 +19,7 @@ const TribeCard = ({
 }) => {
   return (
     <div className="px-[24px]">
-      <div className="mb-2 rounded-[16px] border-[1px] border-grey-30 bg-mid-grey">
+      <div className="border-grey-30 bg-mid-grey mb-2 rounded-[16px] border-[1px]">
         <div className="flex items-center justify-between rounded-[16px] bg-white p-4">
           <div className="flex items-center gap-2">
             <div>
@@ -30,28 +30,28 @@ const TribeCard = ({
                 <p className="font-sans text-[14px] font-semibold">{title}</p>
               </div>
               <div>
-                <p className="font-sans text-[12px] font-normal text-text-grey">
+                <p className="text-text-grey font-sans text-[12px] font-normal">
                   Created on {date}
                 </p>
               </div>
             </div>
           </div>
-          <ChevronRight className={"w-[10px] text-text-grey"} />
+          <ChevronRight className={"text-text-grey w-[10px]"} />
         </div>
-        <div className="flex justify-between rounded-b-[16px] bg-mid-grey p-4 py-6">
+        <div className="bg-mid-grey flex justify-between rounded-b-[16px] p-4 py-6">
           <div>
-            <p className="font-semi-normal font-sans text-[12px] leading-[14.4px] text-black-light">
+            <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
               {category}
             </p>
           </div>
           <div>
-            <p className="font-semi-normal font-sans text-[12px] leading-[14.4px] text-black-light">
+            <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
               {members || 0} Members
             </p>
           </div>
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            <p className="font-semi-normal font-sans text-[12px] leading-[14.4px] text-black-light">
+            <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
               {threads || 0}threads
             </p>
           </div>

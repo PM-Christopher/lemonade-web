@@ -73,13 +73,22 @@ export const businessesApi = {
     browserApi.patch<BusinessDetailResponse>(buildPath(adminBusinessesRoutes.APPROVE, { id }), {}),
 
   rejectBusiness: (id: string, payload: RejectOrSuspendPayload) =>
-    browserApi.patch<BusinessDetailResponse>(buildPath(adminBusinessesRoutes.REJECT, { id }), payload),
+    browserApi.patch<BusinessDetailResponse>(
+      buildPath(adminBusinessesRoutes.REJECT, { id }),
+      payload,
+    ),
 
   suspendBusiness: (id: string, payload: RejectOrSuspendPayload) =>
-    browserApi.patch<BusinessDetailResponse>(buildPath(adminBusinessesRoutes.SUSPEND, { id }), payload),
+    browserApi.patch<BusinessDetailResponse>(
+      buildPath(adminBusinessesRoutes.SUSPEND, { id }),
+      payload,
+    ),
 
   reactivateBusiness: (id: string) =>
-    browserApi.patch<BusinessDetailResponse>(buildPath(adminBusinessesRoutes.REACTIVATE, { id }), {}),
+    browserApi.patch<BusinessDetailResponse>(
+      buildPath(adminBusinessesRoutes.REACTIVATE, { id }),
+      {},
+    ),
 
   deleteBusiness: (id: string) =>
     browserApi.delete<{ deleted: boolean }>(buildPath(adminBusinessesRoutes.DELETE, { id })),

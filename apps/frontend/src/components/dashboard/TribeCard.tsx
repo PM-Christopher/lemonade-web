@@ -11,7 +11,7 @@ type TribeIF = {
 const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
   const router = useRouter();
   return (
-    <div className="flex h-[200px] w-[422px] flex-col rounded-2xl bg-light-yellow p-4 shadow-none">
+    <div className="bg-light-yellow flex w-full flex-col rounded-2xl p-4 shadow-none">
       <div className="flex-shrink-0">
         <Image
           src={getSafeImageSrc(tribe?.image, "/images/tribe_1.png")}
@@ -22,12 +22,12 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
         />
       </div>
 
-      <div className="mt-2 flex flex-1 justify-between">
+      <div className="mt-2 flex justify-between">
         <div className="min-w-0 flex-1">
-          <p className="truncate font-sans text-xs font-semibold text-text-grey">
+          <p className="text-text-grey text-meta truncate font-sans font-semibold">
             {tribe?.tribe_name}
           </p>
-          <p className="mt-1 max-w-[329.33px] truncate text-ellipsis font-sans text-xs font-semibold leading-relaxed">
+          <p className="text-body-s mt-1 max-w-[329.33px] truncate font-sans font-semibold text-ellipsis">
             {tribe?.description}
           </p>
         </div>
@@ -36,7 +36,7 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
         </div>
       </div>
 
-      <div className="mt-auto flex justify-between pt-2">
+      <div className="mt-3 flex justify-between">
         <div className="flex gap-2">
           <div className="flex items-center justify-between gap-1">
             <Image
@@ -46,7 +46,9 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
               height={16}
               className="h-4 w-4"
             />
-            <p className="font-sans text-sm font-semi-normal text-light-black">{tribe?.likes}</p>
+            <p className="font-semi-normal text-light-black text-body-s font-sans">
+              {tribe?.likes}
+            </p>
           </div>
           <div className="flex items-center justify-between gap-1">
             <Image
@@ -56,15 +58,17 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
               height={16}
               className="h-4 w-4"
             />
-            <p className="font-sans text-sm font-semi-normal text-light-black">{tribe?.comments}</p>
+            <p className="font-semi-normal text-light-black text-body-s font-sans">
+              {tribe?.comments}
+            </p>
           </div>
         </div>
 
         <div
           className="flex cursor-pointer items-center justify-between gap-1 transition-opacity hover:opacity-80"
-          onClick={() => router.push(`tribe/${tribe?.slug}`)}
+          onClick={() => router.push(`/tribe/${tribe?.slug}`)}
         >
-          <p className="font-sans text-sm font-semi-normal text-light-green">View</p>
+          <p className="font-semi-normal text-light-green text-body-s font-sans">View</p>
           <Image
             src={"/images/arrow-left.png"}
             alt="arrow left"

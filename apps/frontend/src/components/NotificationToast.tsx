@@ -11,7 +11,7 @@ const NotificationToast = ({ payload }: { payload: Notification }) => {
     if (payload) {
       toast.custom((t) => (
         <div
-          className={`pointer-events-auto flex w-full max-w-sm rounded-xl bg-gradient-green p-4 shadow-lg ring-1 ring-black ring-opacity-5 transition-all ${
+          className={`bg-gradient-green ring-opacity-5 pointer-events-auto flex w-full max-w-sm rounded-xl p-4 shadow-lg ring-1 ring-black transition-all ${
             t.visible ? "animate-enter" : "animate-leave"
           }`}
         >
@@ -34,7 +34,7 @@ const NotificationToast = ({ payload }: { payload: Notification }) => {
   // Show persistent preview when no payload
   if (!payload) {
     return (
-      <div className="w-full max-w-sm rounded-xl bg-white p-4 shadow-lg ring-1 ring-black ring-opacity-5">
+      <div className="ring-opacity-5 w-full max-w-sm rounded-xl bg-white p-4 shadow-lg ring-1 ring-black">
         <p className="text-sm font-semibold text-gray-900">Sample Title</p>
         <p className="mt-1 text-sm text-gray-600">This is a sample body text for preview.</p>
       </div>

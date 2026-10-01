@@ -9,12 +9,7 @@ interface DisputeJobModalProps {
   toggleSubmit: () => void;
 }
 
-const DisputeJobModal: React.FC<DisputeJobModalProps> = ({
-  isOpen,
-  toggle,
-  job,
-  toggleSubmit,
-}) => {
+const DisputeJobModal: React.FC<DisputeJobModalProps> = ({ isOpen, toggle, job, toggleSubmit }) => {
   const toggleModal = () => {
     toggle();
     toggleSubmit();
@@ -35,27 +30,21 @@ const DisputeJobModal: React.FC<DisputeJobModalProps> = ({
           <div className="mt-2 flex flex-col items-center">
             <div className={"flex flex-col gap-[16px]"}>
               <p className="text-[14px] font-normal">
-                It&apos;s best to avoid disputing services unless the business
-                owner has breached the terms of your agreement.
+                It&apos;s best to avoid disputing services unless the business owner has breached
+                the terms of your agreement.
               </p>
 
-              <p className={"text-[14px] font-normal"}>
-                To ensure your dispute is valid
-              </p>
+              <p className={"text-[14px] font-normal"}>To ensure your dispute is valid</p>
 
               <ol className="list-decimal space-y-[16px] pl-5 font-sans text-[14px] font-normal">
-                <li>
-                  Briefly explain the issue and how the agreement was breached.
-                </li>
+                <li>Briefly explain the issue and how the agreement was breached.</li>
                 <li>Upload clear photos as evidence.</li>
-                <li>
-                  We&apos;ll analyze your claim to determine a fair resolution.
-                </li>
+                <li>We&apos;ll analyze your claim to determine a fair resolution.</li>
               </ol>
             </div>
             <div className="mt-[16px] flex w-full justify-center gap-3">
               <Button
-                className="h-[48px] w-full rounded-[12px] bg-gradient-green p-[14px] px-[48px] shadow-custom-bottom"
+                className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
                 onClick={toggleModal}
               >
                 I understand

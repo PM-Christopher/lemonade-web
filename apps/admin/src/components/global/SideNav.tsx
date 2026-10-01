@@ -6,14 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
-import { useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 function SideNav({}) {
   const pathname = usePathname();
   const profileActive = pathname === "/profile" || pathname.startsWith("/profile");
   const dispatch = useAppDispatch();
-  const { user } = useSelector((state: any) => state.auth);
   const router = useRouter();
   const logoutMutation = useLogoutMutation();
   const { data: currentAdmin } = useCurrentAdminQuery();
@@ -39,7 +37,7 @@ function SideNav({}) {
     });
   };
   return (
-    <aside className="bg-gray-20 flex w-64 flex-col gap-[20px] border-r-[1px] border-r-grey-20 bg-white p-4">
+    <aside className="bg-gray-20 border-r-grey-20 flex w-64 flex-col gap-[20px] border-r-[1px] bg-white p-4">
       <div className="mb-8 text-2xl font-bold">
         <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
       </div>
@@ -53,7 +51,7 @@ function SideNav({}) {
               <li key={item.path}>
                 <a
                   href={item.path}
-                  className={`block w-[192px] rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal hover:bg-link-color hover:font-semiBold hover:text-black-light ${
+                  className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-[192px] rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal ${
                     isActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
                   }`}
                 >
@@ -64,10 +62,10 @@ function SideNav({}) {
           })}
         </ul>
       </nav>
-      <div className="mt-auto border-t-[1px] border-t-grey-20 pb-[16px] pt-[16px]">
+      <div className="border-t-grey-20 mt-auto border-t-[1px] pt-[16px] pb-[16px]">
         <a
           href={"/profile"}
-          className={`block w-[192px] rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal hover:bg-link-color hover:font-semiBold hover:text-black-light ${
+          className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-[192px] rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal ${
             profileActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
           }`}
         >
@@ -77,7 +75,7 @@ function SideNav({}) {
           onClick={() => {
             handleLogout();
           }}
-          className="block rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal text-red-1 hover:bg-red-1 hover:text-white"
+          className="text-red-1 hover:bg-red-1 block rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal hover:text-white"
         >
           Logout
         </div>

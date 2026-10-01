@@ -12,10 +12,7 @@ import type {
 } from "./api";
 
 export const dashboardServerApi = {
-  getTribes: () =>
-    backendApi.get<DashboardTribesResponse>(userDashboardRoutes.TRIBES),
-  getEvents: () =>
-    backendApi.get<DashboardEventsResponse>(userDashboardRoutes.EVENTS),
-  getBusinesses: () =>
-    backendApi.get<DashboardBusinessesResponse>(userDashboardRoutes.BUSINESSES),
+  getTribes: () => backendApi.get<DashboardTribesResponse>(userDashboardRoutes.TRIBES),
+  getEvents: () => backendApi.get<DashboardEventsResponse>(userDashboardRoutes.EVENTS),
+  getBusinesses: () => backendApi.get<DashboardBusinessesResponse>(userDashboardRoutes.BUSINESSES),
 };

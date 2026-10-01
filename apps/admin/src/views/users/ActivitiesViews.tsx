@@ -1,7 +1,11 @@
 import React from "react";
-import { CalendarIcon, ChevronDown } from "lucide-react";
+import type { AccountInfoResponse } from "@/features/user/api";
 
-function ActivitiesViews({ userDetail }: any) {
+interface ActivitiesViewsProps {
+  userDetail: AccountInfoResponse | undefined;
+}
+
+function ActivitiesViews({ userDetail }: ActivitiesViewsProps) {
   return (
     <>
       <div className={"flex flex-col py-[20px]"}>
@@ -20,12 +24,12 @@ function ActivitiesViews({ userDetail }: any) {
                     </div>
                 </div> */}
 
-        <div className="pb-[24px] pt-[16px]">
+        <div className="pt-[16px] pb-[24px]">
           <div className={"flex flex-col"}>
-            {userDetail?.logs?.map((item: any) => (
+            {userDetail?.logs?.map((item) => (
               <div className="flex justify-between px-[24px] py-[16px]" key={item?.id}>
-                <p className={"text-[14px] font-medium text-light-black"}>{item?.message}</p>
-                <p className={"text-[14px] font-normal text-text-grey"}>{item?.created_at}</p>
+                <p className={"text-light-black text-[14px] font-medium"}>{item?.message}</p>
+                <p className={"text-text-grey text-[14px] font-normal"}>{item?.created_at}</p>
               </div>
             ))}
 

@@ -86,14 +86,14 @@ const CommentsSection: React.FC<CommentsProps> = ({
     comment,
     isReply = false,
   }) => (
-    <div className={`${isReply ? "ml-12 mt-3" : "mt-4"} first:mt-0`}>
+    <div className={`${isReply ? "mt-3 ml-12" : "mt-4"} first:mt-0`}>
       <div className="flex gap-3">
         {/* Avatar */}
         <div className="flex-shrink-0">
           <div
             className={`${
               isReply ? "h-8 w-8" : "h-10 w-10"
-            } flex items-center justify-center overflow-hidden rounded-full border border-grey-90 bg-gray-200 text-[12px] font-semibold text-gray-700`}
+            } border-grey-90 flex items-center justify-center overflow-hidden rounded-full border bg-gray-200 text-[12px] font-semibold text-gray-700`}
           >
             {comment.user.avatar ? (
               <Image
@@ -113,7 +113,7 @@ const CommentsSection: React.FC<CommentsProps> = ({
         <div className="min-w-0 flex-1">
           {/* User Info */}
           <div className="mb-1 flex items-center gap-2">
-            <span className="text-sm font-semibold text-black-light">{comment.user.username}</span>
+            <span className="text-black-light text-sm font-semibold">{comment.user.username}</span>
             {comment.user.verified && (
               <Image src="/images/verified.png" alt="verified" width={12} height={12} />
             )}
@@ -122,14 +122,14 @@ const CommentsSection: React.FC<CommentsProps> = ({
             {comment?.user_id === user?.id && (
               <>
                 <DotIcon className="h-1 w-1 text-gray-400" />
-                <span className="text-xs font-medium text-light-green">Author</span>
+                <span className="text-light-green text-xs font-medium">Author</span>
               </>
             )}
           </div>
 
           {/* Comment Body */}
           <div className="mb-3">
-            <p className="text-sm leading-relaxed text-black-light">{comment.body}</p>
+            <p className="text-black-light text-sm leading-relaxed">{comment.body}</p>
           </div>
 
           {/* Action Buttons */}
@@ -192,7 +192,7 @@ const CommentsSection: React.FC<CommentsProps> = ({
     <div className="mt-6 border-t border-gray-100 pt-4">
       {/* Comments Header */}
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-base font-semibold text-black-light">Comments ({comments.length})</h3>
+        <h3 className="text-black-light text-base font-semibold">Comments ({comments.length})</h3>
         {/* <button
                     onClick={onToggleVisibility}
                     className="text-sm text-gray-500 hover:text-light-green transition-colors"

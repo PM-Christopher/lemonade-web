@@ -68,6 +68,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
     },
     enableReinitialize: true,
     validationSchema: createPromotionSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       if (isLoggedIn) {
         // NOTE (found, not fixed — pre-existing bug, see the NOTE on

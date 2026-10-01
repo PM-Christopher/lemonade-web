@@ -9,13 +9,12 @@ import { FaSpinner } from "react-icons/fa6";
 interface SuspendModalProps {
   isOpen: boolean;
   toggle: () => void;
-  id?: number;
-  reload?: any;
+  id?: string | number;
+  reload?: () => void;
 }
 
 function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
-  const [selectedOption, setSelectedOption] =
-    useState<string>("policy-violation");
+  const [selectedOption, setSelectedOption] = useState<string>("policy-violation");
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const suspendUserMutation = useSuspendUserMutation(id);
 
@@ -28,7 +27,7 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
       suspendUserMutation.mutate(undefined, {
         onSuccess: () => {
           toggle();
-          reload();
+          reload?.();
         },
       });
     }
@@ -43,37 +42,33 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Suspend user</DialogTitle>
-        <div className="w-[360px] rounded-[12px] bg-white pb-[4px] pt-[16px]">
+        <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
           <div className={"px-[16px] py-[4px]"}>
             <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] font-semibold leading-[27px]">
-                Suspend user
-              </p>
+              <p className="font-sans text-[18px] leading-[27px] font-semibold">Suspend user</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
             </div>
           </div>
           <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
-            <p className={"text-[14px] font-normal text-light-black"}>
-              Are you sure you want to suspend this user? They will no longer
-              have access to their account and other account activities.
+            <p className={"text-light-black text-[14px] font-normal"}>
+              Are you sure you want to suspend this user? They will no longer have access to their
+              account and other account activities.
             </p>
-            <p className={"text-[14px] font-normal text-text-grey"}>Reason</p>
+            <p className={"text-text-grey text-[14px] font-normal"}>Reason</p>
             <select
-              className="rounded-[12px] bg-light-grey p-[12px]"
+              className="bg-light-grey rounded-[12px] p-[12px]"
               value={selectedOption}
               onChange={handleChange}
             >
               <option value={"policy-violation"}>Policy violation</option>
-              <option value={"inappropriate-behaviour"}>
-                Inappropriate behaviour
-              </option>
+              <option value={"inappropriate-behaviour"}>Inappropriate behaviour</option>
             </select>
             <div className={"flex justify-between gap-[10px]"}>
               <button
                 className={
-                  "h-[48px] w-[156px] rounded-[12px] border-[1px] border-light-grey-50 bg-white py-[14px]"
+                  "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white py-[14px]"
                 }
                 onClick={toggle}
               >
@@ -81,7 +76,7 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
               </button>
               <button
                 className={
-                  "h-[48px] w-[156px] rounded-[12px] border-[1px] border-red-2 bg-red-1 py-[14px]"
+                  "border-red-2 bg-red-1 h-[48px] w-[156px] rounded-[12px] border-[1px] py-[14px]"
                 }
                 onClick={SubmitAction}
               >
@@ -90,9 +85,7 @@ function SuspendModal({ isOpen, toggle, id, reload }: SuspendModalProps) {
                     <FaSpinner size={20} className="animate-spin text-white" />
                   </div>
                 ) : (
-                  <p className={"text-[16px] font-medium text-white"}>
-                    Suspend
-                  </p>
+                  <p className={"text-[16px] font-medium text-white"}>Suspend</p>
                 )}
               </button>
             </div>

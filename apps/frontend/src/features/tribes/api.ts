@@ -184,10 +184,7 @@ export const tribesApi = {
     browserApi.get<ThreadsResponse>(buildPath(userTribesRoutes.THREADS_LIST, { forum: id })),
 
   filterThreads: (id: number | string, data: { filter: string }) =>
-    browserApi.post<ThreadsResponse>(
-      buildPath(userTribesRoutes.THREADS_SORT, { forum: id }),
-      data,
-    ),
+    browserApi.post<ThreadsResponse>(buildPath(userTribesRoutes.THREADS_SORT, { forum: id }), data),
 
   viewProfile: (id: number | string) =>
     browserApi.get<ViewProfileResponse>(buildPath(userThreadsRoutes.VIEW_PROFILE, { id })),
@@ -199,15 +196,10 @@ export const tribesApi = {
     browserApi.get<ThreadsResponse>(buildPath(userThreadsRoutes.PINNED, { id })),
 
   reportThread: (id: number | string, data: ReportThreadPayload) =>
-    browserApi.post<{ report: unknown }>(
-      buildPath(userThreadsRoutes.REPORT, { id }),
-      data,
-    ),
+    browserApi.post<{ report: unknown }>(buildPath(userThreadsRoutes.REPORT, { id }), data),
 
   deleteThread: (id: number | string) =>
-    browserApi.delete<DeleteThreadResponse>(
-      buildPath(userThreadsRoutes.DELETE, { id }),
-    ),
+    browserApi.delete<DeleteThreadResponse>(buildPath(userThreadsRoutes.DELETE, { id })),
 
   searchTribe: (data: { search: string }) =>
     browserApi.post<SearchTribeResponse>(userTribesRoutes.SEARCH, data),

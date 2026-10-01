@@ -1,21 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
-import {
-  CalendarIcon,
-  ChevronDown,
-  SearchIcon,
-  UploadIcon,
-} from "lucide-react";
+import { SearchIcon, UploadIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import DataCard from "@/components/global/DataCard";
 import { walletHeaders } from "@/data/tableData";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
-import {
-  useWalletDataQuery,
-  useWithdrawalRequestsQuery,
-} from "@/features/wallet/queries";
+import { useWalletDataQuery, useWithdrawalRequestsQuery } from "@/features/wallet/queries";
+import type { WithdrawalRequestRow } from "@/features/wallet/api";
 import { RootState } from "@/redux/store";
 import dayjs from "dayjs";
 
@@ -58,7 +51,7 @@ function WalletManagementClient() {
   // narrow down client-side at that point.
   const filteredData = isServerPaginated
     ? withdrawalRequests?.history || []
-    : withdrawalRequests?.history?.filter((row: any) =>
+    : withdrawalRequests?.history?.filter((row: WithdrawalRequestRow) =>
         row?.fullname?.toLowerCase().includes(searchTerm.toLowerCase()),
       ) || [];
 
@@ -119,13 +112,13 @@ function WalletManagementClient() {
     <MainLayout>
       <section className="mt-[20px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
-          <p className={"text-[16px] font-semiBold"}>
+          <p className={"font-semiBold text-[16px]"}>
             {withdrawalRequests?.meta?.total ?? withdrawalRequests?.history?.length ?? 0} Wallets
           </p>
           <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
+            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
               <div>
-                <SearchIcon className={"h-[12px] w-[12px] text-grey-40"} />
+                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
               </div>
               <div className="w-full">
                 <input
@@ -133,7 +126,7 @@ function WalletManagementClient() {
                   type="text"
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="w-full rounded-xl bg-light-grey py-4 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search guest name, email address"
                 />
               </div>
@@ -165,9 +158,7 @@ function WalletManagementClient() {
             </div> */}
             <div>
               <Button
-                className={
-                  "flex h-[40px] rounded-[12px] border-step-color bg-gradient-green"
-                }
+                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
               >
                 <UploadIcon className={"h-[15px] w-[15px] text-white"} />
                 <p className={"text-[16px] font-medium text-white"}>Export</p>
@@ -176,25 +167,14 @@ function WalletManagementClient() {
           </div>
         </div>
         <div className={"flex flex-col px-[20px]"}>
-          <div
-            className={
-              "flex flex-col rounded-[12px] border-[1px] border-grey-20"
-            }
-          >
-            <div
-              className={
-                "grid grid-cols-3 gap-[24px] px-[12px] pb-[16px] pt-[8px]"
-              }
-            >
+          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
+            <div className={"grid grid-cols-3 gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
               <DataCard
                 title={"Wallet Revenue"}
                 count={walletData?.wallet_revenue || 0}
                 isPrice={true}
               />
-              <DataCard
-                title={"Total Wallets"}
-                count={walletData?.total_wallets || 0}
-              />
+              <DataCard title={"Total Wallets"} count={walletData?.total_wallets || 0} />
               <DataCard
                 title={"Withdrawal Threshold"}
                 count={walletData?.withdrawal_threshold || 0}
@@ -209,7 +189,7 @@ function WalletManagementClient() {
                   <tr className="bg-mid-grey">
                     {walletHeaders.map((header, idx) => (
                       <th
-                        className="p-4 text-left text-[12px] font-semiBold text-text-grey"
+                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
                         key={idx}
                       >
                         {header}
@@ -219,36 +199,24 @@ function WalletManagementClient() {
                 </thead>
                 <tbody>
                   {currentItems.length > 0 ? (
-                    currentItems.map((row: any, index: any) => (
+                    currentItems.map((row: WithdrawalRequestRow, index: number) => (
                       <tr
                         key={index}
-                        className="h-[72px] cursor-pointer border-b border-grey-20"
-                        onClick={() =>
-                          (window.location.href = `/wallet-management/${row.id}`)
-                        }
+                        className="border-grey-20 h-[72px] cursor-pointer border-b"
+                        onClick={() => (window.location.href = `/wallet-management/${row.id}`)}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {row?.txn_id ?? "N/A"}
                         </td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>₦{row.amount}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          {row.fullname}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          ₦{row.amount}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {dayjs(row.created_at).format(
-                            "YYYY-MM-DD hh:mm:ss A",
-                          )}
+                          {dayjs(row.created_at).format("YYYY-MM-DD hh:mm:ss A")}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {dayjs(row.date_paid).format("YYYY-MM-DD hh:mm:ss A")}
                         </td>
-                        <td
-                          className={
-                            "p-4 font-sans text-sm font-medium capitalize"
-                          }
-                        >
+                        <td className={"p-4 font-sans text-sm font-medium capitalize"}>
                           {row.status}
                         </td>
                       </tr>
@@ -267,11 +235,11 @@ function WalletManagementClient() {
               </table>
 
               {/* Pagination */}
-              <div className="flex items-center justify-between rounded-bl-lg rounded-br-lg bg-mid-grey p-4 px-10">
+              <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
                 <button
                   disabled={currentPage === 1}
                   onClick={() => handlePageChange(currentPage - 1)}
-                  className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+                  className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
                 >
                   Previous
                 </button>
@@ -281,9 +249,7 @@ function WalletManagementClient() {
                       key={page}
                       onClick={() => handlePageChange(page)}
                       className={`h-8 w-8 rounded-lg p-2 text-sm font-medium ${
-                        page === currentPage
-                          ? "bg-light-white text-text-grey"
-                          : "text-gray-500"
+                        page === currentPage ? "bg-light-white text-text-grey" : "text-gray-500"
                       }`}
                     >
                       {page}
@@ -293,7 +259,7 @@ function WalletManagementClient() {
                 <button
                   disabled={currentPage === totalPages || totalPages === 0}
                   onClick={() => handlePageChange(currentPage + 1)}
-                  className="flex h-9 items-center gap-2 rounded-lg border-2 border-light-grey-50 p-2 text-gray-500 disabled:opacity-50"
+                  className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
                 >
                   Next
                 </button>
@@ -302,10 +268,7 @@ function WalletManagementClient() {
           </div>
         </div>
       </section>
-      <WalletThresholdModal
-        isOpen={editThreshold}
-        toggle={toggleEditThreshold}
-      />
+      <WalletThresholdModal isOpen={editThreshold} toggle={toggleEditThreshold} />
     </MainLayout>
   );
 }

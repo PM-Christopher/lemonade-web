@@ -23,7 +23,8 @@ export function useRejectBusinessMutation(id: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: RejectOrSuspendPayload) => businessesApi.rejectBusiness(id as string, payload),
+    mutationFn: (payload: RejectOrSuspendPayload) =>
+      businessesApi.rejectBusiness(id as string, payload),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: businessKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: businessKeys.lists() });
@@ -35,7 +36,8 @@ export function useSuspendBusinessMutation(id: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: RejectOrSuspendPayload) => businessesApi.suspendBusiness(id as string, payload),
+    mutationFn: (payload: RejectOrSuspendPayload) =>
+      businessesApi.suspendBusiness(id as string, payload),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: businessKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: businessKeys.lists() });

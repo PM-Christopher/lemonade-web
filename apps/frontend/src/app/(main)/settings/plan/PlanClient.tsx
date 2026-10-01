@@ -18,12 +18,9 @@ import { RootState } from "@/redux/store";
 // Off the initial bundle — both are only needed once a plan-change is
 // triggered or a payment completes (docs/ARCHITECTURE.md Phase 6,
 // "lazy-load heavy leaf UI").
-const UpgradePlanModal = dynamic(
-  () => import("@/components/settings/Modal/UpgradePlanModal"),
-  {
-    ssr: false,
-  },
-);
+const UpgradePlanModal = dynamic(() => import("@/components/settings/Modal/UpgradePlanModal"), {
+  ssr: false,
+});
 const VerifiedSubscriptionModal = dynamic(
   () => import("@/components/settings/Modal/VerifiedSubscriptionModal"),
   { ssr: false },
@@ -77,26 +74,23 @@ const PlanClient = () => {
     };
   }, [trxref, dispatch, toggleVerMembership]);
 
-  const { data: verData, loading: verifying } =
-    useTransactionPolling(pollingConfig);
+  const { data: verData, loading: verifying } = useTransactionPolling(pollingConfig);
 
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
+        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Plan
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Plan</p>
           </div>
         </div>
 
         <section className="mt-[48px] flex flex-col items-center">
-          <div className="flex flex-col gap-[48px] laptop:flex-row">
+          <div className="laptop:flex-row flex flex-col gap-[48px]">
             {loading ? (
               <SubscriptionsSkeleton count={2} dataList={7} />
             ) : (

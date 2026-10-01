@@ -142,10 +142,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
 
   const hasMoreReviews = displayCount < reviews.length;
 
-  const handleButtonsClick = (
-    type: "call" | "web" | "email",
-    value: string,
-  ) => {
+  const handleButtonsClick = (type: "call" | "web" | "email", value: string) => {
     let href = "";
 
     switch (type) {
@@ -167,15 +164,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
-          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]">
-            <ChevronLeft
-              className="cursor-pointer"
-              onClick={() => router.back()}
-            />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Business details
-            </p>
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
+            <ChevronLeft className="cursor-pointer" onClick={() => router.back()} />
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Business details</p>
           </div>
         </div>
         <section className="mt-4 flex min-h-screen flex-col items-center gap-4">
@@ -184,7 +176,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
           ) : (
             <>
               <div
-                className="relative w-full rounded-[12px] bg-white bg-cover bg-center bg-no-repeat p-[16px] laptop:w-[640px]"
+                className="laptop:w-[640px] relative w-full rounded-[12px] bg-white bg-cover bg-center bg-no-repeat p-[16px]"
                 style={{ backgroundImage: `url('/images/business-bg.png')` }}
               >
                 <div className="flex flex-col">
@@ -192,16 +184,14 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     <Image
                       src={"/images/business/jobLogo.png"}
                       alt="logo"
-                      className="flex justify-center rounded-[16px] border-[1px] border-step-color"
+                      className="border-step-color flex justify-center rounded-[16px] border-[1px]"
                       width={64}
                       height={64}
                     />
                   </div>
                   <div className="mt-[8px] flex flex-col justify-center">
-                    <p className="text-center text-[16px] font-semibold">
-                      {business?.name}
-                    </p>
-                    <p className="text-center text-[14px] font-semi-normal text-text-grey">
+                    <p className="text-center text-[16px] font-semibold">{business?.name}</p>
+                    <p className="font-semi-normal text-text-grey text-center text-[14px]">
                       {business?.city}, {business?.country}
                     </p>
                     {business?.service_rate ? (
@@ -213,17 +203,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     )}
                   </div>
                   <div className="mt-[8px] flex justify-center">
-                    <div className="flex w-fit items-center justify-center gap-1 rounded-xl bg-mid-grey p-2">
+                    <div className="bg-mid-grey flex w-fit items-center justify-center gap-1 rounded-xl p-2">
                       <div>
-                        <Image
-                          src={"/images/medal.png"}
-                          alt="medal"
-                          width={16}
-                          height={16}
-                        />
+                        <Image src={"/images/medal.png"} alt="medal" width={16} height={16} />
                       </div>
                       <div>
-                        <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-primary-black">
+                        <p className="font-semi-normal text-primary-black font-sans text-[14px] leading-[21px]">
                           {formatDecimal(business?.rating ?? 0, 1)}
                         </p>
                       </div>
@@ -233,31 +218,27 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   {!business?.owner && !business?.hasActiveServiceRequest && (
                     <div className="mt-[16px] flex justify-center">
                       <Button
-                        className="w-fit bg-gradient-green p-[14px] px-[24px] shadow-custom-bottom"
+                        className="bg-gradient-green shadow-custom-bottom w-fit p-[14px] px-[24px]"
                         onClick={toggleRequestModal}
                       >
-                        <p className="font-normal text-white">
-                          Request service
-                        </p>
+                        <p className="font-normal text-white">Request service</p>
                       </Button>
                     </div>
                   )}
 
                   {business?.hasActiveServiceRequest && (
                     <div className="mt-4 flex justify-center">
-                      <div className="flex items-center rounded-xl bg-gradient-green px-4 py-2 shadow-custom-bottom">
+                      <div className="bg-gradient-green shadow-custom-bottom flex items-center rounded-xl px-4 py-2">
                         <p className="font-medium text-white">In Progress</p>
                       </div>
                     </div>
                   )}
                 </div>
                 {business?.owner && business.hasBoost && (
-                  <div className="absolute right-0 top-0 rounded-bl-[12px] rounded-tr-[12px] bg-light-green-10">
+                  <div className="bg-light-green-10 absolute top-0 right-0 rounded-tr-[12px] rounded-bl-[12px]">
                     <div className="flex items-center gap-[4px] p-[4px] px-[8px]">
                       <RocketIconGreen />
-                      <p className="text-[14px] font-semi-normal text-mid-green">
-                        Boosted
-                      </p>
+                      <p className="font-semi-normal text-mid-green text-[14px]">Boosted</p>
                     </div>
                   </div>
                 )}
@@ -267,10 +248,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                 <div className="mt-[24px] flex items-center justify-center gap-8">
                   <Link href={`/business/${id}/jobs`}>
                     <div className="flex flex-col items-center gap-[8px]">
-                      <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                      <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                         <CaseIcon />
                       </div>
-                      <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                         Jobs
                       </p>
                     </div>
@@ -280,20 +261,20 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       className="flex cursor-pointer flex-col items-center gap-[8px]"
                       onClick={toggleBoostDetails}
                     >
-                      <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                      <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                         <RocketIconGrey />
                       </div>
-                      <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                         Boost
                       </p>
                     </div>
                   ) : (
                     <Link href={`/business/${id}/boost-business`}>
                       <div className="flex flex-col items-center gap-[8px]">
-                        <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                        <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                           <RocketIcon />
                         </div>
-                        <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                           Boost
                         </p>
                       </div>
@@ -301,22 +282,22 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   )}
                   <Link href={`/business/${id}/edit-business`}>
                     <div className="flex flex-col items-center gap-[8px]">
-                      <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                      <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                         <PencilIcon />
                       </div>
                       <div>
-                        <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                           Edit
                         </p>
                       </div>
                     </div>
                   </Link>
                   <div className="flex flex-col items-center gap-[8px]">
-                    <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                    <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                       <TrashIcon />
                     </div>
                     <div>
-                      <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                         Delete
                       </p>
                     </div>
@@ -327,49 +308,38 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div
                     className="flex cursor-pointer flex-col items-center gap-[8px]"
                     onClick={() =>
-                      handleButtonsClick(
-                        businessButtons.call,
-                        business?.phone_number ?? "",
-                      )
+                      handleButtonsClick(businessButtons.call, business?.phone_number ?? "")
                     }
                   >
-                    <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                    <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                       <PhoneIcon />
                     </div>
-                    <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                    <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                       Call
                     </p>
                   </div>
                   <div
                     className="flex cursor-pointer flex-col items-center gap-[8px]"
-                    onClick={() =>
-                      handleButtonsClick(
-                        businessButtons.email,
-                        business?.email ?? "",
-                      )
-                    }
+                    onClick={() => handleButtonsClick(businessButtons.email, business?.email ?? "")}
                   >
-                    <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                    <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                       <MessageIcon />
                     </div>
-                    <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                    <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                       Send email
                     </p>
                   </div>
                   <div
                     className="flex cursor-pointer flex-col items-center gap-[8px]"
                     onClick={() =>
-                      handleButtonsClick(
-                        businessButtons.web,
-                        business?.website_url ?? "",
-                      )
+                      handleButtonsClick(businessButtons.web, business?.website_url ?? "")
                     }
                   >
-                    <div className="rounded-[16px] border-[1px] border-grey-20 bg-white p-[16px]">
+                    <div className="border-grey-20 rounded-[16px] border-[1px] bg-white p-[16px]">
                       <WebIcon />
                     </div>
                     <div>
-                      <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
                         Visit Website
                       </p>
                     </div>
@@ -377,53 +347,42 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                 </div>
               )}
 
-              <div className="w-full rounded-tl-[24px] rounded-tr-[24px] bg-purple-tint-1 laptop:w-[640px]">
-                <div className="pb-[8px] pl-[16px] pr-[16px] pt-[16px]">
-                  <p className="text-[14px] font-semi-normal">
-                    Lemonade protects in-app transactions only. Use caution
-                    outside the app
+              <div className="bg-purple-tint-1 laptop:w-[640px] w-full rounded-tl-[24px] rounded-tr-[24px]">
+                <div className="pt-[16px] pr-[16px] pb-[8px] pl-[16px]">
+                  <p className="font-semi-normal text-[14px]">
+                    Lemonade protects in-app transactions only. Use caution outside the app
                   </p>
                 </div>
                 <div className="rounded-tl-[24px] rounded-tr-[24px] bg-white">
-                  <div className="pb-[24px] pl-[16px] pr-[16px] pt-[16px]">
+                  <div className="pt-[16px] pr-[16px] pb-[24px] pl-[16px]">
                     <p className="text-[16px] font-semibold">About business</p>
-                    <p className="mt-[12px] text-[14px] font-normal text-light-black">
+                    <p className="text-light-black mt-[12px] text-[14px] font-normal">
                       {business?.description}
                     </p>
-                    <p className="text-[14px] font-semi-normal text-light-green">
-                      More
+                    <p className="font-semi-normal text-light-green text-[14px]">More</p>
+                    <div className="border-t-mid-grey my-[24px] border-t-[1px]"></div>
+                    <p className="text-[16px] font-semibold">Business categories</p>
+                    <p className="text-light-black mt-[12px] text-[14px] font-normal">
+                      {business?.categories?.map((category: string, index: number) => (
+                        <span key={index}>
+                          {formatStringUCFirst(category)}
+                          {index < business?.categories?.length - 1 && ", "}
+                        </span>
+                      ))}
                     </p>
-                    <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
-                    <p className="text-[16px] font-semibold">
-                      Business categories
-                    </p>
-                    <p className="mt-[12px] text-[14px] font-normal text-light-black">
-                      {business?.categories?.map(
-                        (category: string, index: number) => (
-                          <span key={index}>
-                            {formatStringUCFirst(category)}
-                            {index < business?.categories?.length - 1 && ", "}
-                          </span>
-                        ),
-                      )}
-                    </p>
-                    <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
+                    <div className="border-t-mid-grey my-[24px] border-t-[1px]"></div>
                     <p className="text-[16px] font-semibold">Services</p>
-                    <p className="mt-[12px] text-[14px] font-normal text-light-black">
-                      {business?.services?.map(
-                        (service: string, index: number) => (
-                          <span key={index}>
-                            {formatStringUCFirst(service)}
-                            {index < business?.services?.length - 1 && ", "}
-                          </span>
-                        ),
-                      )}
+                    <p className="text-light-black mt-[12px] text-[14px] font-normal">
+                      {business?.services?.map((service: string, index: number) => (
+                        <span key={index}>
+                          {formatStringUCFirst(service)}
+                          {index < business?.services?.length - 1 && ", "}
+                        </span>
+                      ))}
                     </p>
-                    <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
-                    <p className="text-[16px] font-semibold">
-                      Portfolio Gallery
-                    </p>
-                    <div className="sm:grid-cols-3 lg:grid-cols-4 mt-4 grid grid-cols-2 gap-3">
+                    <div className="border-t-mid-grey my-[24px] border-t-[1px]"></div>
+                    <p className="text-[16px] font-semibold">Portfolio Gallery</p>
+                    <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                       {business?.gallery?.map((item: string, index: number) => (
                         <div
                           key={index}
@@ -442,10 +401,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       ))}
                     </div>
 
-                    <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
+                    <div className="border-t-mid-grey my-[24px] border-t-[1px]"></div>
                     <p className="text-[16px] font-semibold">Reviews</p>
                     <div className="flex justify-between">
-                      <div className="flex flex-col rounded-[12px] bg-light_grey p-[12px] px-[20px]">
+                      <div className="bg-light_grey flex flex-col rounded-[12px] p-[12px] px-[20px]">
                         <div className="flex justify-center">
                           <Image
                             src={"/images/medal.png"}
@@ -461,7 +420,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                           </p>
                         </div>
                         <div>
-                          <p className="text-[12px] font-normal text-text-grey">
+                          <p className="text-text-grey text-[12px] font-normal">
                             {reviewData?.reviews.length} ratings
                           </p>
                         </div>
@@ -473,13 +432,11 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     </div>
                     {reviews.length > 0 ? (
                       <>
-                        <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
+                        <div className="border-t-mid-grey my-[24px] border-t-[1px]"></div>
                         {!reviewLoading &&
                           reviews
                             .slice(0, displayCount)
-                            .map((review, index) => (
-                              <Reviews review={review} key={index} />
-                            ))}
+                            .map((review, index) => <Reviews review={review} key={index} />)}
                       </>
                     ) : (
                       <div className="flex flex-col items-center justify-center">
@@ -489,7 +446,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                           width={114}
                           height={98}
                         />
-                        <p className="text-[14px] font-semi-normal text-text-grey">
+                        <p className="font-semi-normal text-text-grey text-[14px]">
                           No reviews yet
                         </p>
                       </div>
@@ -497,7 +454,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     {hasMoreReviews && (
                       <div className="mt-[38px]">
                         <p
-                          className="cursor-pointer text-center text-[16px] font-semi-normal text-light-green"
+                          className="font-semi-normal text-light-green cursor-pointer text-center text-[16px]"
                           onClick={loadMore}
                         >
                           Load more reviews
@@ -510,11 +467,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
             </>
           )}
         </section>
-        <VerifyBoost
-          boost={boost}
-          isOpen={isVerifyBoost}
-          toggleMenu={toggleVerifyBoost}
-        />
+        <VerifyBoost boost={boost} isOpen={isVerifyBoost} toggleMenu={toggleVerifyBoost} />
         <ReviewModal isOpen={isOpen} toggleMenu={toggleMenu} />
         <RequestServiceModal
           id={id}
@@ -533,10 +486,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
           job={business}
           toggleSubmit={toggleSubmitDisputeModal}
         />
-        <SubmitDisputeModal
-          isOpen={isSubmitDisputeOpen}
-          toggle={toggleSubmitDisputeModal}
-        />
+        <SubmitDisputeModal isOpen={isSubmitDisputeOpen} toggle={toggleSubmitDisputeModal} />
       </section>
     </MainLayout>
   );

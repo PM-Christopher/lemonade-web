@@ -21,12 +21,9 @@ import { getIn } from "yup";
 
 // Off the initial bundle — only needed once the bank-account section is
 // opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const BankAccountModal = dynamic(
-  () => import("@/components/events/Modals/BankAccountModal"),
-  {
-    ssr: false,
-  },
-);
+const BankAccountModal = dynamic(() => import("@/components/events/Modals/BankAccountModal"), {
+  ssr: false,
+});
 
 type Ticket = {
   ticket_type: string; // was: "free" | "paid"
@@ -56,32 +53,25 @@ const AddTicketPage = () => {
 
     price: yup
       .string()
-      .when(
-        "ticket_type",
-        (values: any[], schema: yup.StringSchema<string | undefined>) => {
-          // Yup's typings say `values` is any[], so we read from index 0
-          const ticket_type = Array.isArray(values) ? values[0] : values;
+      .when("ticket_type", (values: any[], schema: yup.StringSchema<string | undefined>) => {
+        // Yup's typings say `values` is any[], so we read from index 0
+        const ticket_type = Array.isArray(values) ? values[0] : values;
 
-          // Only validate price when ticket is paid
-          if (ticket_type === "paid") {
-            return schema
-              .required("Ticket price is required")
-              .test(
-                "valid-price",
-                "Ticket price must be greater than 0",
-                (value) => {
-                  if (!value) return false; // required already, but keeps TS happy
-                  const cleaned = value.replace(/,/g, "");
-                  const num = Number(cleaned);
-                  return !Number.isNaN(num) && num > 0;
-                },
-              );
-          }
+        // Only validate price when ticket is paid
+        if (ticket_type === "paid") {
+          return schema
+            .required("Ticket price is required")
+            .test("valid-price", "Ticket price must be greater than 0", (value) => {
+              if (!value) return false; // required already, but keeps TS happy
+              const cleaned = value.replace(/,/g, "");
+              const num = Number(cleaned);
+              return !Number.isNaN(num) && num > 0;
+            });
+        }
 
-          // For "free" or unset ticket_type → no validation
-          return schema.notRequired();
-        },
-      ),
+        // For "free" or unset ticket_type → no validation
+        return schema.notRequired();
+      }),
 
     transfer_commission: yup.boolean().optional(),
 
@@ -90,39 +80,28 @@ const AddTicketPage = () => {
     ticket_stock: yup
       .number()
       .transform((value, originalValue) => {
-        if (
-          originalValue === "" ||
-          originalValue === null ||
-          originalValue === undefined
-        ) {
+        if (originalValue === "" || originalValue === null || originalValue === undefined) {
           return undefined;
         }
         const cleaned = String(originalValue).replace(/,/g, "");
         const num = Number(cleaned);
         return Number.isNaN(num) ? undefined : num;
       })
-      .when(
-        "stock_type",
-        (stock_type: any, schema: yup.NumberSchema<number | undefined>) => {
-          if (stock_type === "limited") {
-            // REQUIRED and must be > 0
-            return schema
-              .required("Ticket stock is required")
-              .moreThan(0, "Ticket stock must be greater than 0");
-          }
-          // Unlimited → not required
-          return schema.notRequired();
-        },
-      ),
+      .when("stock_type", (stock_type: any, schema: yup.NumberSchema<number | undefined>) => {
+        if (stock_type === "limited") {
+          // REQUIRED and must be > 0
+          return schema
+            .required("Ticket stock is required")
+            .moreThan(0, "Ticket stock must be greater than 0");
+        }
+        // Unlimited → not required
+        return schema.notRequired();
+      }),
 
     purchase_limit: yup
       .number()
       .transform((value, originalValue) => {
-        if (
-          originalValue === "" ||
-          originalValue === null ||
-          originalValue === undefined
-        ) {
+        if (originalValue === "" || originalValue === null || originalValue === undefined) {
           return undefined;
         }
         const cleaned = String(originalValue).replace(/,/g, "");
@@ -164,6 +143,7 @@ const AddTicketPage = () => {
       ],
     },
     validationSchema: addTicketSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       const normalizedTickets = values.tickets.map((ticket) => ({
         ...ticket,
@@ -288,35 +268,31 @@ const AddTicketPage = () => {
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Add ticket
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Add ticket</p>
           </div>
         </div>
-        <section className="mt-0 flex flex-col items-center laptop:mt-4">
+        <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           <form onSubmit={formik.handleSubmit}>
-            <div className="mt-10 flex w-full flex-col rounded-[12px] bg-white p-[48px] laptop:w-[640px]">
+            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-[12px] bg-white p-[48px]">
               {formik.values.tickets.map((ticket, index) => (
                 <div className="mb-[24px]" key={index}>
                   {index > 0 && (
-                    <div className="mb-[16px] flex items-center justify-between rounded-[8px] bg-grey-20 p-[8px] px-[16px]">
-                      <p className="text-[14px] font-normal">
-                        Ticket {index + 1}
-                      </p>
+                    <div className="bg-grey-20 mb-[16px] flex items-center justify-between rounded-[8px] p-[8px] px-[16px]">
+                      <p className="text-[14px] font-normal">Ticket {index + 1}</p>
                       <CloseIcon
                         className="h-[10px] w-[10px] cursor-pointer"
                         onClick={() => removeTicket(index)}
                       />
                     </div>
                   )}
-                  <p className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey">
+                  <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     Ticket type
                   </p>
                   <div className="mt-[16px] flex gap-2">
@@ -326,14 +302,9 @@ const AddTicketPage = () => {
                           ? "bg-gradient-green-2 shadow-event-custom"
                           : "bg-light_grey text-text-grey"
                       }`}
-                      onClick={() =>
-                        formik.setFieldValue(
-                          `tickets[${index}].ticket_type`,
-                          "free",
-                        )
-                      }
+                      onClick={() => formik.setFieldValue(`tickets[${index}].ticket_type`, "free")}
                     >
-                      <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
+                      <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                         Free
                       </p>
                     </div>
@@ -343,14 +314,9 @@ const AddTicketPage = () => {
                           ? "bg-gradient-green-2 shadow-event-custom"
                           : "bg-light_grey text-text-grey"
                       }`}
-                      onClick={() =>
-                        formik.setFieldValue(
-                          `tickets[${index}].ticket_type`,
-                          "paid",
-                        )
-                      }
+                      onClick={() => formik.setFieldValue(`tickets[${index}].ticket_type`, "paid")}
                     >
-                      <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
+                      <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                         Paid
                       </p>
                     </div>
@@ -359,7 +325,7 @@ const AddTicketPage = () => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor={`ticket-name-${index}`}
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Ticket name
                     </Label>
@@ -367,7 +333,7 @@ const AddTicketPage = () => {
                       id={`ticket-name-${index}`}
                       type="text"
                       placeholder=""
-                      className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
                       value={formik.values.tickets[index].name}
                       onChange={formik.handleChange}
                       name={`tickets[${index}].name`}
@@ -380,7 +346,7 @@ const AddTicketPage = () => {
                       <div className="mt-[24px] grid gap-2">
                         <Label
                           htmlFor={`ticket-price-${index}`}
-                          className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                          className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                         >
                           Ticket price
                         </Label>
@@ -389,17 +355,11 @@ const AddTicketPage = () => {
                           type="text"
                           inputMode="numeric"
                           placeholder=""
-                          className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0"
                           value={formik.values.tickets[index].price || ""}
                           onChange={(e) => {
-                            const numericValue = e.target.value.replace(
-                              /[^0-9.]/g,
-                              "",
-                            );
-                            formik.setFieldValue(
-                              `tickets[${index}].price`,
-                              numericValue,
-                            );
+                            const numericValue = e.target.value.replace(/[^0-9.]/g, "");
+                            formik.setFieldValue(`tickets[${index}].price`, numericValue);
                           }}
                           onKeyDown={(e) => {
                             if (["e", "E", "+", "-"].includes(e.key)) {
@@ -414,14 +374,12 @@ const AddTicketPage = () => {
                       <div className="mt-[24px] flex items-center gap-2">
                         <input
                           type="checkbox"
-                          className="w-[20px] border-[1px] border-text-grey"
-                          checked={
-                            formik.values.tickets[index].transfer_commission
-                          }
+                          className="border-text-grey w-[20px] border-[1px]"
+                          checked={formik.values.tickets[index].transfer_commission}
                           onChange={formik.handleChange}
                           name={`tickets[${index}].transfer_commission`}
                         />
-                        <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                        <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                           Transfer commission to guest
                         </p>
                       </div>
@@ -432,7 +390,7 @@ const AddTicketPage = () => {
                   <div className="mt-[24px] grid w-full gap-2">
                     <Label
                       htmlFor={`ticket-stock-${index}`}
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Ticket stock
                     </Label>
@@ -440,26 +398,22 @@ const AddTicketPage = () => {
                       <select
                         value={formik.values.tickets[index].stock_type}
                         onChange={formik.handleChange}
-                        className="form-font h-12 w-full rounded-xl border-0 bg-light_grey p-2"
+                        className="form-font bg-light_grey h-12 w-full rounded-xl border-0 p-2"
                         name={`tickets[${index}].stock_type`}
                       >
                         <option value="">Select stock</option>
                         <option value="limited">Limited stock</option>
                         <option value="unlimited">Unlimited stock</option>
                       </select>
-                      {formik.values.tickets[index].stock_type !==
-                        "unlimited" && (
+                      {formik.values.tickets[index].stock_type !== "unlimited" && (
                         <Input
                           type="text"
                           placeholder=""
-                          className="form-font h-12 w-full rounded-xl border-0 bg-light_grey"
+                          className="form-font bg-light_grey h-12 w-full rounded-xl border-0"
                           value={formik.values.tickets[index].ticket_stock}
                           onChange={formik.handleChange}
                           name={`tickets[${index}].ticket_stock`}
-                          readOnly={
-                            formik.values.tickets[index].stock_type ===
-                            "unlimited"
-                          }
+                          readOnly={formik.values.tickets[index].stock_type === "unlimited"}
                         />
                       )}
                     </div>
@@ -470,7 +424,7 @@ const AddTicketPage = () => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor={`ticket-limit-${index}`}
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Purchase limit
                     </Label>
@@ -479,7 +433,7 @@ const AddTicketPage = () => {
                       name={`tickets[${index}].purchase_limit`}
                       type="number"
                       placeholder=""
-                      className="form-font h-12 w-full rounded-xl border-0 bg-light_grey"
+                      className="form-font bg-light_grey h-12 w-full rounded-xl border-0"
                       value={formik.values.tickets[index].purchase_limit}
                       onChange={formik.handleChange}
                       min={0}
@@ -490,14 +444,14 @@ const AddTicketPage = () => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor={`ticket-description-${index}`}
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Ticket description
                     </Label>
                     <textarea
                       value={formik.values.tickets[index].description}
                       onChange={formik.handleChange}
-                      className="form-font h-[131px] resize-none rounded-xl border-0 bg-light_grey p-4"
+                      className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
                       name={`tickets[${index}].description`}
                     />
                     {getTicketFieldError(index, "description")}
@@ -506,13 +460,13 @@ const AddTicketPage = () => {
               ))}
 
               <Button
-                className="mt-[24px] h-[48px] rounded-[12px] border-0 bg-light-green-10 p-[14px] px-[48px] shadow-none"
+                className="bg-light-green-10 mt-[24px] h-[48px] rounded-[12px] border-0 p-[14px] px-[48px] shadow-none"
                 onClick={addTicket}
                 type="button"
               >
                 <div className="flex items-center gap-1">
                   <PlusIcon className="text-light-green" />
-                  <p className="font-sans text-[16px] font-semi-normal leading-[19.2px] text-light-green">
+                  <p className="font-semi-normal text-light-green font-sans text-[16px] leading-[19.2px]">
                     Add another ticket
                   </p>
                 </div>
@@ -520,12 +474,12 @@ const AddTicketPage = () => {
 
               <div className="flex justify-between gap-3">
                 <Button
-                  className="mt-[24px] h-[48px] w-full rounded-[12px] border-[1px] border-light-grey-50 bg-light-grey-50 p-[14px] px-[48px] shadow-none"
+                  className="border-light-grey-50 bg-light-grey-50 mt-[24px] h-[48px] w-full rounded-[12px] border-[1px] p-[14px] px-[48px] shadow-none"
                   type="button"
                   onClick={saveAsDraft}
                 >
                   <div className="flex items-center gap-1">
-                    <p className="font-sans text-[16px] font-semi-normal leading-[19.2px] text-text-grey">
+                    <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[19.2px]">
                       Save as draft
                     </p>
                   </div>

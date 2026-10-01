@@ -106,7 +106,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
       toast.custom(
         (t) => (
           <div
-            className={`pointer-events-auto flex w-full max-w-sm rounded-xl bg-gradient-green p-4 shadow-lg ring-1 ring-black ring-opacity-5 transition-all ${
+            className={`bg-gradient-green ring-opacity-5 pointer-events-auto flex w-full max-w-sm rounded-xl p-4 shadow-lg ring-1 ring-black transition-all ${
               t.visible ? "animate-enter" : "animate-leave"
             }`}
           >

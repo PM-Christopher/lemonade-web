@@ -2,12 +2,26 @@ import React from "react";
 import DataCard from "@/components/global/DataCard";
 import GlobalTable from "@/components/global/GlobalTable";
 import { promotionMainHeaders } from "@/data/tableData";
+import type {
+  EventAffiliatesResponse,
+  EventListResponse,
+  EventPromotionsQueueResponse,
+} from "@/features/events/api";
 
-const PromotionView = ({ pageData }: any) => {
+interface PromotionViewProps {
+  pageData: EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | undefined;
+}
+
+const PromotionView = ({ pageData: rawPageData }: PromotionViewProps) => {
+  // EventsClient.tsx only renders this view for the "promotions" tab, where
+  // getEventData always resolves to EventPromotionsQueueResponse — the
+  // union prop type comes from eventData being shared across three sibling
+  // views that each render for exactly one tab.
+  const pageData = rawPageData as EventPromotionsQueueResponse | undefined;
   return (
     <>
       <>
-        <div className={"flex justify-between gap-[24px] px-[12px] pb-[16px] pt-[8px]"}>
+        <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
           <DataCard
             styles={"w-full"}
             title={"Promotions Revenue"}
@@ -27,7 +41,19 @@ const PromotionView = ({ pageData }: any) => {
             pageLink={"/events/add-promotions"}
           />
         </div>
-        <GlobalTable headers={promotionMainHeaders} content={pageData?.history} />
+        {/* GlobalTable's content prop is a generic stringly-keyed row shape
+            (no named interface) — EventPromotionQueueItem's fields are all
+            string|number|null, but TS only accepts a nominal interface
+            against a Record<string,...> index signature via an explicit
+            cast, not structurally. */}
+        <GlobalTable
+          headers={promotionMainHeaders}
+          content={
+            (pageData?.history ?? []) as unknown as Array<
+              Record<string, string | number | null | undefined>
+            >
+          }
+        />
       </>
     </>
   );

@@ -1,16 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
-import {
-  CalendarIcon,
-  ChevronDown,
-  ChevronRight,
-  ClockIcon,
-  MapPinIcon,
-} from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronRight, ClockIcon, MapPinIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEventDetailQuery } from "@/features/events/queries";
+import type { EventTicket } from "@/features/events/api";
 import { useActivateEventMutation, useApproveEventMutation } from "@/features/events/mutations";
 import { capitalizeWords } from "@/utils/helper";
 import Image from "next/image";
@@ -28,7 +23,7 @@ const RejectEventModal = dynamic(() => import("@/modals/events/RejectEventModal"
   ssr: false,
 });
 
-const EventDetailsClient = ({ id }: { id: number | undefined }) => {
+const EventDetailsClient = ({ id }: { id: string }) => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: event } = useEventDetailQuery(id, { enabled: isLoggedIn });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -43,10 +38,7 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
   };
 
   const handleClickOutside = (event: Event) => {
-    if (
-      containerRef.current &&
-      !containerRef.current.contains(event.target as Node)
-    ) {
+    if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
       setDropdownOpen(false);
     }
   };
@@ -54,10 +46,7 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside as EventListener);
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside as EventListener,
-      );
+      document.removeEventListener("mousedown", handleClickOutside as EventListener);
     };
   }, []);
 
@@ -94,22 +83,16 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
 
   return (
     <MainLayout>
-      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
-        <div
-          className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}
-        >
-          <div
-            className={
-              "flex items-center justify-between border-b-[1px] p-[24px]"
-            }
-          >
-            <p className={"text-[16px] font-semiBold"}>Event summary</p>
+      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
+        <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
+          <div className={"flex items-center justify-between border-b-[1px] p-[24px]"}>
+            <p className={"font-semiBold text-[16px]"}>Event summary</p>
             {isPending || isRejected ? (
               <div className={"flex gap-[12px]"}>
                 {isPending && (
                   <button
                     className={
-                      "h-[44px] w-[124px] rounded-[12px] border-[1px] border-red-2 bg-red-1 text-center"
+                      "border-red-2 bg-red-1 h-[44px] w-[124px] rounded-[12px] border-[1px] text-center"
                     }
                     onClick={toggleRejectModalOpen}
                   >
@@ -118,7 +101,7 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
                 )}
                 <button
                   className={
-                    "h-[44px] w-[124px] rounded-[12px] border-[1px] bg-gradient-green text-center"
+                    "bg-gradient-green h-[44px] w-[124px] rounded-[12px] border-[1px] text-center"
                   }
                   onClick={approveEvent}
                   disabled={approveEventMutation.isPending}
@@ -129,19 +112,17 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
             ) : event?.event?.status !== "ACTIVE" ? (
               <button
                 className={
-                  "h-[44px] w-[156px] rounded-[12px] border-[1px] bg-gradient-green text-center"
+                  "bg-gradient-green h-[44px] w-[156px] rounded-[12px] border-[1px] text-center"
                 }
                 onClick={unsuspendEvent}
               >
-                <p className={"text-[16px] font-medium text-white"}>
-                  Reactivate event
-                </p>
+                <p className={"text-[16px] font-medium text-white"}>Reactivate event</p>
               </button>
             ) : (
               <div className="relative inline-block">
                 <div
                   className={
-                    "flex items-center gap-[8px] rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+                    "border-light-grey-50 flex items-center gap-[8px] rounded-[12px] border-[1px] p-[10px] px-[14px]"
                   }
                   onClick={handleToggleDropdown}
                 >
@@ -149,23 +130,19 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
                   <ChevronDown />
                 </div>
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full z-50 w-[207px] rounded-[12px] bg-white shadow">
+                  <div className="absolute top-full right-0 z-50 w-[207px] rounded-[12px] bg-white shadow">
                     <ul>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                         onClick={toggleSuspendModalOpen}
                       >
-                        <p className={"text-[16px] font-normal"}>
-                          Suspend event
-                        </p>
+                        <p className={"text-[16px] font-normal"}>Suspend event</p>
                       </li>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                         onClick={toggleDeleteModalOpen}
                       >
-                        <p className={"text-[16px] font-normal text-red-1"}>
-                          Delete event
-                        </p>
+                        <p className={"text-red-1 text-[16px] font-normal"}>Delete event</p>
                       </li>
                     </ul>
                   </div>
@@ -176,14 +153,10 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
           <div className={"flex flex-col gap-[20px] p-[24px]"}>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Event Owner:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
               </div>
               <div className={"flex gap-[4px]"}>
-                <p className={"text-[14px] font-medium"}>
-                  {event?.event?.owner?.fullname}
-                </p>
+                <p className={"text-[14px] font-medium"}>{event?.event?.owner?.fullname}</p>
                 {/* <p className={"text-[14px] font-medium text-light-green"}>
                   View profile
                 </p> */}
@@ -191,118 +164,80 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Event ID:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Event ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>EV112332</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Event Status:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Event Status:</p>
               </div>
-              <p className={"text-[14px] font-medium text-light-green-70"}>
+              <p className={"text-light-green-70 text-[14px] font-medium"}>
                 {capitalizeWords(event?.event?.status)}
               </p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Date Created:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
               </div>
               <div className={"flex gap-[4px]"}>
-                <p className={"text-[14px] font-medium"}>
-                  {event?.event?.created_at}
-                </p>
+                <p className={"text-[14px] font-medium"}>{event?.event?.created_at}</p>
               </div>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Event Category:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Event Category:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {event?.event?.category}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.event?.category}</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Payment Settings:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Payment Settings:</p>
               </div>
               <p className={"text-[14px] font-medium"}>Monthly</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Account Number:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Account Number:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {event?.event?.account?.account_number}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.event?.account?.account_number}</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Account Holder:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Account Holder:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {event?.event?.account?.name}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.event?.account?.name}</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Bank Name:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Bank Name:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {event?.event?.account?.bank}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.event?.account?.bank}</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Ticket Revenue:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Ticket Revenue:</p>
               </div>
               <p className={"text-[14px] font-medium"}>N300,000</p>
             </div>
             <div className={"items-center-center flex gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Ticket Class:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Ticket Class:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>
-                {event?.tickets.length}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.tickets.length}</p>
             </div>
-            {event?.tickets.map((ticket: any, index: any) => (
+            {event?.tickets.map((ticket: EventTicket, index: number) => (
               <div
-                className={
-                  "flex flex-col gap-[8px] rounded-[12px] bg-light-grey p-[12px]"
-                }
+                className={"bg-light-grey flex flex-col gap-[8px] rounded-[12px] p-[12px]"}
                 key={index}
               >
-                <p className={"text-[16px] font-semiBold"}>
+                <p className={"font-semiBold text-[16px]"}>
                   {capitalizeWords(ticket?.ticket_type)}
                 </p>
-                <p className={"text-[12px] font-normal text-light-black"}>
-                  {ticket?.description}
-                </p>
+                <p className={"text-light-black text-[12px] font-normal"}>{ticket?.description}</p>
                 <div className={"items-center-center flex gap-[24px]"}>
                   <div className={"w-[115px]"}>
-                    <p className={"text-[12px] font-medium text-text-grey"}>
-                      Price:
-                    </p>
+                    <p className={"text-text-grey text-[12px] font-medium"}>Price:</p>
                   </div>
                   <p className={"text-[14px] font-medium"}>
                     {ticket?.price === 0 ? "-" : ticket?.price}
@@ -310,39 +245,25 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
                 </div>
                 <div className={"items-center-center flex gap-[24px]"}>
                   <div className={"w-[115px]"}>
-                    <p className={"text-[12px] font-medium text-text-grey"}>
-                      Ticket Stock:
-                    </p>
+                    <p className={"text-text-grey text-[12px] font-medium"}>Ticket Stock:</p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>
-                    {capitalizeWords(ticket?.stock_type)}
-                  </p>
+                  <p className={"text-[14px] font-medium"}>{capitalizeWords(ticket?.stock_type)}</p>
                 </div>
                 <div className={"items-center-center flex gap-[24px]"}>
                   <div className={"w-[115px]"}>
-                    <p className={"text-[12px] font-medium text-text-grey"}>
-                      Purchase Limit:
-                    </p>
+                    <p className={"text-text-grey text-[12px] font-medium"}>Purchase Limit:</p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>
-                    {ticket?.purchase_limit}
-                  </p>
+                  <p className={"text-[14px] font-medium"}>{ticket?.purchase_limit}</p>
                 </div>
                 <div className={"items-center-center flex gap-[24px]"}>
                   <div className={"w-[115px]"}>
-                    <p className={"text-[12px] font-medium text-text-grey"}>
-                      Tickets Sold:
-                    </p>
+                    <p className={"text-text-grey text-[12px] font-medium"}>Tickets Sold:</p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>
-                    {ticket?.tickets_sold}
-                  </p>
+                  <p className={"text-[14px] font-medium"}>{ticket?.tickets_sold}</p>
                 </div>
                 <div className={"items-center-center flex gap-[24px]"}>
                   <div className={"w-[115px]"}>
-                    <p className={"text-[12px] font-medium text-text-grey"}>
-                      Sales Revenue:
-                    </p>
+                    <p className={"text-text-grey text-[12px] font-medium"}>Sales Revenue:</p>
                   </div>
                   <p className={"text-[14px] font-medium"}>
                     {ticket?.sales_revenue === 0 ? "-" : ticket?.sales_revenue}
@@ -350,13 +271,9 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
                 </div>
                 <div className={"items-center-center flex gap-[24px]"}>
                   <div className={"w-[115px]"}>
-                    <p className={"text-[12px] font-medium text-text-grey"}>
-                      Check-Ins:
-                    </p>
+                    <p className={"text-text-grey text-[12px] font-medium"}>Check-Ins:</p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>
-                    {ticket?.check_ins}
-                  </p>
+                  <p className={"text-[14px] font-medium"}>{ticket?.check_ins}</p>
                 </div>
               </div>
             ))}
@@ -370,7 +287,7 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
 
         <div
           className={
-            "lg:w-2/3 flex h-[762px] w-full flex-col gap-[16px] rounded-tl-[12px] rounded-tr-[12px] bg-white p-[24px]"
+            "flex h-[762px] w-full flex-col gap-[16px] rounded-tl-[12px] rounded-tr-[12px] bg-white p-[24px] lg:w-2/3"
           }
         >
           <Image
@@ -380,70 +297,48 @@ const EventDetailsClient = ({ id }: { id: number | undefined }) => {
             height={343}
             className={"h-[343px] w-[320px] rounded-[16px]"}
           />
-          <p className={"text-[20px] font-semiBold"}>
-            {event?.event?.event_name}
-          </p>
+          <p className={"font-semiBold text-[20px]"}>{event?.event?.event_name}</p>
           <div className={"flex flex-col gap-[8px]"}>
             <div className={"flex items-center gap-[8px]"}>
               <CalendarIcon className={"text-text-grey"} />
-              <p className={"text-[14px] font-medium text-text-grey"}>
-                {event?.event?.event_date}
-              </p>
+              <p className={"text-text-grey text-[14px] font-medium"}>{event?.event?.event_date}</p>
             </div>
             <div className={"flex items-center gap-[8px]"}>
               <ClockIcon className={"text-text-grey"} />
-              <p className={"text-[14px] font-medium text-text-grey"}>
-                {event?.event?.event_time}
-              </p>
+              <p className={"text-text-grey text-[14px] font-medium"}>{event?.event?.event_time}</p>
             </div>
             <div className={"flex items-center gap-[8px]"}>
               <MapPinIcon className={"text-text-grey"} />
-              <p className={"text-[14px] font-medium text-text-grey"}>
-                {event?.event?.location}
-              </p>
+              <p className={"text-text-grey text-[14px] font-medium"}>{event?.event?.location}</p>
             </div>
           </div>
-          <p className={"text-[16px] font-semiBold"}>Contact Us</p>
-          <p className={"text-[16px] font-semiBold"}>About Event</p>
-          <p className={"text-[14px] font-normal text-text-grey"}>
-            {event?.event?.description}
-          </p>
-          <p className={"text-[16px] font-semiBold"}>Promotions</p>
+          <p className={"font-semiBold text-[16px]"}>Contact Us</p>
+          <p className={"font-semiBold text-[16px]"}>About Event</p>
+          <p className={"text-text-grey text-[14px] font-normal"}>{event?.event?.description}</p>
+          <p className={"font-semiBold text-[16px]"}>Promotions</p>
           <div className={"flex flex-wrap gap-[12px]"}>
             <div
               className={
-                "flex w-fit items-center gap-[] rounded-[12px] border-[1px] border-light-green-tint bg-light-tint p-[8px]"
+                "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-[12px] border-[1px] p-[8px]"
               }
             >
               <p className={"text-[14px] font-medium"}>IG Feed</p>
-              <ChevronRight className={"w-[20px] text-grey-40"} />
+              <ChevronRight className={"text-grey-40 w-[20px]"} />
             </div>
             <div
               className={
-                "flex w-fit items-center gap-[] rounded-[12px] border-[1px] border-light-green-tint bg-light-tint p-[8px]"
+                "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-[12px] border-[1px] p-[8px]"
               }
             >
               <p className={"text-[14px] font-medium"}>IG Story</p>
-              <ChevronRight className={"w-[20px] text-grey-40"} />
+              <ChevronRight className={"text-grey-40 w-[20px]"} />
             </div>
           </div>
         </div>
       </section>
-      <SuspendModal
-        isOpen={suspendModalOpen}
-        toggle={toggleSuspendModalOpen}
-        id={id}
-      />
-      <DeleteModal
-        isOpen={deleteModalOpen}
-        toggle={toggleDeleteModalOpen}
-        id={id}
-      />
-      <RejectEventModal
-        isOpen={rejectModalOpen}
-        toggle={toggleRejectModalOpen}
-        id={id}
-      />
+      <SuspendModal isOpen={suspendModalOpen} toggle={toggleSuspendModalOpen} id={id} />
+      <DeleteModal isOpen={deleteModalOpen} toggle={toggleDeleteModalOpen} id={id} />
+      <RejectEventModal isOpen={rejectModalOpen} toggle={toggleRejectModalOpen} id={id} />
     </MainLayout>
   );
 };

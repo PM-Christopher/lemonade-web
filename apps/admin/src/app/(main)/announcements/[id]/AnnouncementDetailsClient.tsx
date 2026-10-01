@@ -7,7 +7,7 @@ import { RootState } from "@/redux/store";
 import { useAnnouncementDetailQuery } from "@/features/announcements/queries";
 import { capitalizeWords } from "@/utils/helper";
 
-function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
+function AnnouncementDetailsClient({ id }: { id: string }) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: detail } = useAnnouncementDetailQuery(id, {
     enabled: isLoggedIn,
@@ -20,15 +20,11 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
     return (
       <MainLayout>
         <section className={"flex justify-between p-[20px]"}>
-          <div
-            className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}
-          >
+          <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
             <div className={"flex flex-col gap-[20px] p-[24px]"}>
               <div className={"flex items-center gap-[24px]"}>
                 <div className={"w-[115px]"}>
-                  <p className={"text-[12px] font-medium text-text-grey"}>
-                    Event Owner:
-                  </p>
+                  <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
                 </div>
                 <div className={"flex gap-[4px]"}>
                   <p className={"text-[14px] font-medium"}>Loading...</p>
@@ -36,17 +32,13 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
               </div>
               <div className={"flex items-center gap-[24px]"}>
                 <div className={"w-[115px]"}>
-                  <p className={"text-[12px] font-medium text-text-grey"}>
-                    Announcement ID:
-                  </p>
+                  <p className={"text-text-grey text-[12px] font-medium"}>Announcement ID:</p>
                 </div>
                 <p className={"text-[14px] font-medium"}>Loading...</p>
               </div>
               <div className={"flex items-center gap-[24px]"}>
                 <div className={"w-[115px]"}>
-                  <p className={"text-[12px] font-medium text-text-grey"}>
-                    Date Created:
-                  </p>
+                  <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
                 </div>
                 <div className={"flex gap-[4px]"}>
                   <p className={"text-[14px] font-medium"}>Loading...</p>
@@ -54,30 +46,18 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
               </div>
               <div className={"flex items-center gap-[24px]"}>
                 <div className={"w-[115px]"}>
-                  <p className={"text-[12px] font-medium text-text-grey"}>
-                    Status:
-                  </p>
+                  <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
                 </div>
-                <p className={"text-[14px] font-medium text-light-green-70"}>
-                  Loading...
-                </p>
+                <p className={"text-light-green-70 text-[14px] font-medium"}>Loading...</p>
               </div>
             </div>
           </div>
-          <div
-            className={
-              "flex h-fit w-[780px] flex-col gap-[16px] rounded-[12px] bg-white"
-            }
-          >
-            <div
-              className={
-                "flex items-center justify-between border-b-[1px] p-[24px]"
-              }
-            >
-              <p className={"text-[16px] font-semiBold"}>Announcement</p>
+          <div className={"flex h-fit w-[780px] flex-col gap-[16px] rounded-[12px] bg-white"}>
+            <div className={"flex items-center justify-between border-b-[1px] p-[24px]"}>
+              <p className={"font-semiBold text-[16px]"}>Announcement</p>
               <div
                 className={
-                  "cursor-pointer rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+                  "border-light-grey-50 cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"
                 }
               >
                 <p className={"text-[14px] font-medium"}>Edit draft</p>
@@ -85,13 +65,11 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
             </div>
             <div className={"flex flex-col gap-[16px] p-[24px]"}>
               <div className={"flex flex-col"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Title
-                </p>
-                <p className={"text-[20px] font-semiBold"}>Loading...</p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Title</p>
+                <p className={"font-semiBold text-[20px]"}>Loading...</p>
               </div>
               <div className={"flex flex-col"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>Body</p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Body</p>
                 <p>Loading...</p>
               </div>
             </div>
@@ -113,15 +91,11 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
   return (
     <MainLayout>
       <section className={"flex justify-between p-[20px]"}>
-        <div
-          className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}
-        >
+        <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
           <div className={"flex flex-col gap-[20px] p-[24px]"}>
             <div className={"flex items-center gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Event Owner:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
               </div>
               <div className={"flex gap-[4px]"}>
                 <p className={"text-[14px] font-medium"}>
@@ -131,52 +105,34 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
             </div>
             <div className={"flex items-center gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Announcement ID:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Announcement ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>AN112332</p>
             </div>
             <div className={"flex items-center gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Date Created:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
               </div>
               <div className={"flex gap-[4px]"}>
-                <p className={"text-[14px] font-medium"}>
-                  {announcement?.created_at || "N/A"}
-                </p>
+                <p className={"text-[14px] font-medium"}>{announcement?.created_at || "N/A"}</p>
               </div>
             </div>
             <div className={"flex items-center gap-[24px]"}>
               <div className={"w-[115px]"}>
-                <p className={"text-[12px] font-medium text-text-grey"}>
-                  Status:
-                </p>
+                <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
               </div>
-              <p className={"text-[14px] font-medium text-light-green-70"}>
-                {announcement?.status
-                  ? capitalizeWords(announcement.status)
-                  : "N/A"}
+              <p className={"text-light-green-70 text-[14px] font-medium"}>
+                {announcement?.status ? capitalizeWords(announcement.status) : "N/A"}
               </p>
             </div>
           </div>
         </div>
-        <div
-          className={
-            "flex h-fit w-[780px] flex-col gap-[16px] rounded-[12px] bg-white"
-          }
-        >
-          <div
-            className={
-              "flex items-center justify-between border-b-[1px] p-[24px]"
-            }
-          >
-            <p className={"text-[16px] font-semiBold"}>Announcement</p>
+        <div className={"flex h-fit w-[780px] flex-col gap-[16px] rounded-[12px] bg-white"}>
+          <div className={"flex items-center justify-between border-b-[1px] p-[24px]"}>
+            <p className={"font-semiBold text-[16px]"}>Announcement</p>
             <div
               className={
-                "cursor-pointer rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+                "border-light-grey-50 cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"
               }
             >
               <p className={"text-[14px] font-medium"}>Edit draft</p>
@@ -184,13 +140,13 @@ function AnnouncementDetailsClient({ id }: { id: number | undefined }) {
           </div>
           <div className={"flex flex-col gap-[16px] p-[24px]"}>
             <div className={"flex flex-col"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Title</p>
-              <p className={"text-[20px] font-semiBold"}>
+              <p className={"text-text-grey text-[12px] font-medium"}>Title</p>
+              <p className={"font-semiBold text-[20px]"}>
                 {content?.title || "No title available"}
               </p>
             </div>
             <div className={"flex flex-col"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>Body</p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Body</p>
               {content?.content ? (
                 <div
                   className="prose max-w-none"

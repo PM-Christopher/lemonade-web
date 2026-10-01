@@ -8,7 +8,6 @@ import SkillStep from "@/components/form-steps/skills-step";
 import SocialStep from "@/components/form-steps/social-step";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useSelector } from "react-redux";
-import Link from "next/link";
 import { RootState } from "@/redux/store";
 import { useUserProfileQuery } from "@/features/settings/queries";
 
@@ -61,45 +60,31 @@ export default function ProfileStepsPage() {
   };
 
   return (
-    <section>
-      <section className="h-full min-h-screen overflow-hidden bg-white tablet:bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
-          <div>
-            <Link href={"/login"}>
-              <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-            </Link>
-          </div>
+    <AuthLayout>
+      <div className="flex h-full w-full max-w-[1180px] items-center justify-center gap-10">
+        <div className="hidden min-w-0 flex-col tablet:flex">
+          <p className="font-sans text-title-l font-semibold">Welcome,</p>
+          <p className="font-ruso text-mid-green text-display-xs font-bold">{user?.fullname}</p>
+          <p className="text-body-xl mt-3 max-w-[26rem] font-sans font-normal text-text-grey">
+            Set up your account to optimize your experience on the Lemonade network. Don&apos;t
+            worry this will take less than a minute.
+          </p>
+          <Image
+            src="/images/profile_verification.png"
+            alt=""
+            width={320}
+            height={361}
+            className="mt-4 h-auto max-h-[40vh] w-auto object-contain"
+          />
         </div>
-        <div className="mt-[16px] flex flex-col items-center justify-center gap-[4px] px-[16px] tablet:flex-row tablet:items-start tablet:gap-16 tablet:px-4">
-          <div className="flex w-full flex-col items-start px-[16px] tablet:w-[438px]">
-            <div className="flex flex-col">
-              <p className="w-[295px] text-left font-sans text-[24px] font-semibold leading-[48px] tablet:text-[18px]">
-                Welcome,
-              </p>
-              <p className="w-[343px] text-left font-ruso text-[24px] font-bold leading-[48px] text-mid-green tablet:w-[438px] tablet:text-[32px]">
-                {user?.fullname}
-              </p>
-              {/* Removed the outer div that had hidden class */}
-              <div className="mt-[12px] hidden tablet:flex">
-                <p className="w-0 font-sans text-[18px] font-normal leading-[27px] tablet:w-[438px]">
-                  Set up your account to optimize your experience <br />
-                  on the Lemonade network. Don’t worry this will <br />
-                  take less than a minute.
-                </p>
-              </div>
-            </div>
-            <div className="mt-[24px] hidden tablet:flex">
-              <Image
-                src={"/images/profile_verification.png"}
-                alt="signup image"
-                width={320}
-                height={361}
-              />
-            </div>
+        <div className="flex h-full min-h-0 w-full max-w-[480px] flex-col justify-center overflow-y-auto">
+          <div className="mb-2 tablet:hidden">
+            <p className="font-sans text-title-l font-semibold">Welcome,</p>
+            <p className="font-ruso text-mid-green text-title-xl font-bold">{user?.fullname}</p>
           </div>
           {renderStep()}
         </div>
-      </section>
-    </section>
+      </div>
+    </AuthLayout>
   );
 }

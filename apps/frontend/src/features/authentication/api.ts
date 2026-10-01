@@ -215,14 +215,12 @@ export interface BillingHistoryResponse {
 }
 
 export const authApi = {
-  login: (payload: LoginPayload) =>
-    postJson<LoginResult>("/api/auth/login", payload),
+  login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
   logout: () => postJson<void>("/api/auth/logout"),
   getCurrentUser: () => browserApi.get<CurrentUser>(userProfileRoutes.SHOW),
 
   // Post-signup email verification — the "verify-email" page's flow.
-  verifyAccountOtp: (data: VerifyOtpPayload) =>
-    browserApi.post<void>("/user/otp/verify", data),
+  verifyAccountOtp: (data: VerifyOtpPayload) => browserApi.post<void>("/user/otp/verify", data),
 
   // Password-reset OTP check — the "verify-code" page's flow.
   // VerifyForgotPasswordAction (backend) deletes the forgot-password
@@ -259,27 +257,16 @@ export const authApi = {
     browserApi.patch<UpdateProfileFieldResult>(url, data),
 
   changePassword: (data: ChangePasswordPayload) =>
-    browserApi.patch<UpdateProfileFieldResult>(
-      "/user/profile/settings/change-password",
-      data,
-    ),
+    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-password", data),
 
   changeProfileImage: (data: { profile_image: string }) =>
-    browserApi.patch<UpdateProfileFieldResult>(
-      "/user/profile/settings/change-profile-image",
-      data,
-    ),
+    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-profile-image", data),
 
   deleteAccount: (data: DeleteAccountPayload) =>
-    browserApi.post<{ user: null }>(
-      "/user/profile/settings/delete-account",
-      data,
-    ),
+    browserApi.post<{ user: null }>("/user/profile/settings/delete-account", data),
 
   getNotificationSettings: () =>
-    browserApi.get<AppSettingsResponse>(
-      userProfileRoutes.NOTIFICATION_SETTINGS_SHOW,
-    ),
+    browserApi.get<AppSettingsResponse>(userProfileRoutes.NOTIFICATION_SETTINGS_SHOW),
 
   updateNotificationSettings: (data: NotificationSettingsPayload) =>
     browserApi.patch<{ app_settings: unknown }>(
@@ -298,19 +285,13 @@ export const authApi = {
       data,
     ),
 
-  getSubscription: () =>
-    browserApi.get<SubscriptionResponse>(userProfileRoutes.SUBSCRIPTION_SHOW),
+  getSubscription: () => browserApi.get<SubscriptionResponse>(userProfileRoutes.SUBSCRIPTION_SHOW),
 
   getBillingHistory: () =>
-    browserApi.get<BillingHistoryResponse>(
-      userProfileRoutes.SUBSCRIPTION_BILLING_HISTORY,
-    ),
+    browserApi.get<BillingHistoryResponse>(userProfileRoutes.SUBSCRIPTION_BILLING_HISTORY),
 
   changePlan: (data: ChangePlanPayload) =>
-    browserApi.post<ChangePlanResult>(
-      userProfileRoutes.SUBSCRIPTION_CHANGE_PLAN,
-      data,
-    ),
+    browserApi.post<ChangePlanResult>(userProfileRoutes.SUBSCRIPTION_CHANGE_PLAN, data),
 
   // A single subscription plan's fresh details, fetched by id
   // (PricingCard's "Subscribe" click). SubscriptionResource nests a real

@@ -9,11 +9,7 @@ type CheckedInInterface = {
   guestDetails: any;
 };
 
-const CheckedInModal: React.FC<CheckedInInterface> = ({
-  toggle,
-  isOpen,
-  guestDetails,
-}) => {
+const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDetails }) => {
   return (
     <Dialog
       open={isOpen}
@@ -33,34 +29,26 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({
           </div>
           <div className="mt-[24px]">
             <div className="flex justify-center">
-              <Image
-                src={"/images/checkIn.png"}
-                alt="check in"
-                width={311}
-                height={160}
-              />
+              <Image src={"/images/checkIn.png"} alt="check in" width={311} height={160} />
             </div>
           </div>
           <div className="mt-[24px]">
             <div className="flex flex-col">
-              <p className="text-center font-sans text-[20px] font-semibold leading-[28px] text-black-light">
+              <p className="text-black-light text-center font-sans text-[20px] leading-[28px] font-semibold">
                 Check in Successful!
               </p>
-              <p className="text-center font-sans text-[16px] font-normal leading-[24px] tracking-custom text-light-black">
-                Guest with ticket ID{" "}
-                {guestDetails?.ticket?.ticket_id.toUpperCase()} has been
+              <p className="tracking-custom text-light-black text-center font-sans text-[16px] leading-[24px] font-normal">
+                Guest with ticket ID {guestDetails?.ticket?.ticket_id.toUpperCase()} has been
                 successfully checked in.
               </p>
             </div>
           </div>
           <div className="mt-[40px]">
             <button
-              className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+              className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
               onClick={toggle}
             >
-              <p className="font-sans text-[16px] font-semi-normal text-white">
-                Done
-              </p>
+              <p className="font-semi-normal font-sans text-[16px] text-white">Done</p>
             </button>
           </div>
         </div>

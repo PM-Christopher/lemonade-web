@@ -31,23 +31,17 @@ const TopNav = () => {
   };
 
   return (
-    <div className="!relative">
-      <nav className="relative flex flex-wrap items-center justify-between bg-white p-2 px-10">
+    <div className="sticky top-0 z-50">
+      <nav className="flex flex-wrap items-center justify-between bg-white p-2 px-10">
         <div>
           {isMobile ? (
             <Image src={"/images/logo.png"} alt="logo" width={73} height={32} priority />
           ) : (
-            <Image
-              src={"/images/logo.png"}
-              alt="logo"
-              width={127}
-              height={56}
-              priority
-            />
+            <Image src={"/images/logo.png"} alt="logo" width={127} height={56} priority />
           )}
         </div>
 
-        <div className="hidden items-center justify-center gap-8 tablet:flex">
+        <div className="tablet:flex hidden items-center justify-center gap-8">
           {navLinks.map((link, idx) => (
             <Link
               href={link.path}
@@ -59,16 +53,14 @@ const TopNav = () => {
               <div
                 className={`flex flex-col items-center gap-2 ${
                   isActiveLink(pathname, link.path, true)
-                    ? "rounded-[8px] bg-light-green-10 p-[8px] text-light-green"
+                    ? "bg-light-green-10 text-light-green rounded-[8px] p-[8px]"
                     : "text-text-grey"
                 } `}
               >
                 <Image src={link.icon} alt="home" width={12.8} height={12.8} />
                 <p
                   className={`text-[12px] leading-[14.4px] ${
-                    isActiveLink(pathname, link.path, true)
-                      ? "font-semibold"
-                      : "font-normal"
+                    isActiveLink(pathname, link.path, true) ? "font-semibold" : "font-normal"
                   }`}
                 >
                   {link.name}
@@ -89,8 +81,8 @@ const TopNav = () => {
               onClick={() => setOpenNotifications(true)}
             />
           </div>
-          <div className="hidden tablet:block">
-            <p className="font-sans text-[18px] font-normal leading-[27px]">
+          <div className="tablet:block hidden">
+            <p className="font-sans text-[18px] leading-[27px] font-normal">
               Hello,{" "}
               <span className="font-semibold">
                 {user?.fullname ? formatName(user.fullname)?.[0] : ""}
@@ -108,10 +100,8 @@ const TopNav = () => {
                   className="h-[40px] w-[40px] rounded-full border-[2px] border-[#3B4152] transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
                 />
               ) : (
-                <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] bg-gradient-green text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
-                  <p className="font-ruso text-[18px]">
-                    {getInitials(user?.fullname)}
-                  </p>
+                <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+                  <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
                 </div>
               )}
             </Link>
@@ -121,10 +111,10 @@ const TopNav = () => {
 
       <Dialog open={openNotifications} onOpenChange={setOpenNotifications}>
         <DialogContent
-          className={`scrollbar-hide max-h-[80vh] overflow-y-auto ${isMobile ? "" : "sm:right-8 sm:top-8 sm:translate-x-0 sm:translate-y-0"}`}
+          className={`scrollbar-hide max-h-[80vh] overflow-y-auto ${isMobile ? "" : "sm:top-8 sm:right-8 sm:translate-x-0 sm:translate-y-0"}`}
         >
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold uppercase tracking-wide text-gray-600">
+            <DialogTitle className="text-lg font-semibold tracking-wide text-gray-600 uppercase">
               Notifications
             </DialogTitle>
           </DialogHeader>
@@ -133,8 +123,7 @@ const TopNav = () => {
               <div
                 key={index}
                 className={`${index !== 0 && "mt-4"} ${
-                  index !== data.notifications.length - 1 &&
-                  "border-b border-gray-200 pb-4"
+                  index !== data.notifications.length - 1 && "border-b border-gray-200 pb-4"
                 } flex flex-col gap-3`}
               >
                 <div className="flex items-start gap-3">
@@ -147,10 +136,9 @@ const TopNav = () => {
                         {notification?.title ?? ""}
                       </p>
                       <p className="text-sm text-gray-400">
-                        {dayjs(
-                          notification?.meta?.created_at ||
-                            notification?.created_at,
-                        ).format("DD MMM")}
+                        {dayjs(notification?.meta?.created_at || notification?.created_at).format(
+                          "DD MMM",
+                        )}
                       </p>
                     </div>
                     <p className="text-sm leading-relaxed text-gray-600">
@@ -202,13 +190,8 @@ const TopNav = () => {
                   <p>Name: {selectedNotification.meta?.tribe_name}</p>
                   <p>Category: {selectedNotification.meta?.category}</p>
                   <p>Description: {selectedNotification.meta?.description}</p>
-                  <p>
-                    Monetized:{" "}
-                    {selectedNotification.meta?.monetized ? "Yes" : "No"}
-                  </p>
-                  <p>
-                    Private: {selectedNotification.meta?.private ? "Yes" : "No"}
-                  </p>
+                  <p>Monetized: {selectedNotification.meta?.monetized ? "Yes" : "No"}</p>
+                  <p>Private: {selectedNotification.meta?.private ? "Yes" : "No"}</p>
                 </div>
               )}
 
@@ -235,14 +218,11 @@ const TopNav = () => {
                     {selectedNotification.meta?.message}
                   </p>
                   <p>
-                    <span className="font-medium">From:</span>{" "}
-                    {selectedNotification.meta?.user_id}
+                    <span className="font-medium">From:</span> {selectedNotification.meta?.user_id}
                   </p>
                   <p>
                     <span className="font-medium">Requested At:</span>{" "}
-                    {dayjs(selectedNotification.meta?.created_at).format(
-                      "DD MMM YYYY, hh:mm A",
-                    )}
+                    {dayjs(selectedNotification.meta?.created_at).format("DD MMM YYYY, hh:mm A")}
                   </p>
                 </div>
               )}
@@ -261,32 +241,26 @@ const TopNav = () => {
                   <p>Category: {selectedNotification.meta?.category}</p>
                   <p>
                     Date:{" "}
-                    {dayjs(selectedNotification.meta?.start_date).format(
-                      "DD MMM YYYY, hh:mm A",
-                    )}
+                    {dayjs(selectedNotification.meta?.start_date).format("DD MMM YYYY, hh:mm A")}
                   </p>
                   <p>Location: {selectedNotification.meta?.location}</p>
-                  <p>
-                    Description: {selectedNotification.meta?.event_description}
-                  </p>
+                  <p>Description: {selectedNotification.meta?.event_description}</p>
                   {selectedNotification.meta?.socials && (
                     <div>
                       <p className="font-semibold">Socials:</p>
                       <ul className="list-disc pl-4">
-                        {selectedNotification.meta.socials.map(
-                          (s: any, idx: number) => (
-                            <li key={idx}>
-                              <a
-                                href={s.value}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 underline"
-                              >
-                                {s.name}
-                              </a>
-                            </li>
-                          ),
-                        )}
+                        {selectedNotification.meta.socials.map((s: any, idx: number) => (
+                          <li key={idx}>
+                            <a
+                              href={s.value}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              {s.name}
+                            </a>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   )}
@@ -294,9 +268,7 @@ const TopNav = () => {
               )}
             </div>
           ) : (
-            <p className="py-10 text-center text-gray-500">
-              No details to show
-            </p>
+            <p className="py-10 text-center text-gray-500">No details to show</p>
           )}
         </DialogContent>
       </Dialog>

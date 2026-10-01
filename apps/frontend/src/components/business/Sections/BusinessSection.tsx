@@ -60,16 +60,16 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
   }, [trxref, dispatch, router, searchParams]);
 
   return (
-    <section className="sm:px-6 lg:px-8 mt-4 flex flex-col items-center px-4">
+    <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
       {/* Featured Section */}
-      <div className="sm:rounded-xl w-full max-w-[1312px] gap-3 rounded-none bg-light-green-50 p-4">
-        <p className="sm:text-xl mb-3 text-lg font-semibold">Featured</p>
+      <div className="bg-light-green-50 w-full max-w-[1312px] gap-3 rounded-none p-4 sm:rounded-xl">
+        <p className="mb-3 text-lg font-semibold sm:text-xl">Featured</p>
         {loading ? (
           <BusinessCarouselSkeleton count={4} />
         ) : featured?.length > 0 ? (
           <BusinessCarousel businesses={featured} showDots={false} showArrows={false} />
         ) : (
-          <div className="sm:py-12 flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm">
+          <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm sm:py-12">
             <div className="flex max-w-md flex-col items-center text-center">
               <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                 <svg
@@ -98,12 +98,12 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
 
       {/* All Business Sections */}
       <div className="mt-6 w-full max-w-[1312px] rounded-xl bg-white p-4 shadow-sm">
-        <p className="sm:text-xl mb-4 text-lg font-semibold">All businesses</p>
+        <p className="mb-4 text-lg font-semibold sm:text-xl">All businesses</p>
         <div
           className={`grid gap-2 ${
             !loading && (!businesses || businesses.length === 0)
               ? "grid-cols-1"
-              : "grid-cols-1 phone:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4"
+              : "phone:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 grid-cols-1"
           }`}
         >
           {loading ? (
@@ -115,7 +115,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
               </Link>
             ))
           ) : (
-            <div className="sm:py-12 flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm sm:py-12">
               <div className="flex max-w-md flex-col items-center text-center">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                   <svg

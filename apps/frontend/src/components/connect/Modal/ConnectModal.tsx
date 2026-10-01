@@ -2,13 +2,7 @@ import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
-import {
-  Button,
-  Label,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useAppDispatch } from "@/redux/hook";
@@ -23,12 +17,7 @@ type ConnectInterface = {
   authUser: any;
 };
 
-const ConnectModal: React.FC<ConnectInterface> = ({
-  toggle,
-  isOpen,
-  users,
-  authUser,
-}) => {
+const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authUser }) => {
   const dispatch = useAppDispatch();
   const sendInviteMutation = useSendInviteMutation();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,6 +31,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({
       message: "",
     },
     validationSchema: connectSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       sendConnect(values);
     },
@@ -101,7 +91,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({
         <DialogTitle className="sr-only">{"Connect"}</DialogTitle>
         <form
           onSubmit={formik.handleSubmit}
-          className="hide-scrollbar h-screen w-screen scale-100 transform overflow-y-auto rounded-none bg-white p-6 shadow-2xl transition-all duration-300 hover:scale-100 laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:scale-95 laptop:rounded-2xl"
+          className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:scale-95 laptop:rounded-2xl h-screen w-screen scale-100 transform overflow-y-auto rounded-none bg-white p-6 shadow-2xl transition-all duration-300 hover:scale-100"
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-100 pb-3">
@@ -121,26 +111,19 @@ const ConnectModal: React.FC<ConnectInterface> = ({
           <div className="mt-6 flex flex-col items-center space-y-2 text-center">
             {/* Profile Avatar */}
             <div className="relative h-[40px] w-[40px]">
-              <Image
-                src="/images/lemon.png"
-                alt="lemon"
-                width={40}
-                height={40}
-              />
+              <Image src="/images/lemon.png" alt="lemon" width={40} height={40} />
               <p className="absolute bottom-2 left-2 text-[12px] font-semibold text-black">
                 L{user?.short_lemon_id}
               </p>
             </div>
 
             {/* User Info */}
-            <p className="text-[18px] font-semibold text-gray-900">
-              {user?.long_lemon_id}
-            </p>
+            <p className="text-[18px] font-semibold text-gray-900">{user?.long_lemon_id}</p>
             <p className="text-[14px] text-gray-700">{user?.username}</p>
             <p className="text-[12px] text-gray-500">{user?.industry}</p>
 
             {/* Distance */}
-            <div className="mt-3 flex items-center gap-2 text-[12px] text-mid-green">
+            <div className="text-mid-green mt-3 flex items-center gap-2 text-[12px]">
               <LocationIcon />
               <p>
                 {getDistanceFromLatLonInKm(
@@ -155,9 +138,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({
 
             {/* Already Connected */}
             {user?.hasConnected ? (
-              <p className="mt-6 text-[12px] text-text-grey">
-                You are already connected!
-              </p>
+              <p className="text-text-grey mt-6 text-[12px]">You are already connected!</p>
             ) : (
               <>
                 {/* Invite Message */}
@@ -172,7 +153,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({
                     onChange={formik.handleChange}
                     value={formik.values.message}
                     placeholder="Write a short friendly invite..."
-                    className="h-[120px] w-full resize-none rounded-xl border-0 bg-light_grey p-3 px-4 text-sm text-gray-700 outline-none transition-all focus:ring-2 focus:ring-green-400"
+                    className="bg-light_grey h-[120px] w-full resize-none rounded-xl border-0 p-3 px-4 text-sm text-gray-700 transition-all outline-none focus:ring-2 focus:ring-green-400"
                   />
                 </div>
 
@@ -180,7 +161,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({
                 <div className="mt-6 w-full">
                   <Button
                     type="submit"
-                    className="h-[48px] w-full rounded-xl bg-gradient-green shadow-custom-bottom transition-all hover:brightness-110"
+                    className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-xl transition-all hover:brightness-110"
                   >
                     <p className="text-[16px] font-medium">Send Invite</p>
                   </Button>

@@ -10,15 +10,14 @@ import { checkError } from "@lemonade/domain";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";
-import * as yup from "yup";
 import { useFormik } from "formik";
+import { otpSchema } from "@lemonade/validation";
 import {
   useResendOtpMutation,
   useVerifyPasswordResetOtpMutation,
 } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { FormikButton } from "@/components/global/FormikButton";
-import Link from "next/link";
 
 export default function VerifyCodePage() {
   const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
@@ -104,15 +103,12 @@ export default function VerifyCodePage() {
   };
 
   //form validation
-  const verifySchema = yup.object({
-    code: yup.string().length(4).required("Code is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       code: "",
     },
-    validationSchema: verifySchema,
+    validationSchema: otpSchema,
+    validateOnMount: true,
     validateOnChange: false,
     onSubmit: async (values) => {
       await verifyOtp(values);
@@ -162,38 +158,24 @@ export default function VerifyCodePage() {
 
   return (
     <AuthLayout>
-      <section className="bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
+      <div className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10">
+        <div className="hidden min-w-0 flex-col tablet:flex">
           <div>
-            <Link href={"/login"}>
-              <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-            </Link>
+            <p className="font-ruso text-display-s font-bold">Verification code</p>
+            <p className="text-body-xl mt-2 max-w-[26rem] font-sans font-normal text-text-grey">
+              Enter the 4-digit code sent to {cookie.email} to verify your account
+            </p>
           </div>
-          <div>
-            <Link href="/login">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">Login</p>
-            </Link>
-          </div>
+          <Image
+            src={"/images/verification.png"}
+            alt=""
+            width={320}
+            height={258}
+            className="mt-4 h-auto max-h-[36vh] w-auto object-contain"
+          />
         </div>
-        <div className="mt-10 flex min-h-screen flex-wrap items-start justify-center gap-16">
-          <div className="flex flex-col">
-            <div>
-              <p className="font-ruso text-[40px] font-bold leading-[48px]">Verification code</p>
-              <p className="font-sans text-[18px] font-normal leading-[27px]">
-                Enter the 4-digit code sent to {cookie.email} <br /> to verify your account
-              </p>
-            </div>
-            <div>
-              <Image
-                src={"/images/verification.png"}
-                alt="signup image"
-                width={511.06}
-                height={519.77}
-              />
-            </div>
-          </div>
-          <form onSubmit={formik.handleSubmit}>
-            <Card className="w-[480px] p-10">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-[440px]">
+          <Card className="w-full p-6">
               <CardContent className="flex justify-center">
                 <div className="flex flex-col items-center justify-center">
                   <OtpInput
@@ -246,17 +228,17 @@ export default function VerifyCodePage() {
                   ) : null}
                 </div>
               </CardContent>
-              <CardContent className="mb-[10px] mt-[10px] flex justify-center">
-                <div className="mb-[5px] mt-[10px] flex cursor-pointer justify-center">
+              <CardContent className="mt-[10px] mb-[10px] flex justify-center">
+                <div className="mt-[10px] mb-[5px] flex cursor-pointer justify-center">
                   {canResend ? (
                     <p
-                      className="cursor-pointer font-sans text-[16px] font-semi-normal text-light-green"
+                      className="font-semi-normal text-light-green cursor-pointer font-sans text-[16px]"
                       onClick={handleResend}
                     >
                       Send code again
                     </p>
                   ) : (
-                    <p className="font-sans text-[16px] font-semi-normal text-light-green">
+                    <p className="font-semi-normal text-light-green font-sans text-[16px]">
                       Resend code in {seconds} secs
                     </p>
                   )}
@@ -270,10 +252,9 @@ export default function VerifyCodePage() {
                   classes="w-full h-[48px] rounded-[12px]"
                 />
               </CardContent>
-            </Card>
-          </form>
-        </div>
-      </section>
+          </Card>
+        </form>
+      </div>
     </AuthLayout>
   );
 }

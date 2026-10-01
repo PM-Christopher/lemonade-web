@@ -5,10 +5,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
 import { useFormik } from "formik";
-import {
-  useAddToWalletMutation,
-  useDeductFromWalletMutation,
-} from "@/features/wallet/mutations";
+import { useAddToWalletMutation, useDeductFromWalletMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 
@@ -16,8 +13,7 @@ type UpdateBalanceInterface = {
   isOpen: boolean;
   toggle: () => void;
   updateType: string;
-  userDetails?: any;
-  balance?: any;
+  balance?: number;
   // Optional: a consumer outside the wallet-management domain (e.g. the
   // user detail page's WalletView, refreshing its own Redux-backed account
   // info) that needs its own refresh on top of this mutation's own query
@@ -29,17 +25,12 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
   isOpen,
   toggle,
   updateType,
-  userDetails,
   balance,
   reload,
 }) => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const id = params.id
-    ? Array.isArray(params.id)
-      ? parseInt(params.id[0])
-      : parseInt(params.id)
-    : undefined;
+  const id = params.id ? (Array.isArray(params.id) ? params.id[0] : params.id) : undefined;
 
   const addToWallet = useAddToWalletMutation(id);
   const deductFromWallet = useDeductFromWalletMutation(id);
@@ -104,26 +95,18 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{renderType()}</DialogTitle>
-        <div
-          className="rounded-lg bg-white p-6 shadow-lg"
-          style={{ width: "480px" }}
-        >
+        <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
           <div className="flex items-center justify-between">
-            <p className={"text-[18px] font-semiBold"}>{renderType()}</p>
+            <p className={"font-semiBold text-[18px]"}>{renderType()}</p>
             <div className="cursor-pointer" onClick={toggle}>
               <XIcon />
             </div>
           </div>
-          <div
-            className={"flex flex-col"}
-            style={{ marginTop: "20px", gap: "16px" }}
-          >
+          <div className={"flex flex-col"} style={{ marginTop: "20px", gap: "16px" }}>
             <div className={"flex flex-col"} style={{ gap: "4px" }}>
-              <p className={"text-[14px] font-normal text-text-grey"}>Amount</p>
+              <p className={"text-text-grey text-[14px] font-normal"}>Amount</p>
               <Input
-                className={
-                  "h-[48px] rounded-[12px] border-none bg-light-grey px-[12px] py-[12px]"
-                }
+                className={"bg-light-grey h-[48px] rounded-[12px] border-none px-[12px] py-[12px]"}
                 placeholder={"Amount"}
                 value={formik.values.amount}
                 onChange={formik.handleChange("amount")}
@@ -137,11 +120,6 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               <span className={"text-[14px] font-bold"}>
                 {" "}
                 ₦{" "}
-                {/* {formatNumberWithCommas(
-                userDetails?.total_amount ||
-                  userDetails?.history[0]?.wallet?.balance ||
-                  0
-              )} */}
                 {formatNumberWithCommas(balance || 0)}
               </span>
             </p>
@@ -149,7 +127,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
             <div className={"flex justify-between gap-[16px]"}>
               <button
                 className={
-                  "w-full rounded-[12px] border-[1px] border-light-grey-50 bg-white px-[48px] py-[11px]"
+                  "border-light-grey-50 w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[11px]"
                 }
                 onClick={toggle}
               >
@@ -157,7 +135,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               </button>
               <button
                 className={
-                  "w-full rounded-[12px] border-[1px] border-step-color bg-gradient-green px-[48px] py-[11px]"
+                  "border-step-color bg-gradient-green w-full rounded-[12px] border-[1px] px-[48px] py-[11px]"
                 }
                 onClick={() => {
                   formik.handleSubmit();

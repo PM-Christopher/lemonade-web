@@ -31,9 +31,14 @@ const useSearchParams = () => {
   const setSearchParams = useCallback(
     (paramsObject: Record<string, string | undefined>) => {
       const newQueryString = createQueryString(paramsObject);
-      router.push(`${pathname}?${newQueryString}`);
+      // Already there — a push of the current path refreshes the page, and
+      // the search effects call this on mount with an empty value.
+      if (newQueryString === searchParams.toString()) return;
+      // An empty query must be the bare path. Pushing "/transactions?" leaves
+      // the previous search params in place, so a tab switch never leaves page=2.
+      router.push(newQueryString ? `${pathname}?${newQueryString}` : pathname);
     },
-    [createQueryString, router, pathname],
+    [createQueryString, router, pathname, searchParams],
   );
 
   return { searchParams, setSearchParams };

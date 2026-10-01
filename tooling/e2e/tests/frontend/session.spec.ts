@@ -7,10 +7,14 @@ import { test, expect } from "@playwright/test";
 // hard reload, proving the httpOnly cookie (not just in-memory Redux
 // state) is what's actually keeping the user logged in.
 test("an authenticated session survives a hard reload", async ({ page }) => {
-  await page.goto("/");
+  test.setTimeout(60_000);
+  // "load" never settles on next dev when a hanging request keeps the page
+  // busy, and the navigation gets aborted. The cookie check only needs the
+  // document.
+  await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page).not.toHaveURL(/\/login/);
 
-  await page.reload();
+  await page.reload({ waitUntil: "domcontentloaded" });
 
   await expect(page).not.toHaveURL(/\/login/);
 });

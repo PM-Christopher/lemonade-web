@@ -161,6 +161,7 @@ const CreateEventPage = () => {
       commission: null,
     },
     validationSchema: createEventSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       try {
         await createEventSchema.validate(formik.values);
@@ -285,20 +286,20 @@ const CreateEventPage = () => {
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.push("/event")}
           >
             <ChevronLeft className="cursor-pointer" />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Add event</p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Add event</p>
           </div>
         </div>
-        <section className="mt-0 flex flex-col laptop:mt-4 laptop:items-center">
+        <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
           <div>
-            <div className="mt-10 flex w-full flex-col rounded-[12px] bg-white p-[48px] laptop:w-[640px]">
-              <p className="font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-[12px] bg-white p-[48px]">
+              <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                 EVENT DETAILS
               </p>
               <SingleFileUploader
@@ -314,7 +315,7 @@ const CreateEventPage = () => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="event-name"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Event name
                 </Label>
@@ -322,7 +323,7 @@ const CreateEventPage = () => {
                   id="event-name"
                   type="text"
                   placeholder=""
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   value={formik.values.event_name}
                   onChange={(e) => {
                     formik.setFieldValue("event_name", e.target.value);
@@ -335,12 +336,12 @@ const CreateEventPage = () => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Event description
                 </Label>
                 <textarea
-                  className="form-font h-[131px] resize-none rounded-xl border-0 bg-light_grey p-4"
+                  className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
                   value={formik.values.event_description}
                   onChange={(e) => {
                     formik.setFieldValue("event_description", e.target.value);
@@ -355,13 +356,13 @@ const CreateEventPage = () => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Event category
                 </Label>
                 <select
                   id="fullname"
-                  className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                   value={formik.values.category}
                   onChange={(e) => {
                     formik.setFieldValue("category", e.target.value);
@@ -375,7 +376,7 @@ const CreateEventPage = () => {
                   <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.category}</p>
                 ) : null}
               </div>
-              <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                 EVENT TYPE
               </p>
               <div className="mt-[16px] flex gap-2">
@@ -391,7 +392,7 @@ const CreateEventPage = () => {
                   }}
                 >
                   <LocationIcon />
-                  <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
+                  <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                     Physical
                   </p>
                 </div>
@@ -407,7 +408,7 @@ const CreateEventPage = () => {
                   }}
                 >
                   <WebIcon />
-                  <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
+                  <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                     Online
                   </p>
                 </div>
@@ -416,11 +417,11 @@ const CreateEventPage = () => {
                 <div className="mt-[24px] grid gap-2">
                   <Label
                     htmlFor="fullname"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Event location
                   </Label>
-                  <div className="flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                  <div className="bg-light_grey flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                     <div>
                       <LocationIcon />
                     </div>
@@ -428,7 +429,7 @@ const CreateEventPage = () => {
                       <input
                         id="search"
                         type="text"
-                        className="w-full border-0 bg-light_grey px-[4px] text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                        className="bg-light_grey w-full border-0 px-[4px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
                         value={formik.values.location}
                         onChange={(e) => {
@@ -447,13 +448,13 @@ const CreateEventPage = () => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="meeting-platform"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Meeting Platform
                     </Label>
                     <select
                       id="meeting-platform"
-                      className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                       value={formik.values.hosting_platform}
                       onChange={formik.handleChange("hosting_platform")}
                     >
@@ -470,7 +471,7 @@ const CreateEventPage = () => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="meeting-link"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Meeting link
                     </Label>
@@ -478,7 +479,7 @@ const CreateEventPage = () => {
                       id="meeting-link"
                       type="text"
                       placeholder=""
-                      className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
                       value={formik.values.meeting_link}
                       onChange={formik.handleChange("meeting_link")}
                       onBlur={formik.handleBlur}
@@ -493,7 +494,7 @@ const CreateEventPage = () => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="meeting-passcode"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Meeting passcode
                     </Label>
@@ -501,7 +502,7 @@ const CreateEventPage = () => {
                       id="meeting-passcode"
                       type="text"
                       placeholder=""
-                      className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
                       value={formik.values.meeting_passcode}
                       onChange={formik.handleChange("meeting_passcode")}
                       onBlur={formik.handleBlur}
@@ -517,13 +518,13 @@ const CreateEventPage = () => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="event-time-zone"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Event time zone
                 </Label>
                 <select
                   id="event-time-zone"
-                  className="form-font h-12 w-full rounded-xl border-0 bg-light_grey px-2"
+                  className="form-font bg-light_grey h-12 w-full rounded-xl border-0 px-2"
                   value={formik.values.time_zone}
                   onChange={(e) => {
                     formik.setFieldValue("time_zone", e.target.value);
@@ -543,13 +544,13 @@ const CreateEventPage = () => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Start date
                 </Label>
                 <div className="flex justify-between gap-3">
                   <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                       <div>
                         <CalendarIcon />
                       </div>
@@ -574,7 +575,7 @@ const CreateEventPage = () => {
                           minDate={now}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:border-none focus:outline-none focus:ring-0"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                           placeholderText="From"
                         />
                       </div>
@@ -587,7 +588,7 @@ const CreateEventPage = () => {
                   </div>
 
                   <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                       <div>
                         <ClockIcon />
                       </div>
@@ -610,7 +611,7 @@ const CreateEventPage = () => {
                           timeCaption={"Start Time"}
                           timeIntervals={15}
                           dateFormat="h:mm aa"
-                          className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:border-none focus:outline-none focus:ring-0"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                           placeholderText="Start Time"
                           minTime={
                             formik.values.start_date &&
@@ -633,13 +634,13 @@ const CreateEventPage = () => {
               <div className="mt-[24px] grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   End date
                 </Label>
                 <div className="flex justify-between gap-3">
                   <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                       <CalendarIcon />
                       <DatePicker
                         selected={formik.values.end_date ? new Date(formik.values.end_date) : null}
@@ -660,7 +661,7 @@ const CreateEventPage = () => {
                         }
                         dateFormat="yyyy-MM-dd"
                         placeholderText="End Date"
-                        className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:border-none focus:outline-none focus:ring-0"
+                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                       />
                     </div>
                     {formik.touched.end_date && formik.errors.end_date ? (
@@ -671,7 +672,7 @@ const CreateEventPage = () => {
                   </div>
 
                   <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                       <ClockIcon />
                       <DatePicker
                         selected={
@@ -707,7 +708,7 @@ const CreateEventPage = () => {
                           max.setHours(23, 45, 0, 0);
                           return max;
                         })()}
-                        className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:border-none focus:outline-none focus:ring-0"
+                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                       />
                     </div>
                     {formik.touched.end_time && formik.errors.end_time ? (
@@ -718,7 +719,7 @@ const CreateEventPage = () => {
                   </div>
                 </div>
               </div>
-              <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                 AFFILIATE PROGRAM
               </p>
               <div className="mt-[28px] flex justify-between">
@@ -727,10 +728,10 @@ const CreateEventPage = () => {
                     <AffiliateUsersIcon />
                   </div>
                   <div className="flex flex-col">
-                    <p className="font-sans text-[16px] font-normal leading-[24px] tracking-custom">
+                    <p className="tracking-custom font-sans text-[16px] leading-[24px] font-normal">
                       Enable Affiliate program
                     </p>
-                    <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                    <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                       Affiliates will earn 0.01% per ticket sales
                     </p>
                   </div>
@@ -752,7 +753,7 @@ const CreateEventPage = () => {
                 <div className="mt-[24px] grid gap-2">
                   <Label
                     htmlFor="fullname"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Set commission (%)
                   </Label>
@@ -760,13 +761,13 @@ const CreateEventPage = () => {
                     id="fullname"
                     type="number"
                     placeholder=""
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.commission ?? ""}
                     onChange={(e) => {
                       formik.setFieldValue("commission", e.target.value);
                     }}
                   />
-                  <span className="font-sans text-[12px] font-normal leading-[14.4px] text-grey-40">
+                  <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
                     Commission will be based on the per ticket sold
                   </span>
                   {formik.touched.commission && formik.errors.commission ? (
@@ -776,10 +777,10 @@ const CreateEventPage = () => {
                   ) : null}
                 </div>
               )}
-              <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                 SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
               </p>
-              <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                 <div>
                   <AttachmentIcon />
                 </div>
@@ -787,7 +788,7 @@ const CreateEventPage = () => {
                   <input
                     id="search"
                     type="url"
-                    className="w-full rounded-xl border-0 bg-light_grey px-1 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="https://example.com"
                     value={socials.website}
                     onChange={handleSocialsChange}
@@ -795,7 +796,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                 <div>
                   <FacebookIcon />
                 </div>
@@ -803,7 +804,7 @@ const CreateEventPage = () => {
                   <input
                     id="search"
                     type="text"
-                    className="w-full rounded-xl border-0 bg-light_grey px-1 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Facebook username"
                     value={socials.facebook}
                     onChange={handleSocialsChange}
@@ -811,7 +812,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                 <div>
                   <LinkedInIcon />
                 </div>
@@ -819,7 +820,7 @@ const CreateEventPage = () => {
                   <input
                     id="search"
                     type="text"
-                    className="w-full rounded-xl border-0 bg-light_grey px-1 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="LinkedIn username"
                     value={socials.linkedin}
                     onChange={handleSocialsChange}
@@ -827,7 +828,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                 <div>
                   <TwitterIcon />
                 </div>
@@ -835,7 +836,7 @@ const CreateEventPage = () => {
                   <input
                     id="search"
                     type="text"
-                    className="w-full rounded-xl border-0 bg-light_grey px-1 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Twitter username"
                     value={socials.twitter}
                     onChange={handleSocialsChange}
@@ -843,7 +844,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                 <div>
                   <InstagramIcon />
                 </div>
@@ -851,7 +852,7 @@ const CreateEventPage = () => {
                   <input
                     id="search"
                     type="text"
-                    className="w-full rounded-xl border-0 bg-light_grey px-1 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Instagram username"
                     value={socials.instagram}
                     onChange={handleSocialsChange}

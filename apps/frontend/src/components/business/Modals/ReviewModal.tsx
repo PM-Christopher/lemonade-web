@@ -1,14 +1,7 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import RatingGreyIcon from "@/image/icons/RatingGreyIcon.png";
-import {
-  Button,
-  Label,
-  Input,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import Image from "next/image";
 
 type ReviewInterface = {
@@ -32,15 +25,13 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
               <div className="cursor-pointer" onClick={toggleMenu}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] font-semibold leading-[27px] tracking-custom">
+              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
                 Write a review
               </p>
             </div>
             <div>
-              <Button className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom">
-                <p className="font-sans text-[12px] font-semi-normal">
-                  Submit a review
-                </p>
+              <Button className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]">
+                <p className="font-semi-normal font-sans text-[12px]">Submit a review</p>
               </Button>
             </div>
           </div>
@@ -48,47 +39,22 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
               >
                 Business rating
               </Label>
               <div className="flex gap-2">
-                <Image
-                  src={"/image/RatingGreyIcon.png"}
-                  alt="rating"
-                  width={29}
-                  height={29}
-                />
-                <Image
-                  src={"/image/RatingGreyIcon.png"}
-                  alt="rating"
-                  width={29}
-                  height={29}
-                />
-                <Image
-                  src={"/image/RatingGreyIcon.png"}
-                  alt="rating"
-                  width={29}
-                  height={29}
-                />
-                <Image
-                  src={"/image/RatingGreyIcon.png"}
-                  alt="rating"
-                  width={29}
-                  height={29}
-                />
-                <Image
-                  src={"/image/RatingGreyIcon.png"}
-                  alt="rating"
-                  width={29}
-                  height={29}
-                />
+                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
               </div>
             </div>
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
               >
                 Title
               </Label>
@@ -96,25 +62,23 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
                 id="fullname"
                 type="text"
                 placeholder=""
-                className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                className="form-font bg-light_grey h-12 rounded-xl border-0"
               />
             </div>
             <div className="mt-[24px] grid gap-2">
               <div className="flex justify-between">
                 <Label
                   htmlFor="fullname"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Description
                 </Label>
-                <p className="text-[12px] font-normal text-text-grey">
-                  100 characters
-                </p>
+                <p className="text-text-grey text-[12px] font-normal">100 characters</p>
               </div>
               <textarea
                 id="fullname"
                 placeholder="A short bio about yourself"
-                className="h-[91px] resize-none rounded-xl border-0 bg-light_grey p-3 text-[14px] font-normal"
+                className="bg-light_grey h-[91px] resize-none rounded-xl border-0 p-3 text-[14px] font-normal"
                 readOnly={true}
               />
             </div>

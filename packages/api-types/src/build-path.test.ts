@@ -7,9 +7,9 @@ describe("buildPath", () => {
   });
 
   it("fills multiple placeholders", () => {
-    expect(
-      buildPath("/admin/tribes/{id}/remove-user/{user_id}", { id: 1, user_id: 2 }),
-    ).toBe("/admin/tribes/1/remove-user/2");
+    expect(buildPath("/admin/tribes/{id}/remove-user/{user_id}", { id: 1, user_id: 2 })).toBe(
+      "/admin/tribes/1/remove-user/2",
+    );
   });
 
   it("accepts string values as-is", () => {

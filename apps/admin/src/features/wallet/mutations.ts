@@ -17,7 +17,7 @@ export function useUpdateWithdrawalThresholdMutation() {
   });
 }
 
-export function useWithdrawalRequestDecisionMutation(id: number | undefined) {
+export function useWithdrawalRequestDecisionMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -30,7 +30,7 @@ export function useWithdrawalRequestDecisionMutation(id: number | undefined) {
   });
 }
 
-export function useAddToWalletMutation(id: number | undefined) {
+export function useAddToWalletMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -42,7 +42,7 @@ export function useAddToWalletMutation(id: number | undefined) {
   });
 }
 
-export function useDeductFromWalletMutation(id: number | undefined) {
+export function useDeductFromWalletMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({

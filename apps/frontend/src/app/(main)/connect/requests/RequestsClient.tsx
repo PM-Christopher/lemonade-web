@@ -16,18 +16,12 @@ import { InviteSkeleton } from "@/components/Skeletons";
 
 // Off the initial bundle — both are only needed once their triggering
 // action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const InviteModal = dynamic(
-  () => import("@/components/connect/Modal/InviteModal"),
-  {
-    ssr: false,
-  },
-);
-const ConnectModal = dynamic(
-  () => import("@/components/connect/Modal/ConnectModal"),
-  {
-    ssr: false,
-  },
-);
+const InviteModal = dynamic(() => import("@/components/connect/Modal/InviteModal"), {
+  ssr: false,
+});
+const ConnectModal = dynamic(() => import("@/components/connect/Modal/ConnectModal"), {
+  ssr: false,
+});
 
 const RequestsClient = () => {
   const router = useRouter();
@@ -94,20 +88,20 @@ const RequestsClient = () => {
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex flex-col items-start justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:flex-row laptop:items-center laptop:px-[64px]">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="laptop:flex-row laptop:items-center laptop:px-[64px] flex flex-col items-start justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.push("/connect")}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
+            <p className="tracking-custom font-sans text-[16px] font-semibold">
               Connection requests
             </p>
           </div>
-          <div className="group relative flex w-full items-center gap-2 laptop:w-fit">
+          <div className="group laptop:w-fit relative flex w-full items-center gap-2">
             {/* Search Container */}
-            <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px] laptop:w-[235px]">
+            <div className="bg-light_grey laptop:w-[235px] flex h-[40px] w-full items-center gap-3 rounded-[12px] p-2 px-[12px]">
               <div>
                 <SearchIcon />
               </div>
@@ -115,7 +109,7 @@ const RequestsClient = () => {
                 <input
                   id="search"
                   type="text"
-                  className="w-full rounded-xl border-0 bg-light_grey px-[10px] text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                  className="bg-light_grey w-full rounded-xl border-0 px-[10px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search username..."
                   onKeyDown={(e) => handleSearch(e)}
                 />
@@ -129,7 +123,7 @@ const RequestsClient = () => {
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <div className="max-h-[659px] w-screen rounded-[12px] border-none bg-white p-[24px] laptop:w-[800px] laptop:border-[1px] laptop:border-grey-20">
+          <div className="laptop:w-[800px] laptop:border-[1px] laptop:border-grey-20 max-h-[659px] w-screen rounded-[12px] border-none bg-white p-[24px]">
             <div className="hide-scrollbar max-h-screen overflow-y-auto">
               {loading ? (
                 <InviteSkeleton count={4} />
@@ -145,7 +139,7 @@ const RequestsClient = () => {
                   />
                 ))
               ) : (
-                <div className="sm:py-12 flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm">
+                <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm sm:py-12">
                   <div className="flex max-w-md flex-col items-center text-center">
                     <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                       <svg
@@ -163,13 +157,10 @@ const RequestsClient = () => {
                         />
                       </svg>
                     </div>
-                    <p className="text-base font-semibold text-gray-700">
-                      No Requests Found
-                    </p>
+                    <p className="text-base font-semibold text-gray-700">No Requests Found</p>
                     <p className="mt-1 text-sm text-gray-500">
-                      Check back later for connection requests from other users.
-                      You can also invite friends to connect with you using the
-                      invite link below.
+                      Check back later for connection requests from other users. You can also invite
+                      friends to connect with you using the invite link below.
                     </p>
                   </div>
                 </div>
@@ -178,11 +169,7 @@ const RequestsClient = () => {
           </div>
         </section>
         {inviteIndex !== null && (
-          <InviteModal
-            invite={invites[inviteIndex]}
-            toggle={toggleMenu}
-            isOpen={isOpen}
-          />
+          <InviteModal invite={invites[inviteIndex]} toggle={toggleMenu} isOpen={isOpen} />
         )}
         {connUser && (
           <ConnectModal

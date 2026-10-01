@@ -90,15 +90,15 @@ export const SingleFileUploader = ({
       {elementImage === "" ? (
         <Dropzone onDrop={(acceptedFiles) => handleFileChange(acceptedFiles)}>
           {({ getRootProps, getInputProps }) => (
-            <section className="mt-[16px] w-[200px] cursor-pointer rounded-[12px] border-2 border-dashed bg-light_grey px-[16px] py-[39.5px]">
+            <section className="bg-light_grey mt-[16px] w-[200px] cursor-pointer rounded-[12px] border-2 border-dashed px-[16px] py-[39.5px]">
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
                 <div className="flex w-[175.05px] flex-col items-center">
                   <Image src={"/images/upload_image.png"} alt="upload" width={56} height={56} />
-                  <p className="mt-[12px] w-[155px] text-center font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom">
+                  <p className="font-semi-normal tracking-custom mt-[12px] w-[155px] text-center font-sans text-[14px] leading-[21px]">
                     {title}
                   </p>
-                  <p className="mt-[4px] w-[175px] items-center text-center font-sans text-[12px] font-normal leading-[14.4px] text-grey-40">
+                  <p className="text-grey-40 mt-[4px] w-[175px] items-center text-center font-sans text-[12px] leading-[14.4px] font-normal">
                     Files must be PNG, JPG, or JPEG format, under 2MB.
                   </p>
                 </div>
@@ -117,7 +117,7 @@ export const SingleFileUploader = ({
           />
 
           <div
-            className="absolute right-0 top-0 z-10 m-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-white shadow" // Ensure X is above image
+            className="absolute top-0 right-0 z-10 m-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-white shadow" // Ensure X is above image
             onClick={() => {
               setElementImage("");
               handleRemoveImage();

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { Card, CardContent, Label, Input } from "@lemonade/ui";
+import { Card, CardContent } from "@lemonade/ui";
 import OtpInput from "react-otp-input";
 import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -18,24 +18,25 @@ function ForgotPasswordPage({}) {
       code: "",
     },
     validationSchema: forgotPasswordSchema,
-    onSubmit: async (values) => {},
+    validateOnMount: true,
+    onSubmit: async () => {},
   });
 
-  const [otp, setOtp] = useState(formik.values.code);
+  const [, setOtp] = useState(formik.values.code);
   return (
     <AuthLayout>
-      <section className="h-full min-h-screen overflow-hidden bg-light-grey">
+      <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
             <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
           </div>
         </div>
-        <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
-          <Card className="w-full rounded-[16px] border-none p-[24px] shadow-sm tablet:w-[480px]">
-            <CardContent className="grid gap-[24px] tablet:gap-[40px]">
+        <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
+          <Card className="tablet:w-[480px] w-full rounded-[16px] border-none p-[24px] shadow-sm">
+            <CardContent className="tablet:gap-[40px] grid gap-[24px]">
               <div>
                 <p className="font-ruso text-[24px] font-normal">Verification Code</p>
-                <p className="text-[14px] font-normal text-text-grey">
+                <p className="text-text-grey text-[14px] font-normal">
                   Enter the 4-digit code sent adminlogin@admin.com to reset your password.
                 </p>
               </div>
@@ -58,7 +59,7 @@ function ForgotPasswordPage({}) {
                   }}
                 />
               </div>
-              <p className="text-center text-[16px] font-medium text-light-green">
+              <p className="text-light-green text-center text-[16px] font-medium">
                 Resend in 60 secs
               </p>
               <FormikButton

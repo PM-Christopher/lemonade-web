@@ -26,11 +26,7 @@ type FilterEventInterface = {
   filterEventsMutation: ReturnType<typeof useFilterEventsMutation>;
 };
 
-const FilterEventModal = ({
-  toggle,
-  isOpen,
-  filterEventsMutation,
-}: FilterEventInterface) => {
+const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventInterface) => {
   const [clickedCategory, setClickedCategory] = useState("");
   const [timeOptions, setTimeOption] = useState(["This week", "This Month"]);
   const [timeType, setTimeType] = useState("");
@@ -107,7 +103,7 @@ const FilterEventModal = ({
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
               >
                 CATEGORY
               </Label>
@@ -126,7 +122,7 @@ const FilterEventModal = ({
                         key={index}
                         onClick={() => handleCategoryClick(category?.name)}
                       >
-                        <p className="text-[14px] font-normal text-text-grey">
+                        <p className="text-text-grey text-[14px] font-normal">
                           {formatStringUCFirst(category?.name)}
                         </p>
                       </div>
@@ -138,7 +134,7 @@ const FilterEventModal = ({
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
               >
                 TIME & DATE
               </Label>
@@ -155,14 +151,12 @@ const FilterEventModal = ({
                         key={index}
                         onClick={() => handleTimeType(option)}
                       >
-                        <p className="text-[14px] font-normal text-text-grey">
-                          {option}
-                        </p>
+                        <p className="text-text-grey text-[14px] font-normal">{option}</p>
                       </div>
                     ))}
                   </div>
                   <div className="flex items-center justify-between gap-[10px]">
-                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                       <div>
                         <CalendarIcon />
                       </div>
@@ -178,13 +172,13 @@ const FilterEventModal = ({
                           }}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="w-full cursor-pointer bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-[10px] font-sans text-[12px] shadow-none"
                           placeholderText="From"
                         />
                       </div>
                     </div>
                     <p>-</p>
-                    <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                       <div>
                         <CalendarIcon />
                       </div>
@@ -200,7 +194,7 @@ const FilterEventModal = ({
                           }}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="w-full cursor-pointer bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-[10px] font-sans text-[12px] shadow-none"
                           placeholderText="To"
                         />
                       </div>
@@ -212,7 +206,7 @@ const FilterEventModal = ({
             <div className="mt-[24px] grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
               >
                 LOCATION
               </Label>
@@ -220,11 +214,11 @@ const FilterEventModal = ({
                 <Select onValueChange={handleLocationChange}>
                   <SelectTrigger
                     aria-label="Location"
-                    className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]"
+                    className="bg-mid-grey h-[40px] w-[180px] rounded-xl border-0 px-[16px]"
                   >
                     <SelectValue
                       placeholder={
-                        <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">
+                        <span className="text-text-grey font-sans text-[12px] leading-[14.4px] font-semibold">
                           Location
                         </span>
                       }
@@ -240,20 +234,18 @@ const FilterEventModal = ({
             </div>
             <div className="mt-[40px] flex gap-[4px]">
               <button
-                className="w-full rounded-[12px] border-[1px] border-light-grey-50 p-[10px] px-[14px]"
+                className="border-light-grey-50 w-full rounded-[12px] border-[1px] p-[10px] px-[14px]"
                 onClick={handleResetFilter}
               >
-                <p className="font-sans text-[16px] font-semi-normal text-black-light">
+                <p className="font-semi-normal text-black-light font-sans text-[16px]">
                   Reset filter
                 </p>
               </button>
               <button
-                className="auth-button rounded-[12px] border-step-color p-[10px] px-[14px] shadow-custom-bottom"
+                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
                 onClick={handleFilterEvent}
               >
-                <p className="font-sans text-[16px] font-semi-normal text-white">
-                  Apply filter
-                </p>
+                <p className="font-semi-normal font-sans text-[16px] text-white">Apply filter</p>
               </button>
             </div>
           </div>

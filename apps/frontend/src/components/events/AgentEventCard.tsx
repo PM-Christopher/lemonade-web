@@ -23,13 +23,13 @@ const AgentEventCard = ({
         className="h-[164px] w-[164px] rounded-[12px]"
       />
       <p className="mt-[8px] font-sans text-[14px] font-semibold">{name}</p>
-      <p className="mt-[4px] w-fit rounded-[8px] bg-light-green-10 p-[4px] font-sans text-[14px] font-normal text-light-tint-2">
+      <p className="bg-light-green-10 text-light-tint-2 mt-[4px] w-fit rounded-[8px] p-[4px] font-sans text-[14px] font-normal">
         {commission}%
       </p>
       <div className="mt-[4px] flex items-center gap-2">
         <TicketIcon />
-        <p className="text-[14px] font-normal text-text-grey">
-          From <span className="font-semibold text-black-light">N{amount} </span>
+        <p className="text-text-grey text-[14px] font-normal">
+          From <span className="text-black-light font-semibold">N{amount} </span>
         </p>
       </div>
     </div>

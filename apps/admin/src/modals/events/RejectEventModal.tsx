@@ -8,7 +8,7 @@ import { useRejectEventMutation } from "@/features/events/mutations";
 interface RejectEventModalProps {
   isOpen: boolean;
   toggle: () => void;
-  id?: number;
+  id?: string | number;
 }
 
 // Mirrors backend's RejectSubmissionRequest exactly (app/Http/Requests/

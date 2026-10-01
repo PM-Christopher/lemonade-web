@@ -2,7 +2,11 @@
 // the pattern this follows: the BFF proxy transport (browserApi), not the
 // pre-BFF axiosInstance.
 import { browserApi } from "@/lib/browser-api";
-import { adminWalletRoutes, adminTransactionRoutes, buildPath } from "@lemonade/api-types/generated";
+import {
+  adminWalletRoutes,
+  adminTransactionRoutes,
+  buildPath,
+} from "@lemonade/api-types/generated";
 
 export interface WalletData {
   // Pre-formatted decimal strings from the backend (money is formatted
@@ -83,7 +87,7 @@ export const walletApi = {
         : undefined,
     }),
 
-  getWalletDetail: (id: number) =>
+  getWalletDetail: (id: string | number) =>
     browserApi.get<WalletDetail>(buildPath(adminTransactionRoutes.WALLET_WITHDRAWAL, { id })),
 
   updateWithdrawalThreshold: (threshold: number) =>

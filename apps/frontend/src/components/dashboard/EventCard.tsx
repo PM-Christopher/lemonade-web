@@ -12,29 +12,27 @@ type EventIF = {
 
 const EventCard: React.FC<EventIF> = ({ event }) => {
   return (
-    <div className="flex h-[280px] w-[200px] flex-col overflow-hidden rounded-2xl shadow-sm">
-      <div className="h-[200px] flex-shrink-0">
+    <div className="flex w-full flex-col overflow-hidden rounded-2xl shadow-sm">
+      <div className="flex h-[200px] flex-shrink-0 items-center justify-center bg-white">
         <Image
           src={getSafeImageSrc(event?.event_image, "/images/event_images/event_1.png")}
           alt="event_1"
           width={200}
           height={200}
-          className="h-full w-full rounded-t-2xl object-cover"
+          className="h-full w-full object-contain"
         />
       </div>
-      <div className="flex flex-1 flex-col justify-between p-3">
-        <div className="mb-2">
-          <p className="line-clamp-2 font-sans text-base font-semi-normal leading-6">
-            {event.event_name}
-          </p>
-        </div>
-        <div className="mt-auto flex items-center gap-1">
-          <CalendarIcon className="h-4 w-4 text-text-grey" />
-          <p className="font-sans text-sm font-semi-normal leading-[21px] text-text-grey">
+      <div className="flex flex-col p-3">
+        <p className="font-semi-normal text-body-l truncate font-sans" title={event.event_name}>
+          {event.event_name}
+        </p>
+        <div className="mt-2 flex items-center gap-1 overflow-hidden">
+          <CalendarIcon className="text-text-grey h-4 w-4 shrink-0" />
+          <p className="font-semi-normal text-text-grey text-body-s shrink-0 font-sans whitespace-nowrap">
             {formatDate(event?.start_date)}
           </p>
-          <DotIcon className="h-[3px] w-[3px] text-text-grey" />
-          <p className="font-sans text-sm font-semi-normal leading-[21px] text-text-grey">
+          <DotIcon className="text-text-grey h-[3px] w-[3px]" />
+          <p className="font-semi-normal text-text-grey text-body-s font-sans">
             {formatTime(event?.start_date)}
           </p>
         </div>

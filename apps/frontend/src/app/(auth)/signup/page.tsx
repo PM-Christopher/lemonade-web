@@ -1,12 +1,11 @@
 "use client";
-import Link from "next/link";
 import React from "react";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
-import * as yup from "yup";
+import { signupSchema } from "@lemonade/validation";
 import { signup } from "@/features/authentication/authApi";
 import { Card, CardContent, CardFooter, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
@@ -20,17 +19,25 @@ import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import dynamic from "next/dynamic";
 
+function SocialMark({ src, label }: { src: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-border-grey bg-white">
+        <Image src={src} alt="" width={24} height={24} />
+      </span>
+      <span className="text-meta text-text-grey">{label}</span>
+    </div>
+  );
+}
+
 // Off the initial bundle — only needed once a legal-document link is
 // clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
 const TermsOfUseModal = dynamic(() => import("@/components/TermsOfUseModal"), {
   ssr: false,
 });
-const PrivacyPolicyModal = dynamic(
-  () => import("@/components/PrivacyPolicyModal"),
-  {
-    ssr: false,
-  },
-);
+const PrivacyPolicyModal = dynamic(() => import("@/components/PrivacyPolicyModal"), {
+  ssr: false,
+});
 
 type valuesType = {
   email: string;
@@ -53,32 +60,14 @@ export default function SignupPage() {
     setTermOpen(!termOpen);
   };
 
-  const passwordRules =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~])(?=.{8,})/;
-  //form validation
-  const signUpSchema = yup.object({
-    fullname: yup.string().required("Fullname is required"),
-    email: yup
-      .string()
-      .email("Please enter a valid email")
-      .required("Email is required"),
-    password: yup
-      .string()
-      .min(8)
-      .matches(passwordRules, {
-        message:
-          "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character",
-      })
-      .required("Password is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       email: "",
       fullname: "",
       password: "",
     },
-    validationSchema: signUpSchema,
+    validationSchema: signupSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await signup({ ...values }, dispatch, router, setCookie);
     },
@@ -170,51 +159,35 @@ export default function SignupPage() {
 
   return (
     <AuthLayout>
-      <section className="h-full min-h-screen overflow-hidden bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
-          <Link href="/login">
-            <Image
-              src={"/images/logo.png"}
-              alt="logo"
-              width={127}
-              height={56}
-            />
-          </Link>
-          <div>
-            <Link href="/login">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">
-                Login
-              </p>
-            </Link>
-          </div>
+      <div className="mx-auto flex w-full max-w-[1180px] items-center justify-center gap-8">
+        <div className="hidden min-w-0 flex-col tablet:flex">
+          <p className="font-ruso text-display-s font-bold">Create account</p>
+          <p className="text-body-xl mt-2 font-sans font-normal text-text-grey">
+            Join the network of diverse pool of talents.
+          </p>
+          <Image
+            src={"/images/signup_image.png"}
+            alt=""
+            width={511}
+            height={520}
+            priority
+            className="mt-2 h-auto max-h-[42vh] w-auto object-contain"
+          />
         </div>
-        <div className="mt-24 flex flex-col items-center justify-center gap-16 tablet:flex-row tablet:items-start tablet:px-4">
-          <div className="flex flex-col phone:mb-[16px]">
-            <div className="text-center phone:text-left">
-              <p className="font-ruso text-[40px] font-bold leading-[48px]">
-                Create account
-              </p>
-              <p className="font-sans text-[18px] font-normal leading-[27px]">
-                Join the network of diverse pool of talents.
-              </p>
-            </div>
-            <div className="hidden tablet:flex">
-              <Image
-                src={"/images/signup_image.png"}
-                alt="signup image"
-                width={511.06}
-                height={519.77}
-                priority
-              />
-            </div>
+        <div className="flex w-full max-w-[440px] flex-col">
+          <div className="mb-4 shrink-0 text-center tablet:hidden">
+            <p className="font-ruso text-title-xl font-bold text-primary-black">Create account</p>
+            <p className="text-body-l mt-1 font-sans font-normal text-text-grey">
+              Join the network of diverse pool of talents.
+            </p>
           </div>
-          <form onSubmit={formik.handleSubmit}>
-            <Card className="w-full rounded-[16px] border-none p-[24px] shadow-none tablet:w-[480px]">
-              <CardContent className="grid gap-[24px] tablet:gap-[40px]">
+          <form onSubmit={formik.handleSubmit} className="min-h-0 w-full overflow-y-auto">
+            <Card className="w-full rounded-[16px] border-none p-5 shadow-none tablet:p-6">
+              <CardContent className="grid gap-4">
                 <div className="grid gap-2">
                   <Label
                     htmlFor="username"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Full name
                   </Label>
@@ -225,18 +198,16 @@ export default function SignupPage() {
                     value={formik.values.fullname}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
                   {checkError("fullname", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">
-                      {formik.errors.fullname}
-                    </p>
+                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.fullname}</p>
                   ) : null}
                 </div>
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Email address
                   </Label>
@@ -247,18 +218,16 @@ export default function SignupPage() {
                     value={formik.values.email}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
                   {checkError("email", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">
-                      {formik.errors.email}
-                    </p>
+                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
                   ) : null}
                 </div>
                 <div className="grid gap-2">
                   <Label
                     htmlFor="password"
-                    className="font-sans text-[14px] font-normal text-text-grey"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Password
                   </Label>
@@ -268,14 +237,16 @@ export default function SignupPage() {
                     value={formik.values.password}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
 
                   {checkError("password", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">
-                      {formik.errors.password}
+                    <p className="text-meta text-[#FF8D8D]">{formik.errors.password}</p>
+                  ) : (
+                    <p className="text-meta text-text-grey">
+                      Password must be at least 8 character long
                     </p>
-                  ) : null}
+                  )}
                 </div>
                 <FormikButton
                   loading={formik.isSubmitting}
@@ -283,47 +254,45 @@ export default function SignupPage() {
                   error={formik.isValid}
                   classes="w-full h-[48px] rounded-[12px]"
                 />
-                <div className="flex items-center justify-around">
-                  <div className="h-[2px] w-[60px] bg-border-grey" />
-                  <p className="text-center text-[14px] font-normal text-grey-light">
-                    Or continue with
-                  </p>
-                  <div className="h-[2px] w-[60px] bg-border-grey" />
+                <div className="flex items-center gap-3">
+                  <div className="bg-border-grey h-px flex-1" />
+                  <p className="text-text-grey text-body-s font-normal">Or continue with</p>
+                  <div className="bg-border-grey h-px flex-1" />
                 </div>
-                <div className="mt-4 flex items-center justify-center gap-[24px]">
-                  {/*<div className="app-icon-border flex justify-center items-center">*/}
-                  {/*    <Image src={"/images/apple.png"} alt="logo" width={24} height={24}/>*/}
-                  {/*</div>*/}
-                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+                <div className="flex items-start justify-center gap-6">
+                  <SocialMark src="/images/apple.png" label="Apple" />
+                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
+                  ) : (
+                    <SocialMark src="/images/google.png" label="Google" />
                   )}
-                  {/*<div className="app-icon-border flex justify-center items-center">*/}
-                  {/*    <Image src={"/images/facebook.png"} alt="logo" width={24} height={24}/>*/}
-                  {/*</div>*/}
+                  <SocialMark src="/images/facebook.png" label="Facebook" />
                 </div>
               </CardContent>
-              <CardFooter className="mt-4 flex flex-col justify-center">
-                <p className="w-[295px] text-center text-[14px] font-normal tablet:w-[384px]">
-                  By continuing you agree with Lemonade network’s{" "}
-                  <span
-                    className="cursor-pointer text-mid-green underline"
+              <CardFooter className="mt-2 flex justify-center">
+                <p className="text-body-s max-w-[22rem] text-center font-normal">
+                  By continuing you agree with Lemonade network&apos;s{" "}
+                  <button
+                    type="button"
+                    className="text-light-green cursor-pointer font-semibold underline"
                     onClick={toggleTermOpen}
                   >
                     Terms of Use
-                  </span>{" "}
+                  </button>{" "}
                   and{" "}
-                  <span
-                    className="cursor-pointer text-mid-green underline"
+                  <button
+                    type="button"
+                    className="text-light-green cursor-pointer font-semibold underline"
                     onClick={togglePrivacy}
                   >
-                    Privacy Policy
-                  </span>
+                    Privacy Policies
+                  </button>
                 </p>
               </CardFooter>
             </Card>
           </form>
         </div>
-      </section>
+      </div>
       <TermsOfUseModal toggle={toggleTermOpen} option={termOpen} />
       <PrivacyPolicyModal toggle={togglePrivacy} option={privacyOpen} />
     </AuthLayout>

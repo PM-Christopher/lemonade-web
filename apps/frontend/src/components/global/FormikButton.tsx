@@ -23,11 +23,12 @@ export const FormikButton = ({
         bgColor === null
           ? !error
             ? "bg-mid-green"
-            : "bg-gradient-green shadow-green-inset transition-shadow duration-300 hover:shadow-green-inset-strong"
+            : "bg-gradient-green"
           : ""
-      } ${loading && "cursor-not-allowed bg-light-green opacity-70"} `}
-      disabled={loading}
-      // disabled={loading || !error}
+      } ${loading && "bg-light-green cursor-not-allowed opacity-70"} ${
+        !error && "cursor-not-allowed"
+      } `}
+      disabled={loading || !error}
     >
       {loading ? (
         <div className="flex items-center justify-center">

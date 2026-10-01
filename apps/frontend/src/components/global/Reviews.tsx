@@ -27,7 +27,7 @@ const Reviews: React.FC<ReviewInterface> = ({ review }) => {
     <>
       <div className="">
         <p className="text-[14px] font-semibold">{review?.title}</p>
-        <p className="text-[14px] font-normal text-light-black">{review?.description}</p>
+        <p className="text-light-black text-[14px] font-normal">{review?.description}</p>
         <div className="flex items-center justify-between">
           <div className="mt-[14px] flex items-center gap-[8px]">
             <div className="rounded-[6px] border-[1px]">
@@ -36,22 +36,22 @@ const Reviews: React.FC<ReviewInterface> = ({ review }) => {
                 alt="avatar"
                 width={16}
                 height={16}
-                className="h-[16px] w-[16px] rounded-[6px] border-[1px] border-grey-90"
+                className="border-grey-90 h-[16px] w-[16px] rounded-[6px] border-[1px]"
               />
             </div>
-            <p className="text-[12px] font-semibold text-text-grey">{review?.user?.username}</p>
+            <p className="text-text-grey text-[12px] font-semibold">{review?.user?.username}</p>
             <DotIcon className="h-[2px] w-[2px]" />
-            <p className="text-[12px] font-normal text-text-grey">{review?.created_at}</p>
+            <p className="text-text-grey text-[12px] font-normal">{review?.created_at}</p>
           </div>
           <div>
-            <div className="flex items-center gap-2 rounded-[12px] bg-mid-grey p-[4px] px-[6px]">
+            <div className="bg-mid-grey flex items-center gap-2 rounded-[12px] p-[4px] px-[6px]">
               <RatingIcon />
               <p className="text-[12px] font-semibold">{formatDecimal(review?.rating, 1)}</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="my-[24px] border-t-[1px] border-t-mid-grey"></div>
+      <div className="border-t-mid-grey my-[24px] border-t-[1px]"></div>
     </>
   );
 };

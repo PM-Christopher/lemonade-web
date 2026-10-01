@@ -3,13 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import PinnedIcon from "@/images/icons/pinnedIcon.svg";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@lemonade/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
@@ -47,18 +41,12 @@ import { ThreadsSkeleton } from "@/components/Skeletons";
 // Off the initial bundle — both are only needed once a user opens the
 // corresponding modal (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy
 // leaf UI").
-const CreateThreadModal = dynamic(
-  () => import("@/components/tribe/CreateThreadModal"),
-  {
-    ssr: false,
-  },
-);
-const ReportThreadModal = dynamic(
-  () => import("@/components/tribe/ReportThreadModal"),
-  {
-    ssr: false,
-  },
-);
+const CreateThreadModal = dynamic(() => import("@/components/tribe/CreateThreadModal"), {
+  ssr: false,
+});
+const ReportThreadModal = dynamic(() => import("@/components/tribe/ReportThreadModal"), {
+  ssr: false,
+});
 
 const TribeClient = ({ id }: { id: string }) => {
   const [createThreadModalOpen, setCreateThreadModalOpen] = useState(false);
@@ -77,10 +65,7 @@ const TribeClient = ({ id }: { id: string }) => {
   const { data: tribeData, isLoading: tribeLoading } = useTribeQuery(id);
   const tribe = tribeData?.tribe ?? null;
   const { data: threadsData, isLoading: dataLoading } = useThreadsQuery(id);
-  const threads = useMemo(
-    () => threadsData?.threads ?? [],
-    [threadsData?.threads],
-  );
+  const threads = useMemo(() => threadsData?.threads ?? [], [threadsData?.threads]);
   const { data: pinnedThreadsData } = usePinnedThreadsQuery(id);
   const pinnedThreads = pinnedThreadsData?.threads ?? [];
 
@@ -101,8 +86,7 @@ const TribeClient = ({ id }: { id: string }) => {
     if (!q) return threads;
     return threads.filter((thread: Thread) => {
       return (
-        thread?.topic?.toLowerCase().includes(q) ||
-        thread?.thoughts?.toLowerCase().includes(q)
+        thread?.topic?.toLowerCase().includes(q) || thread?.thoughts?.toLowerCase().includes(q)
       );
     });
   }, [threads, query]);
@@ -221,7 +205,7 @@ const TribeClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <div className="bg-light_grey pb-10">
-        <div className="flex flex-col justify-between gap-4 border-b-[1px] border-t-[1px] bg-white p-5 px-10 tablet:flex-row tablet:items-center">
+        <div className="tablet:flex-row tablet:items-center flex flex-col justify-between gap-4 border-t-[1px] border-b-[1px] bg-white p-5 px-10">
           <div
             className="flex cursor-pointer items-center gap-2"
             onClick={() => router.push("/tribe")}
@@ -230,13 +214,13 @@ const TribeClient = ({ id }: { id: string }) => {
               <ChevronLeft />
             </div>
             <div>
-              <p className="font-sans text-[16px] font-semibold leading-[24px]">
+              <p className="font-sans text-[16px] leading-[24px] font-semibold">
                 {tribe?.tribe_name}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between gap-[10px]">
-            <div className="flex h-[40px] w-[247px] items-center gap-3 rounded-[12px] bg-light_grey px-[16px] tablet:w-[300px]">
+            <div className="bg-light_grey tablet:w-[300px] flex h-[40px] w-[247px] items-center gap-3 rounded-[12px] px-[16px]">
               <div>
                 <SearchIcon />
               </div>
@@ -244,7 +228,7 @@ const TribeClient = ({ id }: { id: string }) => {
                 <input
                   id="search"
                   type="text"
-                  className="w-full rounded-xl border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                  className="bg-light_grey w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search thread"
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -253,11 +237,11 @@ const TribeClient = ({ id }: { id: string }) => {
             <Select onValueChange={sortThreads}>
               <SelectTrigger
                 aria-label="Sort threads"
-                className="h-[40px] w-[180px] rounded-xl border-0 bg-mid-grey px-[16px]"
+                className="bg-mid-grey h-[40px] w-[180px] rounded-xl border-0 px-[16px]"
               >
                 <SelectValue
                   placeholder={
-                    <span className="font-sans text-[12px] font-semibold leading-[14.4px] text-text-grey">
+                    <span className="text-text-grey font-sans text-[12px] leading-[14.4px] font-semibold">
                       Select Option
                     </span>
                   }
@@ -273,10 +257,10 @@ const TribeClient = ({ id }: { id: string }) => {
         </div>
         <div className="mt-4 flex justify-around">
           {/* Left Content Section */}
-          <div className="flex w-full max-w-[1000px] flex-col px-4 laptop:px-10">
+          <div className="laptop:px-10 flex w-full max-w-[1000px] flex-col px-4">
             {/* Pinned Threads */}
             {pinnedThreads?.length > 0 && (
-              <div className="flex flex-wrap items-center justify-start gap-3 rounded-lg bg-grey-20 p-3">
+              <div className="bg-grey-20 flex flex-wrap items-center justify-start gap-3 rounded-lg p-3">
                 {pinnedThreads.map((pinned, index) => (
                   <button
                     key={pinned.id ?? index}
@@ -301,9 +285,7 @@ const TribeClient = ({ id }: { id: string }) => {
               {dataLoading || data === undefined ? (
                 <ThreadsSkeleton count={4} />
               ) : data.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">
-                  No threads found...
-                </div>
+                <div className="p-6 text-center text-gray-500">No threads found...</div>
               ) : (
                 <div className="flex flex-col gap-6">
                   {data.map((thread: Thread, index: number) => (
@@ -332,7 +314,7 @@ const TribeClient = ({ id }: { id: string }) => {
                 </div>
                 <button
                   onClick={activateJoinTribeModal}
-                  className="text-sm font-medium text-light-green underline transition hover:text-green-700"
+                  className="text-light-green text-sm font-medium underline transition hover:text-green-700"
                 >
                   Unlock Tribe content
                 </button>
@@ -342,7 +324,7 @@ const TribeClient = ({ id }: { id: string }) => {
 
           {/* Right Sidebar (Desktop only) */}
           {!isMobile && (
-            <aside className="hidden tablet:block">
+            <aside className="tablet:block hidden">
               <TribeDetailsCard
                 share={activateShareTribeModal}
                 toggle={activateCreateThreadModal}
@@ -397,16 +379,12 @@ const TribeClient = ({ id }: { id: string }) => {
             setThreadId={setThreadId}
             tribeId={id}
           />
-          <AddMemberModal
-            isOpen={addUserModal}
-            toggle={toggleAddMember}
-            id={id}
-          />
+          <AddMemberModal isOpen={addUserModal} toggle={toggleAddMember} id={id} />
         </div>
       </div>
       {isMobile && (
         <div
-          className="fixed bottom-[150px] right-4 flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full bg-gradient-green p-4 text-white shadow-custom-bottom"
+          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-[150px] flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full p-4 text-white"
           onClick={activateCreateThreadModal}
         >
           <EditIcon className="h-[19px] w-[19px]" />

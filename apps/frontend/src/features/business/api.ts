@@ -131,38 +131,26 @@ export interface BoostPackagesResponse {
 }
 
 export const businessApi = {
-  getListings: () =>
-    browserApi.get<ListingsResponse>(userListingRoutes.LIST),
+  getListings: () => browserApi.get<ListingsResponse>(userListingRoutes.LIST),
 
   createListing: (values: CreateOrUpdateBusinessPayload) =>
     browserApi.post<BusinessDetailResponse>(userListingRoutes.CREATE, values),
 
   updateListing: (id: number | string, values: CreateOrUpdateBusinessPayload) =>
-    browserApi.patch<BusinessDetailResponse>(
-      buildPath(userListingRoutes.UPDATE, { id }),
-      values,
-    ),
+    browserApi.patch<BusinessDetailResponse>(buildPath(userListingRoutes.UPDATE, { id }), values),
 
   boostListing: (id: number | string, data: BoostBusinessPayload) =>
-    browserApi.post<BoostBusinessResponse>(
-      buildPath(userListingRoutes.BOOST, { id }),
-      data,
-    ),
+    browserApi.post<BoostBusinessResponse>(buildPath(userListingRoutes.BOOST, { id }), data),
 
-  getJobsData: () =>
-    browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_LIST),
+  getJobsData: () => browserApi.get<JobsDataResponse>(userBusinessRoutes.JOBS_LIST),
 
   // Same shape as getJobsData, scoped to one owned business listing.
   getBusinessJobData: (id: number | string) =>
-    browserApi.get<JobsDataResponse>(
-      buildPath(userListingRoutes.JOB_DATA, { id }),
-    ),
+    browserApi.get<JobsDataResponse>(buildPath(userListingRoutes.JOB_DATA, { id })),
 
-  getBoostPackages: () =>
-    browserApi.get<BoostPackagesResponse>(userListingRoutes.BOOSTS),
+  getBoostPackages: () => browserApi.get<BoostPackagesResponse>(userListingRoutes.BOOSTS),
 
-  getBusinesses: () =>
-    browserApi.get<BusinessListResponse>(userBusinessRoutes.LIST),
+  getBusinesses: () => browserApi.get<BusinessListResponse>(userBusinessRoutes.LIST),
 
   getBusiness: (id: number | string) =>
     browserApi.get<BusinessDetailResponse>(buildPath(userBusinessRoutes.SHOW, { id })),
@@ -191,10 +179,7 @@ export const businessApi = {
     }),
 
   markJobRequest: (id: number, data: unknown) =>
-    browserApi.post<MarkJobRequestResponse>(
-      buildPath(userListingRoutes.JOBS_MARK, { id }),
-      data,
-    ),
+    browserApi.post<MarkJobRequestResponse>(buildPath(userListingRoutes.JOBS_MARK, { id }), data),
 
   requestJobPayment: (id: number) =>
     browserApi.patch<RequestJobPaymentResponse>(
@@ -202,10 +187,7 @@ export const businessApi = {
     ),
 
   makeJobPayment: (id: number, data: unknown) =>
-    browserApi.post<MakeJobPaymentResponse>(
-      buildPath(userBusinessRoutes.JOBS_PAY, { id }),
-      data,
-    ),
+    browserApi.post<MakeJobPaymentResponse>(buildPath(userBusinessRoutes.JOBS_PAY, { id }), data),
 
   markJobCompleted: (id: number) =>
     browserApi.post<MarkJobCompletedResponse>(
@@ -213,8 +195,5 @@ export const businessApi = {
     ),
 
   disputeJob: (id: number, data: unknown) =>
-    browserApi.post<DisputeJobResponse>(
-      buildPath(userBusinessRoutes.JOBS_DISPUTE, { id }),
-      data,
-    ),
+    browserApi.post<DisputeJobResponse>(buildPath(userBusinessRoutes.JOBS_DISPUTE, { id }), data),
 };

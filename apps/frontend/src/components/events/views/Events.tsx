@@ -30,18 +30,18 @@ const EventsSectionView: React.FC<EventsInterface> = ({
   return (
     <section className="mt-2 flex flex-col items-center">
       {eventsLoading ? (
-        <div className="flex w-full justify-center rounded-[12px] bg-none p-[24px] laptop:w-[1008px] laptop:bg-light-green-50">
+        <div className="laptop:w-[1008px] laptop:bg-light-green-50 flex w-full justify-center rounded-[12px] bg-none p-[24px]">
           <TrendingEventsSkeleton />
         </div>
       ) : (
         events?.trending?.length > 0 && (
-          <div className="flex w-full justify-center rounded-[12px] bg-none p-[24px] laptop:w-[1008px] laptop:bg-light-green-50">
+          <div className="laptop:w-[1008px] laptop:bg-light-green-50 flex w-full justify-center rounded-[12px] bg-none p-[24px]">
             <Carousel events={events?.trending} showDots={true} showArrows={false} />
           </div>
         )
       )}
 
-      <div className="mt-[48px] w-full rounded-[12px] p-[24px] laptop:w-[1008px]">
+      <div className="laptop:w-[1008px] mt-[48px] w-full rounded-[12px] p-[24px]">
         {searchTerm ? (
           results.length > 0 ? (
             isMobile ? (
@@ -62,7 +62,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
               </div>
             )
           ) : (
-            <div className="col-span-2 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-12 laptop:col-span-3">
+            <div className="laptop:col-span-3 col-span-2 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-12">
               <svg
                 className="mb-3 h-12 w-12 text-gray-300"
                 fill="none"
@@ -82,7 +82,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
           )
         ) : filtered ? (
           <>
-            <p className="mb-[16px] font-sans text-[20px] font-semibold leading-[28px]">
+            <p className="mb-[16px] font-sans text-[20px] leading-[28px] font-semibold">
               Filtered Events
             </p>
             <div className="grid grid-cols-3 gap-2">
@@ -99,7 +99,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
           </>
         ) : (
           <>
-            <p className="mb-[16px] font-sans text-[20px] font-semibold leading-[28px]">
+            <p className="mb-[16px] font-sans text-[20px] leading-[28px] font-semibold">
               All Events
             </p>
             {isMobile ? (

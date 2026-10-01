@@ -6,7 +6,14 @@ import { RootState } from "@/redux/store";
 import { useTribeListQuery } from "@/features/tribes/queries";
 import PaginationComp from "@/components/global/Pagination";
 
-const tribeHeaders = ["TRIBE ID", "TRIBE NAME", "CREATED BY", "CATEGORY", "MEMBERS", "DATE CREATED"];
+const tribeHeaders = [
+  "TRIBE ID",
+  "TRIBE NAME",
+  "CREATED BY",
+  "CATEGORY",
+  "MEMBERS",
+  "DATE CREATED",
+];
 
 const CreatedTribeViews = () => {
   const router = useRouter();
@@ -26,7 +33,7 @@ const CreatedTribeViews = () => {
         <thead>
           <tr className="bg-mid-grey">
             {tribeHeaders.map((header) => (
-              <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={header}>
+              <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={header}>
                 {header}
               </th>
             ))}
@@ -37,7 +44,7 @@ const CreatedTribeViews = () => {
             paginatedTribes.map((tribe) => (
               <tr
                 key={tribe.id}
-                className="h-[72px] cursor-pointer border-b border-grey-20"
+                className="border-grey-20 h-[72px] cursor-pointer border-b"
                 onClick={() => router.push(`/tribes/${tribe.id}`)}
               >
                 <td className="p-4 font-sans text-sm font-medium">{tribe.uuid}</td>

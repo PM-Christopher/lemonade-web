@@ -135,6 +135,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
   const formik = useFormik<PlanFormValues>({
     initialValues: plan ? toFormValues(plan) : emptyValues,
     validationSchema: planSchema,
+    validateOnMount: true,
     enableReinitialize: true,
     onSubmit: (values) => {
       const payload = {

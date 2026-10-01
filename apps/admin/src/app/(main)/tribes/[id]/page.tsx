@@ -76,7 +76,7 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
                 <MainTribeCard key={thread.id} thread={thread} onDelete={setDeleteThreadId} />
               ))
             ) : (
-              <p className="text-[14px] font-normal text-text-grey">No threads yet</p>
+              <p className="text-text-grey text-[14px] font-normal">No threads yet</p>
             )}
           </div>
 
@@ -85,7 +85,7 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
               <p className="text-[16px] font-semibold">Tribe details</p>
               {isRestricted ? (
                 <button
-                  className="h-[44px] w-[156px] rounded-[12px] border-[1px] bg-gradient-green text-center"
+                  className="bg-gradient-green h-[44px] w-[156px] rounded-[12px] border-[1px] text-center"
                   onClick={() => setReactivateModalOpen(true)}
                 >
                   <p className="text-[16px] font-medium text-white">Reactivate tribe</p>
@@ -93,14 +93,14 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
               ) : (
                 <div className="relative inline-block" ref={containerRef}>
                   <div
-                    className="flex cursor-pointer items-center gap-[8px] rounded-[12px] border-[1px] border-light-grey-50 px-[14px] py-[10px]"
+                    className="border-light-grey-50 flex cursor-pointer items-center gap-[8px] rounded-[12px] border-[1px] px-[14px] py-[10px]"
                     onClick={() => setDropdownOpen((prev) => !prev)}
                   >
                     <p className="text-[14px] font-medium">Flag tribe</p>
                     <ChevronDown />
                   </div>
                   {dropdownOpen && (
-                    <div className="absolute right-0 top-full z-50 w-[207px] rounded-[12px] bg-white shadow">
+                    <div className="absolute top-full right-0 z-50 w-[207px] rounded-[12px] bg-white shadow">
                       <ul>
                         <li
                           className="cursor-pointer px-4 py-2 hover:bg-gray-100"
@@ -118,7 +118,7 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
                             setDeleteModalOpen(true);
                           }}
                         >
-                          <p className="text-[16px] font-normal text-red-1">Delete tribe</p>
+                          <p className="text-red-1 text-[16px] font-normal">Delete tribe</p>
                         </li>
                       </ul>
                     </div>
@@ -133,7 +133,7 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
                 onRemoveMember={(userId, name) => setRemoveMemberTarget({ userId, name })}
               />
             ) : (
-              <p className="text-[14px] font-normal text-text-grey">Loading tribe...</p>
+              <p className="text-text-grey text-[14px] font-normal">Loading tribe...</p>
             )}
           </div>
         </section>

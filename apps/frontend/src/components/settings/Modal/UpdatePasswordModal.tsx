@@ -16,11 +16,7 @@ type UpdatePasswordInterface = {
   user: any;
 };
 
-const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
-  toggle,
-  isOpen,
-  user,
-}) => {
+const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen, user }) => {
   const dispatch = useAppDispatch();
   const changePasswordMutation = useChangePasswordMutation();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -52,6 +48,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
       new_password_confirmation: "",
     },
     validationSchema: passwordSchema,
+    validateOnMount: true,
     enableReinitialize: true,
     onSubmit: async (values) => {
       changePasswordMutation.mutate(values, {
@@ -88,7 +85,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Update password</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="h-screen w-screen rounded-none bg-white p-6 shadow-lg laptop:h-full laptop:w-[480px] laptop:rounded-lg">
+          <div className="laptop:h-full laptop:w-[480px] laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="cursor-pointer" onClick={toggle}>
@@ -96,7 +93,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
                 </div>
                 <p className="text-[16px] font-semibold">Update password</p>
               </div>
-              <div className="hidden laptop:block">
+              <div className="laptop:block hidden">
                 <FormikButton
                   title="Save password"
                   error={formik.isValid}
@@ -111,16 +108,16 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
                   <div className="mt-[24px] grid gap-1">
                     <Label
                       htmlFor="current-password"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Current password
                     </Label>
-                    <div className="flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                    <div className="bg-light_grey flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] p-2 px-[12px]">
                       <div className="w-full">
                         <input
                           id="current-password"
                           type={showCurrentPassword ? "text" : "password"}
-                          className="h-[48px] w-full rounded-xl border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                          className="bg-light_grey h-[48px] w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                           placeholder=""
                           value={formik.values.password}
                           onChange={(e) => {
@@ -134,52 +131,46 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
                   <div className="mt-[24px] grid gap-1">
                     <Label
                       htmlFor="new-password"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       New Password
                     </Label>
-                    <div className="flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                    <div className="bg-light_grey flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] p-2 px-[12px]">
                       <div className="w-full">
                         <input
                           id="new-password"
                           type={showCurrentPassword ? "text" : "password"}
-                          className="h-[48px] w-full rounded-xl border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                          className="bg-light_grey h-[48px] w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                           placeholder=""
                           value={formik.values.new_password}
                           onChange={(e) => {
-                            formik.setFieldValue(
-                              "new_password",
-                              e.target.value,
-                            );
+                            formik.setFieldValue("new_password", e.target.value);
                           }}
                         />
                       </div>
                       <EyeIcon onClick={toggleNewPasswordVisibility} />
                     </div>
-                    <p className="text-[12px] font-normal text-grey-40">
+                    <p className="text-grey-40 text-[12px] font-normal">
                       Password must be at least 8 character long
                     </p>
                   </div>
                   <div className="mt-[24px] grid gap-1">
                     <Label
                       htmlFor="confirm-password"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Confirm password
                     </Label>
-                    <div className="flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                    <div className="bg-light_grey flex h-[48px] w-full items-center justify-between gap-3 rounded-[12px] p-2 px-[12px]">
                       <div className="w-full">
                         <input
                           id="confirm-password"
                           type={showCurrentPassword ? "text" : "password"}
-                          className="h-[48px] w-full rounded-xl border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                          className="bg-light_grey h-[48px] w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                           placeholder=""
                           value={formik.values.new_password_confirmation}
                           onChange={(e) => {
-                            formik.setFieldValue(
-                              "new_password_confirmation",
-                              e.target.value,
-                            );
+                            formik.setFieldValue("new_password_confirmation", e.target.value);
                           }}
                         />
                       </div>
@@ -187,7 +178,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({
                     </div>
                   </div>
                 </div>
-                <div className="block laptop:hidden">
+                <div className="laptop:hidden block">
                   <FormikButton
                     title="Save password"
                     error={formik.isValid}

@@ -6,12 +6,11 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useCookies } from "react-cookie";
-import Link from "next/link";
 import { useAppDispatch } from "@/redux/hook";
 import { useForgotPasswordMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import * as yup from "yup";
 import { useFormik } from "formik";
+import { forgotPasswordSchema } from "@lemonade/validation";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -21,15 +20,12 @@ export default function ForgotPasswordPage() {
   const forgotPasswordMutation = useForgotPasswordMutation();
   const loading = forgotPasswordMutation.isPending;
 
-  const forgotPasswordSchema = yup.object({
-    email: yup.string().required("Email is required"),
-  });
-
   const formik = useFormik({
     initialValues: {
       email: "",
     },
     validationSchema: forgotPasswordSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       await onSignup(values);
     },
@@ -76,39 +72,26 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout>
-      <section className="bg-gradient-light-green">
-        <div className="flex flex-wrap items-center justify-between p-2 px-10">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10"
+      >
+        <div className="hidden min-w-0 flex-col tablet:flex">
           <div>
-            <Link href={"/login"}>
-              <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
-            </Link>
+            <p className="font-ruso text-display-s font-bold">Forgot Password</p>
+            <p className="text-body-xl mt-2 max-w-[26rem] font-sans font-normal text-text-grey">
+              Enter your email address and a 4-digit code will be sent to reset your password.
+            </p>
           </div>
-          <div>
-            <Link href="/login">
-              <p className="text-bl rounded-xl border-2 p-[9px] px-[16px] font-sans">Login</p>
-            </Link>
-          </div>
+          <Image
+            src={"/images/forgot_password.png"}
+            alt=""
+            width={511}
+            height={520}
+            className="mt-2 h-auto max-h-[40vh] w-auto object-contain"
+          />
         </div>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="mt-10 flex min-h-screen flex-wrap items-start justify-center gap-16">
-            <div className="flex flex-col">
-              <div>
-                <p className="font-ruso text-[40px] font-bold leading-[48px]">Forgot Password</p>
-                <p className="mt-2 font-sans text-[18px] font-normal leading-[27px]">
-                  Enter your email address and a 4-digit code will <br /> be sent to reset your
-                  password.
-                </p>
-              </div>
-              <div>
-                <Image
-                  src={"/images/forgot_password.png"}
-                  alt="signup image"
-                  width={511.06}
-                  height={519.77}
-                />
-              </div>
-            </div>
-            <Card className="w-[480px] p-10">
+        <Card className="w-full max-w-[440px] p-6">
               <CardContent className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="email" className="font-label">
@@ -118,7 +101,7 @@ export default function ForgotPasswordPage() {
                     id="email"
                     type="email"
                     placeholder="e.g. Janedoe@example.com"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.email}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
@@ -150,10 +133,8 @@ export default function ForgotPasswordPage() {
                   )}
                 </Button>
               </CardContent>
-            </Card>
-          </div>
-        </form>
-      </section>
+        </Card>
+      </form>
     </AuthLayout>
   );
 }

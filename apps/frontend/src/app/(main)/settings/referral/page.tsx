@@ -186,33 +186,33 @@ function ReferralSettingsPage() {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[8px] px-[16px] laptop:px-[64px]">
+        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.push("/settings")}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">Referrals</p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Referrals</p>
           </div>
         </div>
 
         <section className="mt-4 flex flex-col items-center">
-          <div className="flex flex-col items-center gap-0 laptop:gap-[16px]">
-            <div className="rounded-[12px] bg-light-green-10">
-              <div className="flex w-full items-center justify-center p-[24px] laptop:w-[560px]">
+          <div className="laptop:gap-[16px] flex flex-col items-center gap-0">
+            <div className="bg-light-green-10 rounded-[12px]">
+              <div className="laptop:w-[560px] flex w-full items-center justify-center p-[24px]">
                 <Image src={"/images/giftImage.png"} alt="gift_image" width={160} height={171} />
               </div>
 
-              <div className="flex w-screen flex-col gap-[8px] p-[24px] laptop:w-[560px]">
+              <div className="laptop:w-[560px] flex w-screen flex-col gap-[8px] p-[24px]">
                 {/* Username Row */}
                 <div className="flex items-center justify-between gap-[2px]">
-                  <div className="w-full rounded-bl-[12px] rounded-tl-[12px] bg-light-tint-4 p-[10.5px] px-[12px]">
-                    <p className="text-[18px] font-bold text-mid-green">
+                  <div className="bg-light-tint-4 w-full rounded-tl-[12px] rounded-bl-[12px] p-[10.5px] px-[12px]">
+                    <p className="text-mid-green text-[18px] font-bold">
                       {user.username.toUpperCase()}
                     </p>
                   </div>
                   <div
-                    className="flex h-[48px] w-fit cursor-pointer items-center rounded-br-[12px] rounded-tr-[12px] bg-light-tint-4 px-[12px]"
+                    className="bg-light-tint-4 flex h-[48px] w-fit cursor-pointer items-center rounded-tr-[12px] rounded-br-[12px] px-[12px]"
                     onClick={handleCopy}
                   >
                     <CopyIcon />
@@ -221,13 +221,13 @@ function ReferralSettingsPage() {
 
                 {/* Referral Link Row */}
                 <div className="relative flex items-center justify-between gap-[2px]">
-                  <div className="flex h-[48px] w-full items-center rounded-bl-[12px] rounded-tl-[12px] bg-light-tint-4 px-[12px]">
-                    <p className="truncate text-[14px] font-semi-normal text-mid-green">
+                  <div className="bg-light-tint-4 flex h-[48px] w-full items-center rounded-tl-[12px] rounded-bl-[12px] px-[12px]">
+                    <p className="font-semi-normal text-mid-green truncate text-[14px]">
                       {referralLink}
                     </p>
                   </div>
                   <div
-                    className="flex h-[48px] w-fit cursor-pointer items-center rounded-br-[12px] rounded-tr-[12px] bg-light-tint-4 px-[12px]"
+                    className="bg-light-tint-4 flex h-[48px] w-fit cursor-pointer items-center rounded-tr-[12px] rounded-br-[12px] px-[12px]"
                     onClick={() => setShowShareOptions(!showShareOptions)}
                   >
                     <ShareIcon />
@@ -261,17 +261,17 @@ function ReferralSettingsPage() {
             </div>
 
             {/* Reward Breakdown */}
-            <div className="mt-0 flex w-screen flex-col gap-[8px] rounded-[12px] bg-white p-[24px] laptop:mt-[24px] laptop:w-[560px]">
+            <div className="laptop:mt-[24px] laptop:w-[560px] mt-0 flex w-screen flex-col gap-[8px] rounded-[12px] bg-white p-[24px]">
               <p className="text-[16px] font-semibold">Refer friends and earn</p>
 
               <div className="mt-[24px] flex flex-col">
                 <div className="flex gap-[16px]">
-                  <div className="rounded-[12px] bg-light-green-10 p-[12px]">
+                  <div className="bg-light-green-10 rounded-[12px] p-[12px]">
                     <ReferralIcon className="h-[24px] w-[24px]" />
                   </div>
                   <div className="flex flex-col">
                     <p className="text-[16px] font-semibold">2% of the subscription fee</p>
-                    <p className="text-[14px] font-normal text-text-grey">
+                    <p className="text-text-grey text-[14px] font-normal">
                       When they subscribe to Membership
                     </p>
                   </div>
@@ -282,12 +282,12 @@ function ReferralSettingsPage() {
                 </div>
 
                 <div className="flex gap-[16px]">
-                  <div className="rounded-[12px] bg-light-green-10 p-[12px]">
+                  <div className="bg-light-green-10 rounded-[12px] p-[12px]">
                     <ReferralIcon className="h-[24px] w-[24px]" />
                   </div>
                   <div className="flex flex-col">
                     <p className="text-[16px] font-semibold">2% of the renewal fee</p>
-                    <p className="text-[14px] font-normal text-text-grey">
+                    <p className="text-text-grey text-[14px] font-normal">
                       When they renew their Subscription
                     </p>
                   </div>
@@ -298,7 +298,7 @@ function ReferralSettingsPage() {
                 className="mt-[24px] flex cursor-pointer items-center justify-between"
                 onClick={toggleModal}
               >
-                <p className="text-[16px] font-semi-normal">Referral activity</p>
+                <p className="font-semi-normal text-[16px]">Referral activity</p>
                 <ChevronRight />
               </div>
             </div>

@@ -10,13 +10,11 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import UserDetailsClient from "./UserDetailsClient";
 
-export default async function UserDetailsPage(props: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function UserDetailsPage(props: { params: Promise<{ id: string }> }) {
   await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.users);
 
   const params = await props.params;
-  const id = Number(params.id);
+  const id = params.id;
   const queryClient = getQueryClient();
 
   await Promise.all([

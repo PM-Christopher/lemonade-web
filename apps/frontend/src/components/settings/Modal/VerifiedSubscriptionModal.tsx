@@ -35,11 +35,7 @@ interface VerifiedSuccessProps {
   };
 }
 
-const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
-  isOpen,
-  toggle,
-  data,
-}) => {
+const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, toggle, data }) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { subscription } = data || {};
 
@@ -69,9 +65,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
       icon: TicketIcon,
       label: "Ticket sales commission",
       value:
-        subscription?.sales_commission === 0
-          ? "None"
-          : `${subscription?.sales_commission ?? 0}%`,
+        subscription?.sales_commission === 0 ? "None" : `${subscription?.sales_commission ?? 0}%`,
     },
     {
       icon: BagIcon,
@@ -102,7 +96,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Welcome to Membership</DialogTitle>
-        <div className="sm:p-8 hide-scrollbar animate-scaleIn flex max-h-[90vh] w-[640px] max-w-[92%] flex-col overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+        <div className="hide-scrollbar animate-scaleIn flex max-h-[90vh] w-[640px] max-w-[92%] flex-col overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white pb-3">
             <button
@@ -116,7 +110,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
             <button
               type="button"
               onClick={toggle}
-              className="flex items-center justify-center gap-2 rounded-xl border border-step-color bg-gradient-green px-4 py-2 font-sans text-[16px] font-medium text-white shadow-green-inset transition-all duration-300 hover:shadow-green-inset-strong"
+              className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-sans text-[16px] font-medium text-white transition-all duration-300"
             >
               <span>Done</span>
             </button>
@@ -124,17 +118,17 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
 
           {/* Content */}
           <div className="mt-8 flex flex-col gap-6">
-            <div className="sm:text-left flex flex-col gap-2">
+            <div className="flex flex-col gap-2 sm:text-left">
               <div className="flex items-center gap-2">
                 <p className="text-[18px] font-semibold">{user?.fullname}</p>
                 <VerIcon className="h-[20px] w-[20px]" />
               </div>
-              <p className="sm:text-[40px] font-ruso text-[32px] leading-tight text-black-light">
+              <p className="font-ruso text-black-light text-[32px] leading-tight sm:text-[40px]">
                 Welcome to Membership
               </p>
             </div>
 
-            <p className="sm:text-left text-[16px] font-medium text-light-black">
+            <p className="text-light-black text-[16px] font-medium sm:text-left">
               You&apos;ve unlocked all membership access
             </p>
 
@@ -143,9 +137,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Icon className="h-[14px] w-[14px]" />
-                    <p className="text-[14px] font-medium text-gray-800">
-                      {label}
-                    </p>
+                    <p className="text-[14px] font-medium text-gray-800">{label}</p>
                   </div>
 
                   {typeof value === "boolean" ? (
@@ -155,9 +147,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({
                       <PadlockIcon />
                     )
                   ) : (
-                    <p className="text-[14px] font-normal text-text-grey">
-                      {value}
-                    </p>
+                    <p className="text-text-grey text-[14px] font-normal">{value}</p>
                   )}
                 </div>
               ))}

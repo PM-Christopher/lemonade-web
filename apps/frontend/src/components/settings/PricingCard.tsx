@@ -59,8 +59,8 @@ const PricingCard: React.FC<PricingInterface> = ({
         className="w-[260px] rounded-tl-[16px] rounded-tr-[16px] px-[48px] pt-[16px]"
         style={{ background: `${active ? "url('/images/pricingbg.png')" : "#F4F4F6"}` }}
       >
-        <p className="text-center font-ruso text-[20px] font-normal">{subscription?.title}</p>
-        <p className="text-center text-[16px] font-normal text-light-black">
+        <p className="font-ruso text-center text-[20px] font-normal">{subscription?.title}</p>
+        <p className="text-light-black text-center text-[16px] font-normal">
           {subscription?.access_type} access
         </p>
       </div>
@@ -78,37 +78,37 @@ const PricingCard: React.FC<PricingInterface> = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-[20px] rounded-bl-[12px] rounded-br-[12px] bg-white p-4">
+        <div className="flex flex-col gap-[20px] rounded-br-[12px] rounded-bl-[12px] bg-white p-4">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <VerIcon />
-              <p className="text-[14px] font-semi-normal">Verification badge</p>
+              <p className="font-semi-normal text-[14px]">Verification badge</p>
             </div>
             {subscription?.ver_badge ? <CheckIcon /> : <PadlockIcon />}
           </div>
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <ChatIcon />
-              <p className="text-[14px] font-semi-normal">Tribe creation</p>
+              <p className="font-semi-normal text-[14px]">Tribe creation</p>
             </div>
             {subscription?.forum_creation ? <CheckIcon /> : <PadlockIcon />}
           </div>
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <LemonIcon />
-              <p className="text-[14px] font-semi-normal">Lemon ID</p>
+              <p className="font-semi-normal text-[14px]">Lemon ID</p>
             </div>
             {subscription?.lemon_id ? <CheckIcon /> : <PadlockIcon />}
           </div>
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <CalendarIcon />
-              <p className="text-[14px] font-semi-normal">Event creation</p>
+              <p className="font-semi-normal text-[14px]">Event creation</p>
             </div>
             {subscription?.event_creation === 0 ? (
-              <p className="text-[14px] font-semi-normal text-text-grey">Unlimited</p>
+              <p className="font-semi-normal text-text-grey text-[14px]">Unlimited</p>
             ) : (
-              <p className="text-[14px] font-semi-normal text-text-grey">
+              <p className="font-semi-normal text-text-grey text-[14px]">
                 {subscription?.event_creation} monthly
               </p>
             )}
@@ -116,12 +116,12 @@ const PricingCard: React.FC<PricingInterface> = ({
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <TicketIcon />
-              <p className="text-[14px] font-semi-normal">Ticket sales commission</p>
+              <p className="font-semi-normal text-[14px]">Ticket sales commission</p>
             </div>
             {subscription?.sales_commission === 0 ? (
-              <p className="text-[14px] font-semi-normal text-text-grey">None</p>
+              <p className="font-semi-normal text-text-grey text-[14px]">None</p>
             ) : (
-              <p className="text-[14px] font-semi-normal text-text-grey">
+              <p className="font-semi-normal text-text-grey text-[14px]">
                 {subscription?.sales_commission}%
               </p>
             )}
@@ -129,12 +129,12 @@ const PricingCard: React.FC<PricingInterface> = ({
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <BagIcon />
-              <p className="text-[14px] font-semi-normal">Service commission</p>
+              <p className="font-semi-normal text-[14px]">Service commission</p>
             </div>
             {subscription?.service_commission === 0 ? (
-              <p className="text-[14px] font-semi-normal text-text-grey">None</p>
+              <p className="font-semi-normal text-text-grey text-[14px]">None</p>
             ) : (
-              <p className="text-[14px] font-semi-normal text-text-grey">
+              <p className="font-semi-normal text-text-grey text-[14px]">
                 {subscription?.service_commission}%
               </p>
             )}
@@ -142,16 +142,16 @@ const PricingCard: React.FC<PricingInterface> = ({
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <WebIcon />
-              <p className="text-[14px] font-semi-normal">Connection range</p>
+              <p className="font-semi-normal text-[14px]">Connection range</p>
             </div>
-            <p className="text-[14px] font-semi-normal text-text-grey">
+            <p className="font-semi-normal text-text-grey text-[14px]">
               {subscription.connection_range}
             </p>
           </div>
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <ReferralIcon />
-              <p className="text-[14px] font-semi-normal">Offline benefits</p>
+              <p className="font-semi-normal text-[14px]">Offline benefits</p>
             </div>
             {subscription?.offline_benefits ? <CheckIcon /> : <PadlockIcon />}
           </div>
@@ -162,13 +162,13 @@ const PricingCard: React.FC<PricingInterface> = ({
       >
         {!active ? (
           <p
-            className="text-[16px] font-semi-normal"
+            className="font-semi-normal text-[16px]"
             onClick={() => handleSubscribe(subscription.id, subscription)}
           >
             Subscribe
           </p>
         ) : (
-          <p className="text-[16px] font-semi-normal text-text-grey">Current plan</p>
+          <p className="font-semi-normal text-text-grey text-[16px]">Current plan</p>
         )}
       </Button>
     </div>

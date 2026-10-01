@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTransactionEventDetailQuery } from "@/features/transaction/queries";
+import type { TransactionHistoryRow } from "@/features/transaction/api";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import dayjs from "dayjs";
 
-function TransactionEventDetailsClient({ id }: { id: number | undefined }) {
+function TransactionEventDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage] = useState(10);
   const router = useRouter();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -43,13 +44,8 @@ function TransactionEventDetailsClient({ id }: { id: number | undefined }) {
     // Convert data to CSV rows
     const csvRows = [
       headers.join(","), // Header row
-      ...event.history.map((item: any) => {
-        return [
-          item.unique_id,
-          item.amount,
-          `"${item.created_at}"`,
-          item.status,
-        ].join(",");
+      ...event.history.map((item: TransactionHistoryRow) => {
+        return [item.unique_id, item.amount, `"${item.created_at}"`, item.status].join(",");
       }),
     ];
 
@@ -63,10 +59,7 @@ function TransactionEventDetailsClient({ id }: { id: number | undefined }) {
 
     // Set up download link
     link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `payment_history_${new Date().toISOString().split("T")[0]}.csv`,
-    );
+    link.setAttribute("download", `payment_history_${new Date().toISOString().split("T")[0]}.csv`);
     link.style.visibility = "hidden";
 
     // Append to document, trigger download and clean up
@@ -76,39 +69,27 @@ function TransactionEventDetailsClient({ id }: { id: number | undefined }) {
   };
   return (
     <MainLayout>
-      <section className="md:p-5 lg:flex-col md:gap-5 flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4">
+      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
         <div
-          className={
-            "flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"
-          }
+          className={"flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"}
         >
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Event name:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Event name:</p>
             </div>
             <div className={"flex gap-[4px]"}>
-              <p className={"text-[14px] font-medium"}>
-                {event?.info?.event_name}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.info?.event_name}</p>
               {/*<p className={"cursor-pointer font-medium text-[14px] text-light-green"}>View business</p>*/}
             </div>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Event owner:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Event owner:</p>
             </div>
             <div className={"flex gap-[4px]"}>
-              <p className={"text-[14px] font-medium"}>
-                {event?.info?.organizer}
-              </p>
+              <p className={"text-[14px] font-medium"}>{event?.info?.organizer}</p>
               <p
-                className={
-                  "cursor-pointer text-[14px] font-medium text-light-green"
-                }
+                className={"text-light-green cursor-pointer text-[14px] font-medium"}
                 onClick={() => router.push(`/users/${event?.info?.user_id}`)}
               >
                 View profile
@@ -117,37 +98,25 @@ function TransactionEventDetailsClient({ id }: { id: number | undefined }) {
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Transaction Id:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
-              {event?.info?.transaction_id}
-            </p>
+            <p className={"text-[14px] font-medium"}>{event?.info?.transaction_id}</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Amount:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
             </div>
             <p className={"text-[14px] font-medium"}>N0</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Tickets sold:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Tickets sold:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
-              {event?.info?.tickets_sold}
-            </p>
+            <p className={"text-[14px] font-medium"}>{event?.info?.tickets_sold}</p>
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Date paid:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Date paid:</p>
             </div>
             <p className={"text-[14px] font-medium"}>
               {dayjs(event?.info?.created_at).format("DD MMM, YYYY hh:mmA")}
@@ -155,62 +124,50 @@ function TransactionEventDetailsClient({ id }: { id: number | undefined }) {
           </div>
           <div className={"items-center-center flex gap-[24px]"}>
             <div className={"w-[115px]"}>
-              <p className={"text-[12px] font-medium text-text-grey"}>
-                Status:
-              </p>
+              <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
             </div>
-            <p className={"text-[14px] font-medium text-light-green-70"}>
+            <p className={"text-light-green-70 text-[14px] font-medium"}>
               {capitalizeWords(event?.info?.status)}
             </p>
           </div>
         </div>
 
         {/* history  */}
-        <div className="lg:w-2/3 flex w-full flex-col">
-          <div
-            className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}
-          >
+        <div className="flex w-full flex-col lg:w-2/3">
+          <div className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}>
             <div
               className={
-                "flex items-center justify-between border-b-[1px] border-b-grey-20 p-[24px]"
+                "border-b-grey-20 flex items-center justify-between border-b-[1px] p-[24px]"
               }
             >
-              <p className={"text-[16px] font-semiBold"}>Boosting history</p>
+              <p className={"font-semiBold text-[16px]"}>Boosting history</p>
               <div
                 className={
-                  "flex items-center gap-[10px] rounded-[12px] border-[1px] border-light-grey-50 px-[12px] py-[10px]"
+                  "border-light-grey-50 flex items-center gap-[10px] rounded-[12px] border-[1px] px-[12px] py-[10px]"
                 }
                 onClick={printCSV}
               >
                 <PrinterIcon className={"w-[20px]"} />
-                <p className={"text-[16px] font-medium text-black-light"}>
-                  Print
-                </p>
+                <p className={"text-black-light text-[16px] font-medium"}>Print</p>
               </div>
             </div>
 
             <div className={"flex flex-col px-[24px]"}>
-              {paginatedData?.map((item: any, index: number) => (
-                <div className="px-[16px] pb-[24px] pt-[16px]" key={index}>
+              {paginatedData?.map((item: TransactionHistoryRow, index: number) => (
+                <div className="px-[16px] pt-[16px] pb-[24px]" key={index}>
                   <div className="flex justify-between">
                     <div className="flex flex-col">
                       <p className={"text-[14px] font-medium"}>
                         {item?.unique_id} - ₦{item?.amount}
                       </p>
-                      <p className={"text-[12px] font-normal text-text-grey"}>
-                        {item?.created_at}
-                      </p>
+                      <p className={"text-text-grey text-[12px] font-normal"}>{item?.created_at}</p>
                     </div>
                     <div
                       className={
-                        "h-fit gap-[4px] rounded-[8px] bg-light-green-60 px-[8px] py-[4px]"
+                        "bg-light-green-60 h-fit gap-[4px] rounded-[8px] px-[8px] py-[4px]"
                       }
                     >
-                      <p
-                        className={
-                          "text-[12px] font-medium text-light-green-70"
-                        }
-                      >
+                      <p className={"text-light-green-70 text-[12px] font-medium"}>
                         {capitalizeWords(item?.status)}
                       </p>
                     </div>

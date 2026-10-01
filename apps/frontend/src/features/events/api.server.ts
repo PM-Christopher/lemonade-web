@@ -25,13 +25,10 @@ export const eventsServerApi = {
   getEvent: (id: number | string) =>
     backendApi.get<EventDetailResponse>(buildPath(userEventsRoutes.SHOW, { id })),
 
-  getEvents: () =>
-    backendApi.get<EventsListResponse>(userEventsRoutes.ATTENDEES_LIST),
+  getEvents: () => backendApi.get<EventsListResponse>(userEventsRoutes.ATTENDEES_LIST),
 
   getGuestList: (id: number | string) =>
-    backendApi.get<GuestListResponse>(
-      buildPath(userEventsRoutes.GUEST_LIST, { id }),
-    ),
+    backendApi.get<GuestListResponse>(buildPath(userEventsRoutes.GUEST_LIST, { id })),
 
   getAffiliateEvent: (id: number | string) =>
     backendApi.get<AffiliateEventDetailResponse>(
@@ -39,15 +36,10 @@ export const eventsServerApi = {
     ),
 
   getEventTicketData: (id: number | string) =>
-    backendApi.get<EventTicketDataResponse>(
-      buildPath(userEventsRoutes.ATTENDEES_TICKETS, { id }),
-    ),
+    backendApi.get<EventTicketDataResponse>(buildPath(userEventsRoutes.ATTENDEES_TICKETS, { id })),
 
   getEventTickets: (id: number | string) =>
-    backendApi.get<EventTicketsResponse>(
-      buildPath(userEventsRoutes.EVENT_TICKETS, { id }),
-    ),
+    backendApi.get<EventTicketsResponse>(buildPath(userEventsRoutes.EVENT_TICKETS, { id })),
 
-  getPromotions: () =>
-    backendApi.get<PromotionsResponse>(userEventsRoutes.PROMOTIONS),
+  getPromotions: () => backendApi.get<PromotionsResponse>(userEventsRoutes.PROMOTIONS),
 };

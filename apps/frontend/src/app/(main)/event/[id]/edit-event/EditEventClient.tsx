@@ -97,10 +97,7 @@ const schema = yup.object({
   event_name: yup.string().required("Event name is required"),
   event_description: yup.string().required("Description is required"),
   category: yup.string().required("Category is required"),
-  event_type: yup
-    .string()
-    .oneOf(["physical", "online"])
-    .required("Event type is required"),
+  event_type: yup.string().oneOf(["physical", "online"]).required("Event type is required"),
 
   location: yup.string().when("event_type", {
     is: "physical",
@@ -116,10 +113,7 @@ const schema = yup.object({
 
   meeting_link: yup.string().when("event_type", {
     is: "online",
-    then: (s) =>
-      s
-        .required("Meeting link is required")
-        .url("Meeting link must be a valid url"),
+    then: (s) => s.required("Meeting link is required").url("Meeting link must be a valid url"),
     otherwise: (s) => s.optional(),
   }),
 
@@ -142,10 +136,7 @@ const schema = yup.object({
     .when("affiliate_program", {
       is: true,
       then: (s) =>
-        s
-          .typeError("Commission must be a number")
-          .required("Commission rate is required")
-          .min(0),
+        s.typeError("Commission must be a number").required("Commission rate is required").min(0),
       otherwise: (s) => s.optional(),
     }),
 });
@@ -191,11 +182,7 @@ const EditEventClient = ({ id }: { id: string }) => {
   const router = useRouter();
 
   const eventId = Number(id);
-  const {
-    data: eventData,
-    isLoading: loading,
-    refetch,
-  } = useEventQuery(eventId);
+  const { data: eventData, isLoading: loading, refetch } = useEventQuery(eventId);
   const event = eventData?.event;
   const updateEventMutation = useUpdateEventMutation(eventId);
 
@@ -235,11 +222,10 @@ const EditEventClient = ({ id }: { id: string }) => {
     enableReinitialize: true,
     initialValues: buildInitialValues(event),
     validationSchema: schema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       try {
-        const filteredSocials = (
-          Object.keys(values.socials) as Array<keyof SocialMediaHandles>
-        )
+        const filteredSocials = (Object.keys(values.socials) as Array<keyof SocialMediaHandles>)
           .filter((key) => Boolean(values.socials[key]))
           .map((key) => ({ name: key, value: values.socials[key] }));
 
@@ -258,9 +244,7 @@ const EditEventClient = ({ id }: { id: string }) => {
             start_date: `${values.start_date}T${values.start_time}`,
             end_date: `${values.end_date}T${values.end_time}`,
             affiliate_program: values.affiliate_program,
-            commission: values.affiliate_program
-              ? Number(values.commission)
-              : null,
+            commission: values.affiliate_program ? Number(values.commission) : null,
             socials: filteredSocials,
           },
         };
@@ -300,8 +284,7 @@ const EditEventClient = ({ id }: { id: string }) => {
   const endMinTime = (() => {
     if (!formik.values.end_date) return startOfDay;
 
-    const endIsToday =
-      new Date(formik.values.end_date).toDateString() === now.toDateString();
+    const endIsToday = new Date(formik.values.end_date).toDateString() === now.toDateString();
     const base = endIsToday ? now : startOfDay;
 
     if (
@@ -321,16 +304,14 @@ const EditEventClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] border-b-grey-20 border-t-grey-20 bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <button
             type="button"
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.push("/event")}
           >
             <ChevronLeft />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Edit event
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Edit event</p>
           </button>
         </div>
 
@@ -340,7 +321,7 @@ const EditEventClient = ({ id }: { id: string }) => {
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <div className="mt-10 flex w-[640px] flex-col rounded-[12px] bg-white p-[48px]">
-                <p className="font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+                <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                   EVENT DETAILS
                 </p>
 
@@ -356,7 +337,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-[24px] grid gap-2">
                   <Label
                     htmlFor="event-name"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Event name
                   </Label>
@@ -364,7 +345,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     id="event-name"
                     name="event_name"
                     type="text"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.event_name}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -375,17 +356,15 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-[24px] grid gap-2">
                   <Label
                     htmlFor="event-description"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Event description
                   </Label>
                   <textarea
                     id="event-description"
-                    className="form-font h-[131px] resize-none rounded-xl border-0 bg-light_grey p-4"
+                    className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
                     value={formik.values.event_description}
-                    onChange={(e) =>
-                      formik.setFieldValue("event_description", e.target.value)
-                    }
+                    onChange={(e) => formik.setFieldValue("event_description", e.target.value)}
                     onBlur={formik.handleBlur}
                   />
                 </div>
@@ -394,14 +373,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-[24px] grid gap-2">
                   <Label
                     htmlFor="event-category"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Event category
                   </Label>
                   <select
                     id="event-category"
                     name="category"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                     value={formik.values.category}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -413,7 +392,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Event type */}
-                <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+                <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                   EVENT TYPE
                 </p>
 
@@ -425,12 +404,10 @@ const EditEventClient = ({ id }: { id: string }) => {
                         ? "bg-gradient-green-2 shadow-event-custom"
                         : "bg-light_grey text-text-grey"
                     }`}
-                    onClick={() =>
-                      formik.setFieldValue("event_type", "physical")
-                    }
+                    onClick={() => formik.setFieldValue("event_type", "physical")}
                   >
                     <LocationIcon />
-                    <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
+                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       Physical
                     </p>
                   </button>
@@ -445,7 +422,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     onClick={() => formik.setFieldValue("event_type", "online")}
                   >
                     <WebIcon />
-                    <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom">
+                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       Online
                     </p>
                   </button>
@@ -456,17 +433,17 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="event-location"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Event location
                     </Label>
-                    <div className="flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]">
+                    <div className="bg-light_grey flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
                       <LocationIcon />
                       <input
                         id="event-location"
                         name="location"
                         type="text"
-                        className="w-full rounded-xl border-0 bg-light_grey text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                        className="bg-light_grey w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
                         value={formik.values.location}
                         onChange={formik.handleChange}
@@ -482,14 +459,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <div className="mt-[24px] grid gap-2">
                       <Label
                         htmlFor="hosting_platform"
-                        className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                       >
                         Meeting Platform
                       </Label>
                       <select
                         id="hosting_platform"
                         name="hosting_platform"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                        className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                         value={formik.values.hosting_platform}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -502,7 +479,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <div className="mt-[24px] grid gap-2">
                       <Label
                         htmlFor="meeting_link"
-                        className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                       >
                         Meeting link
                       </Label>
@@ -510,7 +487,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         id="meeting_link"
                         name="meeting_link"
                         type="text"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                        className="form-font bg-light_grey h-12 rounded-xl border-0"
                         value={formik.values.meeting_link}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -520,7 +497,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <div className="mt-[24px] grid gap-2">
                       <Label
                         htmlFor="meeting_passcode"
-                        className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                       >
                         Meeting passcode
                       </Label>
@@ -528,7 +505,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         id="meeting_passcode"
                         name="meeting_passcode"
                         type="text"
-                        className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                        className="form-font bg-light_grey h-12 rounded-xl border-0"
                         value={formik.values.meeting_passcode}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -541,14 +518,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-[24px] grid gap-2">
                   <Label
                     htmlFor="time_zone"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Event time zone
                   </Label>
                   <select
                     id="time_zone"
                     name="time_zone"
-                    className="form-font h-12 rounded-xl border-0 bg-light_grey px-2"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                     value={formik.values.time_zone}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -564,42 +541,36 @@ const EditEventClient = ({ id }: { id: string }) => {
 
                 {/* Start */}
                 <div className="mt-[24px] grid gap-2">
-                  <Label className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey">
+                  <Label className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     Start date
                   </Label>
 
                   <div className="flex justify-between gap-3">
                     <div className="flex w-full flex-col gap-[4px]">
-                      <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                         <CalendarIcon />
                         <DatePicker
                           selected={
-                            formik.values.start_date
-                              ? new Date(formik.values.start_date)
-                              : null
+                            formik.values.start_date ? new Date(formik.values.start_date) : null
                           }
                           onChange={(date: Date | null) => {
-                            formik.setFieldValue(
-                              "start_date",
-                              date ? toISODate(date) : "",
-                            );
+                            formik.setFieldValue("start_date", date ? toISODate(date) : "");
                           }}
                           minDate={now}
                           dateFormat="yyyy-MM-dd"
-                          className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:outline-none focus:ring-0"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                           placeholderText="From"
                         />
                       </div>
-                      {formik.touched.start_date &&
-                        formik.errors.start_date && (
-                          <p className="text-left text-[12px] text-[#FF8D8D]">
-                            {formik.errors.start_date}
-                          </p>
-                        )}
+                      {formik.touched.start_date && formik.errors.start_date && (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {formik.errors.start_date}
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex w-full flex-col gap-[4px]">
-                      <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                         <ClockIcon />
                         <DatePicker
                           selected={
@@ -617,52 +588,44 @@ const EditEventClient = ({ id }: { id: string }) => {
                           timeCaption="Start Time"
                           timeIntervals={15}
                           dateFormat="h:mm aa"
-                          className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:outline-none focus:ring-0"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                           placeholderText="Start Time"
                           minTime={startMinTime}
                           maxTime={endOfDay}
                         />
                       </div>
-                      {formik.touched.start_time &&
-                        formik.errors.start_time && (
-                          <p className="text-left text-[12px] text-[#FF8D8D]">
-                            {formik.errors.start_time}
-                          </p>
-                        )}
+                      {formik.touched.start_time && formik.errors.start_time && (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {formik.errors.start_time}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {/* End */}
                 <div className="mt-[24px] grid gap-2">
-                  <Label className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey">
+                  <Label className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     End date
                   </Label>
 
                   <div className="flex justify-between gap-3">
                     <div className="flex w-full flex-col gap-[4px]">
-                      <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                         <CalendarIcon />
                         <DatePicker
                           selected={
-                            formik.values.end_date
-                              ? new Date(formik.values.end_date)
-                              : null
+                            formik.values.end_date ? new Date(formik.values.end_date) : null
                           }
                           onChange={(date: Date | null) => {
-                            formik.setFieldValue(
-                              "end_date",
-                              date ? toISODate(date) : "",
-                            );
+                            formik.setFieldValue("end_date", date ? toISODate(date) : "");
                           }}
                           minDate={
-                            formik.values.start_date
-                              ? new Date(formik.values.start_date)
-                              : now
+                            formik.values.start_date ? new Date(formik.values.start_date) : now
                           }
                           dateFormat="yyyy-MM-dd"
                           placeholderText="End Date"
-                          className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:outline-none focus:ring-0"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
                       {formik.touched.end_date && formik.errors.end_date && (
@@ -673,13 +636,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                     </div>
 
                     <div className="flex w-full flex-col gap-[4px]">
-                      <div className="flex h-[40px] w-full items-center gap-3 rounded-[12px] bg-light_grey px-[16px]">
+                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
                         <ClockIcon />
                         <DatePicker
                           selected={
-                            formik.values.end_time
-                              ? timeStringToDate(formik.values.end_time)
-                              : null
+                            formik.values.end_time ? timeStringToDate(formik.values.end_time) : null
                           }
                           onChange={(date: Date | null) => {
                             if (!date) return;
@@ -694,7 +655,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                           placeholderText="End Time"
                           minTime={endMinTime}
                           maxTime={endOfDay}
-                          className="w-full cursor-pointer border-none bg-light_grey px-[10px] font-sans text-[12px] font-semi-normal shadow-none focus:outline-none focus:ring-0"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
                       {formik.touched.end_time && formik.errors.end_time && (
@@ -707,7 +668,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Affiliate */}
-                <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
+                <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
                   AFFILIATE PROGRAM
                 </p>
 
@@ -717,19 +678,17 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <AffiliateUsersIcon />
                     </div>
                     <div className="flex flex-col">
-                      <p className="font-sans text-[16px] font-normal leading-[24px] tracking-custom">
+                      <p className="tracking-custom font-sans text-[16px] leading-[24px] font-normal">
                         Enable Affiliate program
                       </p>
-                      <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                         Affiliates will earn 0.01% per ticket sales
                       </p>
                     </div>
                   </div>
 
                   <Switch
-                    onChange={(v) =>
-                      formik.setFieldValue("affiliate_program", v)
-                    }
+                    onChange={(v) => formik.setFieldValue("affiliate_program", v)}
                     checked={affiliateEnabled}
                     checkedIcon={false}
                     uncheckedIcon={false}
@@ -741,7 +700,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <div className="mt-[24px] grid gap-2">
                     <Label
                       htmlFor="commission"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Set commission (%)
                     </Label>
@@ -751,7 +710,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       type="text"
                       inputMode="decimal" // mobile shows numeric keypad
                       autoComplete="off"
-                      className="form-font h-12 rounded-xl border-0 bg-light_grey"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
                       value={formik.values.commission}
                       onChange={(e) => {
                         // allow only digits and at most one dot
@@ -763,9 +722,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         // keep only first dot
                         const firstDot = v.indexOf(".");
                         if (firstDot !== -1) {
-                          v =
-                            v.slice(0, firstDot + 1) +
-                            v.slice(firstDot + 1).replace(/\./g, "");
+                          v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, "");
                         }
 
                         formik.setFieldValue("commission", v);
@@ -773,24 +730,20 @@ const EditEventClient = ({ id }: { id: string }) => {
                       onBlur={formik.handleBlur}
                       onKeyDown={(e) => {
                         // hard-block scientific notation keys
-                        if (["e", "E", "+", "-"].includes(e.key))
-                          e.preventDefault();
+                        if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
                       }}
                       placeholder="e.g. 2.5"
                     />
 
-                    <span className="font-sans text-[12px] font-normal leading-[14.4px] text-grey-40">
+                    <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
                       Commission will be based on the per ticket sold
                     </span>
                   </div>
                 )}
 
                 {/* Socials */}
-                <p className="mt-[48px] font-sans text-[12px] font-bold leading-[14.4px] text-light-black">
-                  SOCIAL DETAILS{" "}
-                  <span className="font-semi-normal text-text-grey">
-                    (Optional)
-                  </span>
+                <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+                  SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
                 </p>
 
                 {[
@@ -822,14 +775,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                 ].map(({ key, icon, type }) => (
                   <div
                     key={key}
-                    className="mt-[16px] flex items-center gap-3 rounded-[12px] bg-light_grey p-2 px-[12px]"
+                    className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]"
                   >
                     <div>{icon}</div>
                     <div className="w-full">
                       <input
                         type={type}
                         name={`socials.${key}`}
-                        className="w-full rounded-xl border-0 bg-light_grey px-1 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                        className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         value={(formik.values.socials as any)[key] ?? ""}
                         onChange={formik.handleChange}
                         placeholder=""

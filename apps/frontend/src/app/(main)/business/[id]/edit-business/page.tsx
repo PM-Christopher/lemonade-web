@@ -13,9 +13,7 @@ import { sharedKeys } from "@/features/shared/queries";
 import { sharedServerApi } from "@/features/shared/api.server";
 import EditBusinessClient from "./EditBusinessClient";
 
-export default async function EditBusinessPage(props: {
-  params: Promise<{ id: number }>;
-}) {
+export default async function EditBusinessPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;
   const queryClient = getQueryClient();
 

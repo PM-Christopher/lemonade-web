@@ -29,50 +29,37 @@ const PayoutModal: React.FC<PayoutInterface> = ({ isOpen, toggle }) => {
           <div className="mt-10">
             <div className="flex flex-col items-center">
               <div>
-                <Image
-                  src={"/images/Payout.png"}
-                  alt="payout"
-                  width={311}
-                  height={160}
-                />
+                <Image src={"/images/Payout.png"} alt="payout" width={311} height={160} />
               </div>
               <div className="mt-[24px]">
-                <p className="text-center text-[20px] font-semibold">
-                  Payout requested
-                </p>
+                <p className="text-center text-[20px] font-semibold">Payout requested</p>
                 <p className="max-w-[416px] text-center text-[16px] font-normal">
-                  Your payment is being processed and will be disbursed into the
-                  account details provided below
+                  Your payment is being processed and will be disbursed into the account details
+                  provided below
                 </p>
               </div>
-              <div className="mt-[24px] w-full rounded-[12px] bg-light-tint p-[16px]">
-                <div className="rounded-[12px] bg-light-tint-3 p-[8px]">
-                  <p className="text-center text-[12px] font-normal text-text-grey">
+              <div className="bg-light-tint mt-[24px] w-full rounded-[12px] p-[16px]">
+                <div className="bg-light-tint-3 rounded-[12px] p-[8px]">
+                  <p className="text-text-grey text-center text-[12px] font-normal">
                     Payout amount
                   </p>
-                  <p className="text-center text-[20px] font-semibold text-black-light">
-                    N2,000
-                  </p>
+                  <p className="text-black-light text-center text-[20px] font-semibold">N2,000</p>
                 </div>
                 <div className="my-[16px] flex justify-between">
                   <p className="text-[14px] font-normal">Account name</p>
-                  <p className="text-[14px] font-semi-normal">
-                    Christine Joseph
-                  </p>
+                  <p className="font-semi-normal text-[14px]">Christine Joseph</p>
                 </div>
                 <div className="my-[16px] flex justify-between">
                   <p className="text-[14px] font-normal">Bank name</p>
-                  <p className="text-[14px] font-semi-normal">
-                    United Bank for Africa
-                  </p>
+                  <p className="font-semi-normal text-[14px]">United Bank for Africa</p>
                 </div>
                 <div className="my-[16px] flex justify-between">
                   <p className="text-[14px] font-normal">Account number</p>
-                  <p className="text-[14px] font-semi-normal">0823212345</p>
+                  <p className="font-semi-normal text-[14px]">0823212345</p>
                 </div>
               </div>
 
-              <Button className="mt-[48px] h-[48px] w-full rounded-[12px] border-step-color bg-gradient-green p-[14px] px-[48px] shadow-custom-bottom">
+              <Button className="border-step-color bg-gradient-green shadow-custom-bottom mt-[48px] h-[48px] w-full rounded-[12px] p-[14px] px-[48px]">
                 <p>Done</p>
               </Button>
             </div>

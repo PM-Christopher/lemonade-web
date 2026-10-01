@@ -14,7 +14,8 @@ export default async function TransactionsPage() {
 
   await queryClient.prefetchQuery({
     queryKey: transactionKeys.list("plan-subscriptions", 1),
-    queryFn: () => transactionServerApi.getPlanSubscriptions({ page: 1, perPage: DEFAULT_PER_PAGE }),
+    queryFn: () =>
+      transactionServerApi.getPlanSubscriptions({ page: 1, perPage: DEFAULT_PER_PAGE }),
   });
 
   return (

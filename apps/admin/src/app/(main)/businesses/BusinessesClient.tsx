@@ -22,9 +22,13 @@ const STATUS_OPTIONS = [
 const TABLE_HEADERS = ["Name", "Location", "Owner", "Date submitted", "Status"];
 
 function searchableFields(business: AdminBusiness): string[] {
-  return [business.name, business.city, business.country, business.email, business.owner?.name].filter(
-    (value): value is string => Boolean(value),
-  );
+  return [
+    business.name,
+    business.city,
+    business.country,
+    business.email,
+    business.owner?.name,
+  ].filter((value): value is string => Boolean(value));
 }
 
 function BusinessesClient() {
@@ -39,24 +43,26 @@ function BusinessesClient() {
     const all = data?.businesses ?? [];
     const q = searchValue.trim().toLowerCase();
     if (!q) return all;
-    return all.filter((business) => searchableFields(business).some((value) => value.toLowerCase().includes(q)));
+    return all.filter((business) =>
+      searchableFields(business).some((value) => value.toLowerCase().includes(q)),
+    );
   }, [data, searchValue]);
 
   return (
     <MainLayout>
       <section className="mt-[24px] flex flex-col gap-[20px]">
         <div className={"flex justify-between px-[20px]"}>
-          <p className={"text-[16px] font-semiBold"}>{businesses.length} Businesses</p>
+          <p className={"font-semiBold text-[16px]"}>{businesses.length} Businesses</p>
           <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] border-grey-20 p-2 px-[12px]">
+            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
               <div>
-                <SearchIcon className={"h-[12px] w-[12px] text-grey-40"} />
+                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
               </div>
               <div className="w-full">
                 <input
                   id="search"
                   type="text"
-                  className="w-full rounded-xl bg-light-grey py-4 text-[14px] focus:border-transparent focus:outline-none focus:ring-0"
+                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search business, city, owner..."
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -65,7 +71,7 @@ function BusinessesClient() {
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger
                 aria-label="Filter by status"
-                className="h-[40px] w-[193px] rounded-[12px] text-[12px] font-semiBold text-text-grey focus:!border-light-green-50"
+                className="font-semiBold text-text-grey focus:!border-light-green-50 h-[40px] w-[193px] rounded-[12px] text-[12px]"
               >
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -80,13 +86,16 @@ function BusinessesClient() {
           </div>
         </div>
         <div className={"flex flex-col px-[20px]"}>
-          <div className={"flex flex-col rounded-[12px] border-[1px] border-grey-20"}>
+          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-mid-grey">
                     {TABLE_HEADERS.map((header) => (
-                      <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={header}>
+                      <th
+                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
+                        key={header}
+                      >
                         {header}
                       </th>
                     ))}
@@ -97,15 +106,19 @@ function BusinessesClient() {
                     businesses.map((business) => (
                       <tr
                         key={business.id}
-                        className="h-[72px] cursor-pointer border-b border-grey-20"
+                        className="border-grey-20 h-[72px] cursor-pointer border-b"
                         onClick={() => router.push(`/businesses/${business.id}`)}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{business.name}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {[business.city, business.country].filter(Boolean).join(", ") || "N/A"}
                         </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>{business.owner?.name ?? "N/A"}</td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>{business.date_submitted}</td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>
+                          {business.owner?.name ?? "N/A"}
+                        </td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>
+                          {business.date_submitted}
+                        </td>
                         <td
                           className={`p-4 font-sans text-sm font-medium ${GetStatusClass(capitalizeWords(business.status))}`}
                         >
@@ -115,7 +128,10 @@ function BusinessesClient() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={TABLE_HEADERS.length} className="p-4 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={TABLE_HEADERS.length}
+                        className="p-4 text-center text-sm text-gray-500"
+                      >
                         {isLoading ? "Loading..." : "No data available"}
                       </td>
                     </tr>

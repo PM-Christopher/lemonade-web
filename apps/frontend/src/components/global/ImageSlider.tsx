@@ -47,7 +47,7 @@ const Carousel: React.FC<ImageSlider> = ({
   return (
     <div className="relative w-full overflow-hidden rounded-2xl bg-black/5 shadow-lg">
       {/* Responsive height via aspect ratio */}
-      <div className="sm:aspect-[16/9] lg:aspect-[21/9] relative aspect-[16/10] w-full">
+      <div className="relative aspect-[16/10] w-full sm:aspect-[16/9] lg:aspect-[21/9]">
         {events?.map((item, index) => (
           <div
             key={index}
@@ -71,15 +71,15 @@ const Carousel: React.FC<ImageSlider> = ({
 
         {/* Arrows */}
         {showArrows && (events?.length ?? 0) > 1 && (
-          <div className="sm:px-3 absolute inset-0 flex items-center justify-between px-2">
+          <div className="absolute inset-0 flex items-center justify-between px-2 sm:px-3">
             <button
               type="button"
               onClick={prevSlide}
               aria-label="Previous slide"
-              className="sm:h-11 sm:w-11 group inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/70 shadow backdrop-blur-md transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-white/60 active:scale-95"
+              className="group inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/70 shadow backdrop-blur-md transition hover:bg-white focus:ring-2 focus:ring-white/60 focus:outline-none active:scale-95 sm:h-11 sm:w-11"
             >
               <svg
-                className="sm:w-6 sm:h-6 h-5 w-5 text-gray-900 transition group-hover:scale-105"
+                className="h-5 w-5 text-gray-900 transition group-hover:scale-105 sm:h-6 sm:w-6"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2.5"
@@ -93,10 +93,10 @@ const Carousel: React.FC<ImageSlider> = ({
               type="button"
               onClick={nextSlide}
               aria-label="Next slide"
-              className="sm:h-11 sm:w-11 group inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/70 shadow backdrop-blur-md transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-white/60 active:scale-95"
+              className="group inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/70 shadow backdrop-blur-md transition hover:bg-white focus:ring-2 focus:ring-white/60 focus:outline-none active:scale-95 sm:h-11 sm:w-11"
             >
               <svg
-                className="sm:w-6 sm:h-6 h-5 w-5 text-gray-900 transition group-hover:scale-105"
+                className="h-5 w-5 text-gray-900 transition group-hover:scale-105 sm:h-6 sm:w-6"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2.5"
@@ -109,26 +109,26 @@ const Carousel: React.FC<ImageSlider> = ({
         )}
 
         {/* Bottom info panel */}
-        <div className="sm:p-4 lg:p-6 absolute bottom-0 left-0 right-0 p-3">
+        <div className="absolute right-0 bottom-0 left-0 p-3 sm:p-4 lg:p-6">
           <div className="mx-auto w-full max-w-[980px] rounded-2xl border border-white/10 bg-[#1A2600]/20 shadow-lg backdrop-blur-xl">
-            <div className="sm:gap-4 sm:flex-row sm:items-center sm:justify-between sm:px-5 lg:px-6 flex flex-col gap-3 px-4 py-4">
+            <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 lg:px-6">
               {/* Text */}
               <div className="min-w-0">
-                <p className="sm:text-[22px] lg:text-[28px] truncate font-sans text-[18px] font-semibold leading-tight text-white">
+                <p className="truncate font-sans text-[18px] leading-tight font-semibold text-white sm:text-[22px] lg:text-[28px]">
                   {events?.[currentIndex]?.event_name}
                 </p>
 
                 <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-white/90">
                   <div className="flex items-center gap-[6px]">
                     <CalendarIcon className="h-4 w-4 text-white" />
-                    <p className="sm:text-[14px] font-sans text-[13px] font-normal leading-[16.8px]">
+                    <p className="font-sans text-[13px] leading-[16.8px] font-normal sm:text-[14px]">
                       {formatLongDate(events?.[currentIndex]?.start_date, "mid")}
                     </p>
                   </div>
 
                   <DotIcon className="h-[4px] w-[4px]" />
 
-                  <p className="sm:text-[14px] font-sans text-[13px] font-normal leading-[16.8px]">
+                  <p className="font-sans text-[13px] leading-[16.8px] font-normal sm:text-[14px]">
                     {formatTime(events?.[currentIndex]?.start_date)} -{" "}
                     {formatTime(events?.[currentIndex]?.end_date)}
                   </p>
@@ -136,10 +136,10 @@ const Carousel: React.FC<ImageSlider> = ({
               </div>
 
               {/* CTA */}
-              <div className="sm:justify-end flex">
+              <div className="flex sm:justify-end">
                 <button
                   type="button"
-                  className="sm:w-auto sm:text-[16px] inline-flex w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 font-sans text-[14px] font-semi-normal leading-[19.2px] text-white transition hover:bg-white/20"
+                  className="font-semi-normal inline-flex w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 font-sans text-[14px] leading-[19.2px] text-white transition hover:bg-white/20 sm:w-auto sm:text-[16px]"
                 >
                   Get ticket
                 </button>
@@ -148,8 +148,8 @@ const Carousel: React.FC<ImageSlider> = ({
 
             {/* Dots (scrollable on mobile, centered on desktop) */}
             {(events?.length ?? 0) > 1 && (
-              <div className="sm:px-5 lg:px-6 px-4 pb-4">
-                <div className="hide-scrollbar sm:justify-center flex items-center gap-2 overflow-x-auto">
+              <div className="px-4 pb-4 sm:px-5 lg:px-6">
+                <div className="hide-scrollbar flex items-center gap-2 overflow-x-auto sm:justify-center">
                   {events?.map((_, index) => (
                     <button
                       key={index}
@@ -158,7 +158,7 @@ const Carousel: React.FC<ImageSlider> = ({
                       onClick={() => goToSlide(index)}
                       className={`h-2.5 rounded-full transition-all ${
                         currentIndex === index
-                          ? "w-8 bg-step-color"
+                          ? "bg-step-color w-8"
                           : "w-2.5 bg-white/70 hover:bg-white"
                       }`}
                     />

@@ -1,9 +1,23 @@
+import type { useRouter } from "next/navigation";
 import { axiosInstance } from "@/lib/axiosInstane";
-import { authFailure, authStart, authSuccess, authUser, loadStop } from "./authSlice";
-import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
+import { authFailure, authStart, authSuccess, loadStop } from "./authSlice";
+import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { AppDispatch } from "@/redux/store";
 
-export const login = async (values: any, dispatch: any, router: any, setCookie: any) => {
+interface LoginValues {
+  email: string;
+  password: string;
+}
+
+type SetCookie = (name: string, value: string, options?: Record<string, unknown>) => void;
+
+export const login = async (
+  values: LoginValues,
+  dispatch: AppDispatch,
+  router: ReturnType<typeof useRouter>,
+  setCookie: SetCookie,
+) => {
   dispatch(authStart());
   try {
     const { data } = await axiosInstance.post("/admin/auth/login", { ...values });
@@ -45,7 +59,7 @@ export const login = async (values: any, dispatch: any, router: any, setCookie: 
         }),
       );
     }
-  } catch (error: any) {
+  } catch {
     dispatch(
       updateToastifyReducer({
         show: true,

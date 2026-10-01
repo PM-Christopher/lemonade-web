@@ -100,8 +100,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message:
-            "Please select at least one ticket quantity before proceeding.",
+          message: "Please select at least one ticket quantity before proceeding.",
           type: "error",
         }),
       );
@@ -117,28 +116,26 @@ const BuyTicketClient = ({ id }: { id: number }) => {
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
-        <div className="flex items-center justify-between border-b-[1px] border-t-[1px] bg-white p-[12px] px-10">
+      <section className="laptop:bg-light_grey bg-white pb-10">
+        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pl-[4px] pr-[16px]"
+            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
             onClick={() => router.back()}
           >
             <ChevronLeft className="cursor-pointer" />
-            <p className="font-sans text-[16px] font-semibold tracking-custom">
-              Buy ticket
-            </p>
+            <p className="tracking-custom font-sans text-[16px] font-semibold">Buy ticket</p>
           </div>
         </div>
-        <section className="mt-4 bg-white laptop:bg-none">
-          <div className="flex flex-col laptop:flex-row laptop:justify-around">
-            <div className="flex w-full flex-col justify-between gap-y-[460px] rounded-[12px] bg-none p-0 py-[10px] laptop:w-[688px] laptop:bg-white laptop:p-[24px]">
+        <section className="laptop:bg-none mt-4 bg-white">
+          <div className="laptop:flex-row laptop:justify-around flex flex-col">
+            <div className="laptop:w-[688px] laptop:bg-white laptop:p-[24px] flex w-full flex-col justify-between gap-y-[460px] rounded-[12px] bg-none p-0 py-[10px]">
               {loading ? (
                 <EventTicketDetailSkeleton />
               ) : (
                 <div className="">
-                  <div className="flex flex-col gap-4 rounded-xl bg-green-tint p-4 transition-shadow duration-300 hover:shadow-lg laptop:flex-row laptop:p-6">
+                  <div className="bg-green-tint laptop:flex-row laptop:p-6 flex flex-col gap-4 rounded-xl p-4 transition-shadow duration-300 hover:shadow-lg">
                     {/* Event Poster */}
-                    <div className="h-[120px] w-full flex-shrink-0 laptop:h-[120px] laptop:w-[120px]">
+                    <div className="laptop:h-[120px] laptop:w-[120px] h-[120px] w-full flex-shrink-0">
                       <Image
                         src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
                         alt={event?.event_name || "event poster"}
@@ -150,12 +147,12 @@ const BuyTicketClient = ({ id }: { id: number }) => {
 
                     {/* Event Info */}
                     <div className="flex flex-1 flex-col gap-2">
-                      <p className="font-sans text-[16px] font-semibold leading-[28px] text-black-light laptop:text-[18px]">
+                      <p className="text-black-light laptop:text-[18px] font-sans text-[16px] leading-[28px] font-semibold">
                         {event?.event_name}
                       </p>
 
                       {/* Date */}
-                      <div className="flex items-center gap-2 text-[14px] text-text-grey laptop:text-[16px]">
+                      <div className="text-text-grey laptop:text-[16px] flex items-center gap-2 text-[14px]">
                         <CalendarIcon className="text-gray-500" />
                         <span>{formatLongDate(event?.start_date, "mid")}</span>
                         <span>-</span>
@@ -163,7 +160,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                       </div>
 
                       {/* Time */}
-                      <div className="flex items-center gap-2 text-[14px] text-text-grey laptop:text-[16px]">
+                      <div className="text-text-grey laptop:text-[16px] flex items-center gap-2 text-[14px]">
                         <ClockIcon className="text-gray-500" />
                         <span>{formatTime(event?.start_date ?? null)}</span>
                         <span>-</span>
@@ -176,46 +173,44 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     <div className="laptop:none px-[16px]" key={index}>
                       <div className="mt-[24px] flex items-center justify-between">
                         <div className="flex flex-col">
-                          <p className="font-sans text-[14px] font-semi-normal leading-[21px] text-black-light">
+                          <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
                             {ticket.name}
                           </p>
-                          <p className="font-sans text-[18px] font-semibold leading-[27px] tracking-custom">
-                            {ticket?.price === 0
-                              ? "Free"
-                              : `₦ ${ticket?.price}`}
+                          <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                            {ticket?.price === 0 ? "Free" : `₦ ${ticket?.price}`}
                           </p>
-                          <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                          <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                             {ticket.description}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <div
-                            className="flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-[8px] bg-light-white p-3"
+                            className="bg-light-white flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-[8px] p-3"
                             onClick={() => handleDecrement(index)}
                           >
                             <p className="">-</p>
                           </div>
-                          <div className="flex h-[28px] w-[27.75px] items-center justify-center rounded-[8px] bg-light-white p-4">
-                            <p className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom">
+                          <div className="bg-light-white flex h-[28px] w-[27.75px] items-center justify-center rounded-[8px] p-4">
+                            <p className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]">
                               {quantities[index]?.quantity}
                             </p>
                           </div>
                           <div
-                            className="flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-[8px] bg-light-white p-3"
+                            className="bg-light-white flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-[8px] p-3"
                             onClick={() => handleIncrement(index)}
                           >
                             <p className="">+</p>
                           </div>
                         </div>
                       </div>
-                      <div className="my-2 border-t-[1px] border-grey-20"></div>
+                      <div className="border-grey-20 my-2 border-t-[1px]"></div>
                     </div>
                   ))}
                 </div>
               )}
-              <div className="flex items-center justify-center gap-[16px] laptop:hidden">
+              <div className="laptop:hidden flex items-center justify-center gap-[16px]">
                 <div className="flex w-[147px] items-center gap-[16px]">
-                  <p className="text-[20px] font-bold text-mid-green">
+                  <p className="text-mid-green text-[20px] font-bold">
                     {totalAmount() === 0 ? (
                       <>₦ {totalAmount()}</>
                     ) : (
@@ -223,61 +218,51 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     )}
                   </p>
                   <ChevronUp
-                    className="cursor-pointer text-mid-green"
+                    className="text-mid-green cursor-pointer"
                     onClick={toggleSummaryModal}
                   />
                 </div>
                 <Button
-                  className="h-[48px] w-[180px] rounded-[12px] border-b-[2px] bg-gradient-green px-[48px] py-[14px] shadow-none"
+                  className="bg-gradient-green h-[48px] w-[180px] rounded-[12px] border-b-[2px] px-[48px] py-[14px] shadow-none"
                   onClick={proceed}
                 >
-                  <p className="text-[16px] font-semi-normal">Assign ticket</p>
+                  <p className="font-semi-normal text-[16px]">Assign ticket</p>
                 </Button>
               </div>
             </div>
-            <div className="hidden laptop:block">
+            <div className="laptop:block hidden">
               <div className="w-[480px] rounded-[12px] bg-white px-[10px] py-[12px]">
-                <p className="font-sans text-[20px] font-semibold leading-[28px]">
-                  Summary
-                </p>
+                <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
                 {quantities?.map(
                   (quantity: TicketDetails, index: number) =>
                     quantity.quantity > 0 && (
-                      <div
-                        className="mt-[16px] flex justify-between"
-                        key={index}
-                      >
+                      <div className="mt-[16px] flex justify-between" key={index}>
                         <div>
-                          <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                          <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                             {quantity.quantity} {quantity.ticket_name}
                           </p>
                         </div>
                         <div>
-                          <p className="font-sans text-[14px] font-semibold leading-[21px] tracking-custom text-light-black">
+                          <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
                             {quantity.price * quantity.quantity === 0 ? (
                               <>₦ {quantity.price * quantity.quantity}</>
                             ) : (
-                              <>
-                                ₦{" "}
-                                {formatNumberWithCommas(
-                                  quantity.price * quantity.quantity,
-                                )}
-                              </>
+                              <>₦ {formatNumberWithCommas(quantity.price * quantity.quantity)}</>
                             )}
                           </p>
                         </div>
                       </div>
                     ),
                 )}
-                <div className="my-4 border-t-[1px] border-grey-20"></div>
+                <div className="border-grey-20 my-4 border-t-[1px]"></div>
                 <div className="mt-[16px] flex justify-between">
                   <div>
-                    <p className="font-sans text-[14px] font-normal leading-[21px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                       Subtotal
                     </p>
                   </div>
                   <div>
-                    <p className="font-sans text-[14px] font-semibold leading-[21px] tracking-custom text-light-black">
+                    <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
                       {calculateSubtotal() === 0 ? (
                         <>₦ {calculateSubtotal()}</>
                       ) : (
@@ -286,15 +271,15 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     </p>
                   </div>
                 </div>
-                <div className="my-4 border-t-[1px] border-grey-20"></div>
+                <div className="border-grey-20 my-4 border-t-[1px]"></div>
                 <div className="mt-[16px] flex justify-between">
                   <div>
-                    <p className="font-sans text-[18px] font-normal leading-[27px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[27px] font-normal">
                       Total
                     </p>
                   </div>
                   <div>
-                    <p className="font-sans text-[18px] font-semibold leading-[27px] tracking-custom text-light-black">
+                    <p className="tracking-custom text-light-black font-sans text-[18px] leading-[27px] font-semibold">
                       {totalAmount() === 0 ? (
                         <>₦ {totalAmount()}</>
                       ) : (
@@ -305,18 +290,18 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                 </div>
                 <div className="mt-[20px] flex items-center justify-between">
                   <div>
-                    <p className="pl-[40px] font-sans text-[18px] font-normal leading-[27px] tracking-custom text-text-grey">
+                    <p className="tracking-custom text-text-grey pl-[40px] font-sans text-[18px] leading-[27px] font-normal">
                       -
                     </p>
                   </div>
                   <div>
                     <Button
                       className={
-                        "h-[48px] w-[216px] gap-[8px] rounded-[12px] border-b-2 border-transparent bg-gradient-green px-[48px] py-[14px] shadow-custom-bottom"
+                        "bg-gradient-green shadow-custom-bottom h-[48px] w-[216px] gap-[8px] rounded-[12px] border-b-2 border-transparent px-[48px] py-[14px]"
                       }
                       onClick={proceed}
                     >
-                      <p className="font-sans text-[16px] font-semi-normal leading-[19.2px]">
+                      <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
                         Assign ticket
                       </p>
                     </Button>

@@ -8,7 +8,7 @@ import { useSuspendEventMutation } from "@/features/events/mutations";
 interface DeactivateModalProps {
   isOpen: boolean;
   toggle: () => void;
-  id?: number;
+  id?: string | number;
 }
 
 function SuspendModal({ isOpen, toggle, id }: DeactivateModalProps) {

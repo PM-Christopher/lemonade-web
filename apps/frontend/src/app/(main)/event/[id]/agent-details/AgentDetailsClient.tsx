@@ -26,8 +26,7 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { getSafeImageSrc } from "@/lib/helper";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 
-type SocialIconName =
-  "facebook" | "instagram" | "linkedin" | "twitter" | "website";
+type SocialIconName = "facebook" | "instagram" | "linkedin" | "twitter" | "website";
 
 const ICON_MAP: Record<SocialIconName, React.JSX.Element> = {
   facebook: <FacebookIcon className="h-5 w-5" />,
@@ -37,11 +36,7 @@ const ICON_MAP: Record<SocialIconName, React.JSX.Element> = {
   website: <AttachmentIcon className="h-5 w-5" />,
 };
 
-function SocialLinks({
-  socials,
-}: {
-  socials?: Array<{ name: string; value: string }> | null;
-}) {
+function SocialLinks({ socials }: { socials?: Array<{ name: string; value: string }> | null }) {
   const items = socials ?? [];
   if (!items.length) return null;
 
@@ -60,7 +55,7 @@ function SocialLinks({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Visit our ${key}`}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition hover:-translate-y-[1px] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition hover:-translate-y-[1px] hover:shadow-md focus:ring-2 focus:ring-green-400 focus:outline-none"
           >
             {icon}
           </a>
@@ -85,14 +80,12 @@ function GenerateLinkCTA({
     return (
       <div
         className={[
-          "h-12 w-full rounded-xl border border-step-color bg-gradient-green",
-          "flex items-center justify-center shadow-green-inset",
+          "border-step-color bg-gradient-green h-12 w-full rounded-xl border",
+          "shadow-green-inset flex items-center justify-center",
           className,
         ].join(" ")}
       >
-        <p className="text-[16px] font-semi-normal leading-[19.2px] text-white">
-          Link generated
-        </p>
+        <p className="font-semi-normal text-[16px] leading-[19.2px] text-white">Link generated</p>
       </div>
     );
   }
@@ -100,7 +93,7 @@ function GenerateLinkCTA({
   return (
     <Button
       className={[
-        "h-12 w-full rounded-xl border border-step-color bg-gradient-green",
+        "border-step-color bg-gradient-green h-12 w-full rounded-xl border",
         "shadow-green-inset hover:shadow-green-inset-strong",
         "disabled:cursor-not-allowed disabled:opacity-60",
         className,
@@ -108,7 +101,7 @@ function GenerateLinkCTA({
       onClick={onClick}
       disabled={loading}
     >
-      <p className="text-[16px] font-semi-normal leading-[19.2px] text-white">
+      <p className="font-semi-normal text-[16px] leading-[19.2px] text-white">
         {loading ? "Generating link..." : "Generate affiliate link"}
       </p>
     </Button>
@@ -119,8 +112,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: programDetails, isLoading: loading } =
-    useAffiliateEventDetailQuery(id);
+  const { data: programDetails, isLoading: loading } = useAffiliateEventDetailQuery(id);
   const generateAffiliateLinkMutation = useGenerateAffiliateLinkMutation();
   const generateLinkLoading = generateAffiliateLinkMutation.isPending;
 
@@ -153,35 +145,27 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
     });
   };
 
-  const startDate = useMemo(
-    () => (event?.start_date ? new Date(event.start_date) : null),
-    [event],
-  );
-  const endDate = useMemo(
-    () => (event?.end_date ? new Date(event.end_date) : null),
-    [event],
-  );
+  const startDate = useMemo(() => (event?.start_date ? new Date(event.start_date) : null), [event]);
+  const endDate = useMemo(() => (event?.end_date ? new Date(event.end_date) : null), [event]);
 
   return (
     <MainLayout>
-      <section className="bg-white pb-10 laptop:bg-light_grey">
+      <section className="laptop:bg-light_grey bg-white pb-10">
         {/* Header */}
         <div className="border-y border-gray-100 bg-white">
-          <div className="mx-auto flex w-full max-w-[1312px] items-center justify-between px-4 py-4 tablet:px-6 laptop:px-10">
+          <div className="tablet:px-6 laptop:px-10 mx-auto flex w-full max-w-[1312px] items-center justify-between px-4 py-4">
             <Link
               href="/event"
               className="inline-flex items-center gap-2 rounded-xl px-2 py-2 transition hover:bg-gray-50"
             >
               <ChevronLeft />
-              <p className="text-[16px] font-semibold tracking-custom">
-                Event details
-              </p>
+              <p className="tracking-custom text-[16px] font-semibold">Event details</p>
             </Link>
           </div>
         </div>
 
         {/* Content */}
-        <div className="mx-auto w-full max-w-[1312px] px-4 tablet:px-6 laptop:px-10 laptop:pt-4">
+        <div className="tablet:px-6 laptop:px-10 laptop:pt-4 mx-auto w-full max-w-[1312px] px-4">
           {loading ? (
             <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
               <div className="animate-pulse space-y-4">
@@ -194,16 +178,14 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
           ) : (
             <>
               {/* Top card */}
-              <section className="mt-0 laptop:mt-4">
+              <section className="laptop:mt-4 mt-0">
                 <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md">
-                  <div className="flex flex-col laptop:flex-row">
+                  <div className="laptop:flex-row flex flex-col">
                     {/* Image */}
-                    <div className="w-full laptop:w-[480px]">
-                      <div className="relative aspect-[16/11] w-full bg-gray-100 laptop:aspect-[496/532]">
+                    <div className="laptop:w-[480px] w-full">
+                      <div className="laptop:aspect-[496/532] relative aspect-[16/11] w-full bg-gray-100">
                         <Image
-                          src={
-                            getSafeImageSrc(event?.event_image, "/images/default-event.jpg")
-                          }
+                          src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
                           alt={event?.event_name || "event image"}
                           fill
                           priority={false}
@@ -213,19 +195,17 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                     </div>
 
                     {/* Details */}
-                    <div className="flex-1 p-5 tablet:p-7 laptop:p-10">
-                      <h1 className="text-[20px] font-semibold leading-snug text-gray-900 tablet:text-[26px] laptop:text-[32px]">
+                    <div className="tablet:p-7 laptop:p-10 flex-1 p-5">
+                      <h1 className="tablet:text-[26px] laptop:text-[32px] text-[20px] leading-snug font-semibold text-gray-900">
                         {event?.event_name}
                       </h1>
 
                       {/* Meta */}
-                      <div className="mt-5 space-y-3 text-text-grey">
+                      <div className="text-text-grey mt-5 space-y-3">
                         <div className="flex items-start gap-3">
                           <CalendarIcon className="mt-[2px]" />
-                          <p className="text-[14px] leading-[27px] tablet:text-[16px] laptop:text-[18px]">
-                            {startDate
-                              ? formatLongDate(startDate, "mid")
-                              : "--"}{" "}
+                          <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
+                            {startDate ? formatLongDate(startDate, "mid") : "--"}{" "}
                             <span className="mx-1">–</span>
                             {endDate ? formatLongDate(endDate, "mid") : "--"}
                           </p>
@@ -233,7 +213,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                         <div className="flex items-start gap-3">
                           <ClockIcon className="mt-[2px]" />
-                          <p className="text-[14px] leading-[27px] tablet:text-[16px] laptop:text-[18px]">
+                          <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
                             {startDate ? formatLongTime(startDate) : "--"}{" "}
                             <span className="mx-1">–</span>
                             {endDate ? formatLongTime(endDate) : "--"}
@@ -242,15 +222,15 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                         <div className="flex items-start gap-3">
                           <LocationIcon className="mt-[2px]" />
-                          <p className="text-[14px] leading-[27px] tablet:text-[16px] laptop:text-[18px]">
+                          <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
                             {event?.location ?? "--"}
                           </p>
                         </div>
                       </div>
 
                       {/* Contact + CTA (Laptop) */}
-                      <div className="mt-10 hidden laptop:block">
-                        <p className="text-[18px] font-semibold leading-[27px] tracking-custom text-gray-900">
+                      <div className="laptop:block mt-10 hidden">
+                        <p className="tracking-custom text-[18px] leading-[27px] font-semibold text-gray-900">
                           Contact Us
                         </p>
                         <div className="mt-4">
@@ -271,22 +251,22 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
               </section>
 
               {/* Bottom section */}
-              <section className="mt-8 flex flex-col gap-6 laptop:flex-row">
+              <section className="laptop:flex-row mt-8 flex flex-col gap-6">
                 {/* About */}
-                <div className="flex-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm tablet:p-7">
-                  <h2 className="text-[20px] font-semibold leading-[33.6px] text-gray-900 tablet:text-[22px]">
+                <div className="tablet:p-7 flex-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                  <h2 className="tablet:text-[22px] text-[20px] leading-[33.6px] font-semibold text-gray-900">
                     About Event
                   </h2>
 
                   <div className="mt-4 text-gray-700">
-                    <p className="text-[14px] leading-7 tablet:text-[16px]">
+                    <p className="tablet:text-[16px] text-[14px] leading-7">
                       {event?.event_description ?? "No description available."}
                     </p>
                   </div>
 
                   {/* Contact (Mobile/Tablet) */}
-                  <div className="mt-8 laptop:hidden">
-                    <p className="text-[18px] font-semibold leading-[27px] tracking-custom text-gray-900">
+                  <div className="laptop:hidden mt-8">
+                    <p className="tracking-custom text-[18px] leading-[27px] font-semibold text-gray-900">
                       Contact Us
                     </p>
                     <div className="mt-4">
@@ -296,11 +276,9 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                 </div>
 
                 {/* Tickets */}
-                <aside className="w-full rounded-2xl border border-gray-100 bg-white p-5 shadow-sm tablet:p-7 laptop:w-[420px]">
+                <aside className="tablet:p-7 laptop:w-[420px] w-full rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <p className="text-[18px] font-semibold text-gray-900">
-                      Tickets
-                    </p>
+                    <p className="text-[18px] font-semibold text-gray-900">Tickets</p>
                     {!!event?.isAffiliate && (
                       <span className="rounded-full border border-green-100 bg-green-50 px-3 py-1 text-xs text-green-700">
                         Affiliate
@@ -309,22 +287,19 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                   </div>
 
                   <div className="mt-4 space-y-3">
-                    {event?.isAffiliate &&
-                    (event?.ticket_sold?.length ?? 0) > 0 ? (
+                    {event?.isAffiliate && (event?.ticket_sold?.length ?? 0) > 0 ? (
                       event?.ticket_sold?.map((item: any) => (
                         <div
                           key={item?.id}
                           className="flex items-center justify-between rounded-xl border border-gray-100 p-3 transition hover:bg-gray-50"
                         >
                           <div className="flex flex-col">
-                            <p className="text-[14px] font-semi-normal text-gray-900">
+                            <p className="font-semi-normal text-[14px] text-gray-900">
                               {item?.name}
                             </p>
-                            <p className="text-[12px] font-normal text-text-grey">
-                              {item?.count}
-                            </p>
+                            <p className="text-text-grey text-[12px] font-normal">{item?.count}</p>
                           </div>
-                          <p className="text-[14px] font-semi-normal text-gray-900">
+                          <p className="font-semi-normal text-[14px] text-gray-900">
                             ₦{formatNumberWithCommas(item?.price)}
                           </p>
                         </div>
@@ -337,7 +312,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                   </div>
 
                   {/* CTA (Mobile/Tablet) */}
-                  <div className="mt-6 laptop:hidden">
+                  <div className="laptop:hidden mt-6">
                     <GenerateLinkCTA
                       isAffiliate={event?.isAffiliate}
                       loading={generateLinkLoading}

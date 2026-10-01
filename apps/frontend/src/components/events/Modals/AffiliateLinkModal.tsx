@@ -11,11 +11,7 @@ type AffiliateLinkInterface = {
   item: string;
 };
 
-const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({
-  isOpen,
-  toggle,
-  item,
-}) => {
+const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, item }) => {
   return (
     <Dialog
       open={isOpen}
@@ -26,10 +22,10 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Link generated!"}</DialogTitle>
         {/* Centering wrapper with top/bottom padding */}
-        <div className="sm:px-6 sm:py-10 relative flex w-[480px] items-center justify-center px-4 py-6">
+        <div className="relative flex w-[480px] items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
           {/* Modal */}
           <div
-            className="sm:max-w-[520px] sm:p-6 sm:max-h-[calc(100vh-80px)] relative max-h-[calc(100vh-48px)] w-full overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl animate-in fade-in zoom-in-95"
+            className="animate-in fade-in zoom-in-95 relative max-h-[calc(100vh-48px)] w-full overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:max-h-[calc(100vh-80px)] sm:max-w-[520px] sm:p-6"
             role="dialog"
             aria-modal="true"
           >
@@ -48,9 +44,9 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({
             </div>
 
             {/* Body */}
-            <div className="sm:mt-6 mt-3">
+            <div className="mt-3 sm:mt-6">
               <div className="flex justify-center">
-                <div className="sm:w-[200px] sm:h-[200px] relative h-[160px] w-[160px]">
+                <div className="relative h-[160px] w-[160px] sm:h-[200px] sm:w-[200px]">
                   <Image
                     src="/images/affliliateLink.png"
                     alt="affiliate-link"
@@ -62,22 +58,20 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({
               </div>
 
               <div className="mt-6 text-center">
-                <p className="sm:text-[20px] text-[18px] font-semibold">
-                  Link generated!
-                </p>
-                <p className="sm:text-[16px] mt-2 text-[14px] text-text-grey">
-                  You have successfully joined this affiliate program. Share
-                  your link and start earning now.
+                <p className="text-[18px] font-semibold sm:text-[20px]">Link generated!</p>
+                <p className="text-text-grey mt-2 text-[14px] sm:text-[16px]">
+                  You have successfully joined this affiliate program. Share your link and start
+                  earning now.
                 </p>
               </div>
 
-              <div className="mb-2 mt-6 rounded-2xl bg-light-tint p-4">
-                <p className="sm:text-[14px] text-[13px] font-semi-normal text-text-grey">
+              <div className="bg-light-tint mt-6 mb-2 rounded-2xl p-4">
+                <p className="font-semi-normal text-text-grey text-[13px] sm:text-[14px]">
                   Affiliate link
                 </p>
 
-                <div className="mt-2 flex items-center gap-2 rounded-2xl bg-light-tint-3 p-3">
-                  <p className="min-w-0 flex-1 truncate font-semi-normal text-light-black">
+                <div className="bg-light-tint-3 mt-2 flex items-center gap-2 rounded-2xl p-3">
+                  <p className="font-semi-normal text-light-black min-w-0 flex-1 truncate">
                     {process.env.NEXT_PUBLIC_BASE_URL + "/" + item}
                   </p>
 
@@ -98,7 +92,7 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({
               <button
                 type="button"
                 onClick={toggle}
-                className="hover:bg-light-green-20 mt-4 w-full rounded-2xl bg-light-green-10 py-3 font-semi-normal text-light-green transition"
+                className="hover:bg-light-green-20 bg-light-green-10 font-semi-normal text-light-green mt-4 w-full rounded-2xl py-3 transition"
               >
                 Done
               </button>

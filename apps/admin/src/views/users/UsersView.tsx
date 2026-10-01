@@ -4,6 +4,14 @@ import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useRouter } from "next/navigation";
 import useSearchParams from "@/hooks/useSearchParams";
+import type { AffiliateListResponse, UserListResponse } from "@/features/user/api";
+
+interface UsersViewsProps {
+  userData: UserListResponse | AffiliateListResponse | undefined;
+  menuOption: string;
+  page: number | undefined;
+  onPageChange: (page: number) => void;
+}
 
 // `userData.meta` present -> the backend already paginated this response
 // (docs/ARCHITECTURE.md §22 Conflict 1) — `data` is just the current page,
@@ -12,7 +20,7 @@ import useSearchParams from "@/hooks/useSearchParams";
 // filter is active, UsersClient fetched the old unpaginated shape instead,
 // and this component falls back to exactly the client-side filter + slice
 // it always did, with its own local page state.
-function UsersViews({ userData, menuOption, page, onPageChange }: any) {
+function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: UsersViewsProps) {
   const router = useRouter();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("q");
@@ -21,11 +29,17 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
   const [localPage, setLocalPage] = useState(1);
   const perPage = 10;
 
+  // UsersClient.tsx only renders this view for the "users" tab, where
+  // useUserListQuery always resolves to UserListResponse — the union prop
+  // type comes from userData being shared with AffiliateView, the other
+  // tab's sibling component.
+  const userData = rawUserData as UserListResponse | undefined;
+
   const isServerPaginated = Boolean(userData?.meta);
 
   const data = useMemo(() => {
-    const users = userData?.users;
     if (!userData) return [];
+    const users = userData.users;
     if (menuOption !== "users" || isServerPaginated) return users;
 
     if ((!query && !status) || query?.trim() === "") return users;
@@ -33,7 +47,7 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
     const q = query?.toLowerCase()?.trim();
     const s = status?.toLowerCase()?.trim();
 
-    return users.filter((user: any) => {
+    return users.filter((user) => {
       const matchesQuery =
         !q ||
         user?.unique_id?.toLowerCase().includes(q) ||
@@ -52,17 +66,15 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
       ? `${query ?? ""}|${status ?? ""}`
       : null;
   const [seenPage, setSeenPage] = useState({ resetPage, userData });
-  if (
-    resetPage !== null &&
-    (seenPage.resetPage !== resetPage || seenPage.userData !== userData)
-  ) {
+  if (resetPage !== null && (seenPage.resetPage !== resetPage || seenPage.userData !== userData)) {
     setSeenPage({ resetPage, userData });
     setLocalPage(1);
   }
 
-  const totalPages = isServerPaginated
-    ? userData.meta.last_page
-    : Math.ceil((data?.length ?? 0) / perPage);
+  const totalPages =
+    isServerPaginated && userData?.meta
+      ? userData.meta.last_page
+      : Math.ceil((data?.length ?? 0) / perPage);
   const currentPage = isServerPaginated ? (page ?? 1) : localPage;
   const paginatedData = isServerPaginated
     ? data
@@ -83,7 +95,7 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
           <thead>
             <tr className="bg-mid-grey">
               {usersHeaders.map((header, idx) => (
-                <th className="p-4 text-left text-[12px] font-semiBold text-text-grey" key={idx}>
+                <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
                   {header}
                 </th>
               ))}
@@ -91,10 +103,10 @@ function UsersViews({ userData, menuOption, page, onPageChange }: any) {
           </thead>
           <tbody>
             {paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((row: any, index: any) => (
+              paginatedData.map((row, index) => (
                 <tr
                   key={index}
-                  className="h-[72px] cursor-pointer border-b border-grey-20"
+                  className="border-grey-20 h-[72px] cursor-pointer border-b"
                   onClick={() => router.push(`/users/${row.id}`)}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>

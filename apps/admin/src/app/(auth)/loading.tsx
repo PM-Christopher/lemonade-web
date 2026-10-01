@@ -1,10 +1,10 @@
 export default function AuthLoading() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-light-grey">
+    <div className="bg-light-grey flex min-h-screen items-center justify-center">
       <div
         role="status"
         aria-label="Loading"
-        className="h-8 w-8 animate-spin rounded-full border-2 border-grey-20 border-t-step-color"
+        className="border-grey-20 border-t-step-color h-8 w-8 animate-spin rounded-full border-2"
       />
     </div>
   );

@@ -4,6 +4,5 @@ import { adminAccountRoutes } from "@lemonade/api-types/generated";
 import type { AdminProfileResponse } from "./api";
 
 export const profileServerApi = {
-  getProfile: () =>
-    backendApi.get<AdminProfileResponse>(adminAccountRoutes.PROFILE),
+  getProfile: () => backendApi.get<AdminProfileResponse>(adminAccountRoutes.PROFILE),
 };

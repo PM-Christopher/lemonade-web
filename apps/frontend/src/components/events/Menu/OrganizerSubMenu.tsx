@@ -12,21 +12,21 @@ type OrganizerSubMenuInterface = {
 const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({ toggle }) => {
   const router = useRouter();
   return (
-    <div className="hidden items-center gap-4 laptop:flex">
+    <div className="laptop:flex hidden items-center gap-4">
       <div
-        className="flex h-[36px] cursor-pointer items-center gap-2 rounded-[12px] border-[1px] border-light-grey-50 p-[8px] px-[14px]"
+        className="border-light-grey-50 flex h-[36px] cursor-pointer items-center gap-2 rounded-[12px] border-[1px] p-[8px] px-[14px]"
         onClick={toggle}
       >
         <GearIcon />
-        <p className="font-sans text-[16px] font-semi-normal text-black-light">Payment setting</p>
+        <p className="font-semi-normal text-black-light font-sans text-[16px]">Payment setting</p>
       </div>
       <Button
-        className="h-[40px] w-[156px] rounded-[12px] border-[1px] border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
+        className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[40px] w-[156px] rounded-[12px] border-[1px]"
         onClick={() => router.push("/event/create-event")}
       >
         <div className="flex items-center gap-2">
           <PlusIcon />
-          <p className="font-sans text-[16px] font-semi-normal text-white">Add Event</p>
+          <p className="font-semi-normal font-sans text-[16px] text-white">Add Event</p>
         </div>
       </Button>
     </div>

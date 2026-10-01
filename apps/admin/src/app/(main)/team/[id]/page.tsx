@@ -6,13 +6,11 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
 import TeamDetailsClient from "./TeamDetailsClient";
 
-export default async function TeamDetailsPage(props: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function TeamDetailsPage(props: { params: Promise<{ id: string }> }) {
   await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.teamMembers);
 
   const params = await props.params;
-  const id = Number(params.id);
+  const id = params.id;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({

@@ -31,7 +31,8 @@ module.exports = {
       meta: {
         type: "suggestion",
         docs: {
-          description: "Disallow arbitrary `[Npx]` Tailwind classes in favor of the shared token scale.",
+          description:
+            "Disallow arbitrary `[Npx]` Tailwind classes in favor of the shared token scale.",
         },
         schema: [],
         messages: {

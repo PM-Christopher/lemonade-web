@@ -99,11 +99,11 @@ const MultipleFileUploader = ({
         {({ getRootProps, getInputProps }) => (
           <section
             {...getRootProps()}
-            className="flex h-[170px] w-[170px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-light_grey p-4 transition hover:bg-gray-100"
+            className="bg-light_grey flex h-[170px] w-[170px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 p-4 transition hover:bg-gray-100"
           >
             <input {...getInputProps()} />
             <Image src={"/images/upload_image.png"} alt="upload" width={48} height={48} />
-            <p className="mt-3 text-center font-sans text-[14px] font-semibold leading-[21px] text-black">
+            <p className="mt-3 text-center font-sans text-[14px] leading-[21px] font-semibold text-black">
               {title}
             </p>
             <p className="mt-1 text-center text-[12px] font-normal text-gray-400">
@@ -133,7 +133,7 @@ const MultipleFileUploader = ({
             <button
               type="button"
               onClick={() => removeImage(image)}
-              className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow transition hover:bg-red-50"
+              className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow transition hover:bg-red-50"
             >
               <span className="text-lg font-bold text-red-500">×</span>
             </button>

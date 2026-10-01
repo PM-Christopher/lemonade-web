@@ -42,7 +42,7 @@ function FindEventSubMenu() {
     <div className="flex flex-col">
       {/* Search */}
       <div className="sticky top-0 z-10 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/50">
-        <div className="flex items-center gap-3 rounded-2xl bg-light_grey px-4 py-3 shadow-sm ring-1 ring-black/5">
+        <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
           <span className="shrink-0 text-gray-500">
             <SearchIcon />
           </span>
@@ -73,12 +73,12 @@ function FindEventSubMenu() {
       <div>
         {/* Empty state BEFORE searching */}
         {!loading && !hasSearched && (
-          <div className="flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-mid-grey/70 bg-white p-6 text-center">
-            <div className="mb-3 rounded-2xl bg-light_grey p-3 text-gray-600">
+          <div className="border-mid-grey/70 flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-6 text-center">
+            <div className="bg-light_grey mb-3 rounded-2xl p-3 text-gray-600">
               <SearchIcon />
             </div>
-            <p className="sm:text-[15px] font-sans text-[14px] text-gray-700">
-              Press <span className="rounded-md bg-light_grey px-2 py-0.5 font-medium">Enter</span>{" "}
+            <p className="font-sans text-[14px] text-gray-700 sm:text-[15px]">
+              Press <span className="bg-light_grey rounded-md px-2 py-0.5 font-medium">Enter</span>{" "}
               to start searching
             </p>
             <p className="mt-1 text-[13px] text-gray-500">Type an event name or keyword.</p>
@@ -87,7 +87,7 @@ function FindEventSubMenu() {
 
         {/* Loading */}
         {loading && (
-          <div className="mt-4 grid grid-cols-2 gap-4 laptop:grid-cols-3">
+          <div className="laptop:grid-cols-3 mt-4 grid grid-cols-2 gap-4">
             <AffiliateEventsSkeleton count={6} />
           </div>
         )}
@@ -97,8 +97,8 @@ function FindEventSubMenu() {
           hasSearched &&
           !isEmpty &&
           (!affiliateEvents || affiliateEvents.length === 0) && (
-            <div className="flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-mid-grey/70 bg-white p-6 text-center">
-              <div className="mb-3 rounded-2xl bg-light_grey p-3 text-gray-600">
+            <div className="border-mid-grey/70 flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-6 text-center">
+              <div className="bg-light_grey mb-3 rounded-2xl p-3 text-gray-600">
                 <SearchIcon />
               </div>
               <p className="font-sans text-[15px] font-medium text-gray-800">No events found</p>
@@ -108,7 +108,7 @@ function FindEventSubMenu() {
 
         {/* Data */}
         {!loading && affiliateEvents?.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 gap-4 laptop:grid-cols-3">
+          <div className="laptop:grid-cols-3 mt-4 grid grid-cols-2 gap-4">
             {affiliateEvents.map((item: any, index: number) => (
               <div key={index} className="min-w-0">
                 <Link href={`/event/${item.id}/agent-details`}>

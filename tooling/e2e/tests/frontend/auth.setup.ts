@@ -6,9 +6,7 @@ setup("authenticate as a real user", async ({ page }) => {
   const email = process.env.E2E_USER_EMAIL;
   const password = process.env.E2E_USER_PASSWORD;
   if (!email || !password) {
-    throw new Error(
-      "E2E_USER_EMAIL and E2E_USER_PASSWORD must be set — see tooling/e2e/README.md",
-    );
+    throw new Error("E2E_USER_EMAIL and E2E_USER_PASSWORD must be set — see tooling/e2e/README.md");
   }
 
   await page.goto("/login");

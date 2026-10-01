@@ -30,28 +30,28 @@ const SideMenuEventCard = ({
           />
         </div>
         <div className="flex flex-col gap-[10px]">
-          <p className="font-sans text-[14px] font-semi-normal leading-[21px] tracking-custom text-black-light">
+          <p className="font-semi-normal tracking-custom text-black-light font-sans text-[14px] leading-[21px]">
             {event.event_name}
           </p>
           <div className="flex items-center gap-[4px]">
             <CalendarIcon />
-            <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+            <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               {formatDate(event?.start_date)}
             </p>
-            <DotFilledIcon className="w-[10px] text-text-grey" />
-            <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+            <DotFilledIcon className="text-text-grey w-[10px]" />
+            <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               {formatLongTime(event.start_date)}
             </p>
-            <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+            <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               -
             </p>
-            <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+            <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               {formatLongTime(event.end_date)}
             </p>
           </div>
           <div className="flex items-center">
             <LocationIcon />
-            <p className="font-sans text-[12px] font-semi-normal leading-[14.4px] text-text-grey">
+            <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               {event.location}
             </p>
           </div>

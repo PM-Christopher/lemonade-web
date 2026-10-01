@@ -5,11 +5,13 @@ export const userKeys = {
   all: () => ["user"] as const,
   lists: () => [...userKeys.all(), "list"] as const,
   list: (trxType: string, page?: number) =>
-    page ? [...userKeys.lists(), trxType, page] as const : [...userKeys.lists(), trxType] as const,
+    page
+      ? ([...userKeys.lists(), trxType, page] as const)
+      : ([...userKeys.lists(), trxType] as const),
   details: () => [...userKeys.all(), "detail"] as const,
-  detail: (id: number) => [...userKeys.details(), id] as const,
-  affiliateDetail: (id: number) => [...userKeys.all(), "affiliate-detail", id] as const,
-  accountInfo: (id: number, infoType: string) =>
+  detail: (id: string | number) => [...userKeys.details(), id] as const,
+  affiliateDetail: (id: string | number) => [...userKeys.all(), "affiliate-detail", id] as const,
+  accountInfo: (id: string | number, infoType: string) =>
     [...userKeys.all(), "account-info", id, infoType] as const,
 };
 
@@ -25,32 +27,38 @@ export function useUserListQuery(
   });
 }
 
-export function useUserDetailQuery(id: number | undefined, options?: { enabled?: boolean }) {
+export function useUserDetailQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: userKeys.detail(id ?? 0),
-    queryFn: () => userApi.getUserDetail(id as number),
+    queryFn: () => userApi.getUserDetail(id as string | number),
     staleTime: 60_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });
 }
 
-export function useAffiliateDetailQuery(id: number | undefined, options?: { enabled?: boolean }) {
+export function useAffiliateDetailQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: userKeys.affiliateDetail(id ?? 0),
-    queryFn: () => userApi.getAffiliateDetail(id as number),
+    queryFn: () => userApi.getAffiliateDetail(id as string | number),
     staleTime: 60_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });
 }
 
 export function useAccountInfoQuery(
-  id: number | undefined,
+  id: string | number | undefined,
   infoType: string,
   options?: { enabled?: boolean },
 ) {
   return useQuery({
     queryKey: userKeys.accountInfo(id ?? 0, infoType),
-    queryFn: () => userApi.getAccountInfo(id as number, infoType),
+    queryFn: () => userApi.getAccountInfo(id as string | number, infoType),
     staleTime: 60_000,
     enabled: Boolean(id) && Boolean(infoType) && options?.enabled !== false,
   });

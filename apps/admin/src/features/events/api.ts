@@ -129,23 +129,25 @@ export const eventsApi = {
     }
   },
 
-  getEventDetail: (id: number) =>
+  getEventDetail: (id: string | number) =>
     browserApi.get<EventDetailResponse>(buildPath(adminEventsRoutes.SHOW, { id })),
 
-  suspendEvent: (id: number) =>
+  suspendEvent: (id: string | number) =>
     browserApi.patch<{ suspended: boolean }>(buildPath(adminEventsRoutes.SUSPEND, { id }), {}),
 
-  activateEvent: (id: number) =>
+  activateEvent: (id: string | number) =>
     browserApi.patch<{ activated: boolean }>(buildPath(adminEventsRoutes.ACTIVATE, { id }), {}),
 
-  deleteEvent: (id: number) =>
+  deleteEvent: (id: string | number) =>
     browserApi.delete<{ deleted: boolean }>(buildPath(adminEventsRoutes.DELETE, { id })),
 
-  approveEvent: (id: number) =>
+  approveEvent: (id: string | number) =>
     browserApi.patch<{ event: EventDetail }>(buildPath(adminEventsRoutes.APPROVE, { id }), {}),
 
-  rejectEvent: (id: number, reason: string) =>
-    browserApi.patch<{ event: EventDetail }>(buildPath(adminEventsRoutes.REJECT, { id }), { reason }),
+  rejectEvent: (id: string | number, reason: string) =>
+    browserApi.patch<{ event: EventDetail }>(buildPath(adminEventsRoutes.REJECT, { id }), {
+      reason,
+    }),
 
   updateCommissionCharge: (commissionCharge: number) =>
     browserApi.patch<{ setting: { commission_charge: number } }>(
@@ -206,7 +208,10 @@ export const promotionsApi = {
     browserApi.get<PromotionDetailResponse>(buildPath(adminPromotionsRoutes.SHOW, { id })),
 
   updatePromotion: (id: number, data: PromotionPayload) =>
-    browserApi.patch<PromotionDetailResponse>(buildPath(adminPromotionsRoutes.UPDATE, { id }), data),
+    browserApi.patch<PromotionDetailResponse>(
+      buildPath(adminPromotionsRoutes.UPDATE, { id }),
+      data,
+    ),
 
   deletePromotion: (id: number) =>
     browserApi.delete<{ deleted: boolean }>(buildPath(adminPromotionsRoutes.DELETE, { id })),

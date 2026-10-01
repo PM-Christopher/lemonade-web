@@ -40,6 +40,11 @@ export interface TransactionHistoryRow {
   paid_at?: string | null;
   paymentable_type?: string;
   paymentable_id?: number;
+  // "events" trxType rows — same field names as TransactionEventDetailResponse.info.
+  event_name?: string;
+  event_image?: string;
+  organizer?: string;
+  tickets_sold?: number;
   [key: string]: unknown;
 }
 
@@ -62,6 +67,9 @@ export interface TransactionListResponse {
   total_transactions?: number;
   successful_transactions?: number;
   total_wallets?: number;
+  // Wallet-withdrawals trxType only — same field/shape as the wallet
+  // domain's own WalletData.wallet_revenue (features/wallet/api.ts).
+  wallet_revenue?: string;
   churn_rate?: number;
   meta?: PaginationMeta;
   [key: string]: unknown;
@@ -99,16 +107,23 @@ export type TransactionListType =
 export const transactionApi = {
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
   // Threaded through every case uniformly.
-  getTransactionData: (trxType: TransactionListType, pagination?: { page?: number; perPage?: number }) => {
+  getTransactionData: (
+    trxType: TransactionListType,
+    pagination?: { page?: number; perPage?: number },
+  ) => {
     const params = pagination?.page
       ? { page: pagination.page, per_page: pagination.perPage }
       : undefined;
 
     switch (trxType) {
       case "plan-subscriptions":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.SUBSCRIPTIONS, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.SUBSCRIPTIONS, {
+          params,
+        });
       case "wallet-withdrawals":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.WALLET_WITHDRAWALS, {
+          params,
+        });
       case "boosting":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.BOOSTS, { params });
       case "services":
@@ -116,17 +131,17 @@ export const transactionApi = {
       case "events":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.EVENTS, { params });
       case "promotions":
-        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PROMOTIONS, { params });
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.PROMOTIONS, {
+          params,
+        });
     }
   },
 
-  getPlanSubscription: (id: number) =>
+  getPlanSubscription: (id: string | number) =>
     browserApi.get<PlanSubscriptionDetailResponse>(
       buildPath(adminTransactionRoutes.SUBSCRIPTION, { id }),
     ),
 
-  getEventDetail: (id: number) =>
-    browserApi.get<TransactionEventDetailResponse>(
-      buildPath(adminTransactionRoutes.EVENT, { id }),
-    ),
+  getEventDetail: (id: string | number) =>
+    browserApi.get<TransactionEventDetailResponse>(buildPath(adminTransactionRoutes.EVENT, { id })),
 };

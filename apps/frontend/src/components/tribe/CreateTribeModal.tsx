@@ -34,10 +34,7 @@ interface CreateTribeModalProps {
   activateModal: () => void;
 }
 
-const CreateTribeModal = ({
-  modalFlag,
-  activateModal,
-}: CreateTribeModalProps) => {
+const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const createTribeMutation = useCreateTribeMutation();
@@ -79,6 +76,7 @@ const CreateTribeModal = ({
       members: [],
     },
     validationSchema: createTribeSchema,
+    validateOnMount: true,
     onSubmit: async (values) => {
       values.membership_fee = values.membership_fee ? values.membership_fee : 0;
       createTribeMutation.mutate(values, {
@@ -117,9 +115,7 @@ const CreateTribeModal = ({
     }
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const formData = new FormData();
@@ -172,14 +168,14 @@ const CreateTribeModal = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create Tribe</DialogTitle>
-        <div className="hide-scrollbar flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl laptop:h-auto laptop:max-h-[90vh] laptop:w-[640px] laptop:rounded-lg">
+        <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[640px] laptop:rounded-lg flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl">
           <form onSubmit={formik.handleSubmit} className="flex flex-col">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[8px]">
                 <CloseIcon onClick={activateModal} className="cursor-pointer" />
-                <p className="text-[18px] font-semiBold">Create Tribe</p>
+                <p className="font-semiBold text-[18px]">Create Tribe</p>
               </div>
-              <div className="hidden tablet:block">
+              <div className="tablet:block hidden">
                 <FormikButton
                   title="Create tribe"
                   error={formik.isValid}
@@ -188,7 +184,7 @@ const CreateTribeModal = ({
                 />
               </div>
             </div>
-            <div className="mt-[48px] flex justify-center tablet:mt-[24px]">
+            <div className="tablet:mt-[24px] mt-[48px] flex justify-center">
               {image ? (
                 <Image
                   src={image}
@@ -220,14 +216,14 @@ const CreateTribeModal = ({
               <div className="grid gap-2">
                 <Label
                   htmlFor="tribe-name"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Tribe name
                 </Label>
                 <Input
                   id="tribe-name"
                   type="text"
-                  className="form-font h-[48px] rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-[48px] rounded-xl border-0"
                   value={formik.values.tribe_name}
                   onChange={(e: any) => {
                     formik.setFieldValue("tribe_name", e.target.value);
@@ -237,7 +233,7 @@ const CreateTribeModal = ({
               <div className="mt-4 grid gap-2">
                 <Label
                   htmlFor="tribe-name"
-                  className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Category
                 </Label>
@@ -249,18 +245,16 @@ const CreateTribeModal = ({
                 >
                   <SelectTrigger
                     aria-label="Category"
-                    className="h-[48px] rounded-xl border-0 bg-light_grey"
+                    className="bg-light_grey h-[48px] rounded-xl border-0"
                   >
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent className="form-font">
-                    {tribe_cat?.categories?.map(
-                      (category: any, index: number) => (
-                        <SelectItem value={category?.name} key={index}>
-                          {category?.name}
-                        </SelectItem>
-                      ),
-                    )}
+                    {tribe_cat?.categories?.map((category: any, index: number) => (
+                      <SelectItem value={category?.name} key={index}>
+                        {category?.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -268,17 +262,15 @@ const CreateTribeModal = ({
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="description"
-                    className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Description
                   </Label>
-                  <p className="text-[12px] font-normal text-text-grey">
-                    100 characters
-                  </p>
+                  <p className="text-text-grey text-[12px] font-normal">100 characters</p>
                 </div>
                 <Textarea
                   id="description"
-                  className="form-font h-[91px] resize-none rounded-xl border-0 bg-light_grey"
+                  className="form-font bg-light_grey h-[91px] resize-none rounded-xl border-0"
                   placeholder="Description about this tribe"
                   value={formik.values.description}
                   onChange={(e: any) => {
@@ -294,10 +286,10 @@ const CreateTribeModal = ({
                       <DollarBillIcon />
                     </div>
                     <div>
-                      <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
+                      <p className="font-semi-normal text-black-light font-sans text-[16px] leading-[24px]">
                         Monetize tribe
                       </p>
-                      <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                         User will pay to be part of your tribe
                       </p>
                     </div>
@@ -319,22 +311,22 @@ const CreateTribeModal = ({
                   <div className="grid gap-2">
                     <Label
                       htmlFor="tribe-name"
-                      className="font-sans text-[14px] font-normal leading-[16.8px] text-text-grey"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Acceptance fee (₦)
                     </Label>
                     <Input
                       id="tribe-name"
                       type="number"
-                      className="form-font h-[48px] rounded-xl border-0 bg-light_grey"
+                      className="form-font bg-light_grey h-[48px] rounded-xl border-0"
                       value={formik.values.membership_fee}
                       onChange={(e: any) => {
                         formik.setFieldValue("membership_fee", e.target.value);
                       }}
                     />
-                    <div className="mb-[24px] mt-[5px] flex items-center gap-2">
+                    <div className="mt-[5px] mb-[24px] flex items-center gap-2">
                       <InfoIcon />
-                      <p className="text-[12px] font-normal text-text-grey">
+                      <p className="text-text-grey text-[12px] font-normal">
                         {" "}
                         10% of membership fees go to the Lemonade Network
                       </p>
@@ -348,10 +340,10 @@ const CreateTribeModal = ({
                       <PadlockIcon />
                     </div>
                     <div>
-                      <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-black-light">
+                      <p className="font-semi-normal text-black-light font-sans text-[16px] leading-[24px]">
                         Private tribe
                       </p>
-                      <p className="font-sans text-[12px] font-normal leading-[14.4px] text-text-grey">
+                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                         Tribe will only be available to invited members
                       </p>
                     </div>
@@ -372,7 +364,7 @@ const CreateTribeModal = ({
               </div>
             </div>
             {isMobile && (
-              <div className="fixed bottom-0 left-0 flex w-full flex-col items-center justify-center pb-[24px] pl-[16px] pr-[16px] pt-[16px]">
+              <div className="fixed bottom-0 left-0 flex w-full flex-col items-center justify-center pt-[16px] pr-[16px] pb-[24px] pl-[16px]">
                 <div className="mt-auto">
                   <FormikButton
                     title="Create tribe"

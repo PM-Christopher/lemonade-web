@@ -99,7 +99,7 @@ Fixed in the same pass that added the test that caught them, not left as known-b
 - **`apps/frontend/src/app/(auth)/{login,signup}/page.tsx`** — both called `useGoogleLogin()`
   unconditionally. `@react-oauth/google`'s hook throws synchronously inside its own effect ("Missing
   required parameter client_id") when `GoogleOAuthProvider`'s `clientId` is empty, which it is in this
-  local dev environment (`NEXT_PUBLIC_GOOGLE_CLIENT_ID` unset) — crashing the *entire* login/signup page
+  local dev environment (`NEXT_PUBLIC_GOOGLE_CLIENT_ID` unset) — crashing the _entire_ login/signup page
   into its error boundary, not just disabling the Google button. First surfaced as
   `ticket-purchase.spec.ts` failing on an unrelated selector after a redirect to `/login`; root-caused by
   capturing `pageerror`/console output directly, same technique as the Firebase bug above. Fixed by

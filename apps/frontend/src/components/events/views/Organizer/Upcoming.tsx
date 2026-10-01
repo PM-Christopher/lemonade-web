@@ -20,7 +20,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
   return (
     <>
       {events?.length > 0 && (
-        <div className="flex w-full flex-col gap-[24px] rounded-[16px] bg-white pr-0 laptop:w-[780px] laptop:flex-row laptop:pr-[80px]">
+        <div className="laptop:w-[780px] laptop:flex-row laptop:pr-[80px] flex w-full flex-col gap-[24px] rounded-[16px] bg-white pr-0">
           <Image
             src={getSafeImageSrc(events[0]?.event_image, "/images/default-event.jpg")}
             alt="poster"
@@ -28,39 +28,39 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
             height={343}
             className="w-[320px]"
           />
-          <div className="mt-[12px] flex flex-col px-[10px] pb-[10px] laptop:mt-[24px]">
-            <p className="font-sans text-[24px] font-semibold leading-[33.6px]">
+          <div className="laptop:mt-[24px] mt-[12px] flex flex-col px-[10px] pb-[10px]">
+            <p className="font-sans text-[24px] leading-[33.6px] font-semibold">
               {events[0]?.event_name}
             </p>
             <div className="mt-[16px] flex items-center gap-2">
               <CalendarIcon />
-              <p className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-text-grey">
+              <p className="font-semi-normal tracking-custom text-text-grey font-sans text-[16px] leading-[24px]">
                 {formatLongDate(events[0]?.start_date, "mid")}
               </p>
               <p>-</p>
-              <p className="font-sans text-[16px] font-semi-normal leading-[24px] tracking-custom text-text-grey">
+              <p className="font-semi-normal tracking-custom text-text-grey font-sans text-[16px] leading-[24px]">
                 {formatLongDate(events[0]?.end_date, "mid")}
               </p>
             </div>
             <div className="mt-[16px] flex items-center gap-2">
               <ClockIcon />
-              <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-text-grey">
+              <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
                 {formatLongTime(events[0]?.start_date)}
               </p>
               <p>-</p>
-              <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-text-grey">
+              <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
                 {formatLongTime(events[0]?.end_date)}
               </p>
             </div>
             <div className="mt-[16px] flex items-center gap-2">
               <LocationIcon />
-              <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-text-grey">
+              <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
                 {events[0]?.location}
               </p>
             </div>
             <Link href={`/event/${events[0]?.id}/details`} className="w-fit">
               <div className="mt-[40px] flex w-fit items-center gap-2">
-                <p className="font-sans text-[16px] font-semi-normal leading-[24px] text-light-green">
+                <p className="font-semi-normal text-light-green font-sans text-[16px] leading-[24px]">
                   View Details
                 </p>
                 <ChevronRight className="text-light-green" />
@@ -69,7 +69,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
           </div>
         </div>
       )}
-      <div className="mt-[10px] grid w-full grid-cols-2 gap-[16px] rounded-[12px] bg-white p-[16px] laptop:w-[780px] laptop:grid-cols-3">
+      <div className="laptop:w-[780px] laptop:grid-cols-3 mt-[10px] grid w-full grid-cols-2 gap-[16px] rounded-[12px] bg-white p-[16px]">
         {loading ? (
           <EventsSkeleton count={3} />
         ) : events?.length > 0 ? (
@@ -77,7 +77,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
             <OrganizerEventCard key={index} event={event} draft={false} />
           ))
         ) : (
-          <div className="col-span-2 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-12 laptop:col-span-3">
+          <div className="laptop:col-span-3 col-span-2 flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-12">
             <svg
               className="mb-3 h-12 w-12 text-gray-300"
               fill="none"
@@ -97,7 +97,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
             </p>
             <button
               onClick={() => router.push("/event/create-event")}
-              className="mt-4 rounded-lg bg-gradient-green px-4 py-2 text-sm font-medium text-white shadow-green-inset transition hover:shadow-green-inset-strong"
+              className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong mt-4 rounded-lg px-4 py-2 text-sm font-medium text-white transition"
             >
               Add Event
             </button>

@@ -56,73 +56,73 @@ const CancelSection = ({}) => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-[12px] bg-white p-[24px] laptop:w-[640px]">
+    <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-[12px] bg-white p-[24px]">
       <div>
         <p className="text-[20px] font-semibold">We are sorry to see you go</p>
-        <p className="text-[14px] font-normal text-light-black">
+        <p className="text-light-black text-[14px] font-normal">
           You will lose the following plan benefits if you downgrade
         </p>
       </div>
-      <div className="flex flex-col gap-[16px] rounded-[12px] bg-mid-grey p-[24px]">
+      <div className="bg-mid-grey flex flex-col gap-[16px] rounded-[12px] p-[24px]">
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Verification badge</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Verification badge</p>
           {subscription?.benefits?.ver_badge ? <CheckIcon /> : <PadlockIcon />}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Tribe creation</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Tribe creation</p>
           {subscription?.benefits?.forum_creation ? <CheckIcon /> : <PadlockIcon />}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Lemon ID</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Lemon ID</p>
           {subscription?.benefits?.lemon_id ? <CheckIcon /> : <PadlockIcon />}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Event creation</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Event creation</p>
           {subscription?.benefits?.event_creation === 0 ? (
-            <p className="text-[14px] font-semi-normal text-text-grey">Unlimited</p>
+            <p className="font-semi-normal text-text-grey text-[14px]">Unlimited</p>
           ) : (
-            <p className="text-[14px] font-semi-normal text-text-grey">
+            <p className="font-semi-normal text-text-grey text-[14px]">
               {subscription?.benefits?.event_creation} monthly
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Ticket sales commission</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Ticket sales commission</p>
           {subscription?.benefits?.sales_commission === 0 ? (
-            <p className="text-[14px] font-semi-normal text-text-grey">None</p>
+            <p className="font-semi-normal text-text-grey text-[14px]">None</p>
           ) : (
-            <p className="text-[14px] font-semi-normal text-text-grey">
+            <p className="font-semi-normal text-text-grey text-[14px]">
               {subscription?.benefits?.sales_commission}%
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Service commission</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Service commission</p>
           {subscription?.benefits?.service_commission === 0 ? (
-            <p className="text-[14px] font-semi-normal text-text-grey">None</p>
+            <p className="font-semi-normal text-text-grey text-[14px]">None</p>
           ) : (
-            <p className="text-[14px] font-semi-normal text-text-grey">
+            <p className="font-semi-normal text-text-grey text-[14px]">
               {subscription?.benefits?.service_commission}%
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Connection range</p>
-          <p className="text-[14px] font-semi-normal text-text-grey">
+          <p className="font-semi-normal text-black-light text-[14px]">Connection range</p>
+          <p className="font-semi-normal text-text-grey text-[14px]">
             {subscription?.benefits?.connection_range}
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-[14px] font-semi-normal text-black-light">Offline benefits</p>
+          <p className="font-semi-normal text-black-light text-[14px]">Offline benefits</p>
           {subscription?.benefits?.offline_benefits ? <CheckIcon /> : <PadlockIcon />}
         </div>
       </div>
-      <div className="mt-[24px] flex flex-col justify-between gap-[16px] laptop:flex-row">
+      <div className="laptop:flex-row mt-[24px] flex flex-col justify-between gap-[16px]">
         <Button
           className={`h-[48px] w-full rounded-[12px] ${
             !upgradeLoading
-              ? "border border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
-              : "cursor-not-allowed bg-mid-green opacity-70"
+              ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
+              : "bg-mid-green cursor-not-allowed opacity-70"
           } `}
           onClick={downgradePlan}
         >
@@ -148,14 +148,14 @@ const CancelSection = ({}) => {
                   d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                 />
               </svg>
-              <p className="text-[16px] font-semi-normal">Loading...</p>
+              <p className="font-semi-normal text-[16px]">Loading...</p>
             </>
           ) : (
-            <p className="text-[16px] font-semi-normal">Continue to downgrade</p>
+            <p className="font-semi-normal text-[16px]">Continue to downgrade</p>
           )}
         </Button>
         <Button className="h-[48px] w-full rounded-[12px] border-[1px] bg-white shadow-none hover:bg-white">
-          <p className="text-[16px] font-semi-normal text-black-light">Keep my current plan</p>
+          <p className="font-semi-normal text-black-light text-[16px]">Keep my current plan</p>
         </Button>
       </div>
     </div>

@@ -28,6 +28,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({
       threshold: "",
     },
     validationSchema: prodSchema,
+    validateOnMount: true,
     onSubmit: (values) => {
       updateThreshold.mutate(parseInt(values.threshold), {
         onSuccess: () => {
