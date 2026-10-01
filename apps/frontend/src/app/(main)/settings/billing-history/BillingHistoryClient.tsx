@@ -1,17 +1,16 @@
 "use client";
 import React from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import MasterCardIcon from "@/images/icons/masterCardIcon.svg";
 import { useBillingHistoryQuery } from "@/features/authentication/queries";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import { BillingHistorySkeleton } from "@/components/Skeletons";
+import type { RootState } from "@/redux/store";
 
 const BillingHistoryClient = () => {
   const router = useRouter();
-  const { subscription } = useSelector((state: any) => state.auth);
+  const { subscription } = useSelector((state: RootState) => state.auth);
 
   const { data, isLoading: loading } = useBillingHistoryQuery();
 
@@ -77,7 +76,7 @@ const BillingHistoryClient = () => {
 
                 {data?.histories?.length ? (
                   <div className="divide-light-green-20 border-light-green-20 flex flex-col divide-y overflow-hidden rounded-xl border">
-                    {data.histories.map((history: any, index: number) => (
+                    {data.histories.map((history, index: number) => (
                       <div
                         key={index}
                         className="hover:bg-light-green-5 laptop:flex-row laptop:items-center flex flex-col items-start justify-between bg-white px-4 py-3 transition-colors"

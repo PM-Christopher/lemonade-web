@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChatIcon from "@/images/icons/chatIcon.svg";
 import CalendarIcon from "@/images/icons/calendarIcon.svg";

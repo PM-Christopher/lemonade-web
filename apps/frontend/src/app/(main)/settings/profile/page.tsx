@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import UploadCamIcon from "@/images/icons/UploadCameraIcon.svg";
@@ -20,6 +19,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
 import { setIsRouting } from "@/redux/tempSlice";
+import type { RootState } from "@/redux/store";
 
 // Off the initial bundle — only needed once a field's edit button is
 // clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -32,14 +32,14 @@ const ProfileSettingsPage = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [profileType, setProfileType] = useState("");
   const dispatch = useAppDispatch();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const changeProfileImageMutation = useChangeProfileImageMutation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
 
-  const [avatar, setAvatar] = useState(null);
+  const [, setAvatar] = useState(null);
 
   // Handle file input change (when a file is selected)
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,11 +75,12 @@ const ProfileSettingsPage = ({}) => {
             }),
           );
         }
-      } catch (err: any) {
+      } catch (err) {
+        const legacyError = err as { response?: { data?: { message?: string } } };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: err?.response?.data?.message || "error",
+            message: legacyError?.response?.data?.message || "error",
             type: "error",
           }),
         );
@@ -87,7 +88,7 @@ const ProfileSettingsPage = ({}) => {
     }
   };
 
-  const updateImageFunc = (data: any) => {
+  const updateImageFunc = (data: string) => {
     changeProfileImageMutation.mutate(
       { profile_image: data },
       {
@@ -100,7 +101,7 @@ const ProfileSettingsPage = ({}) => {
             }),
           );
         },
-        onError: (error: any) => {
+        onError: (error: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -247,7 +248,7 @@ const ProfileSettingsPage = ({}) => {
                 <p className="text-text-grey text-[14px] font-normal">Socials</p>
                 <div className="flex items-center gap-2">
                   <div className="bg-light_grey flex items-center gap-2 rounded-[18px] p-1">
-                    {user?.socials.map((link: any) => (
+                    {user?.socials.map((link: { name?: string; value?: string }) => (
                       <a
                         href={link.value}
                         target="_blank"

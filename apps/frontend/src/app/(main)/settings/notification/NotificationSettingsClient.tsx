@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import dynamic from "next/dynamic";

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PadlockIcon from "@/images/icons/padlockIcon.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
@@ -13,6 +12,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
+import type { RootState } from "@/redux/store";
 
 // Off the initial bundle — only needed once "Change password" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -25,7 +25,7 @@ const AccountSettingsPage = () => {
   const dispatch = useAppDispatch();
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const router = useRouter();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const logoutMutation = useLogoutMutation();
 
   const toggleSettingsModal = () => {

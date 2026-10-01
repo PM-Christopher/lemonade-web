@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@lemonade/ui";
@@ -194,7 +193,7 @@ function WalletSettingsClient() {
                 <TransactionHistorySkeleton count={4} />
               ) : (
                 <div className="px-6">
-                  {data?.payout_history?.map((history: any, index: number) => (
+                  {data?.payout_history?.map((history, index: number) => (
                     <div className="flex items-center justify-between pt-4 pb-6" key={index}>
                       <div className="flex flex-col">
                         <p className="font-semi-normal text-[14px]">

@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useRouter } from "next/navigation";

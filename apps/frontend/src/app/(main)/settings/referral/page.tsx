@@ -127,7 +127,6 @@
 
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CopyIcon from "@/images/icons/copyGreenIcon.svg";
@@ -139,10 +138,11 @@ import ReferralHistory from "@/components/settings/Modal/ReferralHistory";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
+import type { RootState } from "@/redux/store";
 
 function ReferralSettingsPage() {
   const router = useRouter();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 

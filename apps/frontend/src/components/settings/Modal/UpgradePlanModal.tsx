@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { FormikButton } from "@/components/global/FormikButton";
-import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useChangePlanMutation } from "@/features/authentication/mutations";
-import * as yup from "yup";
 
 interface MembershipOption {
   id: number;
@@ -34,7 +32,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
   const handleSelectedPlan = (membership: MembershipOption) => {
     setSelected((prevSelected) => (prevSelected === membership.id ? null : membership.id));
 
-    setSubType((prevSelected) => (selected === membership.id ? null : (membership.type ?? null)));
+    setSubType(selected === membership.id ? null : (membership.type ?? null));
   };
 
   const handleSubUpgrade = async () => {

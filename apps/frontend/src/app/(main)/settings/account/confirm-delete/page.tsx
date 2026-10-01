@@ -1,11 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Button, Label } from "@lemonade/ui";
 import EyeIcon from "@/images/icons/eyeIcon.svg";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -47,7 +45,7 @@ const ConfirmDeletePage = () => {
           // redirect user to login
           router.push("/login");
         },
-        onError: (error: any) => {
+        onError: (error: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,

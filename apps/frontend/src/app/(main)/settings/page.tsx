@@ -15,7 +15,6 @@ import BillingIcon from "@/images/icons/billingIcon.svg";
 import BellIcon from "@/images/icons/bellIcon.svg";
 import WalletIcon from "@/images/icons/walletIcon.svg";
 import ReferralIcon from "@/images/icons/referralIcon.svg";
-import SupportIcon from "@/images/icons/supportIcon.svg";
 import PaperIcon from "@/images/icons/paperIcon.svg";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -101,7 +100,7 @@ function SettingsPage() {
                 <>
                   <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Socials</p>
                   <div className="bg-mid-grey flex w-fit gap-2 rounded-2xl p-1">
-                    {user.socials.map((link: any) => (
+                    {user.socials.map((link: { name?: string; value?: string }) => (
                       <a
                         href={link.value}
                         target="_blank"
