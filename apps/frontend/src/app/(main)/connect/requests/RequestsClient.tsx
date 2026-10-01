@@ -49,7 +49,7 @@ const RequestsClient = () => {
     setInviteIndex(index);
   };
 
-  const handleSearch = (e: any) => {
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (e.currentTarget.value !== "") {
         findUserMutation.mutate(e.currentTarget.value, {
@@ -61,10 +61,10 @@ const RequestsClient = () => {
                 type: "success",
               }),
             );
-            e.target.value = "";
+            e.currentTarget.value = "";
             toggleConnectModal();
           },
-          onError: (err: any) => {
+          onError: (err: { message?: string }) => {
             dispatch(
               updateToastifyReducer({
                 show: true,

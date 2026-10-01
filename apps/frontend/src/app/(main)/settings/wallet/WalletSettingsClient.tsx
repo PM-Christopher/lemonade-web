@@ -17,7 +17,6 @@ import { useAppDispatch } from "@/redux/hook";
 import { useWalletSettingsQuery } from "@/features/settings/queries";
 import { useRequestPayoutMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { ColorRing } from "react-loader-spinner";
 
 // Off the initial bundle — only needed once "Request payout" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").

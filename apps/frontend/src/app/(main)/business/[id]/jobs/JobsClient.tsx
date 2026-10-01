@@ -24,7 +24,7 @@ const JobsClient = ({ id }: { id: number }) => {
     }
   };
 
-  const { data, isLoading: loading } = useBusinessJobDataQuery(id);
+  const { data } = useBusinessJobDataQuery(id);
 
   return (
     <MainLayout>

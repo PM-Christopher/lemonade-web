@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
+import React, { useState } from "react";
 import BusinessSection from "@/components/business/Sections/BusinessSection";
 import ListingSection from "@/components/business/Sections/ListingSection";
 import BusinessSubMenu from "@/components/business/Menu/BusinessSubMenu";
@@ -22,7 +21,7 @@ const ServiceDetailsModal = dynamic(
 );
 
 const BusinessListClient = () => {
-  const { setActive, getActive, selectedMenu } = usePersistentMenuState();
+  const { setActive, getActive } = usePersistentMenuState();
   const persistedMenuOption = getActive("business") ?? "business";
 
   const [menuOption, setMenuOption] = useState(persistedMenuOption);

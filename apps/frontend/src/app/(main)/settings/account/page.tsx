@@ -90,7 +90,7 @@ const AccountSettingsPage = () => {
         </div>
         <section className="mt-4 flex flex-col items-center px-5">
           <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl bg-white p-4">
-            {settingsItems.map((item, index) => (
+            {settingsItems.map((item) => (
               <div
                 key={item.id}
                 className="-m-2 flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors duration-200 hover:bg-gray-50"
