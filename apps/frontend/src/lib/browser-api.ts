@@ -29,6 +29,10 @@ export const browserApi: ApiClient = createApiClient({
   onUnauthorized: () => {
     if (typeof window === "undefined") return;
     if (AUTH_PATHS.has(window.location.pathname)) return;
+    // Hard reload, not router.push: this config callback runs outside any
+    // component/hook context, and a session that just failed refresh needs
+    // every in-memory store (Redux, TanStack Query cache) wiped.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = "/login";
   },
 });

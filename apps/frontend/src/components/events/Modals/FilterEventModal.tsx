@@ -40,7 +40,9 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
     setLocation(value);
   };
 
-  const { data, loading } = useRequest(`/shared/utilities/event-categories`);
+  const { data, loading } = useRequest<{ categories?: Array<{ name?: string }> }>(
+    `/shared/utilities/event-categories`,
+  );
 
   const handleCategoryClick = (category: string) => {
     if (category === clickedCategory) {
@@ -112,7 +114,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                   {loading ? (
                     <p>Loading...</p>
                   ) : (
-                    data?.categories?.map((category: any, index: number) => (
+                    data?.categories?.map((category, index: number) => (
                       <div
                         className={`w-fit cursor-pointer rounded-xl p-3 px-4 ${
                           category?.name === clickedCategory
@@ -120,10 +122,10 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                             : "bg-light_grey"
                         }`}
                         key={index}
-                        onClick={() => handleCategoryClick(category?.name)}
+                        onClick={() => handleCategoryClick(category?.name ?? "")}
                       >
                         <p className="text-text-grey text-[14px] font-normal">
-                          {formatStringUCFirst(category?.name)}
+                          {formatStringUCFirst(category?.name ?? "")}
                         </p>
                       </div>
                     ))

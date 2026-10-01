@@ -47,6 +47,11 @@ axiosInstance.interceptors.response.use(
         "/profile-setup",
       ];
       if (!authPaths.includes(window.location.pathname)) {
+        // Hard reload, not router.push: this runs inside an axios
+        // interceptor, outside any component/hook context, and a session
+        // that just failed refresh needs every in-memory store (Redux,
+        // TanStack Query cache) wiped, not a soft client-side navigation.
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
         window.location.href = "/login";
       }
     }

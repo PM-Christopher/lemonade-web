@@ -28,6 +28,10 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       clearLegacyCookies();
+      // Hard reload, not router.push: this runs inside an axios
+      // interceptor, outside any component/hook context, and a session
+      // that just failed refresh needs every in-memory store wiped.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       if (typeof window !== "undefined") window.location.href = "/login";
     }
     return Promise.reject(error);

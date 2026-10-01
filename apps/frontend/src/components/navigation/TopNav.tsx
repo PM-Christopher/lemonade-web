@@ -12,20 +12,51 @@ import { useRequest } from "@/hooks/useRequest";
 import dayjs from "dayjs";
 import { FaBell } from "react-icons/fa";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
+import type { RootState } from "@/redux/store";
+
+interface NotificationMeta {
+  image?: string;
+  tribe_name?: string;
+  category?: string;
+  description?: string;
+  monetized?: boolean;
+  private?: boolean;
+  title?: string;
+  content?: string;
+  date_scheduled?: string;
+  status?: string;
+  message?: string;
+  user_id?: string;
+  created_at?: string;
+  event_image?: string;
+  event_name?: string;
+  start_date?: string;
+  location?: string;
+  event_description?: string;
+  socials?: Array<{ name?: string; value?: string }>;
+}
+
+interface AppNotification {
+  title?: string;
+  body?: string;
+  type?: string;
+  created_at?: string;
+  meta?: NotificationMeta;
+}
 
 const TopNav = () => {
   const pathname = usePathname();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
 
-  const [selectedNotification, setSelectedNotification] = useState<any>(null);
+  const [selectedNotification, setSelectedNotification] = useState<AppNotification | null>(null);
   const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
 
-  const { data } = useRequest("/user/notification");
+  const { data } = useRequest<{ notifications?: AppNotification[] }>("/user/notification");
   const { setSelectedMenu } = usePersistentMenuState();
 
-  const handleViewMore = (notification: any) => {
+  const handleViewMore = (notification: AppNotification) => {
     setSelectedNotification(notification);
     setOpenDetailModal(true);
   };
@@ -118,12 +149,12 @@ const TopNav = () => {
               Notifications
             </DialogTitle>
           </DialogHeader>
-          {data?.notifications?.length > 0 ? (
-            data.notifications.map((notification: any, index: number) => (
+          {(data?.notifications?.length ?? 0) > 0 ? (
+            data!.notifications!.map((notification: AppNotification, index: number) => (
               <div
                 key={index}
                 className={`${index !== 0 && "mt-4"} ${
-                  index !== data.notifications.length - 1 && "border-b border-gray-200 pb-4"
+                  index !== data!.notifications!.length - 1 && "border-b border-gray-200 pb-4"
                 } flex flex-col gap-3`}
               >
                 <div className="flex items-start gap-3">
@@ -181,7 +212,7 @@ const TopNav = () => {
                 <div className="space-y-2 rounded-md border p-3">
                   <p className="font-semibold">Tribe Details</p>
                   <Image
-                    src={selectedNotification.meta?.image}
+                    src={selectedNotification.meta?.image ?? ""}
                     alt="tribe image"
                     width={300}
                     height={200}
@@ -231,7 +262,7 @@ const TopNav = () => {
                 <div className="space-y-2 rounded-md border p-3">
                   <p className="font-semibold">Event Details</p>
                   <Image
-                    src={selectedNotification.meta?.event_image}
+                    src={selectedNotification.meta?.event_image ?? ""}
                     alt="event image"
                     width={300}
                     height={200}
@@ -249,7 +280,7 @@ const TopNav = () => {
                     <div>
                       <p className="font-semibold">Socials:</p>
                       <ul className="list-disc pl-4">
-                        {selectedNotification.meta.socials.map((s: any, idx: number) => (
+                        {selectedNotification.meta.socials.map((s, idx: number) => (
                           <li key={idx}>
                             <a
                               href={s.value}

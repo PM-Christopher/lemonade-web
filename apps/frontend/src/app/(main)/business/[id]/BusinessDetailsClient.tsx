@@ -103,9 +103,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   }, [shouldOpenDispute, router, pathname]);
 
   // business reviews
-  const { data: reviewData, loading: reviewLoading } = useRequest(
-    `/user/business/${id}/business-reviews`,
-  );
+  const { data: reviewData, loading: reviewLoading } = useRequest<{
+    reviews?: Review[];
+    subReviews?: Array<{ rating: number; count: number }>;
+  }>(`/user/business/${id}/business-reviews`);
   const reviews: Review[] = reviewData?.reviews ?? [];
 
   useEffect(() => {
@@ -421,13 +422,13 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         </div>
                         <div>
                           <p className="text-text-grey text-[12px] font-normal">
-                            {reviewData?.reviews.length} ratings
+                            {reviewData?.reviews?.length} ratings
                           </p>
                         </div>
                       </div>
                       <RatingsBar
-                        max_count={reviewData?.reviews.length}
-                        ratings={reviewData?.subReviews}
+                        max_count={reviewData?.reviews?.length ?? 0}
+                        ratings={reviewData?.subReviews ?? []}
                       />
                     </div>
                     {reviews.length > 0 ? (

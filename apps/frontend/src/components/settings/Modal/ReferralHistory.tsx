@@ -9,22 +9,31 @@ type ReferralHistoryInterface = {
   isOpen: boolean;
 };
 
+interface ReferralEntry {
+  amount?: number;
+  type?: string;
+}
+
+interface ReferralHistoryData {
+  referral_history?: ReferralEntry[];
+}
+
 const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle }) => {
   const router = useRouter();
-  const { data } = useRequest(`/user/wallet/referral-history`);
+  const { data } = useRequest<ReferralHistoryData>(`/user/wallet/referral-history`);
 
   const { totalEarned, total_referrals, total_subscribed } = useMemo(() => {
     if (!data?.referral_history) return { totalEarned: 0, total_referrals: 0, total_subscribed: 0 };
 
     const totalEarned = data.referral_history.reduce(
-      (acc: any, cur: any) => acc + (cur.amount || 0),
+      (acc: number, cur: ReferralEntry) => acc + (cur.amount || 0),
       0,
     );
 
     const total_referrals = data?.referral_history?.length;
 
     const total_subscribed = data?.referral_history?.filter(
-      (ref: any) => ref?.type?.toLowerCase() === "subscription",
+      (ref: ReferralEntry) => ref?.type?.toLowerCase() === "subscription",
     )?.length;
 
     return { totalEarned, total_referrals, total_subscribed };

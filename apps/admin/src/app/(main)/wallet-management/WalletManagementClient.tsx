@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import { SearchIcon, UploadIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
@@ -20,6 +21,7 @@ const WalletThresholdModal = dynamic(
 );
 
 function WalletManagementClient() {
+  const router = useRouter();
   const [editThreshold, setEditThreshold] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -201,7 +203,7 @@ function WalletManagementClient() {
                       <tr
                         key={index}
                         className="border-grey-20 h-[72px] cursor-pointer border-b"
-                        onClick={() => (window.location.href = `/wallet-management/${row.id}`)}
+                        onClick={() => router.push(`/wallet-management/${row.id}`)}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {row?.txn_id ?? "N/A"}

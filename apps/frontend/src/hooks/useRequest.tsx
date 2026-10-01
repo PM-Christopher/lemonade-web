@@ -1,16 +1,19 @@
-import { useAppDispatch } from "@/redux/hook";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { axiosInstance } from "@/lib/axiosInstane";
-import { AxiosResponse } from "axios";
 
-export const useRequest = (
+interface LegacyAxiosError {
+  response?: { data?: { message?: string } };
+  message?: string;
+}
+
+export const useRequest = <T = unknown,>(
   url: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
-  body: any = {},
+  body: Record<string, unknown> = {},
   start = true,
   headers: Record<string, string> = {}, // flat object
 ) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(start);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -41,9 +44,10 @@ export const useRequest = (
       if (response?.data?.status) {
         setData(response.data.data ?? response.data.banks ?? response.data);
       }
-    } catch (err: any) {
+    } catch (err) {
+      const legacyError = err as LegacyAxiosError;
       setError(true);
-      setErrorMessage(err.response?.data?.message || err.message);
+      setErrorMessage(legacyError.response?.data?.message || legacyError.message || null);
     } finally {
       setLoading(false);
     }
