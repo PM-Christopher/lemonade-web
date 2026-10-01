@@ -35,16 +35,16 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
               <p className="text-[16px] font-semibold">User Info</p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col items-center justify-center">
               <Image
                 src={userInfo?.receiver?.avatar}
                 alt="check in"
                 width={64}
                 height={64}
-                className="border-grey-90 h-[64px] w-[64px] rounded-[24px] border-[1px]"
+                className="border-grey-90 h-16 w-16 rounded-3xl border"
               />
-              <p className="mt-[16px] text-[18px] font-semibold">{userInfo?.receiver?.username}</p>
+              <p className="mt-4 text-[18px] font-semibold">{userInfo?.receiver?.username}</p>
               <p className="font-semi-normal text-light-black text-[14px]">
                 Lemon {userInfo?.receiver?.lemon_id} (L
                 {userInfo?.receiver?.lemon_id})
@@ -52,27 +52,27 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
               <p className="text-text-grey text-[12px] font-normal">
                 {formatString(userInfo?.receiver?.industry)}
               </p>
-              <div className="mt-[16px] flex items-center gap-2">
+              <div className="mt-4 flex items-center gap-2">
                 <LocationIcon />
                 <p className="font-semi-normal text-mid-green text-[12px]">3kms away</p>
                 <p className="text-grey-80">|</p>
-                <div className="bg-light-green-10 rounded-[8px] p-[4px] px-[8px]">
+                <div className="bg-light-green-10 rounded-[8px] p-1 px-2">
                   <p className="font-semi-normal text-mid-green text-[12px]">connected</p>
                 </div>
               </div>
-              <p className="text-light-black mt-[16px] max-w-[416px] text-center text-[14px] font-normal">
+              <p className="text-light-black mt-4 max-w-[416px] text-center text-[14px] font-normal">
                 {userInfo?.receiver?.bio}
               </p>
-              <div className="mt-[16px]">
+              <div className="mt-4">
                 <p className="text-center text-[14px] font-semibold">Social links</p>
-                <div className="mt-[12px] flex justify-center gap-[16px]">
+                <div className="mt-3 flex justify-center gap-4">
                   {userInfo?.receiver?.socials?.map((link: any) => (
                     <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
-                      {link.name === "facebook" && <FacebookIcon className="w-[24px]" />}
-                      {link.name === "instagram" && <InstagramIcon className="w-[24px]" />}
-                      {link.name === "linkedin" && <LinkedInIcon className="w-[24px]" />}
-                      {link.name === "twitter" && <TwitterIcon className="w-[24px]" />}
-                      {link.name === "website" && <WebIcon className="w-[24px]" />}
+                      {link.name === "facebook" && <FacebookIcon className="w-6" />}
+                      {link.name === "instagram" && <InstagramIcon className="w-6" />}
+                      {link.name === "linkedin" && <LinkedInIcon className="w-6" />}
+                      {link.name === "twitter" && <TwitterIcon className="w-6" />}
+                      {link.name === "website" && <WebIcon className="w-6" />}
                     </a>
                   ))}
                 </div>

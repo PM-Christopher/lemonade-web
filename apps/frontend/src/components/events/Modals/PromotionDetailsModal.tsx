@@ -27,35 +27,35 @@ const PromotionDetailsModal: React.FC<PDInterface> = ({ toggle, isOpen, promotio
               </div>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
                 {promotion?.name}
               </p>
               {promotion?.status === "active" ? (
-                <div className="bg-light-green-60 w-fit rounded-[8px] p-[4px] px-[8px]">
+                <div className="bg-light-green-60 w-fit rounded-[8px] p-1 px-2">
                   <p className="tracking-custom text-light-green-70 font-sans text-[14px] leading-[24px] font-normal">
                     Active
                   </p>
                 </div>
               ) : (
-                <div className="bg-warning w-fit rounded-[8px] p-[4px] px-[8px]">
+                <div className="bg-warning w-fit rounded-[8px] p-1 px-2">
                   <p className="tracking-custom text-warning-bold font-sans text-[14px] leading-[24px] font-normal">
                     Pending
                   </p>
                 </div>
               )}
-              <div className="bg-green-tint mt-[16px] rounded-[12px] p-[16px]">
+              <div className="bg-green-tint mt-4 rounded-xl p-4">
                 <p className="tracking-custom text-mid-green text-center font-sans text-[14px] leading-[24px] font-semibold">
                   Scheduled for {promotion?.promotion_date}
                 </p>
               </div>
-              <div className="bg-mid-grey mt-[16px] rounded-[12px] p-[24px]">
+              <div className="bg-mid-grey mt-4 rounded-xl p-6">
                 <p className="font-sans text-[16px] font-semibold">BREAKDOWN</p>
-                <div className="mt-[12px] flex flex-col">
+                <div className="mt-3 flex flex-col">
                   {promotion?.breakdown.length > 0 &&
                     promotion?.breakdown.map((item: any, index: number) => (
-                      <div className="my-[10px] flex items-center gap-[8px]" key={index}>
+                      <div className="my-2.5 flex items-center gap-2" key={index}>
                         <ChevronRightFilled />
                         <p className="tracking-custom text-black-light font-sans text-[14px] leading-[21px] font-normal">
                           {item}

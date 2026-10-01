@@ -94,7 +94,7 @@ const BusinessListClient = () => {
           isOpen={isOpen}
           detailsToggle={toggleServiceDetailsMenu}
         />
-        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between gap-2 border-t-[1px] border-b-[1px] bg-white p-5 px-10">
+        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between gap-2 border-t border-b bg-white p-5 px-10">
           <div className="bg-mid-grey relative inline-flex rounded-xl p-[0.35em] text-sm sm:text-base">
             {/* Sliding pill */}
             <span

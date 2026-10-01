@@ -73,41 +73,29 @@ function ForumClient() {
 
   return (
     <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex gap-[16px] px-[20px]"}>
-          <div
-            className={
-              "border-grey-20 flex flex-col gap-[4px] rounded-[12px] border-[1px] p-[16px]"
-            }
-          >
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex gap-4 px-5"}>
+          <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
             <p className={"font-semiBold text-text-grey text-[12px]"}>PENDING EVENTS</p>
             <p className={"font-semiBold text-[20px]"}>{queue?.pending_events.count ?? 0}</p>
           </div>
-          <div
-            className={
-              "border-grey-20 flex flex-col gap-[4px] rounded-[12px] border-[1px] p-[16px]"
-            }
-          >
+          <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
             <p className={"font-semiBold text-text-grey text-[12px]"}>PENDING BUSINESSES</p>
             <p className={"font-semiBold text-[20px]"}>{queue?.pending_businesses.count ?? 0}</p>
           </div>
-          <div
-            className={
-              "border-grey-20 flex flex-col gap-[4px] rounded-[12px] border-[1px] p-[16px]"
-            }
-          >
+          <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
             <p className={"font-semiBold text-text-grey text-[12px]"}>OPEN REPORTS</p>
             <p className={"font-semiBold text-[20px]"}>{queue?.open_reports.count ?? 0}</p>
           </div>
         </div>
 
-        <div className={"flex items-center justify-between px-[20px]"}>
-          <div className={"flex gap-[8px]"}>
+        <div className={"flex items-center justify-between px-5"}>
+          <div className={"flex gap-2"}>
             {CONTENT_TABS.map((tab) => (
               <button
                 key={tab.type}
                 onClick={() => switchType(tab.type)}
-                className={`h-[40px] rounded-[12px] border-[1px] px-[16px] text-[14px] font-medium ${
+                className={`h-10 rounded-xl border px-4 text-[14px] font-medium ${
                   activeType === tab.type
                     ? "border-light-green-tint bg-light-tint"
                     : "border-grey-20 bg-white"
@@ -117,9 +105,9 @@ function ForumClient() {
               </button>
             ))}
           </div>
-          <div className={"flex gap-[12px]"}>
-            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
-              <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
+          <div className={"flex gap-3"}>
+            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+              <SearchIcon className={"text-grey-40 h-3 w-3"} />
               <input
                 id="search"
                 type="text"
@@ -133,7 +121,7 @@ function ForumClient() {
               onClick={() =>
                 setSearchParams({ deleted: showRemoved ? undefined : "1", page: undefined })
               }
-              className={`h-[40px] rounded-[12px] border-[1px] px-[16px] text-[14px] font-medium ${
+              className={`h-10 rounded-xl border px-4 text-[14px] font-medium ${
                 showRemoved ? "border-light-green-tint bg-light-tint" : "border-grey-20 bg-white"
               }`}
             >
@@ -142,8 +130,8 @@ function ForumClient() {
           </div>
         </div>
 
-        <div className={"flex flex-col px-[20px]"}>
-          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>
@@ -166,9 +154,7 @@ function ForumClient() {
                       return (
                         <tr key={row.id} className="border-grey-20 h-[72px] border-b">
                           <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>
-                          <td
-                            className={"max-w-[320px] truncate p-4 font-sans text-sm font-medium"}
-                          >
+                          <td className={"max-w-80 truncate p-4 font-sans text-sm font-medium"}>
                             {row.title ?? row.body ?? "—"}
                           </td>
                           <td className={"p-4 font-sans text-sm font-medium"}>

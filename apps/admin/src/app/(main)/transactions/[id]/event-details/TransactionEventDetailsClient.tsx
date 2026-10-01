@@ -70,23 +70,21 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div
-          className={"flex h-fit w-[600px] flex-col gap-[20px] rounded-[12px] bg-white p-[24px]"}
-        >
-          <div className={"items-center-center flex gap-[24px]"}>
+        <div className={"flex h-fit w-[600px] flex-col gap-5 rounded-xl bg-white p-6"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Event name:</p>
             </div>
-            <div className={"flex gap-[4px]"}>
+            <div className={"flex gap-1"}>
               <p className={"text-[14px] font-medium"}>{event?.info?.event_name}</p>
               {/*<p className={"cursor-pointer font-medium text-[14px] text-light-green"}>View business</p>*/}
             </div>
           </div>
-          <div className={"items-center-center flex gap-[24px]"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Event owner:</p>
             </div>
-            <div className={"flex gap-[4px]"}>
+            <div className={"flex gap-1"}>
               <p className={"text-[14px] font-medium"}>{event?.info?.organizer}</p>
               <p
                 className={"text-light-green cursor-pointer text-[14px] font-medium"}
@@ -96,25 +94,25 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
               </p>
             </div>
           </div>
-          <div className={"items-center-center flex gap-[24px]"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{event?.info?.transaction_id}</p>
           </div>
-          <div className={"items-center-center flex gap-[24px]"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
             </div>
             <p className={"text-[14px] font-medium"}>N0</p>
           </div>
-          <div className={"items-center-center flex gap-[24px]"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Tickets sold:</p>
             </div>
             <p className={"text-[14px] font-medium"}>{event?.info?.tickets_sold}</p>
           </div>
-          <div className={"items-center-center flex gap-[24px]"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Date paid:</p>
             </div>
@@ -122,7 +120,7 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
               {dayjs(event?.info?.created_at).format("DD MMM, YYYY hh:mmA")}
             </p>
           </div>
-          <div className={"items-center-center flex gap-[24px]"}>
+          <div className={"items-center-center flex gap-6"}>
             <div className={"w-[115px]"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
             </div>
@@ -134,27 +132,23 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
 
         {/* history  */}
         <div className="flex w-full flex-col lg:w-2/3">
-          <div className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}>
-            <div
-              className={
-                "border-b-grey-20 flex items-center justify-between border-b-[1px] p-[24px]"
-              }
-            >
+          <div className={"h-[700px] rounded-tl-xl rounded-tr-xl bg-white"}>
+            <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
               <p className={"font-semiBold text-[16px]"}>Boosting history</p>
               <div
                 className={
-                  "border-light-grey-50 flex items-center gap-[10px] rounded-[12px] border-[1px] px-[12px] py-[10px]"
+                  "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
                 }
                 onClick={printCSV}
               >
-                <PrinterIcon className={"w-[20px]"} />
+                <PrinterIcon className={"w-5"} />
                 <p className={"text-black-light text-[16px] font-medium"}>Print</p>
               </div>
             </div>
 
-            <div className={"flex flex-col px-[24px]"}>
+            <div className={"flex flex-col px-6"}>
               {paginatedData?.map((item: TransactionHistoryRow, index: number) => (
-                <div className="px-[16px] pt-[16px] pb-[24px]" key={index}>
+                <div className="px-4 pt-4 pb-6" key={index}>
                   <div className="flex justify-between">
                     <div className="flex flex-col">
                       <p className={"text-[14px] font-medium"}>
@@ -162,11 +156,7 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
                       </p>
                       <p className={"text-text-grey text-[12px] font-normal"}>{item?.created_at}</p>
                     </div>
-                    <div
-                      className={
-                        "bg-light-green-60 h-fit gap-[4px] rounded-[8px] px-[8px] py-[4px]"
-                      }
-                    >
+                    <div className={"bg-light-green-60 h-fit gap-1 rounded-[8px] px-2 py-1"}>
                       <p className={"text-light-green-70 text-[12px] font-medium"}>
                         {capitalizeWords(item?.status)}
                       </p>

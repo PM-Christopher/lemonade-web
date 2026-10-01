@@ -45,7 +45,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white p-[48px] px-[20px]">
+        <div className="laptop:w-[585px] h-full w-screen bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
@@ -56,9 +56,9 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
             </div>
           </div>
-          <div className="border-b-light-grey-50 mt-[10px] flex justify-between border-b-[1px]">
+          <div className="border-b-light-grey-50 mt-2.5 flex justify-between border-b">
             <div
-              className={`laptop:w-[276.5px] h-10 w-full px-[16px] py-[8px] ${option === "upcoming" && "border-b-step-color border-b-2"}`}
+              className={`laptop:w-[276.5px] h-10 w-full px-4 py-2 ${option === "upcoming" && "border-b-step-color border-b-2"}`}
             >
               <p
                 className="font-semi-normal tracking-custom cursor-pointer text-center font-sans text-[14px] leading-[21px]"
@@ -68,7 +68,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
               </p>
             </div>
             <div
-              className={`laptop:w-[276.5px] h-10 w-full px-[16px] py-[8px] ${option === "past" && "border-b-step-color border-b-2"}`}
+              className={`laptop:w-[276.5px] h-10 w-full px-4 py-2 ${option === "past" && "border-b-step-color border-b-2"}`}
             >
               <p
                 className="font-semi-normal tracking-custom cursor-pointer text-center font-sans text-[14px] leading-[21px]"
@@ -79,7 +79,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
             </div>
           </div>
 
-          <div className="hide-scrollbar flex max-h-screen w-full flex-col gap-[12px] overflow-y-auto">
+          <div className="hide-scrollbar flex max-h-screen w-full flex-col gap-3 overflow-y-auto">
             {option === "upcoming" ? (
               (data?.upcoming?.length ?? 0) > 0 ? (
                 data?.upcoming?.map((event: MyTicketInterface, index: number) => (
@@ -91,7 +91,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
                   />
                 ))
               ) : (
-                <div className="mt-[10px]">
+                <div className="mt-2.5">
                   <p className="font-semiBold">No event listed</p>
                 </div>
               )
@@ -105,7 +105,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
                 />
               ))
             ) : (
-              <div className="mt-[10px]">
+              <div className="mt-2.5">
                 <p className="font-semiBold">No event listed</p>
               </div>
             )}

@@ -112,7 +112,7 @@ const DashboardClient = () => {
             ) : businesses?.length > 0 ? (
               businesses?.map((business: BusinessInterface, idx: number) => (
                 <div
-                  className="tablet:w-[320px] w-[78vw] max-w-[320px] shrink-0 cursor-pointer"
+                  className="tablet:w-80 w-[78vw] max-w-80 shrink-0 cursor-pointer"
                   key={idx}
                   onClick={() => router.push(`/business/${business.id}`)}
                 >

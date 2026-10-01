@@ -34,16 +34,14 @@ function AddPromotionsClient() {
 
   return (
     <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-[16px]"}>
             {promotionData?.promotions?.length || 0} Promotions
           </p>
-          <div className={"flex justify-between gap-[12px]"}>
+          <div className={"flex justify-between gap-3"}>
             <div>
-              <Button
-                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
-              >
+              <Button className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}>
                 <PlusIcon className={"h-[15px] w-[15px] text-white"} />
                 <p className={"text-[16px] font-medium text-white"} onClick={togglePromotionModal}>
                   Add promotion
@@ -52,7 +50,7 @@ function AddPromotionsClient() {
             </div>
           </div>
         </div>
-        <div className={"grid grid-cols-3 gap-[24px] px-[20px]"}>
+        <div className={"grid grid-cols-3 gap-6 px-5"}>
           {promotionData?.promotions.map((promotion: Promotion, index: number) => (
             <PromotionsCard
               promotion={promotion}

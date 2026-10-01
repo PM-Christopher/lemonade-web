@@ -17,8 +17,8 @@ const TribeModal: React.FC<TribeModalProps> = ({ toggle, isOpen }) => {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="h-full w-[1152px] rounded-[12px] bg-white p-[48px] px-[20px]">
-          <div className="flex items-center justify-between gap-4 border-b-[1px] pb-5">
+        <div className="h-full w-[1152px] rounded-xl bg-white p-12 px-5">
+          <div className="flex items-center justify-between gap-4 border-b pb-5">
             <div className="flex cursor-pointer items-center gap-2">
               <div>
                 <p className="font-sans text-[16px] leading-[24px] font-semibold">Tribe name</p>
@@ -30,12 +30,12 @@ const TribeModal: React.FC<TribeModalProps> = ({ toggle, isOpen }) => {
           </div>
 
           <div className={"flex h-full flex-row gap-6 p-2"}>
-            <div className={"h-full border-r-[1px]"}>
-              <div className={"flex flex-col gap-3 pr-[20px]"}>
-                <div className={"flex justify-between gap-[16px]"}>
-                  <div className="bg-light_grey bg-light-grey flex h-[40px] w-[430px] items-center gap-3 rounded-[12px] px-[16px]">
+            <div className={"h-full border-r"}>
+              <div className={"flex flex-col gap-3 pr-5"}>
+                <div className={"flex justify-between gap-4"}>
+                  <div className="bg-light_grey bg-light-grey flex h-10 w-[430px] items-center gap-3 rounded-xl px-4">
                     <div>
-                      <SearchIcon className={"w-[12px]"} />
+                      <SearchIcon className={"w-3"} />
                     </div>
                     <div className="w-full">
                       <input
@@ -48,14 +48,14 @@ const TribeModal: React.FC<TribeModalProps> = ({ toggle, isOpen }) => {
                   </div>
                   <div
                     className={
-                      "bg-mid-grey flex h-[40px] w-[180px] items-center justify-between rounded-[12px] px-[16px] py-[10px]"
+                      "bg-mid-grey flex h-10 w-[180px] items-center justify-between rounded-xl px-4 py-2.5"
                     }
                   >
-                    <div className={"flex items-center gap-[8px]"}>
+                    <div className={"flex items-center gap-2"}>
                       <FlameIcon className="h-4 w-4" aria-hidden="true" />
                       <p className={"text-text-grey text-[14px] font-medium"}>Popular</p>
                     </div>
-                    <ChevronDown className={"text-text-grey w-[20px]"} />
+                    <ChevronDown className={"text-text-grey w-5"} />
                   </div>
                 </div>
                 <ThreadCard />

@@ -97,9 +97,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -110,9 +110,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
           <EventProgramDetailSkeleton />
         ) : (
           <div className="mt-4 flex flex-col items-center">
-            <div className="flex justify-between gap-[24px]">
+            <div className="flex justify-between gap-6">
               <div>
-                <div className="flex w-[640px] flex-col rounded-[12px] bg-white p-[24px]">
+                <div className="flex w-[640px] flex-col rounded-xl bg-white p-6">
                   <div className="bg-green-tint/60 flex items-center gap-6 rounded-xl p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     <div className="relative overflow-hidden rounded-lg shadow-md">
                       <Image
@@ -147,16 +147,16 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-[24px] flex items-center justify-center gap-8">
+                  <div className="mt-6 flex items-center justify-center gap-8">
                     {(event?.promotion?.length ?? 0) > 0 ? (
                       <div
-                        className="relative flex cursor-pointer flex-col items-center gap-[8px]"
+                        className="relative flex cursor-pointer flex-col items-center gap-2"
                         onClick={handleGetEventPromotion}
                       >
-                        <div className="bg-light-green-60 absolute top-0 left-0 flex h-[20px] w-[20px] -translate-x-1/3 -translate-y-1/3 items-center justify-center rounded-full shadow-md">
-                          <CheckIcon className="h-[10px] w-[10px]" stroke="#009D44" />
+                        <div className="bg-light-green-60 absolute top-0 left-0 flex h-5 w-5 -translate-x-1/3 -translate-y-1/3 items-center justify-center rounded-full shadow-md">
+                          <CheckIcon className="h-2.5 w-2.5" stroke="#009D44" />
                         </div>
-                        <div className="border-grey-20 rounded-[16px] border-[1px] p-[16px]">
+                        <div className="border-grey-20 rounded-2xl border p-4">
                           <MicIcon />
                         </div>
                         <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
@@ -165,8 +165,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     ) : (
                       <Link href={`/event/${id}/promote-event`}>
-                        <div className="flex flex-col items-center gap-[8px]">
-                          <div className="border-grey-20 rounded-[16px] border-[1px] p-[16px]">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="border-grey-20 rounded-2xl border p-4">
                             <MicIcon />
                           </div>
                           <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
@@ -176,8 +176,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </Link>
                     )}
                     <Link href={`/event/${id}/guest-list`}>
-                      <div className="flex flex-col items-center gap-[8px]">
-                        <div className="border-grey-20 rounded-[16px] border-[1px] p-[16px]">
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="border-grey-20 rounded-2xl border p-4">
                           <QrIcon />
                         </div>
                         <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
@@ -186,8 +186,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </Link>
                     <Link href={`/event/${id}/edit-event`}>
-                      <div className="flex flex-col items-center gap-[8px]">
-                        <div className="border-grey-20 rounded-[16px] border-[1px] p-[16px]">
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="border-grey-20 rounded-2xl border p-4">
                           <EditIcon />
                         </div>
                         <div>
@@ -198,8 +198,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </Link>
                     <Link href={`/event/${id}/add-ticket`}>
-                      <div className="flex flex-col items-center gap-[8px]">
-                        <div className="border-grey-20 rounded-[16px] border-[1px] p-[16px]">
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="border-grey-20 rounded-2xl border p-4">
                           <TicketIcon />
                         </div>
                         <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
@@ -209,7 +209,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                     </Link>
                   </div>
                   <Link href={"/event/5/guest-list"}>
-                    <div className="border-mid-grey mt-[24px] flex items-center justify-between rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                    <div className="border-mid-grey mt-6 flex items-center justify-between rounded-xl border-2 p-3 px-4">
                       <div className="flex items-center gap-2">
                         <AffiliateUsersIcon />
                         <p className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]">
@@ -219,7 +219,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       <ChevronRightIcon />
                     </div>
                   </Link>
-                  <div className="border-mid-grey mt-[24px] flex flex-col rounded-[12px] border-[2px] p-[16px]">
+                  <div className="border-mid-grey mt-6 flex flex-col rounded-xl border-2 p-4">
                     <div className="flex flex-col">
                       <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                         Sales Revenue
@@ -228,7 +228,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         ₦{event?.breakdown?.sales_revenue}
                       </p>
                     </div>
-                    <div className="border-t-grey-20 my-4 border-t-[1px]"></div>
+                    <div className="border-t-grey-20 my-4 border-t"></div>
                     <div className="flex flex-col">
                       <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                         Tickets sold
@@ -238,7 +238,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         {event?.breakdown?.tickets_sold?.count}
                       </p>
                     </div>
-                    <div className="border-t-grey-20 my-4 border-t-[1px]"></div>
+                    <div className="border-t-grey-20 my-4 border-t"></div>
                     <div className="flex flex-col">
                       <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                         Check ins
@@ -254,7 +254,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-[16px]">
+                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
                   <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
                     Sales revenue by ticket type
                   </p>
@@ -275,10 +275,10 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
                         return (
                           <div key={idx}>
-                            <p className="mt-[16px] font-sans text-[14px] leading-[16.8px] font-normal">
+                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
                               {ticket?.name}
                             </p>
-                            <div className="mt-[2px] flex justify-between">
+                            <div className="mt-0.5 flex justify-between">
                               <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
                                 ₦{formatNumberWithCommas(ticket?.price)}
                               </p>
@@ -287,9 +287,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                                 {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                               </p>
                             </div>
-                            <div className="mt-[4px] h-[8px] w-full rounded-full bg-gray-200">
+                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
                               <div
-                                className="bg-gradient-progress-green h-[8px] rounded-full"
+                                className="bg-gradient-progress-green h-2 rounded-full"
                                 style={{ width: progressWidth }}
                               ></div>
                             </div>
@@ -298,7 +298,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       },
                     )}
                 </div>
-                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-[16px]">
+                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
                   <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
                     Ticket sold by ticket type
                   </p>
@@ -328,10 +328,10 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                               : "0%";
                         return (
                           <div key={idx}>
-                            <p className="mt-[16px] font-sans text-[14px] leading-[16.8px] font-normal">
+                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
                               {ticket?.name}
                             </p>
-                            <div className="mt-[2px] flex justify-between">
+                            <div className="mt-0.5 flex justify-between">
                               <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
                                 {percentageText}
                               </p>
@@ -340,9 +340,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                                 {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                               </p>
                             </div>
-                            <div className="mt-[4px] h-[8px] w-full rounded-full bg-gray-200">
+                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
                               <div
-                                className="bg-gradient-progress-green h-[8px] rounded-full"
+                                className="bg-gradient-progress-green h-2 rounded-full"
                                 style={{ width: progressWidth }}
                               ></div>
                             </div>
@@ -351,7 +351,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       },
                     )}
                 </div>
-                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-[16px]">
+                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
                   <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
                     Check ins by ticket type
                   </p>
@@ -381,10 +381,10 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
                         return (
                           <div key={idx}>
-                            <p className="mt-[16px] font-sans text-[14px] leading-[16.8px] font-normal">
+                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
                               {ticket?.name}
                             </p>
-                            <div className="mt-[2px] flex justify-between">
+                            <div className="mt-0.5 flex justify-between">
                               <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
                                 {percentageText}
                               </p>
@@ -393,9 +393,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                                 {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                               </p>
                             </div>
-                            <div className="mt-[4px] h-[8px] w-full rounded-full bg-gray-200">
+                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
                               <div
-                                className="bg-gradient-progress-green h-[8px] rounded-full"
+                                className="bg-gradient-progress-green h-2 rounded-full"
                                 style={{ width: progressWidth }}
                               ></div>
                             </div>

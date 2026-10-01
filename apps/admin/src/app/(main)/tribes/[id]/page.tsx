@@ -68,7 +68,7 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
     <RequirePermission permission={ADMIN_SECTION_PERMISSIONS.tribes}>
       <MainLayout>
         <section className="flex justify-between bg-white">
-          <div className="flex h-[780px] w-[888px] flex-col gap-[16px] overflow-y-auto border-r-[1px] p-[24px]">
+          <div className="flex h-[780px] w-[888px] flex-col gap-4 overflow-y-auto border-r p-6">
             <p className="text-[16px] font-semibold">Tribe threads</p>
             <AddThreadForm tribeId={id} />
             {threads.length > 0 ? (
@@ -80,12 +80,12 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
             )}
           </div>
 
-          <div className="flex h-[780px] w-[788px] flex-col gap-[24px] overflow-y-auto p-[24px]">
+          <div className="flex h-[780px] w-[788px] flex-col gap-6 overflow-y-auto p-6">
             <div className="flex items-center justify-between">
               <p className="text-[16px] font-semibold">Tribe details</p>
               {isRestricted ? (
                 <button
-                  className="bg-gradient-green h-[44px] w-[156px] rounded-[12px] border-[1px] text-center"
+                  className="bg-gradient-green h-11 w-[156px] rounded-xl border text-center"
                   onClick={() => setReactivateModalOpen(true)}
                 >
                   <p className="text-[16px] font-medium text-white">Reactivate tribe</p>
@@ -93,14 +93,14 @@ const TribeDetailPage = (props: { params: Promise<{ id: string }> }) => {
               ) : (
                 <div className="relative inline-block" ref={containerRef}>
                   <div
-                    className="border-light-grey-50 flex cursor-pointer items-center gap-[8px] rounded-[12px] border-[1px] px-[14px] py-[10px]"
+                    className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5"
                     onClick={() => setDropdownOpen((prev) => !prev)}
                   >
                     <p className="text-[14px] font-medium">Flag tribe</p>
                     <ChevronDown />
                   </div>
                   {dropdownOpen && (
-                    <div className="absolute top-full right-0 z-50 w-[207px] rounded-[12px] bg-white shadow">
+                    <div className="absolute top-full right-0 z-50 w-[207px] rounded-xl bg-white shadow">
                       <ul>
                         <li
                           className="cursor-pointer px-4 py-2 hover:bg-gray-100"

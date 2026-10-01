@@ -66,9 +66,9 @@ const GuestListClient = ({ id }: { id: number }) => {
           loading={guestDetailLoading}
           id={id}
         />
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -76,7 +76,7 @@ const GuestListClient = ({ id }: { id: number }) => {
           </div>
         </div>
 
-        <div className={"mt-4 flex flex-col items-center gap-[8px]"}>
+        <div className={"mt-4 flex flex-col items-center gap-2"}>
           <div className="mx-auto w-full max-w-[880px]">
             <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm sm:p-4">
               {/* Search */}
@@ -104,7 +104,7 @@ const GuestListClient = ({ id }: { id: number }) => {
             </div>
           </div>
 
-          <div className="flex h-auto w-full max-w-[880px] flex-col gap-[16px] rounded-[12px] bg-white p-[24px]">
+          <div className="flex h-auto w-full max-w-[880px] flex-col gap-4 rounded-xl bg-white p-6">
             {isLoading ? (
               <GuestListSkeleton count={4} />
             ) : hasItems ? (

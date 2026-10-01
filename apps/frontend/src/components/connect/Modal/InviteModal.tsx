@@ -65,7 +65,7 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
                 className="rounded-full p-2 transition-all hover:bg-gray-100"
                 onClick={toggle}
               >
-                <CloseIcon className="w-[12px]" />
+                <CloseIcon className="w-3" />
               </button>
               <p className="text-[16px] font-semibold text-gray-900">New Invite</p>
             </div>
@@ -74,7 +74,7 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
           {/* Content */}
           <div className="mt-6 flex flex-col items-center space-y-3 text-center">
             {/* Avatar */}
-            <div className="relative flex h-[44px] w-[44px] items-center justify-center overflow-hidden rounded-full bg-gray-100">
+            <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gray-100">
               <Image src="/images/lemon.png" alt="lemon" fill className="object-contain" />
               <p className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-black">
                 {invite?.invitee?.lemon_id_short}
@@ -111,7 +111,7 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
 
             {/* Message */}
             {invite?.message && (
-              <div className="bg-light_grey mt-4 flex w-full max-w-[384px] flex-col rounded-lg p-4">
+              <div className="bg-light_grey mt-4 flex w-full max-w-96 flex-col rounded-lg p-4">
                 <p className="text-[12px] font-medium text-gray-500">Message</p>
                 <p className="mt-1 text-[14px] text-gray-800">{invite?.message}</p>
               </div>
@@ -121,13 +121,13 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
           {/* Actions */}
           <div className="mt-6 flex w-full gap-4">
             <Button
-              className="h-[48px] flex-1 rounded-lg border border-gray-300 bg-white transition-all hover:bg-gray-50"
+              className="h-12 flex-1 rounded-lg border border-gray-300 bg-white transition-all hover:bg-gray-50"
               onClick={() => requestAction("rejected")}
             >
               <p className="text-[16px] font-medium text-gray-900">Reject Invite</p>
             </Button>
             <Button
-              className="bg-gradient-green h-[48px] flex-1 rounded-lg shadow-lg transition-all hover:brightness-105"
+              className="bg-gradient-green h-12 flex-1 rounded-lg shadow-lg transition-all hover:brightness-105"
               onClick={() => requestAction("accepted")}
             >
               <p className="text-[16px] font-medium">Accept Invite</p>

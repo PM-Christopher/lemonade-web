@@ -55,7 +55,7 @@ function SocialLinks({ socials }: { socials?: Array<{ name: string; value: strin
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Visit our ${key}`}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition hover:-translate-y-[1px] hover:shadow-md focus:ring-2 focus:ring-green-400 focus:outline-none"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition hover:-translate-y-px hover:shadow-md focus:ring-2 focus:ring-green-400 focus:outline-none"
           >
             {icon}
           </a>
@@ -203,7 +203,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                       {/* Meta */}
                       <div className="text-text-grey mt-5 space-y-3">
                         <div className="flex items-start gap-3">
-                          <CalendarIcon className="mt-[2px]" />
+                          <CalendarIcon className="mt-0.5" />
                           <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
                             {startDate ? formatLongDate(startDate, "mid") : "--"}{" "}
                             <span className="mx-1">–</span>
@@ -212,7 +212,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                         </div>
 
                         <div className="flex items-start gap-3">
-                          <ClockIcon className="mt-[2px]" />
+                          <ClockIcon className="mt-0.5" />
                           <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
                             {startDate ? formatLongTime(startDate) : "--"}{" "}
                             <span className="mx-1">–</span>
@@ -221,7 +221,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                         </div>
 
                         <div className="flex items-start gap-3">
-                          <LocationIcon className="mt-[2px]" />
+                          <LocationIcon className="mt-0.5" />
                           <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
                             {event?.location ?? "--"}
                           </p>

@@ -45,24 +45,24 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
             <p className="text-[16px] font-semibold">Referral activity</p>
           </div>
         </div>
-        <div className="mt-[24px]">
-          <div className="border-mid-grey flex flex-col rounded-[12px] border-[2px] p-[16px]">
-            <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+        <div className="mt-6">
+          <div className="border-mid-grey flex flex-col rounded-xl border-2 p-4">
+            <div className="border-b-mid-grey flex flex-col border-b p-4">
               <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
               <p className="tracking-custom text-[18px] font-semibold">
                 ₦{Number(totalEarned)?.toLocaleString() ?? 0}
               </p>
             </div>
-            <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+            <div className="border-b-mid-grey flex flex-col border-b p-4">
               <p className="text-text-grey text-[14px] font-normal">Total referrals</p>
               <p className="tracking-custom text-[18px] font-semibold">{total_referrals ?? 0}</p>
             </div>
-            <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+            <div className="border-b-mid-grey flex flex-col border-b p-4">
               <p className="text-text-grey text-[14px] font-normal">Total subscribed referrals</p>
               <p className="tracking-custom text-[18px] font-semibold">{total_subscribed ?? 0}</p>
             </div>
             <div
-              className="flex cursor-pointer items-center gap-[8px] p-[12px] px-[16px]"
+              className="flex cursor-pointer items-center gap-2 p-3 px-4"
               onClick={() => router.push("/settings/wallet")}
             >
               <p className="font-semi-normal text-light-green text-[16px]">Go to wallet</p>

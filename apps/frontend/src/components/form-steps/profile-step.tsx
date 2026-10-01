@@ -145,13 +145,13 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="tablet:w-[480px] w-full rounded-[16px] border-none shadow-none">
+      <Card className="tablet:w-[480px] w-full rounded-2xl border-none shadow-none">
         <CardHeader className="grid gap-4">
           <div className="flex gap-2">
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-border-grey h-[2px] w-[15px]" />
-            <div className="bg-border-grey h-[2px] w-[15px]" />
-            <div className="bg-border-grey h-[2px] w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-border-grey h-0.5 w-[15px]" />
+            <div className="bg-border-grey h-0.5 w-[15px]" />
+            <div className="bg-border-grey h-0.5 w-[15px]" />
           </div>
           <div>
             <p className="font-sans text-[24px] font-semibold">Profile set up</p>
@@ -171,7 +171,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
                   backgroundRepeat: "no-repeat",
                 }}
                 onClick={handleImageClick}
-                className="h-[80px] w-[80px] cursor-pointer rounded-[24px] border-[1px] border-[#3B4152]"
+                className="h-20 w-20 cursor-pointer rounded-3xl border border-[#3B4152]"
               ></div>
             ) : (
               <Image
@@ -224,7 +224,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
             <Textarea
               id="bio"
               placeholder="A short bio about yourself..."
-              className="form-font bg-light_grey h-[99px] gap-[10px] rounded-xl border-0"
+              className="form-font bg-light_grey h-[99px] gap-2.5 rounded-xl border-0"
               value={formik.values.bio}
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
@@ -274,7 +274,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
             loading={formik.isSubmitting}
             title="Next"
             error={formik.isValid}
-            classes="w-full h-[48px] rounded-[12px]"
+            classes="w-full h-12 rounded-xl"
           />
         </CardContent>
       </Card>

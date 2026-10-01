@@ -62,7 +62,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
   };
 
   return (
-    <div className="border-grey-20 mb-[16px] rounded-[12px] border-[1px] bg-white p-[4px]">
+    <div className="border-grey-20 mb-4 rounded-xl border bg-white p-1">
       <div className="flex flex-col">
         <div className="relative">
           <Image
@@ -73,7 +73,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
             height={230}
           />
           {draft && (
-            <div className="bg-warning absolute top-0 right-0 rounded-tl-[0px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px] p-[4px] px-[8px]">
+            <div className="bg-warning absolute top-0 right-0 rounded-tl-[0px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px] p-1 px-2">
               <p className="text-warning-bold text-center font-sans text-[14px] leading-[16.8px] font-semibold">
                 Draft
               </p>
@@ -86,7 +86,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
               {event?.event_name}
             </p>
             <div className="my-2 flex items-center gap-1">
-              <CalendarIcon className="h-[12px] w-[12px]" />
+              <CalendarIcon className="h-3 w-3" />
               <p className="text-text-grey laptop:text-[14px] font-sans text-[12px] leading-[16.8px] font-normal">
                 {formatLongDate(event?.start_date, "mid")}
               </p>

@@ -13,8 +13,8 @@ type TribeCardIF = {
 const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
   const router = useRouter();
   return (
-    <div className="border-grey-30 bg-mid-grey mb-2 rounded-[16px] border-[1px]">
-      <div className="flex items-center justify-between rounded-[16px] bg-white p-4">
+    <div className="border-grey-30 bg-mid-grey mb-2 rounded-2xl border">
+      <div className="flex items-center justify-between rounded-2xl bg-white p-4">
         <div className="flex items-center gap-2">
           <div>
             <Image
@@ -46,7 +46,7 @@ const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
             </button>
           ))}
       </div>
-      <div className="bg-mid-grey flex justify-between rounded-b-[16px] p-4 py-6">
+      <div className="bg-mid-grey flex justify-between rounded-b-2xl p-4 py-6">
         <div>
           <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
             {tribe.category}

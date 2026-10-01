@@ -55,26 +55,26 @@ function SettingsPage() {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
-          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
+        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
+          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">User Details</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
           <div className="flex flex-col items-center">
-            <div className="bg-step-color laptop:w-[640px] flex w-full items-center justify-between rounded-[12px] p-[16px]">
-              <div className="flex items-center gap-[8px]">
+            <div className="bg-step-color laptop:w-[640px] flex w-full items-center justify-between rounded-xl p-4">
+              <div className="flex items-center gap-2">
                 {user?.profile_image ? (
                   <Image
                     src={user?.profile_image}
                     alt="avatar"
                     width={40}
                     height={40}
-                    className="h-[40px] w-[40px] rounded-full border-[2px] border-[#3B4152] transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
+                    className="h-10 w-10 rounded-full border-2 border-[#3B4152] transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
                   />
                 ) : (
-                  <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+                  <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
                     <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
                   </div>
                 )}
@@ -90,7 +90,7 @@ function SettingsPage() {
                 </p>
               </div>
             </div>
-            <div className="laptop:w-[632px] w-full rounded-br-[16px] rounded-bl-[16px] bg-white p-[16px]">
+            <div className="laptop:w-[632px] w-full rounded-br-2xl rounded-bl-2xl bg-white p-4">
               <p className="font-semi-normal text-text-grey text-[12px]">Industry</p>
               <p className="text-black-light text-[14px] font-normal">
                 {formatString(user?.industry)}
@@ -100,7 +100,7 @@ function SettingsPage() {
               {user?.socials && user.socials.length > 0 && (
                 <>
                   <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Socials</p>
-                  <div className="bg-mid-grey flex w-fit gap-[8px] rounded-[16px] p-[4px]">
+                  <div className="bg-mid-grey flex w-fit gap-2 rounded-2xl p-1">
                     {user.socials.map((link: any) => (
                       <a
                         href={link.value}
@@ -120,7 +120,7 @@ function SettingsPage() {
               )}
             </div>
 
-            <div className="laptop:w-[640px] mt-[24px] w-full rounded-[12px] bg-white p-[16px]">
+            <div className="laptop:w-[640px] mt-6 w-full rounded-xl bg-white p-4">
               <p className="text-black-light text-[12px] font-bold">ACCOUNT</p>
               <div>
                 {accountSettings.map((item) => (
@@ -129,7 +129,7 @@ function SettingsPage() {
                     className="my-[20.5px] flex cursor-pointer items-center justify-between"
                     onClick={() => router.push(item.path)}
                   >
-                    <div className="flex items-center gap-[8px]">
+                    <div className="flex items-center gap-2">
                       <item.icon />
                       <p className="text-[16px] font-normal">{item.title}</p>
                     </div>
@@ -139,7 +139,7 @@ function SettingsPage() {
               </div>
             </div>
 
-            <div className="laptop:w-[640px] mt-[24px] w-full rounded-[12px] bg-white p-[16px]">
+            <div className="laptop:w-[640px] mt-6 w-full rounded-xl bg-white p-4">
               <p className="text-black-light text-[12px] font-bold">EARN</p>
               <div>
                 {earnSettings.map((item) => (
@@ -148,7 +148,7 @@ function SettingsPage() {
                     className="my-[20.5px] flex cursor-pointer items-center justify-between"
                     onClick={() => router.push(item.path)}
                   >
-                    <div className="flex items-center gap-[8px]">
+                    <div className="flex items-center gap-2">
                       <item.icon />
                       <p className="text-[16px] font-normal">{item.title}</p>
                     </div>
@@ -158,7 +158,7 @@ function SettingsPage() {
               </div>
             </div>
 
-            <div className="laptop:w-[640px] mt-[24px] w-full rounded-[12px] bg-white p-[16px]">
+            <div className="laptop:w-[640px] mt-6 w-full rounded-xl bg-white p-4">
               <p className="text-black-light text-[12px] font-bold">MORE</p>
               <div>
                 {moreSettings.map((item) => (
@@ -167,7 +167,7 @@ function SettingsPage() {
                     className="my-[20.5px] flex cursor-pointer items-center justify-between"
                     onClick={() => router.push(item.path)}
                   >
-                    <div className="flex items-center gap-[8px]">
+                    <div className="flex items-center gap-2">
                       <item.icon />
                       <p className="text-[16px] font-normal">{item.title}</p>
                     </div>

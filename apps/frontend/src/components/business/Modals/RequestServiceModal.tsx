@@ -122,14 +122,14 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
               </div>
               <div className="flex flex-col gap-y-[250px]">
                 <div className="mt-10">
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="amount"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       I want to book you for
                     </Label>
-                    <div className="bg-light_grey flex h-[48px] w-full items-center gap-3 rounded-[12px] p-2 px-[12px]">
+                    <div className="bg-light_grey flex h-12 w-full items-center gap-3 rounded-xl p-2 px-3">
                       <div>
                         <p className="font-semi-normal text-[14px]">₦</p>
                       </div>
@@ -155,7 +155,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="fullname"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -166,7 +166,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                       <div className="flex flex-wrap gap-2">
                         {services?.map((service, index) => (
                           <div
-                            className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
+                            className={`w-fit cursor-pointer rounded-xl p-3 px-4 ${
                               Array.isArray(formik.values.services) &&
                               formik.values.services.includes(service)
                                 ? "bg-gradient-green-2 shadow-event-custom"
@@ -183,7 +183,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <div className="flex justify-between">
                       <Label
                         htmlFor="additional-information"
@@ -196,7 +196,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                     <textarea
                       id="additional-information"
                       placeholder=""
-                      className="bg-light_grey h-[128px] resize-none rounded-xl border-0 p-4 text-[14px] font-normal"
+                      className="bg-light_grey h-32 resize-none rounded-xl border-0 p-4 text-[14px] font-normal"
                       readOnly={false}
                       value={formik.values.additional_information}
                       onChange={formik.handleChange}
@@ -209,7 +209,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                     title="Send quote"
                     error={formik.isValid}
                     loading={formik.isSubmitting}
-                    classes="w-full rounded-[12px] h-[48px] px-[48px] py-[16px]"
+                    classes="w-full rounded-xl h-12 px-12 py-4"
                   />
                 </div>
               </div>

@@ -56,7 +56,7 @@ const PricingCard: React.FC<PricingInterface> = ({
   return (
     <div className="flex flex-col items-center">
       <div
-        className="w-[260px] rounded-tl-[16px] rounded-tr-[16px] px-[48px] pt-[16px]"
+        className="w-[260px] rounded-tl-2xl rounded-tr-2xl px-12 pt-4"
         style={{ background: `${active ? "url('/images/pricingbg.png')" : "#F4F4F6"}` }}
       >
         <p className="font-ruso text-center text-[20px] font-normal">{subscription?.title}</p>
@@ -65,20 +65,16 @@ const PricingCard: React.FC<PricingInterface> = ({
         </p>
       </div>
       <div
-        className={`w-[311px] rounded-[12px] border-[2px] ${active ? "border-step-color" : "border-light-grey-60"}`}
+        className={`w-[311px] rounded-xl border-2 ${active ? "border-step-color" : "border-light-grey-60"}`}
       >
-        <div
-          className={`rounded-tl-[12px] rounded-tr-[12px] ${active ? "bg-step-color" : "bg-grey-20"}`}
-        >
+        <div className={`rounded-tl-xl rounded-tr-xl ${active ? "bg-step-color" : "bg-grey-20"}`}>
           {subscription?.monthly_charge === 0 ? (
-            <p className="p-[12px] text-[16px] font-semibold">Free forever</p>
+            <p className="p-3 text-[16px] font-semibold">Free forever</p>
           ) : (
-            <p className="p-[12px] text-[16px] font-semibold">
-              N{subscription?.monthly_charge}/month
-            </p>
+            <p className="p-3 text-[16px] font-semibold">N{subscription?.monthly_charge}/month</p>
           )}
         </div>
-        <div className="flex flex-col gap-[20px] rounded-br-[12px] rounded-bl-[12px] bg-white p-4">
+        <div className="flex flex-col gap-5 rounded-br-xl rounded-bl-xl bg-white p-4">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <VerIcon />
@@ -158,7 +154,7 @@ const PricingCard: React.FC<PricingInterface> = ({
         </div>
       </div>
       <Button
-        className={`mt-[56px] h-[48px] rounded-[12px] border-[1px] p-[14px] px-[70px] shadow-none ${!active ? "bg-gradient-green" : "border-light-grey-70 bg-light-grey-70"}`}
+        className={`mt-14 h-12 rounded-xl border p-3.5 px-[70px] shadow-none ${!active ? "bg-gradient-green" : "border-light-grey-70 bg-light-grey-70"}`}
       >
         {!active ? (
           <p

@@ -72,7 +72,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
               <p className="text-[16px] font-semibold">User Info</p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col items-center justify-center">
               {user?.profile_image ? (
                 <Image
@@ -80,25 +80,25 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
                   alt="check in"
                   width={64}
                   height={64}
-                  className="border-grey-90 h-[64px] w-[64px] rounded-[24px] border-[1px]"
+                  className="border-grey-90 h-16 w-16 rounded-3xl border"
                 />
               ) : (
-                <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+                <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
                   <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
                 </div>
               )}
 
-              <p className="mt-[16px] text-[18px] font-semibold">{user?.username}</p>
+              <p className="mt-4 text-[18px] font-semibold">{user?.username}</p>
               <p className="text-text-grey text-[12px] font-normal">
                 {formatString(user?.industry)}
               </p>
-              <p className="text-light-black mt-[16px] max-w-[416px] text-center text-[14px] font-normal">
+              <p className="text-light-black mt-4 max-w-[416px] text-center text-[14px] font-normal">
                 {user?.bio}
               </p>
               {user?.socials.length > 0 && (
-                <div className="mt-[16px]">
+                <div className="mt-4">
                   <p className="text-center text-[14px] font-semibold">Social links</p>
-                  <div className="mt-[12px] flex gap-[16px]">
+                  <div className="mt-3 flex gap-4">
                     {user?.socials.map((link: any) => (
                       <a
                         href={link.value}
@@ -106,11 +106,11 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
                         rel="noopener noreferrer"
                         key={link.name}
                       >
-                        {link.name === "facebook" && <FacebookIcon className="w-[24px]" />}
-                        {link.name === "instagram" && <InstagramIcon className="w-[24px]" />}
-                        {link.name === "linkedin" && <LinkedInIcon className="w-[24px]" />}
-                        {link.name === "twitter" && <TwitterIcon className="w-[24px]" />}
-                        {link.name === "website" && <WebIcon className="w-[24px]" />}
+                        {link.name === "facebook" && <FacebookIcon className="w-6" />}
+                        {link.name === "instagram" && <InstagramIcon className="w-6" />}
+                        {link.name === "linkedin" && <LinkedInIcon className="w-6" />}
+                        {link.name === "twitter" && <TwitterIcon className="w-6" />}
+                        {link.name === "website" && <WebIcon className="w-6" />}
                       </a>
                     ))}
                   </div>
@@ -119,17 +119,17 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
               {!tribe?.owner &&
                 (user?.has_connected ? (
                   <Link href={"/connect"}>
-                    <div className="mt-[16px]">
-                      <div className="border-light-grey-50 flex h-[48px] w-[343px] cursor-pointer items-center justify-center gap-[8px] rounded-[12px] border-[1px] p-[14px] px-[48px]">
+                    <div className="mt-4">
+                      <div className="border-light-grey-50 flex h-12 w-[343px] cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12">
                         <ChatIcon />
                         <p className="font-semi-normal text-black-light text-[16px]">Open chat</p>
                       </div>
                     </div>
                   </Link>
                 ) : (
-                  <div className="mt-[16px]">
+                  <div className="mt-4">
                     <div
-                      className="border-light-grey-50 flex h-[48px] w-[343px] cursor-pointer items-center justify-center gap-[8px] rounded-[12px] border-[1px] p-[14px] px-[48px]"
+                      className="border-light-grey-50 flex h-12 w-[343px] cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12"
                       onClick={sendConnect}
                     >
                       <p className="font-semi-normal text-black-light text-[16px]">Send request</p>

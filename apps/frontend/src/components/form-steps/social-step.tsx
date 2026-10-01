@@ -125,13 +125,13 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="tablet:w-[480px] w-full rounded-[16px] border-none shadow-none">
+      <Card className="tablet:w-[480px] w-full rounded-2xl border-none shadow-none">
         <CardHeader className="grid gap-4">
           <div className="flex gap-2">
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-step-color h-[2px] w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
           </div>
           <div>
             <p className="font-sans text-[24px] font-semibold">Link your social profiles</p>
@@ -142,7 +142,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
           </div>
         </CardHeader>
         <CardContent className="mt-[30px] grid gap-4">
-          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
             <div className="">
               <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -156,7 +156,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
               onChange={handleChange}
             />
           </div>
-          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
             <div className="">
               <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -170,7 +170,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
               onChange={handleChange}
             />
           </div>
-          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
             <div className="">
               <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -184,7 +184,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
               onChange={handleChange}
             />
           </div>
-          <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
             <div className="">
               <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
             </div>
@@ -212,7 +212,7 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
             loading={formik.isSubmitting}
             title="Done"
             error={formik.isValid}
-            classes="w-full h-[48px] rounded-[12px]"
+            classes="w-full h-12 rounded-xl"
           />
         </CardContent>
       </Card>

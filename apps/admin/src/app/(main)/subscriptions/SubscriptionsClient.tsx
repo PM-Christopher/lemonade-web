@@ -69,12 +69,12 @@ function SubscriptionsClient() {
 
   return (
     <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-[16px]"}>{plans.length} Plans</p>
           <div>
             <Button
-              className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
+              className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
               onClick={openCreateModal}
             >
               <PlusIcon className={"h-[15px] w-[15px] text-white"} />
@@ -82,8 +82,8 @@ function SubscriptionsClient() {
             </Button>
           </div>
         </div>
-        <div className={"flex flex-col px-[20px]"}>
-          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>
@@ -106,7 +106,7 @@ function SubscriptionsClient() {
                           <div className="flex items-center gap-2">
                             {plan.title}
                             {plan.recommended && (
-                              <span className="bg-light-green-10 font-semiBold text-light-green rounded-full px-2 py-[2px] text-[11px]">
+                              <span className="bg-light-green-10 font-semiBold text-light-green rounded-full px-2 py-0.5 text-[11px]">
                                 Recommended
                               </span>
                             )}
@@ -130,14 +130,14 @@ function SubscriptionsClient() {
                           {plan.subscriber_count ?? 0}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          <div className="flex items-center gap-[12px]">
+                          <div className="flex items-center gap-3">
                             <button
                               type="button"
                               className="text-text-grey"
                               onClick={() => openEditModal(plan)}
                               aria-label={`Edit ${plan.title}`}
                             >
-                              <PencilIcon className="h-[16px] w-[16px]" />
+                              <PencilIcon className="h-4 w-4" />
                             </button>
                             {plan.active ? (
                               <button

@@ -94,7 +94,7 @@ export default function TribeListClient() {
                 {/* centered underline */}
                 <span
                   className={[
-                    "bg-step-color h-[2px] rounded-full transition-all duration-300 ease-out",
+                    "bg-step-color h-0.5 rounded-full transition-all duration-300 ease-out",
                     isActive
                       ? "w-full opacity-100"
                       : "w-0 opacity-0 group-hover:w-full group-hover:opacity-60",
@@ -109,7 +109,7 @@ export default function TribeListClient() {
         <div className="flex items-center gap-3">
           {/* Mobile Search */}
           <div className="tablet:hidden block">
-            <div className="bg-light_grey flex h-[44px] w-[260px] items-center gap-3 rounded-xl p-2">
+            <div className="bg-light_grey flex h-11 w-[260px] items-center gap-3 rounded-xl p-2">
               <SearchIcon className="text-gray-500" />
               <input
                 type="text"
@@ -172,7 +172,7 @@ export default function TribeListClient() {
 
               {/* Tooltip */}
               {(!search || search.trim() === "") && showTooltip && (
-                <div className="animate-fade-in absolute bottom-[-28px] left-2 rounded-md bg-gray-800 px-2 py-1 text-xs text-white shadow-md">
+                <div className="animate-fade-in absolute -bottom-7 left-2 rounded-md bg-gray-800 px-2 py-1 text-xs text-white shadow-md">
                   Start typing to search...
                   <div className="absolute -top-1 left-4 h-2 w-2 rotate-45 bg-gray-800"></div>
                 </div>
@@ -197,7 +197,7 @@ export default function TribeListClient() {
                           alt={tribe.tribe_name}
                           width={48}
                           height={48}
-                          className="h-[48px] w-[48px] rounded-xl border border-gray-200 object-cover transition-colors group-hover:border-gray-300"
+                          className="h-12 w-12 rounded-xl border border-gray-200 object-cover transition-colors group-hover:border-gray-300"
                         />
                       </div>
                       <div className="min-w-0 flex-1">

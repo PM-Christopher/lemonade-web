@@ -146,15 +146,15 @@ const AddBusinessClient = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
-          <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft className="cursor-pointer" onClick={() => router.back()} />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Add business</p>
           </div>
         </div>
         <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           <form onSubmit={formik.handleSubmit}>
-            <div className="laptop:mt-10 laptop:w-[640px] mt-0 flex w-full flex-col rounded-[12px] bg-white p-[48px]">
+            <div className="laptop:mt-10 laptop:w-[640px] mt-0 flex w-full flex-col rounded-xl bg-white p-12">
               <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                 BUSINESS DETAILS
               </p>
@@ -168,7 +168,7 @@ const AddBusinessClient = () => {
               {formik.errors.image ? (
                 <p className="text-[12px] text-[#FF8D8D]">{formik.errors.image}</p>
               ) : null}
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="business_name"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -190,7 +190,7 @@ const AddBusinessClient = () => {
                   <p className="text-[12px] text-[#FF8D8D]">{formik.errors.name}</p>
                 ) : null}
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -210,7 +210,7 @@ const AddBusinessClient = () => {
                   <p className="text-[12px] text-[#FF8D8D]">{formik.errors.categories}</p>
                 ) : null}
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -228,10 +228,10 @@ const AddBusinessClient = () => {
                   <p className="text-[12px] text-[#FF8D8D]">{formik.errors.description}</p>
                 ) : null}
               </div>
-              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 BUSINESS ADDRESS
               </p>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="city"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -252,7 +252,7 @@ const AddBusinessClient = () => {
                   <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
                 ) : null}
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="country"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -278,10 +278,10 @@ const AddBusinessClient = () => {
                   <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
                 ) : null}
               </div>
-              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 SERVICE DETAILS
               </p>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="city"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -303,22 +303,22 @@ const AddBusinessClient = () => {
                 <p className="text-text-grey my-[5px] text-[12px]">
                   Click <i>enter</i> to add service
                 </p>
-                <div className="mt-[8px] flex flex-wrap gap-[4px]">
+                <div className="mt-2 flex flex-wrap gap-1">
                   {formik.values.services.map((service, index) => (
                     <div
-                      className="bg-grey-20 flex items-center gap-[8px] rounded-[8px] p-[8px] px-[12px]"
+                      className="bg-grey-20 flex items-center gap-2 rounded-[8px] p-2 px-3"
                       key={index}
                     >
                       <p className="font-semi-normal text-text-grey text-[14px]">{service}</p>
                       <CloseIcon
-                        className="h-[8px] w-[8px] cursor-pointer"
+                        className="h-2 w-2 cursor-pointer"
                         onClick={() => removeService(service)}
                       />
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="city"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -336,7 +336,7 @@ const AddBusinessClient = () => {
                   }}
                 />
               </div>
-              <p className="text-text-grey mt-[24px] text-[14px] font-normal">
+              <p className="text-text-grey mt-6 text-[14px] font-normal">
                 Portfolio gallery <span>(Optional)</span>
               </p>
               <MultipleFileUploader
@@ -346,11 +346,11 @@ const AddBusinessClient = () => {
                 images={[]}
                 title="Upload multiple images"
               />
-              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 CONTACT DETAILS
               </p>
               <div className="grid grid-cols-1">
-                <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                   <div>
                     <MessageIcon />
                   </div>
@@ -372,7 +372,7 @@ const AddBusinessClient = () => {
                 ) : null}
               </div>
               <div className="grid grid-cols-1">
-                <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                   <div>
                     <PhoneIcon />
                   </div>
@@ -394,7 +394,7 @@ const AddBusinessClient = () => {
                 ) : null}
               </div>
               <div className="grid grid-cols-1">
-                <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                   <div>
                     <WebIcon />
                   </div>
@@ -420,7 +420,7 @@ const AddBusinessClient = () => {
                 title="List business"
                 error={formik.isValid}
                 loading={formik.isSubmitting}
-                classes="mt-[32px] h-[48px] p-[14px] px-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"
+                classes="mt-8 h-12 p-3.5 px-12 rounded-xl border border-step-color shadow-custom-bottom"
               />
             </div>
           </form>

@@ -22,7 +22,7 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
           width={320}
           height={105}
         />
-        <div className="absolute bottom-[-28px] left-4 h-14 w-14">
+        <div className="absolute -bottom-7 left-4 h-14 w-14">
           <Image
             src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
             alt="Overlay Image"
@@ -33,7 +33,7 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
         </div>
       </div>
 
-      <div className="px-[10px] pt-10 pb-[10px]">
+      <div className="px-2.5 pt-10 pb-2.5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <p className="text-light-black text-body-s truncate font-sans font-semibold">

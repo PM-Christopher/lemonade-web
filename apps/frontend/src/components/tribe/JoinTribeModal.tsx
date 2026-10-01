@@ -62,7 +62,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
             </div>
             <div>
               <Button
-                className="auth-button shadow-green-inset hover:shadow-green-inset-strong rounded-[12px] p-[10px] px-[14px]"
+                className="auth-button shadow-green-inset hover:shadow-green-inset-strong rounded-xl p-2.5 px-3.5"
                 onClick={() => handleJoinTribe(tribe.slug)}
                 disabled={tribeLoading}
               >
@@ -86,7 +86,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
           </div>
           <div className="mt-10 flex flex-col items-center">
             <div className="flex justify-center">
-              <div className="border-step-color bg-light-green-10 flex w-[544px] flex-col items-center rounded-[12px] border-2 p-[16px]">
+              <div className="border-step-color bg-light-green-10 flex w-[544px] flex-col items-center rounded-xl border-2 p-4">
                 <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
                   Membership fee
                 </p>
@@ -108,8 +108,8 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
               </div>
             </div>
 
-            <div className="bg-light_grey flex justify-center rounded-[12px]">
-              <div className="flex w-[544px] flex-col gap-4 p-4 py-[24px]">
+            <div className="bg-light_grey flex justify-center rounded-xl">
+              <div className="flex w-[544px] flex-col gap-4 p-4 py-6">
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
                   <p className="font-semi-normal font-sans text-[14px] leading-[21px]">

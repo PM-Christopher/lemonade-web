@@ -106,7 +106,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
             <div className={"flex flex-col"} style={{ gap: "4px" }}>
               <p className={"text-text-grey text-[14px] font-normal"}>Amount</p>
               <Input
-                className={"bg-light-grey h-[48px] rounded-[12px] border-none px-[12px] py-[12px]"}
+                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Amount"}
                 value={formik.values.amount}
                 onChange={formik.handleChange("amount")}
@@ -123,18 +123,16 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               </span>
             </p>
 
-            <div className={"flex justify-between gap-[16px]"}>
+            <div className={"flex justify-between gap-4"}>
               <button
-                className={
-                  "border-light-grey-50 w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[11px]"
-                }
+                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
                 onClick={toggle}
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
               <button
                 className={
-                  "border-step-color bg-gradient-green w-full rounded-[12px] border-[1px] px-[48px] py-[11px]"
+                  "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
                 }
                 onClick={() => {
                   formik.handleSubmit();

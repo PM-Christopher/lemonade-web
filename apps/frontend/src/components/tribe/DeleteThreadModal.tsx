@@ -56,20 +56,20 @@ const DeleteThreadModal: React.FC<DeleteThreadIF> = ({
               <CloseIcon />
             </div>
           </div>
-          <div className="mt-[24px] flex flex-col gap-[16px]">
+          <div className="mt-6 flex flex-col gap-4">
             <p className="text-light-black text-[14px] font-normal">
               Are you sure you want to delete this thread?
             </p>
 
-            <div className="flex gap-[12px]">
+            <div className="flex gap-3">
               <Button
-                className="h-[44px] w-full rounded-[12px] border-[1px] bg-white py-[14px] shadow-none hover:bg-white"
+                className="h-11 w-full rounded-xl border bg-white py-3.5 shadow-none hover:bg-white"
                 onClick={handleDeleteThread}
               >
                 <p className="font-semi-normal text-red-1 text-[16px]">Yes, delete</p>
               </Button>
               <Button
-                className="bg-gradient-green h-[44px] w-full rounded-[12px] border-none bg-transparent shadow-none"
+                className="bg-gradient-green h-11 w-full rounded-xl border-none bg-transparent shadow-none"
                 onClick={toggle}
               >
                 <p className="font-semi-normal text-[16px]">No, don&apos;t delete</p>

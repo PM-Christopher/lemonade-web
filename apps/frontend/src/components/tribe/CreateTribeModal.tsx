@@ -171,7 +171,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
         <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[640px] laptop:rounded-lg flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl">
           <form onSubmit={formik.handleSubmit} className="flex flex-col">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-2">
                 <CloseIcon onClick={activateModal} className="cursor-pointer" />
                 <p className="font-semiBold text-[18px]">Create Tribe</p>
               </div>
@@ -180,18 +180,18 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                   title="Create tribe"
                   error={formik.isValid}
                   loading={formik.isSubmitting}
-                  classes="px-[14px] p-[10px] rounded-[12px] border-step-color"
+                  classes="px-3.5 p-2.5 rounded-xl border-step-color"
                 />
               </div>
             </div>
-            <div className="tablet:mt-[24px] mt-[48px] flex justify-center">
+            <div className="tablet:mt-6 mt-12 flex justify-center">
               {image ? (
                 <Image
                   src={image}
                   alt="upload"
                   width={89}
                   height={83}
-                  className="h-[89px] w-[89px] cursor-pointer rounded-[24px] border-[1px]"
+                  className="h-[89px] w-[89px] cursor-pointer rounded-3xl border"
                   onClick={handleImageClick}
                 />
               ) : (
@@ -212,7 +212,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                 onChange={handleFileChange}
               />
             </div>
-            <div className="mt-[16px] flex flex-col">
+            <div className="mt-4 flex flex-col">
               <div className="grid gap-2">
                 <Label
                   htmlFor="tribe-name"
@@ -223,7 +223,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                 <Input
                   id="tribe-name"
                   type="text"
-                  className="form-font bg-light_grey h-[48px] rounded-xl border-0"
+                  className="form-font bg-light_grey h-12 rounded-xl border-0"
                   value={formik.values.tribe_name}
                   onChange={(e: any) => {
                     formik.setFieldValue("tribe_name", e.target.value);
@@ -245,7 +245,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                 >
                   <SelectTrigger
                     aria-label="Category"
-                    className="bg-light_grey h-[48px] rounded-xl border-0"
+                    className="bg-light_grey h-12 rounded-xl border-0"
                   >
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
@@ -280,7 +280,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
               </div>
 
               <div className="mt-8 flex flex-col">
-                <div className="mb-[24px] flex justify-between">
+                <div className="mb-6 flex justify-between">
                   <div className="flex gap-2">
                     <div>
                       <DollarBillIcon />
@@ -318,13 +318,13 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                     <Input
                       id="tribe-name"
                       type="number"
-                      className="form-font bg-light_grey h-[48px] rounded-xl border-0"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
                       value={formik.values.membership_fee}
                       onChange={(e: any) => {
                         formik.setFieldValue("membership_fee", e.target.value);
                       }}
                     />
-                    <div className="mt-[5px] mb-[24px] flex items-center gap-2">
+                    <div className="mt-[5px] mb-6 flex items-center gap-2">
                       <InfoIcon />
                       <p className="text-text-grey text-[12px] font-normal">
                         {" "}
@@ -364,13 +364,13 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
               </div>
             </div>
             {isMobile && (
-              <div className="fixed bottom-0 left-0 flex w-full flex-col items-center justify-center pt-[16px] pr-[16px] pb-[24px] pl-[16px]">
+              <div className="fixed bottom-0 left-0 flex w-full flex-col items-center justify-center pt-4 pr-4 pb-6 pl-4">
                 <div className="mt-auto">
                   <FormikButton
                     title="Create tribe"
                     error={formik.isValid}
                     loading={formik.isSubmitting}
-                    classes="w-[343px] px-[14px] p-[10px] rounded-[12px] border-step-color h-[48px]"
+                    classes="w-[343px] px-3.5 p-2.5 rounded-xl border-step-color h-12"
                   />
                 </div>
               </div>

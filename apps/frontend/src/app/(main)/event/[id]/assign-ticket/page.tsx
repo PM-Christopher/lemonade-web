@@ -209,9 +209,9 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft className="cursor-pointer" />
@@ -220,16 +220,16 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
         </div>
         <section className="mt-4">
           <form onSubmit={formik.handleSubmit}>
-            <div className="mt-[16px] flex justify-center">
-              <section className="w-[640px] gap-[24px] rounded-[12px] bg-white p-[48px]">
-                <div className="bg-light-green-10 rounded-[8px] px-[16px] py-[8px]">
+            <div className="mt-4 flex justify-center">
+              <section className="w-[640px] gap-6 rounded-xl bg-white p-12">
+                <div className="bg-light-green-10 rounded-[8px] px-4 py-2">
                   <p className="font-sans text-[14px] leading-[21px] font-normal">
                     Your tickets has been reserved for{" "}
                     <span className="font-semiBold text-light-tint-2">{formatTime(timeLeft)}</span>{" "}
                     mins. Complete your purchase to secure your spot.
                   </p>
                 </div>
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label htmlFor="fullname" className="font-label">
                     Full name
                   </Label>
@@ -242,7 +242,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                     onChange={formik.handleChange}
                   />
                 </div>
-                <div className="mt-[16px] grid gap-2">
+                <div className="mt-4 grid gap-2">
                   <Label htmlFor="email" className="font-label">
                     Email address
                   </Label>
@@ -255,7 +255,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                     onChange={formik.handleChange}
                   />
                 </div>
-                <div className="mt-[36px] flex justify-between">
+                <div className="mt-9 flex justify-between">
                   <div className="flex gap-2">
                     <UserIcon />
                     <div>
@@ -289,12 +289,12 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                       formik={formik}
                     />
                   ))}
-                <div className="mt-[24px] flex justify-between">
+                <div className="mt-6 flex justify-between">
                   <FormikButton
                     title="Pay now"
                     loading={formik.isSubmitting || loading}
                     error={formik.isValid}
-                    classes="w-full h-[48px] gap-[8px] rounded-[12px] border-b-2 border-step-color"
+                    classes="w-full h-12 gap-2 rounded-xl border-b-2 border-step-color"
                   />
                 </div>
               </section>

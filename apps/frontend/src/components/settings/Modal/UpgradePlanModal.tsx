@@ -147,10 +147,10 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
               </div>
             </div>
             <div className="mt-10">
-              <div className={"flex flex-col gap-[16px]"}>
+              <div className={"flex flex-col gap-4"}>
                 {pricing?.map((membership: any) => (
                   <div
-                    className={`cursor-pointer rounded-[12px] p-[16px] ${selected === membership.id ? "border-step-color bg-light-green-10 border-[1px]" : "bg-mid-grey"}`}
+                    className={`cursor-pointer rounded-xl p-4 ${selected === membership.id ? "border-step-color bg-light-green-10 border" : "bg-mid-grey"}`}
                     key={membership.id}
                     onClick={() => handleSelectedPlan(membership)}
                   >

@@ -29,12 +29,12 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               </div>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex justify-center">
               <Image src={"/images/tickets.png"} alt="promotion_payment" width={160} height={160} />
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-light-green text-center font-sans text-[20px] leading-[28px] font-semibold">
                 Payment successful!
@@ -44,14 +44,14 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="font-sans text-[20px] leading-[20px] font-semibold">
                 {event?.data?.event?.event_name}
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Date
@@ -61,7 +61,7 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Time
@@ -71,27 +71,27 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               </p>
             </div>
           </div>
-          {/*<div className="mt-[24px]">*/}
+          {/*<div className="mt-6">*/}
           {/*    <div className="flex flex-col">*/}
           {/*        <p className="font-sans font-normal text-[14px] text-text-grey leading-[20px]">Ticket Type</p>*/}
           {/*        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">1</p>*/}
           {/*    </div>*/}
           {/*</div>*/}
-          {/*<div className="mt-[24px]">*/}
+          {/*<div className="mt-6">*/}
           {/*    <div className="flex flex-col">*/}
           {/*        <p className="font-sans font-normal text-[14px] text-text-grey leading-[20px]">Ticket ID</p>*/}
           {/*        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">₦500,000</p>*/}
           {/*    </div>*/}
           {/*</div>*/}
-          <div className="mt-[40px] flex gap-[4px]">
+          <div className="mt-10 flex gap-1">
             <button
-              className="border-light-grey-50 w-full rounded-[12px] border-[1px] p-[10px] px-[14px]"
+              className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
               onClick={toggle}
             >
               <p className="font-semi-normal text-black-light font-sans text-[16px]">More events</p>
             </button>
             <button
-              className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+              className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggleMore}
             >
               <p className="font-semi-normal font-sans text-[16px] text-white">My tickets</p>

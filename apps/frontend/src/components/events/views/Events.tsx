@@ -30,18 +30,18 @@ const EventsSectionView: React.FC<EventsInterface> = ({
   return (
     <section className="mt-2 flex flex-col items-center">
       {eventsLoading ? (
-        <div className="laptop:w-[1008px] laptop:bg-light-green-50 flex w-full justify-center rounded-[12px] bg-none p-[24px]">
+        <div className="laptop:w-[1008px] laptop:bg-light-green-50 flex w-full justify-center rounded-xl bg-none p-6">
           <TrendingEventsSkeleton />
         </div>
       ) : (
         events?.trending?.length > 0 && (
-          <div className="laptop:w-[1008px] laptop:bg-light-green-50 flex w-full justify-center rounded-[12px] bg-none p-[24px]">
+          <div className="laptop:w-[1008px] laptop:bg-light-green-50 flex w-full justify-center rounded-xl bg-none p-6">
             <Carousel events={events?.trending} showDots={true} showArrows={false} />
           </div>
         )
       )}
 
-      <div className="laptop:w-[1008px] mt-[48px] w-full rounded-[12px] p-[24px]">
+      <div className="laptop:w-[1008px] mt-12 w-full rounded-xl p-6">
         {searchTerm ? (
           results.length > 0 ? (
             isMobile ? (
@@ -82,7 +82,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
           )
         ) : filtered ? (
           <>
-            <p className="mb-[16px] font-sans text-[20px] leading-[28px] font-semibold">
+            <p className="mb-4 font-sans text-[20px] leading-[28px] font-semibold">
               Filtered Events
             </p>
             <div className="grid grid-cols-3 gap-2">
@@ -99,9 +99,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
           </>
         ) : (
           <>
-            <p className="mb-[16px] font-sans text-[20px] leading-[28px] font-semibold">
-              All Events
-            </p>
+            <p className="mb-4 font-sans text-[20px] leading-[28px] font-semibold">All Events</p>
             {isMobile ? (
               <div className="scrollbar-hide mt-3 flex space-x-2 overflow-x-auto py-4 shadow-none">
                 {events?.this_week.map((event: EventInterface, index: number) => (

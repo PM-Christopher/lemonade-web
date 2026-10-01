@@ -92,9 +92,9 @@ const NotificationSettingsClient = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.push("/settings")}
           >
             <ChevronLeft />
@@ -103,12 +103,12 @@ const NotificationSettingsClient = () => {
             </p>
           </div>
         </div>
-        <section className="mt-4 flex flex-col items-center px-[10px]">
-          <div className="laptop:w-[640px] flex w-full flex-col gap-[24px] rounded-[12px]">
-            <div className="flex flex-col gap-[16px]">
+        <section className="mt-4 flex flex-col items-center px-2.5">
+          <div className="laptop:w-[640px] flex w-full flex-col gap-6 rounded-xl">
+            <div className="flex flex-col gap-4">
               <p className="font-semi-normal text-light-black text-[12px]">TRIBE</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-[12px] bg-white">
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">New thread in Tribe</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -118,7 +118,7 @@ const NotificationSettingsClient = () => {
                     onClick={() => selectNotification("new_thread")}
                   />
                 </div>
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Thread engagements</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -131,10 +131,10 @@ const NotificationSettingsClient = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-col gap-4">
               <p className="font-semi-normal text-light-black text-[12px]">EVENT</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-[12px] bg-white">
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Ticket sales</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -144,7 +144,7 @@ const NotificationSettingsClient = () => {
                     onClick={() => selectNotification("ticket_sales")}
                   />
                 </div>
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Ticket payout</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -157,10 +157,10 @@ const NotificationSettingsClient = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-col gap-4">
               <p className="font-semi-normal text-light-black text-[12px]">BUSINESS</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-[12px] bg-white">
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Service offer</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -170,7 +170,7 @@ const NotificationSettingsClient = () => {
                     onClick={() => selectNotification("service_offer")}
                   />
                 </div>
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Service status</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -180,7 +180,7 @@ const NotificationSettingsClient = () => {
                     onClick={() => selectNotification("service_status")}
                   />
                 </div>
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Service payout</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -193,10 +193,10 @@ const NotificationSettingsClient = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-col gap-4">
               <p className="font-semi-normal text-light-black text-[12px]">CONNECT</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-[12px] bg-white">
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">Connect request</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
@@ -206,7 +206,7 @@ const NotificationSettingsClient = () => {
                     onClick={() => selectNotification("connect_request")}
                   />
                 </div>
-                <div className="flex items-center justify-between p-[12px] px-[16px]">
+                <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
                     <p className="font-semi-normal text-[14px]">New message</p>
                     <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>

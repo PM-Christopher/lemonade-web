@@ -56,7 +56,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
             </div>
             <div>
               <Button
-                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+                className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 type="button"
                 onClick={submitThread}
               >
@@ -64,7 +64,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
               </Button>
             </div>
           </div>
-          <div className="mt-[24px] flex flex-col gap-[16px] p-6">
+          <div className="mt-6 flex flex-col gap-4 p-6">
             <p className="font-semiBold text-black-light text-[20px]">
               What is wrong with this thread?
             </p>
@@ -73,8 +73,8 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                 defaultValue="Inappropriate_content"
                 onValueChange={(value) => setSelectedReport(value)}
               >
-                <div className="flex flex-col gap-[20px]">
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                <div className="flex flex-col gap-5">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
                     <RadioGroupItem value="Inappropriate_content" id="option-one" />
                     <div className="flex flex-col">
                       <Label
@@ -88,7 +88,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                       </p>
                     </div>
                   </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
                     <RadioGroupItem value="Abuse & Harassment" id="option-two" />
                     <div className="flex flex-col">
                       <Label
@@ -103,7 +103,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                       </p>
                     </div>
                   </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
                     <RadioGroupItem value="Hate speech" id="option-three" />
                     <div className="flex flex-col">
                       <Label
@@ -119,7 +119,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                       </p>
                     </div>
                   </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
                     <RadioGroupItem value="Spam or irrelevant content" id="option-four" />
                     <div className="flex flex-col">
                       <Label
@@ -134,7 +134,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                       </p>
                     </div>
                   </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
                     <RadioGroupItem value="Illegal activity" id="option-five" />
                     <div className="flex flex-col">
                       <Label
@@ -149,7 +149,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                       </p>
                     </div>
                   </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-[12px] border-[2px] p-[12px] px-[16px]">
+                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
                     <RadioGroupItem value="Misinformation or disinformation" id="option-six" />
                     <div className="flex flex-col">
                       <Label

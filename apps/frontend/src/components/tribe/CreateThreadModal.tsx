@@ -270,7 +270,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create thread</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="laptop:h-full laptop:w-[800px] flex h-screen w-screen flex-col rounded-[12px] bg-white">
+          <div className="laptop:h-full laptop:w-[800px] flex h-screen w-screen flex-col rounded-xl bg-white">
             <div className={`p-6`}>
               <div className="flex items-center justify-between">
                 <div className="cursor-pointer" onClick={toggle}>
@@ -299,7 +299,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                 <div className="mt-4 grid gap-2">
                   <textarea
                     id="tribe-name"
-                    className="h-[160px] resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="h-40 resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Share your thoughts..."
                     value={formik.values.thoughts}
                     onChange={(e) => {
@@ -310,7 +310,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                     <p className="text-[12px] text-[#FF8D8D]">{formik.errors.thoughts}</p>
                   ) : null}
                 </div>
-                <div className="flex flex-col gap-[40px]">
+                <div className="flex flex-col gap-10">
                   <div className={"flex gap-2"}>
                     {mediaFiles &&
                       mediaFiles.length > 0 &&
@@ -437,7 +437,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
               </div>
             </div>
             {isMobile ? (
-              <div className="bg-mid-grey fixed bottom-0 flex w-full items-center gap-6 rounded-br-[12px] rounded-bl-[12px] p-4">
+              <div className="bg-mid-grey fixed bottom-0 flex w-full items-center gap-6 rounded-br-xl rounded-bl-xl p-4">
                 <ImageIcon className="cursor-pointer" onClick={handleImageInput} />
                 <VideoIcon className="cursor-pointer" onClick={handleVideoInput} />
                 <PollIcon className="cursor-pointer" onClick={handlePolls} />
@@ -446,7 +446,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                 </div>
               </div>
             ) : (
-              <div className="bg-mid-grey flex items-center gap-6 rounded-br-[12px] rounded-bl-[12px] p-4">
+              <div className="bg-mid-grey flex items-center gap-6 rounded-br-xl rounded-bl-xl p-4">
                 <ImageIcon className="cursor-pointer" onClick={handleImageInput} />
                 <VideoIcon className="cursor-pointer" onClick={handleVideoInput} />
                 <PollIcon className="cursor-pointer" onClick={handlePolls} />

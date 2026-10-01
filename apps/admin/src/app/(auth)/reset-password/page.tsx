@@ -30,8 +30,8 @@ function ResetPasswordPage({}) {
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
-          <Card className="tablet:w-[480px] w-full rounded-[16px] border-none p-[24px] shadow-sm">
-            <CardContent className="tablet:gap-[40px] grid gap-[24px]">
+          <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-sm">
+            <CardContent className="tablet:gap-10 grid gap-6">
               <div>
                 <p className="font-ruso text-[24px] font-normal">Reset Password</p>
                 <p className="text-text-grey text-[14px] font-normal">
@@ -78,7 +78,7 @@ function ResetPasswordPage({}) {
                 loading={formik.isSubmitting}
                 title="Save password"
                 error={formik.isValid}
-                classes="w-full h-[48px] rounded-[12px]"
+                classes="w-full h-12 rounded-xl"
               />
             </CardContent>
           </Card>

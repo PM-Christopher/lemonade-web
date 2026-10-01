@@ -64,9 +64,9 @@ const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_conne
               <p className="text-[16px] font-semibold">Visibility settings</p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
-              <div className="bg-light-green-10 flex w-full flex-col items-center justify-center rounded-[12px] pt-[12px] pb-[12px]">
+              <div className="bg-light-green-10 flex w-full flex-col items-center justify-center rounded-xl pt-3 pb-3">
                 <div className="relative">
                   <Image src={"/images/lemon.png"} alt="lemon" width={33} height={41} />
                   <p className="absolute bottom-3.5 left-2 text-center text-[12px] font-semibold text-black">
@@ -75,7 +75,7 @@ const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_conne
                 </div>
                 <p className="text-[18px] font-semibold">{user_connect?.user?.lemon_id_full}</p>
               </div>
-              <div className="mt-[32px] flex justify-between">
+              <div className="mt-8 flex justify-between">
                 <div className="flex flex-col">
                   <p className="text-[16px] font-semibold">Turn on visibility</p>
                   <p className="font-semi-normal text-text-grey text-[12px]">

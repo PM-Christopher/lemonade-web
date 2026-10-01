@@ -121,7 +121,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
             <div className="flex flex-col gap-2 sm:text-left">
               <div className="flex items-center gap-2">
                 <p className="text-[18px] font-semibold">{user?.fullname}</p>
-                <VerIcon className="h-[20px] w-[20px]" />
+                <VerIcon className="h-5 w-5" />
               </div>
               <p className="font-ruso text-black-light text-[32px] leading-tight sm:text-[40px]">
                 Welcome to Membership
@@ -136,7 +136,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
               {benefits.map(({ icon: Icon, label, value }, idx) => (
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Icon className="h-[14px] w-[14px]" />
+                    <Icon className="h-3.5 w-3.5" />
                     <p className="text-[14px] font-medium text-gray-800">{label}</p>
                   </div>
 

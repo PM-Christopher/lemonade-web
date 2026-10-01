@@ -28,9 +28,9 @@ const CancelSubscriptionPage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -39,7 +39,7 @@ const CancelSubscriptionPage = () => {
             </p>
           </div>
         </div>
-        <section className="mt-[48px] flex flex-col items-center">{renderSection()}</section>
+        <section className="mt-12 flex flex-col items-center">{renderSection()}</section>
       </section>
     </MainLayout>
   );

@@ -58,7 +58,7 @@ export default function ImageCarousel({ images }: { images: string[] }) {
                 e.stopPropagation();
                 setCurrent(index);
               }}
-              className={`h-[8px] w-[8px] rounded-full transition-all ${
+              className={`h-2 w-2 rounded-full transition-all ${
                 index === current ? "scale-125 bg-white shadow" : "bg-white/50 hover:bg-white/70"
               }`}
             />

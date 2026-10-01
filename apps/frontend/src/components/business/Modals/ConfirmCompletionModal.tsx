@@ -64,13 +64,13 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen,
             </div>
           </div>
           <div className="mt-2 flex w-[328px] flex-col items-center">
-            <p className="mt-[16px] text-[14px] font-normal">
+            <p className="mt-4 text-[14px] font-normal">
               Are you sure this service has been completed? If so, the payment will be released to
               the vendor and the order will be marked as completed.
             </p>
-            <div className="mt-[16px] flex w-full justify-center gap-3">
+            <div className="mt-4 flex w-full justify-center gap-3">
               <Button
-                className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
+                className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl p-3.5 px-12"
                 onClick={markCompleted}
                 disabled={completedLoading}
               >
@@ -78,7 +78,7 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen,
                   <>
                     <div
                       className={
-                        "flex w-full items-center justify-center gap-[8px] rounded-2xl shadow-md"
+                        "flex w-full items-center justify-center gap-2 rounded-2xl shadow-md"
                       }
                     >
                       <svg

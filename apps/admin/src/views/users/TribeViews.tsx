@@ -8,7 +8,7 @@ interface TribeViewsProps {
 
 const TribeViews = ({ userDetail }: TribeViewsProps) => {
   return (
-    <div className={"flex flex-col py-[20px]"}>
+    <div className={"flex flex-col py-5"}>
       {userDetail?.tribes?.map((item) => (
         <TribeCard
           date={item?.created_at}

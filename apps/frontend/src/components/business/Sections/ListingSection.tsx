@@ -51,7 +51,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
         </div>
       ) : (
         // Business List
-        <div className="mt-6 w-full max-w-[1312px] rounded-xl bg-white p-4 pb-[20px] shadow-sm">
+        <div className="mt-6 w-full max-w-[1312px] rounded-xl bg-white p-4 pb-5 shadow-sm">
           <div className={"flex items-center justify-between"}>
             <h2 className="mb-4 font-sans text-lg font-semibold sm:text-xl">All Listings</h2>
             <Button

@@ -43,10 +43,10 @@ function PromotionsCard({
   };
 
   return (
-    <div className={"flex flex-col gap-[16px] rounded-[12px] bg-white p-[24px]"}>
+    <div className={"flex flex-col gap-4 rounded-xl bg-white p-6"}>
       <div className={"flex justify-between"}>
         <p className={"font-semiBold text-[16px]"}>{promotion?.name}</p>
-        <div className={"flex gap-[4px]"}>
+        <div className={"flex gap-1"}>
           <PencilIcon
             className={"cursor-pointer"}
             onClick={() => handleEditPromotion(promotion?.id)}
@@ -58,7 +58,7 @@ function PromotionsCard({
         </div>
       </div>
       <p className={"font-semiBold text-[20px]"}>N{formatThousandSeparator(promotion?.price)}</p>
-      <div className={"flex flex-col gap-[8px]"}>
+      <div className={"flex flex-col gap-2"}>
         {promotion?.breakdown?.map((item: string, index: number) => (
           <p key={index} className={"text-light-black text-[14px] font-normal"}>
             {item}

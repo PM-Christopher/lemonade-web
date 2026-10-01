@@ -117,9 +117,9 @@ const BuyTicketClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft className="cursor-pointer" />
@@ -128,7 +128,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
         </div>
         <section className="laptop:bg-none mt-4 bg-white">
           <div className="laptop:flex-row laptop:justify-around flex flex-col">
-            <div className="laptop:w-[688px] laptop:bg-white laptop:p-[24px] flex w-full flex-col justify-between gap-y-[460px] rounded-[12px] bg-none p-0 py-[10px]">
+            <div className="laptop:w-[688px] laptop:bg-white laptop:p-6 flex w-full flex-col justify-between gap-y-[460px] rounded-xl bg-none p-0 py-2.5">
               {loading ? (
                 <EventTicketDetailSkeleton />
               ) : (
@@ -170,8 +170,8 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                   </div>
 
                   {tickets?.map((ticket: TicketInterface, index: number) => (
-                    <div className="laptop:none px-[16px]" key={index}>
-                      <div className="mt-[24px] flex items-center justify-between">
+                    <div className="laptop:none px-4" key={index}>
+                      <div className="mt-6 flex items-center justify-between">
                         <div className="flex flex-col">
                           <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
                             {ticket.name}
@@ -185,31 +185,31 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                         </div>
                         <div className="flex items-center gap-2">
                           <div
-                            className="bg-light-white flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-[8px] p-3"
+                            className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-[8px] p-3"
                             onClick={() => handleDecrement(index)}
                           >
                             <p className="">-</p>
                           </div>
-                          <div className="bg-light-white flex h-[28px] w-[27.75px] items-center justify-center rounded-[8px] p-4">
+                          <div className="bg-light-white flex h-7 w-[27.75px] items-center justify-center rounded-[8px] p-4">
                             <p className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]">
                               {quantities[index]?.quantity}
                             </p>
                           </div>
                           <div
-                            className="bg-light-white flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-[8px] p-3"
+                            className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-[8px] p-3"
                             onClick={() => handleIncrement(index)}
                           >
                             <p className="">+</p>
                           </div>
                         </div>
                       </div>
-                      <div className="border-grey-20 my-2 border-t-[1px]"></div>
+                      <div className="border-grey-20 my-2 border-t"></div>
                     </div>
                   ))}
                 </div>
               )}
-              <div className="laptop:hidden flex items-center justify-center gap-[16px]">
-                <div className="flex w-[147px] items-center gap-[16px]">
+              <div className="laptop:hidden flex items-center justify-center gap-4">
+                <div className="flex w-[147px] items-center gap-4">
                   <p className="text-mid-green text-[20px] font-bold">
                     {totalAmount() === 0 ? (
                       <>₦ {totalAmount()}</>
@@ -223,7 +223,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                   />
                 </div>
                 <Button
-                  className="bg-gradient-green h-[48px] w-[180px] rounded-[12px] border-b-[2px] px-[48px] py-[14px] shadow-none"
+                  className="bg-gradient-green h-12 w-[180px] rounded-xl border-b-2 px-12 py-3.5 shadow-none"
                   onClick={proceed}
                 >
                   <p className="font-semi-normal text-[16px]">Assign ticket</p>
@@ -231,12 +231,12 @@ const BuyTicketClient = ({ id }: { id: number }) => {
               </div>
             </div>
             <div className="laptop:block hidden">
-              <div className="w-[480px] rounded-[12px] bg-white px-[10px] py-[12px]">
+              <div className="w-[480px] rounded-xl bg-white px-2.5 py-3">
                 <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
                 {quantities?.map(
                   (quantity: TicketDetails, index: number) =>
                     quantity.quantity > 0 && (
-                      <div className="mt-[16px] flex justify-between" key={index}>
+                      <div className="mt-4 flex justify-between" key={index}>
                         <div>
                           <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                             {quantity.quantity} {quantity.ticket_name}
@@ -254,8 +254,8 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                       </div>
                     ),
                 )}
-                <div className="border-grey-20 my-4 border-t-[1px]"></div>
-                <div className="mt-[16px] flex justify-between">
+                <div className="border-grey-20 my-4 border-t"></div>
+                <div className="mt-4 flex justify-between">
                   <div>
                     <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                       Subtotal
@@ -271,8 +271,8 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     </p>
                   </div>
                 </div>
-                <div className="border-grey-20 my-4 border-t-[1px]"></div>
-                <div className="mt-[16px] flex justify-between">
+                <div className="border-grey-20 my-4 border-t"></div>
+                <div className="mt-4 flex justify-between">
                   <div>
                     <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[27px] font-normal">
                       Total
@@ -288,16 +288,16 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     </p>
                   </div>
                 </div>
-                <div className="mt-[20px] flex items-center justify-between">
+                <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <p className="tracking-custom text-text-grey pl-[40px] font-sans text-[18px] leading-[27px] font-normal">
+                    <p className="tracking-custom text-text-grey pl-10 font-sans text-[18px] leading-[27px] font-normal">
                       -
                     </p>
                   </div>
                   <div>
                     <Button
                       className={
-                        "bg-gradient-green shadow-custom-bottom h-[48px] w-[216px] gap-[8px] rounded-[12px] border-b-2 border-transparent px-[48px] py-[14px]"
+                        "bg-gradient-green shadow-custom-bottom h-12 w-[216px] gap-2 rounded-xl border-b-2 border-transparent px-12 py-3.5"
                       }
                       onClick={proceed}
                     >

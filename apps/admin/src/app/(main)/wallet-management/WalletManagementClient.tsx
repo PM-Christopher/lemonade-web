@@ -110,15 +110,15 @@ function WalletManagementClient() {
 
   return (
     <MainLayout>
-      <section className="mt-[20px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
+      <section className="mt-5 flex flex-col gap-5">
+        <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-[16px]"}>
             {withdrawalRequests?.meta?.total ?? withdrawalRequests?.history?.length ?? 0} Wallets
           </p>
-          <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
+          <div className={"flex justify-between gap-3"}>
+            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
               <div>
-                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
+                <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
               <div className="w-full">
                 <input
@@ -133,7 +133,7 @@ function WalletManagementClient() {
             </div>
             {/* <div
               className={
-                "flex border-[1px] border-grey-20 bg-none w-[193px] h-[40px] px-[16px] py-[10px] rounded-[12px] justify-between items-center"
+                "flex border border-grey-20 bg-none w-[193px] h-10 px-4 py-2.5 rounded-xl justify-between items-center"
               }
             >
               <div className={"flex justify-between items-center"}>
@@ -141,11 +141,11 @@ function WalletManagementClient() {
                   STATUS
                 </p>
               </div>
-              <ChevronDown className={"text-text-grey w-[20px]"} />
+              <ChevronDown className={"text-text-grey w-5"} />
             </div> */}
             {/* <div
               className={
-                "flex border-[1px] border-grey-20 bg-none w-[193px] h-[40px] px-[16px] py-[10px] rounded-[12px] justify-between items-center"
+                "flex border border-grey-20 bg-none w-[193px] h-10 px-4 py-2.5 rounded-xl justify-between items-center"
               }
             >
               <div className={"flex gap-2 items-center"}>
@@ -154,21 +154,19 @@ function WalletManagementClient() {
                   ALL TIME
                 </p>
               </div>
-              <ChevronDown className={"text-text-grey w-[20px]"} />
+              <ChevronDown className={"text-text-grey w-5"} />
             </div> */}
             <div>
-              <Button
-                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
-              >
+              <Button className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}>
                 <UploadIcon className={"h-[15px] w-[15px] text-white"} />
                 <p className={"text-[16px] font-medium text-white"}>Export</p>
               </Button>
             </div>
           </div>
         </div>
-        <div className={"flex flex-col px-[20px]"}>
-          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
-            <div className={"grid grid-cols-3 gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
+            <div className={"grid grid-cols-3 gap-6 px-3 pt-2 pb-4"}>
               <DataCard
                 title={"Wallet Revenue"}
                 count={walletData?.wallet_revenue || 0}

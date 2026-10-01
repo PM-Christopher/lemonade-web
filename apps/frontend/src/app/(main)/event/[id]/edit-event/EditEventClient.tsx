@@ -304,10 +304,10 @@ const EditEventClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <button
             type="button"
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.push("/event")}
           >
             <ChevronLeft />
@@ -320,7 +320,7 @@ const EditEventClient = ({ id }: { id: string }) => {
             <EventFormSkeleton />
           ) : (
             <form onSubmit={formik.handleSubmit}>
-              <div className="mt-10 flex w-[640px] flex-col rounded-[12px] bg-white p-[48px]">
+              <div className="mt-10 flex w-[640px] flex-col rounded-xl bg-white p-12">
                 <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                   EVENT DETAILS
                 </p>
@@ -334,7 +334,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 />
 
                 {/* Event name */}
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="event-name"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -353,7 +353,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Description */}
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="event-description"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -370,7 +370,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Category */}
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="event-category"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -392,14 +392,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Event type */}
-                <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                   EVENT TYPE
                 </p>
 
-                <div className="mt-[16px] flex gap-2">
+                <div className="mt-4 flex gap-2">
                   <button
                     type="button"
-                    className={`flex items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${
+                    className={`flex items-center gap-2 rounded-xl p-3 px-4 ${
                       isPhysical
                         ? "bg-gradient-green-2 shadow-event-custom"
                         : "bg-light_grey text-text-grey"
@@ -414,7 +414,7 @@ const EditEventClient = ({ id }: { id: string }) => {
 
                   <button
                     type="button"
-                    className={`flex items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${
+                    className={`flex items-center gap-2 rounded-xl p-3 px-4 ${
                       isOnline
                         ? "bg-gradient-green-2 shadow-event-custom"
                         : "bg-light_grey text-text-grey"
@@ -430,14 +430,14 @@ const EditEventClient = ({ id }: { id: string }) => {
 
                 {/* Physical */}
                 {isPhysical && (
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="event-location"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
                       Event location
                     </Label>
-                    <div className="bg-light_grey flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+                    <div className="bg-light_grey flex items-center gap-3 rounded-xl p-2 px-3">
                       <LocationIcon />
                       <input
                         id="event-location"
@@ -456,7 +456,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 {/* Online */}
                 {isOnline && (
                   <>
-                    <div className="mt-[24px] grid gap-2">
+                    <div className="mt-6 grid gap-2">
                       <Label
                         htmlFor="hosting_platform"
                         className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -476,7 +476,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       </select>
                     </div>
 
-                    <div className="mt-[24px] grid gap-2">
+                    <div className="mt-6 grid gap-2">
                       <Label
                         htmlFor="meeting_link"
                         className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -494,7 +494,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       />
                     </div>
 
-                    <div className="mt-[24px] grid gap-2">
+                    <div className="mt-6 grid gap-2">
                       <Label
                         htmlFor="meeting_passcode"
                         className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -515,7 +515,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 )}
 
                 {/* Time zone */}
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="time_zone"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -540,14 +540,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Start */}
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     Start date
                   </Label>
 
                   <div className="flex justify-between gap-3">
-                    <div className="flex w-full flex-col gap-[4px]">
-                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                    <div className="flex w-full flex-col gap-1">
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <CalendarIcon />
                         <DatePicker
                           selected={
@@ -558,7 +558,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                           }}
                           minDate={now}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                           placeholderText="From"
                         />
                       </div>
@@ -569,8 +569,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                       )}
                     </div>
 
-                    <div className="flex w-full flex-col gap-[4px]">
-                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                    <div className="flex w-full flex-col gap-1">
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <ClockIcon />
                         <DatePicker
                           selected={
@@ -588,7 +588,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                           timeCaption="Start Time"
                           timeIntervals={15}
                           dateFormat="h:mm aa"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                           placeholderText="Start Time"
                           minTime={startMinTime}
                           maxTime={endOfDay}
@@ -604,14 +604,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* End */}
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     End date
                   </Label>
 
                   <div className="flex justify-between gap-3">
-                    <div className="flex w-full flex-col gap-[4px]">
-                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                    <div className="flex w-full flex-col gap-1">
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <CalendarIcon />
                         <DatePicker
                           selected={
@@ -625,7 +625,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                           }
                           dateFormat="yyyy-MM-dd"
                           placeholderText="End Date"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
                       {formik.touched.end_date && formik.errors.end_date && (
@@ -635,8 +635,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                       )}
                     </div>
 
-                    <div className="flex w-full flex-col gap-[4px]">
-                      <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                    <div className="flex w-full flex-col gap-1">
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <ClockIcon />
                         <DatePicker
                           selected={
@@ -655,7 +655,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                           placeholderText="End Time"
                           minTime={endMinTime}
                           maxTime={endOfDay}
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
                       {formik.touched.end_time && formik.errors.end_time && (
@@ -668,11 +668,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Affiliate */}
-                <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                   AFFILIATE PROGRAM
                 </p>
 
-                <div className="mt-[28px] flex justify-between">
+                <div className="mt-7 flex justify-between">
                   <div className="flex gap-2">
                     <div className="mt-1">
                       <AffiliateUsersIcon />
@@ -697,7 +697,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {affiliateEnabled && (
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="commission"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -742,7 +742,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 )}
 
                 {/* Socials */}
-                <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                   SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
                 </p>
 
@@ -775,7 +775,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 ].map(({ key, icon, type }) => (
                   <div
                     key={key}
-                    className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]"
+                    className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3"
                   >
                     <div>{icon}</div>
                     <div className="w-full">
@@ -796,7 +796,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   error={formik.isValid}
                   onClick={formik.handleSubmit}
                   title="Save changes"
-                  classes="mt-[24px] h-[48px] rounded-[12px] border-[1px] border-step-color shadow-green-inset hover:shadow-green-inset-strong"
+                  classes="mt-6 h-12 rounded-xl border border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                 />
               </div>
             </form>

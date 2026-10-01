@@ -16,8 +16,8 @@ const GuestListCard = ({ guest, data }: { guest: GuestListCardProps; data: SideM
   };
 
   return (
-    <div className="cursor-pointer px-[24px]" onClick={handleSelectGuest}>
-      <div className="group flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-all hover:-translate-y-[1px] hover:border-gray-300 hover:shadow-md">
+    <div className="cursor-pointer px-6" onClick={handleSelectGuest}>
+      <div className="group flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-all hover:-translate-y-px hover:border-gray-300 hover:shadow-md">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <p className="truncate text-[15px] font-semibold text-gray-900">{guest?.name}</p>

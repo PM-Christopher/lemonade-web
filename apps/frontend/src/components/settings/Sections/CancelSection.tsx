@@ -56,14 +56,14 @@ const CancelSection = ({}) => {
   };
 
   return (
-    <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-[12px] bg-white p-[24px]">
+    <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl bg-white p-6">
       <div>
         <p className="text-[20px] font-semibold">We are sorry to see you go</p>
         <p className="text-light-black text-[14px] font-normal">
           You will lose the following plan benefits if you downgrade
         </p>
       </div>
-      <div className="bg-mid-grey flex flex-col gap-[16px] rounded-[12px] p-[24px]">
+      <div className="bg-mid-grey flex flex-col gap-4 rounded-xl p-6">
         <div className="flex items-center justify-between">
           <p className="font-semi-normal text-black-light text-[14px]">Verification badge</p>
           {subscription?.benefits?.ver_badge ? <CheckIcon /> : <PadlockIcon />}
@@ -117,9 +117,9 @@ const CancelSection = ({}) => {
           {subscription?.benefits?.offline_benefits ? <CheckIcon /> : <PadlockIcon />}
         </div>
       </div>
-      <div className="laptop:flex-row mt-[24px] flex flex-col justify-between gap-[16px]">
+      <div className="laptop:flex-row mt-6 flex flex-col justify-between gap-4">
         <Button
-          className={`h-[48px] w-full rounded-[12px] ${
+          className={`h-12 w-full rounded-xl ${
             !upgradeLoading
               ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
               : "bg-mid-green cursor-not-allowed opacity-70"
@@ -154,7 +154,7 @@ const CancelSection = ({}) => {
             <p className="font-semi-normal text-[16px]">Continue to downgrade</p>
           )}
         </Button>
-        <Button className="h-[48px] w-full rounded-[12px] border-[1px] bg-white shadow-none hover:bg-white">
+        <Button className="h-12 w-full rounded-xl border bg-white shadow-none hover:bg-white">
           <p className="font-semi-normal text-black-light text-[16px]">Keep my current plan</p>
         </Button>
       </div>

@@ -20,7 +20,7 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
     >
       <DialogContentBare className="fixed top-0 right-0 bottom-0 left-auto h-full w-fit max-w-none translate-x-0 translate-y-0 gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Guest details</DialogTitle>
-        <div className="h-full w-[585px] bg-white p-[48px] px-[20px]">
+        <div className="h-full w-[585px] bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
@@ -31,7 +31,7 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
             </div>
           </div>
-          <div className="mt-[40px] p-[24px] px-[64px]">
+          <div className="mt-10 p-6 px-16">
             <p className="font-sans text-[20px] leading-[28px] font-semibold">Halloween party</p>
             <div className="flex items-center gap-2">
               <CalendarIcon />
@@ -47,7 +47,7 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
                 6PM
               </p>
             </div>
-            <div className="mt-[24px]">
+            <div className="mt-6">
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
@@ -67,7 +67,7 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
                 </div>
               </div>
             </div>
-            <div className="mt-[24px]">
+            <div className="mt-6">
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
@@ -87,13 +87,13 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
                 </div>
               </div>
             </div>
-            <div className="mt-[24px]">
+            <div className="mt-6">
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     Check in status
                   </p>
-                  <div className="bg-warning flex items-center justify-center gap-[4px] rounded-[12px] p-[2px] px-[8px]">
+                  <div className="bg-warning flex items-center justify-center gap-1 rounded-xl p-0.5 px-2">
                     <ClockOrange />
                     <p className="font-semi-normal tracking-custom text-warning-bold font-sans text-[14px] leading-[21px]">
                       Pending
@@ -110,8 +110,8 @@ const GuestDetailsModal: React.FC<GuestDetailsInterface> = ({ toggleMenu, isOpen
                 </div>
               </div>
             </div>
-            <div className="mt-[24px]">
-              <button className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]">
+            <div className="mt-6">
+              <button className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl p-3.5 px-12">
                 <p className="font-semi-normal font-sans text-[16px] leading-[19.2px] text-white">
                   Check in
                 </p>

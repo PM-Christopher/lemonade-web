@@ -25,10 +25,8 @@ function DataCard({
 }) {
   const router = useRouter();
   return (
-    <div
-      className={`shadow-card-shadow flex justify-between rounded-[12px] bg-white p-4 ${styles}`}
-    >
-      <div className={"flex flex-col gap-[16px]"}>
+    <div className={`shadow-card-shadow flex justify-between rounded-xl bg-white p-4 ${styles}`}>
+      <div className={"flex flex-col gap-4"}>
         <p className="text-text-grey text-[14px] font-normal">{title}</p>
         <p className="font-semiBold text-[24px]">
           {isPrice && "₦"}

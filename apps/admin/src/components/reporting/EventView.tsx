@@ -8,7 +8,7 @@ function EventView() {
         <div className="flex items-center gap-2">
           <div>
             {/*<Image src={thread?.created_by?.user?.avatar} alt="" width={48} height={48}*/}
-            {/*       className="w-[48px] h-[48px] rounded-[16px] border-[1px] border-grey-90"/>*/}
+            {/*       className="w-12 h-12 rounded-2xl border border-grey-90"/>*/}
           </div>
           <div>
             {/*<p className="font-semi-normal font-sans text-[14px] leading-[14.4px]">{thread?.created_by?.user?.username}</p>*/}
@@ -31,7 +31,7 @@ function EventView() {
           <MoreVerticalIcon className="cursor-pointer" />
         </div>
       </div>
-      <div className="mt-[4px]">
+      <div className="mt-1">
         <p className="font-sans text-[14px] leading-[21px] font-semibold">{/*{thread?.topic}*/}</p>
         <p className="text-light-black mt-[30px] font-sans text-[14px] leading-[21px] font-normal">
           {/*{isExpanded || !thread?.thoughts || thread.thoughts.length <= charLimit*/}

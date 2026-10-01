@@ -10,19 +10,19 @@ interface MainTribeCardProps {
 
 const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
   return (
-    <div className="border-grey-20 flex flex-col gap-[8px] border-b-[1px] pb-[16px]">
+    <div className="border-grey-20 flex flex-col gap-2 border-b pb-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-[8px]">
+        <div className="flex items-center gap-2">
           <Image
             src={thread.user?.profile_image || "/images/tribe_1.png"}
             alt={thread.user?.fullname ?? "member"}
             width={32}
             height={32}
-            className="h-[32px] w-[32px] rounded-full"
+            className="h-8 w-8 rounded-full"
           />
-          <div className="flex items-center gap-[8px]">
+          <div className="flex items-center gap-2">
             <p className="text-[14px] font-normal">{thread.user?.fullname ?? "Unknown member"}</p>
-            <DotIcon className="text-light-grey-50 px-[0px]" />
+            <DotIcon className="text-light-grey-50 px-0" />
             <p className="text-text-grey text-[12px] font-normal">{thread.created_at}</p>
           </div>
         </div>
@@ -33,7 +33,7 @@ const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
             className="text-text-grey hover:text-red-1 cursor-pointer"
             onClick={() => onDelete(thread.id)}
           >
-            <Trash2Icon className="h-[16px] w-[16px]" />
+            <Trash2Icon className="h-4 w-4" />
           </button>
         )}
       </div>

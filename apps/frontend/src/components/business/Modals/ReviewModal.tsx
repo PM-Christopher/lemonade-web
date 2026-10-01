@@ -30,13 +30,13 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
               </p>
             </div>
             <div>
-              <Button className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]">
+              <Button className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5">
                 <p className="font-semi-normal font-sans text-[12px]">Submit a review</p>
               </Button>
             </div>
           </div>
           <div className="mt-10">
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -51,7 +51,7 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
                 <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
               </div>
             </div>
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -65,7 +65,7 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
                 className="form-font bg-light_grey h-12 rounded-xl border-0"
               />
             </div>
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <div className="flex justify-between">
                 <Label
                   htmlFor="fullname"

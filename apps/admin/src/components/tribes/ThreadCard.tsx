@@ -29,7 +29,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
                 alt=""
                 width={48}
                 height={48}
-                className="border-grey-90 h-[48px] w-[48px] rounded-[16px] border-[1px]"
+                className="border-grey-90 h-12 w-12 rounded-2xl border"
               />
             </div>
             <div>
@@ -49,7 +49,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
           </div>
           <MoreVerticalIcon className="cursor-pointer" />
         </div>
-        <div className="mt-[4px]">
+        <div className="mt-1">
           <p className="font-sans text-[14px] leading-[21px] font-semibold">{thread?.topic}</p>
           <p className="text-light-black mt-[30px] font-sans text-[14px] leading-[21px] font-normal">
             {isExpanded || content || content.length <= charLimit
@@ -67,7 +67,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
         </div>
       </div>
       <div className="mt-2 flex gap-4"></div>
-      <div className="w-full border-b-[1px]"></div>
+      <div className="w-full border-b"></div>
     </div>
   );
 };

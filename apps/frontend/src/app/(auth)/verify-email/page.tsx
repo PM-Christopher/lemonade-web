@@ -164,7 +164,7 @@ export default function VerifyPage() {
             </p>
           </div>
           <form onSubmit={formik.handleSubmit} className="w-full">
-            <Card className="w-full rounded-[16px] border-none p-6 shadow-none">
+            <Card className="w-full rounded-2xl border-none p-6 shadow-none">
               <CardContent className="grid gap-6">
                 <div className="flex flex-col items-center">
                   <OtpInput
@@ -229,7 +229,7 @@ export default function VerifyPage() {
                   loading={formik.isSubmitting}
                   title="Verify"
                   error={(formik.values.code?.length ?? 0) === 4 && !invalidCode}
-                  classes="w-full h-[48px] rounded-[12px]"
+                  classes="w-full h-12 rounded-xl"
                 />
               </CardContent>
             </Card>

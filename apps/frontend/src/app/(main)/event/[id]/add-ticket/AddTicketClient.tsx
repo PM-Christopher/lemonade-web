@@ -282,9 +282,9 @@ const AddTicketClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -293,15 +293,15 @@ const AddTicketClient = ({ id }: { id: number }) => {
         </div>
         <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           <form onSubmit={formik.handleSubmit}>
-            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-[12px] bg-white p-[48px]">
+            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-xl bg-white p-12">
               {formik.values.tickets.map((ticket, index) => (
-                <div className="mb-[24px]" key={index}>
+                <div className="mb-6" key={index}>
                   <input type="hidden" name="ticket_id" value={ticket.ticket_id} />
                   {index > 0 && (
-                    <div className="bg-grey-20 mb-[16px] flex items-center justify-between rounded-[8px] p-[8px] px-[16px]">
+                    <div className="bg-grey-20 mb-4 flex items-center justify-between rounded-[8px] p-2 px-4">
                       <p className="text-[14px] font-normal">Ticket {index + 1}</p>
                       <CloseIcon
-                        className="h-[10px] w-[10px] cursor-pointer"
+                        className="h-2.5 w-2.5 cursor-pointer"
                         onClick={() => removeTicket(index)}
                       />
                     </div>
@@ -309,9 +309,9 @@ const AddTicketClient = ({ id }: { id: number }) => {
                   <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
                     Ticket type
                   </p>
-                  <div className="mt-[16px] flex gap-2">
+                  <div className="mt-4 flex gap-2">
                     <div
-                      className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[24px] ${
+                      className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-6 ${
                         ticket.ticket_type === "free"
                           ? "bg-gradient-green-2 shadow-event-custom"
                           : "bg-light_grey text-text-grey"
@@ -323,7 +323,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                       </p>
                     </div>
                     <div
-                      className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[24px] ${
+                      className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-6 ${
                         ticket.ticket_type === "paid"
                           ? "bg-gradient-green-2 shadow-event-custom"
                           : "bg-light_grey text-text-grey"
@@ -336,7 +336,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                     </div>
                   </div>
 
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor={`ticket-name-${index}`}
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -357,7 +357,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
 
                   {ticket.ticket_type === "paid" && (
                     <>
-                      <div className="mt-[24px] grid gap-2">
+                      <div className="mt-6 grid gap-2">
                         <Label
                           htmlFor={`ticket-price-${index}`}
                           className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -385,10 +385,10 @@ const AddTicketClient = ({ id }: { id: number }) => {
                         />
                       </div>
                       {getTicketFieldError(index, "price")}
-                      <div className="mt-[24px] flex items-center gap-2">
+                      <div className="mt-6 flex items-center gap-2">
                         <input
                           type="checkbox"
-                          className="border-text-grey w-[20px] border-[1px]"
+                          className="border-text-grey w-5 border"
                           checked={formik.values.tickets[index].transfer_commission}
                           onChange={formik.handleChange}
                           name={`tickets[${index}].transfer_commission`}
@@ -401,7 +401,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                     </>
                   )}
 
-                  <div className="mt-[24px] grid w-full gap-2">
+                  <div className="mt-6 grid w-full gap-2">
                     <Label
                       htmlFor={`ticket-stock-${index}`}
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -435,7 +435,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                     {getTicketFieldError(index, "ticket_stock")}
                   </div>
 
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor={`ticket-limit-${index}`}
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -455,7 +455,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                     {getTicketFieldError(index, "purchase_limit")}
                   </div>
 
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor={`ticket-description-${index}`}
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -474,7 +474,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
               ))}
 
               <Button
-                className="bg-light-green-10 mt-[24px] h-[48px] rounded-[12px] border-0 p-[14px] px-[48px] shadow-none"
+                className="bg-light-green-10 mt-6 h-12 rounded-xl border-0 p-3.5 px-12 shadow-none"
                 onClick={addTicket}
                 type="button"
               >
@@ -491,7 +491,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                   title="Save ticket"
                   loading={formik.isSubmitting}
                   error={formik.isValid}
-                  classes="rounded-[12px] h-[48px] p-[14px] px-[48px] mt-[24px] border-0 w-full"
+                  classes="rounded-xl h-12 p-3.5 px-12 mt-6 border-0 w-full"
                 />
               </div>
             </div>

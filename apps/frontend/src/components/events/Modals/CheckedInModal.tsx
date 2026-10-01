@@ -27,12 +27,12 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
               </div>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex justify-center">
               <Image src={"/images/checkIn.png"} alt="check in" width={311} height={160} />
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-black-light text-center font-sans text-[20px] leading-[28px] font-semibold">
                 Check in Successful!
@@ -43,9 +43,9 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
               </p>
             </div>
           </div>
-          <div className="mt-[40px]">
+          <div className="mt-10">
             <button
-              className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+              className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
               <p className="font-semi-normal font-sans text-[16px] text-white">Done</p>

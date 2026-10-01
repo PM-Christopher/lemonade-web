@@ -37,12 +37,12 @@ function SideNav({}) {
     });
   };
   return (
-    <aside className="bg-gray-20 border-r-grey-20 flex w-64 flex-col gap-[20px] border-r-[1px] bg-white p-4">
+    <aside className="bg-gray-20 border-r-grey-20 flex w-64 flex-col gap-5 border-r bg-white p-4">
       <div className="mb-8 text-2xl font-bold">
         <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
       </div>
       <nav>
-        <ul className="space-y-[8px]">
+        <ul className="space-y-2">
           {visibleLinks.map((item) => {
             const isActive =
               pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
@@ -51,7 +51,7 @@ function SideNav({}) {
               <li key={item.path}>
                 <a
                   href={item.path}
-                  className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-[192px] rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal ${
+                  className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-48 rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal ${
                     isActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
                   }`}
                 >
@@ -62,10 +62,10 @@ function SideNav({}) {
           })}
         </ul>
       </nav>
-      <div className="border-t-grey-20 mt-auto border-t-[1px] pt-[16px] pb-[16px]">
+      <div className="border-t-grey-20 mt-auto border-t pt-4 pb-4">
         <a
           href={"/profile"}
-          className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-[192px] rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal ${
+          className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-48 rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal ${
             profileActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
           }`}
         >
@@ -75,7 +75,7 @@ function SideNav({}) {
           onClick={() => {
             handleLogout();
           }}
-          className="text-red-1 hover:bg-red-1 block rounded-[12px] px-[12px] py-[10px] font-sans text-[14px] font-normal hover:text-white"
+          className="text-red-1 hover:bg-red-1 block rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal hover:text-white"
         >
           Logout
         </div>

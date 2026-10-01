@@ -27,9 +27,9 @@ const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe 
               </div>
             </div>
           </div>
-          <div className="mt-10 flex flex-col items-center gap-[24px]">
+          <div className="mt-10 flex flex-col items-center gap-6">
             <div className="my-6 flex justify-center">
-              <div className="flex w-[544px] flex-col items-center gap-[8px]">
+              <div className="flex w-[544px] flex-col items-center gap-2">
                 <p className={"font-semiBold text-[18px]"}>Welcome to</p>
                 <p className="font-ruso text-center text-[24px] leading-[21px] font-normal">
                   {tribe?.tribe_name}
@@ -43,8 +43,8 @@ const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe 
               </p>
             </div>
 
-            <div className="bg-light_grey flex justify-center rounded-[12px]">
-              <div className="flex w-[544px] flex-col gap-[20px] p-4 py-[24px]">
+            <div className="bg-light_grey flex justify-center rounded-xl">
+              <div className="flex w-[544px] flex-col gap-5 p-4 py-6">
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
                   <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
@@ -66,7 +66,7 @@ const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe 
               </div>
             </div>
             <button
-              className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+              className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
               <p className="font-semi-normal font-sans text-[16px] text-white">View tribe</p>

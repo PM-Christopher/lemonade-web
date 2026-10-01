@@ -18,7 +18,7 @@ const BottomNav = () => {
         {visibleLinks.map((link, idx) => (
           <Link href={link.path} key={idx}>
             <div
-              className={`flex flex-col items-center gap-2 ${isActiveLink(pathname, link.path, true) ? "bg-light-green-10 text-light-green rounded-[8px] p-[8px]" : "text-text-grey"} `}
+              className={`flex flex-col items-center gap-2 ${isActiveLink(pathname, link.path, true) ? "bg-light-green-10 text-light-green rounded-[8px] p-2" : "text-text-grey"} `}
             >
               {/* <Image src={link.icon} alt="home" width={12.8}/> */}
               <p

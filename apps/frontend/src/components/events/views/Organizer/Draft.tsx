@@ -5,7 +5,7 @@ import { EventsSkeleton } from "@/components/Skeletons";
 
 const Draft = ({ events, loading }: { events: EventInterface[]; loading: boolean }) => {
   return (
-    <div className="laptop:w-[780px] laptop:grid-cols-3 mt-[10px] grid w-full grid-cols-2 gap-[16px] rounded-[12px] bg-white p-[16px]">
+    <div className="laptop:w-[780px] laptop:grid-cols-3 mt-2.5 grid w-full grid-cols-2 gap-4 rounded-xl bg-white p-4">
       {loading ? (
         <EventsSkeleton count={3} />
       ) : events.length > 0 ? (

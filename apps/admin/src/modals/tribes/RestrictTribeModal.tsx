@@ -43,8 +43,8 @@ function RestrictTribeModal({ isOpen, toggle, id }: RestrictTribeModalProps) {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Restrict tribe</DialogTitle>
-        <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
-          <div className={"px-[16px] py-[4px]"}>
+        <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+          <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
               <p className="font-sans text-[18px] leading-[27px] font-semibold">Restrict tribe</p>
               <div className="cursor-pointer" onClick={toggle}>
@@ -52,24 +52,20 @@ function RestrictTribeModal({ isOpen, toggle, id }: RestrictTribeModalProps) {
               </div>
             </div>
           </div>
-          <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
+          <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-[14px] font-normal"}>
               Are you sure you want to restrict this tribe? It will no longer be visible or joinable
               until reactivated.
             </p>
-            <div className={"flex justify-between gap-[10px]"}>
+            <div className={"flex justify-between gap-2.5"}>
               <button
-                className={
-                  "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white"
-                }
+                className={"border-light-grey-50 h-12 w-[156px] rounded-xl border bg-white"}
                 onClick={toggle}
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
               <button
-                className={
-                  "border-red-2 bg-red-1 h-[48px] w-[156px] rounded-[12px] border-[1px] text-center"
-                }
+                className={"border-red-2 bg-red-1 h-12 w-[156px] rounded-xl border text-center"}
                 onClick={submitAction}
                 disabled={restrictTribeMutation.isPending}
               >

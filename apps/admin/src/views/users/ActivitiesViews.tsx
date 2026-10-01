@@ -8,32 +8,32 @@ interface ActivitiesViewsProps {
 function ActivitiesViews({ userDetail }: ActivitiesViewsProps) {
   return (
     <>
-      <div className={"flex flex-col py-[20px]"}>
-        {/* <div className={"px-[24px] py-[16px]"}>
+      <div className={"flex flex-col py-5"}>
+        {/* <div className={"px-6 py-4"}>
                     <div
-                        className={"flex border-[1px] border-grey-20 h-[40px] rounded-[12px] justify-between items-center bg-light-grey px-[16px] py-[10px]"}>
+                        className={"flex border border-grey-20 h-10 rounded-xl justify-between items-center bg-light-grey px-4 py-2.5"}>
                         <div className={'flex justify-between items-center'}>
-                            <div className={"flex gap-[8px] items-center text-text-grey"}>
+                            <div className={"flex gap-2 items-center text-text-grey"}>
                                 <CalendarIcon className={"w-[15px]"}/>
                                 <p className={"text-[12px] font-semiBold text-text-grey"}>
                                     ALL TIME
                                 </p>
                             </div>
                         </div>
-                        <ChevronDown className={"text-text-grey w-[20px]"}/>
+                        <ChevronDown className={"text-text-grey w-5"}/>
                     </div>
                 </div> */}
 
-        <div className="pt-[16px] pb-[24px]">
+        <div className="pt-4 pb-6">
           <div className={"flex flex-col"}>
             {userDetail?.logs?.map((item) => (
-              <div className="flex justify-between px-[24px] py-[16px]" key={item?.id}>
+              <div className="flex justify-between px-6 py-4" key={item?.id}>
                 <p className={"text-light-black text-[14px] font-medium"}>{item?.message}</p>
                 <p className={"text-text-grey text-[14px] font-normal"}>{item?.created_at}</p>
               </div>
             ))}
 
-            {/* <div className="flex justify-between px-[24px] py-[16px]">
+            {/* <div className="flex justify-between px-6 py-4">
               <p className={"font-medium text-[14px] text-light-black"}>
                 Created a 'Nigeria start-ups' Tribe
               </p>

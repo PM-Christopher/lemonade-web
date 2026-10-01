@@ -119,14 +119,14 @@ const Carousel: React.FC<ImageSlider> = ({
                 </p>
 
                 <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-white/90">
-                  <div className="flex items-center gap-[6px]">
+                  <div className="flex items-center gap-1.5">
                     <CalendarIcon className="h-4 w-4 text-white" />
                     <p className="font-sans text-[13px] leading-[16.8px] font-normal sm:text-[14px]">
                       {formatLongDate(events?.[currentIndex]?.start_date, "mid")}
                     </p>
                   </div>
 
-                  <DotIcon className="h-[4px] w-[4px]" />
+                  <DotIcon className="h-1 w-1" />
 
                   <p className="font-sans text-[13px] leading-[16.8px] font-normal sm:text-[14px]">
                     {formatTime(events?.[currentIndex]?.start_date)} -{" "}

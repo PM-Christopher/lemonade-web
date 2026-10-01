@@ -106,8 +106,8 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
                     </div>
                   </div>
                 </div>
-                <div className="mt-[24px]">
-                  <div className="flex flex-col gap-[12px]">
+                <div className="mt-6">
+                  <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <p className="text-[16px] font-normal">In-app notification</p>
                       <Switch

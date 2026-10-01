@@ -19,32 +19,32 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
   if (!isHydrated) {
     return (
       <MainLayout>
-        <section className={"flex justify-between p-[20px]"}>
-          <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
-            <div className={"flex flex-col gap-[20px] p-[24px]"}>
-              <div className={"flex items-center gap-[24px]"}>
+        <section className={"flex justify-between p-5"}>
+          <div className={"flex h-fit w-[800px] flex-col rounded-xl bg-white"}>
+            <div className={"flex flex-col gap-5 p-6"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
                 </div>
-                <div className={"flex gap-[4px]"}>
+                <div className={"flex gap-1"}>
                   <p className={"text-[14px] font-medium"}>Loading...</p>
                 </div>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Announcement ID:</p>
                 </div>
                 <p className={"text-[14px] font-medium"}>Loading...</p>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
                 </div>
-                <div className={"flex gap-[4px]"}>
+                <div className={"flex gap-1"}>
                   <p className={"text-[14px] font-medium"}>Loading...</p>
                 </div>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
                 </div>
@@ -52,18 +52,14 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
               </div>
             </div>
           </div>
-          <div className={"flex h-fit w-[780px] flex-col gap-[16px] rounded-[12px] bg-white"}>
-            <div className={"flex items-center justify-between border-b-[1px] p-[24px]"}>
+          <div className={"flex h-fit w-[780px] flex-col gap-4 rounded-xl bg-white"}>
+            <div className={"flex items-center justify-between border-b p-6"}>
               <p className={"font-semiBold text-[16px]"}>Announcement</p>
-              <div
-                className={
-                  "border-light-grey-50 cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"
-                }
-              >
+              <div className={"border-light-grey-50 cursor-pointer rounded-xl border p-2.5 px-3.5"}>
                 <p className={"text-[14px] font-medium"}>Edit draft</p>
               </div>
             </div>
-            <div className={"flex flex-col gap-[16px] p-[24px]"}>
+            <div className={"flex flex-col gap-4 p-6"}>
               <div className={"flex flex-col"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Title</p>
                 <p className={"font-semiBold text-[20px]"}>Loading...</p>
@@ -90,34 +86,34 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
 
   return (
     <MainLayout>
-      <section className={"flex justify-between p-[20px]"}>
-        <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
-          <div className={"flex flex-col gap-[20px] p-[24px]"}>
-            <div className={"flex items-center gap-[24px]"}>
+      <section className={"flex justify-between p-5"}>
+        <div className={"flex h-fit w-[800px] flex-col rounded-xl bg-white"}>
+          <div className={"flex flex-col gap-5 p-6"}>
+            <div className={"flex items-center gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
               </div>
-              <div className={"flex gap-[4px]"}>
+              <div className={"flex gap-1"}>
                 <p className={"text-[14px] font-medium"}>
                   {announcement?.created_by?.name || "N/A"}
                 </p>
               </div>
             </div>
-            <div className={"flex items-center gap-[24px]"}>
+            <div className={"flex items-center gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Announcement ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>AN112332</p>
             </div>
-            <div className={"flex items-center gap-[24px]"}>
+            <div className={"flex items-center gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
               </div>
-              <div className={"flex gap-[4px]"}>
+              <div className={"flex gap-1"}>
                 <p className={"text-[14px] font-medium"}>{announcement?.created_at || "N/A"}</p>
               </div>
             </div>
-            <div className={"flex items-center gap-[24px]"}>
+            <div className={"flex items-center gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
               </div>
@@ -127,18 +123,14 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
             </div>
           </div>
         </div>
-        <div className={"flex h-fit w-[780px] flex-col gap-[16px] rounded-[12px] bg-white"}>
-          <div className={"flex items-center justify-between border-b-[1px] p-[24px]"}>
+        <div className={"flex h-fit w-[780px] flex-col gap-4 rounded-xl bg-white"}>
+          <div className={"flex items-center justify-between border-b p-6"}>
             <p className={"font-semiBold text-[16px]"}>Announcement</p>
-            <div
-              className={
-                "border-light-grey-50 cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"
-              }
-            >
+            <div className={"border-light-grey-50 cursor-pointer rounded-xl border p-2.5 px-3.5"}>
               <p className={"text-[14px] font-medium"}>Edit draft</p>
             </div>
           </div>
-          <div className={"flex flex-col gap-[16px] p-[24px]"}>
+          <div className={"flex flex-col gap-4 p-6"}>
             <div className={"flex flex-col"}>
               <p className={"text-text-grey text-[12px] font-medium"}>Title</p>
               <p className={"font-semiBold text-[20px]"}>

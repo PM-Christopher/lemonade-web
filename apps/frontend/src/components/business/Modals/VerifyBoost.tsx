@@ -37,8 +37,8 @@ const VerifyBoost = ({
           <div className="flex flex-col items-center">
             <Image src={"/images/promoteEventIcon.png"} alt="promote" width={160} height={160} />
           </div>
-          <div className="px-[10px]">
-            <div className="mt-[24px] flex flex-col items-center">
+          <div className="px-2.5">
+            <div className="mt-6 flex flex-col items-center">
               <p className="font-semiBold text-light-green text-center text-[20px]">
                 Payment successful
               </p>
@@ -49,20 +49,20 @@ const VerifyBoost = ({
                 </span>
               </p>
             </div>
-            <div className="mt-[24px]">
+            <div className="mt-6">
               <p className="font-semiBold text-[20px]">Featured</p>
             </div>
-            <div className="mt-[24px] flex flex-col">
+            <div className="mt-6 flex flex-col">
               <p className="text-text-grey text-[14px] font-normal">Start date</p>
               <p className="font-semi-normal text-light-black text-[14px]">{boost?.start_date}</p>
             </div>
 
-            <div className="mt-[16px] flex flex-col">
+            <div className="mt-4 flex flex-col">
               <p className="text-text-grey text-[14px] font-normal">Start time</p>
               <p className="font-semi-normal text-light-black text-[14px]">{boost?.start_time}</p>
             </div>
 
-            <div className="mt-[16px] flex flex-col">
+            <div className="mt-4 flex flex-col">
               <p className="text-text-grey text-[14px] font-normal">Duration</p>
               <p className="font-semi-normal text-light-black text-[14px]">
                 {boost?.duration} days
@@ -71,7 +71,7 @@ const VerifyBoost = ({
           </div>
 
           <Button
-            className="bg-gradient-green mt-[24px] h-[48px] w-full"
+            className="bg-gradient-green mt-6 h-12 w-full"
             onClick={backToBusiness}
             type="button"
           >

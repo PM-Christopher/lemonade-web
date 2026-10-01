@@ -92,7 +92,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
         return (
           <div>
             <p className="text-text-grey text-[14px] font-normal">Service status</p>
-            <div className="bg-warning mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
+            <div className="bg-warning mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <ClockIconOrange />
               <p className="font-semi-normal text-warning-bold text-[14px]">Awaiting</p>
             </div>
@@ -102,7 +102,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
         return (
           <div>
             <p className="text-text-grey text-[14px] font-normal">Service status</p>
-            <div className="bg-purple-1 mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
+            <div className="bg-purple-1 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <CheckPIcon />
               <p className="font-semi-normal text-blue-accent-1 text-[14px]">Accepted</p>
             </div>
@@ -112,7 +112,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
         return (
           <div>
             <p className="text-text-grey text-[14px] font-normal">Service status</p>
-            <div className="bg-red-accent-1 mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
+            <div className="bg-red-accent-1 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <CloseRedIcon />
               <p className="font-semi-normal text-red-1 text-[14px]">Rejected</p>
             </div>
@@ -122,7 +122,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
         return (
           <div>
             <p className="text-text-grey text-[14px] font-normal">Service status</p>
-            <div className="bg-warning mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
+            <div className="bg-warning mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <ClockIconOrange />
               <p className="font-semi-normal text-warning-bold text-[14px]">In progress</p>
             </div>
@@ -132,7 +132,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
         return (
           <div>
             <p className="text-text-grey text-[14px] font-normal">Service status</p>
-            <div className="bg-light-green-60 mt-[8px] flex w-fit items-center gap-2 rounded-[12px] p-[2px] px-[8px]">
+            <div className="bg-light-green-60 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <CheckGIcon />
               <p className="font-semi-normal text-light-green-70 text-[14px]">Completed</p>
             </div>
@@ -203,7 +203,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                       alt="job logo"
                       width={72}
                       height={72}
-                      className="border-step-color h-[64px] rounded-xl border object-cover"
+                      className="border-step-color h-16 rounded-xl border object-cover"
                     />
                     <p className="mt-3 text-center text-[16px] font-semibold text-black">
                       {job?.name}
@@ -273,13 +273,13 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                 {!job?.isOwner && job?.status === "IN_PROGRESS" && (
                   <>
                     <Button
-                      className={`bg-gradient-green h-[48px] w-full rounded-2xl shadow-md`}
+                      className={`bg-gradient-green h-12 w-full rounded-2xl shadow-md`}
                       onClick={markCompleted}
                     >
                       <p className="text-light-white text-[16px] font-medium">Mark as Completed</p>
                     </Button>
                     <Button
-                      className="h-[48px] w-full rounded-2xl border border-gray-300 bg-white font-medium text-black"
+                      className="h-12 w-full rounded-2xl border border-gray-300 bg-white font-medium text-black"
                       onClick={navigateDispute}
                     >
                       Dispute
@@ -289,7 +289,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
 
                 {!job?.isOwner && job?.status === "ACCEPTED" && job?.payment_requested && (
                   <Button
-                    className="bg-gradient-green text-light-white h-[48px] w-full rounded-2xl font-semibold shadow-md"
+                    className="bg-gradient-green text-light-white h-12 w-full rounded-2xl font-semibold shadow-md"
                     onClick={togglePayNow}
                   >
                     Make Payment
@@ -299,15 +299,15 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                 {job?.isOwner &&
                   job?.status === "ACCEPTED" &&
                   (job?.payment_made ? (
-                    <div className="laptop:w-[544px] mt-[40px] mb-[10px] flex w-full justify-center gap-3">
-                      <Button className="border-light-grey-50 h-[48px] w-full rounded-[12px] border-[1px] bg-white p-[14px] px-[48px] shadow-none">
+                    <div className="laptop:w-[544px] mt-10 mb-2.5 flex w-full justify-center gap-3">
+                      <Button className="border-light-grey-50 h-12 w-full rounded-xl border bg-white p-3.5 px-12 shadow-none">
                         <p className="font-semi-normal text-black-light text-[16px]">Dispute Job</p>
                       </Button>
                     </div>
                   ) : (
-                    <div className="laptop:w-[544px] mt-[40px] mb-[10px] flex w-full justify-center gap-3">
+                    <div className="laptop:w-[544px] mt-10 mb-2.5 flex w-full justify-center gap-3">
                       <Button
-                        className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
+                        className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl p-3.5 px-12"
                         onClick={toggleConfirmPayment}
                       >
                         <p className="font-semi-normal text-[16px]">Request payment</p>
@@ -322,7 +322,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                         Include a message with your offer response
                       </p>
                       <textarea
-                        className="h-[80px] w-full resize-none rounded-xl bg-gray-50 p-3 text-[14px]"
+                        className="h-20 w-full resize-none rounded-xl bg-gray-50 p-3 text-[14px]"
                         placeholder="Write your remark..."
                         value={remark}
                         onChange={(e) => setRemark(e.target.value)}
@@ -331,7 +331,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                     {markLoading ? (
                       <div
                         className={
-                          "bg-gradient-green mt-4 flex h-[48px] w-full items-center justify-center gap-[8px] rounded-2xl font-semibold shadow-md"
+                          "bg-gradient-green mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl font-semibold shadow-md"
                         }
                       >
                         <svg
@@ -359,14 +359,14 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                     ) : (
                       <div className="mt-4 flex gap-3">
                         <Button
-                          className="bg-gradient-green h-[48px] w-full rounded-2xl font-semibold shadow-md"
+                          className="bg-gradient-green h-12 w-full rounded-2xl font-semibold shadow-md"
                           onClick={() => markJob("accepted")}
                           disabled={markLoading}
                         >
                           Accept
                         </Button>
                         <Button
-                          className="hover:text-light-white h-[48px] w-full rounded-2xl border border-gray-300 bg-white font-semibold text-black"
+                          className="hover:text-light-white h-12 w-full rounded-2xl border border-gray-300 bg-white font-semibold text-black"
                           onClick={() => markJob("rejected")}
                           disabled={markLoading}
                         >

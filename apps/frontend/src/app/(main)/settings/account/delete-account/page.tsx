@@ -17,9 +17,9 @@ const DeleteAccountPage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[64px]">
+        <div className="flex items-center justify-between border-t border-b bg-white p-2 px-16">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -27,13 +27,13 @@ const DeleteAccountPage = () => {
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:w-[640px] laptop:bg-white flex w-full flex-col gap-4 rounded-[12px] bg-none p-[24px]">
+          <div className="laptop:w-[640px] laptop:bg-white flex w-full flex-col gap-4 rounded-xl bg-none p-6">
             <p className="text-light-black max-w-[592px] text-[14px] font-normal">
               Deleting your account permanently removes your data from our system. You will have a{" "}
               <span className="font-semibold">30-day</span> grace period to change your mind. If you
               log in to your account within 30 days of deletion, your account will be reactivated.
             </p>
-            <div className="bg-light_grey mt-[24px] flex flex-col gap-[16px] p-[16px]">
+            <div className="bg-light_grey mt-6 flex flex-col gap-4 p-4">
               <p className="text-[14px] font-semibold">Before you go, make sure</p>
               <div className="flex items-center gap-2">
                 <ChatIcon />
@@ -64,8 +64,8 @@ const DeleteAccountPage = () => {
                 Your account cannot be deleted if these criteria are not met
               </p>
             </div>
-            <div className="mt-[36px] flex items-center justify-between">
-              <div className="flex items-center gap-[8px]">
+            <div className="mt-9 flex items-center justify-between">
+              <div className="flex items-center gap-2">
                 <SuppprtIcon />
                 <p className="font-semi-normal text-[14px]">
                   Reach out to support for any pending issues
@@ -73,14 +73,14 @@ const DeleteAccountPage = () => {
               </div>
               <ChevronRight />
             </div>
-            <div className="mt-[24px] flex justify-between gap-[16px]">
+            <div className="mt-6 flex justify-between gap-4">
               <Button
-                className="border-red-2 bg-red-1 h-[48px] w-full rounded-[12px] border-[1px] shadow-none"
+                className="border-red-2 bg-red-1 h-12 w-full rounded-xl border shadow-none"
                 onClick={() => router.push("/settings/account/confirm-delete")}
               >
                 <p className="font-semi-normal text-[16px]">Delete account</p>
               </Button>
-              <Button className="h-[48px] w-full border-none bg-transparent shadow-none">
+              <Button className="h-12 w-full border-none bg-transparent shadow-none">
                 <p className="font-semi-normal text-light-green text-[16px]">Cancel</p>
               </Button>
             </div>

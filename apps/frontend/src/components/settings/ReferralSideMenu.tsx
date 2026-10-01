@@ -14,8 +14,8 @@ const ReferralSideMenu: React.FC<ReferralSideMenuInterface> = ({ isOpen, toggleM
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white pt-[24px]">
-          <div className="flex items-center justify-between px-[24px]">
+        <div className="laptop:w-[585px] h-full w-screen bg-white pt-6">
+          <div className="flex items-center justify-between px-6">
             <div>
               <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
                 Referral History
@@ -26,20 +26,20 @@ const ReferralSideMenu: React.FC<ReferralSideMenuInterface> = ({ isOpen, toggleM
             </div>
           </div>
 
-          <div className="mt-[16px] flex flex-col px-[24px]">
-            <div className="flex flex-col pt-[16px] pb-[24px]">
+          <div className="mt-4 flex flex-col px-6">
+            <div className="flex flex-col pt-4 pb-6">
               <p className="font-semi-normal text-[14px]">N2,000 - Subscription</p>
               <p className="text-text-grey text-[12px] font-normal">23, Mar 2023. 05:00PM</p>
             </div>
-            <div className="flex flex-col pt-[16px] pb-[24px]">
+            <div className="flex flex-col pt-4 pb-6">
               <p className="font-semi-normal text-[14px]">N2,000 - Subscription</p>
               <p className="text-text-grey text-[12px] font-normal">23, Mar 2023. 05:00PM</p>
             </div>
-            <div className="flex flex-col pt-[16px] pb-[24px]">
+            <div className="flex flex-col pt-4 pb-6">
               <p className="font-semi-normal text-[14px]">N2,000 - Subscription</p>
               <p className="text-text-grey text-[12px] font-normal">23, Mar 2023. 05:00PM</p>
             </div>
-            <div className="flex flex-col pt-[16px] pb-[24px]">
+            <div className="flex flex-col pt-4 pb-6">
               <p className="font-semi-normal text-[14px]">N2,000 - Subscription</p>
               <p className="text-text-grey text-[12px] font-normal">23, Mar 2023. 05:00PM</p>
             </div>

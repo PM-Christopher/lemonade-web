@@ -89,9 +89,9 @@ const RequestsClient = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="laptop:flex-row laptop:items-center laptop:px-[64px] flex flex-col items-start justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+        <div className="laptop:flex-row laptop:items-center laptop:px-16 flex flex-col items-start justify-between border-t border-b bg-white p-2 px-4">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.push("/connect")}
           >
             <ChevronLeft />
@@ -101,7 +101,7 @@ const RequestsClient = () => {
           </div>
           <div className="group laptop:w-fit relative flex w-full items-center gap-2">
             {/* Search Container */}
-            <div className="bg-light_grey laptop:w-[235px] flex h-[40px] w-full items-center gap-3 rounded-[12px] p-2 px-[12px]">
+            <div className="bg-light_grey laptop:w-[235px] flex h-10 w-full items-center gap-3 rounded-xl p-2 px-3">
               <div>
                 <SearchIcon />
               </div>
@@ -109,7 +109,7 @@ const RequestsClient = () => {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light_grey w-full rounded-xl border-0 px-[10px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light_grey w-full rounded-xl border-0 px-2.5 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search username..."
                   onKeyDown={(e) => handleSearch(e)}
                 />
@@ -123,7 +123,7 @@ const RequestsClient = () => {
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:w-[800px] laptop:border-[1px] laptop:border-grey-20 max-h-[659px] w-screen rounded-[12px] border-none bg-white p-[24px]">
+          <div className="laptop:w-[800px] laptop:border laptop:border-grey-20 max-h-[659px] w-screen rounded-xl border-none bg-white p-6">
             <div className="hide-scrollbar max-h-screen overflow-y-auto">
               {loading ? (
                 <InviteSkeleton count={4} />

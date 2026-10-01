@@ -75,7 +75,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                       alt="logo"
                       width={48}
                       height={48}
-                      className="border-step-color h-[40px] w-[40px] rounded-xl border object-cover"
+                      className="border-step-color h-10 w-10 rounded-xl border object-cover"
                     />
                     <div className="flex flex-col">
                       <p className="text-[15px] font-semibold text-black">{job?.name}</p>

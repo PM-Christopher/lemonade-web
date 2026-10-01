@@ -31,35 +31,35 @@ const PayoutModal: React.FC<PayoutInterface> = ({ isOpen, toggle }) => {
               <div>
                 <Image src={"/images/Payout.png"} alt="payout" width={311} height={160} />
               </div>
-              <div className="mt-[24px]">
+              <div className="mt-6">
                 <p className="text-center text-[20px] font-semibold">Payout requested</p>
                 <p className="max-w-[416px] text-center text-[16px] font-normal">
                   Your payment is being processed and will be disbursed into the account details
                   provided below
                 </p>
               </div>
-              <div className="bg-light-tint mt-[24px] w-full rounded-[12px] p-[16px]">
-                <div className="bg-light-tint-3 rounded-[12px] p-[8px]">
+              <div className="bg-light-tint mt-6 w-full rounded-xl p-4">
+                <div className="bg-light-tint-3 rounded-xl p-2">
                   <p className="text-text-grey text-center text-[12px] font-normal">
                     Payout amount
                   </p>
                   <p className="text-black-light text-center text-[20px] font-semibold">N2,000</p>
                 </div>
-                <div className="my-[16px] flex justify-between">
+                <div className="my-4 flex justify-between">
                   <p className="text-[14px] font-normal">Account name</p>
                   <p className="font-semi-normal text-[14px]">Christine Joseph</p>
                 </div>
-                <div className="my-[16px] flex justify-between">
+                <div className="my-4 flex justify-between">
                   <p className="text-[14px] font-normal">Bank name</p>
                   <p className="font-semi-normal text-[14px]">United Bank for Africa</p>
                 </div>
-                <div className="my-[16px] flex justify-between">
+                <div className="my-4 flex justify-between">
                   <p className="text-[14px] font-normal">Account number</p>
                   <p className="font-semi-normal text-[14px]">0823212345</p>
                 </div>
               </div>
 
-              <Button className="border-step-color bg-gradient-green shadow-custom-bottom mt-[48px] h-[48px] w-full rounded-[12px] p-[14px] px-[48px]">
+              <Button className="border-step-color bg-gradient-green shadow-custom-bottom mt-12 h-12 w-full rounded-xl p-3.5 px-12">
                 <p>Done</p>
               </Button>
             </div>

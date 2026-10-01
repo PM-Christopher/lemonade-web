@@ -9,33 +9,30 @@ interface EventViewProps {
 
 const EventView: React.FC<EventViewProps> = ({ userDetail }) => {
   return (
-    <div className="flex flex-col gap-[24px]">
-      <div className={"p-[16px] px-[24px] pt-[24px]"}>
+    <div className="flex flex-col gap-6">
+      <div className={"p-4 px-6 pt-6"}>
         <div
           className={
-            "border-grey-20 bg-light-grey flex h-[40px] items-center justify-between rounded-[12px] border-[1px] px-[16px] py-[10px]"
+            "border-grey-20 bg-light-grey flex h-10 items-center justify-between rounded-xl border px-4 py-2.5"
           }
         >
           <div className={"flex items-center justify-between"}>
-            <div className={"text-text-grey flex items-center gap-[8px]"}>
+            <div className={"text-text-grey flex items-center gap-2"}>
               <CalendarIcon className={"w-[15px]"} />
               <p className={"font-semiBold text-text-grey text-[12px]"}>ALL EVENTS</p>
             </div>
           </div>
-          <ChevronDown className={"text-text-grey w-[20px]"} />
+          <ChevronDown className={"text-text-grey w-5"} />
         </div>
       </div>
-      <div className={"p-[24px]"}>
-        <div className={"flex flex-wrap gap-[24px]"}>
+      <div className={"p-6"}>
+        <div className={"flex flex-wrap gap-6"}>
           {userDetail?.events?.map((item) => (
-            <div
-              key={item?.id}
-              className={"flex w-fit flex-col gap-[4px] rounded-[12px] border-[1px] p-[4px]"}
-            >
+            <div key={item?.id} className={"flex w-fit flex-col gap-1 rounded-xl border p-1"}>
               <Image src={item?.image ?? ""} alt={""} width={155.5} height={155.5} />
               <p className={"font-semiBold text-[14px]"}>{item?.name}</p>
-              <div className={"flex items-center gap-[4px]"}>
-                <CalendarIcon className={"w-[12px]"} />
+              <div className={"flex items-center gap-1"}>
+                <CalendarIcon className={"w-3"} />
                 <p className={"text-text-grey text-[12px] font-normal"}>{item?.date}</p>
                 <Dot className={"text-text-grey"} />
                 <p className={"text-text-grey text-[12px] font-normal"}>{item?.time}</p>

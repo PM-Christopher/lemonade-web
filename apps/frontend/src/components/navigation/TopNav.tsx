@@ -53,7 +53,7 @@ const TopNav = () => {
               <div
                 className={`flex flex-col items-center gap-2 ${
                   isActiveLink(pathname, link.path, true)
-                    ? "bg-light-green-10 text-light-green rounded-[8px] p-[8px]"
+                    ? "bg-light-green-10 text-light-green rounded-[8px] p-2"
                     : "text-text-grey"
                 } `}
               >
@@ -97,10 +97,10 @@ const TopNav = () => {
                   alt="avatar"
                   width={40}
                   height={40}
-                  className="h-[40px] w-[40px] rounded-full border-[2px] border-[#3B4152] transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
+                  className="h-10 w-10 rounded-full border-2 border-[#3B4152] transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]"
                 />
               ) : (
-                <div className="bg-gradient-green flex h-[40px] w-[40px] items-center justify-center rounded-full border-[2px] border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
+                <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
                   <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
                 </div>
               )}

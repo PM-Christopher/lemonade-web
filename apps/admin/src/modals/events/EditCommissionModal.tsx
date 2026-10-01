@@ -71,8 +71,8 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Commission percentage</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
-          <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
-            <div className={"px-[16px] py-[4px]"}>
+          <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+            <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
                 <p className="font-sans text-[18px] leading-[27px] font-semibold">
                   Commission percentage
@@ -82,24 +82,22 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
                 </div>
               </div>
             </div>
-            <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
+            <div className={"flex flex-col gap-4 px-4 py-4"}>
               <p className={"text-light-black text-[14px] font-normal"}>
                 Set the commission to be earned on every ticket sale.
               </p>
               <p className={"text-text-grey text-[14px] font-normal"}>Commission percentage (%)</p>
               <Input
-                className={"bg-light-grey h-[48px] rounded-[12px] border-none px-[12px] py-[12px]"}
+                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Commission percentage"}
                 value={formik.values.percentage}
                 onChange={formik.handleChange("percentage")}
                 onBlur={formik.handleBlur}
                 type={"number"}
               />
-              <div className={"flex justify-between gap-[10px]"}>
+              <div className={"flex justify-between gap-2.5"}>
                 <button
-                  className={
-                    "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white"
-                  }
+                  className={"border-light-grey-50 h-12 w-[156px] rounded-xl border bg-white"}
                   onClick={toggle}
                 >
                   <p className={"text-[16px] font-medium text-black"}>Cancel</p>
@@ -108,9 +106,9 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
                   loading={formik.isSubmitting}
                   title={"Save"}
                   error={formik.isValid}
-                  classes="border-[1px] px-[14px] py-[11px] rounded-[12px] w-[156px]"
+                  classes="border px-3.5 py-[11px] rounded-xl w-[156px]"
                 />
-                {/*<button className={"h-[48px] border-[1px] bg-gradient-green rounded-[12px] w-[156px] text-center"}>*/}
+                {/*<button className={"h-12 border bg-gradient-green rounded-xl w-[156px] text-center"}>*/}
                 {/*    <p className={"text-[16px] font-medium text-white"}>Save</p>*/}
                 {/*</button>*/}
               </div>

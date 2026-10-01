@@ -12,12 +12,10 @@ function DataInfoCard({
   handleChange?: () => void;
 }) {
   return (
-    <div
-      className={`shadow-card-shadow flex justify-between rounded-[12px] bg-white p-4 ${styles}`}
-    >
-      <div className={"flex flex-col gap-[16px]"}>
-        <div className={"bg-mid-grey w-fit rounded-[13px] p-[8px]"}>
-          <FileIcon className={"h-[17px] w-[14px]"} />
+    <div className={`shadow-card-shadow flex justify-between rounded-xl bg-white p-4 ${styles}`}>
+      <div className={"flex flex-col gap-4"}>
+        <div className={"bg-mid-grey w-fit rounded-[13px] p-2"}>
+          <FileIcon className={"h-[17px] w-3.5"} />
         </div>
         <p className="text-[16px] font-medium">{title}</p>
         {isEditable && <p className="text-light-green text-[14px] font-medium">Edit</p>}

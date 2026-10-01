@@ -50,7 +50,7 @@ export const TribesSkeleton = ({ count }: { count: number }) => {
 
 export const TribeDetailsSkeleton = () => {
   return (
-    <div className="flex h-fit w-[496px] animate-pulse flex-col gap-2 rounded-[12px] bg-white p-4 py-4">
+    <div className="flex h-fit w-[496px] animate-pulse flex-col gap-2 rounded-xl bg-white p-4 py-4">
       {/* Header */}
       <div>
         <p className="font-sans text-[16px] leading-[24px] font-semibold">Tribe details</p>
@@ -58,7 +58,7 @@ export const TribeDetailsSkeleton = () => {
 
       {/* Tribe Image */}
       <div className="mt-10 flex justify-center">
-        <div className="h-[96px] w-[96px] rounded-[24px] bg-gray-200"></div>
+        <div className="h-24 w-24 rounded-3xl bg-gray-200"></div>
       </div>
 
       {/* Tribe Info */}
@@ -68,7 +68,7 @@ export const TribeDetailsSkeleton = () => {
 
         {/* Members & Threads */}
         <div className="mt-1 flex items-center justify-center gap-1">
-          <div className="h-3 w-[80px] rounded bg-gray-200"></div>
+          <div className="h-3 w-20 rounded bg-gray-200"></div>
           <div className="h-3 w-[60px] rounded bg-gray-200"></div>
         </div>
 
@@ -79,10 +79,10 @@ export const TribeDetailsSkeleton = () => {
         </div>
 
         {/* Actions (Share / Add Member) */}
-        <div className="mt-4 flex gap-[16px]">
+        <div className="mt-4 flex gap-4">
           {/* Share */}
           <div className="flex flex-col items-center gap-2">
-            <div className="bg-light_grey flex h-[64px] w-[64px] items-center justify-center rounded-[16px] p-[24px]">
+            <div className="bg-light_grey flex h-16 w-16 items-center justify-center rounded-2xl p-6">
               <div className="h-6 w-6 rounded-full bg-gray-200"></div>
             </div>
             <div className="h-4 w-[60px] rounded bg-gray-200"></div>
@@ -90,7 +90,7 @@ export const TribeDetailsSkeleton = () => {
 
           {/* Add member */}
           <div className="flex flex-col items-center gap-2">
-            <div className="bg-light_grey flex h-[64px] w-[64px] items-center justify-center rounded-[16px] p-[24px]">
+            <div className="bg-light_grey flex h-16 w-16 items-center justify-center rounded-2xl p-6">
               <div className="h-6 w-6 rounded-full bg-gray-200"></div>
             </div>
             <div className="h-4 w-[60px] rounded bg-gray-200"></div>
@@ -113,15 +113,15 @@ export const TribeDetailsSkeleton = () => {
       </div>
 
       {/* Members List */}
-      <div className="bg-light_grey flex flex-col gap-4 rounded-[12px] p-3">
-        <div className="h-4 w-[80px] rounded bg-gray-200"></div>
+      <div className="bg-light_grey flex flex-col gap-4 rounded-xl p-3">
+        <div className="h-4 w-20 rounded bg-gray-200"></div>
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="h-[20px] w-[20px] rounded-[6px] bg-gray-200"></div>
-              <div className="h-4 w-[80px] rounded bg-gray-200"></div>
+              <div className="h-5 w-5 rounded-[6px] bg-gray-200"></div>
+              <div className="h-4 w-20 rounded bg-gray-200"></div>
             </div>
-            <div className="h-4 w-[20px] rounded bg-gray-200"></div>
+            <div className="h-4 w-5 rounded bg-gray-200"></div>
           </div>
         ))}
       </div>
@@ -135,32 +135,32 @@ export const SubscriptionsSkeleton = ({ count, dataList }: { count: number; data
       {Array.from({ length: count }).map((_, i) => (
         <div className="flex animate-pulse flex-col items-center" key={i}>
           {/* Header Section */}
-          <div className="bg-grey-20 w-[260px] rounded-tl-[16px] rounded-tr-[16px] px-[48px] pt-[16px]">
-            <div className="bg-light-grey-70 mx-auto mb-2 h-[24px] w-[120px] rounded-md"></div>
-            <div className="bg-light-grey-70 mx-auto h-[20px] w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 w-[260px] rounded-tl-2xl rounded-tr-2xl px-12 pt-4">
+            <div className="bg-light-grey-70 mx-auto mb-2 h-6 w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 mx-auto h-5 w-[100px] rounded-md"></div>
           </div>
 
           {/* Card Section */}
-          <div className="border-light-grey-60 mt-1 w-[311px] rounded-[12px] border-[2px]">
-            <div className="bg-grey-20 rounded-tl-[12px] rounded-tr-[12px] p-[12px]">
-              <div className="bg-light-grey-70 h-[20px] w-[140px] rounded-md"></div>
+          <div className="border-light-grey-60 mt-1 w-[311px] rounded-xl border-2">
+            <div className="bg-grey-20 rounded-tl-xl rounded-tr-xl p-3">
+              <div className="bg-light-grey-70 h-5 w-[140px] rounded-md"></div>
             </div>
 
-            <div className="flex flex-col gap-[20px] rounded-br-[12px] rounded-bl-[12px] bg-white p-4">
+            <div className="flex flex-col gap-5 rounded-br-xl rounded-bl-xl bg-white p-4">
               {Array.from({ length: dataList }).map((_, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="bg-light-grey-70 h-[20px] w-[20px] rounded-md"></div>
-                    <div className="bg-light-grey-70 h-[14px] w-[120px] rounded-md"></div>
+                    <div className="bg-light-grey-70 h-5 w-5 rounded-md"></div>
+                    <div className="bg-light-grey-70 h-3.5 w-[120px] rounded-md"></div>
                   </div>
-                  <div className="bg-light-grey-70 h-[14px] w-[40px] rounded-md"></div>
+                  <div className="bg-light-grey-70 h-3.5 w-10 rounded-md"></div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Button Section */}
-          <div className="bg-light-grey-70 mt-[56px] h-[48px] w-[250px] rounded-[12px]"></div>
+          <div className="bg-light-grey-70 mt-14 h-12 w-[250px] rounded-xl"></div>
         </div>
       ))}
     </>
@@ -171,37 +171,34 @@ export const TribeListSkeleton = ({ count }: { count: number }) => {
   return (
     <div className="animate-pulse space-y-3">
       {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className="border-grey-30 bg-mid-grey mb-2 overflow-hidden rounded-[16px] border-[1px]"
-        >
+        <div key={i} className="border-grey-30 bg-mid-grey mb-2 overflow-hidden rounded-2xl border">
           {/* Top Section */}
-          <div className="flex items-center justify-between rounded-[16px] bg-white p-4">
+          <div className="flex items-center justify-between rounded-2xl bg-white p-4">
             <div className="flex items-center gap-2">
               {/* Tribe Image */}
-              <div className="h-[40px] w-[40px] rounded-full bg-gray-200"></div>
+              <div className="h-10 w-10 rounded-full bg-gray-200"></div>
 
               {/* Tribe Info */}
               <div className="flex flex-col gap-1">
-                <div className="h-[12px] w-[100px] rounded bg-gray-200"></div>
-                <div className="h-[10px] w-[140px] rounded bg-gray-100"></div>
+                <div className="h-3 w-[100px] rounded bg-gray-200"></div>
+                <div className="h-2.5 w-[140px] rounded bg-gray-100"></div>
               </div>
             </div>
 
             {/* Join Button */}
-            <div className="flex items-center gap-1 rounded-[12px] border-[1px] border-gray-200 p-[6px] px-[16px]">
-              <div className="h-[10px] w-[40px] rounded bg-gray-200"></div>
-              <div className="h-[16px] w-[16px] rounded-full bg-gray-100"></div>
+            <div className="flex items-center gap-1 rounded-xl border border-gray-200 p-1.5 px-4">
+              <div className="h-2.5 w-10 rounded bg-gray-200"></div>
+              <div className="h-4 w-4 rounded-full bg-gray-100"></div>
             </div>
           </div>
 
           {/* Bottom Section */}
-          <div className="bg-mid-grey flex items-center justify-between rounded-b-[16px] p-4 py-6">
-            <div className="h-[10px] w-[60px] rounded bg-gray-200"></div>
-            <div className="h-[10px] w-[80px] rounded bg-gray-200"></div>
+          <div className="bg-mid-grey flex items-center justify-between rounded-b-2xl p-4 py-6">
+            <div className="h-2.5 w-[60px] rounded bg-gray-200"></div>
+            <div className="h-2.5 w-20 rounded bg-gray-200"></div>
             <div className="flex items-center gap-2">
-              <div className="h-[16px] w-[16px] rounded bg-gray-200"></div>
-              <div className="h-[10px] w-[70px] rounded bg-gray-200"></div>
+              <div className="h-4 w-4 rounded bg-gray-200"></div>
+              <div className="h-2.5 w-[70px] rounded bg-gray-200"></div>
             </div>
           </div>
         </div>
@@ -220,10 +217,10 @@ export const ThreadsSkeleton = ({ count }: { count: number }) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {/* Avatar */}
-                <div className="h-[48px] w-[48px] rounded-[16px] border border-gray-300 bg-gray-200"></div>
+                <div className="h-12 w-12 rounded-2xl border border-gray-300 bg-gray-200"></div>
 
                 {/* Username */}
-                <div className="h-[12px] w-[80px] rounded bg-gray-200"></div>
+                <div className="h-3 w-20 rounded bg-gray-200"></div>
 
                 {/* Verified Icon Placeholder */}
                 <div className="h-[13px] w-[13px] rounded-full bg-gray-200"></div>
@@ -232,53 +229,53 @@ export const ThreadsSkeleton = ({ count }: { count: number }) => {
                 <div className="h-[3px] w-[3px] rounded-full bg-gray-300"></div>
 
                 {/* Date */}
-                <div className="h-[10px] w-[60px] rounded bg-gray-200"></div>
+                <div className="h-2.5 w-[60px] rounded bg-gray-200"></div>
               </div>
 
               {/* More Icon */}
-              <div className="h-[20px] w-[20px] rounded-full bg-gray-200"></div>
+              <div className="h-5 w-5 rounded-full bg-gray-200"></div>
             </div>
 
             {/* Topic */}
-            <div className="mt-[8px] h-[14px] w-[60%] rounded bg-gray-200"></div>
+            <div className="mt-2 h-3.5 w-[60%] rounded bg-gray-200"></div>
 
             {/* Thoughts */}
-            <div className="mt-[20px] space-y-2">
-              <div className="h-[12px] w-full rounded bg-gray-200"></div>
-              <div className="h-[12px] w-[90%] rounded bg-gray-200"></div>
-              <div className="h-[12px] w-[80%] rounded bg-gray-200"></div>
+            <div className="mt-5 space-y-2">
+              <div className="h-3 w-full rounded bg-gray-200"></div>
+              <div className="h-3 w-[90%] rounded bg-gray-200"></div>
+              <div className="h-3 w-[80%] rounded bg-gray-200"></div>
             </div>
 
             {/* Media Carousel Placeholder */}
-            <div className="mt-4 h-[180px] w-full rounded-[12px] bg-gray-200"></div>
+            <div className="mt-4 h-[180px] w-full rounded-xl bg-gray-200"></div>
 
             {/* Poll Section */}
             <div className="mt-6 flex flex-col gap-3">
-              <div className="h-[16px] w-[120px] rounded bg-gray-200"></div>
+              <div className="h-4 w-[120px] rounded bg-gray-200"></div>
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={i}
-                  className="relative h-[40px] w-full overflow-hidden rounded-[8px] bg-gray-200"
+                  className="relative h-10 w-full overflow-hidden rounded-[8px] bg-gray-200"
                 ></div>
               ))}
-              <div className="h-[10px] w-[80px] rounded bg-gray-200"></div>
+              <div className="h-2.5 w-20 rounded bg-gray-200"></div>
             </div>
           </div>
 
           {/* Like / Comment Buttons */}
           <div className="mt-2 flex gap-4">
-            <div className="h-[30px] w-[64px] rounded-[12px] bg-gray-200"></div>
-            <div className="h-[30px] w-[64px] rounded-[12px] bg-gray-200"></div>
+            <div className="h-[30px] w-16 rounded-xl bg-gray-200"></div>
+            <div className="h-[30px] w-16 rounded-xl bg-gray-200"></div>
           </div>
 
           {/* Comments Section Placeholder */}
           <div className="mt-4 space-y-4">
             {Array.from({ length: 2 }).map((_, i) => (
               <div key={i} className="flex gap-2">
-                <div className="h-[32px] w-[32px] rounded-full bg-gray-200"></div>
+                <div className="h-8 w-8 rounded-full bg-gray-200"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-[10px] w-[40%] rounded bg-gray-200"></div>
-                  <div className="h-[10px] w-[80%] rounded bg-gray-200"></div>
+                  <div className="h-2.5 w-[40%] rounded bg-gray-200"></div>
+                  <div className="h-2.5 w-[80%] rounded bg-gray-200"></div>
                 </div>
               </div>
             ))}
@@ -330,9 +327,9 @@ export const EventDetailsSkeleton = () => {
     <section className="mt-4 flex animate-pulse flex-col items-center">
       {/* Main Container */}
       <div className="flex w-full justify-center">
-        <div className="laptop:max-w-[1100px] laptop:flex-row laptop:items-center flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white p-[20px] shadow-sm">
+        <div className="laptop:max-w-[1100px] laptop:flex-row laptop:items-center flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white p-5 shadow-sm">
           {/* Image Skeleton */}
-          <div className="laptop:w-[480px] h-[320px] w-full rounded-2xl bg-gray-200"></div>
+          <div className="laptop:w-[480px] h-80 w-full rounded-2xl bg-gray-200"></div>
 
           {/* Event Details Skeleton */}
           <div className="laptop:px-10 laptop:py-8 flex w-full flex-col justify-between space-y-5 px-6 py-6">
@@ -348,7 +345,7 @@ export const EventDetailsSkeleton = () => {
             {/* Time */}
             <div className="flex items-center gap-3">
               <div className="h-5 w-5 rounded-full bg-gray-200"></div>
-              <div className="h-4 w-[160px] rounded bg-gray-200"></div>
+              <div className="h-4 w-40 rounded bg-gray-200"></div>
             </div>
 
             {/* Location */}
@@ -369,29 +366,29 @@ export const EventDetailsSkeleton = () => {
 
             {/* CTA Button */}
             <div className="laptop:flex mt-10 hidden">
-              <div className="h-[56px] w-[231px] rounded-[12px] bg-gray-200"></div>
+              <div className="h-14 w-[231px] rounded-xl bg-gray-200"></div>
             </div>
           </div>
         </div>
       </div>
 
       {/* About Section */}
-      <div className="laptop:max-w-[1100px] mt-[40px] w-full">
+      <div className="laptop:max-w-[1100px] mt-10 w-full">
         <div className="mb-4 h-6 w-[150px] rounded bg-gray-200"></div>
         <div className="h-[120px] w-full rounded-xl bg-gray-200"></div>
 
         {/* Mobile Contact & CTA */}
-        <div className="laptop:hidden mt-[40px] block space-y-4">
+        <div className="laptop:hidden mt-10 block space-y-4">
           <div className="h-5 w-[100px] rounded bg-gray-200"></div>
 
-          <div className="flex items-center gap-[16px]">
+          <div className="flex items-center gap-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="h-8 w-8 rounded-full bg-gray-200"></div>
             ))}
           </div>
 
-          <div className="mt-[20px]">
-            <div className="h-[56px] w-[231px] rounded-[12px] bg-gray-200"></div>
+          <div className="mt-5">
+            <div className="h-14 w-[231px] rounded-xl bg-gray-200"></div>
           </div>
         </div>
       </div>
@@ -405,7 +402,7 @@ export const EventTicketDetailSkeleton = () => {
       {/* Event Header Skeleton */}
       <div className="bg-green-tint flex gap-4 rounded-[8px] p-3 px-4">
         {/* Event Image Skeleton */}
-        <div className="laptop:h-[120px] laptop:w-[120px] h-[72px] w-[72px] rounded-[12px] bg-gray-200"></div>
+        <div className="laptop:h-[120px] laptop:w-[120px] h-[72px] w-[72px] rounded-xl bg-gray-200"></div>
 
         {/* Event Info Skeleton */}
         <div className="flex flex-1 flex-col gap-2">
@@ -415,9 +412,9 @@ export const EventTicketDetailSkeleton = () => {
           {/* Date */}
           <div className="flex items-center gap-2">
             <div className="h-4 w-4 rounded-full bg-gray-200"></div>
-            <div className="h-3 w-[80px] rounded bg-gray-200"></div>
+            <div className="h-3 w-20 rounded bg-gray-200"></div>
             <div className="h-3 w-3 rounded bg-gray-200"></div>
-            <div className="h-3 w-[80px] rounded bg-gray-200"></div>
+            <div className="h-3 w-20 rounded bg-gray-200"></div>
           </div>
 
           {/* Time */}
@@ -437,7 +434,7 @@ export const EventTicketDetailSkeleton = () => {
             <div className="flex flex-col gap-2">
               <div className="h-4 w-[120px] rounded bg-gray-200"></div>
               <div className="h-5 w-[60px] rounded bg-gray-200"></div>
-              <div className="h-3 w-[160px] rounded bg-gray-200"></div>
+              <div className="h-3 w-40 rounded bg-gray-200"></div>
             </div>
             <div className="flex items-center gap-2">
               <div className="h-6 w-6 rounded-[8px] bg-gray-200"></div>
@@ -445,7 +442,7 @@ export const EventTicketDetailSkeleton = () => {
               <div className="h-6 w-6 rounded-[8px] bg-gray-200"></div>
             </div>
           </div>
-          <div className="my-2 border-t-[1px] border-gray-200"></div>
+          <div className="my-2 border-t border-gray-200"></div>
         </div>
       ))}
     </div>
@@ -455,12 +452,12 @@ export const EventTicketDetailSkeleton = () => {
 export const EventProgramDetailSkeleton = () => {
   return (
     <div className="mt-4 flex animate-pulse flex-col items-center">
-      <div className="flex justify-between gap-[24px]">
+      <div className="flex justify-between gap-6">
         {/* Left Column */}
         <div>
-          <div className="flex w-[640px] flex-col rounded-[12px] bg-white p-[24px]">
+          <div className="flex w-[640px] flex-col rounded-xl bg-white p-6">
             {/* Event Card Skeleton */}
-            <div className="bg-green-tint flex items-center gap-3 rounded-[8px] p-[8px] px-[16px]">
+            <div className="bg-green-tint flex items-center gap-3 rounded-[8px] p-2 px-4">
               <div className="h-[120px] w-[120px] rounded-[8px] bg-gray-200"></div>
               <div className="flex w-full flex-col gap-2">
                 <div className="h-5 w-1/2 rounded bg-gray-200"></div>
@@ -471,17 +468,17 @@ export const EventProgramDetailSkeleton = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-[24px] flex items-center justify-center gap-8">
+            <div className="mt-6 flex items-center justify-center gap-8">
               {[1, 2, 3, 4].map((_, i) => (
-                <div key={i} className="flex flex-col items-center gap-[8px]">
-                  <div className="border-grey-20 h-[48px] w-[48px] rounded-[16px] border-[1px] bg-gray-100 p-[16px]"></div>
+                <div key={i} className="flex flex-col items-center gap-2">
+                  <div className="border-grey-20 h-12 w-12 rounded-2xl border bg-gray-100 p-4"></div>
                   <div className="h-3 w-12 rounded bg-gray-200"></div>
                 </div>
               ))}
             </div>
 
             {/* Guest List */}
-            <div className="border-mid-grey mt-[24px] flex items-center justify-between rounded-[12px] border-[2px] p-[12px] px-[16px]">
+            <div className="border-mid-grey mt-6 flex items-center justify-between rounded-xl border-2 p-3 px-4">
               <div className="flex items-center gap-2">
                 <div className="h-5 w-5 rounded-full bg-gray-200"></div>
                 <div className="h-4 w-20 rounded bg-gray-200"></div>
@@ -490,12 +487,12 @@ export const EventProgramDetailSkeleton = () => {
             </div>
 
             {/* Breakdown Boxes */}
-            <div className="border-mid-grey mt-[24px] flex flex-col gap-4 rounded-[12px] border-[2px] p-[16px]">
+            <div className="border-mid-grey mt-6 flex flex-col gap-4 rounded-xl border-2 p-4">
               {[1, 2, 3].map((_, i) => (
                 <div key={i}>
                   <div className="mb-2 h-3 w-24 rounded bg-gray-200"></div>
                   <div className="h-5 w-32 rounded bg-gray-200"></div>
-                  {i < 2 && <div className="border-t-grey-20 my-4 border-t-[1px]"></div>}
+                  {i < 2 && <div className="border-t-grey-20 my-4 border-t"></div>}
                 </div>
               ))}
             </div>
@@ -505,16 +502,16 @@ export const EventProgramDetailSkeleton = () => {
         {/* Right Column */}
         <div className="flex flex-col gap-3">
           {[1, 2, 3].map((_, i) => (
-            <div key={i} className="flex w-[480px] flex-col rounded-[8px] bg-white p-[16px]">
+            <div key={i} className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
               <div className="mb-4 h-5 w-1/2 rounded bg-gray-200"></div>
               {[1, 2, 3].map((_, j) => (
-                <div key={j} className="mt-[16px]">
+                <div key={j} className="mt-4">
                   <div className="mb-2 h-4 w-1/3 rounded bg-gray-200"></div>
-                  <div className="mt-[2px] flex justify-between">
+                  <div className="mt-0.5 flex justify-between">
                     <div className="h-5 w-20 rounded bg-gray-200"></div>
                     <div className="h-4 w-16 rounded bg-gray-200"></div>
                   </div>
-                  <div className="mt-[4px] h-[8px] w-full rounded-full bg-gray-200"></div>
+                  <div className="mt-1 h-2 w-full rounded-full bg-gray-200"></div>
                 </div>
               ))}
             </div>
@@ -536,9 +533,9 @@ export const GuestListSkeleton = ({ count }: { count: 4 }) => {
           <div className="w-full min-w-0">
             {/* Name + ticket */}
             <div className="flex items-center gap-2">
-              <div className="h-[14px] w-[140px] rounded bg-gray-200" />
+              <div className="h-3.5 w-[140px] rounded bg-gray-200" />
               <span className="h-1 w-1 rounded-full bg-gray-200" />
-              <div className="h-[12px] w-[90px] rounded bg-gray-200" />
+              <div className="h-3 w-[90px] rounded bg-gray-200" />
             </div>
 
             {/* Status pill */}
@@ -562,17 +559,17 @@ export const GuestListSkeleton = ({ count }: { count: 4 }) => {
 
 export const TransactionHistorySkeleton = ({ count }: { count: 4 }) => {
   return (
-    <div className="animate-pulse px-[24px]">
+    <div className="animate-pulse px-6">
       {[...Array(count)].map((_, index) => (
-        <div key={index} className="flex items-center justify-between pt-[16px] pb-[24px]">
+        <div key={index} className="flex items-center justify-between pt-4 pb-6">
           {/* Left side: Amount + message */}
           <div className="flex w-[60%] flex-col gap-2">
-            <div className="bg-light-grey-70 h-[16px] w-[120px] rounded-md"></div>
-            <div className="bg-light-grey-70 h-[12px] w-[80px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-4 w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-3 w-20 rounded-md"></div>
           </div>
 
           {/* Right side: Status badge */}
-          <div className="bg-light-grey-70 h-[20px] w-[80px] rounded-[8px]"></div>
+          <div className="bg-light-grey-70 h-5 w-20 rounded-[8px]"></div>
         </div>
       ))}
     </div>
@@ -583,36 +580,36 @@ export const WalletDetailSkeleton = () => {
   return (
     <div className="laptop:w-[580px] flex w-full animate-pulse flex-col gap-4">
       {/* Earnings Card */}
-      <div className="flex flex-col gap-4 rounded-[12px] bg-white p-[16px]">
+      <div className="flex flex-col gap-4 rounded-xl bg-white p-4">
         {/* Total Amount Earned */}
-        <div className="border-b-mid-grey flex flex-col gap-2 border-b-[1px] p-[16px]">
-          <div className="bg-light-grey-70 h-[14px] w-[140px] rounded-md"></div>
-          <div className="bg-light-grey-70 h-[20px] w-[100px] rounded-md"></div>
+        <div className="border-b-mid-grey flex flex-col gap-2 border-b p-4">
+          <div className="bg-light-grey-70 h-3.5 w-[140px] rounded-md"></div>
+          <div className="bg-light-grey-70 h-5 w-[100px] rounded-md"></div>
         </div>
 
         {/* Referral Earnings */}
-        <div className="border-b-mid-grey flex items-center justify-between border-b-[1px] p-[16px]">
+        <div className="border-b-mid-grey flex items-center justify-between border-b p-4">
           <div className="flex flex-col gap-2">
-            <div className="bg-light-grey-70 h-[14px] w-[120px] rounded-md"></div>
-            <div className="bg-light-grey-70 h-[20px] w-[80px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-3.5 w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-5 w-20 rounded-md"></div>
           </div>
-          <div className="bg-light-grey-70 h-[24px] w-[24px] rounded-full"></div>
+          <div className="bg-light-grey-70 h-6 w-6 rounded-full"></div>
         </div>
 
         {/* Affiliate Earnings */}
-        <div className="flex items-center justify-between p-[16px]">
+        <div className="flex items-center justify-between p-4">
           <div className="flex flex-col gap-2">
-            <div className="bg-light-grey-70 h-[14px] w-[120px] rounded-md"></div>
-            <div className="bg-light-grey-70 h-[20px] w-[80px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-3.5 w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-5 w-20 rounded-md"></div>
           </div>
-          <div className="bg-light-grey-70 h-[24px] w-[24px] rounded-full"></div>
+          <div className="bg-light-grey-70 h-6 w-6 rounded-full"></div>
         </div>
       </div>
 
       {/* Payout Request */}
-      <div className="bg-light-tint flex flex-col gap-4 rounded-[12px] p-[16px]">
-        <div className="bg-light-grey-70 h-[14px] w-[80%] rounded-md"></div>
-        <div className="bg-light-grey-70 h-[48px] w-[200px] rounded-[12px]"></div>
+      <div className="bg-light-tint flex flex-col gap-4 rounded-xl p-4">
+        <div className="bg-light-grey-70 h-3.5 w-[80%] rounded-md"></div>
+        <div className="bg-light-grey-70 h-12 w-[200px] rounded-xl"></div>
       </div>
     </div>
   );
@@ -620,56 +617,56 @@ export const WalletDetailSkeleton = () => {
 
 export const GuestDetailSkeleton = () => {
   return (
-    <div className="mt-4 flex animate-pulse flex-col gap-[24px] px-[64px] py-[24px]">
+    <div className="mt-4 flex animate-pulse flex-col gap-6 px-16 py-6">
       {/* Event title */}
-      <div className="bg-grey-20 h-[20px] w-[200px] rounded-md"></div>
+      <div className="bg-grey-20 h-5 w-[200px] rounded-md"></div>
 
       {/* Date and time */}
-      <div className="flex items-center gap-[8px]">
-        <div className="bg-grey-20 h-[16px] w-[16px] rounded-md"></div>
-        <div className="bg-grey-20 h-[14px] w-[80px] rounded-md"></div>
-        <div className="bg-grey-20 h-[4px] w-[4px] rounded-full"></div>
-        <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
+      <div className="flex items-center gap-2">
+        <div className="bg-grey-20 h-4 w-4 rounded-md"></div>
+        <div className="bg-grey-20 h-3.5 w-20 rounded-md"></div>
+        <div className="bg-grey-20 h-1 w-1 rounded-full"></div>
+        <div className="bg-grey-20 h-3.5 w-[60px] rounded-md"></div>
       </div>
 
       {/* Guest name & Ticket ID */}
       <div className="flex justify-between">
-        <div className="flex flex-col gap-[6px]">
-          <div className="bg-grey-20 h-[12px] w-[80px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[120px] rounded-md"></div>
+        <div className="flex flex-col gap-1.5">
+          <div className="bg-grey-20 h-3 w-20 rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-[120px] rounded-md"></div>
         </div>
-        <div className="flex flex-col gap-[6px]">
-          <div className="bg-grey-20 h-[12px] w-[60px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
+        <div className="flex flex-col gap-1.5">
+          <div className="bg-grey-20 h-3 w-[60px] rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-[100px] rounded-md"></div>
         </div>
       </div>
 
       {/* Email & Ticket type */}
       <div className="flex justify-between">
-        <div className="flex flex-col gap-[6px]">
-          <div className="bg-grey-20 h-[12px] w-[100px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[160px] rounded-md"></div>
+        <div className="flex flex-col gap-1.5">
+          <div className="bg-grey-20 h-3 w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-40 rounded-md"></div>
         </div>
-        <div className="flex flex-col gap-[6px]">
-          <div className="bg-grey-20 h-[12px] w-[80px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
+        <div className="flex flex-col gap-1.5">
+          <div className="bg-grey-20 h-3 w-20 rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-[60px] rounded-md"></div>
         </div>
       </div>
 
       {/* Check-in status */}
       <div className="flex justify-between">
-        <div className="flex flex-col gap-[6px]">
-          <div className="bg-grey-20 h-[12px] w-[120px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
+        <div className="flex flex-col gap-1.5">
+          <div className="bg-grey-20 h-3 w-[120px] rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-[100px] rounded-md"></div>
         </div>
-        <div className="flex flex-col gap-[6px]">
-          <div className="bg-grey-20 h-[12px] w-[100px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[80px] rounded-md"></div>
+        <div className="flex flex-col gap-1.5">
+          <div className="bg-grey-20 h-3 w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-20 rounded-md"></div>
         </div>
       </div>
 
       {/* Check-in button */}
-      <div className="bg-grey-20 h-[48px] w-full rounded-[12px]"></div>
+      <div className="bg-grey-20 h-12 w-full rounded-xl"></div>
     </div>
   );
 };
@@ -680,18 +677,18 @@ export const BusinessesSkeleton = ({ count }: { count: number }) => {
       {[...Array(count)].map((_, i) => (
         <div
           key={i}
-          className="tablet:w-[320px] w-[78vw] max-w-[320px] shrink-0 animate-pulse rounded-lg bg-white p-[4px]"
+          className="tablet:w-80 w-[78vw] max-w-80 shrink-0 animate-pulse rounded-lg bg-white p-1"
         >
           {/* Main image placeholder */}
           <div className="relative">
             <div className="h-[105px] w-full rounded-lg bg-gray-300" />
 
             {/* Overlay logo */}
-            <div className="absolute bottom-[-28px] left-4 h-14 w-14 rounded-xl border border-gray-200 bg-gray-300" />
+            <div className="absolute -bottom-7 left-4 h-14 w-14 rounded-xl border border-gray-200 bg-gray-300" />
           </div>
 
           {/* Content */}
-          <div className="p-[10px]">
+          <div className="p-2.5">
             {/* Name + city + rating */}
             <div className="mt-10 flex flex-wrap justify-between gap-2 sm:flex-nowrap">
               <div className="flex flex-wrap items-center gap-2">
@@ -728,39 +725,36 @@ export const AllBusinessSkeleton = ({ count }: { count: number }) => {
   return (
     <>
       {[...Array(count)].map((_, i) => (
-        <div
-          className="border-mid-grey animate-pulse rounded-[12px] border-[2px] shadow-lg"
-          key={i}
-        >
+        <div className="border-mid-grey animate-pulse rounded-xl border-2 shadow-lg" key={i}>
           <div className="flex flex-col">
             {/* Header */}
-            <div className="p-[16px]">
+            <div className="p-4">
               <div className="flex justify-between">
                 {/* Logo & Name */}
-                <div className="laptop:flex-col laptop:items-start laptop:gap-[10px] flex flex-row items-center justify-center gap-[8px]">
-                  <div className="border-grey-30 bg-grey-20 h-[40px] w-[40px] rounded-xl border"></div>
-                  <div className="flex flex-col gap-[4px]">
-                    <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
-                    <div className="bg-grey-20 h-[12px] w-[80px] rounded-md"></div>
+                <div className="laptop:flex-col laptop:items-start laptop:gap-2.5 flex flex-row items-center justify-center gap-2">
+                  <div className="border-grey-30 bg-grey-20 h-10 w-10 rounded-xl border"></div>
+                  <div className="flex flex-col gap-1">
+                    <div className="bg-grey-20 h-3.5 w-[100px] rounded-md"></div>
+                    <div className="bg-grey-20 h-3 w-20 rounded-md"></div>
                   </div>
                 </div>
 
                 {/* Rating */}
-                <div className="bg-mid-grey flex h-[28px] items-center gap-1 rounded-xl p-2">
-                  <div className="bg-grey-20 h-[16px] w-[16px] rounded-full"></div>
-                  <div className="bg-grey-20 h-[14px] w-[24px] rounded-md"></div>
+                <div className="bg-mid-grey flex h-7 items-center gap-1 rounded-xl p-2">
+                  <div className="bg-grey-20 h-4 w-4 rounded-full"></div>
+                  <div className="bg-grey-20 h-3.5 w-6 rounded-md"></div>
                 </div>
               </div>
             </div>
 
             {/* Services & Rate */}
-            <div className="bg-mid-grey rounded-br-[12px] rounded-bl-[12px] p-[12px] px-[16px]">
-              <div className="mt-[8px] flex items-center justify-between">
+            <div className="bg-mid-grey rounded-br-xl rounded-bl-xl p-3 px-4">
+              <div className="mt-2 flex items-center justify-between">
                 <div className="flex gap-2">
-                  <div className="bg-grey-20 h-[14px] w-[60px] rounded-[12px]"></div>
-                  <div className="bg-grey-20 h-[14px] w-[40px] rounded-[12px]"></div>
+                  <div className="bg-grey-20 h-3.5 w-[60px] rounded-xl"></div>
+                  <div className="bg-grey-20 h-3.5 w-10 rounded-xl"></div>
                 </div>
-                <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
+                <div className="bg-grey-20 h-3.5 w-[60px] rounded-md"></div>
               </div>
             </div>
           </div>
@@ -772,40 +766,40 @@ export const AllBusinessSkeleton = ({ count }: { count: number }) => {
 
 export const BusinessCarouselSkeleton = ({ count }: { count: number }) => {
   return (
-    <div className="relative w-full overflow-hidden rounded-[12px]">
+    <div className="relative w-full overflow-hidden rounded-xl">
       <div className="tablet:grid-cols-2 laptop:grid-cols-3 desktop:grid-cols-4 mt-3 grid grid-cols-1 gap-4">
         {[...Array(count)].map((_, i) => (
-          <div key={i} className="w-full animate-pulse rounded-lg bg-white p-[4px] shadow-sm">
+          <div key={i} className="w-full animate-pulse rounded-lg bg-white p-1 shadow-sm">
             {/* Main Image */}
             <div className="relative">
               <div className="bg-grey-20 h-[105px] w-full rounded-lg"></div>
-              <div className="absolute bottom-[-35px] left-[16px] h-16 w-16">
+              <div className="absolute bottom-[-35px] left-4 h-16 w-16">
                 <div className="border-grey-40 bg-grey-30 h-full w-full rounded-xl border"></div>
               </div>
             </div>
 
-            <div className="p-[10px]">
+            <div className="p-2.5">
               {/* Business name and location */}
               <div className="mt-10 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="bg-grey-20 h-[14px] w-[80px] rounded-md"></div>
+                  <div className="bg-grey-20 h-3.5 w-20 rounded-md"></div>
                   <div className="bg-grey-20 h-1 w-1 rounded-full"></div>
-                  <div className="bg-grey-20 h-[12px] w-[60px] rounded-md"></div>
+                  <div className="bg-grey-20 h-3 w-[60px] rounded-md"></div>
                 </div>
                 {/* Rating */}
-                <div className="bg-mid-grey flex h-[28px] items-center gap-1 rounded-xl p-2">
-                  <div className="bg-grey-20 h-[16px] w-[16px] rounded-full"></div>
-                  <div className="bg-grey-20 h-[14px] w-[24px] rounded-md"></div>
+                <div className="bg-mid-grey flex h-7 items-center gap-1 rounded-xl p-2">
+                  <div className="bg-grey-20 h-4 w-4 rounded-full"></div>
+                  <div className="bg-grey-20 h-3.5 w-6 rounded-md"></div>
                 </div>
               </div>
 
               {/* Services and rate */}
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="bg-grey-20 h-[14px] w-[60px] rounded-full"></div>
-                  <div className="bg-grey-20 h-[14px] w-[40px] rounded-full"></div>
+                  <div className="bg-grey-20 h-3.5 w-[60px] rounded-full"></div>
+                  <div className="bg-grey-20 h-3.5 w-10 rounded-full"></div>
                 </div>
-                <div className="bg-grey-20 h-[14px] w-[60px] rounded-md"></div>
+                <div className="bg-grey-20 h-3.5 w-[60px] rounded-md"></div>
               </div>
             </div>
           </div>
@@ -817,92 +811,92 @@ export const BusinessCarouselSkeleton = ({ count }: { count: number }) => {
 
 export const BusinessDetailSkeleton = () => {
   return (
-    <div className="laptop:w-[640px] relative w-full animate-pulse rounded-[12px] bg-white p-[16px]">
+    <div className="laptop:w-[640px] relative w-full animate-pulse rounded-xl bg-white p-4">
       {/* Header with logo */}
       <div className="flex flex-col items-center">
-        <div className="border-grey-30 bg-grey-20 h-[64px] w-[64px] rounded-[16px] border"></div>
-        <div className="mt-[8px] flex flex-col items-center gap-[4px]">
-          <div className="bg-grey-20 h-[16px] w-[120px] rounded-md"></div>
-          <div className="bg-grey-20 h-[14px] w-[100px] rounded-md"></div>
-          <div className="bg-grey-20 mt-[4px] h-[16px] w-[80px] rounded-md"></div>
+        <div className="border-grey-30 bg-grey-20 h-16 w-16 rounded-2xl border"></div>
+        <div className="mt-2 flex flex-col items-center gap-1">
+          <div className="bg-grey-20 h-4 w-[120px] rounded-md"></div>
+          <div className="bg-grey-20 h-3.5 w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 mt-1 h-4 w-20 rounded-md"></div>
         </div>
-        <div className="mt-[8px] flex justify-center">
+        <div className="mt-2 flex justify-center">
           <div className="bg-grey-10 flex items-center gap-1 rounded-xl p-2">
-            <div className="bg-grey-20 h-[16px] w-[16px] rounded-full"></div>
-            <div className="bg-grey-20 h-[14px] w-[24px] rounded-md"></div>
+            <div className="bg-grey-20 h-4 w-4 rounded-full"></div>
+            <div className="bg-grey-20 h-3.5 w-6 rounded-md"></div>
           </div>
         </div>
-        <div className="mt-[16px]">
-          <div className="bg-grey-20 h-[40px] w-[140px] rounded-[12px]"></div>
+        <div className="mt-4">
+          <div className="bg-grey-20 h-10 w-[140px] rounded-xl"></div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-[24px] flex items-center justify-center gap-8">
+      <div className="mt-6 flex items-center justify-center gap-8">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="flex flex-col items-center gap-[8px]">
-            <div className="bg-grey-10 border-grey-20 rounded-[16px] border p-[16px]">
-              <div className="bg-grey-20 h-[24px] w-[24px] rounded-md"></div>
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className="bg-grey-10 border-grey-20 rounded-2xl border p-4">
+              <div className="bg-grey-20 h-6 w-6 rounded-md"></div>
             </div>
-            <div className="bg-grey-20 h-[12px] w-[40px] rounded-md"></div>
+            <div className="bg-grey-20 h-3 w-10 rounded-md"></div>
           </div>
         ))}
       </div>
 
       {/* Info Section */}
-      <div className="bg-grey-10 laptop:w-[640px] mt-[24px] w-full rounded-tl-[24px] rounded-tr-[24px]">
-        <div className="p-[16px]">
+      <div className="bg-grey-10 laptop:w-[640px] mt-6 w-full rounded-tl-3xl rounded-tr-3xl">
+        <div className="p-4">
           {/* About business */}
-          <div className="bg-grey-20 mb-[12px] h-[16px] w-[120px] rounded-md"></div>
-          <div className="mb-[16px] space-y-2">
-            <div className="bg-grey-20 h-[12px] w-full rounded-md"></div>
-            <div className="bg-grey-20 h-[12px] w-[80%] rounded-md"></div>
+          <div className="bg-grey-20 mb-3 h-4 w-[120px] rounded-md"></div>
+          <div className="mb-4 space-y-2">
+            <div className="bg-grey-20 h-3 w-full rounded-md"></div>
+            <div className="bg-grey-20 h-3 w-[80%] rounded-md"></div>
           </div>
 
           {/* Business Categories */}
-          <div className="bg-grey-20 mb-[12px] h-[16px] w-[150px] rounded-md"></div>
-          <div className="mb-[16px] space-y-2">
-            <div className="bg-grey-20 h-[12px] w-[70%] rounded-md"></div>
+          <div className="bg-grey-20 mb-3 h-4 w-[150px] rounded-md"></div>
+          <div className="mb-4 space-y-2">
+            <div className="bg-grey-20 h-3 w-[70%] rounded-md"></div>
           </div>
 
           {/* Services */}
-          <div className="bg-grey-20 mb-[12px] h-[16px] w-[100px] rounded-md"></div>
-          <div className="mb-[16px] space-y-2">
-            <div className="bg-grey-20 h-[12px] w-[60%] rounded-md"></div>
+          <div className="bg-grey-20 mb-3 h-4 w-[100px] rounded-md"></div>
+          <div className="mb-4 space-y-2">
+            <div className="bg-grey-20 h-3 w-[60%] rounded-md"></div>
           </div>
 
           {/* Portfolio Gallery */}
-          <div className="bg-grey-20 mb-[12px] h-[16px] w-[160px] rounded-md"></div>
-          <div className="mb-[16px] flex flex-wrap gap-2">
+          <div className="bg-grey-20 mb-3 h-4 w-40 rounded-md"></div>
+          <div className="mb-4 flex flex-wrap gap-2">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="bg-grey-20 h-[170px] w-[170px] rounded-[4px]"></div>
             ))}
           </div>
 
           {/* Reviews */}
-          <div className="bg-grey-20 mb-[16px] h-[16px] w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 mb-4 h-4 w-[100px] rounded-md"></div>
           <div className="flex justify-between">
-            <div className="bg-grey-10 flex flex-col rounded-[12px] p-[12px] px-[20px]">
-              <div className="bg-grey-20 mx-auto mb-[8px] h-[20px] w-[20px] rounded-full"></div>
-              <div className="bg-grey-20 mx-auto mb-[4px] h-[20px] w-[60px] rounded-md"></div>
-              <div className="bg-grey-20 mx-auto h-[12px] w-[80px] rounded-md"></div>
+            <div className="bg-grey-10 flex flex-col rounded-xl p-3 px-5">
+              <div className="bg-grey-20 mx-auto mb-2 h-5 w-5 rounded-full"></div>
+              <div className="bg-grey-20 mx-auto mb-1 h-5 w-[60px] rounded-md"></div>
+              <div className="bg-grey-20 mx-auto h-3 w-20 rounded-md"></div>
             </div>
             <div className="flex w-[60%] flex-col justify-between gap-2">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="bg-grey-20 h-[12px] w-full rounded-md"></div>
+                <div key={i} className="bg-grey-20 h-3 w-full rounded-md"></div>
               ))}
             </div>
           </div>
 
           {/* Reviews List */}
-          <div className="mt-[24px] space-y-4">
+          <div className="mt-6 space-y-4">
             {[...Array(2)].map((_, i) => (
               <div key={i} className="bg-grey-20 h-[60px] rounded-md"></div>
             ))}
           </div>
 
           {/* Load More */}
-          <div className="bg-grey-20 mx-auto mt-[24px] h-[16px] w-[100px] rounded-md"></div>
+          <div className="bg-grey-20 mx-auto mt-6 h-4 w-[100px] rounded-md"></div>
         </div>
       </div>
     </div>
@@ -931,7 +925,7 @@ export const AffiliateItemSkeleton = ({ count }: { count: number }) => {
             {/* Content Skeleton */}
             <div className="flex flex-col space-y-3">
               {/* Event Name */}
-              <div className="h-4 w-[160px] rounded bg-gray-200"></div>
+              <div className="h-4 w-40 rounded bg-gray-200"></div>
 
               {/* Date & Time */}
               <div className="flex items-center gap-2">
@@ -939,7 +933,7 @@ export const AffiliateItemSkeleton = ({ count }: { count: number }) => {
                 <div className="h-3 w-[100px] rounded bg-gray-200"></div>
                 <div className="h-2 w-2 rounded-full bg-gray-200"></div>
                 <div className="h-3 w-[60px] rounded bg-gray-200"></div>
-                <div className="h-3 w-[20px] rounded bg-gray-200"></div>
+                <div className="h-3 w-5 rounded bg-gray-200"></div>
                 <div className="h-3 w-[60px] rounded bg-gray-200"></div>
               </div>
 
@@ -963,20 +957,20 @@ export const AffiliateEventsSkeleton = ({ count }: { count: number }) => {
   return (
     <>
       {[...Array(count)].map((_, i) => (
-        <div className="mb-[24px] flex animate-pulse flex-col" key={i}>
+        <div className="mb-6 flex animate-pulse flex-col" key={i}>
           {/* Image Skeleton */}
-          <div className="h-[164px] w-[164px] rounded-[12px] bg-gray-200"></div>
+          <div className="h-[164px] w-[164px] rounded-xl bg-gray-200"></div>
 
           {/* Name Skeleton */}
-          <div className="mt-[8px] h-4 w-[100px] rounded bg-gray-200"></div>
+          <div className="mt-2 h-4 w-[100px] rounded bg-gray-200"></div>
 
           {/* Commission Skeleton */}
-          <div className="mt-[4px] h-4 w-[60px] rounded bg-gray-200"></div>
+          <div className="mt-1 h-4 w-[60px] rounded bg-gray-200"></div>
 
           {/* Ticket / Amount Skeleton */}
-          <div className="mt-[4px] flex items-center gap-2">
+          <div className="mt-1 flex items-center gap-2">
             <div className="h-4 w-4 rounded-full bg-gray-200"></div>
-            <div className="h-3 w-[80px] rounded bg-gray-200"></div>
+            <div className="h-3 w-20 rounded bg-gray-200"></div>
           </div>
         </div>
       ))}
@@ -997,7 +991,7 @@ export const AffiliateDataSkeleton = () => {
       <div className="h-4 w-[100px] rounded bg-gray-200"></div>
 
       {/* Tickets Sold Number Skeleton */}
-      <div className="h-6 w-[80px] rounded bg-gray-200"></div>
+      <div className="h-6 w-20 rounded bg-gray-200"></div>
 
       {/* Divider */}
       <div className="my-4 border-t border-gray-300"></div>
@@ -1016,32 +1010,32 @@ export const InviteSkeleton = ({ count }: { count: number }) => {
     <>
       {[...Array(count)].map((_, i) => (
         <div
-          className="border-b-mid-grey mb-[32px] flex animate-pulse justify-between border-b-[1px] pb-[16px]"
+          className="border-b-mid-grey mb-8 flex animate-pulse justify-between border-b pb-4"
           key={i}
         >
           <div className="flex gap-2">
             {/* Avatar + Lemon ID */}
             <div className="relative flex items-center justify-center">
               <div className="h-[41px] w-[33px] rounded-[8px] bg-gray-200"></div>
-              <div className="absolute h-[8px] w-[20px] rounded bg-gray-300"></div>
+              <div className="absolute h-2 w-5 rounded bg-gray-300"></div>
             </div>
 
             {/* Invite Info */}
             <div className="flex flex-col gap-2">
               {/* Name + Message Intro */}
-              <div className="h-[14px] w-[200px] rounded bg-gray-200"></div>
+              <div className="h-3.5 w-[200px] rounded bg-gray-200"></div>
 
               {/* Distance + Message Row */}
-              <div className="flex items-center gap-[8px]">
-                <div className="h-[10px] w-[60px] rounded bg-gray-200"></div>
-                <div className="h-[10px] w-[10px] rounded-full bg-gray-200"></div>
-                <div className="h-[10px] w-[120px] rounded bg-gray-200"></div>
+              <div className="flex items-center gap-2">
+                <div className="h-2.5 w-[60px] rounded bg-gray-200"></div>
+                <div className="h-2.5 w-2.5 rounded-full bg-gray-200"></div>
+                <div className="h-2.5 w-[120px] rounded bg-gray-200"></div>
               </div>
             </div>
           </div>
 
           {/* Chevron Icon */}
-          <div className="h-[16px] w-[16px] rounded bg-gray-200"></div>
+          <div className="h-4 w-4 rounded bg-gray-200"></div>
         </div>
       ))}
     </>
@@ -1053,13 +1047,13 @@ export const BoostPackagesSkeleton = ({ count }: { count: number }) => {
     <>
       {[...Array(count)].map((_, i) => (
         <div
-          className={`bg-light-tint flex w-fit animate-pulse flex-col items-center justify-center rounded-[12px] p-[16px]`}
+          className={`bg-light-tint flex w-fit animate-pulse flex-col items-center justify-center rounded-xl p-4`}
           key={i}
         >
           <div className="h-[74px] w-[74px] rounded-[8px] bg-gray-200" />
-          <div className="mt-[8px] h-[12px] w-[60px] rounded-[4px] bg-gray-200" />
-          <div className="mt-[8px] h-[16px] w-[80px] rounded-[4px] bg-gray-200" />
-          <div className="mt-[4px] h-[12px] w-[120px] rounded-[4px] bg-gray-200" />
+          <div className="mt-2 h-3 w-[60px] rounded-[4px] bg-gray-200" />
+          <div className="mt-2 h-4 w-20 rounded-[4px] bg-gray-200" />
+          <div className="mt-1 h-3 w-[120px] rounded-[4px] bg-gray-200" />
         </div>
       ))}
     </>
@@ -1072,31 +1066,31 @@ export const BillingHistorySkeleton = ({ count }: { count: number }) => {
       {/* Current Plan Skeleton */}
       <div className="border-b-step-color bg-green-tint flex flex-col items-start justify-between gap-6 rounded-2xl border-b-4 p-6 sm:flex-row sm:items-center">
         <div className="flex w-full flex-col gap-2 sm:w-[60%]">
-          <div className="bg-light-grey-70 h-[20px] w-[100px] rounded-md"></div>
-          <div className="bg-light-grey-70 h-[28px] w-[140px] rounded-md"></div>
+          <div className="bg-light-grey-70 h-5 w-[100px] rounded-md"></div>
+          <div className="bg-light-grey-70 h-7 w-[140px] rounded-md"></div>
           <div className="bg-light-green-50 w-[180px] rounded-lg px-3 py-2">
-            <div className="bg-light-grey-70 h-[16px] w-[120px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-4 w-[120px] rounded-md"></div>
           </div>
         </div>
-        <div className="bg-light-grey-70 h-[20px] w-[100px] rounded-md"></div>
+        <div className="bg-light-grey-70 h-5 w-[100px] rounded-md"></div>
       </div>
 
       {/* Payment Info Skeleton */}
       <div className="flex flex-col gap-4">
-        <div className="bg-light-grey-70 h-[16px] w-[120px] rounded-md"></div>
+        <div className="bg-light-grey-70 h-4 w-[120px] rounded-md"></div>
 
         <div className="bg-light-green-10 flex w-fit items-center gap-3 rounded-lg px-2 py-1">
           <div className="bg-light-green-50 flex items-center gap-2 rounded-xl px-3 py-2">
-            <div className="bg-light-grey-70 h-[24px] w-[33px] rounded-md"></div>
-            <div className="bg-light-grey-70 h-[16px] w-[60px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-6 w-[33px] rounded-md"></div>
+            <div className="bg-light-grey-70 h-4 w-[60px] rounded-md"></div>
           </div>
-          <div className="bg-light-grey-70 h-[16px] w-[100px] rounded-md"></div>
+          <div className="bg-light-grey-70 h-4 w-[100px] rounded-md"></div>
         </div>
       </div>
 
       {/* Payment History Skeleton */}
       <div className="flex flex-col gap-4">
-        <div className="bg-light-grey-70 h-[16px] w-[140px] rounded-md"></div>
+        <div className="bg-light-grey-70 h-4 w-[140px] rounded-md"></div>
 
         {/* 3 Dummy History Rows */}
         <div className="divide-light-green-20 border-light-green-20 flex flex-col divide-y overflow-hidden rounded-xl border">
@@ -1106,8 +1100,8 @@ export const BillingHistorySkeleton = ({ count }: { count: number }) => {
               className="laptop:flex-row laptop:items-center flex flex-col items-start justify-between bg-white px-4 py-3"
             >
               <div className="bg-light-grey-70 h-[18px] w-[150px] rounded-md"></div>
-              <div className="bg-light-grey-70 laptop:mt-0 mt-2 h-[16px] w-[100px] rounded-md"></div>
-              <div className="bg-light-grey-70 laptop:mt-0 mt-2 h-[18px] w-[80px] rounded-md"></div>
+              <div className="bg-light-grey-70 laptop:mt-0 mt-2 h-4 w-[100px] rounded-md"></div>
+              <div className="bg-light-grey-70 laptop:mt-0 mt-2 h-[18px] w-20 rounded-md"></div>
             </div>
           ))}
         </div>
@@ -1124,7 +1118,7 @@ export const ImagesLoadingSkeleton = ({ count }: { count: number }) => {
         .map((_, index) => (
           <div key={index} className="relative inline-block h-[165.5px] w-[165.5px] animate-pulse">
             {/* Image Skeleton */}
-            <div className="h-full w-full rounded-[12px] bg-gray-200" />
+            <div className="h-full w-full rounded-xl bg-gray-200" />
 
             {/* Remove Button Skeleton */}
             <div className="absolute top-0 right-0 m-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-300 shadow">
@@ -1147,10 +1141,10 @@ export const JobListSkeleton = ({ count }: { count: number }) => {
               {/* Top Row Skeleton: Logo + Name */}
               <div className="mb-4 flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="h-[40px] w-[40px] rounded-xl bg-gray-200" />
+                  <div className="h-10 w-10 rounded-xl bg-gray-200" />
                   <div className="flex flex-col gap-2">
                     <div className="h-4 w-[120px] rounded bg-gray-200" />
-                    <div className="mt-1 h-3 w-[80px] rounded bg-gray-200" />
+                    <div className="mt-1 h-3 w-20 rounded bg-gray-200" />
                   </div>
                 </div>
                 <div className="h-4 w-4 rounded bg-gray-200" />
@@ -1160,7 +1154,7 @@ export const JobListSkeleton = ({ count }: { count: number }) => {
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex flex-wrap gap-2">
                   <div className="h-5 w-[60px] rounded-full bg-gray-200" />
-                  <div className="h-5 w-[40px] rounded-full bg-gray-200" />
+                  <div className="h-5 w-10 rounded-full bg-gray-200" />
                 </div>
                 <div className="h-4 w-[50px] rounded bg-gray-200" />
               </div>
@@ -1183,7 +1177,7 @@ export const ChatListCardSkeleton = ({ count }: { count: number }) => {
         className="flex animate-pulse cursor-pointer items-center gap-3 rounded-xl p-4"
       >
         {/* Avatar Skeleton */}
-        <div className="h-[48px] w-[48px] rounded-[16px] bg-gray-200 shadow-sm" />
+        <div className="h-12 w-12 rounded-2xl bg-gray-200 shadow-sm" />
 
         {/* Chat Info Skeleton */}
         <div className="border-grey-20 flex w-full flex-col border-b pb-2">
@@ -1191,20 +1185,20 @@ export const ChatListCardSkeleton = ({ count }: { count: number }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {/* Username */}
-              <div className="h-[12px] w-[120px] rounded bg-gray-200" />
+              <div className="h-3 w-[120px] rounded bg-gray-200" />
               {/* Dot */}
-              <div className="h-[5px] w-[10px] rounded-full bg-gray-200" />
+              <div className="h-[5px] w-2.5 rounded-full bg-gray-200" />
               {/* Lemon ID */}
-              <div className="h-[10px] w-[60px] rounded bg-gray-200" />
+              <div className="h-2.5 w-[60px] rounded bg-gray-200" />
             </div>
 
             {/* Timestamp */}
-            <div className="h-[10px] w-[50px] rounded bg-gray-200" />
+            <div className="h-2.5 w-[50px] rounded bg-gray-200" />
           </div>
 
           {/* Message Preview */}
           <div className="mt-2">
-            <div className="h-[12px] w-[80%] rounded bg-gray-200" />
+            <div className="h-3 w-[80%] rounded bg-gray-200" />
           </div>
         </div>
       </div>
@@ -1214,47 +1208,47 @@ export const ChatListCardSkeleton = ({ count }: { count: number }) => {
 export const MyTicketSkeleton = () => {
   return (
     <div className="laptop:p-0 animate-pulse p-6">
-      <div className="laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0 mt-[16px] flex flex-col items-center rounded-[16px] bg-white p-6">
+      <div className="laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0 mt-4 flex flex-col items-center rounded-2xl bg-white p-6">
         <div className="flex justify-center">
-          <div className="flex w-[340px] flex-col gap-[16px]">
+          <div className="flex w-[340px] flex-col gap-4">
             {/* Event name */}
             <div className="h-[18px] w-[220px] rounded bg-gray-200" />
 
             {/* Date + Time */}
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
-                <div className="h-[12px] w-[40px] rounded bg-gray-200" />
-                <div className="h-[12px] w-[90px] rounded bg-gray-200" />
+                <div className="h-3 w-10 rounded bg-gray-200" />
+                <div className="h-3 w-[90px] rounded bg-gray-200" />
               </div>
               <div className="flex flex-col items-end gap-2">
-                <div className="h-[12px] w-[40px] rounded bg-gray-200" />
-                <div className="h-[12px] w-[70px] rounded bg-gray-200" />
+                <div className="h-3 w-10 rounded bg-gray-200" />
+                <div className="h-3 w-[70px] rounded bg-gray-200" />
               </div>
             </div>
 
             {/* Ticket type + Ticket ID */}
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
-                <div className="h-[12px] w-[70px] rounded bg-gray-200" />
-                <div className="h-[12px] w-[100px] rounded bg-gray-200" />
+                <div className="h-3 w-[70px] rounded bg-gray-200" />
+                <div className="h-3 w-[100px] rounded bg-gray-200" />
               </div>
               <div className="flex flex-col items-end gap-2">
-                <div className="h-[12px] w-[60px] rounded bg-gray-200" />
-                <div className="h-[12px] w-[110px] rounded bg-gray-200" />
+                <div className="h-3 w-[60px] rounded bg-gray-200" />
+                <div className="h-3 w-[110px] rounded bg-gray-200" />
               </div>
             </div>
 
             {/* Venue */}
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
-                <div className="h-[12px] w-[45px] rounded bg-gray-200" />
-                <div className="h-[12px] w-[200px] rounded bg-gray-200" />
+                <div className="h-3 w-[45px] rounded bg-gray-200" />
+                <div className="h-3 w-[200px] rounded bg-gray-200" />
               </div>
             </div>
 
             {/* QR Code */}
-            <div className="laptop:mt-[48px] mt-[94px] flex items-center justify-center">
-              <div className="h-[240px] w-[240px] rounded-[12px] bg-gray-200" />
+            <div className="laptop:mt-12 mt-[94px] flex items-center justify-center">
+              <div className="h-60 w-60 rounded-xl bg-gray-200" />
             </div>
           </div>
         </div>
@@ -1266,75 +1260,75 @@ export const MyTicketSkeleton = () => {
 export const EventFormSkeleton = () => {
   return (
     <form>
-      <div className="mt-10 flex w-[640px] animate-pulse flex-col rounded-[12px] bg-white p-[48px]">
+      <div className="mt-10 flex w-[640px] animate-pulse flex-col rounded-xl bg-white p-12">
         {/* Header */}
         <div className="h-3 w-28 rounded bg-gray-200" />
 
         {/* Uploader */}
-        <div className="mt-6 h-[160px] w-full rounded-[12px] bg-gray-200" />
+        <div className="mt-6 h-40 w-full rounded-xl bg-gray-200" />
 
         {/* Event name */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-24 rounded bg-gray-200" />
           <div className="h-12 w-full rounded-xl bg-gray-200" />
         </div>
 
         {/* Description */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-32 rounded bg-gray-200" />
           <div className="h-[131px] w-full rounded-xl bg-gray-200" />
         </div>
 
         {/* Category */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-28 rounded bg-gray-200" />
           <div className="h-12 w-full rounded-xl bg-gray-200" />
         </div>
 
         {/* EVENT TYPE */}
-        <div className="mt-[48px] h-3 w-24 rounded bg-gray-200" />
+        <div className="mt-12 h-3 w-24 rounded bg-gray-200" />
 
         {/* Physical / Online buttons */}
-        <div className="mt-[16px] flex gap-2">
-          <div className="h-[48px] w-[140px] rounded-[12px] bg-gray-200" />
-          <div className="h-[48px] w-[140px] rounded-[12px] bg-gray-200" />
+        <div className="mt-4 flex gap-2">
+          <div className="h-12 w-[140px] rounded-xl bg-gray-200" />
+          <div className="h-12 w-[140px] rounded-xl bg-gray-200" />
         </div>
 
         {/* Location / Online fields placeholder */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-28 rounded bg-gray-200" />
-          <div className="h-12 w-full rounded-[12px] bg-gray-200" />
+          <div className="h-12 w-full rounded-xl bg-gray-200" />
         </div>
 
         {/* Time zone */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-32 rounded bg-gray-200" />
           <div className="h-12 w-full rounded-xl bg-gray-200" />
         </div>
 
         {/* Start date */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-24 rounded bg-gray-200" />
           <div className="flex justify-between gap-3">
-            <div className="h-[40px] w-full rounded-[12px] bg-gray-200" />
-            <div className="h-[40px] w-full rounded-[12px] bg-gray-200" />
+            <div className="h-10 w-full rounded-xl bg-gray-200" />
+            <div className="h-10 w-full rounded-xl bg-gray-200" />
           </div>
         </div>
 
         {/* End date */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-24 rounded bg-gray-200" />
           <div className="flex justify-between gap-3">
-            <div className="h-[40px] w-full rounded-[12px] bg-gray-200" />
-            <div className="h-[40px] w-full rounded-[12px] bg-gray-200" />
+            <div className="h-10 w-full rounded-xl bg-gray-200" />
+            <div className="h-10 w-full rounded-xl bg-gray-200" />
           </div>
         </div>
 
         {/* AFFILIATE PROGRAM */}
-        <div className="mt-[48px] h-3 w-36 rounded bg-gray-200" />
+        <div className="mt-12 h-3 w-36 rounded bg-gray-200" />
 
         {/* Affiliate toggle row */}
-        <div className="mt-[28px] flex items-start justify-between gap-4">
+        <div className="mt-7 flex items-start justify-between gap-4">
           <div className="flex w-full gap-2">
             <div className="h-6 w-6 rounded bg-gray-200" />
             <div className="flex w-full flex-col gap-2">
@@ -1346,22 +1340,19 @@ export const EventFormSkeleton = () => {
         </div>
 
         {/* Commission field placeholder */}
-        <div className="mt-[24px] grid gap-2">
+        <div className="mt-6 grid gap-2">
           <div className="h-3 w-32 rounded bg-gray-200" />
           <div className="h-12 w-full rounded-xl bg-gray-200" />
           <div className="h-3 w-[260px] rounded bg-gray-200" />
         </div>
 
         {/* SOCIAL DETAILS */}
-        <div className="mt-[48px] h-3 w-44 rounded bg-gray-200" />
+        <div className="mt-12 h-3 w-44 rounded bg-gray-200" />
 
         {/* Social inputs (5 rows) */}
-        <div className="mt-[16px] flex flex-col gap-3">
+        <div className="mt-4 flex flex-col gap-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 rounded-[12px] bg-gray-200 p-2 px-[12px]"
-            >
+            <div key={i} className="flex items-center gap-3 rounded-xl bg-gray-200 p-2 px-3">
               <div className="h-5 w-5 rounded bg-gray-300" />
               <div className="h-5 w-full rounded bg-gray-300" />
             </div>
@@ -1369,7 +1360,7 @@ export const EventFormSkeleton = () => {
         </div>
 
         {/* Submit button */}
-        <div className="mt-[24px] h-[48px] w-full rounded-[12px] bg-gray-200" />
+        <div className="mt-6 h-12 w-full rounded-xl bg-gray-200" />
       </div>
     </form>
   );

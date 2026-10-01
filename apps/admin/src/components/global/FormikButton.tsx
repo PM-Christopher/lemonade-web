@@ -24,7 +24,7 @@ export const FormikButton = ({
       type="submit"
       className={`${
         classes === null
-          ? "flex h-[48px] w-fit items-center justify-center rounded-xl px-[14px] py-[10px]"
+          ? "flex h-12 w-fit items-center justify-center rounded-xl px-3.5 py-2.5"
           : classes
       } ${loading && "opacity-70"} ${bgColor && !error ? errorColor : bgColor} ${
         bgColor === null ? (!error ? "bg-mid-green" : "bg-gradient-green") : ""

@@ -67,13 +67,13 @@ const ConnectClient = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div>
             <p className="text-[14px] font-semibold">Connect</p>
           </div>
           <div className="flex items-center gap-2">
             <Link href={"/connect/requests"}>
-              <div className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-[12px] border-[1px] p-[8px] px-[14px]">
+              <div className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-3.5">
                 <RequestIcon />
                 <p className="font-semi-normal text-black-light laptop:block hidden font-sans text-[16px]">
                   Requests
@@ -81,7 +81,7 @@ const ConnectClient = () => {
               </div>
             </Link>
             <div
-              className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-[12px] border-[1px] p-[8px] px-[14px]"
+              className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-3.5"
               onClick={toggleSettingsModal}
             >
               <SettingsIcon />
@@ -97,7 +97,7 @@ const ConnectClient = () => {
               <div
                 className={`${chatOpened ? "hidden" : "flex"} h-[648px] w-screen flex-col bg-white`}
               >
-                <div className="p-[8px] px-[16px]">
+                <div className="p-2 px-4">
                   <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
                     {/* Icon */}
                     <span className="shrink-0 text-gray-500">
@@ -167,11 +167,11 @@ const ConnectClient = () => {
             </div>
           )}
           <div className="laptop:flex hidden">
-            <div className="flex h-[648px] w-[375px] flex-col rounded-tl-[16px] rounded-bl-[16px] border-[1px] bg-white">
-              <div className="p-[16px]">
+            <div className="flex h-[648px] w-[375px] flex-col rounded-tl-2xl rounded-bl-2xl border bg-white">
+              <div className="p-4">
                 <p className="font-ruso text-black-light text-[18px] font-bold">Chats</p>
               </div>
-              <div className="p-[8px] px-[16px]">
+              <div className="p-2 px-4">
                 <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
                   {/* Icon */}
                   <span className="shrink-0 text-gray-500">
@@ -220,7 +220,7 @@ const ConnectClient = () => {
                       <button
                         type={"button"}
                         className={
-                          "bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[48px] rounded-[12px] px-[12px]"
+                          "bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-12 rounded-xl px-3"
                         }
                       >
                         <p className={"font-ruso text-white"}>Send request</p>

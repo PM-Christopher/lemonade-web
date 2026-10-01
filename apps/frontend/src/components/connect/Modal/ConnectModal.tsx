@@ -101,7 +101,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
                 onClick={toggle}
                 className="rounded-full p-2 transition-all hover:bg-gray-100"
               >
-                <CloseIcon className="w-[12px]" />
+                <CloseIcon className="w-3" />
               </button>
               <p className="text-[16px] font-semibold text-gray-800">Connect</p>
             </div>
@@ -110,7 +110,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
           {/* Content */}
           <div className="mt-6 flex flex-col items-center space-y-2 text-center">
             {/* Profile Avatar */}
-            <div className="relative h-[40px] w-[40px]">
+            <div className="relative h-10 w-10">
               <Image src="/images/lemon.png" alt="lemon" width={40} height={40} />
               <p className="absolute bottom-2 left-2 text-[12px] font-semibold text-black">
                 L{user?.short_lemon_id}
@@ -161,7 +161,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
                 <div className="mt-6 w-full">
                   <Button
                     type="submit"
-                    className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-xl transition-all hover:brightness-110"
+                    className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl transition-all hover:brightness-110"
                   >
                     <p className="text-[16px] font-medium">Send Invite</p>
                   </Button>

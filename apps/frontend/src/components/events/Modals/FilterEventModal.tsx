@@ -99,8 +99,8 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
               <p>Event filter</p>
             </div>
           </div>
-          <div className="mt-[24px] flex flex-col">
-            <div className="mt-[24px] grid gap-2">
+          <div className="mt-6 flex flex-col">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -114,7 +114,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                   ) : (
                     data?.categories?.map((category: any, index: number) => (
                       <div
-                        className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
+                        className={`w-fit cursor-pointer rounded-xl p-3 px-4 ${
                           category?.name === clickedCategory
                             ? "bg-gradient-green-2 shadow-event-custom"
                             : "bg-light_grey"
@@ -131,7 +131,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 </div>
               </div>
             </div>
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -143,7 +143,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                   <div className="flex flex-wrap gap-2">
                     {timeOptions?.map((option: string, index: number) => (
                       <div
-                        className={`w-fit cursor-pointer rounded-[12px] p-[12px] px-[16px] ${
+                        className={`w-fit cursor-pointer rounded-xl p-3 px-4 ${
                           option === timeType
                             ? "bg-gradient-green-2 shadow-event-custom"
                             : "bg-light_grey"
@@ -155,8 +155,8 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                       </div>
                     ))}
                   </div>
-                  <div className="flex items-center justify-between gap-[10px]">
-                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                  <div className="flex items-center justify-between gap-2.5">
+                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <div>
                         <CalendarIcon />
                       </div>
@@ -172,13 +172,13 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                           }}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-[10px] font-sans text-[12px] shadow-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-2.5 font-sans text-[12px] shadow-none"
                           placeholderText="From"
                         />
                       </div>
                     </div>
                     <p>-</p>
-                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <div>
                         <CalendarIcon />
                       </div>
@@ -194,7 +194,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                           }}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-[10px] font-sans text-[12px] shadow-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-2.5 font-sans text-[12px] shadow-none"
                           placeholderText="To"
                         />
                       </div>
@@ -203,7 +203,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 </div>
               </div>
             </div>
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -214,7 +214,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 <Select onValueChange={handleLocationChange}>
                   <SelectTrigger
                     aria-label="Location"
-                    className="bg-mid-grey h-[40px] w-[180px] rounded-xl border-0 px-[16px]"
+                    className="bg-mid-grey h-10 w-[180px] rounded-xl border-0 px-4"
                   >
                     <SelectValue
                       placeholder={
@@ -232,9 +232,9 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 </Select>
               </div>
             </div>
-            <div className="mt-[40px] flex gap-[4px]">
+            <div className="mt-10 flex gap-1">
               <button
-                className="border-light-grey-50 w-full rounded-[12px] border-[1px] p-[10px] px-[14px]"
+                className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
                 onClick={handleResetFilter}
               >
                 <p className="font-semi-normal text-black-light font-sans text-[16px]">
@@ -242,7 +242,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 </p>
               </button>
               <button
-                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+                className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 onClick={handleFilterEvent}
               >
                 <p className="font-semi-normal font-sans text-[16px] text-white">Apply filter</p>

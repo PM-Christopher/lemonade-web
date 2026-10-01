@@ -21,7 +21,7 @@ const DeleteModal = dynamic(() => import("@/modals/businesses/DeleteModal"), { s
 function Field({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
-    <div className={"items-center-center flex gap-[24px]"}>
+    <div className={"items-center-center flex gap-6"}>
       <div className={"w-[140px]"}>
         <p className={"text-text-grey text-[12px] font-medium"}>{label}:</p>
       </div>
@@ -46,28 +46,22 @@ function BusinessDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:p-5">
-        <div className={"flex h-fit w-full max-w-[720px] flex-col rounded-[12px] bg-white"}>
-          <div
-            className={
-              "flex flex-wrap items-center justify-between gap-[12px] border-b-[1px] p-[24px]"
-            }
-          >
+        <div className={"flex h-fit w-full max-w-[720px] flex-col rounded-xl bg-white"}>
+          <div className={"flex flex-wrap items-center justify-between gap-3 border-b p-6"}>
             <p className={"font-semiBold text-[16px]"}>Business summary</p>
-            <div className={"flex gap-[8px]"}>
+            <div className={"flex gap-2"}>
               {status === "PENDING" && (
                 <>
                   <button
                     className={
-                      "border-step-color bg-gradient-green h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
+                      "border-step-color bg-gradient-green h-11 rounded-xl border px-5 text-center"
                     }
                     onClick={() => setApproveModalOpen(true)}
                   >
                     <p className={"text-[16px] font-medium text-white"}>Approve</p>
                   </button>
                   <button
-                    className={
-                      "border-red-2 bg-red-1 h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
-                    }
+                    className={"border-red-2 bg-red-1 h-11 rounded-xl border px-5 text-center"}
                     onClick={() => setRejectModalOpen(true)}
                   >
                     <p className={"text-[16px] font-medium text-white"}>Reject</p>
@@ -76,9 +70,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
               )}
               {status === "ACTIVE" && (
                 <button
-                  className={
-                    "border-red-2 bg-red-1 h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
-                  }
+                  className={"border-red-2 bg-red-1 h-11 rounded-xl border px-5 text-center"}
                   onClick={() => setSuspendModalOpen(true)}
                 >
                   <p className={"text-[16px] font-medium text-white"}>Suspend</p>
@@ -87,7 +79,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
               {(status === "SUSPENDED" || status === "REJECTED" || status === "INACTIVE") && (
                 <button
                   className={
-                    "border-step-color bg-gradient-green h-[44px] rounded-[12px] border-[1px] px-[20px] text-center"
+                    "border-step-color bg-gradient-green h-11 rounded-xl border px-5 text-center"
                   }
                   onClick={() => setReactivateModalOpen(true)}
                 >
@@ -96,14 +88,14 @@ function BusinessDetailsClient({ id }: { id: string }) {
               )}
             </div>
           </div>
-          <div className={"flex flex-col gap-[20px] p-[24px]"}>
+          <div className={"flex flex-col gap-5 p-6"}>
             {business?.image && (
               <Image
                 src={business.image}
                 alt={business.name}
                 width={96}
                 height={96}
-                className={"h-[96px] w-[96px] rounded-[16px] object-cover"}
+                className={"h-24 w-24 rounded-2xl object-cover"}
               />
             )}
             <Field label="Business name" value={business?.name} />
@@ -127,15 +119,15 @@ function BusinessDetailsClient({ id }: { id: string }) {
             <Field label="Reviewed at" value={business?.reviewed_at} />
             <Field label="Rejection reason" value={business?.rejection_reason} />
             {business?.description && (
-              <div className={"flex flex-col gap-[8px]"}>
+              <div className={"flex flex-col gap-2"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Description</p>
                 <p className={"text-light-black text-[14px] font-normal"}>{business.description}</p>
               </div>
             )}
             {business?.gallery && business.gallery.length > 0 && (
-              <div className={"flex flex-col gap-[8px]"}>
+              <div className={"flex flex-col gap-2"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Gallery</p>
-                <div className={"flex flex-wrap gap-[12px]"}>
+                <div className={"flex flex-wrap gap-3"}>
                   {business.gallery.map((src) => (
                     <Image
                       key={src}
@@ -143,7 +135,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
                       alt={business.name}
                       width={120}
                       height={120}
-                      className={"h-[120px] w-[120px] rounded-[12px] object-cover"}
+                      className={"h-[120px] w-[120px] rounded-xl object-cover"}
                     />
                   ))}
                 </div>
@@ -151,13 +143,11 @@ function BusinessDetailsClient({ id }: { id: string }) {
             )}
           </div>
           <div
-            className={
-              "border-t-grey-20 mt-[20px] flex items-center justify-between gap-[24px] border-t-[1px] p-[24px]"
-            }
+            className={"border-t-grey-20 mt-5 flex items-center justify-between gap-6 border-t p-6"}
           >
             <button
               className={
-                "border-light-grey-50 text-red-1 w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+                "border-light-grey-50 text-red-1 w-full rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
               }
               type={"button"}
               onClick={() => setDeleteModalOpen(true)}

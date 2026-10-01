@@ -12,20 +12,20 @@ type EventCardIF = {
 };
 const EventCard: React.FC<EventCardIF> = ({ event }) => {
   return (
-    <div className="laptop:w-[316px] mb-[16px] flex w-[165px] flex-col rounded-[12px] bg-white">
+    <div className="laptop:w-[316px] mb-4 flex w-[165px] flex-col rounded-xl bg-white">
       <Image
         src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
         alt="event_1"
         width={316}
         height={316}
-        className="laptop:h-[316px] laptop:w-[316px] h-[165px] w-[165px] rounded-t-[12px]"
+        className="laptop:h-[316px] laptop:w-[316px] h-[165px] w-[165px] rounded-t-xl"
       />
       <div className="p-2">
         <p className="tracking-custom laptop:text-[18px] my-2 font-sans text-[14px] leading-[27px] font-semibold">
           {event.event_name}
         </p>
         <div className="my-2 flex items-center gap-1">
-          <CalendarIcon className="h-[12px] w-[12px]" />
+          <CalendarIcon className="h-3 w-3" />
           <p className="text-text-grey laptop:text-[14px] font-sans text-[10px] leading-[16.8px] font-normal">
             {formatDate(event?.start_date)}
           </p>
@@ -35,7 +35,7 @@ const EventCard: React.FC<EventCardIF> = ({ event }) => {
           </p>
         </div>
         <div className="my-2 flex items-center gap-1">
-          <LocationIcon className="h-[12px] w-[12px]" />
+          <LocationIcon className="h-3 w-3" />
           <p className="text-text-grey laptop:text-[14px] truncate font-sans text-[10px] leading-[16.8px] font-normal">
             {event?.location}
           </p>

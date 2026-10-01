@@ -16,7 +16,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
   const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver;
 
   return (
-    // <div className={`p-[16px] flex items-center gap-[8px] ${active && "bg-light-green-10"} cursor-pointer`}>
+    // <div className={`p-4 flex items-center gap-2 ${active && "bg-light-green-10"} cursor-pointer`}>
     <div
       className={`flex items-center gap-3 rounded-xl p-4 transition-all duration-150 ${
         active ? "bg-light-green-10" : "hover:bg-gray-50"
@@ -25,7 +25,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
     >
       {/* Avatar / Initials */}
       <div
-        className={`flex h-[48px] w-[48px] items-center justify-center rounded-[16px] text-lg font-semibold text-white shadow-sm ${
+        className={`flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-semibold text-white shadow-sm ${
           userType?.avatar ? "" : "bg-gray-500"
         }`}
         style={
@@ -59,7 +59,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
             <p className="text-black-light truncate text-[14px] font-semibold">
               {userType.username}
             </p>
-            <DotIcon className="h-[5px] w-[10px] text-gray-400" />
+            <DotIcon className="h-[5px] w-2.5 text-gray-400" />
             <p className="text-text-grey text-[13px] font-normal">L{userType.lemon_id}</p>
           </div>
 

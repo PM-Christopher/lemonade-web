@@ -98,9 +98,9 @@ function WalletSettingsClient() {
       <section className="bg-light_grey pb-10">
         <ReferralSideMenu toggleMenu={toggleRefMenu} isOpen={isRefOpen} />
         <AffiliateSideMenu isOpen={isAfOpen} toggleMenu={toggleAfMenu} />
-        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.push("/settings")}
           >
             <ChevronLeft />
@@ -108,19 +108,19 @@ function WalletSettingsClient() {
           </div>
         </div>
 
-        <section className="laptop:flex-row laptop:px-0 mt-4 flex flex-col justify-center gap-[20px] px-[10px]">
+        <section className="laptop:flex-row laptop:px-0 mt-4 flex flex-col justify-center gap-5 px-2.5">
           {loading ? (
             <WalletDetailSkeleton />
           ) : (
             <div className="laptop:w-[580px] flex w-full flex-col">
-              <div className="flex flex-col rounded-[12px] bg-white p-[16px]">
-                <div className="border-b-mid-grey flex flex-col border-b-[1px] p-[16px]">
+              <div className="flex flex-col rounded-xl bg-white p-4">
+                <div className="border-b-mid-grey flex flex-col border-b p-4">
                   <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
                   <p className="tracking-custom text-[18px] font-semibold">
                     N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                   </p>
                 </div>
-                <div className="border-b-mid-grey flex justify-between border-b-[1px] p-[16px]">
+                <div className="border-b-mid-grey flex justify-between border-b p-4">
                   <div className="flex flex-col">
                     <p className="text-text-grey text-[14px] font-normal">Referral earnings</p>
                     <p className="tracking-custom text-[18px] font-semibold">
@@ -129,7 +129,7 @@ function WalletSettingsClient() {
                   </div>
                   <ChevronRight onClick={toggleRefMenu} className="cursor-pointer" />
                 </div>
-                <div className="flex justify-between p-[16px]">
+                <div className="flex justify-between p-4">
                   <div className="flex flex-col">
                     <p className="text-text-grey text-[14px] font-normal">Affiliate earnings</p>
                     <p className="tracking-custom text-[18px] font-semibold">
@@ -140,12 +140,12 @@ function WalletSettingsClient() {
                 </div>
               </div>
               {data?.payout_request && (
-                <div className="bg-light-tint mt-[24px] flex flex-col rounded-[12px] p-[16px]">
+                <div className="bg-light-tint mt-6 flex flex-col rounded-xl p-4">
                   <p className="text-light-black text-[16px] font-normal">
                     Commission payouts are available when you&apos;ve earned over ₦100,000
                   </p>
                   <Button
-                    className={`bg-gradient-green mt-[16px] h-[48px] w-fit rounded-[12px] p-[14px] px-[48px] ${
+                    className={`bg-gradient-green mt-4 h-12 w-fit rounded-xl p-3.5 px-12 ${
                       !profileLoading
                         ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
                         : "bg-mid-green cursor-not-allowed opacity-70"
@@ -186,19 +186,16 @@ function WalletSettingsClient() {
             </div>
           )}
           <div>
-            <div className="laptop:min-w-[684px] flex w-full flex-col rounded-[12px] bg-white">
-              <div className="border-b-[1px] p-[16px]">
+            <div className="laptop:min-w-[684px] flex w-full flex-col rounded-xl bg-white">
+              <div className="border-b p-4">
                 <p className="text-[16px] font-semibold">Payout history</p>
               </div>
               {loading ? (
                 <TransactionHistorySkeleton count={4} />
               ) : (
-                <div className="px-[24px]">
+                <div className="px-6">
                   {data?.payout_history?.map((history: any, index: number) => (
-                    <div
-                      className="flex items-center justify-between pt-[16px] pb-[24px]"
-                      key={index}
-                    >
+                    <div className="flex items-center justify-between pt-4 pb-6" key={index}>
                       <div className="flex flex-col">
                         <p className="font-semi-normal text-[14px]">
                           N{formatNumberWithCommas(Number(history?.amount) || 0)}
@@ -206,7 +203,7 @@ function WalletSettingsClient() {
                         <p className="text-text-grey text-[12px] font-normal">{history?.date}</p>
                       </div>
                       {history?.status === "processing" && (
-                        <div className="bg-warning rounded-[8px] px-[8px] py-[4px]">
+                        <div className="bg-warning rounded-[8px] px-2 py-1">
                           <p className="font-semi-normal text-warning-bold text-[12px]">
                             Processing
                           </p>
@@ -214,32 +211,32 @@ function WalletSettingsClient() {
                       )}
                       {history?.status === "completed" ||
                         (history?.status === "successful" && (
-                          <div className="bg-light-green-60 rounded-[8px] px-[8px] py-[4px]">
+                          <div className="bg-light-green-60 rounded-[8px] px-2 py-1">
                             <p className="font-semi-normal text-light-green-70 text-[12px]">
                               Completed
                             </p>
                           </div>
                         ))}
                       {history?.status === "failed" && (
-                        <div className="bg-red-3 rounded-[8px] px-[8px] py-[4px]">
+                        <div className="bg-red-3 rounded-[8px] px-2 py-1">
                           <p className="font-semi-normal text-red-1 text-[12px]">Failed</p>
                         </div>
                       )}
                       {history?.status === "pending" && (
-                        <div className="bg-warning rounded-[8px] px-[8px] py-[4px]">
+                        <div className="bg-warning rounded-[8px] px-2 py-1">
                           <p className="font-semi-normal text-warning-bold text-[12px]">Pending</p>
                         </div>
                       )}
                     </div>
                   ))}
-                  {/*<div className="pt-[16px] pb-[24px] flex justify-between items-center">*/}
+                  {/*<div className="pt-4 pb-6 flex justify-between items-center">*/}
                   {/*    <div className="flex flex-col">*/}
                   {/*        <p className="font-semi-normal text-[14px]">N2,000</p>*/}
                   {/*        <p className="font-normal text-[12px] text-text-grey">23 Mar, 2023 05:00PM</p>*/}
                   {/*    </div>*/}
 
                   {/*</div>*/}
-                  {/*<div className="pt-[16px] pb-[24px] flex justify-between items-center">*/}
+                  {/*<div className="pt-4 pb-6 flex justify-between items-center">*/}
                   {/*    <div className="flex flex-col">*/}
                   {/*        <p className="font-semi-normal text-[14px]">N2,000</p>*/}
                   {/*        <p className="font-normal text-[12px] text-text-grey">23 Mar, 2023 05:00PM</p>*/}

@@ -41,8 +41,8 @@ function DeactivateModal({ isOpen, toggle, id, reload }: DeactivateModalProps) {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Deactivate user</DialogTitle>
-        <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
-          <div className={"px-[16px] py-[4px]"}>
+        <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+          <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
               <p className="font-sans text-[18px] leading-[27px] font-semibold">Deactivate user</p>
               <div className="cursor-pointer" onClick={toggle}>
@@ -50,32 +50,30 @@ function DeactivateModal({ isOpen, toggle, id, reload }: DeactivateModalProps) {
               </div>
             </div>
           </div>
-          <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
+          <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-[14px] font-normal"}>
               Are you sure you want to deactivate this user? This user account and all activities
               related to it will be permanently removed on the platform
             </p>
             <p className={"text-text-grey text-[14px] font-normal"}>Reason</p>
             <select
-              className="bg-light-grey rounded-[12px] p-[12px]"
+              className="bg-light-grey rounded-xl p-3"
               value={selectedOption}
               onChange={handleChange}
             >
               <option value={"policy-violation"}>Policy violation</option>
               <option value={"inappropriate-behaviour"}>Inappropriate behaviour</option>
             </select>
-            <div className={"flex justify-between gap-[10px]"}>
+            <div className={"flex justify-between gap-2.5"}>
               <button
-                className={
-                  "border-light-grey-50 h-[48px] w-[156px] rounded-[12px] border-[1px] bg-white py-[14px]"
-                }
+                className={"border-light-grey-50 h-12 w-[156px] rounded-xl border bg-white py-3.5"}
                 onClick={toggle}
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
               <button
                 className={
-                  "border-red-2 bg-red-1 h-[48px] w-[156px] rounded-[12px] border-[1px] py-[14px] text-center"
+                  "border-red-2 bg-red-1 h-12 w-[156px] rounded-xl border py-3.5 text-center"
                 }
                 onClick={SubmitAction}
               >

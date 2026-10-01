@@ -287,9 +287,9 @@ const CreateEventPage = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.push("/event")}
           >
             <ChevronLeft className="cursor-pointer" />
@@ -298,7 +298,7 @@ const CreateEventPage = () => {
         </div>
         <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
           <div>
-            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-[12px] bg-white p-[48px]">
+            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-xl bg-white p-12">
               <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                 EVENT DETAILS
               </p>
@@ -312,7 +312,7 @@ const CreateEventPage = () => {
               {formik.touched.event_image && formik.errors.event_image ? (
                 <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.event_image}</p>
               ) : null}
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="event-name"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -333,7 +333,7 @@ const CreateEventPage = () => {
                   <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.event_name}</p>
                 ) : null}
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -353,7 +353,7 @@ const CreateEventPage = () => {
                   </p>
                 ) : null}
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -376,12 +376,12 @@ const CreateEventPage = () => {
                   <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.category}</p>
                 ) : null}
               </div>
-              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 EVENT TYPE
               </p>
-              <div className="mt-[16px] flex gap-2">
+              <div className="mt-4 flex gap-2">
                 <div
-                  className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${
+                  className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${
                     eventType === "physical"
                       ? "bg-gradient-green-2 shadow-event-custom"
                       : "bg-light_grey text-text-grey"
@@ -397,7 +397,7 @@ const CreateEventPage = () => {
                   </p>
                 </div>
                 <div
-                  className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${
+                  className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${
                     eventType === "online"
                       ? "bg-gradient-green-2 shadow-event-custom"
                       : "bg-light_grey text-text-grey"
@@ -414,14 +414,14 @@ const CreateEventPage = () => {
                 </div>
               </div>
               {eventType === "physical" && (
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="fullname"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
                     Event location
                   </Label>
-                  <div className="bg-light_grey flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+                  <div className="bg-light_grey flex items-center gap-3 rounded-xl p-2 px-3">
                     <div>
                       <LocationIcon />
                     </div>
@@ -429,7 +429,7 @@ const CreateEventPage = () => {
                       <input
                         id="search"
                         type="text"
-                        className="bg-light_grey w-full border-0 px-[4px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                        className="bg-light_grey w-full border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
                         value={formik.values.location}
                         onChange={(e) => {
@@ -445,7 +445,7 @@ const CreateEventPage = () => {
               )}
               {eventType === "online" && (
                 <>
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="meeting-platform"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -468,7 +468,7 @@ const CreateEventPage = () => {
                     ) : null}
                   </div>
 
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="meeting-link"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -491,7 +491,7 @@ const CreateEventPage = () => {
                     ) : null}
                   </div>
 
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="meeting-passcode"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -515,7 +515,7 @@ const CreateEventPage = () => {
                   </div>
                 </>
               )}
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="event-time-zone"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -541,7 +541,7 @@ const CreateEventPage = () => {
                   <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.time_zone}</p>
                 ) : null}
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -549,8 +549,8 @@ const CreateEventPage = () => {
                   Start date
                 </Label>
                 <div className="flex justify-between gap-3">
-                  <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                  <div className={"flex w-full flex-col gap-1"}>
+                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <div>
                         <CalendarIcon />
                       </div>
@@ -575,7 +575,7 @@ const CreateEventPage = () => {
                           minDate={now}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                           placeholderText="From"
                         />
                       </div>
@@ -587,8 +587,8 @@ const CreateEventPage = () => {
                     ) : null}
                   </div>
 
-                  <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                  <div className={"flex w-full flex-col gap-1"}>
+                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <div>
                         <ClockIcon />
                       </div>
@@ -611,7 +611,7 @@ const CreateEventPage = () => {
                           timeCaption={"Start Time"}
                           timeIntervals={15}
                           dateFormat="h:mm aa"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                           placeholderText="Start Time"
                           minTime={
                             formik.values.start_date &&
@@ -631,7 +631,7 @@ const CreateEventPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -639,8 +639,8 @@ const CreateEventPage = () => {
                   End date
                 </Label>
                 <div className="flex justify-between gap-3">
-                  <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                  <div className={"flex w-full flex-col gap-1"}>
+                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <CalendarIcon />
                       <DatePicker
                         selected={formik.values.end_date ? new Date(formik.values.end_date) : null}
@@ -661,7 +661,7 @@ const CreateEventPage = () => {
                         }
                         dateFormat="yyyy-MM-dd"
                         placeholderText="End Date"
-                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                       />
                     </div>
                     {formik.touched.end_date && formik.errors.end_date ? (
@@ -671,8 +671,8 @@ const CreateEventPage = () => {
                     ) : null}
                   </div>
 
-                  <div className={"flex w-full flex-col gap-[4px]"}>
-                    <div className="bg-light_grey flex h-[40px] w-full items-center gap-3 rounded-[12px] px-[16px]">
+                  <div className={"flex w-full flex-col gap-1"}>
+                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <ClockIcon />
                       <DatePicker
                         selected={
@@ -708,7 +708,7 @@ const CreateEventPage = () => {
                           max.setHours(23, 45, 0, 0);
                           return max;
                         })()}
-                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-[10px] font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                       />
                     </div>
                     {formik.touched.end_time && formik.errors.end_time ? (
@@ -719,10 +719,10 @@ const CreateEventPage = () => {
                   </div>
                 </div>
               </div>
-              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 AFFILIATE PROGRAM
               </p>
-              <div className="mt-[28px] flex justify-between">
+              <div className="mt-7 flex justify-between">
                 <div className="flex gap-2">
                   <div className="mt-1">
                     <AffiliateUsersIcon />
@@ -750,7 +750,7 @@ const CreateEventPage = () => {
                 </div>
               </div>
               {checked && (
-                <div className="mt-[24px] grid gap-2">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="fullname"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -777,10 +777,10 @@ const CreateEventPage = () => {
                   ) : null}
                 </div>
               )}
-              <p className="text-light-black mt-[48px] font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
               </p>
-              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                 <div>
                   <AttachmentIcon />
                 </div>
@@ -796,7 +796,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                 <div>
                   <FacebookIcon />
                 </div>
@@ -812,7 +812,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                 <div>
                   <LinkedInIcon />
                 </div>
@@ -828,7 +828,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                 <div>
                   <TwitterIcon />
                 </div>
@@ -844,7 +844,7 @@ const CreateEventPage = () => {
                   />
                 </div>
               </div>
-              <div className="bg-light_grey mt-[16px] flex items-center gap-3 rounded-[12px] p-2 px-[12px]">
+              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
                 <div>
                   <InstagramIcon />
                 </div>
@@ -865,7 +865,7 @@ const CreateEventPage = () => {
                 error={formik.isValid}
                 onClick={formik.handleSubmit}
                 title="Continue"
-                classes="mt-[24px] h-[48px] rounded-[12px] border-[1px] border-step-color shadow-custom-bottom"
+                classes="mt-6 h-12 rounded-xl border border-step-color shadow-custom-bottom"
               />
             </div>
           </div>

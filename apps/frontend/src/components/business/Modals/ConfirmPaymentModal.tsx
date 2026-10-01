@@ -66,15 +66,15 @@ const ConfirmPaymentModal = ({
               <CloseIcon />
             </div>
           </div>
-          <div className="mt-10 flex flex-col items-center pb-[10px]">
+          <div className="mt-10 flex flex-col items-center pb-2.5">
             <p className="w-[328px] text-[14px] font-normal">
               To ensure a smooth process, please mark the job as completed only after it&apos;s
               finished. Your payment will be released only when the client confirms completion. You
               may dispute delayed payments.
             </p>
-            <div className="mt-[40px] flex w-full justify-center gap-3">
+            <div className="mt-10 flex w-full justify-center gap-3">
               <Button
-                className={`h-[48px] w-full rounded-[12px] p-[14px] px-[48px] ${requestPLoading ? "bg-light-green-20" : "bg-gradient-green"} shadow-custom-bottom`}
+                className={`h-12 w-full rounded-xl p-3.5 px-12 ${requestPLoading ? "bg-light-green-20" : "bg-gradient-green"} shadow-custom-bottom`}
                 onClick={handleRequestPayment}
                 disabled={requestPLoading}
               >

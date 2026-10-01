@@ -41,7 +41,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white p-[48px] px-[20px]">
+        <div className="laptop:w-[585px] h-full w-screen bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
@@ -89,7 +89,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
             </div>
           </div>
 
-          <div className="mt-[32px] h-screen p-[16px] px-[32px]">
+          <div className="mt-8 h-screen p-4 px-8">
             {loading ? <JobListSkeleton count={6} /> : renderCards()}
           </div>
         </div>

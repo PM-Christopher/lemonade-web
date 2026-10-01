@@ -71,8 +71,8 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
           </div>
         </div>
         <form onSubmit={formik.handleSubmit}>
-          <div className="mt-[24px] flex flex-col">
-            <div className="mt-[24px] grid gap-2">
+          <div className="mt-6 flex flex-col">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
@@ -80,13 +80,13 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 Location
               </Label>
               <div className="mt-2">
-                <div className="bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]">
+                <div className="bg-light_grey flex h-12 w-full items-center gap-2 rounded-lg p-3">
                   <LocationIcon />
                   <input
                     id="search"
                     type="text"
                     value={formik.values.location}
-                    className="bg-light_grey w-full rounded-xl border-0 px-[4px] text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Enter location"
                     onChange={(e) => {
                       formik.setFieldValue("location", e.target.value);
@@ -97,7 +97,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             </div>
 
             {/*business category*/}
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
@@ -108,7 +108,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 <Select onValueChange={handleCategoryChange}>
                   <SelectTrigger
                     aria-label="Business Category"
-                    className="bg-light_grey h-[48px] w-full rounded-xl border-0 px-[16px] font-sans focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="bg-light_grey h-12 w-full rounded-xl border-0 px-4 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
                   >
                     <SelectValue
                       placeholder={
@@ -131,7 +131,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             </div>
 
             {/*service type*/}
-            <div className="mt-[24px] grid gap-2">
+            <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
                 className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
@@ -139,12 +139,12 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 Service Type
               </Label>
               <div className="mt-2">
-                <div className="bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]">
+                <div className="bg-light_grey flex h-12 w-full items-center gap-2 rounded-lg p-3">
                   <input
                     id="search"
                     type="text"
                     value={formik.values.service_type}
-                    className="bg-light_grey w-full rounded-xl border-0 px-[4px] font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="bg-light_grey w-full rounded-xl border-0 px-1 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Service Type"
                     onChange={(e) => {
                       formik.setFieldValue("service_type", e.target.value);
@@ -154,19 +154,15 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
               </div>
             </div>
             {/*range*/}
-            <div className="mt-[24px] grid">
+            <div className="mt-6 grid">
               <Label
                 htmlFor="fullname"
                 className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
               >
                 Budget Range
               </Label>
-              <div className="mt-2 flex items-center justify-between gap-[12px]">
-                <div
-                  className={
-                    "bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]"
-                  }
-                >
+              <div className="mt-2 flex items-center justify-between gap-3">
+                <div className={"bg-light_grey flex h-12 w-full items-center gap-2 rounded-lg p-3"}>
                   <NairaIcon />
                   <input
                     type="text"
@@ -183,11 +179,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   />
                 </div>
                 <span>-</span>
-                <div
-                  className={
-                    "bg-light_grey flex h-[48px] w-full items-center gap-[8px] rounded-lg p-[12px]"
-                  }
-                >
+                <div className={"bg-light_grey flex h-12 w-full items-center gap-2 rounded-lg p-3"}>
                   <NairaIcon />
                   <input
                     type="text"
@@ -206,9 +198,9 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
               </div>
             </div>
 
-            <div className="mt-[30px] flex gap-[4px]">
+            <div className="mt-[30px] flex gap-1">
               <button
-                className="border-light-grey-50 w-full rounded-[12px] border-[1px] p-[10px] px-[14px]"
+                className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
                 onClick={handleResetFilter}
               >
                 <p className="font-semi-normal text-black-light font-sans text-[16px]">
@@ -220,7 +212,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 title="Apply filter"
                 error={formik.isValid}
                 loading={formik.isSubmitting}
-                classes="auth-button px-[14px] p-[10px] rounded-[12px] border-step-color shadow-custom-bottom"
+                classes="auth-button px-3.5 p-2.5 rounded-xl border-step-color shadow-custom-bottom"
               />
             </div>
           </div>

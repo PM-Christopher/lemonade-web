@@ -90,15 +90,15 @@ export const SingleFileUploader = ({
       {elementImage === "" ? (
         <Dropzone onDrop={(acceptedFiles) => handleFileChange(acceptedFiles)}>
           {({ getRootProps, getInputProps }) => (
-            <section className="bg-light_grey mt-[16px] w-[200px] cursor-pointer rounded-[12px] border-2 border-dashed px-[16px] py-[39.5px]">
+            <section className="bg-light_grey mt-4 w-[200px] cursor-pointer rounded-xl border-2 border-dashed px-4 py-[39.5px]">
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
                 <div className="flex w-[175.05px] flex-col items-center">
                   <Image src={"/images/upload_image.png"} alt="upload" width={56} height={56} />
-                  <p className="font-semi-normal tracking-custom mt-[12px] w-[155px] text-center font-sans text-[14px] leading-[21px]">
+                  <p className="font-semi-normal tracking-custom mt-3 w-[155px] text-center font-sans text-[14px] leading-[21px]">
                     {title}
                   </p>
-                  <p className="text-grey-40 mt-[4px] w-[175px] items-center text-center font-sans text-[12px] leading-[14.4px] font-normal">
+                  <p className="text-grey-40 mt-1 w-[175px] items-center text-center font-sans text-[12px] leading-[14.4px] font-normal">
                     Files must be PNG, JPG, or JPEG format, under 2MB.
                   </p>
                 </div>

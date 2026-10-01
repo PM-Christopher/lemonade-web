@@ -46,7 +46,7 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
             {/* Body */}
             <div className="mt-3 sm:mt-6">
               <div className="flex justify-center">
-                <div className="relative h-[160px] w-[160px] sm:h-[200px] sm:w-[200px]">
+                <div className="relative h-40 w-40 sm:h-[200px] sm:w-[200px]">
                   <Image
                     src="/images/affliliateLink.png"
                     alt="affiliate-link"

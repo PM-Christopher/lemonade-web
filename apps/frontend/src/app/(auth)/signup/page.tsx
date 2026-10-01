@@ -182,7 +182,7 @@ export default function SignupPage() {
             </p>
           </div>
           <form onSubmit={formik.handleSubmit} className="min-h-0 w-full overflow-y-auto">
-            <Card className="tablet:p-6 w-full rounded-[16px] border-none p-5 shadow-none">
+            <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
               <CardContent className="grid gap-4">
                 <div className="grid gap-2">
                   <Label
@@ -252,7 +252,7 @@ export default function SignupPage() {
                   loading={formik.isSubmitting}
                   title="Create account"
                   error={formik.isValid}
-                  classes="w-full h-[48px] rounded-[12px]"
+                  classes="w-full h-12 rounded-xl"
                 />
                 <div className="flex items-center gap-3">
                   <div className="bg-border-grey h-px flex-1" />

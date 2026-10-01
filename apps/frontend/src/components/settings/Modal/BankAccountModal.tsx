@@ -133,7 +133,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
               </div>
             </div>
             <div className="mt-10">
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -159,7 +159,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -177,7 +177,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
                   }}
                 />
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"

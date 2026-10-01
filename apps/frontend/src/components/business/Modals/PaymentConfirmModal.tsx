@@ -81,7 +81,7 @@ const PaymentConfirmModal = ({
 
           {/* Button */}
           <Button
-            className="bg-gradient-green mt-8 h-[48px] w-full rounded-xl shadow-md transition hover:shadow-lg"
+            className="bg-gradient-green mt-8 h-12 w-full rounded-xl shadow-md transition hover:shadow-lg"
             onClick={backToBusiness}
             type="button"
           >

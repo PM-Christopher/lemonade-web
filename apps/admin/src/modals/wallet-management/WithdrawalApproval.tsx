@@ -70,10 +70,7 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({ isOpen, toggl
             <p className={"text-[14px] font-normal"}>
               Are you sure you want to approve this wallet balance withdrawal?
             </p>
-            <div
-              className={"bg-mid-grey flex flex-col rounded-[12px] p-[16px]"}
-              style={{ gap: "17px" }}
-            >
+            <div className={"bg-mid-grey flex flex-col rounded-xl p-4"} style={{ gap: "17px" }}>
               {/* Hardcoded placeholder data (amount/account holder/bank/account
                 number) — this modal renders no real withdrawal-request detail
                 today, only a hardcoded fixture. It's a pre-existing bug, not
@@ -111,18 +108,16 @@ const WithdrawalApproval: React.FC<WithdrawalActionInterface> = ({ isOpen, toggl
                 <p className={"font-semiBold text-[14px]"}>0123456789</p>
               </div>
             </div>
-            <div className={"flex justify-between gap-[16px]"}>
+            <div className={"flex justify-between gap-4"}>
               <button
-                className={
-                  "border-light-grey-50 w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[11px]"
-                }
+                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
                 onClick={toggle}
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
               <button
                 className={
-                  "border-step-color bg-gradient-green w-full rounded-[12px] border-[1px] px-[48px] py-[11px]"
+                  "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
                 }
                 onClick={isReject}
               >

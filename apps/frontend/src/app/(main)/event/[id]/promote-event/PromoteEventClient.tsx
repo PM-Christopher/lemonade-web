@@ -85,9 +85,9 @@ function PromoteEventClient({ id }: { id: number }) {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -97,8 +97,8 @@ function PromoteEventClient({ id }: { id: number }) {
         <section className="mt-4 flex flex-col items-center">
           <div className="flex justify-between gap-[100px]">
             <div className="flex flex-col">
-              <div className="w-[640px] rounded-[12px] bg-white p-[24px] px-[48px]">
-                <div className="mt-[24px] grid gap-2">
+              <div className="w-[640px] rounded-xl bg-white p-6 px-12">
+                <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="fullname"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -109,7 +109,7 @@ function PromoteEventClient({ id }: { id: number }) {
                     <div></div>
                   ) : (
                     <select
-                      className="form-font bg-light_grey h-12 rounded-xl border-0 p-[12px]"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0 p-3"
                       onChange={handleSelectPromotion}
                       value={selectedPromotion?.id}
                     >
@@ -123,8 +123,8 @@ function PromoteEventClient({ id }: { id: number }) {
                     </select>
                   )}
                 </div>
-                <div className="flex gap-[16px]">
-                  <div className="mt-[24px] grid gap-2">
+                <div className="flex gap-4">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="fullname"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -135,13 +135,13 @@ function PromoteEventClient({ id }: { id: number }) {
                       id="fullname"
                       type="text"
                       placeholder="N0.00"
-                      className="bg-light_grey text-text-grey h-[48px] w-[380px] rounded-xl border-0 px-[10px] font-sans text-[14px] font-medium focus:outline-none"
+                      className="bg-light_grey text-text-grey h-12 w-[380px] rounded-xl border-0 px-2.5 font-sans text-[14px] font-medium focus:outline-none"
                       defaultValue={
                         selectedPromotion ? formattedCurrency(selectedPromotion.price) : ""
                       }
                     />
                   </div>
-                  <div className="mt-[24px] grid gap-2">
+                  <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="fullname"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -152,20 +152,20 @@ function PromoteEventClient({ id }: { id: number }) {
                       id="fullname"
                       type="text"
                       placeholder="1"
-                      className="form-font bg-light_grey h-[48px] w-[148px] rounded-xl border-0 px-[10px] focus:outline-none"
+                      className="form-font bg-light_grey h-12 w-[148px] rounded-xl border-0 px-2.5 focus:outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               {
-                <div className="border-light-green-tint bg-light-tint mt-[24px] w-[640px] rounded-[12px] border-[1px] p-[16px] px-[16px]">
+                <div className="border-light-green-tint bg-light-tint mt-6 w-[640px] rounded-xl border p-4 px-4">
                   <p className="font-sans text-[12px] leading-[14.4px] font-semibold">BREAKDOWN</p>
-                  <div className="mt-[12px] flex flex-col gap-[12px]">
+                  <div className="mt-3 flex flex-col gap-3">
                     {selectedPromotion &&
                       selectedPromotion?.breakdown?.length > 0 &&
                       selectedPromotion?.breakdown?.map((breakdown, index: number) => (
-                        <div className="flex items-center gap-[8px]" key={index}>
+                        <div className="flex items-center gap-2" key={index}>
                           <ChevronRightFilled />
                           <p className="tracking-custom text-black-light font-sans text-[14px] leading-[21px] font-normal">
                             {breakdown}
@@ -177,9 +177,9 @@ function PromoteEventClient({ id }: { id: number }) {
               }
             </div>
             <div>
-              <div className="w-[480px] rounded-[12px] bg-white p-[24px] px-[16px]">
+              <div className="w-[480px] rounded-xl bg-white p-6 px-4">
                 <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
-                <div className="mt-[16px] flex justify-between">
+                <div className="mt-4 flex justify-between">
                   <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                     {selectedPromotion ? selectedPromotion?.name : "-"}
                   </p>
@@ -187,7 +187,7 @@ function PromoteEventClient({ id }: { id: number }) {
                     {formattedCurrency(selectedPromotion?.price)}
                   </p>
                 </div>
-                <div className="mt-[16px] flex justify-between">
+                <div className="mt-4 flex justify-between">
                   <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                     Unit
                   </p>
@@ -195,8 +195,8 @@ function PromoteEventClient({ id }: { id: number }) {
                     {selectedPromotion ? unit : "-"}
                   </p>
                 </div>
-                <div className="border-t-mid-grey my-[16px] border-t-[1px]"></div>
-                <div className="mt-[16px] flex justify-between">
+                <div className="border-t-mid-grey my-4 border-t"></div>
+                <div className="mt-4 flex justify-between">
                   <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
                     Subtotal
                   </p>
@@ -204,8 +204,8 @@ function PromoteEventClient({ id }: { id: number }) {
                     {selectedPromotion ? formattedCurrency(subtotal) : "-"}
                   </p>
                 </div>
-                <div className="border-t-mid-grey my-[16px] border-t-[1px]"></div>
-                <div className="mt-[16px] flex justify-between">
+                <div className="border-t-mid-grey my-4 border-t"></div>
+                <div className="mt-4 flex justify-between">
                   <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[21px] font-normal">
                     Total
                   </p>
@@ -213,7 +213,7 @@ function PromoteEventClient({ id }: { id: number }) {
                     {selectedPromotion ? formattedCurrency(subtotal) : "-"}
                   </p>
                 </div>
-                <div className="mt-[24px] flex items-center justify-around gap-[16px] pt-[16px] pr-[16px] pl-[16px]">
+                <div className="mt-6 flex items-center justify-around gap-4 pt-4 pr-4 pl-4">
                   <div className="">
                     <p className="text-mid-green font-sans font-bold">
                       {selectedPromotion ? formattedCurrency(subtotal) : "-"}
@@ -221,7 +221,7 @@ function PromoteEventClient({ id }: { id: number }) {
                   </div>
                   <div className="group relative flex flex-col items-center">
                     <button
-                      className={`border-step-color bg-gradient-green shadow-custom-bottom flex h-[48px] items-center rounded-[12px] p-[14px] px-[48px] ${
+                      className={`border-step-color bg-gradient-green shadow-custom-bottom flex h-12 items-center rounded-xl p-3.5 px-12 ${
                         selectedPromotion === null || promotionLoading
                           ? "cursor-not-allowed opacity-60"
                           : ""

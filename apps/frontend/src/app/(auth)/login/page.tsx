@@ -215,7 +215,7 @@ export default function LoginPage() {
             </p>
           </div>
           <form onSubmit={formik.handleSubmit} className="w-full">
-            <Card className="w-full rounded-[16px] border-none p-6 shadow-none">
+            <Card className="w-full rounded-2xl border-none p-6 shadow-none">
               <CardContent className="grid gap-4">
                 <div className="grid gap-2">
                   <Label
@@ -259,14 +259,14 @@ export default function LoginPage() {
                   loading={formik.isSubmitting}
                   title="Login"
                   error={formik.isValid}
-                  classes="w-full h-[48px] rounded-[12px]"
+                  classes="w-full h-12 rounded-xl"
                 />
                 <div className="flex items-center justify-around">
-                  <div className="bg-border-grey h-[2px] w-[60px]" />
+                  <div className="bg-border-grey h-0.5 w-[60px]" />
                   <p className="text-grey-light text-body-s text-center font-normal">
                     Or continue with
                   </p>
-                  <div className="bg-border-grey h-[2px] w-[60px]" />
+                  <div className="bg-border-grey h-0.5 w-[60px]" />
                 </div>
                 <div className="mt-4 flex items-start justify-center gap-6">
                   <SocialMark src="/images/apple.png" label="Apple" />

@@ -79,15 +79,15 @@ function TeamClient() {
 
   return (
     <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-[16px]"}>
             {teamData?.admins?.length || 0} Team Members
           </p>
-          <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
+          <div className={"flex justify-between gap-3"}>
+            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
               <div>
-                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
+                <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
               <div className="w-full">
                 <input
@@ -101,7 +101,7 @@ function TeamClient() {
             </div>
             <div>
               <Button
-                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
+                className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
                 onClick={toggelModal}
               >
                 <PlusIcon className={"h-[15px] w-[15px] text-white"} />
@@ -110,8 +110,8 @@ function TeamClient() {
             </div>
           </div>
         </div>
-        <div className={"flex flex-col px-[20px]"}>
-          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>

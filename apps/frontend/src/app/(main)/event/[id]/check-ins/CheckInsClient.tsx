@@ -46,9 +46,9 @@ const CheckInsClient = ({ id }: { id: number }) => {
           loading={guestDetailLoading}
           id={id}
         />
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[12px] px-10">
+        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
-            className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -56,11 +56,9 @@ const CheckInsClient = ({ id }: { id: number }) => {
           </div>
         </div>
 
-        <div className={"mt-4 flex flex-col items-center gap-[8px]"}>
-          <div
-            className={"flex w-[800px] justify-between gap-[8px] rounded-[12px] bg-white p-[24px]"}
-          >
-            <div className="bg-light_grey flex h-[48px] w-full items-center gap-3 rounded-[12px] p-2 px-[12px]">
+        <div className={"mt-4 flex flex-col items-center gap-2"}>
+          <div className={"flex w-[800px] justify-between gap-2 rounded-xl bg-white p-6"}>
+            <div className="bg-light_grey flex h-12 w-full items-center gap-3 rounded-xl p-2 px-3">
               <SearchIcon className="shrink-0" />
               <input
                 id="search"
@@ -69,20 +67,16 @@ const CheckInsClient = ({ id }: { id: number }) => {
                 placeholder="Search guest name, email address"
               />
             </div>
-            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-[12px] p-3 transition-all duration-200 hover:bg-gray-200">
+            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-xl p-3 transition-all duration-200 hover:bg-gray-200">
               <UploadIcon className="h-5 w-5 text-gray-700" />
             </div>
 
-            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-[12px] p-3 transition-all duration-200 hover:bg-gray-200">
+            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-xl p-3 transition-all duration-200 hover:bg-gray-200">
               <ScanIcon className="h-5 w-5 text-gray-700" />
             </div>
           </div>
 
-          <div
-            className={
-              "flex h-[900px] w-[800px] flex-col gap-[16px] rounded-[12px] bg-white p-[24px]"
-            }
-          >
+          <div className={"flex h-[900px] w-[800px] flex-col gap-4 rounded-xl bg-white p-6"}>
             {loading ? (
               <GuestListSkeleton count={4} />
             ) : (

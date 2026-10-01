@@ -182,8 +182,8 @@ const EventListClient: React.FC = () => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <SideMenu toggleMenu={toggleMenu} isOpen={isOpen} />
-        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between border-t-[1px] border-b-[1px] bg-white px-[64px] py-[8px]">
-          <div className="flex items-center justify-between px-[16px]">
+        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between border-t border-b bg-white px-16 py-2">
+          <div className="flex items-center justify-between px-4">
             <div className="bg-mid-grey relative inline-flex rounded-xl p-[0.35em] text-sm sm:text-base">
               {/* Sliding pill */}
               <span
@@ -230,7 +230,7 @@ const EventListClient: React.FC = () => {
 
             {menuOption === "events" ? (
               <div className="laptop:hidden flex cursor-pointer" onClick={toggleMenu}>
-                <TicketIcon className="h-[16px] w-[23px]" />
+                <TicketIcon className="h-4 w-[23px]" />
               </div>
             ) : (
               menuOption === "organizer" && (

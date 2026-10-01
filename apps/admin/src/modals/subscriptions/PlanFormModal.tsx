@@ -194,9 +194,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{title}</DialogTitle>
-        <div className="w-[480px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
+        <div className="w-[480px] rounded-xl bg-white pt-4 pb-1">
           <form onSubmit={formik.handleSubmit}>
-            <div className={"px-[16px] py-[4px]"}>
+            <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
                 <p className="font-sans text-[18px] leading-[27px] font-semibold">{title}</p>
                 <div className="cursor-pointer" onClick={toggle}>
@@ -204,11 +204,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 </div>
               </div>
             </div>
-            <div
-              className={
-                "flex max-h-[60vh] flex-col gap-[16px] overflow-y-auto px-[16px] py-[16px]"
-              }
-            >
+            <div className={"flex max-h-[60vh] flex-col gap-4 overflow-y-auto px-4 py-4"}>
               <div className="grid gap-2">
                 <Label htmlFor="title" className="text-text-grey font-sans text-[14px] font-normal">
                   Title
@@ -241,7 +237,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-[12px]">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
                   <Label
                     htmlFor="monthly_charge"
@@ -280,7 +276,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-[12px]">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
                   <Label
                     htmlFor="event_creation"
@@ -317,7 +313,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-[12px]">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
                   <Label
                     htmlFor="sales_commission"
@@ -356,7 +352,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-[8px]">
+              <div className="grid grid-cols-2 gap-2">
                 {checkboxFields.map((field) => (
                   <label
                     key={field.name}
@@ -374,13 +370,11 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 ))}
               </div>
             </div>
-            <div className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}>
+            <div className={"flex justify-between gap-4 px-4 pb-2.5"}>
               <button
                 type="button"
                 onClick={toggle}
-                className={
-                  "border-light-grey-50 w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[11px]"
-                }
+                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
@@ -388,7 +382,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 loading={createPlanMutation.isPending || updatePlanMutation.isPending}
                 title="Confirm"
                 error={formik.isValid}
-                classes="w-full rounded-[12px] border-[1px] border-step-color px-[48px] py-[11px]"
+                classes="w-full rounded-xl border border-step-color px-12 py-[11px]"
               />
             </div>
           </form>

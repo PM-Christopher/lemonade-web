@@ -137,11 +137,11 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{promotionTitle}</DialogTitle>
-        <div className="w-[640px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
+        <div className="w-[640px] rounded-xl bg-white pt-4 pb-1">
           <form onSubmit={formik.handleSubmit}>
-            <div className={"px-[16px] py-[4px]"}>
+            <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
-                <div className={"flex items-center gap-[8px]"}>
+                <div className={"flex items-center gap-2"}>
                   <XIcon onClick={toggle} className={"cursor-pointer"} />
                   <p className="font-sans text-[18px] leading-[27px] font-semibold">
                     {promotionTitle}
@@ -152,30 +152,28 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                     loading={formik.isSubmitting}
                     title={promotionTitle}
                     error={formik.isValid}
-                    classes="border-[1px] px-[14px] py-[11px] rounded-[12px] w-full"
+                    classes="border px-3.5 py-[11px] rounded-xl w-full"
                   />
                 </div>
               </div>
             </div>
-            <div className={"flex flex-col gap-[24px] px-[16px] py-[16px]"}>
-              <div className={"flex flex-col gap-[2px]"}>
+            <div className={"flex flex-col gap-6 px-4 py-4"}>
+              <div className={"flex flex-col gap-0.5"}>
                 <p className={"text-text-grey text-[14px] font-normal"}>Promotion name</p>
                 <input
                   id="name"
-                  className={
-                    "bg-light-grey h-[48px] gap-[12px] rounded-[12px] p-[12px] text-[14px]"
-                  }
+                  className={"bg-light-grey h-12 gap-3 rounded-xl p-3 text-[14px]"}
                   placeholder={""}
                   value={formik.values.name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </div>
-              <div className={"flex flex-col gap-[4px]"}>
+              <div className={"flex flex-col gap-1"}>
                 <p className={"text-text-grey text-[14px] font-normal"}>Price option</p>
                 <div className="flex gap-2">
                   <div
-                    className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${eventType === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
                     onClick={() => {
                       setEventType("one-time");
                       formik.setFieldValue("price_option", "one-time");
@@ -186,7 +184,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                     </p>
                   </div>
                   <div
-                    className={`flex cursor-pointer items-center gap-2 rounded-[12px] p-[12px] px-[16px] ${eventType === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${eventType === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
                     onClick={() => {
                       setEventType("unit");
                       formik.setFieldValue("price_option", "unit");
@@ -198,26 +196,24 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                   </div>
                 </div>
               </div>
-              <div className={"flex flex-col gap-[2px]"}>
+              <div className={"flex flex-col gap-0.5"}>
                 <p className={"text-text-grey text-[14px] font-normal"}>Promotion Price</p>
                 <input
                   id="price"
-                  className={
-                    "bg-light-grey h-[48px] gap-[12px] rounded-[12px] p-[12px] text-[14px]"
-                  }
+                  className={"bg-light-grey h-12 gap-3 rounded-xl p-3 text-[14px]"}
                   placeholder={"N0.00"}
                   value={formik.values.price}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </div>
-              <div className="flex flex-col gap-[2px]">
+              <div className="flex flex-col gap-0.5">
                 <p className="text-text-grey text-[14px] font-normal">Breakdown</p>
                 {breakdowns.map((breakdown, index) => (
-                  <div key={index} className="flex flex-col gap-[2px]">
+                  <div key={index} className="flex flex-col gap-0.5">
                     <div className="relative">
                       <input
-                        className="bg-light-grey h-[48px] w-full gap-[12px] rounded-[12px] p-[12px] pr-[40px] text-[14px]"
+                        className="bg-light-grey h-12 w-full gap-3 rounded-xl p-3 pr-10 text-[14px]"
                         placeholder="Enter breakdown of promotion"
                         value={breakdown}
                         onChange={(e) => handleInputChange(index, e.target.value)}
@@ -235,10 +231,10 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                 ))}
               </div>
             </div>
-            <div className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}>
+            <div className={"flex justify-between gap-4 px-4 pb-2.5"}>
               <button
                 className={
-                  "bg-light-green-10 flex w-full items-center justify-center rounded-[12px] border-[1px] px-[48px] py-[11px]"
+                  "bg-light-green-10 flex w-full items-center justify-center rounded-xl border px-12 py-[11px]"
                 }
                 onClick={handleAddField}
                 type={"button"}

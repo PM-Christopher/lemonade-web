@@ -14,15 +14,15 @@ type BusinessCardIF = {
 const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
   return (
     <div className="border-mid-grey flex h-full flex-col rounded-xl border-2 shadow-lg">
-      <div className="flex flex-1 flex-col gap-[20px] p-[16px]">
+      <div className="flex flex-1 flex-col gap-5 p-4">
         {/* Top Section - Business Info */}
         <div className="">
           <div className="flex justify-between">
-            <div className="laptop:flex-col laptop:items-start laptop:gap-[10px] flex flex-row items-center justify-center gap-[8px]">
+            <div className="laptop:flex-col laptop:items-start laptop:gap-2.5 flex flex-row items-center justify-center gap-2">
               <Image
                 src={getSafeImageSrc(business.image, "/images/business_empty.png")}
                 alt="Overlay Image"
-                className="border-step-color h-[40px] w-[40px] rounded-xl border object-cover"
+                className="border-step-color h-10 w-10 rounded-xl border object-cover"
                 width={40}
                 height={40}
               />

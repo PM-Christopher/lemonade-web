@@ -79,7 +79,7 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
             </div>
             <div>
               <Button
-                className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+                className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 onClick={handleAddTribeMember}
               >
                 <p className="font-semi-normal font-sans text-[12px]">Add member</p>
@@ -87,14 +87,14 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
             </div>
           </div>
           <div className="mt-10 flex flex-col px-6">
-            <div className="mt-[24px] grid gap-1">
+            <div className="mt-6 grid gap-1">
               <Label
                 htmlFor="username"
                 className="text-text-grey text-[14px] leading-[16.8px] font-normal"
               >
                 Username
               </Label>
-              <div className="border-step-color bg-light_grey flex h-[48px] items-center rounded-[12px] border-[1.5px] px-2">
+              <div className="border-step-color bg-light_grey flex h-12 items-center rounded-xl border-[1.5px] px-2">
                 <input
                   id="username"
                   type="text"
@@ -106,18 +106,18 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
                 <PlusIcon className="text-step-color cursor-pointer" onClick={handleAddUsername} />
               </div>
             </div>
-            <div className="border-b-grey-20 border-b-[2px] py-4"></div>
+            <div className="border-b-grey-20 border-b-2 py-4"></div>
             <div className="mt-4 flex flex-wrap items-center gap-2">
               {usernames.map((username, index) => (
                 <div
                   key={index}
-                  className="bg-grey-20 flex items-center gap-[8px] rounded-[8px] px-[12px] py-[8px]"
+                  className="bg-grey-20 flex items-center gap-2 rounded-[8px] px-3 py-2"
                 >
                   <p className="text-text-grey text-[14px] font-medium">{username}</p>
                   {/* Clicking the XIcon removes the username */}
                   <XIcon
                     onClick={() => handleRemoveUsername(index)}
-                    className="text-text-grey w-[16px] cursor-pointer"
+                    className="text-text-grey w-4 cursor-pointer"
                   />
                 </div>
               ))}

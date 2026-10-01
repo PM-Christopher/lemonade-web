@@ -132,13 +132,13 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="tablet:w-[480px] w-full rounded-[16px] border-none shadow-none">
+      <Card className="tablet:w-[480px] w-full rounded-2xl border-none shadow-none">
         <CardHeader className="grid gap-4">
           <div className="flex gap-2">
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-step-color h-[2px] w-[15px]" />
-            <div className="bg-border-grey h-[2px] w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-border-grey h-0.5 w-[15px]" />
           </div>
           <div>
             <p className="font-sans text-[24px] font-semibold">Skills & Interests</p>
@@ -156,7 +156,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
             {skills.map((item, idx) => (
               <div
                 key={idx}
-                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${
+                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
                   Array.isArray(formik.values.skills) && formik.values.skills.includes(item)
                     ? "bg-gradient-green text-white"
                     : "bg-light_grey"
@@ -176,7 +176,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
           <div className="grid grid-cols-[repeat(4,auto)] gap-3">
             {interests.map((item, idx) => (
               <div
-                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
                 key={idx}
                 onClick={() => handleInterestClick(item)}
               >
@@ -193,7 +193,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
             loading={formik.isSubmitting}
             title="Next"
             error={formik.isValid}
-            classes="w-full h-[48px] rounded-[12px]"
+            classes="w-full h-12 rounded-xl"
           />
         </CardContent>
       </Card>

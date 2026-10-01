@@ -205,7 +205,7 @@ const TribeClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <div className="bg-light_grey pb-10">
-        <div className="tablet:flex-row tablet:items-center flex flex-col justify-between gap-4 border-t-[1px] border-b-[1px] bg-white p-5 px-10">
+        <div className="tablet:flex-row tablet:items-center flex flex-col justify-between gap-4 border-t border-b bg-white p-5 px-10">
           <div
             className="flex cursor-pointer items-center gap-2"
             onClick={() => router.push("/tribe")}
@@ -219,8 +219,8 @@ const TribeClient = ({ id }: { id: string }) => {
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-between gap-[10px]">
-            <div className="bg-light_grey tablet:w-[300px] flex h-[40px] w-[247px] items-center gap-3 rounded-[12px] px-[16px]">
+          <div className="flex items-center justify-between gap-2.5">
+            <div className="bg-light_grey tablet:w-[300px] flex h-10 w-[247px] items-center gap-3 rounded-xl px-4">
               <div>
                 <SearchIcon />
               </div>
@@ -237,7 +237,7 @@ const TribeClient = ({ id }: { id: string }) => {
             <Select onValueChange={sortThreads}>
               <SelectTrigger
                 aria-label="Sort threads"
-                className="bg-mid-grey h-[40px] w-[180px] rounded-xl border-0 px-[16px]"
+                className="bg-mid-grey h-10 w-[180px] rounded-xl border-0 px-4"
               >
                 <SelectValue
                   placeholder={

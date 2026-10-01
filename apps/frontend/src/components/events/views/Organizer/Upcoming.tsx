@@ -20,19 +20,19 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
   return (
     <>
       {events?.length > 0 && (
-        <div className="laptop:w-[780px] laptop:flex-row laptop:pr-[80px] flex w-full flex-col gap-[24px] rounded-[16px] bg-white pr-0">
+        <div className="laptop:w-[780px] laptop:flex-row laptop:pr-20 flex w-full flex-col gap-6 rounded-2xl bg-white pr-0">
           <Image
             src={getSafeImageSrc(events[0]?.event_image, "/images/default-event.jpg")}
             alt="poster"
             width={320}
             height={343}
-            className="w-[320px]"
+            className="w-80"
           />
-          <div className="laptop:mt-[24px] mt-[12px] flex flex-col px-[10px] pb-[10px]">
+          <div className="laptop:mt-6 mt-3 flex flex-col px-2.5 pb-2.5">
             <p className="font-sans text-[24px] leading-[33.6px] font-semibold">
               {events[0]?.event_name}
             </p>
-            <div className="mt-[16px] flex items-center gap-2">
+            <div className="mt-4 flex items-center gap-2">
               <CalendarIcon />
               <p className="font-semi-normal tracking-custom text-text-grey font-sans text-[16px] leading-[24px]">
                 {formatLongDate(events[0]?.start_date, "mid")}
@@ -42,7 +42,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
                 {formatLongDate(events[0]?.end_date, "mid")}
               </p>
             </div>
-            <div className="mt-[16px] flex items-center gap-2">
+            <div className="mt-4 flex items-center gap-2">
               <ClockIcon />
               <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
                 {formatLongTime(events[0]?.start_date)}
@@ -52,14 +52,14 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
                 {formatLongTime(events[0]?.end_date)}
               </p>
             </div>
-            <div className="mt-[16px] flex items-center gap-2">
+            <div className="mt-4 flex items-center gap-2">
               <LocationIcon />
               <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
                 {events[0]?.location}
               </p>
             </div>
             <Link href={`/event/${events[0]?.id}/details`} className="w-fit">
-              <div className="mt-[40px] flex w-fit items-center gap-2">
+              <div className="mt-10 flex w-fit items-center gap-2">
                 <p className="font-semi-normal text-light-green font-sans text-[16px] leading-[24px]">
                   View Details
                 </p>
@@ -69,7 +69,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
           </div>
         </div>
       )}
-      <div className="laptop:w-[780px] laptop:grid-cols-3 mt-[10px] grid w-full grid-cols-2 gap-[16px] rounded-[12px] bg-white p-[16px]">
+      <div className="laptop:w-[780px] laptop:grid-cols-3 mt-2.5 grid w-full grid-cols-2 gap-4 rounded-xl bg-white p-4">
         {loading ? (
           <EventsSkeleton count={3} />
         ) : events?.length > 0 ? (

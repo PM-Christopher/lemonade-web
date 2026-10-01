@@ -26,19 +26,19 @@ const SideMenuEventCard = ({
             alt="upcoming_event"
             width={94}
             height={94}
-            className={"h-[94px] w-[94px] rounded-[12px]"}
+            className={"h-[94px] w-[94px] rounded-xl"}
           />
         </div>
-        <div className="flex flex-col gap-[10px]">
+        <div className="flex flex-col gap-2.5">
           <p className="font-semi-normal tracking-custom text-black-light font-sans text-[14px] leading-[21px]">
             {event.event_name}
           </p>
-          <div className="flex items-center gap-[4px]">
+          <div className="flex items-center gap-1">
             <CalendarIcon />
             <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               {formatDate(event?.start_date)}
             </p>
-            <DotFilledIcon className="text-text-grey w-[10px]" />
+            <DotFilledIcon className="text-text-grey w-2.5" />
             <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
               {formatLongTime(event.start_date)}
             </p>

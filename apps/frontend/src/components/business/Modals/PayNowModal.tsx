@@ -66,18 +66,18 @@ const PayNowModal = ({
               </div>
             </div>
           </div>
-          <div className="mt-2 flex flex-col items-center py-[16px]">
-            <div className="border-mid-green bg-light-green-10 gap-[8px] rounded-[8px] border-[1px] border-dashed p-[31px] px-[102px]">
+          <div className="mt-2 flex flex-col items-center py-4">
+            <div className="border-mid-green bg-light-green-10 gap-2 rounded-[8px] border border-dashed p-[31px] px-[102px]">
               <p className="font-semiBold text-mid-green text-[24px]">
                 ₦{formatNumberWithCommas(job?.amount)}
               </p>
             </div>
-            <p className="mt-[16px] text-[14px] font-normal">
+            <p className="mt-4 text-[14px] font-normal">
               Your payment will be held securely in escrow until you mark the service as completed.
             </p>
-            <div className="mt-[16px] flex w-full justify-center gap-3">
+            <div className="mt-4 flex w-full justify-center gap-3">
               <Button
-                className="bg-gradient-green shadow-custom-bottom h-[48px] w-full rounded-[12px] p-[14px] px-[48px]"
+                className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl p-3.5 px-12"
                 onClick={handlePayNow}
                 disabled={payLoading}
               >

@@ -20,46 +20,46 @@ function TeamDetailsClient({ id }: { id: string }) {
   if (!isHydrated) {
     return (
       <MainLayout>
-        <section className={"flex justify-between p-[20px]"}>
-          <div className={"flex h-fit w-[588px] flex-col gap-[12px] rounded-[12px] bg-white"}>
+        <section className={"flex justify-between p-5"}>
+          <div className={"flex h-fit w-[588px] flex-col gap-3 rounded-xl bg-white"}>
             <div className={"flex flex-col"}>
-              <div className={"flex flex-col gap-[20px] p-[24px]"}>
-                <div className={"bg-mid-grey h-[64px] w-[64px] rounded-full"}></div>
-                <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex flex-col gap-5 p-6"}>
+                <div className={"bg-mid-grey h-16 w-16 rounded-full"}></div>
+                <div className={"flex items-center gap-6"}>
                   <div className={"w-[115px]"}>
                     <p className={"text-text-grey text-[12px] font-medium"}>Full Name:</p>
                   </div>
                   <p className={"text-[14px] font-medium"}>Loading...</p>
                 </div>
-                <div className={"flex items-center gap-[24px]"}>
+                <div className={"flex items-center gap-6"}>
                   <div className={"w-[115px]"}>
                     <p className={"text-text-grey text-[12px] font-medium"}>User ID:</p>
                   </div>
                   <p className={"text-[14px] font-medium"}>Loading...</p>
                 </div>
-                <div className={"flex items-center gap-[24px]"}>
+                <div className={"flex items-center gap-6"}>
                   <div className={"w-[115px]"}>
                     <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
                   </div>
                   <p className={"text-light-green-70 text-[14px] font-medium"}>Loading...</p>
                 </div>
-                <div className={"flex items-center gap-[24px]"}>
+                <div className={"flex items-center gap-6"}>
                   <div className={"w-[115px]"}>
                     <p className={"text-text-grey text-[12px] font-medium"}>Role:</p>
                   </div>
-                  <div className={"flex gap-[4px]"}>
+                  <div className={"flex gap-1"}>
                     <p className={"text-[14px] font-medium"}>Loading...</p>
                   </div>
                 </div>
-                <div className={"flex items-center gap-[24px]"}>
+                <div className={"flex items-center gap-6"}>
                   <div className={"w-[115px]"}>
                     <p className={"text-text-grey text-[12px] font-medium"}>Email Address:</p>
                   </div>
-                  <div className={"flex gap-[4px]"}>
+                  <div className={"flex gap-1"}>
                     <p className={"text-[14px] font-medium"}>Loading...</p>
                   </div>
                 </div>
-                <div className={"flex items-center gap-[24px]"}>
+                <div className={"flex items-center gap-6"}>
                   <div className={"w-[115px]"}>
                     <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
                   </div>
@@ -68,12 +68,12 @@ function TeamDetailsClient({ id }: { id: string }) {
               </div>
               <div
                 className={
-                  "border-t-grey-20 mt-[20px] flex items-center justify-between gap-[24px] border-t-[1px] p-[24px]"
+                  "border-t-grey-20 mt-5 flex items-center justify-between gap-6 border-t p-6"
                 }
               >
                 <button
                   className={
-                    "border-light-grey-50 w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+                    "border-light-grey-50 w-full rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
                   }
                   type={"button"}
                 >
@@ -81,7 +81,7 @@ function TeamDetailsClient({ id }: { id: string }) {
                 </button>
                 <button
                   className={
-                    "border-light-grey-50 text-red-1 w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+                    "border-light-grey-50 text-red-1 w-full rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
                   }
                   type={"button"}
                 >
@@ -92,31 +92,31 @@ function TeamDetailsClient({ id }: { id: string }) {
           </div>
           <div className={"flex flex-col"}>
             <div
-              className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}
+              className={"h-[700px] rounded-tl-xl rounded-tr-xl bg-white"}
               style={{ width: "908px" }}
             >
-              <div className="border-b-grey-20 mt-[10px] flex justify-between border-b-[1px] p-[24px]">
+              <div className="border-b-grey-20 mt-2.5 flex justify-between border-b p-6">
                 <p className={"font-semiBold text-[16px]"}>Activity Logs</p>
               </div>
-              <div className={"flex flex-col py-[20px]"}>
-                <div className={"px-[24px] py-[16px]"}>
+              <div className={"flex flex-col py-5"}>
+                <div className={"px-6 py-4"}>
                   <div
                     className={
-                      "border-grey-20 bg-light-grey flex h-[40px] w-[203px] cursor-pointer items-center justify-between rounded-[12px] border-[1px] px-[16px] py-[10px]"
+                      "border-grey-20 bg-light-grey flex h-10 w-[203px] cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5"
                     }
                   >
                     <div className={"flex items-center justify-between"}>
-                      <div className={"text-text-grey flex items-center gap-[8px]"}>
+                      <div className={"text-text-grey flex items-center gap-2"}>
                         <CalendarIcon className={"w-[15px]"} />
                         <p className={"font-semiBold text-text-grey text-[12px]"}>ALL TIME</p>
                       </div>
                     </div>
-                    <ChevronDown className={"text-text-grey w-[20px]"} />
+                    <ChevronDown className={"text-text-grey w-5"} />
                   </div>
                 </div>
-                <div className="pt-[16px] pb-[24px]">
+                <div className="pt-4 pb-6">
                   <div className={"flex flex-col"}>
-                    <div className="flex justify-between px-[24px] py-[16px]">
+                    <div className="flex justify-between px-6 py-4">
                       <p className={"text-light-black text-[14px] font-medium"}>Loading...</p>
                       <p className={"text-text-grey text-[14px] font-normal"}>Loading...</p>
                     </div>
@@ -125,7 +125,7 @@ function TeamDetailsClient({ id }: { id: string }) {
               </div>
             </div>
             <div
-              className={"bg-mid-grey h-[62px] rounded-br-[12px] rounded-bl-[12px]"}
+              className={"bg-mid-grey h-[62px] rounded-br-xl rounded-bl-xl"}
               style={{ width: "908px" }}
             >
               <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
@@ -161,24 +161,24 @@ function TeamDetailsClient({ id }: { id: string }) {
 
   return (
     <MainLayout>
-      <section className={"flex justify-between p-[20px]"}>
-        <div className={"flex h-fit w-[588px] flex-col gap-[12px] rounded-[12px] bg-white"}>
+      <section className={"flex justify-between p-5"}>
+        <div className={"flex h-fit w-[588px] flex-col gap-3 rounded-xl bg-white"}>
           <div className={"flex flex-col"}>
-            <div className={"flex flex-col gap-[20px] p-[24px]"}>
-              <div className={"bg-mid-grey h-[64px] w-[64px] rounded-full"}></div>
-              <div className={"flex items-center gap-[24px]"}>
+            <div className={"flex flex-col gap-5 p-6"}>
+              <div className={"bg-mid-grey h-16 w-16 rounded-full"}></div>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Full Name:</p>
                 </div>
                 <p className={"text-[14px] font-medium"}>{team?.name || "N/A"}</p>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>User ID:</p>
                 </div>
                 <p className={"text-[14px] font-medium"}>LN112332</p>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
                 </div>
@@ -186,25 +186,25 @@ function TeamDetailsClient({ id }: { id: string }) {
                   {team?.status ? capitalizeWords(team.status) : "N/A"}
                 </p>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Role:</p>
                 </div>
-                <div className={"flex gap-[4px]"}>
+                <div className={"flex gap-1"}>
                   <p className={"text-[14px] font-medium"}>
                     {team?.role ? capitalizeSpecial(team.role) : "N/A"}
                   </p>
                 </div>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Email Address:</p>
                 </div>
-                <div className={"flex gap-[4px]"}>
+                <div className={"flex gap-1"}>
                   <p className={"text-[14px] font-medium"}>{team?.email || "N/A"}</p>
                 </div>
               </div>
-              <div className={"flex items-center gap-[24px]"}>
+              <div className={"flex items-center gap-6"}>
                 <div className={"w-[115px]"}>
                   <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
                 </div>
@@ -213,12 +213,12 @@ function TeamDetailsClient({ id }: { id: string }) {
             </div>
             <div
               className={
-                "border-t-grey-20 mt-[20px] flex items-center justify-between gap-[24px] border-t-[1px] p-[24px]"
+                "border-t-grey-20 mt-5 flex items-center justify-between gap-6 border-t p-6"
               }
             >
               <button
                 className={
-                  "border-light-grey-50 w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+                  "border-light-grey-50 w-full rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
                 }
                 type={"button"}
               >
@@ -226,7 +226,7 @@ function TeamDetailsClient({ id }: { id: string }) {
               </button>
               <button
                 className={
-                  "border-light-grey-50 text-red-1 w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+                  "border-light-grey-50 text-red-1 w-full rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
                 }
                 type={"button"}
               >
@@ -237,32 +237,32 @@ function TeamDetailsClient({ id }: { id: string }) {
         </div>
         <div className={"flex flex-col"}>
           <div
-            className={"h-[700px] rounded-tl-[12px] rounded-tr-[12px] bg-white"}
+            className={"h-[700px] rounded-tl-xl rounded-tr-xl bg-white"}
             style={{ width: "908px" }}
           >
-            <div className="border-b-grey-20 mt-[10px] flex justify-between border-b-[1px] p-[24px]">
+            <div className="border-b-grey-20 mt-2.5 flex justify-between border-b p-6">
               <p className={"font-semiBold text-[16px]"}>Activity Logs</p>
             </div>
-            <div className={"flex flex-col py-[20px]"}>
-              <div className={"px-[24px] py-[16px]"}>
+            <div className={"flex flex-col py-5"}>
+              <div className={"px-6 py-4"}>
                 <div
                   className={
-                    "border-grey-20 bg-light-grey flex h-[40px] w-[203px] cursor-pointer items-center justify-between rounded-[12px] border-[1px] px-[16px] py-[10px]"
+                    "border-grey-20 bg-light-grey flex h-10 w-[203px] cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5"
                   }
                 >
                   <div className={"flex items-center justify-between"}>
-                    <div className={"text-text-grey flex items-center gap-[8px]"}>
+                    <div className={"text-text-grey flex items-center gap-2"}>
                       <CalendarIcon className={"w-[15px]"} />
                       <p className={"font-semiBold text-text-grey text-[12px]"}>ALL TIME</p>
                     </div>
                   </div>
-                  <ChevronDown className={"text-text-grey w-[20px]"} />
+                  <ChevronDown className={"text-text-grey w-5"} />
                 </div>
               </div>
 
-              <div className="pt-[16px] pb-[24px]">
+              <div className="pt-4 pb-6">
                 <div className={"flex flex-col"}>
-                  <div className="flex justify-between px-[24px] py-[16px]">
+                  <div className="flex justify-between px-6 py-4">
                     <p className={"text-light-black text-[14px] font-medium"}>
                       Joined Lemonade Network
                     </p>
@@ -270,7 +270,7 @@ function TeamDetailsClient({ id }: { id: string }) {
                       Mon, 23 Mar, 2024 05:00PM
                     </p>
                   </div>
-                  <div className="flex justify-between px-[24px] py-[16px]">
+                  <div className="flex justify-between px-6 py-4">
                     <p className={"text-light-black text-[14px] font-medium"}>
                       Created a &apos;Nigeria start-ups&apos; Tribe
                     </p>
@@ -283,7 +283,7 @@ function TeamDetailsClient({ id }: { id: string }) {
             </div>
           </div>
           <div
-            className={"bg-mid-grey h-[62px] rounded-br-[12px] rounded-bl-[12px]"}
+            className={"bg-mid-grey h-[62px] rounded-br-xl rounded-bl-xl"}
             style={{ width: "908px" }}
           >
             <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">

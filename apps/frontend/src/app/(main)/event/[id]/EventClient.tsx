@@ -50,9 +50,9 @@ const EventClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-5 px-10">
+        <div className="flex items-center justify-between border-t border-b bg-white p-5 px-10">
           <Link href="/event">
-            <div className="flex items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]">
+            <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
               <ChevronLeft />
               <p className="tracking-custom font-sans text-[16px] font-semibold">Event details</p>
             </div>
@@ -139,7 +139,7 @@ const EventClient = ({ id }: { id: number }) => {
                   {/* CTA */}
                   <div className="laptop:flex hidden pt-6">
                     <Link href={buyTicketHref} passHref>
-                      <Button className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-[56px] w-[231px] items-center justify-center rounded-[12px] border-b-2 border-transparent transition-all duration-300 hover:opacity-90">
+                      <Button className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-14 w-[231px] items-center justify-center rounded-xl border-b-2 border-transparent transition-all duration-300 hover:opacity-90">
                         <span className="font-sans text-[16px] leading-[19.2px] font-medium text-white">
                           Buy ticket from ₦{event?.minimum_price}
                         </span>
@@ -150,23 +150,23 @@ const EventClient = ({ id }: { id: number }) => {
               </section>
             </div>
 
-            <div className="laptop:max-w-[1100px] mt-[40px] w-full">
+            <div className="laptop:max-w-[1100px] mt-10 w-full">
               <p className="font-sans text-[24px] leading-[33.6px] font-semibold text-gray-900">
                 About Event
               </p>
-              <div className="mt-[16px] w-full rounded-xl bg-gray-50">
+              <div className="mt-4 w-full rounded-xl bg-gray-50">
                 <p className="font-sans text-[16px] leading-[24px] font-normal text-gray-700">
                   {event?.event_description}
                 </p>
               </div>
 
               {/* Contact + CTA (Mobile Only) */}
-              <div className="laptop:hidden mt-[40px] block">
+              <div className="laptop:hidden mt-10 block">
                 <p className="font-sans text-[18px] leading-[27px] font-semibold text-gray-900">
                   Contact Us
                 </p>
 
-                <div className="mt-[16px] flex items-center gap-[16px]">
+                <div className="mt-4 flex items-center gap-4">
                   {[
                     { name: "facebook", icon: <FacebookIcon /> },
                     { name: "instagram", icon: <InstagramIcon /> },
@@ -189,9 +189,9 @@ const EventClient = ({ id }: { id: number }) => {
                   })}
                 </div>
 
-                <div className="mt-[40px]">
+                <div className="mt-10">
                   <Link href={buyTicketHref}>
-                    <Button className="shadow-custom-bottomtransition-all bg-gradient-green h-[56px] w-[231px] gap-2 rounded-[12px] border-b-2 border-transparent px-6 py-3.5 duration-300 hover:opacity-90">
+                    <Button className="shadow-custom-bottomtransition-all bg-gradient-green h-14 w-[231px] gap-2 rounded-xl border-b-2 border-transparent px-6 py-3.5 duration-300 hover:opacity-90">
                       <p className="font-sans text-[16px] leading-[19.2px] font-medium text-white">
                         Buy ticket from ₦{event?.minimum_price ?? "2,000"}
                       </p>

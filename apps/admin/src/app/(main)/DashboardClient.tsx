@@ -91,10 +91,10 @@ function DashboardClient() {
 
   return (
     <MainLayout>
-      <div className="mt-[20px] flex flex-col gap-[20px] px-[40px]">
+      <div className="mt-5 flex flex-col gap-5 px-10">
         {/* <div
           className={
-            "flex border-[1px] border-grey-20 bg-none w-fit px-[16px] py-[10px] rounded-[12px] gap-[30px]"
+            "flex border border-grey-20 bg-none w-fit px-4 py-2.5 rounded-xl gap-[30px]"
           }
         >
           <div className={"flex gap-2 items-center"}>
@@ -103,7 +103,7 @@ function DashboardClient() {
           </div>
           <ChevronDown className={"text-text-grey"} />
         </div> */}
-        <div className={"grid grid-cols-4 gap-[20px]"}>
+        <div className={"grid grid-cols-4 gap-5"}>
           {data.map((item, index) => (
             <DataCard
               styles={"w-[276px] h-[132px]"}

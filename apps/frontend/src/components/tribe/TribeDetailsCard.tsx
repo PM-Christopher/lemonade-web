@@ -38,12 +38,12 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
       {tribeLoading ? (
         <TribeDetailsSkeleton />
       ) : (
-        <div className="flex h-fit w-[496px] flex-col gap-2 rounded-[12px] bg-white p-4 py-4">
+        <div className="flex h-fit w-[496px] flex-col gap-2 rounded-xl bg-white p-4 py-4">
           <div>
             <p className="font-sans text-[16px] leading-[24px] font-semibold">Tribe details</p>
           </div>
           <div className="mt-10 flex justify-center">
-            <div className="h-[96px] w-[96px] overflow-hidden rounded-[24px] border-[2px]">
+            <div className="h-24 w-24 overflow-hidden rounded-3xl border-2">
               <Image
                 src={tribe?.image || "/images/placeholder.png"} // fallback
                 alt="tribe"
@@ -86,12 +86,12 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               </>
             </div>
 
-            <div className="flex gap-[16px]">
+            <div className="flex gap-4">
               <div
                 className="flex cursor-pointer flex-col items-center"
                 onClick={() => share(tribe)}
               >
-                <div className="bg-light_grey flex flex-col items-center rounded-[16px] p-[24px]">
+                <div className="bg-light_grey flex flex-col items-center rounded-2xl p-6">
                   <ShareIcon />
                 </div>
                 <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
@@ -104,7 +104,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                   className="flex cursor-pointer flex-col items-center"
                   onClick={toggleAddMember}
                 >
-                  <div className="bg-light_grey flex flex-col items-center rounded-[16px] p-[24px]">
+                  <div className="bg-light_grey flex flex-col items-center rounded-2xl p-6">
                     <AddUserIcon />
                   </div>
                   <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
@@ -117,7 +117,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           <div className="my-2 flex justify-center">
             {tribe?.has_joined || tribe?.owner ? (
               <Button
-                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] rounded-[37px] border p-[14px] px-[24px]"
+                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] rounded-[37px] border p-3.5 px-6"
                 onClick={toggle}
               >
                 <div className="flex items-center justify-center gap-1">
@@ -129,7 +129,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               </Button>
             ) : (
               <Button
-                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] rounded-[37px] border p-[14px] px-[24px]"
+                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-[60px] rounded-[37px] border p-3.5 px-6"
                 onClick={toggleJoin}
               >
                 <div className="flex justify-center gap-1">
@@ -159,7 +159,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           ) : (
             <></>
           )}
-          <div className="bg-light_grey flex flex-col rounded-[12px] p-3">
+          <div className="bg-light_grey flex flex-col rounded-xl p-3">
             <p className="font-semi-normal text-text-grey font-sans text-[14px] leading-[21px]">
               Members
             </p>
@@ -170,15 +170,15 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                     <div className="flex items-center justify-between py-1">
                       <div className="flex items-center gap-2">
                         <div>
-                          {/*<Image src={member?.user?.avatar} alt="avatar" width={20} height={20} className="w-[20px] h-[20px] rounded-[6px]"/>*/}
-                          <div className="flex h-[20px] w-[20px] items-center justify-center overflow-hidden rounded-[6px] bg-gray-200 text-[10px] font-semibold text-gray-700">
+                          {/*<Image src={member?.user?.avatar} alt="avatar" width={20} height={20} className="w-5 h-5 rounded-[6px]"/>*/}
+                          <div className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-[6px] bg-gray-200 text-[10px] font-semibold text-gray-700">
                             {member?.user?.avatar ? (
                               <Image
                                 src={member.user.avatar}
                                 alt="avatar"
                                 width={20}
                                 height={20}
-                                className="h-[20px] w-[20px] object-cover"
+                                className="h-5 w-5 object-cover"
                               />
                             ) : (
                               getInitials(member?.user?.fullname)
@@ -197,7 +197,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                         </div>
                       )}
                     </div>
-                    <div className="my-2 border-t-[1px]"></div>
+                    <div className="my-2 border-t"></div>
                   </React.Fragment>
                 ))
               ) : (

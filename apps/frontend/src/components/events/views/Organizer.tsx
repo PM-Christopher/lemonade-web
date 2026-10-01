@@ -42,7 +42,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
 
   return (
     <>
-      <div className="laptop:justify-between flex items-center justify-center border-b-[1px] bg-white px-[16px] pt-[8px] pb-[1px]">
+      <div className="laptop:justify-between flex items-center justify-center border-b bg-white px-4 pt-2 pb-px">
         <div className="flex gap-10">
           <div className="flex gap-4 sm:gap-6">
             {[
@@ -71,7 +71,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
                   {/* centered underline */}
                   <span
                     className={[
-                      "bg-step-color h-[2px] rounded-full transition-all duration-300 ease-out",
+                      "bg-step-color h-0.5 rounded-full transition-all duration-300 ease-out",
                       isActive
                         ? "w-full opacity-100"
                         : "w-0 opacity-0 group-hover:w-full group-hover:opacity-60",
@@ -84,7 +84,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
         </div>
       </div>
 
-      <section className="mt-4 flex flex-col items-center px-[10px]">
+      <section className="mt-4 flex flex-col items-center px-2.5">
         {/*<EmptyEvent />*/}
         {renderView()}
         <PaymentSettingsModal toggle={activatePaymentModal} option={togglePaymentModel} />

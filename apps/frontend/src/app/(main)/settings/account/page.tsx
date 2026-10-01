@@ -79,9 +79,9 @@ const AccountSettingsPage = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[64px]">
+        <div className="flex items-center justify-between border-t border-b bg-white p-2 px-16">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -89,14 +89,14 @@ const AccountSettingsPage = () => {
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center px-5">
-          <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-[12px] bg-white p-[16px]">
+          <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl bg-white p-4">
             {settingsItems.map((item, index) => (
               <div
                 key={item.id}
                 className="-m-2 flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors duration-200 hover:bg-gray-50"
                 onClick={item.onClick}
               >
-                <div className="flex items-center gap-[8px]">
+                <div className="flex items-center gap-2">
                   {item.icon}
                   <p className={`text-[16px] font-normal ${item.textColor}`}>{item.label}</p>
                 </div>

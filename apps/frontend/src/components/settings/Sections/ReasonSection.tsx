@@ -27,7 +27,7 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
   };
 
   return (
-    <div className="laptop:w-[640px] flex w-full flex-col gap-6 rounded-[12px] bg-white p-[24px]">
+    <div className="laptop:w-[640px] flex w-full flex-col gap-6 rounded-xl bg-white p-6">
       {/* Header */}
       <div>
         <p className="text-[20px] font-semibold">Why are you leaving?</p>
@@ -38,11 +38,11 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
 
       {/* Radio Options */}
       <RadioGroup value={selectedReason} onValueChange={handleChange}>
-        <div className="flex flex-col gap-[20px]">
+        <div className="flex flex-col gap-5">
           {cancelReason.map(({ value, label }) => (
             <div
               key={value}
-              className={`flex cursor-pointer items-center gap-2 rounded-[12px] border-2 p-[12px] px-[16px] ${
+              className={`flex cursor-pointer items-center gap-2 rounded-xl border-2 p-3 px-4 ${
                 selectedReason === value ? "border-step-color bg-gray-50" : "border-grey-20"
               }`}
             >
@@ -56,9 +56,9 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
       </RadioGroup>
 
       {/* Continue Button */}
-      <div className="mt-[24px] flex justify-end">
+      <div className="mt-6 flex justify-end">
         <Button
-          className="h-[48px] rounded-[12px] border-1 bg-white px-6 shadow-none hover:bg-white"
+          className="h-12 rounded-xl border-1 bg-white px-6 shadow-none hover:bg-white"
           onClick={handleContinue}
         >
           <p className="text-black-light text-[16px] font-medium">Continue</p>

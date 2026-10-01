@@ -70,7 +70,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
             </div>
           </div>
           <div style={{ marginTop: "20px" }}>
-            <div className={"flex flex-col gap-[16px]"}>
+            <div className={"flex flex-col gap-4"}>
               <div style={{ maxWidth: "328px" }}>
                 <p className={"text-text-grey text-[14px] font-normal"}>
                   Set the minimum amount that can be withdrawn from wallet balance.
@@ -78,17 +78,17 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
               </div>
               <p className={"text-text-grey text-[14px] font-normal"}>Amount</p>
               <Input
-                className={"bg-light-grey h-[48px] rounded-[12px] border-none px-[12px] py-[12px]"}
+                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Amount"}
                 value={formik.values.threshold}
                 onChange={formik.handleChange("threshold")}
                 onBlur={formik.handleBlur}
               />
-              <div className={"flex justify-between gap-[16px]"}>
+              <div className={"flex justify-between gap-4"}>
                 <button
                   onClick={toggle}
                   className={
-                    "border-light-grey-50 h-[48px] w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[14px]"
+                    "border-light-grey-50 h-12 w-full rounded-xl border bg-white px-12 py-3.5"
                   }
                 >
                   <p className={"text-[16px] font-medium text-black"}>Cancel</p>
@@ -96,7 +96,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
                 <button
                   onClick={() => formik.handleSubmit()}
                   className={
-                    "border-step-color bg-gradient-green h-[48px] w-full rounded-[12px] border-[1px] px-[48px] py-[14px]"
+                    "border-step-color bg-gradient-green h-12 w-full rounded-xl border px-12 py-3.5"
                   }
                 >
                   <p className={"text-[16px] font-medium text-white"}>

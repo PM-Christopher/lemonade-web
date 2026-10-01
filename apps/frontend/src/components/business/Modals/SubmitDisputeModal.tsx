@@ -94,7 +94,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
 
             <FormikButton
               title="Submit"
-              classes="h-[40px] w-[90px] rounded-[12px]"
+              classes="h-10 w-[90px] rounded-xl"
               loading={formik.isSubmitting}
               error={formik.isValid}
             />

@@ -50,13 +50,13 @@ function BusinessesClient() {
 
   return (
     <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-[16px]"}>{businesses.length} Businesses</p>
-          <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
+          <div className={"flex justify-between gap-3"}>
+            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
               <div>
-                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
+                <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
               <div className="w-full">
                 <input
@@ -71,7 +71,7 @@ function BusinessesClient() {
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger
                 aria-label="Filter by status"
-                className="font-semiBold text-text-grey focus:!border-light-green-50 h-[40px] w-[193px] rounded-[12px] text-[12px]"
+                className="font-semiBold text-text-grey focus:!border-light-green-50 h-10 w-[193px] rounded-xl text-[12px]"
               >
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -85,8 +85,8 @@ function BusinessesClient() {
             </Select>
           </div>
         </div>
-        <div className={"flex flex-col px-[20px]"}>
-          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
                 <thead>

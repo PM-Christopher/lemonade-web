@@ -12,23 +12,23 @@ function ProfileClient() {
 
   return (
     <MainLayout>
-      <section className={"flex justify-between p-[20px]"}>
-        <div className={"flex h-fit w-[588px] flex-col gap-[12px] rounded-[12px] bg-white"}>
-          <div className={"flex flex-col gap-[20px] p-[24px]"}>
-            <div className={"bg-mid-grey h-[64px] w-[64px] rounded-full"}></div>
-            <div className={"items-center-center flex gap-[24px]"}>
+      <section className={"flex justify-between p-5"}>
+        <div className={"flex h-fit w-[588px] flex-col gap-3 rounded-xl bg-white"}>
+          <div className={"flex flex-col gap-5 p-6"}>
+            <div className={"bg-mid-grey h-16 w-16 rounded-full"}></div>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Full Name:</p>
               </div>
               <p className={"text-[14px] font-medium"}>{profile?.name}</p>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>User ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>{profile?.unique_id}</p>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
               </div>
@@ -36,23 +36,23 @@ function ProfileClient() {
                 {profile?.status === 1 ? "Active" : "Suspended"}
               </p>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Role:</p>
               </div>
-              <div className={"flex gap-[4px]"}>
+              <div className={"flex gap-1"}>
                 <p className={"text-[14px] font-medium"}>{profile?.role.toUpperCase()}</p>
               </div>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Email Address:</p>
               </div>
-              <div className={"flex gap-[4px]"}>
+              <div className={"flex gap-1"}>
                 <p className={"text-[14px] font-medium"}>{profile?.email}</p>
               </div>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Date Address:</p>
               </div>
@@ -60,7 +60,7 @@ function ProfileClient() {
             </div>
             <button
               className={
-                "border-light-grey-50 w-fit rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[14px] font-medium"
+                "border-light-grey-50 w-fit rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
               }
               type={"button"}
             >

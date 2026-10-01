@@ -31,7 +31,7 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle }) => 
     >
       <DialogContentBare className="fixed top-5 right-5 bottom-5 left-auto w-fit max-w-none translate-x-0 translate-y-0 gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Payout history</DialogTitle>
-        <div className="flex h-full flex-col rounded-[12px] bg-white" style={{ width: "585px" }}>
+        <div className="flex h-full flex-col rounded-xl bg-white" style={{ width: "585px" }}>
           <div
             className="flex items-center justify-between"
             style={{
@@ -50,15 +50,15 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle }) => 
               <XIcon className="cursor-pointer" onClick={toggle} />
             </div>
           </div>
-          <div className={"mt-[16px] flex flex-col px-[24px]"}>
+          <div className={"mt-4 flex flex-col px-6"}>
             {payoutHistoryData.map((item, index: number) => (
-              <div key={index} className={"flex justify-between px-[16px] pt-[16px] pb-[24px]"}>
+              <div key={index} className={"flex justify-between px-4 pt-4 pb-6"}>
                 <div className={"flex flex-col"}>
                   <p className={"text-[14px] font-medium"}>{item.amount}</p>
                   <p className={"text-text-grey text-[12px] font-normal"}>{item.date}</p>
                 </div>
                 <p
-                  className={`h-fit rounded-[8px] px-[8px] py-[4px] text-[12px] font-medium ${renderStyle(item.status)}`}
+                  className={`h-fit rounded-[8px] px-2 py-1 text-[12px] font-medium ${renderStyle(item.status)}`}
                 >
                   {item.status}
                 </p>

@@ -7,7 +7,7 @@ import { UserInterface } from "@/interfaces/SystemInterface";
 function TopNav({}) {
   const user: UserInterface | null = useSelector((state: RootState) => state.auth.user);
   return (
-    <header className="border-b-grey-20 flex items-center justify-between border-b-[1px] bg-white px-[20px] py-[20px]">
+    <header className="border-b-grey-20 flex items-center justify-between border-b bg-white px-5 py-5">
       <h1 className="font-semiBold text-[16px]">Overview</h1>
       <div className="flex items-center space-x-4">
         <div className={"flex flex-col items-end"}>

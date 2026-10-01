@@ -39,9 +39,9 @@ const MyEventModal = ({
             <MyTicketSkeleton />
           ) : (
             <div className="laptop:p-0 p-6">
-              <div className="laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0 mt-[16px] flex flex-col items-center rounded-[16px] bg-white p-6">
+              <div className="laptop:mt-10 laptop:rounded-none laptop:bg-none laptop:p-0 mt-4 flex flex-col items-center rounded-2xl bg-white p-6">
                 <div className="flex justify-center">
-                  <div className="flex w-[340px] flex-col gap-[16px]">
+                  <div className="flex w-[340px] flex-col gap-4">
                     <p className="font-semi-normal font-sans text-[20px] leading-[21px]">
                       {ticket?.ticket[0]?.event_name}
                     </p>
@@ -82,7 +82,7 @@ const MyEventModal = ({
                       </div>
                     </div>
                     {ticket?.ticket[0]?.qr_code && (
-                      <div className="laptop:mt-[48px] mt-[94px] flex items-center justify-center">
+                      <div className="laptop:mt-12 mt-[94px] flex items-center justify-center">
                         <Image
                           src={ticket.ticket[0].qr_code}
                           alt="qr_code"

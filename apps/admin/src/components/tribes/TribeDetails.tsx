@@ -49,14 +49,12 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
 
       <div>
         <p className="mb-4 text-[16px] font-medium">Members</p>
-        <div className={"bg-light-grey flex flex-col gap-[8px] rounded-[12px] px-[24px] py-[16px]"}>
+        <div className={"bg-light-grey flex flex-col gap-2 rounded-xl px-6 py-4"}>
           {members.length > 0 ? (
             members.map((member) => (
               <div
                 key={member.id}
-                className={
-                  "border-b-grey-20 flex justify-between border-b-[1px] py-[10px] last:border-b-0"
-                }
+                className={"border-b-grey-20 flex justify-between border-b py-2.5 last:border-b-0"}
               >
                 <div className={"flex items-center gap-2"}>
                   <Image
@@ -79,7 +77,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
                       onRemoveMember(member.user_id, member.user?.fullname ?? "this member")
                     }
                   >
-                    <XIcon className="h-[16px] w-[16px]" />
+                    <XIcon className="h-4 w-4" />
                   </button>
                 )}
               </div>

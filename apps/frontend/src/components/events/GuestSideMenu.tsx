@@ -59,7 +59,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
       <div
         className={`bg-opacity-50 fixed top-0 right-0 z-50 h-full transform bg-gray-800 transition-transform ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white p-[48px] px-[20px]">
+        <div className="laptop:w-[585px] h-full w-screen bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
@@ -73,14 +73,14 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
           {loading ? (
             <GuestDetailSkeleton />
           ) : (
-            <div className="relative mt-4 flex flex-col gap-[24px] overflow-hidden px-[64px] py-[24px]">
+            <div className="relative mt-4 flex flex-col gap-6 overflow-hidden px-16 py-6">
               {guestDetails?.checked_in && (
-                <div className="absolute top-20 right-0 flex h-[32px] w-[120px] origin-top-right translate-x-[30px] -translate-y-[20px] rotate-45 items-center justify-center bg-red-600 text-[12px] font-semibold text-white shadow-md">
+                <div className="absolute top-20 right-0 flex h-8 w-[120px] origin-top-right translate-x-[30px] -translate-y-5 rotate-45 items-center justify-center bg-red-600 text-[12px] font-semibold text-white shadow-md">
                   VOID
                 </div>
               )}
               <p className={"font-semiBold text-[20px]"}>{guestDetails?.event?.name}</p>
-              <div className={"flex items-center gap-[4px]"}>
+              <div className={"flex items-center gap-1"}>
                 <CalendarIcon className={"h-4 w-4"} />
                 <p className={"text-text-grey font-normal"}>{guestDetails?.event?.start_date}</p>
                 <DotIcon className={"h-1 w-1"} />
@@ -124,16 +124,16 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
                   {guestDetails?.checked_in ? (
                     <div
                       className={
-                        "bg-light-green-60 flex items-center justify-center gap-[4px] rounded-[12px] px-[8px] py-[2px]"
+                        "bg-light-green-60 flex items-center justify-center gap-1 rounded-xl px-2 py-0.5"
                       }
                     >
-                      <CheckIcon className="text-light-green-70 h-[9px] w-[10px] stroke-current" />
+                      <CheckIcon className="text-light-green-70 h-[9px] w-2.5 stroke-current" />
                       <p className={"text-light-green-70 text-[14px] font-medium"}>Checked In</p>
                     </div>
                   ) : (
                     <div
                       className={
-                        "bg-warning flex items-center justify-center gap-[4px] rounded-[12px] px-[8px] py-[2px]"
+                        "bg-warning flex items-center justify-center gap-1 rounded-xl px-2 py-0.5"
                       }
                     >
                       <ClockIcon />
@@ -149,7 +149,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
 
               {!guestDetails?.checked_in && (
                 <button
-                  className={`bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-[48px] items-center justify-center rounded-[12px] text-white ${checkInLoading && "cursor-not-allowed opacity-50"} `}
+                  className={`bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-12 items-center justify-center rounded-xl text-white ${checkInLoading && "cursor-not-allowed opacity-50"} `}
                   type={"button"}
                   onClick={handleCheckInGuest}
                   disabled={checkInLoading}

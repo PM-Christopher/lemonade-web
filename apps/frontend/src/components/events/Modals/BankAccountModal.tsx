@@ -137,12 +137,12 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   title="Submit"
                   error={formik.isValid}
                   loading={formik.isSubmitting}
-                  classes="w-full h-[48px] rounded-xl px-[14px] p-[10px] rounded-[12px] border-step-color shadow-green-inset hover:shadow-green-inset-strong"
+                  classes="w-full h-12 rounded-xl px-3.5 p-2.5 rounded-xl border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                 />
               </div>
             </div>
             <div className="mt-10">
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -172,7 +172,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   )}
                 </select>
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
@@ -195,7 +195,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   maxLength={10}
                 />
               </div>
-              <div className="mt-[24px] grid gap-2">
+              <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"

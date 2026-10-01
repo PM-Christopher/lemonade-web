@@ -57,7 +57,7 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
 
   return (
     <>
-      <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
+      <div className={"flex justify-between gap-6 px-3 pt-2 pb-4"}>
         <DataCard
           styles={"w-full"}
           title={"Total Referral Earnings"}
@@ -75,7 +75,7 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
           count={userData?.total_referrals || 0}
         />
       </div>
-      <div className={"flex w-full justify-between gap-[24px]"}>
+      <div className={"flex w-full justify-between gap-6"}>
         <div className="flex-1 bg-white">
           <table className="min-w-full table-auto border-collapse">
             <thead>
@@ -126,20 +126,20 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
             perPage={perPage}
           />
         </div>
-        <div className="border-yellow-accent-3 flex h-fit flex-col rounded-[12px] border-[1px]">
-          <div className="bg-yellow-accent-1 h-[48px] w-[326px] rounded-tl-[12px] rounded-tr-[12px]">
-            <div className="flex items-center px-[24px] py-[16px]">
+        <div className="border-yellow-accent-3 flex h-fit flex-col rounded-xl border">
+          <div className="bg-yellow-accent-1 h-12 w-[326px] rounded-tl-xl rounded-tr-xl">
+            <div className="flex items-center px-6 py-4">
               <p className="text-light-black text-[12px] font-semibold">Top Referrers</p>
             </div>
           </div>
-          <div className="bg-yellow-accent-2 flex flex-col rounded-br-[12px] rounded-bl-[12px]">
+          <div className="bg-yellow-accent-2 flex flex-col rounded-br-xl rounded-bl-xl">
             {userData?.top_referrers?.map((item, index) => (
               <div key={index} className="flex">
-                <div className="flex h-[72px] w-[221px] items-center gap-[8px] p-[24px] px-[16px]">
-                  <div className="h-[24px] w-[24px] rounded-full bg-gray-600"></div>
+                <div className="flex h-[72px] w-[221px] items-center gap-2 p-6 px-4">
+                  <div className="h-6 w-6 rounded-full bg-gray-600"></div>
                   <p>{item?.name}</p>
                 </div>
-                <div className="w-[105px] p-[24px] px-[16px]">
+                <div className="w-[105px] p-6 px-4">
                   <p>₦{Number(item?.total_earnings)?.toLocaleString()}</p>
                 </div>
               </div>

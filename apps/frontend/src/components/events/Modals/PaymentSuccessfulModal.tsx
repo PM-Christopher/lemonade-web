@@ -30,7 +30,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               </div>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex justify-center">
               <Image
                 src={"/images/promoteEventIcon.png"}
@@ -40,7 +40,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               />
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-light-green text-center font-sans text-[20px] leading-[28px] font-semibold">
                 Payment successful!
@@ -51,14 +51,14 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="font-sans text-[20px] leading-[20px] font-semibold">
                 {promotion?.name}
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Date
@@ -68,7 +68,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Unit
@@ -78,7 +78,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               </p>
             </div>
           </div>
-          <div className="mt-[24px]">
+          <div className="mt-6">
             <div className="flex flex-col">
               <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
                 Amount
@@ -88,9 +88,9 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               </p>
             </div>
           </div>
-          <div className="mt-[40px]">
+          <div className="mt-10">
             <button
-              className="auth-button border-step-color shadow-custom-bottom rounded-[12px] p-[10px] px-[14px]"
+              className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
               <p className="font-semi-normal font-sans text-[16px] text-white">Go to event</p>

@@ -224,12 +224,12 @@ export default function VerifyCodePage() {
                   }}
                 />
                 {checkError("code", formik) ? (
-                  <p className="mt-[8px] text-[12px] text-[#FF8D8D]">{formik.errors.code}</p>
+                  <p className="mt-2 text-[12px] text-[#FF8D8D]">{formik.errors.code}</p>
                 ) : null}
               </div>
             </CardContent>
-            <CardContent className="mt-[10px] mb-[10px] flex justify-center">
-              <div className="mt-[10px] mb-[5px] flex cursor-pointer justify-center">
+            <CardContent className="mt-2.5 mb-2.5 flex justify-center">
+              <div className="mt-2.5 mb-[5px] flex cursor-pointer justify-center">
                 {canResend ? (
                   <p
                     className="font-semi-normal text-light-green cursor-pointer font-sans text-[16px]"
@@ -249,7 +249,7 @@ export default function VerifyCodePage() {
                 loading={formik.isSubmitting}
                 title="Verify"
                 error={formik.isValid}
-                classes="w-full h-[48px] rounded-[12px]"
+                classes="w-full h-12 rounded-xl"
               />
             </CardContent>
           </Card>

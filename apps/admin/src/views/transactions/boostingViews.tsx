@@ -22,7 +22,7 @@ function BoostingViews({ trx_data, page, onPageChange }: BoostingIF) {
 
   return (
     <>
-      <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
+      <div className={"flex justify-between gap-6 px-3 pt-2 pb-4"}>
         <DataCard
           styles={"w-full"}
           title={"Boosting Revenue"}

@@ -315,15 +315,15 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                   title="Save changes"
                   error={formik.isValid}
                   loading={formik.isSubmitting}
-                  classes="max-w-[135px] p-2 max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"
+                  classes="max-w-[135px] p-2 max-h-[39px] rounded-xl border shadow-custom-bottom"
                 />
               </div>
             </div>
-            <div className="mt-[24px]">
+            <div className="mt-6">
               <div className="flex flex-col gap-y-[300px]">
                 <div className="flex flex-col">
                   {type === "username" && (
-                    <div className="mt-[24px] grid gap-1">
+                    <div className="mt-6 grid gap-1">
                       <Label
                         htmlFor="username"
                         className="text-text-grey text-[14px] leading-[16.8px] font-normal"
@@ -334,7 +334,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                         id="username"
                         type="text"
                         placeholder=""
-                        className="border-step-color bg-light_grey h-[48px] rounded-[12px] border-[1.5px]"
+                        className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
                         value={formik.values.username}
                         onChange={formik.handleChange}
                       />
@@ -342,7 +342,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                   )}
 
                   {type === "bio" && (
-                    <div className="mt-[24px] grid gap-1">
+                    <div className="mt-6 grid gap-1">
                       <Label
                         htmlFor="bio"
                         className="text-text-grey text-[14px] leading-[16.8px] font-normal"
@@ -353,7 +353,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                         id="bio"
                         type="text"
                         placeholder=""
-                        className="border-step-color bg-light_grey h-[48px] rounded-[12px] border-[1.5px]"
+                        className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
                         value={formik.values.bio}
                         onChange={formik.handleChange}
                       />
@@ -361,7 +361,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                   )}
 
                   {type === "industry" && (
-                    <div className="mt-[24px] grid gap-1">
+                    <div className="mt-6 grid gap-1">
                       <Label
                         htmlFor="industry"
                         className="text-text-grey text-[14px] leading-[16.8px] font-normal"
@@ -372,7 +372,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                         id="industry"
                         type="text"
                         placeholder=""
-                        className="border-step-color bg-light_grey h-[48px] rounded-[12px] border-[1.5px]"
+                        className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
                         value={formik.values.industry}
                         onChange={formik.handleChange}
                       />
@@ -457,7 +457,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                   )}
 
                   {type === "skills-interest" && (
-                    <div className="mt-[24px] grid gap-1">
+                    <div className="mt-6 grid gap-1">
                       <div>
                         <p className="font-sans text-[18px] font-semibold">Skills</p>
                       </div>
@@ -465,7 +465,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                         {skills.map((item, idx) => (
                           <div
                             key={idx}
-                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${
+                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
                               Array.isArray(formik.values.skills) &&
                               formik.values.skills.includes(item)
                                 ? "bg-gradient-green text-white"
@@ -486,7 +486,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                       <div className="grid grid-cols-[repeat(4,auto)] gap-3">
                         {interests.map((item, idx) => (
                           <div
-                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-[12px] text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
                             key={idx}
                             onClick={() => handleInterestClick(item)}
                           >
@@ -501,8 +501,8 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                   )}
 
                   {type === "socials" && (
-                    <div className="mt-[24px] grid gap-1">
-                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+                    <div className="mt-6 grid gap-1">
+                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
                         <div className="">
                           <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
                         </div>
@@ -516,7 +516,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                           onChange={handleChange}
                         />
                       </div>
-                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
                         <div className="">
                           <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
                         </div>
@@ -530,7 +530,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                           onChange={handleChange}
                         />
                       </div>
-                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
                         <div className="">
                           <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
                         </div>
@@ -544,7 +544,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                           onChange={handleChange}
                         />
                       </div>
-                      <div className="bg-light_grey flex h-[56px] items-center gap-2 rounded-xl border-0 p-2 px-[20px]">
+                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
                         <div className="">
                           <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
                         </div>
@@ -566,7 +566,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
                     title="Save changes"
                     error={formik.isValid}
                     loading={formik.isSubmitting}
-                    classes="w-full laptop:max-w-[135px] p-2 h-[48px] laptop:max-h-[39px] rounded-[12px] border-[1px] shadow-custom-bottom"
+                    classes="w-full laptop:max-w-[135px] p-2 h-12 laptop:max-h-[39px] rounded-xl border shadow-custom-bottom"
                   />
                 </div>
               </div>

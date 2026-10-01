@@ -122,9 +122,9 @@ const ProfileSettingsPage = ({}) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-[64px] flex items-center justify-between border-t-[1px] border-b-[1px] bg-white p-[8px] px-[16px]">
+        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
-            className="flex cursor-pointer items-center gap-2 rounded-[12px] p-[4px] pr-[16px] pl-[4px]"
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => router.back()}
           >
             <ChevronLeft />
@@ -140,7 +140,7 @@ const ProfileSettingsPage = ({}) => {
                 alt="avatar"
                 width={84}
                 height={84}
-                className="border-grey-90 h-[84px] w-[84px] rounded-[24px] border-[1px]"
+                className="border-grey-90 h-[84px] w-[84px] rounded-3xl border"
               />
 
               <input
@@ -151,31 +151,31 @@ const ProfileSettingsPage = ({}) => {
               />
 
               <div onClick={handleImageClick} className="hover:cursor-pointer">
-                <UploadCamIcon className="absolute right-[-14px] bottom-0 h-8 w-8" />
+                <UploadCamIcon className="absolute -right-3.5 bottom-0 h-8 w-8" />
               </div>
             </div>
-            <div className="laptop:w-[640px] mt-[45.5px] flex w-[343px] flex-col gap-[8px] rounded-[12px] bg-white p-[16px]">
+            <div className="laptop:w-[640px] mt-[45.5px] flex w-[343px] flex-col gap-2 rounded-xl bg-white p-4">
               <div className="flex justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Full name</p>
                 <p className="font-semi-normal text-black-light text-[14px]">{user?.fullname}</p>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Email address</p>
                 <p className="font-semi-normal text-black-light text-[14px]">{user?.email}</p>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Lemonade tag</p>
                 <p className="font-semi-normal text-black-light text-[14px]">
                   Lemon {splitLemonId(user?.lemon_id)} (L
                   {splitLemonId(user?.lemon_id)})
                 </p>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Username</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light text-[14px]">{user?.username}</p>
                   <PencilIcon
-                    className="h-[16px] w-[16px] cursor-pointer"
+                    className="h-4 w-4 cursor-pointer"
                     onClick={() => {
                       setProfileType("username");
                       toggleModal();
@@ -183,14 +183,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Bio</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light max-w-[163px] truncate text-[14px]">
                     {user?.bio}
                   </p>
                   <PencilIcon
-                    className="h-[16px] w-[16px] cursor-pointer"
+                    className="h-4 w-4 cursor-pointer"
                     onClick={() => {
                       setProfileType("bio");
                       toggleModal();
@@ -198,14 +198,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Profession</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light text-[14px]">
                     {formatString(user?.industry)}
                   </p>
                   <PencilIcon
-                    className="h-[16px] w-[16px] cursor-pointer"
+                    className="h-4 w-4 cursor-pointer"
                     onClick={() => {
                       setProfileType("industry");
                       toggleModal();
@@ -213,14 +213,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Address</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light max-w-[130px] truncate text-[14px]">
                     {user?.address?.address}, {user?.address?.city}, {user?.address?.state}
                   </p>
                   <PencilIcon
-                    className="h-[16px] w-[16px] cursor-pointer"
+                    className="h-4 w-4 cursor-pointer"
                     onClick={() => {
                       setProfileType("addresses");
                       toggleModal();
@@ -228,14 +228,14 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Skills & interests</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light text-[14px]">
                     {user?.skills.length + user?.interests.length}
                   </p>
                   <PencilIcon
-                    className="h-[16px] w-[16px] cursor-pointer"
+                    className="h-4 w-4 cursor-pointer"
                     onClick={() => {
                       setProfileType("skills-interest");
                       toggleModal();
@@ -243,10 +243,10 @@ const ProfileSettingsPage = ({}) => {
                   />
                 </div>
               </div>
-              <div className="my-[8px] flex items-center justify-between">
+              <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Socials</p>
                 <div className="flex items-center gap-2">
-                  <div className="bg-light_grey flex items-center gap-[8px] rounded-[18px] p-[4px]">
+                  <div className="bg-light_grey flex items-center gap-2 rounded-[18px] p-1">
                     {user?.socials.map((link: any) => (
                       <a
                         href={link.value}
@@ -254,18 +254,16 @@ const ProfileSettingsPage = ({}) => {
                         rel="noopener noreferrer"
                         key={link.name}
                       >
-                        {link.name === "facebook" && <FacebookIcon className="h-[20px] w-[20px]" />}
-                        {link.name === "instagram" && (
-                          <InstagramIcon className="h-[20px] w-[20px]" />
-                        )}
-                        {link.name === "linkedin" && <LinkedInIcon className="h-[20px] w-[20px]" />}
-                        {link.name === "twitter" && <TwitterIcon className="h-[20px] w-[20px]" />}
-                        {link.name === "website" && <WebIcon className="h-[20px] w-[20px]" />}
+                        {link.name === "facebook" && <FacebookIcon className="h-5 w-5" />}
+                        {link.name === "instagram" && <InstagramIcon className="h-5 w-5" />}
+                        {link.name === "linkedin" && <LinkedInIcon className="h-5 w-5" />}
+                        {link.name === "twitter" && <TwitterIcon className="h-5 w-5" />}
+                        {link.name === "website" && <WebIcon className="h-5 w-5" />}
                       </a>
                     ))}
                   </div>
                   <PencilIcon
-                    className="h-[16px] w-[16px] cursor-pointer"
+                    className="h-4 w-4 cursor-pointer"
                     onClick={() => {
                       setProfileType("socials");
                       toggleModal();

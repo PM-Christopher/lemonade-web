@@ -96,43 +96,43 @@ function ReportDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-[800px] flex-col rounded-[12px] bg-white"}>
-          <div className={"border-b-grey-20 flex flex-col gap-[20px] border-b-[1px] p-[24px]"}>
-            <div className={"items-center-center flex gap-[24px]"}>
+        <div className={"flex h-fit w-[800px] flex-col rounded-xl bg-white"}>
+          <div className={"border-b-grey-20 flex flex-col gap-5 border-b p-6"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Reported By:</p>
               </div>
-              <div className={"flex gap-[4px]"}>
+              <div className={"flex gap-1"}>
                 <p className={"text-[14px] font-medium"}>{report?.reported_by?.name}</p>
               </div>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Report ID:</p>
               </div>
               <p className={"text-[14px] font-medium"}>RE112332</p>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Category:</p>
               </div>
               <p className={"text-[14px] font-medium"}>{capitalizeWords(report?.category)}</p>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Case:</p>
               </div>
-              <div className={"flex gap-[4px]"}>
+              <div className={"flex gap-1"}>
                 <p className={"text-[14px] font-medium"}>{report?.case}</p>
               </div>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Date Submitted:</p>
               </div>
               <p className={"text-[14px] font-medium"}>{report?.date_submitted}</p>
             </div>
-            <div className={"items-center-center flex gap-[24px]"}>
+            <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
               </div>
@@ -141,11 +141,11 @@ function ReportDetailsClient({ id }: { id: string }) {
               </p>
             </div>
           </div>
-          <div className={"p-[24px]"}>
+          <div className={"p-6"}>
             <button
               onClick={resolve}
               className={
-                "border-step-color bg-gradient-green w-full rounded-[12px] border-[1px] px-[48px] py-[11px] font-sans text-[16px] font-medium text-white"
+                "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px] font-sans text-[16px] font-medium text-white"
               }
               type={"button"}
             >
@@ -153,15 +153,10 @@ function ReportDetailsClient({ id }: { id: string }) {
             </button>
           </div>
         </div>
-        <div className={"flex h-[762px] w-full flex-col rounded-[12px] bg-white lg:w-2/3"}>
-          <div
-            className={"border-b-grey-20 flex items-center justify-between border-b-[1px] p-[18px]"}
-          >
+        <div className={"flex h-[762px] w-full flex-col rounded-xl bg-white lg:w-2/3"}>
+          <div className={"border-b-grey-20 flex items-center justify-between border-b p-[18px]"}>
             <p className={"font-semiBold text-[16px]"}>Content</p>
-            <div
-              className={"cursor-pointer rounded-[12px] border-[1px] p-[10px] px-[14px]"}
-              onClick={handleDelete}
-            >
+            <div className={"cursor-pointer rounded-xl border p-2.5 px-3.5"} onClick={handleDelete}>
               <p className={"text-[14px] font-medium"}>Delete</p>
             </div>
           </div>

@@ -37,15 +37,15 @@ const AnnouncementsClient = () => {
 
   return (
     <MainLayout>
-      <section className="mt-[24px] flex flex-col gap-[20px]">
-        <div className={"flex justify-between px-[20px]"}>
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-[16px]"}>
             {announcementData?.announcements?.length} Announcements
           </p>
-          <div className={"flex justify-between gap-[12px]"}>
-            <div className="bg-light_grey border-grey-20 flex h-[40px] w-[285px] items-center gap-3 rounded-[12px] border-[1px] p-2 px-[12px]">
+          <div className={"flex justify-between gap-3"}>
+            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
               <div>
-                <SearchIcon className={"text-grey-40 h-[12px] w-[12px]"} />
+                <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
               <div className="w-full">
                 <input
@@ -57,18 +57,16 @@ const AnnouncementsClient = () => {
               </div>
             </div>
             <div>
-              <Button
-                className={"border-step-color bg-gradient-green flex h-[40px] rounded-[12px]"}
-              >
+              <Button className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}>
                 <PlusIcon className={"h-[15px] w-[15px] text-white"} />
                 <p className={"text-[16px] font-medium text-white"}>New Announcement</p>
               </Button>
             </div>
           </div>
         </div>
-        <div className={"flex flex-col px-[20px]"}>
-          <div className={"border-grey-20 flex flex-col rounded-[12px] border-[1px]"}>
-            <div className={"flex justify-between gap-[24px] px-[12px] pt-[8px] pb-[16px]"}>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
+            <div className={"flex justify-between gap-6 px-3 pt-2 pb-4"}>
               <DataInfoCard styles={"w-full"} title={"Terms & Conditions"} isEditable={true} />
               <DataInfoCard styles={"w-full"} title={"Privacy policy"} isEditable={true} />
               <DataInfoCard styles={"w-full"} title={"Community guidelines"} isEditable={true} />

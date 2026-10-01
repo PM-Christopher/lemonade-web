@@ -87,8 +87,8 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Add Admin</DialogTitle>
-        <div className="w-[360px] rounded-[12px] bg-white pt-[16px] pb-[4px]">
-          <div className={"px-[16px] py-[4px]"}>
+        <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+          <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
               <p className="font-sans text-[18px] leading-[27px] font-semibold">Add Admin</p>
               <div className="cursor-pointer" onClick={toggle}>
@@ -96,7 +96,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
               </div>
             </div>
           </div>
-          <div className={"flex flex-col gap-[16px] px-[16px] py-[16px]"}>
+          <div className={"flex flex-col gap-4 px-4 py-4"}>
             <div className="grid gap-2">
               <Label
                 htmlFor="first_name"
@@ -179,19 +179,17 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
               />
             </div>
           </div>
-          <div className={"flex justify-between gap-[16px] px-[16px] pb-[10px]"}>
+          <div className={"flex justify-between gap-4 px-4 pb-2.5"}>
             <button
               onClick={toggle}
-              className={
-                "border-light-grey-50 w-full rounded-[12px] border-[1px] bg-white px-[48px] py-[11px]"
-              }
+              className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
             >
               <p className={"text-[16px] font-medium text-black"}>Cancel</p>
             </button>
             <button
               onClick={() => formik.handleSubmit()}
               className={
-                "border-step-color bg-gradient-green w-full rounded-[12px] border-[1px] px-[48px] py-[11px]"
+                "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
               }
             >
               <p className={"text-[16px] font-medium text-white"}>Confirm</p>

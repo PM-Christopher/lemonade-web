@@ -119,9 +119,9 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create Tribe</DialogTitle>
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          <div className="tablet:max-h-[90vh] tablet:h-auto tablet:w-[640px] flex h-screen w-full flex-col overflow-y-auto rounded-lg bg-white p-6 px-[48px] pb-[48px] shadow-lg">
+          <div className="tablet:max-h-[90vh] tablet:h-auto tablet:w-[640px] flex h-screen w-full flex-col overflow-y-auto rounded-lg bg-white p-6 px-12 pb-12 shadow-lg">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-2">
                 <XIcon onClick={closeAndReset} className="cursor-pointer" />
                 <p className="font-semiBold text-[18px]">Create Tribe</p>
               </div>
@@ -131,14 +131,14 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 </p>
               </Button>
             </div>
-            <div className="tablet:mt-[24px] mt-[48px] flex flex-col items-center">
+            <div className="tablet:mt-6 mt-12 flex flex-col items-center">
               {image ? (
                 <Image
                   src={image}
                   alt="upload"
                   width={89}
                   height={83}
-                  className="h-[89px] w-[89px] cursor-pointer rounded-[24px] border-[1px] object-cover"
+                  className="h-[89px] w-[89px] cursor-pointer rounded-3xl border object-cover"
                   onClick={handleImageClick}
                 />
               ) : (
@@ -163,7 +163,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 <p className="text-red-1 mt-2 text-[12px]">{errors.image.message}</p>
               )}
             </div>
-            <div className="mt-[16px] flex flex-col">
+            <div className="mt-4 flex flex-col">
               <div className="grid gap-2">
                 <Label
                   htmlFor="tribe-name"
@@ -174,7 +174,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 <Input
                   id="tribe-name"
                   type="text"
-                  className="bg-light_grey form-font h-[48px] rounded-xl border-0"
+                  className="bg-light_grey form-font h-12 rounded-xl border-0"
                   {...register("tribe_name")}
                 />
                 {errors.tribe_name && (
@@ -196,7 +196,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                       <SelectTrigger
                         id="category"
                         aria-label="Category"
-                        className="bg-light_grey h-[48px] rounded-xl border-0"
+                        className="bg-light_grey h-12 rounded-xl border-0"
                       >
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
