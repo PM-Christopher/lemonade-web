@@ -1,28 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Label,
-  Input,
-  Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@lemonade/ui";
-import { Loader2 } from "lucide-react";
+import React from "react";
+import { Card, CardContent, CardHeader, Label, Input } from "@lemonade/ui";
 
 import { axiosInstance } from "@/lib/axiosInstane";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
 import { contactAddressSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
-import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";
+import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { useCookies } from "react-cookie";
 import CountryList from "country-list-with-dial-code-and-flag";
 
@@ -32,9 +19,20 @@ interface AddressInterface {
   prev_step: () => void;
 }
 
-const AddressStep: React.FC<AddressInterface> = ({ loading, next_step, prev_step }) => {
+interface AddressFormValues {
+  address: string;
+  city: string;
+  country: string;
+  state: string;
+}
+
+interface LegacyAxiosError {
+  response?: { data?: { message?: string } };
+}
+
+const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
   const dispatch = useAppDispatch();
-  const [cookie, setCookie, removeCookie] = useCookies(["token", "newToken"]);
+  const [cookie] = useCookies(["token", "newToken"]);
 
   const getHeader = () => {
     const token = cookie.newToken;
@@ -60,7 +58,7 @@ const AddressStep: React.FC<AddressInterface> = ({ loading, next_step, prev_step
     },
   });
 
-  const addressStep = async (values: any) => {
+  const addressStep = async (values: AddressFormValues) => {
     dispatch(authStart());
 
     try {
@@ -80,12 +78,13 @@ const AddressStep: React.FC<AddressInterface> = ({ loading, next_step, prev_step
           }),
         );
       }
-    } catch (err: any) {
+    } catch (err) {
+      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: err?.response?.data?.message || "error",
+          message: legacyError?.response?.data?.message || "error",
           type: "error",
         }),
       );

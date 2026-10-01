@@ -12,11 +12,21 @@ import { FormikButton } from "@/components/global/FormikButton";
 import { useUpdateProfileFieldMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
+interface UpdateModalUser {
+  username?: string;
+  bio?: string;
+  industry?: string;
+  skills?: string[];
+  interests?: string[];
+  address?: { address?: string; city?: string; country?: string; state?: string };
+  socials?: Array<{ name: string; value: string }>;
+}
+
 type UpdateInterface = {
   toggle: () => void;
   isOpen: boolean;
   type: string;
-  user: any;
+  user: UpdateModalUser;
 };
 
 type FormValues = {
@@ -270,10 +280,10 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
           formik.setFieldValue("interests", user.interests);
           break;
         case "addresses":
-          formik.setFieldValue("address", user.address.address);
-          formik.setFieldValue("city", user.address.city);
-          formik.setFieldValue("country", user.address.country);
-          formik.setFieldValue("state", user.address.state);
+          formik.setFieldValue("address", user.address?.address);
+          formik.setFieldValue("city", user.address?.city);
+          formik.setFieldValue("country", user.address?.country);
+          formik.setFieldValue("state", user.address?.state);
           break;
         case "socials":
           formik.setFieldValue("socials", user.socials);
@@ -288,7 +298,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
   }, [user, type]);
 
   const getSocialUrl = (platform: string) => {
-    const social = user.socials.find((s: any) => s.name === platform);
+    const social = user.socials?.find((s) => s.name === platform);
     return social ? social.value : ""; // Return empty string if not found
   };
 

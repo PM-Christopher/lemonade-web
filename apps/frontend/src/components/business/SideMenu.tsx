@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import JobsCard from "@/components/business/JobsCard";
+import JobsCard, { type Job } from "@/components/business/JobsCard";
 import { useJobsDataQuery } from "@/features/business/queries";
 import { JobListSkeleton } from "@/components/Skeletons";
 
@@ -17,19 +17,35 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
     switch (jobType) {
       case "in-progress":
         return (
-          <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.in_progress || []} />
+          <JobsCard
+            toggleMenu={detailsToggle}
+            type="business"
+            jobs={(jobData?.in_progress ?? []) as Job[]}
+          />
         );
       case "completed":
         return (
-          <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.completed || []} />
+          <JobsCard
+            toggleMenu={detailsToggle}
+            type="business"
+            jobs={(jobData?.completed ?? []) as Job[]}
+          />
         );
       case "sent-offers":
         return (
-          <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.sent_offers || []} />
+          <JobsCard
+            toggleMenu={detailsToggle}
+            type="business"
+            jobs={(jobData?.sent_offers ?? []) as Job[]}
+          />
         );
       default:
         return (
-          <JobsCard toggleMenu={detailsToggle} type="business" jobs={jobData?.in_progress || []} />
+          <JobsCard
+            toggleMenu={detailsToggle}
+            type="business"
+            jobs={(jobData?.in_progress ?? []) as Job[]}
+          />
         );
     }
   };

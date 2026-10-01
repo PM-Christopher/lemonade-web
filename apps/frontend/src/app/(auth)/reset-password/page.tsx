@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, Button, Input, Label } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
@@ -29,7 +29,7 @@ export default function ResetPasswordPage() {
     },
   });
 
-  const onSignup = async (values: any) => {
+  const onSignup = async (values: { password: string; confirm_password: string }) => {
     resetPasswordMutation.mutate(
       { password: values.password, confirm_password: values.confirm_password },
       {
@@ -43,7 +43,7 @@ export default function ResetPasswordPage() {
           );
           router.push("/login");
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           dispatch(
             updateToastifyReducer({
               show: true,

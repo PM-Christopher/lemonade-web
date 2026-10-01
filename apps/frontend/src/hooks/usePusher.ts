@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { appendIncomingChatMessage } from "@/features/connect/queries";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { RootState } from "@/redux/store";
+import type { OutgoingChatMessage } from "@/features/connect/api";
 
 export const usePusher = (channelName: string | null, eventName: string) => {
-  const [data, setData] = useState<any>(null);
-  const { user } = useAppSelector((state: any) => state.auth);
+  const [data, setData] = useState<unknown>(null);
+  const { user } = useAppSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -22,11 +24,12 @@ export const usePusher = (channelName: string | null, eventName: string) => {
     const subscribeName = isUserChannel ? channelName : `private-${channelName}`;
     const channel = pusher.subscribe(subscribeName);
 
-    const eventHandler = (receivedData: any) => {
+    const eventHandler = (receivedData: unknown) => {
       setData(receivedData);
 
       if (channelName === `chat.${user?.id}` && user?.id) {
-        appendIncomingChatMessage(queryClient, user.id, receivedData.message);
+        const { message } = receivedData as { message: OutgoingChatMessage };
+        appendIncomingChatMessage(queryClient, user.id, message);
       } else if (channelName === `request.${user?.id}` && eventName === "request.service") {
         dispatch(
           updateToastifyReducer({

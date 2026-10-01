@@ -24,8 +24,17 @@ interface authState {
         payment_method: string;
         next_billing_date: string;
         id: number;
+        benefits?: {
+          ver_badge?: boolean;
+          forum_creation?: boolean;
+          lemon_id?: boolean;
+          event_creation?: number;
+          sales_commission?: number;
+          service_commission?: number;
+          connection_range?: string | number;
+          offline_benefits?: boolean;
+        };
       }
-    | any
     | null;
   subscription_id: number | null;
   plan: Record<string, unknown> | null;

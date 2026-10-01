@@ -92,7 +92,7 @@ export const getDistanceFromLatLonInKm = (
   lat2: number,
   lon2: number,
 ) => {
-  const toRad = (value: any) => (value * Math.PI) / 180;
+  const toRad = (value: number) => (value * Math.PI) / 180;
 
   const R = 6371; // Earth's radius in km
   const dLat = toRad(lat2 - lat1);

@@ -15,11 +15,11 @@ const ConfirmPaymentModal = ({
   isOpen: boolean;
   toggleMenu: () => void;
   sMenu: () => void;
-  job: any;
+  job: { id?: number; business_id?: number };
 }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const requestJobPaymentMutation = useRequestJobPaymentMutation(job?.id);
+  const requestJobPaymentMutation = useRequestJobPaymentMutation(job?.id ?? 0);
   const requestPLoading = requestJobPaymentMutation.isPending;
 
   const handleRequestPayment = () => {

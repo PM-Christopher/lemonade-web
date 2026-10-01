@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@lemonade/ui";
-import avatar_url from "@/image/avatar_1.png";
 import Image from "next/image";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { useAppDispatch } from "@/redux/hook";
@@ -29,11 +28,23 @@ interface ProfileInterface {
   next_step: () => void;
 }
 
-const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
+interface ProfileFormValues {
+  profile_image: string;
+  bio: string;
+  username: string;
+  industry: string;
+  referral_code: string;
+}
+
+interface LegacyAxiosError {
+  response?: { data?: { message?: string } };
+}
+
+const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [avatar, setAvatar] = useState(null);
   const dispatch = useAppDispatch();
-  const [cookie, setCookie, removeCookie] = useCookies(["token", "newToken"]);
+  const [cookie] = useCookies(["token", "newToken"]);
 
   const getHeader = () => {
     const token = cookie.newToken;
@@ -60,7 +71,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
     },
   });
 
-  const profileStep = async (values: any) => {
+  const profileStep = async (values: ProfileFormValues) => {
     dispatch(authStart());
 
     try {
@@ -80,12 +91,13 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
           }),
         );
       }
-    } catch (err: any) {
+    } catch (err) {
+      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: err?.response?.data?.message || "error",
+          message: legacyError?.response?.data?.message || "error",
           type: "error",
         }),
       );
@@ -131,11 +143,12 @@ const ProfileStep: React.FC<ProfileInterface> = ({ loading, next_step }) => {
             }),
           );
         }
-      } catch (err: any) {
+      } catch (err) {
+        const legacyError = err as LegacyAxiosError;
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: err?.response?.data?.message || "error",
+            message: legacyError?.response?.data?.message || "error",
             type: "error",
           }),
         );

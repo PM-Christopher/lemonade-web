@@ -12,6 +12,7 @@ import { RootState } from "@/redux/store";
 import { useBusinessesQuery, useListingsQuery } from "@/features/business/queries";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import dynamic from "next/dynamic";
+import type { ServiceJob } from "@/components/business/Modals/ServiceDetailsModal";
 
 // Off the initial bundle — only needed once a service card is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -139,7 +140,7 @@ const BusinessListClient = () => {
         {renderView()}
         {Boolean(job) && (
           <ServiceDetailsModal
-            job={job}
+            job={job as ServiceJob}
             isOpen={isServiceOpen}
             toggleMenu={toggleServiceDetailsMenu}
             loading={jobLoading}

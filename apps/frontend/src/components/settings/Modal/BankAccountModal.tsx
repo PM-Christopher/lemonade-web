@@ -3,7 +3,6 @@ import CloseIcon from "@/images/icons/close.svg";
 import {
   Label,
   Input,
-  Button,
   Select,
   SelectContent,
   SelectItem,
@@ -21,6 +20,7 @@ import { useBanksQuery } from "@/features/shared/queries";
 import { useVerifyAccountMutation } from "@/features/shared/mutations";
 import { useCreateBankAccountMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { Bank } from "@/features/shared/api";
 
 type BankAccountInterface = {
   isOpen: boolean;
@@ -33,7 +33,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
   const [error, setError] = useState("");
   const dispatch = useAppDispatch();
 
-  const { data: banksData, isLoading: loading } = useBanksQuery({
+  const { data: banksData } = useBanksQuery({
     enabled: isOpen,
   });
   const data = banksData?.banks ?? [];
@@ -67,7 +67,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
           );
           toggle();
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -151,7 +151,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ isOpen, toggle }) =>
                     <SelectValue placeholder="Select Bank" />
                   </SelectTrigger>
                   <SelectContent className="form-font">
-                    {data?.map((item: any, index: number) => (
+                    {data?.map((item: Bank, index: number) => (
                       <SelectItem value={JSON.stringify(item)} key={index}>
                         {item?.name}
                       </SelectItem>

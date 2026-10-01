@@ -25,11 +25,12 @@ const verifyAccount = createAsyncThunk(
         account_number,
       });
       return response.data;
-    } catch (err: any) {
-      if (!err.response) {
+    } catch (err) {
+      const legacyError = err as { response?: { data?: unknown } };
+      if (!legacyError.response) {
         throw err;
       }
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(legacyError.response.data);
     }
   },
 );
@@ -42,7 +43,7 @@ const generalSlice = createSlice({
     builder.addCase(verifyAccount.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(verifyAccount.fulfilled, (state, { payload }) => {
+    builder.addCase(verifyAccount.fulfilled, (state) => {
       state.loading = false;
     });
     builder.addCase(verifyAccount.rejected, (state) => {

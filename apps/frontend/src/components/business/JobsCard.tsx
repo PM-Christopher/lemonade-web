@@ -9,9 +9,9 @@ import { useAppDispatch } from "@/redux/hook";
 import { useSelector } from "react-redux";
 import { useGetJobMutation } from "@/features/business/mutations";
 import { setSelectedJob } from "@/redux/tempSlice";
-import JobEmpty from "@/image/JobEmpty.png";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
+import type { ServiceJob } from "@/components/business/Modals/ServiceDetailsModal";
 
 // Off the initial bundle — only needed once a job row is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -20,8 +20,19 @@ const ServiceDetailsModal = dynamic(
   { ssr: false },
 );
 
+export interface Job {
+  id: number;
+  image?: string;
+  name?: string;
+  city?: string;
+  country?: string;
+  services?: string[];
+  amount?: number;
+  isOwner?: boolean;
+}
+
 type JobCardInterface = {
-  jobs: any;
+  jobs: Job[];
   type: string;
   toggleMenu?: () => void;
 };
@@ -37,7 +48,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
     setIsOpen(!isOpen);
   };
 
-  const fetchJob = (id: number, job: any) => {
+  const fetchJob = (id: number, job: Job) => {
     const businessType = job?.isOwner ? "listing" : "business";
     getJobMutation.mutate(
       { id, type: businessType },
@@ -61,7 +72,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
       {jobs?.length > 0 ? (
         <div className="hide-scrollbar flex flex-col overflow-y-auto pb-24">
           <div className="flex w-full flex-col gap-4">
-            {jobs?.map((job: any, index: number) => (
+            {jobs?.map((job: Job, index: number) => (
               <div
                 key={index}
                 className="cursor-pointer rounded-2xl bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md"
@@ -71,7 +82,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <Image
-                      src={job?.image}
+                      src={job?.image ?? ""}
                       alt="logo"
                       width={48}
                       height={48}
@@ -80,7 +91,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                     <div className="flex flex-col">
                       <p className="text-[15px] font-semibold text-black">{job?.name}</p>
                       <p className="text-text-grey mt-1 text-[13px]">
-                        {job?.city}, {formatCountry(job?.country)}
+                        {job?.city}, {formatCountry(job?.country ?? "")}
                       </p>
                     </div>
                   </div>
@@ -114,7 +125,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                     )}
                   </div>
                   <p className="text-[15px] font-semibold text-black">
-                    N{formatNumberWithCommas(job?.amount)}
+                    N{formatNumberWithCommas(job?.amount ?? 0)}
                   </p>
                 </div>
 
@@ -136,7 +147,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
       )}
       {job && (
         <ServiceDetailsModal
-          job={job}
+          job={job as ServiceJob}
           isOpen={isOpen}
           toggleMenu={detailsToggle}
           loading={jobLoading}

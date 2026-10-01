@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import JobsCard from "@/components/business/JobsCard";
+import JobsCard, { type Job } from "@/components/business/JobsCard";
 import { useRouter } from "next/navigation";
 import { useBusinessJobDataQuery } from "@/features/business/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -15,13 +14,13 @@ const JobsClient = ({ id }: { id: number }) => {
   const renderCards = () => {
     switch (jobType) {
       case "in-progress":
-        return <JobsCard type="listing" jobs={data?.in_progress} />;
+        return <JobsCard type="listing" jobs={(data?.in_progress ?? []) as Job[]} />;
       case "completed":
-        return <JobsCard type="listing" jobs={data?.completed} />;
+        return <JobsCard type="listing" jobs={(data?.completed ?? []) as Job[]} />;
       case "sent-offers":
-        return <JobsCard type="listing" jobs={data?.sent_offers} />;
+        return <JobsCard type="listing" jobs={(data?.sent_offers ?? []) as Job[]} />;
       default:
-        return <JobsCard type="listing" jobs={data?.in_progress} />;
+        return <JobsCard type="listing" jobs={(data?.in_progress ?? []) as Job[]} />;
     }
   };
 

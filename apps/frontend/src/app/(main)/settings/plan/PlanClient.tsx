@@ -1,8 +1,7 @@
 "use client";
 import React, { useCallback, useMemo, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import PricingCard from "@/components/settings/PricingCard";
+import PricingCard, { type PricingPlan } from "@/components/settings/PricingCard";
 import { useSelector } from "react-redux";
 import { useSubscriptionPlansQuery } from "@/features/authentication/queries";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -14,6 +13,12 @@ import { useAppDispatch } from "@/redux/hook";
 import { changeSubscription } from "@/features/authentication/authSlice";
 import { useSubscriptionPlanMutation } from "@/features/authentication/mutations";
 import { RootState } from "@/redux/store";
+import type { Subscription } from "@/components/settings/Modal/VerifiedSubscriptionModal";
+
+interface VerifyTransactionResult {
+  status?: string;
+  data?: { history?: unknown; subscription?: Subscription };
+}
 
 // Off the initial bundle — both are only needed once a plan-change is
 // triggered or a payment completes (docs/ARCHITECTURE.md Phase 6,
@@ -27,7 +32,7 @@ const VerifiedSubscriptionModal = dynamic(
 );
 
 const PlanClient = () => {
-  const { subscription, user } = useSelector((state: RootState) => state.auth);
+  const { subscription } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const subscriptionPlanMutation = useSubscriptionPlanMutation();
@@ -62,9 +67,9 @@ const PlanClient = () => {
     if (!trxref) return null;
     return {
       transactionId: trxref,
-      isSuccess: (data: any) => data.status === "successful",
-      onSuccess: (data: any) => {
-        dispatch(changeSubscription(data.data.history));
+      isSuccess: (data: VerifyTransactionResult) => data.status === "successful",
+      onSuccess: (data: VerifyTransactionResult) => {
+        dispatch(changeSubscription(data.data?.history));
         setPaymentSuccess(true);
         toggleVerMembership();
         const cleanUrl = window.location.pathname;
@@ -74,7 +79,8 @@ const PlanClient = () => {
     };
   }, [trxref, dispatch, toggleVerMembership]);
 
-  const { data: verData, loading: verifying } = useTransactionPolling(pollingConfig);
+  const { data: verData, loading: verifying } =
+    useTransactionPolling<VerifyTransactionResult>(pollingConfig);
 
   return (
     <MainLayout>
@@ -94,7 +100,7 @@ const PlanClient = () => {
             {loading ? (
               <SubscriptionsSkeleton count={2} dataList={7} />
             ) : (
-              data?.subscriptions?.map((sub: any, index: number) => (
+              (data?.subscriptions as PricingPlan[] | undefined)?.map((sub, index) => (
                 <PricingCard
                   key={index}
                   toggle={toggleModal}
@@ -122,7 +128,7 @@ const PlanClient = () => {
         <VerifiedSubscriptionModal
           isOpen={openMem}
           toggle={toggleVerMembership}
-          data={verData?.data}
+          data={verData?.data as { subscription: Subscription }}
         />
       )}
     </MainLayout>

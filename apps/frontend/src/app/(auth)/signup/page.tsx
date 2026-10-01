@@ -11,7 +11,6 @@ import { Card, CardContent, CardFooter, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
 import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import axios from "axios";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -39,16 +38,22 @@ const PrivacyPolicyModal = dynamic(() => import("@/components/PrivacyPolicyModal
   ssr: false,
 });
 
-type valuesType = {
-  email: string;
-  fullname: string;
-  password: string;
-};
+interface GoogleSignupResponse {
+  status?: number;
+  message?: string;
+  data?: {
+    data?: {
+      token_type?: string;
+      token?: string;
+      user?: { status?: number; username?: string | null };
+    };
+  };
+}
 
 export default function SignupPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [cookie, setCookie] = useCookies(["token", "newToken"]);
+  const [, setCookie] = useCookies<string>(["token", "newToken"]);
   const [termOpen, setTermOpen] = React.useState(false);
   const [privacyOpen, setPrivacyOpen] = React.useState(false);
 
@@ -73,7 +78,7 @@ export default function SignupPage() {
     },
   });
 
-  const handleLoginSuccess = async (res: any) => {
+  const handleLoginSuccess = async (res: GoogleSignupResponse) => {
     try {
       if (res.status) {
         dispatch(setIsRouting(true));
@@ -85,7 +90,7 @@ export default function SignupPage() {
           }),
         );
 
-        if (res.data.data.token_type === "account_verification_token") {
+        if (res.data?.data?.token_type === "account_verification_token") {
           setCookie("newToken", res.data.data.token, {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
@@ -95,16 +100,17 @@ export default function SignupPage() {
           router.push("/verify-email");
         } else {
           const user = res.data?.data?.user;
-          if (user.status == 0) {
-            setCookie("newToken", res.data.data.token, {
+          const token = res.data?.data?.token;
+          if (user?.status == 0) {
+            setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
               // domain: env === 'development' ? '' : ''
             });
             router.push("/verify-email");
-          } else if (user.username === null) {
-            setCookie("newToken", res.data.data.token, {
+          } else if (user?.username === null) {
+            setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
@@ -112,7 +118,7 @@ export default function SignupPage() {
             });
             router.push("/profile-setup");
           } else {
-            setCookie("newToken", res.data.data.token, {
+            setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
@@ -124,7 +130,7 @@ export default function SignupPage() {
                 type: "success",
               }),
             );
-            dispatch(authSuccess(res.data.data));
+            dispatch(authSuccess(res.data?.data));
             setTimeout(() => {
               router.push("/");
             }, 500);

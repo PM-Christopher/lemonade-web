@@ -16,7 +16,7 @@ import BagIcon from "@/images/icons/caseFilledIcon.svg";
 import WebIcon from "@/images/icons/webFilledIcon.svg";
 import ReferralIcon from "@/images/icons/referralFilledIcon.svg";
 
-interface Subscription {
+export interface Subscription {
   ver_badge?: boolean;
   forum_creation?: boolean;
   lemon_id?: boolean;

@@ -7,7 +7,9 @@ import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/lib/axiosInstane";
-import PaymentConfirmModal from "@/components/business/Modals/PaymentConfirmModal";
+import PaymentConfirmModal, {
+  type PaymentConfirmJob,
+} from "@/components/business/Modals/PaymentConfirmModal";
 import { useAppDispatch } from "@/redux/hook";
 import { setSelectedJob } from "@/redux/tempSlice";
 import { RootState } from "@/redux/store";
@@ -143,7 +145,11 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
         </div>
       </div>
 
-      <PaymentConfirmModal isOpen={isVerifyJob} toggleMenu={toggleVerifyJob} job={job} />
+      <PaymentConfirmModal
+        isOpen={isVerifyJob}
+        toggleMenu={toggleVerifyJob}
+        job={job as PaymentConfirmJob}
+      />
     </section>
   );
 };

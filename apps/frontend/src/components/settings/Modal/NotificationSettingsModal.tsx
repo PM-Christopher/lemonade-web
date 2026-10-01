@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
@@ -7,12 +7,14 @@ import { useUpdateNotificationSettingsMutation } from "@/features/authentication
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import type { NotificationSettingChannels } from "@/features/authentication/api";
+
 type NotificationSettingsInterface = {
   toggle: () => void;
   isOpen: boolean;
-  settings: any;
-  renderHeader: any;
-  type: any;
+  settings: Partial<NotificationSettingChannels>;
+  renderHeader: () => { title: string; description: string } | undefined;
+  type: string;
 };
 
 const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
@@ -111,7 +113,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
                     <div className="flex items-center justify-between">
                       <p className="text-[16px] font-normal">In-app notification</p>
                       <Switch
-                        onChange={(change) => {
+                        onChange={() => {
                           handleChange("in-app");
                         }}
                         checked={inAppChecked}
@@ -123,7 +125,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
                     <div className="flex items-center justify-between">
                       <p className="text-[16px] font-normal">Email</p>
                       <Switch
-                        onChange={(change) => {
+                        onChange={() => {
                           handleChange("email");
                         }}
                         checked={emailChecked}

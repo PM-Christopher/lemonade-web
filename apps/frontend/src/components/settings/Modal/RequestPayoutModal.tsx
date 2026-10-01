@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
-import {
-  Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Input,
-  Dialog,
-  DialogContentBare,
-  DialogTitle,
-} from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useBanksQuery } from "@/features/shared/queries";
+import type { Bank } from "@/features/shared/api";
 import { useVerifyAccountMutation } from "@/features/shared/mutations";
 import { useCreateBankAccountMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -80,7 +70,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
           dispatch(updateHasBankAccount());
           toggle();
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           formik.resetForm();
           dispatch(
             updateToastifyReducer({
@@ -168,7 +158,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                     <>
                       <option value="">Select Bank</option>
                       {banks &&
-                        banks.map((bank: any, index: number) => (
+                        banks.map((bank: Bank, index: number) => (
                           <option value={bank.code} key={index}>
                             {bank?.name}
                           </option>

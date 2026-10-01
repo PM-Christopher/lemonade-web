@@ -1,11 +1,9 @@
 import { useRef, useCallback, useEffect } from "react";
 import { axiosInstance } from "@/lib/axiosInstane";
-import { useCookies } from "react-cookie";
 import Cookies from "js-cookie";
 
 export const useRefreshToken = () => {
   const isRefreshing = useRef(false);
-  const [cookie, setCookie] = useCookies(["token"]);
 
   const refreshAccessToken = useCallback(async () => {
     if (isRefreshing.current) return;

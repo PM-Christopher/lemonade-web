@@ -2,12 +2,18 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
+interface Boost {
+  duration?: number | null;
+  full_start_date?: string;
+  full_end_date?: string;
+}
+
 const BoostDetailsModal = ({
   boost,
   isOpen,
   toggleMenu,
 }: {
-  boost: any;
+  boost: Boost | null | undefined;
   isOpen: boolean;
   toggleMenu: () => void;
 }) => {

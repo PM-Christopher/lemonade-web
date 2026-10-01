@@ -6,17 +6,17 @@ import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
-import { useFormik } from "formik";
-import { createTickets, resetEventState } from "@/features/events/event.slice";
+import { useFormik, type FormikErrors, type FormikTouched } from "formik";
+import { resetEventState } from "@/features/events/event.slice";
 import { useEventTicketsQuery } from "@/features/events/queries";
-import { useCreateEventMutation, useEditEventTicketsMutation } from "@/features/events/mutations";
+import { useEditEventTicketsMutation, useCreateEventMutation } from "@/features/events/mutations";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 // Off the initial bundle — only needed once the bank-account section is
 // opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -36,6 +36,18 @@ type Ticket = {
   ticket_id?: string;
 };
 
+interface RawTicket {
+  ticket_id?: string;
+  ticket_type?: string;
+  name?: string;
+  price?: string | number | null;
+  transfer_commission?: boolean;
+  stock_type?: string;
+  ticket_stock?: number | string | null;
+  purchase_limit?: number | null;
+  description?: string;
+}
+
 const AddTicketClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -44,7 +56,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
     setToggleModal(!toggleModal);
   };
   const { event } = useSelector((state: RootState) => state.event);
-  const { data: eventTicketsData, isLoading: loading } = useEventTicketsQuery(id);
+  const { data: eventTicketsData } = useEventTicketsQuery(id);
   const event_tickets = eventTicketsData?.tickets ?? [];
   const editEventTicketsMutation = useEditEventTicketsMutation(id);
   const createEventMutation = useCreateEventMutation();
@@ -57,8 +69,8 @@ const AddTicketClient = ({ id }: { id: number }) => {
 
     price: yup
       .string()
-      .when("ticket_type", (values: any[], schema: yup.StringSchema<string | undefined>) => {
-        // Yup's typings say `values` is any[], so we read from index 0
+      .when("ticket_type", (values: unknown[], schema: yup.StringSchema<string | undefined>) => {
+        // Yup's typings say `values` is unknown[], so we read from index 0
         const ticket_type = Array.isArray(values) ? values[0] : values;
 
         // Only validate price when ticket is paid
@@ -91,7 +103,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
         const num = Number(cleaned);
         return Number.isNaN(num) ? undefined : num;
       })
-      .when("stock_type", (stock_type: any, schema: yup.NumberSchema<number | undefined>) => {
+      .when("stock_type", (stock_type: unknown, schema: yup.NumberSchema<number | undefined>) => {
         if (stock_type === "limited") {
           // REQUIRED and must be > 0
           return schema
@@ -135,7 +147,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
   const hasExistingTickets = Array.isArray(event_tickets) && event_tickets.length > 0;
 
   const initialTickets: Ticket[] = hasExistingTickets
-    ? event_tickets.map((t: any) => ({
+    ? (event_tickets as RawTicket[]).map((t) => ({
         ticket_id: t.ticket_id ?? "",
         ticket_type: t.ticket_type ?? "",
         name: t.name ?? "",
@@ -209,9 +221,9 @@ const AddTicketClient = ({ id }: { id: number }) => {
 
     if (!Array.isArray(ticketsErrors)) return null;
 
-    const fieldError = (ticketsErrors[index] as any)?.[field];
+    const fieldError = (ticketsErrors[index] as FormikErrors<Ticket> | undefined)?.[field];
     const fieldTouched = Array.isArray(ticketsTouched)
-      ? (ticketsTouched[index] as any)?.[field]
+      ? (ticketsTouched[index] as FormikTouched<Ticket> | undefined)?.[field]
       : false;
 
     // Show error if:
@@ -245,39 +257,6 @@ const AddTicketClient = ({ id }: { id: number }) => {
     const updatedTickets = formik.values.tickets.filter((_, i) => i !== index);
     formik.setValues({ tickets: updatedTickets });
   };
-
-  const saveAsDraft = () => {
-    const data = {
-      event: { ...event, status: "draft" },
-      tickets: formik.values.tickets,
-    };
-    createEventMutation.mutate(data, {
-      onSuccess: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Event saved as draft",
-            type: "success",
-          }),
-        );
-        dispatch(resetEventState());
-        router.push("/event");
-      },
-      onError: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Error creating event",
-            type: "error",
-          }),
-        );
-      },
-    });
-  };
-
-  function hasPaidTicket(tickets: Ticket[]): boolean {
-    return tickets.some((ticket) => ticket.ticket_type === "paid");
-  }
 
   return (
     <MainLayout>

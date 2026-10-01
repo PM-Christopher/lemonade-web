@@ -1,16 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Label, Input, Button } from "@lemonade/ui";
-import { Loader2 } from "lucide-react";
+import React from "react";
+import { Card, CardContent, CardHeader } from "@lemonade/ui";
 import { FormikButton } from "@/components/global/FormikButton";
 
 import { axiosInstance } from "@/lib/axiosInstane";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
 import { skillsInterestsSchema } from "@lemonade/validation";
-import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";
+import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { useCookies } from "react-cookie";
 
 interface SkillsInterface {
@@ -24,9 +23,13 @@ type FormValues = {
   interests: string[];
 };
 
-const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step }) => {
+interface LegacyAxiosError {
+  response?: { data?: { message?: string } };
+}
+
+const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
   const dispatch = useAppDispatch();
-  const [cookie, setCookie, removeCookie] = useCookies(["token", "newToken"]);
+  const [cookie] = useCookies(["token", "newToken"]);
 
   const getHeader = () => {
     const token = cookie.newToken;
@@ -96,7 +99,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
     },
   });
 
-  const skillsStep = async (values: any) => {
+  const skillsStep = async (values: FormValues) => {
     dispatch(authStart());
 
     try {
@@ -116,12 +119,13 @@ const SkillStep: React.FC<SkillsInterface> = ({ loading, next_step, prev_step })
           }),
         );
       }
-    } catch (err: any) {
+    } catch (err) {
+      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: err?.response?.data?.message || "error",
+          message: legacyError?.response?.data?.message || "error",
           type: "error",
         }),
       );

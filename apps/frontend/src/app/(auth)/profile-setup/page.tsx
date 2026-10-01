@@ -13,7 +13,7 @@ import { useUserProfileQuery } from "@/features/settings/queries";
 
 export default function ProfileStepsPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [step, setStep] = useState(1);
   const { user } = useSelector((state: RootState) => state.auth);
   // No token needed — the BFF proxy reads the onboarding cookie

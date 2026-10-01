@@ -13,10 +13,10 @@ const PayNowModal = ({
 }: {
   isOpen: boolean;
   toggleMenu: () => void;
-  job: any;
+  job: { id?: number; amount?: number };
 }) => {
   const dispatch = useAppDispatch();
-  const makeJobPaymentMutation = useMakeJobPaymentMutation(job?.id);
+  const makeJobPaymentMutation = useMakeJobPaymentMutation(job?.id ?? 0);
   const payLoading = makeJobPaymentMutation.isPending;
 
   const handlePayNow = () => {
@@ -69,7 +69,7 @@ const PayNowModal = ({
           <div className="mt-2 flex flex-col items-center py-4">
             <div className="border-mid-green bg-light-green-10 gap-2 rounded-[8px] border border-dashed p-[31px] px-[102px]">
               <p className="font-semiBold text-mid-green text-[24px]">
-                ₦{formatNumberWithCommas(job?.amount)}
+                ₦{formatNumberWithCommas(job?.amount ?? 0)}
               </p>
             </div>
             <p className="mt-4 text-[14px] font-normal">

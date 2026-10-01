@@ -1,9 +1,24 @@
+import type { useRouter } from "next/navigation";
+import type { useCookies } from "react-cookie";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { authFailure, authStart, authSuccess, authUser, loadStop } from "./authSlice";
-import { getTempError, setIsRouting, updateProperty } from "@/redux/tempSlice";
+import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { AppDispatch } from "@/redux/store";
 
-export const signup = async (values: any, dispatch: any, router: any, setCookie: any) => {
+type Router = ReturnType<typeof useRouter>;
+type SetCookie = ReturnType<typeof useCookies<string>>[1];
+
+interface LegacyApiError {
+  response?: { data?: { message?: string } };
+}
+
+export const signup = async (
+  values: Record<string, unknown>,
+  dispatch: AppDispatch,
+  router: Router,
+  setCookie: SetCookie,
+) => {
   dispatch(authStart());
   try {
     const { data } = await axiosInstance.post("/user/auth/register", { ...values });
@@ -33,11 +48,13 @@ export const signup = async (values: any, dispatch: any, router: any, setCookie:
         }),
       );
     }
-  } catch (error: any) {
+  } catch (error) {
+    const legacyError = error as LegacyApiError;
     dispatch(
       updateToastifyReducer({
         show: true,
-        message: error?.response?.data?.message || "Something went wrong. Please try again.",
+        message:
+          legacyError?.response?.data?.message || "Something went wrong. Please try again.",
         type: "error",
       }),
     );
@@ -48,10 +65,10 @@ export const signup = async (values: any, dispatch: any, router: any, setCookie:
 };
 
 export const login = async (
-  values: any,
-  dispatch: any,
-  router: any,
-  setCookie: any,
+  values: Record<string, unknown>,
+  dispatch: AppDispatch,
+  router: Router,
+  setCookie: SetCookie,
   nextPath: string = "/",
 ) => {
   dispatch(authStart());
@@ -96,7 +113,7 @@ export const login = async (
         setCookie("refresh_token", data.data.refresh_token, {
           path: "/",
           maxAge: 3600 * 24 * 7,
-          sameSite: "Lax",
+          sameSite: "lax",
         });
 
         dispatch(
@@ -123,11 +140,12 @@ export const login = async (
         }),
       );
     }
-  } catch (error: any) {
+  } catch (error) {
+    const legacyError = error as LegacyApiError;
     dispatch(
       updateToastifyReducer({
         show: true,
-        message: error?.response?.data?.message || "Error trying to login",
+        message: legacyError?.response?.data?.message || "Error trying to login",
         type: "error",
       }),
     );

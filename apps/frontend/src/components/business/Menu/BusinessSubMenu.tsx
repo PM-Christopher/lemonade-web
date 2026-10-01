@@ -1,7 +1,6 @@
 import React from "react";
 import SearchIcon from "@/images/icons/search.svg";
 import FilterIcon from "@/images/icons/fIlter.svg";
-import TicketIcon from "@/images/icons/tickets.svg";
 import BriefCaseIcon from "@/images/icons/caseIcon.svg";
 
 type BusinessSubMenuInterface = {

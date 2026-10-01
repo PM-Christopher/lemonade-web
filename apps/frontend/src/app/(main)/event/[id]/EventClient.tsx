@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
@@ -119,7 +118,7 @@ const EventClient = ({ id }: { id: number }) => {
                         { name: "website", icon: <AttachmentIcon /> },
                       ].map((social, i) => {
                         const link =
-                          event?.socials?.find((s: any) => s.name === social.name)?.value ?? "#";
+                          event?.socials?.find((s) => s.name === social.name)?.value ?? "#";
                         return (
                           <a
                             key={i}
@@ -175,7 +174,7 @@ const EventClient = ({ id }: { id: number }) => {
                     { name: "website", icon: <AttachmentIcon /> },
                   ].map((social, i) => {
                     const link =
-                      event?.socials?.find((s: any) => s.name === social.name)?.value ?? "#";
+                      event?.socials?.find((s) => s.name === social.name)?.value ?? "#";
                     return (
                       <a
                         key={i}

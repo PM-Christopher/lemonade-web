@@ -1,6 +1,5 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import RatingGreyIcon from "@/image/icons/RatingGreyIcon.png";
 import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import Image from "next/image";
 

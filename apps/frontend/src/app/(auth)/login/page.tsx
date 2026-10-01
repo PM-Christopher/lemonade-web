@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
@@ -29,6 +29,18 @@ function SocialMark({ src, label }: { src: string; label: string }) {
   );
 }
 
+interface GoogleLoginResponse {
+  status?: number;
+  message?: string;
+  data?: {
+    data?: {
+      token_type?: string;
+      token?: string;
+      user?: { status?: number; username?: string | null };
+    };
+  };
+}
+
 function safeNext(raw: string | null) {
   // Prevent open redirects: only allow relative paths
   if (!raw) return "/";
@@ -40,12 +52,10 @@ function safeNext(raw: string | null) {
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [loading, setLoading] = useState(false);
-
   const dispatch = useAppDispatch();
   // "token" here is only for the Google OAuth flow below (handleLoginSuccess),
   // which isn't covered by this cutover — see its own comment.
-  const [cookie, setCookie] = useCookies(["newToken", "token"]);
+  const [, setCookie] = useCookies(["newToken", "token"]);
   const loginMutation = useLoginMutation();
   const next = useMemo(() => safeNext(searchParams.get("next")), [searchParams]);
 
@@ -86,11 +96,11 @@ export default function LoginPage() {
         setTimeout(() => {
           router.push(next || "/");
         }, 500);
-      } catch (error: any) {
+      } catch (error) {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: error?.message || "Error trying to login",
+            message: error instanceof Error ? error.message : "Error trying to login",
             type: "error",
           }),
         );
@@ -104,7 +114,7 @@ export default function LoginPage() {
   // the same secure flow as email/password login needs its own BFF route
   // (a /api/auth/google mirroring app/api/auth/login/route.ts) — real,
   // separate follow-up work, not something to fold in here silently.
-  const handleLoginSuccess = async (res: any) => {
+  const handleLoginSuccess = async (res: GoogleLoginResponse) => {
     try {
       if (res.status) {
         dispatch(setIsRouting(true));
@@ -116,7 +126,7 @@ export default function LoginPage() {
           }),
         );
 
-        if (res.data.data.token_type === "account_verification_token") {
+        if (res.data?.data?.token_type === "account_verification_token") {
           setCookie("newToken", res.data.data.token, {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
@@ -126,16 +136,17 @@ export default function LoginPage() {
           router.push("/verify-email");
         } else {
           const user = res.data?.data?.user;
-          if (user.status == 0) {
-            setCookie("newToken", res.data.data.token, {
+          const token = res.data?.data?.token;
+          if (user?.status == 0) {
+            setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
               // domain: env === 'development' ? '' : ''
             });
             router.push("/verify-email");
-          } else if (user.username === null) {
-            setCookie("newToken", res.data.data.token, {
+          } else if (user?.username === null) {
+            setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
@@ -143,7 +154,7 @@ export default function LoginPage() {
             });
             router.push("/profile-setup");
           } else {
-            setCookie("token", res.data.data.token, {
+            setCookie("token", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
@@ -155,7 +166,7 @@ export default function LoginPage() {
                 type: "success",
               }),
             );
-            dispatch(authSuccess(res.data.data));
+            dispatch(authSuccess(res.data?.data));
             setTimeout(() => {
               router.push("/");
             }, 500);

@@ -16,9 +16,24 @@ import { changeReason, setSubscriptionId } from "@/features/authentication/authS
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
+export interface PricingPlan {
+  id: number;
+  title?: string;
+  access_type?: string;
+  monthly_charge?: number;
+  ver_badge?: boolean;
+  forum_creation?: boolean;
+  lemon_id?: boolean;
+  event_creation?: number;
+  sales_commission?: number;
+  service_commission?: number;
+  connection_range?: string;
+  offline_benefits?: boolean;
+}
+
 type PricingInterface = {
   active: boolean;
-  subscription: any;
+  subscription: PricingPlan;
   toggle: () => void;
   setSubId: (id: number) => void;
   toggleSubMode: (mode: string) => void;
@@ -35,9 +50,9 @@ const PricingCard: React.FC<PricingInterface> = ({
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user, subscription: user_sub } = useSelector((state: RootState) => state.auth);
+  const { subscription: user_sub } = useSelector((state: RootState) => state.auth);
 
-  const handleSubscribe = (id: number, subscription: any) => {
+  const handleSubscribe = (id: number, subscription: PricingPlan) => {
     setSubId(id);
     fetchPlan(id);
     if (user_sub) {

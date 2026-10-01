@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from "react";
 
 export const TribesSkeleton = ({ count }: { count: number }) => {
@@ -903,7 +902,7 @@ export const BusinessDetailSkeleton = () => {
   );
 };
 
-export const MessagesSkeleton = ({ count }: { count: number }) => {};
+export const MessagesSkeleton = () => {};
 
 export const TrendingEventsSkeleton = () => {
   return (

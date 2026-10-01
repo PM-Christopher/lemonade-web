@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useMarkJobCompletedMutation } from "@/features/business/mutations";
@@ -11,11 +10,11 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 interface ConfirmCompletionModalProps {
   isOpen: boolean;
   toggle: () => void;
-  job: any;
+  job: { id?: number };
 }
 const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen, toggle, job }) => {
   const dispatch = useAppDispatch();
-  const markJobCompletedMutation = useMarkJobCompletedMutation(job?.id);
+  const markJobCompletedMutation = useMarkJobCompletedMutation(job?.id ?? 0);
   const completedLoading = markJobCompletedMutation.isPending;
 
   const markCompleted = () => {

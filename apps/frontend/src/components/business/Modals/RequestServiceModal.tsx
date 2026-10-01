@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";

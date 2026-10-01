@@ -5,6 +5,13 @@ import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useRouter } from "next/navigation";
 
+export interface PaymentConfirmJob {
+  amount?: number;
+  name?: string;
+  services?: unknown[];
+  updated_at?: string;
+}
+
 const PaymentConfirmModal = ({
   isOpen,
   job,
@@ -12,7 +19,7 @@ const PaymentConfirmModal = ({
 }: {
   isOpen: boolean;
   toggleMenu: () => void;
-  job: any;
+  job: PaymentConfirmJob;
 }) => {
   const router = useRouter();
   const backToBusiness = () => {
@@ -58,7 +65,9 @@ const PaymentConfirmModal = ({
           {/* Amount */}
           <div className="mt-6">
             <p className="text-text-grey text-[14px]">Amount paid</p>
-            <p className="mt-1 text-[22px] font-semibold">N{formatNumberWithCommas(job?.amount)}</p>
+            <p className="mt-1 text-[22px] font-semibold">
+              N{formatNumberWithCommas(job?.amount ?? 0)}
+            </p>
           </div>
 
           {/* Business Name */}

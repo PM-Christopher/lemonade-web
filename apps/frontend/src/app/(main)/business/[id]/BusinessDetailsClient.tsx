@@ -484,7 +484,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
         <DisputeJobModal
           isOpen={isDisputeOpen}
           toggle={toggleDisputeModal}
-          job={business}
+          job={(business ?? {}) as Record<string, unknown>}
           toggleSubmit={toggleSubmitDisputeModal}
         />
         <SubmitDisputeModal isOpen={isSubmitDisputeOpen} toggle={toggleSubmitDisputeModal} />

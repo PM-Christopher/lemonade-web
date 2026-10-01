@@ -10,7 +10,7 @@ export const AlertMessage = () => {
   const { showToast } = useSelector((s: RootState) => s.toast);
 
   useEffect(() => {
-    let timer: any;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     if (showToast.show) {
       timer = setTimeout(() => {
         dispatch(

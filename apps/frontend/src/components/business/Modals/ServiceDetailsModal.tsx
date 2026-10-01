@@ -2,11 +2,10 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
-import medal from "@/images/icons/medal.png";
 import ClockIconOrange from "@/images/icons/clockIconOrange.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { formatDecimal, formatStringUCFirst, getInitials } from "@/lib/helper";
+import { formatStringUCFirst, getInitials } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useRouter } from "next/navigation";
@@ -17,29 +16,42 @@ import CloseRedIcon from "@/images/icons/closeRedIcon.svg";
 import PayNowModal from "@/components/business/Modals/PayNowModal";
 import { useMarkJobRequestMutation } from "@/features/business/mutations";
 import { formatCountry } from "@lemonade/domain";
-import LoadingSvg from "@/components/svgs/loading.svg";
 import ConfirmCompletionModal from "@/components/business/Modals/ConfirmCompletionModal";
+
+export interface ServiceJob {
+  id?: number;
+  business_id?: number;
+  status?: string;
+  isOwner?: boolean;
+  image?: string;
+  name?: string;
+  city?: string;
+  country?: string;
+  service_rate?: number;
+  amount?: number;
+  services?: string[];
+  additional_information?: string;
+  remark?: string;
+  payment_requested?: boolean;
+  payment_made?: boolean;
+  user?: { avatar?: string; fullname?: string; username?: string };
+}
 
 type ServiceDetailsInterface = {
   isOpen: boolean;
   toggleMenu: () => void;
-  job: any;
+  job: ServiceJob;
   loading: boolean;
 };
 
-const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
-  isOpen,
-  toggleMenu,
-  job,
-  loading,
-}) => {
+const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggleMenu, job }) => {
   const [remark, setRemark] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPayNowOpen, setIsPayNowOpen] = useState(false);
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const markJobRequestMutation = useMarkJobRequestMutation(job?.id);
+  const markJobRequestMutation = useMarkJobRequestMutation(job?.id ?? 0);
   const markLoading = markJobRequestMutation.isPending;
 
   const toggleConfirmPayment = () => {
@@ -199,7 +211,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                 ) : (
                   <>
                     <Image
-                      src={job?.image}
+                      src={job?.image ?? ""}
                       alt="job logo"
                       width={72}
                       height={72}
@@ -209,11 +221,11 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                       {job?.name}
                     </p>
                     <p className="mt-1 text-center text-[14px] text-gray-500">
-                      {job?.city}, {formatCountry(job?.country)}
+                      {job?.city}, {formatCountry(job?.country ?? "")}
                     </p>
-                    {job?.service_rate > 0 && (
+                    {(job?.service_rate ?? 0) > 0 && (
                       <p className="mt-1 text-center text-[16px] font-semibold">
-                        N{formatNumberWithCommas(job?.service_rate)}/hr
+                        N{formatNumberWithCommas(job?.service_rate ?? 0)}/hr
                       </p>
                     )}
                   </>
@@ -233,7 +245,9 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
               {/* Amount */}
               <div>
                 <p className="text-[14px] text-gray-500">Amount</p>
-                <p className="text-[18px] font-semibold">N{formatNumberWithCommas(job?.amount)}</p>
+                <p className="text-[18px] font-semibold">
+                  N{formatNumberWithCommas(job?.amount ?? 0)}
+                </p>
               </div>
 
               {/* Required Services */}
@@ -244,7 +258,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({
                     {job.services.map((service: string, index: number) => (
                       <span key={index}>
                         {formatStringUCFirst(service)}
-                        {index < job.services.length - 1 && ", "}
+                        {index < (job.services?.length ?? 0) - 1 && ", "}
                       </span>
                     ))}
                   </p>

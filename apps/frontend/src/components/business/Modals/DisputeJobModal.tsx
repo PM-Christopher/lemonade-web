@@ -1,15 +1,14 @@
 import React from "react";
-import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
 interface DisputeJobModalProps {
   isOpen: boolean;
   toggle: () => void;
-  job: any;
+  job: Record<string, unknown>;
   toggleSubmit: () => void;
 }
 
-const DisputeJobModal: React.FC<DisputeJobModalProps> = ({ isOpen, toggle, job, toggleSubmit }) => {
+const DisputeJobModal: React.FC<DisputeJobModalProps> = ({ isOpen, toggle, toggleSubmit }) => {
   const toggleModal = () => {
     toggle();
     toggleSubmit();

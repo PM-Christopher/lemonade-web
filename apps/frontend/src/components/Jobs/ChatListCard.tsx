@@ -2,7 +2,6 @@ import React from "react";
 import DotIcon from "@/images/icons/dot.svg";
 import { ChatInterface } from "@/interfaces/ChatInterface";
 import { formatTimeAgo } from "@/lib/helper";
-import Image from "next/image";
 
 type ChatListInterface = {
   active: boolean;

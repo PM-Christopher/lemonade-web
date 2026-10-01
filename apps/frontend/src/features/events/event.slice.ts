@@ -12,7 +12,7 @@ interface eventState {
   total: number;
   event: EventInterface | null;
   newTickets: unknown[];
-  free_event: any;
+  free_event: { completed?: boolean } | null;
   eventReferrals?: Record<string, string>;
 }
 

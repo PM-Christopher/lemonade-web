@@ -1,7 +1,7 @@
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import LocationIcon from "@/images/icons/location.svg";
-import React, { useState } from "react";
+import React from "react";
 import { useBusinessCategoriesQuery } from "@/features/shared/queries";
 import NairaIcon from "@/images/icons/nairaIcon.svg";
 import * as yup from "yup";
@@ -17,12 +17,6 @@ type FilterBusinessInterface = {
 const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
   const filterBusinessMutation = useFilterBusinessMutation();
   const { data } = useBusinessCategoriesQuery();
-
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [startRange, setStartRange] = useState("");
-  const [endRange, setEndRange] = useState("");
 
   const handleCategoryChange = (value: string) => {
     formik.setFieldValue("category", value);

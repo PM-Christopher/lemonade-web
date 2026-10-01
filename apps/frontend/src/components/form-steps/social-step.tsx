@@ -1,14 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, Input } from "@lemonade/ui";
 import Image from "next/image";
-import facebook_image from "@/image/facebook.png";
-import linkedin_image from "@/images/linkedin.png";
-import twitter_image from "@/images/twitter.png";
-import instagram_image from "@/images/instagram.png";
 
 import { axiosInstance } from "@/lib/axiosInstane";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -30,10 +26,14 @@ interface SocialMediaHandles {
   twitter: string;
 }
 
-const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete }) => {
+interface LegacyAxiosError {
+  response?: { data?: { message?: string } };
+}
+
+const SocialStep: React.FC<SocialInterface> = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [cookie, setCookie, removeCookie] = useCookies(["token", "newToken"]);
+  const [cookie, , removeCookie] = useCookies(["token", "newToken"]);
   const [socials, setSocials] = useState<SocialMediaHandles>({
     instagram: "",
     linkedin: "",
@@ -66,12 +66,12 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
     },
     validationSchema: socialStepSchema,
     validateOnMount: true,
-    onSubmit: async (values) => {
-      await socialsStep(socials);
+    onSubmit: async () => {
+      await socialsStep();
     },
   });
 
-  const socialsStep = async (values: any) => {
+  const socialsStep = async () => {
     const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
       .filter((key) => socials[key]) // Only keep keys with non-empty values
       .map((key) => ({
@@ -109,12 +109,13 @@ const SocialStep: React.FC<SocialInterface> = ({ loading, prev_step, onComplete 
           }),
         );
       }
-    } catch (err: any) {
+    } catch (err) {
+      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: err?.response?.data?.message || "error",
+          message: legacyError?.response?.data?.message || "error",
           type: "error",
         }),
       );

@@ -12,7 +12,7 @@ const FirebaseInit = () => {
       await requestNotificationPermission();
     };
 
-    onMessageListener().then((payload) => {});
+    onMessageListener().then(() => {});
     subscribeUser();
   }, []);
   return null;

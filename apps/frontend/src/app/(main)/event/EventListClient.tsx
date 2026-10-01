@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import SideMenu from "@/components/events/SideMenu";
 import EventsSectionView from "@/components/events/views/Events";
 import OrganizerSectionView from "@/components/events/views/Organizer";
@@ -30,7 +29,7 @@ const FilterEventModal = dynamic(() => import("@/components/events/Modals/Filter
 
 const EventListClient: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { setActive, getActive, selectedMenu } = usePersistentMenuState();
+  const { setActive, getActive } = usePersistentMenuState();
   const persistedMenuOption = getActive("event") ?? "events";
 
   const [menuOption, setMenuOption] = useState(persistedMenuOption);

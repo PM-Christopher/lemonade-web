@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, Button, Input, Label } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
@@ -15,8 +15,7 @@ import { forgotPasswordSchema } from "@lemonade/validation";
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState("");
-  const [cookie, setCookie] = useCookies(["newToken", "email"]);
+  const [, setCookie] = useCookies(["newToken", "email"]);
   const forgotPasswordMutation = useForgotPasswordMutation();
   const loading = forgotPasswordMutation.isPending;
 
@@ -31,7 +30,7 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  const onSignup = async (values: any) => {
+  const onSignup = async (values: { email: string }) => {
     forgotPasswordMutation.mutate(
       { email: values.email },
       {
@@ -57,7 +56,7 @@ export default function ForgotPasswordPage() {
           });
           router.push("/verify-code");
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           dispatch(
             updateToastifyReducer({
               show: true,

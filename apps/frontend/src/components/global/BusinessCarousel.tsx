@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import BusinessCard from "@/components/dashboard/BusinessCard";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import FeaturedBusiness from "@/components/business/FeaturedBusiness";
 
@@ -9,7 +8,7 @@ interface ImageSlider {
   showDots: boolean;
 }
 
-const BusinessCarousel: React.FC<ImageSlider> = ({ businesses, showArrows, showDots }) => {
+const BusinessCarousel: React.FC<ImageSlider> = ({ businesses }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = useCallback(() => {
@@ -26,16 +25,6 @@ const BusinessCarousel: React.FC<ImageSlider> = ({ businesses, showArrows, showD
 
     return () => clearInterval(slideInterval); // Clean up on unmount
   }, [nextSlide]);
-
-  const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? businesses?.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
-  };
-
-  const goToSlide = (slideIndex: number) => {
-    setCurrentIndex(slideIndex);
-  };
 
   return (
     <div className="w-full">

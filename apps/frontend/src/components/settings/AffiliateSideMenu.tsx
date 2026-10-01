@@ -1,6 +1,5 @@
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import SideMenuEventCard from "@/components/events/SideMenuEventCard";
 
 type AffiliateSideMenuInterface = {
   isOpen: boolean;

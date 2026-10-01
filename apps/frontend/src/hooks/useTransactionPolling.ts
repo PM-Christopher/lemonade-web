@@ -1,22 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { axiosInstance } from "@/lib/axiosInstane";
 
-interface TransactionPollingProps<T = any> {
-  transactionId: string | number | null;
-  isSuccess: (data: any) => boolean;
-  onSuccess: (data: any) => void;
-  pollingInterval?: number;
-}
-
-export const useTransactionPolling = (
+export const useTransactionPolling = <T = unknown,>(
   config: null | {
     transactionId: string;
-    isSuccess: (data: any) => boolean;
-    onSuccess: (data: any) => void;
+    isSuccess: (data: T) => boolean;
+    onSuccess: (data: T) => void;
     pollingInterval: number;
   },
 ) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
