@@ -1,0 +1,55 @@
+/*
+ * Lemonade type scale, from the Figma typography sheet.
+ * Imported by both apps. Role names match that sheet (XL, L, R, S, XS).
+ * Line height is the sheet's percentage. Title and body carry -0.5% tracking.
+ * Weight stays on the caller.
+ *
+ * Utilities: text-display-xl, text-title-r, text-body-l, text-button,
+ * text-button-sm, text-field, text-label, text-meta.
+ * The field role is not named "input": that name is already a color.
+ */
+
+@theme {
+  --text-display-xl: 72px;
+  --text-display-xl--line-height: 1.2;
+  --text-display-l: 64px;
+  --text-display-l--line-height: 1.2;
+  --text-display-r: 48px;
+  --text-display-r--line-height: 1.2;
+  --text-display-s: 40px;
+  --text-display-s--line-height: 1.2;
+  --text-display-xs: 32px;
+  --text-display-xs--line-height: 1.2;
+
+  --text-title-xl: 32px;
+  --text-title-xl--line-height: 1.4;
+  --text-title-xl--letter-spacing: -0.005em;
+  --text-title-l: 24px;
+  --text-title-l--line-height: 1.4;
+  --text-title-l--letter-spacing: -0.005em;
+  --text-title-r: 20px;
+  --text-title-r--line-height: 1.4;
+  --text-title-r--letter-spacing: -0.005em;
+
+  --text-body-xl: 18px;
+  --text-body-xl--line-height: 1.5;
+  --text-body-xl--letter-spacing: -0.005em;
+  --text-body-l: 16px;
+  --text-body-l--line-height: 1.5;
+  --text-body-l--letter-spacing: -0.005em;
+  --text-body-s: 14px;
+  --text-body-s--line-height: 1.5;
+  --text-body-s--letter-spacing: -0.005em;
+
+  --text-button: 16px;
+  --text-button--line-height: 1.2;
+  --text-button-sm: 14px;
+  --text-button-sm--line-height: 1.2;
+
+  --text-field: 16px;
+  --text-field--line-height: 1.2;
+  --text-label: 14px;
+  --text-label--line-height: 1.2;
+  --text-meta: 12px;
+  --text-meta--line-height: 1.2;
+}

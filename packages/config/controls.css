@@ -1,0 +1,53 @@
+/*
+ * Form controls from the Figma form-fields sheet. Both apps import this
+ * after the Tailwind config, same as typography.css.
+ *
+ * Fields: 48px tall, 12px radius, no shadow. Fill is the sheet's pale grey.
+ * Focus and the correct state use the step green. Errors use a red border
+ * when the control has aria-invalid="true".
+ * Text areas use a 4px radius.
+ * Primary actions are 48px tall with a 12px radius. The quiet header
+ * action (Login, Sign up) uses that same radius, not a pill.
+ */
+
+.field {
+  height: 48px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background-color: #f9fafa;
+  box-shadow: none;
+  padding-left: 12px;
+  padding-right: 12px;
+  outline: none;
+}
+
+.field:focus,
+.field:focus-visible {
+  border: 1px solid #80bc00;
+  box-shadow: none;
+  outline: none;
+}
+
+.field[aria-invalid="true"] {
+  border: 1px solid #e24b4b;
+}
+
+.field:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.field-area {
+  height: auto;
+  min-height: 96px;
+  border-radius: 4px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.btn-quiet {
+  border-radius: 12px;
+  border: 1px solid #3b4152;
+  padding: 8px 16px;
+}
