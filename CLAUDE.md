@@ -303,6 +303,12 @@ produces this corruption byte-for-byte, with or without an explicit `proseWrap` 
 both `"preserve"` and the default). Not a config bug on this repo's side to fix; a formatter
 limitation to route around.
 
+Confirmed trigger: `pnpm run lemonade:check`'s first step is `pnpm run format` — running that
+script was what kept silently re-corrupting these docs. Fixed at the source now that `format`
+excludes `.md`, verified by re-running `pnpm run format` directly and diffing the docs (no
+change) — but if a differently-scoped format/lint-fix command is ever added to this repo, make
+sure it excludes `.md` too, for the same reason.
+
 If an editor, IDE, or agent runs its own format-on-save using this repo's `prettier.config.mjs`
 (or any Prettier invocation) against a `.md` file, disable it for Markdown specifically. If you
 need to edit one of these docs, edit the prose directly and preserve the existing line-wrapping
