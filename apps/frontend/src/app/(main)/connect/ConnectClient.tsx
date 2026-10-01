@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import RequestIcon from "@/images/icons/requestIcon.svg";
 import SettingsIcon from "@/images/icons/gear.svg";
 import SearchIcon from "@/images/icons/search.svg";
@@ -17,6 +16,7 @@ import { usePusher } from "@/hooks/usePusher";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useMediaQuery } from "react-responsive";
 import { ChatListCardSkeleton } from "@/components/Skeletons";
+import type { RootState } from "@/redux/store";
 
 const ConnectClient = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ const ConnectClient = () => {
   const [selectedReceiverId, setSelectedReceiverId] = useState<number | undefined>(undefined);
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const [chatOpened, setChatOpened] = useState(false);
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   usePusher(user?.id ? `chat.${user.id}` : null, "message.sent");
 
   const { data: chatHistory, isLoading: loadingChat } = useChatHistoryQuery({

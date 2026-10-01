@@ -794,7 +794,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <FlatButton
                   loading={formik.isSubmitting}
                   error={formik.isValid}
-                  onClick={formik.handleSubmit}
+                  onClick={() => formik.handleSubmit()}
                   title="Save changes"
                   classes="mt-6 h-12 rounded-xl border border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                 />

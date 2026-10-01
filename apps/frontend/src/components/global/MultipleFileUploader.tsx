@@ -1,25 +1,27 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { sharedApi } from "@/features/shared/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
-import upload_image from "@/image/icons/upload_image.png";
 import { ImagesLoadingSkeleton } from "@/components/Skeletons";
+
+interface FormikSetField {
+  setFieldValue: (field: string, value: unknown) => unknown;
+}
 
 const MultipleFileUploader = ({
   setField,
   images,
   title,
   type,
-  length = "single",
 }: {
-  setField: any;
+  setField: FormikSetField;
   images: string[];
   title: string;
   type: string;
-  length: string | null;
+  length?: string | null;
 }) => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
@@ -70,12 +72,13 @@ const MultipleFileUploader = ({
             }),
           );
         }
-      } catch (err: any) {
+      } catch (err) {
+        const legacyError = err as { response?: { data?: { message?: string } } };
         setLoading(false);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: err?.response?.data?.message || "error",
+            message: legacyError?.response?.data?.message || "error",
             type: "error",
           }),
         );

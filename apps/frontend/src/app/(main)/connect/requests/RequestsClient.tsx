@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import RequestCard from "@/components/connect/RequestCard";
@@ -13,6 +12,7 @@ import { useFindUserMutation } from "@/features/connect/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { InviteSkeleton } from "@/components/Skeletons";
+import type { RootState } from "@/redux/store";
 
 // Off the initial bundle — both are only needed once their triggering
 // action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -29,7 +29,7 @@ const RequestsClient = () => {
   const [isConnectOpen, setIsConnectOpen] = useState(false);
   const [inviteIndex, setInviteIndex] = useState<number | null>(null);
   const dispatch = useAppDispatch();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const { data: invitesData, isLoading: loading } = useInvitesQuery({
     enabled: Boolean(user?.id),
   });
@@ -128,7 +128,7 @@ const RequestsClient = () => {
               {loading ? (
                 <InviteSkeleton count={4} />
               ) : invites.length > 0 ? (
-                invites?.map((invite: any, index: number) => (
+                invites?.map((invite, index: number) => (
                   <RequestCard
                     index={index}
                     toggleInviteIndex={toggleInviteIndex}

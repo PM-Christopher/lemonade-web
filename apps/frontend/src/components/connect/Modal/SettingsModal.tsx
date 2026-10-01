@@ -5,20 +5,19 @@ import Image from "next/image";
 import Switch from "react-switch";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useUpdateVisibilityMutation } from "@/features/connect/mutations";
-import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { ConnectionInfo } from "@/features/connect/api";
 
 type SettingsInterface = {
   toggle: () => void;
   isOpen: boolean;
-  user_connect: any;
+  user_connect: ConnectionInfo | undefined;
 };
 
 const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_connect }) => {
   const dispatch = useAppDispatch();
-  const [checked, setChecked] = useState(user_connect?.user?.visibility ?? false);
-  const { user } = useSelector((state: any) => state.auth);
+  const [checked, setChecked] = useState(Boolean(user_connect?.user?.visibility));
   const updateVisibilityMutation = useUpdateVisibilityMutation();
 
   const handleChange = () => {
@@ -34,7 +33,7 @@ const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_conne
         setChecked(!checked);
         toggle();
       },
-      onError: (err: any) => {
+      onError: (err: { message?: string }) => {
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -84,7 +83,7 @@ const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_conne
                 </div>
                 <div>
                   <Switch
-                    onChange={(change) => {
+                    onChange={() => {
                       handleChange();
                     }}
                     checked={checked}

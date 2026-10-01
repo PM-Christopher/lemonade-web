@@ -2,13 +2,18 @@ import React from "react";
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import { getDistanceFromLatLonInKm } from "@/lib/helper";
+import type { ChatInvite } from "@/features/connect/api";
+
+interface ConnectAuthUser {
+  connect_info?: { latitude?: number; longitude?: number };
+}
 
 type RequestInterface = {
   toggle: () => void;
-  invite: any;
+  invite: ChatInvite;
   toggleInviteIndex: (index: number) => void;
   index: number;
-  user: any;
+  user: ConnectAuthUser;
 };
 
 const RequestCard: React.FC<RequestInterface> = ({
@@ -33,7 +38,7 @@ const RequestCard: React.FC<RequestInterface> = ({
           <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gray-100">
             <Image src="/images/lemon.png" alt="lemon" fill className="object-contain" />
             <p className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-black">
-              {invite?.invitee.lemon_id_short}
+              {invite?.invitee?.lemon_id_short}
             </p>
           </div>
 

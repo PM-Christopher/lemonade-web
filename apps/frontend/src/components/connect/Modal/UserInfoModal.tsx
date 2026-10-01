@@ -10,10 +10,21 @@ import WebIcon from "@/images/icons/webIcon.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatString } from "@/lib/helper";
 
+interface ConnectUserInfo {
+  receiver?: {
+    avatar?: string;
+    username?: string;
+    lemon_id?: string;
+    industry?: string;
+    bio?: string;
+    socials?: Array<{ name?: string; value?: string }>;
+  };
+}
+
 type UserInfoInterface = {
   toggle: () => void;
   isOpen: boolean;
-  userInfo: any;
+  userInfo: ConnectUserInfo | null;
 };
 
 const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }) => {
@@ -38,7 +49,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
           <div className="mt-6">
             <div className="flex flex-col items-center justify-center">
               <Image
-                src={userInfo?.receiver?.avatar}
+                src={userInfo?.receiver?.avatar ?? ""}
                 alt="check in"
                 width={64}
                 height={64}
@@ -66,7 +77,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
               <div className="mt-4">
                 <p className="text-center text-[14px] font-semibold">Social links</p>
                 <div className="mt-3 flex justify-center gap-4">
-                  {userInfo?.receiver?.socials?.map((link: any) => (
+                  {userInfo?.receiver?.socials?.map((link) => (
                     <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
                       {link.name === "facebook" && <FacebookIcon className="w-6" />}
                       {link.name === "instagram" && <InstagramIcon className="w-6" />}

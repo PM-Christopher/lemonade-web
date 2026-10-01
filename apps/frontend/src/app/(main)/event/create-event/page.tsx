@@ -863,7 +863,7 @@ const CreateEventPage = () => {
               <FlatButton
                 loading={formik.isSubmitting}
                 error={formik.isValid}
-                onClick={formik.handleSubmit}
+                onClick={() => formik.handleSubmit()}
                 title="Continue"
                 classes="mt-6 h-12 rounded-xl border border-step-color shadow-custom-bottom"
               />

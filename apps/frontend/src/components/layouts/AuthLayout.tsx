@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { setIsRouting } from "@/redux/tempSlice";
@@ -20,8 +20,7 @@ const HEADER_ACTION: Record<string, { href: string; label: string } | null> = {
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const router = useRouter();
-  const [cookies, setCookie, removeCookie] = useCookies(["newToken", "token"]);
+  const [cookies] = useCookies(["newToken", "token"]);
   const newToken = cookies.newToken;
   const token = cookies.token;
 

@@ -1,7 +1,16 @@
 "use client";
 import React from "react";
 import { ColorRing } from "react-loader-spinner";
-import { useAppSelector } from "@/redux/hook";
+
+interface FlatButtonProps {
+  loading?: boolean;
+  title?: string;
+  error?: boolean;
+  classes?: string | null;
+  bgColor?: string | null;
+  errorColor?: string | null;
+  onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void;
+}
 
 export const FlatButton = ({
   loading = false,
@@ -11,8 +20,7 @@ export const FlatButton = ({
   bgColor = null,
   errorColor = null,
   onClick,
-}: any) => {
-  const { isRouting } = useAppSelector((state: any) => state.temp);
+}: FlatButtonProps) => {
   return (
     <button
       type="button"

@@ -13,11 +13,11 @@ import { appendIncomingChatMessage } from "@/features/connect/queries";
 import { useSelector } from "react-redux";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { useMediaQuery } from "react-responsive";
-import { usePusher } from "@/hooks/usePusher";
 import { formatSingleTime, getInitials } from "@/lib/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { connectApi } from "@/features/connect/api";
 import { Loader2 } from "lucide-react";
+import type { RootState } from "@/redux/store";
 
 type OpenChatProps = {
   toggleModal: () => void;
@@ -39,10 +39,9 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const sendChatMutation = useSendChatMutation();
   const [text, setText] = useState<string>("");
   const [mediaFiles, setMediaFiles] = useState<string[]>([]);
-  const { user: authUser } = useSelector((state: any) => state.auth);
+  const { user: authUser } = useSelector((state: RootState) => state.auth);
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver;
-  const receiver_id = authUser.id === chat?.sender?.id ? chat?.receiver?.id : chat?.sender.id;
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -160,12 +159,13 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               }),
             );
           }
-        } catch (err: any) {
+        } catch (err) {
+          const legacyError = err as { response?: { data?: { message?: string } } };
           setMediaLoading(false);
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: err?.response?.data?.message || "Error",
+              message: legacyError?.response?.data?.message || "Error",
               type: "error",
             }),
           );

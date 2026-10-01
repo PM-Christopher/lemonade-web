@@ -147,7 +147,7 @@ const Carousel: React.FC<ImageSlider> = ({
             </div>
 
             {/* Dots (scrollable on mobile, centered on desktop) */}
-            {(events?.length ?? 0) > 1 && (
+            {showDots && (events?.length ?? 0) > 1 && (
               <div className="px-4 pb-4 sm:px-5 lg:px-6">
                 <div className="hide-scrollbar flex items-center gap-2 overflow-x-auto sm:justify-center">
                   {events?.map((_, index) => (

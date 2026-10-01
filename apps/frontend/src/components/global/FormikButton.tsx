@@ -1,7 +1,15 @@
 "use client";
 import React from "react";
 import { ColorRing } from "react-loader-spinner";
-import { useAppSelector } from "@/redux/hook";
+
+interface FormikButtonProps {
+  loading?: boolean;
+  title?: string;
+  error?: boolean;
+  classes?: string | null;
+  bgColor?: string | null;
+  errorColor?: string | null;
+}
 
 export const FormikButton = ({
   loading = false,
@@ -10,8 +18,7 @@ export const FormikButton = ({
   classes = null,
   bgColor = null,
   errorColor = null,
-}: any) => {
-  const { isRouting } = useAppSelector((state: any) => state.temp);
+}: FormikButtonProps) => {
   return (
     <button
       type="submit"

@@ -9,12 +9,13 @@ import { useAppDispatch } from "@/redux/hook";
 import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { getDistanceFromLatLonInKm } from "@/lib/helper";
+import type { FoundUser } from "@/features/connect/api";
 
 type ConnectInterface = {
   toggle: () => void;
   isOpen: boolean;
-  users: any;
-  authUser: any;
+  users: FoundUser[];
+  authUser: FoundUser;
 };
 
 const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authUser }) => {
@@ -39,7 +40,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
 
   const sendConnect = (values: { message: string }) => {
     sendInviteMutation.mutate(
-      { ...values, invitee_id: user?.id },
+      { ...values, invitee_id: user.id as number },
       {
         onSuccess: () => {
           dispatch(
@@ -52,7 +53,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
           formik.resetForm();
           toggle();
         },
-        onError: (err: any) => {
+        onError: (err: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,

@@ -8,16 +8,18 @@ import { useAppDispatch } from "@/redux/hook";
 import { useInviteResponseMutation } from "@/features/connect/mutations";
 import { useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { RootState } from "@/redux/store";
+import type { ChatInvite } from "@/features/connect/api";
 
 type InviteInterface = {
   toggle: () => void;
   isOpen: boolean;
-  invite: any;
+  invite: ChatInvite;
 };
 
 const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
   const dispatch = useAppDispatch();
-  const { user } = useSelector((state: any) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
   const inviteResponseMutation = useInviteResponseMutation();
 
   const requestAction = (action: "accepted" | "rejected") => {
@@ -34,7 +36,7 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
           );
           toggle();
         },
-        onError: (err: any) => {
+        onError: (err: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
