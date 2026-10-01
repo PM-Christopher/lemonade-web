@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";

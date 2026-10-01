@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch } from "@/redux/hook";
 import { useReportThreadMutation } from "@/features/tribes/mutations";

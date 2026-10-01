@@ -7,11 +7,12 @@ import { useJoinTribeMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { ColorRing } from "react-loader-spinner";
+import type { TribeInterface } from "@/interfaces/TribeInterface";
 
 type JoinTribeInterface = {
   toggle: () => void;
   isOpen: boolean;
-  tribe: any;
+  tribe: TribeInterface | null;
 };
 
 const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe }) => {
@@ -63,7 +64,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
             <div>
               <Button
                 className="auth-button shadow-green-inset hover:shadow-green-inset-strong rounded-xl p-2.5 px-3.5"
-                onClick={() => handleJoinTribe(tribe.slug)}
+                onClick={() => handleJoinTribe(tribe?.slug ?? "")}
                 disabled={tribeLoading}
               >
                 {tribeLoading ? (

@@ -13,7 +13,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import EditIcon from "@/images/icons/edit.svg";
 import { useMediaQuery } from "react-responsive";
 import ShareTribeModal from "@/components/tribe/ShareTribeModal";
-import UserInfoModal from "@/components/tribe/UserInfoModal";
+import UserInfoModal, { type TribeUserInfo } from "@/components/tribe/UserInfoModal";
 import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import {
@@ -363,7 +363,7 @@ const TribeClient = ({ id }: { id: string }) => {
             <UserInfoModal
               toggle={activateUserInfoModal}
               isOpen={userInfoModal}
-              user={user}
+              user={user as TribeUserInfo | null}
               tribe={tribe}
             />
           )}

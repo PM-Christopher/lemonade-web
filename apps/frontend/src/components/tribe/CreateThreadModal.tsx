@@ -21,7 +21,7 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 type CreateThreadInterface = {
   toggle: () => void;
   isOpen: boolean;
-  tribe_id: any;
+  tribe_id: number | undefined;
   // CreateTribeThread (backend) looks the tribe up by its raw id, not its
   // slug — unlike the threads/pinnedThreads queries, which are slug-keyed.
   // Both identifiers are needed here for that reason (see
@@ -133,11 +133,12 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
               }),
             );
           }
-        } catch (err: any) {
+        } catch (err) {
+          const legacyError = err as { response?: { data?: { message?: string } } };
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: err?.response?.data?.message || "Error",
+              message: legacyError?.response?.data?.message || "Error",
               type: "error",
             }),
           );
@@ -158,7 +159,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     const files = event.target.files;
     if (files) {
       const formData = new FormData();
-      Array.from(files).forEach((file, index) => {
+      Array.from(files).forEach((file) => {
         formData.append(`files[]`, file); // Add each file to the `file[]` key
       });
       try {
@@ -182,11 +183,12 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
             }),
           );
         }
-      } catch (err: any) {
+      } catch (err) {
+        const legacyError = err as { response?: { data?: { message?: string } } };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: err?.response?.data?.message || "error",
+            message: legacyError?.response?.data?.message || "error",
             type: "error",
           }),
         );
@@ -198,7 +200,14 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     setVideoFiles((prevVideos) => prevVideos.filter((video) => video !== videoToRemove));
   };
 
-  const handleCreateThread = async (values: any) => {
+  const handleCreateThread = async (values: {
+    topic: string;
+    thoughts: string;
+    media: string[];
+    videos: string[];
+    tags: string[];
+    polls: boolean;
+  }) => {
     const hasPolls = values.polls || false;
     let thread_polls = null;
     if (poll) {
@@ -211,7 +220,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     }
     const data = { ...values, polls: hasPolls, thread_polls };
     createThreadMutation.mutate(
-      { tribeId: tribe_id, data },
+      { tribeId: tribe_id as number, data },
       {
         onSuccess: () => {
           dispatch(
@@ -314,7 +323,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   <div className={"flex gap-2"}>
                     {mediaFiles &&
                       mediaFiles.length > 0 &&
-                      mediaFiles.map((media: any, index: number) => (
+                      mediaFiles.map((media, index) => (
                         <div key={index} className="relative inline-block h-[200px] w-[200px]">
                           <Image
                             src={media}
@@ -335,7 +344,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   </div>
                   {videoFiles &&
                     videoFiles.length > 0 &&
-                    videoFiles.map((media: any, index: number) => (
+                    videoFiles.map((media, index) => (
                       <div className="relative inline-block h-[200px] w-[200px]" key={index}>
                         <video
                           src={media}

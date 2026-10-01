@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { PlusIcon, XIcon } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { useAddTribeMemberMutation } from "@/features/tribes/mutations";

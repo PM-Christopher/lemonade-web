@@ -9,16 +9,14 @@ import TelegramIcon from "@/images/icons/telegramIcon.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
-import { useRouter } from "next/navigation";
 
 type ShareTribeInterface = {
   toggle: () => void;
   isOpen: boolean;
-  tribe: TribeInterface | any;
+  tribe: TribeInterface | null;
 };
 
 const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe }) => {
-  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const dispatch = useAppDispatch();
 

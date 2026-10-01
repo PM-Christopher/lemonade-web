@@ -5,7 +5,7 @@ import { DotFilledIcon } from "@radix-ui/react-icons";
 import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
-import { formatDate, formatLongTime, formatTime } from "@/lib/dateTimeFormatter";
+import { formatDate, formatLongTime } from "@/lib/dateTimeFormatter";
 import { getSafeImageSrc } from "@/lib/helper";
 
 const SideMenuEventCard = ({

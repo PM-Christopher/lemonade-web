@@ -92,7 +92,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
           // redirect to the newly created tribe
           router.push(`/tribe/${result.tribe.slug}`);
         },
-        onError: (err: any) => {
+        onError: (err: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -141,11 +141,12 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
             }),
           );
         }
-      } catch (err: any) {
+      } catch (err) {
+        const legacyError = err as { response?: { data?: { message?: string } } };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: err?.response?.data?.message || "error",
+            message: legacyError?.response?.data?.message || "error",
             type: "error",
           }),
         );
@@ -225,7 +226,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                   type="text"
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
                   value={formik.values.tribe_name}
-                  onChange={(e: any) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     formik.setFieldValue("tribe_name", e.target.value);
                   }}
                 />
@@ -250,7 +251,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent className="form-font">
-                    {tribe_cat?.categories?.map((category: any, index: number) => (
+                    {tribe_cat?.categories?.map((category, index: number) => (
                       <SelectItem value={category?.name} key={index}>
                         {category?.name}
                       </SelectItem>
@@ -273,7 +274,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                   className="form-font bg-light_grey h-[91px] resize-none rounded-xl border-0"
                   placeholder="Description about this tribe"
                   value={formik.values.description}
-                  onChange={(e: any) => {
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                     formik.setFieldValue("description", e.target.value);
                   }}
                 />
@@ -320,7 +321,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                       type="number"
                       className="form-font bg-light_grey h-12 rounded-xl border-0"
                       value={formik.values.membership_fee}
-                      onChange={(e: any) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         formik.setFieldValue("membership_fee", e.target.value);
                       }}
                     />

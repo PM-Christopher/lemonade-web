@@ -4,7 +4,6 @@ import AffiliateItems from "@/components/events/AffiliateItems";
 import { AffiliateItemSkeleton } from "@/components/Skeletons";
 
 const PromotionsSubMenu = ({ events, loading }: { events: EventInterface[]; loading: boolean }) => {
-  const itemLoading = true;
   return (
     <div className="hide-scrollbar max-h-screen overflow-y-auto">
       {loading ? (

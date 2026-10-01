@@ -7,9 +7,9 @@ import { Button } from "@lemonade/ui";
 import EditIcon from "@/images/icons/edit.svg";
 import DeleteIcon from "@/images/icons/delete.svg";
 import { TribeInterface, TribeMemberInterface } from "@/interfaces/TribeInterface";
+import type { Thread } from "@/interfaces/TribeInterface";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import SkeletonLoader from "@/components/global/SkeletonLoader";
 import { getInitials } from "@/lib/helper";
 import { TribeDetailsSkeleton } from "@/components/Skeletons";
 
@@ -19,7 +19,7 @@ type TribeDetailsInterface = {
   tribe: TribeInterface | null;
   share: (tribe: TribeInterface | null) => void;
   toggleAddMember: () => void;
-  threads: any;
+  threads: Thread[];
   loading: boolean;
 };
 const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
-import HeartIcon from "@/images/icons/heartIcon.svg";
-import HeartFilledIcon from "@/images/icons/heartFilledIcon.svg";
 import moment from "moment";
 
-import { useAppDispatch } from "@/redux/hook";
 import { getInitials } from "@/lib/helper";
 import { Thread } from "@/interfaces/TribeInterface";
 import { useSelector } from "react-redux";
@@ -30,7 +27,7 @@ interface Comment {
 }
 
 interface CommentsProps {
-  comments: any[];
+  comments: Comment[];
   isVisible: boolean;
   onToggleVisibility: () => void;
   onLikeComment?: (commentId: number) => void;
@@ -38,14 +35,7 @@ interface CommentsProps {
   thread: Thread | null;
 }
 
-const CommentsSection: React.FC<CommentsProps> = ({
-  comments,
-  isVisible,
-  onToggleVisibility,
-  onLikeComment,
-  onReplyToComment,
-  thread,
-}) => {
+const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
   const [expandedReplies, setExpandedReplies] = useState<Set<number>>(new Set());
 
   // This state forces re-render every minute
@@ -60,16 +50,6 @@ const CommentsSection: React.FC<CommentsProps> = ({
   }, []);
 
   const { user } = useSelector((state: RootState) => state.auth);
-
-  const toggleReplies = (commentId: number) => {
-    const newExpanded = new Set(expandedReplies);
-    if (newExpanded.has(commentId)) {
-      newExpanded.delete(commentId);
-    } else {
-      newExpanded.add(commentId);
-    }
-    setExpandedReplies(newExpanded);
-  };
 
   const formatTimeAgo = (dateString: string) => {
     const date = moment(dateString);

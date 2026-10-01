@@ -10,17 +10,27 @@ import ChatIcon from "@/images/icons/chatIcon.svg";
 import { formatString, getInitials } from "@/lib/helper";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import { useAppDispatch } from "@/redux/hook";
-import { useSelector } from "react-redux";
 import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import Link from "next/link";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
+export interface TribeUserInfo {
+  id?: number;
+  profile_image?: string;
+  fullname?: string;
+  username?: string;
+  industry?: string;
+  bio?: string;
+  has_connected?: boolean;
+  socials?: Array<{ name?: string; value?: string }>;
+}
+
 type UserInfoInterface = {
   toggle: () => void;
   isOpen: boolean;
-  user: any;
-  tribe: TribeInterface | any;
+  user: TribeUserInfo | null;
+  tribe: TribeInterface | null;
 };
 
 const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, tribe }) => {
@@ -29,7 +39,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
 
   const sendConnect = () => {
     sendInviteMutation.mutate(
-      { message: "I want to connect with you.", invitee_id: user?.id },
+      { message: "I want to connect with you.", invitee_id: user?.id as number },
       {
         onSuccess: () => {
           dispatch(
@@ -41,7 +51,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
           );
           toggle();
         },
-        onError: (err: any) => {
+        onError: (err: { message?: string }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -76,7 +86,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
             <div className="flex flex-col items-center justify-center">
               {user?.profile_image ? (
                 <Image
-                  src={user?.profile_image}
+                  src={user?.profile_image ?? ""}
                   alt="check in"
                   width={64}
                   height={64}
@@ -95,11 +105,11 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
               <p className="text-light-black mt-4 max-w-[416px] text-center text-[14px] font-normal">
                 {user?.bio}
               </p>
-              {user?.socials.length > 0 && (
+              {user?.socials && user.socials.length > 0 && (
                 <div className="mt-4">
                   <p className="text-center text-[14px] font-semibold">Social links</p>
                   <div className="mt-3 flex gap-4">
-                    {user?.socials.map((link: any) => (
+                    {user.socials.map((link) => (
                       <a
                         href={link.value}
                         target="_blank"

@@ -29,7 +29,7 @@ interface ModalPosition {
 
 interface ThreadCardProps {
   thread: Thread;
-  tribe_id: number | any;
+  tribe_id: number | undefined;
   toggle: () => void;
   switchUserId: (id: number) => void;
   pinThread: (id: number) => void;
@@ -100,7 +100,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
     setSubmitting(true);
     try {
       await postCommentMutation.mutateAsync({
-        tribeId: tribe_id,
+        tribeId: tribe_id as number,
         threadId: thread.id,
         data: { body: comment },
       });
@@ -134,7 +134,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
     setLikeCount(prevLiked ? prevCount - 1 : prevCount + 1);
 
     try {
-      await likeThreadMutation.mutateAsync({ tribeId: tribe_id, threadId: thread.id });
+      await likeThreadMutation.mutateAsync({ tribeId: tribe_id as number, threadId: thread.id });
     } catch {
       setHasLiked(prevLiked);
       setLikeCount(prevCount);
@@ -152,7 +152,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   const pollVote = (option_id: number) =>
     submitVoteMutation.mutate(
       {
-        tribeId: tribe_id,
+        tribeId: tribe_id as number,
         threadId: thread.id,
         pollId: thread.thread_polls.id,
         data: { option_id },

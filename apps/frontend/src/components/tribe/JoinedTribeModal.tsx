@@ -2,11 +2,12 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import type { TribeInterface } from "@/interfaces/TribeInterface";
 
 type JoinTribeInterface = {
   toggle: () => void;
   isOpen: boolean;
-  tribe: any;
+  tribe: TribeInterface | null;
 };
 
 const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe }) => {
