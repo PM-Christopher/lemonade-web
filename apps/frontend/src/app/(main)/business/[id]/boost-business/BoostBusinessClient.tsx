@@ -1,11 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label } from "@lemonade/ui";
 import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
-import FeaturedImage from "@/images/featured.png";
 import Image from "next/image";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import * as yup from "yup";
@@ -19,8 +17,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BoostPackagesSkeleton } from "@/components/Skeletons";
-import { useSearchParams } from "next/navigation";
-import useNxtSearchParams from "@/hooks/useSearchParams";
 
 interface BoostPackages {
   duration: number;
@@ -29,8 +25,6 @@ interface BoostPackages {
 
 const BoostBusinessClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const { setSearchParams, nxtSearchParams } = useNxtSearchParams();
   const [packageTitle, setPackageTitle] = useState("");
   const [selectedPackage, setSelectedPackage] = useState({
     price: 0,
@@ -38,7 +32,6 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
   });
   const [pkgIndex, setPkgIndex] = useState<number | null>(null);
   const [selectedPackages, setSelectedPackages] = useState<BoostPackages[]>([]);
-  const [pkgPrice, setPkgPrice] = useState<number | null>(null);
   const boostListingMutation = useBoostListingMutation(id);
 
   const { data, isLoading: loading } = useBoostPackagesQuery();
@@ -138,7 +131,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                     {loading ? (
                       <BoostPackagesSkeleton count={4} />
                     ) : (
-                      data?.packages?.map((pkg: any, index: number) => (
+                      data?.packages?.map((pkg, index: number) => (
                         <div
                           className={`bg-light-tint flex w-fit cursor-pointer flex-col items-center justify-center rounded-xl p-4 ${pkgIndex === index && "border-step-color border-2"}`}
                           key={index}

@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label, Input } from "@lemonade/ui";
@@ -20,7 +19,6 @@ import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import { useCreateListingMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
-import { checkError } from "@lemonade/domain";
 
 interface businessCategories {
   value: string;
@@ -73,7 +71,7 @@ const AddBusinessClient = () => {
     }));
   }, [data]);
 
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
+  const [selectedFrameworks] = useState<string[]>([]);
 
   const createBusinessSchema = yup.object({
     image: yup.string().required("Business image is required"),
