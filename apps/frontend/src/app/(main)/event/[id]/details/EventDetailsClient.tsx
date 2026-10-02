@@ -259,44 +259,42 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                     Sales revenue by ticket type
                   </p>
                   {(event?.sales_revenue?.sales_revenue_breakdown?.length ?? 0) > 0 &&
-                    event?.sales_revenue?.sales_revenue_breakdown?.map(
-                      (ticket, idx: number) => {
-                        const totalStock = Number(ticket?.stock) || 0;
-                        const bought = Number(ticket?.bought) || 0;
+                    event?.sales_revenue?.sales_revenue_breakdown?.map((ticket, idx: number) => {
+                      const totalStock = Number(ticket?.stock) || 0;
+                      const bought = Number(ticket?.bought) || 0;
 
-                        const progressWidth =
-                          ticket?.stock_type === "unlimited"
-                            ? bought > 0
-                              ? "100%"
-                              : "0%"
-                            : totalStock > 0
-                              ? `${Math.min((bought / totalStock) * 100, 100)}%`
-                              : "0%";
+                      const progressWidth =
+                        ticket?.stock_type === "unlimited"
+                          ? bought > 0
+                            ? "100%"
+                            : "0%"
+                          : totalStock > 0
+                            ? `${Math.min((bought / totalStock) * 100, 100)}%`
+                            : "0%";
 
-                        return (
-                          <div key={idx}>
-                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                              {ticket?.name}
+                      return (
+                        <div key={idx}>
+                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
+                            {ticket?.name}
+                          </p>
+                          <div className="mt-0.5 flex justify-between">
+                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                              ₦{formatNumberWithCommas(ticket?.price)}
                             </p>
-                            <div className="mt-0.5 flex justify-between">
-                              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                                ₦{formatNumberWithCommas(ticket?.price)}
-                              </p>
-                              <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-                                {ticket?.bought}/
-                                {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
-                              </p>
-                            </div>
-                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-                              <div
-                                className="bg-gradient-progress-green h-2 rounded-full"
-                                style={{ width: progressWidth }}
-                              ></div>
-                            </div>
+                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                              {ticket?.bought}/
+                              {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
+                            </p>
                           </div>
-                        );
-                      },
-                    )}
+                          <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
+                            <div
+                              className="bg-gradient-progress-green h-2 rounded-full"
+                              style={{ width: progressWidth }}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
                 <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
                   <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
@@ -304,105 +302,101 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                   </p>
 
                   {(event?.sales_revenue?.tickets_sold_breakdown?.length ?? 0) > 0 &&
-                    event?.sales_revenue?.tickets_sold_breakdown?.map(
-                      (ticket, idx: number) => {
-                        const totalStock = Number(ticket?.stock) || 0;
-                        const percentageSold = Number(ticket?.percentage_sold) || 0;
+                    event?.sales_revenue?.tickets_sold_breakdown?.map((ticket, idx: number) => {
+                      const totalStock = Number(ticket?.stock) || 0;
+                      const percentageSold = Number(ticket?.percentage_sold) || 0;
 
-                        const progressWidth =
-                          ticket?.stock_type === "unlimited"
-                            ? (ticket?.bought ?? 0) > 0
-                              ? "100%"
-                              : "0%"
-                            : totalStock > 0
-                              ? `${Math.min((percentageSold / totalStock) * 100, 100)}%`
-                              : "0%";
+                      const progressWidth =
+                        ticket?.stock_type === "unlimited"
+                          ? (ticket?.bought ?? 0) > 0
+                            ? "100%"
+                            : "0%"
+                          : totalStock > 0
+                            ? `${Math.min((percentageSold / totalStock) * 100, 100)}%`
+                            : "0%";
 
-                        const percentageText =
-                          ticket?.stock_type === "unlimited"
-                            ? (ticket?.bought ?? 0) > 0
-                              ? "100%"
-                              : "0%"
-                            : totalStock > 0
-                              ? `${Math.min((percentageSold / totalStock) * 100, 100).toFixed(2)}%`
-                              : "0%";
-                        return (
-                          <div key={idx}>
-                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                              {ticket?.name}
+                      const percentageText =
+                        ticket?.stock_type === "unlimited"
+                          ? (ticket?.bought ?? 0) > 0
+                            ? "100%"
+                            : "0%"
+                          : totalStock > 0
+                            ? `${Math.min((percentageSold / totalStock) * 100, 100).toFixed(2)}%`
+                            : "0%";
+                      return (
+                        <div key={idx}>
+                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
+                            {ticket?.name}
+                          </p>
+                          <div className="mt-0.5 flex justify-between">
+                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                              {percentageText}
                             </p>
-                            <div className="mt-0.5 flex justify-between">
-                              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                                {percentageText}
-                              </p>
-                              <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-                                {ticket?.bought}/
-                                {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
-                              </p>
-                            </div>
-                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-                              <div
-                                className="bg-gradient-progress-green h-2 rounded-full"
-                                style={{ width: progressWidth }}
-                              ></div>
-                            </div>
+                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                              {ticket?.bought}/
+                              {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
+                            </p>
                           </div>
-                        );
-                      },
-                    )}
+                          <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
+                            <div
+                              className="bg-gradient-progress-green h-2 rounded-full"
+                              style={{ width: progressWidth }}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
                 <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
                   <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
                     Check ins by ticket type
                   </p>
                   {(event?.sales_revenue?.tickets_checkins_breakdown?.length ?? 0) > 0 &&
-                    event?.sales_revenue?.tickets_checkins_breakdown?.map(
-                      (ticket, idx: number) => {
-                        const totalStock = Number(ticket?.stock) || 0;
-                        const checkinCount = Number(ticket?.checkin_count) || 0;
+                    event?.sales_revenue?.tickets_checkins_breakdown?.map((ticket, idx: number) => {
+                      const totalStock = Number(ticket?.stock) || 0;
+                      const checkinCount = Number(ticket?.checkin_count) || 0;
 
-                        const progressWidth =
-                          ticket?.stock_type === "unlimited"
-                            ? checkinCount > 0
-                              ? "100%"
-                              : "0%"
-                            : totalStock > 0
-                              ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
-                              : "0%";
+                      const progressWidth =
+                        ticket?.stock_type === "unlimited"
+                          ? checkinCount > 0
+                            ? "100%"
+                            : "0%"
+                          : totalStock > 0
+                            ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
+                            : "0%";
 
-                        const percentageText =
-                          ticket?.stock_type === "unlimited"
-                            ? checkinCount > 0
-                              ? "100%"
-                              : "0%"
-                            : totalStock > 0
-                              ? `${Math.min((checkinCount / totalStock) * 100, 100).toFixed(0)}%`
-                              : "0%";
+                      const percentageText =
+                        ticket?.stock_type === "unlimited"
+                          ? checkinCount > 0
+                            ? "100%"
+                            : "0%"
+                          : totalStock > 0
+                            ? `${Math.min((checkinCount / totalStock) * 100, 100).toFixed(0)}%`
+                            : "0%";
 
-                        return (
-                          <div key={idx}>
-                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                              {ticket?.name}
+                      return (
+                        <div key={idx}>
+                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
+                            {ticket?.name}
+                          </p>
+                          <div className="mt-0.5 flex justify-between">
+                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                              {percentageText}
                             </p>
-                            <div className="mt-0.5 flex justify-between">
-                              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                                {percentageText}
-                              </p>
-                              <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-                                {ticket?.checkin_count}/
-                                {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
-                              </p>
-                            </div>
-                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-                              <div
-                                className="bg-gradient-progress-green h-2 rounded-full"
-                                style={{ width: progressWidth }}
-                              ></div>
-                            </div>
+                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                              {ticket?.checkin_count}/
+                              {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
+                            </p>
                           </div>
-                        );
-                      },
-                    )}
+                          <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
+                            <div
+                              className="bg-gradient-progress-green h-2 rounded-full"
+                              style={{ width: progressWidth }}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>

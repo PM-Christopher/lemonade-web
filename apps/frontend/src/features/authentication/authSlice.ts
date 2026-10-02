@@ -17,25 +17,23 @@ interface authState {
   admin: any;
   adminToken: string | null;
   isLoggedIn: boolean;
-  subscription:
-    | {
-        title: string;
-        plan_price: string;
-        payment_method: string;
-        next_billing_date: string;
-        id: number;
-        benefits?: {
-          ver_badge?: boolean;
-          forum_creation?: boolean;
-          lemon_id?: boolean;
-          event_creation?: number;
-          sales_commission?: number;
-          service_commission?: number;
-          connection_range?: string | number;
-          offline_benefits?: boolean;
-        };
-      }
-    | null;
+  subscription: {
+    title: string;
+    plan_price: string;
+    payment_method: string;
+    next_billing_date: string;
+    id: number;
+    benefits?: {
+      ver_badge?: boolean;
+      forum_creation?: boolean;
+      lemon_id?: boolean;
+      event_creation?: number;
+      sales_commission?: number;
+      service_commission?: number;
+      connection_range?: string | number;
+      offline_benefits?: boolean;
+    };
+  } | null;
   subscription_id: number | null;
   plan: Record<string, unknown> | null;
   appSettings: Record<string, unknown> | null;

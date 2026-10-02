@@ -53,8 +53,7 @@ export const signup = async (
     dispatch(
       updateToastifyReducer({
         show: true,
-        message:
-          legacyError?.response?.data?.message || "Something went wrong. Please try again.",
+        message: legacyError?.response?.data?.message || "Something went wrong. Please try again.",
         type: "error",
       }),
     );

@@ -30,7 +30,6 @@ function PromoteEventClient({ id }: { id: number }) {
     setUnit(1);
   };
 
-
   const cost = selectedPromotion ? selectedPromotion.price : 0;
   const subtotal = cost * unit;
   const formattedCurrency = (amount?: number) =>

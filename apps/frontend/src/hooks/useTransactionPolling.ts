@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { axiosInstance } from "@/lib/axiosInstane";
 
-export const useTransactionPolling = <T = unknown,>(
+export const useTransactionPolling = <T = unknown>(
   config: null | {
     transactionId: string;
     isSuccess: (data: T) => boolean;

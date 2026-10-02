@@ -173,8 +173,7 @@ const EventClient = ({ id }: { id: number }) => {
                     { name: "twitter", icon: <TwitterIcon /> },
                     { name: "website", icon: <AttachmentIcon /> },
                   ].map((social, i) => {
-                    const link =
-                      event?.socials?.find((s) => s.name === social.name)?.value ?? "#";
+                    const link = event?.socials?.find((s) => s.name === social.name)?.value ?? "#";
                     return (
                       <a
                         key={i}

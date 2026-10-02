@@ -30,11 +30,9 @@ const MultipleTicketCard = ({
 }) => {
   const namePrefix = `assigned_tickets[${index}]`;
   const touchedTickets = formik.touched.assigned_tickets as
-    | Array<{ fullname?: boolean; email?: boolean }>
-    | undefined;
+    Array<{ fullname?: boolean; email?: boolean }> | undefined;
   const errorTickets = formik.errors.assigned_tickets as
-    | Array<{ fullname?: string; email?: string }>
-    | undefined;
+    Array<{ fullname?: string; email?: string }> | undefined;
 
   useEffect(() => {
     formik.setFieldValue(`assigned_tickets[${index}].id`, ticket.id);

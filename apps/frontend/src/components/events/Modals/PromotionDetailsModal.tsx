@@ -60,7 +60,8 @@ const PromotionDetailsModal: React.FC<PDInterface> = ({ toggle, isOpen, promotio
               <div className="bg-mid-grey mt-4 rounded-xl p-6">
                 <p className="font-sans text-[16px] font-semibold">BREAKDOWN</p>
                 <div className="mt-3 flex flex-col">
-                  {promotion?.breakdown && promotion.breakdown.length > 0 &&
+                  {promotion?.breakdown &&
+                    promotion.breakdown.length > 0 &&
                     promotion.breakdown.map((item, index: number) => (
                       <div className="my-2.5 flex items-center gap-2" key={index}>
                         <ChevronRightFilled />
