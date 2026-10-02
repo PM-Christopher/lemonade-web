@@ -8,7 +8,6 @@ import { useBusinessCategoriesQuery } from "@/features/shared/queries";
 import { useUpdateListingMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label, Input } from "@lemonade/ui";
@@ -45,10 +44,6 @@ interface FormValues {
 const EditBusinessClient = ({ id }: { id: number }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isRequestOpen, setIsRequestOpen] = useState(false);
-  const [displayCount, setDisplayCount] = useState(4); // Initial number of reviews to show
-  const [reviews, setReviews] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
 

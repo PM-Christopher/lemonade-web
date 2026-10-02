@@ -1,8 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import business_logo from "@/images/business/jobLogo.png";
 import Image from "next/image";
 import { Button } from "@lemonade/ui";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
@@ -19,7 +17,6 @@ import RatingsBar from "@/components/global/RatingsBar";
 import Reviews, { type Review } from "@/components/global/Reviews";
 import ReviewModal from "@/components/business/Modals/ReviewModal";
 import dynamic from "next/dynamic";
-import { useSelector } from "react-redux";
 import { useRequest } from "@/hooks/useRequest";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatDecimal, formatStringUCFirst } from "@/lib/helper";
@@ -27,12 +24,10 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/lib/axiosInstane";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
-import BoostDetailsModal from "@/components/business/Modals/BoostDetailsModal";
+import BoostDetailsModal, { type Boost } from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useRouter } from "next/navigation";
 import { businessButtons } from "@/lib/constant";
-import { useAppDispatch } from "@/redux/hook";
-import { RootState } from "@/redux/store";
 import { useBusinessQuery } from "@/features/business/queries";
 import { BusinessDetailSkeleton } from "@/components/Skeletons";
 import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
@@ -54,12 +49,11 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   const [displayCount, setDisplayCount] = useState(4); // Initial number of reviews to show
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
-  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [, setVerifyLoading] = useState(false);
   const [isVerifyBoost, setIsVerifyBoost] = useState(false);
-  const [boost, setBoost] = useState<any>(null);
+  const [boost, setBoost] = useState<Boost | null>(null);
   const [boostDetails, setBoostDetails] = useState(false);
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const [isDisputeOpen, setIsDisputeOpen] = useState(false);
   const [isSubmitDisputeOpen, setIsSubmitDisputeOpen] = useState(false);
   const pathname = usePathname();
@@ -128,7 +122,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
               router.replace(`?${params.toString()}`);
             }
           }
-        } catch (error) {
+        } catch {
         } finally {
           setVerifyLoading(false);
         }

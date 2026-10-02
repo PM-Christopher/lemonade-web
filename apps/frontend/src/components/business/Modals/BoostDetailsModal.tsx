@@ -2,7 +2,7 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
-interface Boost {
+export interface Boost {
   duration?: number | null;
   full_start_date?: string;
   full_end_date?: string;

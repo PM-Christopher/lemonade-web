@@ -20,7 +20,7 @@ const VerifyBoost = ({
 }: {
   isOpen: boolean;
   toggleMenu: () => void;
-  boost: Boost;
+  boost: Boost | null;
 }) => {
   const router = useRouter();
   const backToBusiness = () => {
