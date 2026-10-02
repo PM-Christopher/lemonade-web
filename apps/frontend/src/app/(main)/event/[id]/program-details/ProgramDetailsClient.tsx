@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
@@ -15,14 +14,23 @@ import { useRouter } from "next/navigation";
 import { useAffiliateEventDetailQuery } from "@/features/events/queries";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { FaNairaSign } from "react-icons/fa6";
 import { getSafeImageSrc } from "@/lib/helper";
 
+interface TicketBreakdown {
+  id?: number;
+  name?: string;
+  price?: number;
+  count?: number;
+  stock?: number;
+  stock_type?: string;
+  checkin_count?: number;
+}
+
 const ProgramDetailsClient = ({ id }: { id: number }) => {
-  const [copied, setCopied] = useState(false);
+  const [, setCopied] = useState(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { data: programDetails, isLoading: loading } = useAffiliateEventDetailQuery(id);
+  const { data: programDetails } = useAffiliateEventDetailQuery(id);
 
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -152,40 +160,42 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
                     Commissions by ticket type
                   </p>
                   {(programDetails?.events?.commissions?.length ?? 0) > 0 &&
-                    programDetails?.events?.commissions?.map((commission: any, index: number) => {
-                      const totalStock = Number(commission?.stock) || 0;
-                      const checkinCount = Number(commission?.checkin_count) || 0;
+                    (programDetails?.events?.commissions as TicketBreakdown[] | undefined)?.map(
+                      (commission, index: number) => {
+                        const totalStock = Number(commission?.stock) || 0;
+                        const checkinCount = Number(commission?.checkin_count) || 0;
 
-                      const progressWidth =
-                        commission?.stock_type === "unlimited"
-                          ? "100%"
-                          : totalStock > 0
-                            ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
-                            : "0%";
+                        const progressWidth =
+                          commission?.stock_type === "unlimited"
+                            ? "100%"
+                            : totalStock > 0
+                              ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
+                              : "0%";
 
-                      return (
-                        <div key={commission?.id ?? index}>
-                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                            {commission?.name}
-                          </p>
-                          <div className="mt-0.5 flex justify-between">
-                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                              N{formatNumberWithCommas(commission?.price)}
+                        return (
+                          <div key={commission?.id ?? index}>
+                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
+                              {commission?.name}
                             </p>
-                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-                              {commission?.count}/
-                              {commission.stock_type === "unlimited" ? "∞" : commission.stock}
-                            </p>
+                            <div className="mt-0.5 flex justify-between">
+                              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                                N{formatNumberWithCommas(commission?.price)}
+                              </p>
+                              <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                                {commission?.count}/
+                                {commission.stock_type === "unlimited" ? "∞" : commission.stock}
+                              </p>
+                            </div>
+                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
+                              <div
+                                className="bg-gradient-progress-green h-2 rounded-full"
+                                style={{ width: progressWidth }}
+                              ></div>
+                            </div>
                           </div>
-                          <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-                            <div
-                              className="bg-gradient-progress-green h-2 rounded-full"
-                              style={{ width: progressWidth }}
-                            ></div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      },
+                    )}
                 </div>
                 <div className="laptop:bg-none rounded-[8px] bg-white p-4">
                   <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
@@ -193,47 +203,49 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
                   </p>
 
                   {(programDetails?.events?.ticket_sold?.length ?? 0) > 0 &&
-                    programDetails?.events?.ticket_sold?.map((ticket: any, index: number) => {
-                      const totalStock = Number(ticket?.stock) || 0;
-                      const checkinCount = Number(ticket?.checkin_count) || 0;
+                    (programDetails?.events?.ticket_sold as TicketBreakdown[] | undefined)?.map(
+                      (ticket, index: number) => {
+                        const totalStock = Number(ticket?.stock) || 0;
+                        const checkinCount = Number(ticket?.checkin_count) || 0;
 
-                      const progressWidth =
-                        ticket?.stock_type === "unlimited"
-                          ? "100%"
-                          : totalStock > 0
-                            ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
-                            : "0%";
+                        const progressWidth =
+                          ticket?.stock_type === "unlimited"
+                            ? "100%"
+                            : totalStock > 0
+                              ? `${Math.min((checkinCount / totalStock) * 100, 100)}%`
+                              : "0%";
 
-                      const percentageText =
-                        ticket?.stock_type === "unlimited"
-                          ? "100%"
-                          : totalStock > 0
-                            ? `${Math.min((checkinCount / totalStock) * 100, 100).toFixed(0)}%`
-                            : "0%";
+                        const percentageText =
+                          ticket?.stock_type === "unlimited"
+                            ? "100%"
+                            : totalStock > 0
+                              ? `${Math.min((checkinCount / totalStock) * 100, 100).toFixed(0)}%`
+                              : "0%";
 
-                      return (
-                        <div key={ticket?.id ?? index}>
-                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                            {ticket.name}
-                          </p>
-                          <div className="mt-0.5 flex justify-between">
-                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                              {percentageText}
+                        return (
+                          <div key={ticket?.id ?? index}>
+                            <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
+                              {ticket.name}
                             </p>
-                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-                              {ticket?.count}/
-                              {ticket.stock_type === "unlimited" ? "∞" : ticket.stock}
-                            </p>
+                            <div className="mt-0.5 flex justify-between">
+                              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                                {percentageText}
+                              </p>
+                              <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                                {ticket?.count}/
+                                {ticket.stock_type === "unlimited" ? "∞" : ticket.stock}
+                              </p>
+                            </div>
+                            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
+                              <div
+                                className="bg-gradient-progress-green h-2 rounded-full"
+                                style={{ width: progressWidth }}
+                              ></div>
+                            </div>
                           </div>
-                          <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-                            <div
-                              className="bg-gradient-progress-green h-2 rounded-full"
-                              style={{ width: progressWidth }}
-                            ></div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      },
+                    )}
                 </div>
               </div>
             )}

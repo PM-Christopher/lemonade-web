@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input } from "@lemonade/ui";
 import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
@@ -10,7 +9,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { usePromotionsQuery } from "@/features/events/queries";
 import { usePayForPromotionMutation } from "@/features/events/mutations";
 import { PromotionInterface } from "@/interfaces/EventInterface";
-import moment, { now } from "moment";
+import moment from "moment";
 import { ColorRing } from "react-loader-spinner";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -31,13 +30,6 @@ function PromoteEventClient({ id }: { id: number }) {
     setUnit(1);
   };
 
-  const handleUnitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Allow only numbers
-    if (/^\d*$/.test(value)) {
-      setUnit(value === "" ? 0 : Number(value));
-    }
-  };
 
   const cost = selectedPromotion ? selectedPromotion.price : 0;
   const subtotal = cost * unit;
