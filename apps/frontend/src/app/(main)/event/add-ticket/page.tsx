@@ -1,13 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input, Button } from "@lemonade/ui";
 import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import * as yup from "yup";
-import { useFormik, FieldArray } from "formik";
+import { useFormik } from "formik";
 import { createTickets, resetEventState } from "@/features/events/event.slice";
 import { useCreateEventMutation } from "@/features/events/mutations";
 import { FormikButton } from "@/components/global/FormikButton";
@@ -17,7 +16,6 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
-import { getIn } from "yup";
 
 // Off the initial bundle — only needed once the bank-account section is
 // opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -53,7 +51,7 @@ const AddTicketPage = () => {
 
     price: yup
       .string()
-      .when("ticket_type", (values: any[], schema: yup.StringSchema<string | undefined>) => {
+      .when("ticket_type", (values: unknown[], schema: yup.StringSchema<string | undefined>) => {
         // Yup's typings say `values` is any[], so we read from index 0
         const ticket_type = Array.isArray(values) ? values[0] : values;
 
@@ -87,7 +85,7 @@ const AddTicketPage = () => {
         const num = Number(cleaned);
         return Number.isNaN(num) ? undefined : num;
       })
-      .when("stock_type", (stock_type: any, schema: yup.NumberSchema<number | undefined>) => {
+      .when("stock_type", (stock_type: unknown, schema: yup.NumberSchema<number | undefined>) => {
         if (stock_type === "limited") {
           // REQUIRED and must be > 0
           return schema
@@ -196,9 +194,9 @@ const AddTicketPage = () => {
 
     if (!Array.isArray(ticketsErrors)) return null;
 
-    const fieldError = (ticketsErrors[index] as any)?.[field];
+    const fieldError = (ticketsErrors[index] as Record<string, unknown> | undefined)?.[field];
     const fieldTouched = Array.isArray(ticketsTouched)
-      ? (ticketsTouched[index] as any)?.[field]
+      ? (ticketsTouched[index] as Record<string, unknown> | undefined)?.[field]
       : false;
 
     // Show error if:
