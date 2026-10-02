@@ -32,6 +32,7 @@ import { useEventQuery } from "@/features/events/queries";
 import { useUpdateEventMutation } from "@/features/events/mutations";
 import { getTimeZones } from "@/lib/helper";
 import { EventFormSkeleton } from "@/components/Skeletons";
+import type { EventInterface } from "@/interfaces/EventInterface";
 
 type SocialMediaHandles = {
   instagram: string;
@@ -141,15 +142,15 @@ const schema = yup.object({
     }),
 });
 
-const buildInitialValues = (event?: any): EventFormValues => {
-  const start = parseDateTime(event?.start_date);
-  const end = parseDateTime(event?.end_date);
+const buildInitialValues = (event?: EventInterface): EventFormValues => {
+  const start = parseDateTime(event?.start_date as string | undefined);
+  const end = parseDateTime(event?.end_date as string | undefined);
 
   const socialsArray = Array.isArray(event?.socials) ? event.socials : [];
   const socialsObj = socialsArray.reduce(
-    (acc: SocialMediaHandles, item: any) => {
+    (acc: SocialMediaHandles, item: { name: string; value: string }) => {
       if (item?.name && item?.name in EMPTY_SOCIALS) {
-        (acc as any)[item.name] = item.value ?? "";
+        acc[item.name as keyof SocialMediaHandles] = item.value ?? "";
       }
       return acc;
     },
@@ -161,7 +162,7 @@ const buildInitialValues = (event?: any): EventFormValues => {
     event_name: event?.event_name ?? "",
     event_description: event?.event_description ?? "",
     category: event?.category ?? "",
-    event_type: event?.event_type ?? "",
+    event_type: (event?.event_type as "" | "physical" | "online" | undefined) ?? "",
     location: event?.location ?? "",
     hosting_platform: event?.hosting_platform ?? "",
     meeting_link: event?.meeting_link ?? "",
@@ -259,11 +260,12 @@ const EditEventClient = ({ id }: { id: string }) => {
           }),
         );
         router.push("/event");
-      } catch (e: any) {
+      } catch (e) {
+        const legacyError = e as { message?: string };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: e?.message ?? "Error updating event",
+            message: legacyError?.message ?? "Error updating event",
             type: "error",
           }),
         );
@@ -783,7 +785,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         type={type}
                         name={`socials.${key}`}
                         className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                        value={(formik.values.socials as any)[key] ?? ""}
+                        value={formik.values.socials[key as keyof SocialMediaHandles] ?? ""}
                         onChange={formik.handleChange}
                         placeholder=""
                       />
