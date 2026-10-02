@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label, Input } from "@lemonade/ui";
@@ -17,8 +16,6 @@ import TwitterIcon from "@/images/icons/twitter-color.svg";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import Switch from "react-switch";
-import { FormikButton } from "@/components/global/FormikButton";
-import { timezones } from "../../../../../pageLinks";
 import { useAppDispatch } from "@/redux/hook";
 import { addEvent } from "@/features/events/event.slice";
 import { useRouter } from "next/navigation";
@@ -162,7 +159,7 @@ const CreateEventPage = () => {
     },
     validationSchema: createEventSchema,
     validateOnMount: true,
-    onSubmit: async (values) => {
+    onSubmit: async () => {
       try {
         await createEventSchema.validate(formik.values);
         const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
@@ -190,8 +187,8 @@ const CreateEventPage = () => {
         };
         dispatch(addEvent(data));
         router.push("/event/add-ticket");
-      } catch (error: any) {
-        if (error.name === "ValidationError") {
+      } catch (error) {
+        if (error instanceof yup.ValidationError) {
           const firstError = error.errors[0];
 
           dispatch(
@@ -213,57 +210,6 @@ const CreateEventPage = () => {
       }
     },
   });
-
-  const submitFunc = async () => {
-    try {
-      await createEventSchema.validate(formik.values);
-      const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
-        .filter((key) => socials[key]) // Only keep keys with non-empty values
-        .map((key) => ({
-          name: key,
-          value: socials[key],
-        }));
-      const data = {
-        event_image: formik.values.event_image,
-        event_name: formik.values.event_name,
-        event_description: formik.values.event_description,
-        category: formik.values.category,
-        event_type: formik.values.event_type,
-        location: formik.values.location,
-        hosting_platform: formik.values.hosting_platform,
-        meeting_link: formik.values.meeting_link,
-        meeting_passcode: formik.values.meeting_passcode,
-        time_zone: formik.values.time_zone,
-        start_date: `${formik.values.start_date}T${formik.values.start_time}`,
-        end_date: `${formik.values.end_date}T${formik.values.end_time}`,
-        affiliate_program: formik.values.affiliate_program,
-        commission: formik.values.commission,
-        socials: filteredSocials,
-      };
-      dispatch(addEvent(data));
-      router.push("/event/add-ticket");
-    } catch (error: any) {
-      if (error.name === "ValidationError") {
-        const firstError = error.errors[0];
-
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: firstError,
-            type: "error",
-          }),
-        );
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "An error occurred while creating the event",
-            type: "error",
-          }),
-        );
-      }
-    }
-  };
 
   const now = new Date();
   const startOfDay = new Date();
