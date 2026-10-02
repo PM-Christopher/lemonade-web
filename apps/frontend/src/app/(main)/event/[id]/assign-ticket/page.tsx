@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState, use } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input } from "@lemonade/ui";
@@ -10,7 +9,7 @@ import Switch from "react-switch";
 import { useSelector } from "react-redux";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import * as yup from "yup";
-import { FieldArray, useFormik } from "formik";
+import { useFormik } from "formik";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import { freeEventState } from "@/features/events/event.slice";
@@ -31,7 +30,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
   const handleChange = () => {
     setChecked(!checked);
   };
-  const { tickets, total, eventReferrals } = useSelector((state: RootState) => state.event);
+  const { tickets } = useSelector((state: RootState) => state.event);
   const buyTicketMutation = useBuyTicketMutation();
   const loading = buyTicketMutation.isPending;
 
@@ -66,7 +65,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
       fullname: "",
       email: "",
       assign_multiple: false,
-      assigned_tickets: tickets.map((ticket: any) => ({
+      assigned_tickets: tickets.map((ticket: TicketDetails) => ({
         id: `${ticket.id}`,
         quantity: ticket.quantity || 0,
         fullname: "",
@@ -177,7 +176,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
     return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
   };
 
-  const expandedTickets = tickets.flatMap((ticket: any) =>
+  const expandedTickets = tickets.flatMap((ticket: TicketDetails) =>
     Array.from({ length: ticket.quantity }, () => ({
       ...ticket,
       quantity: 1, // optional: reset quantity to 1 since each is now a unit

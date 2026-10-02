@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
@@ -18,20 +17,17 @@ import PromotionDetailsModal from "@/components/events/Modals/PromotionDetailsMo
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch } from "@/redux/hook";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEventQuery, eventKeys } from "@/features/events/queries";
 import { useEventPromotionMutation } from "@/features/events/mutations";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { getSafeImageSrc } from "@/lib/helper";
-import { formatLongDate, formatLongTime, formatTime } from "@/lib/dateTimeFormatter";
+import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { EventProgramDetailSkeleton } from "@/components/Skeletons";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
-import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { PromotionInterface } from "@/interfaces/EventInterface";
 
 const EventDetailsClient = ({ id }: { id: number }) => {
-  const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -58,7 +54,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
       verifyTransactionMutation.mutate(
         { trx_ref: trxref },
         {
-          onSuccess: (res: any) => {
+          onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
             // Remove trxref from URL
             const params_ = new URLSearchParams(searchParams);
@@ -66,11 +62,15 @@ const EventDetailsClient = ({ id }: { id: number }) => {
             params_.delete("reference");
             // Update the URL without reloading
             router.replace(`?${params_.toString()}`);
-            const promotion_data = {
-              ...res?.data?.promo,
-              promotion_date: res?.data?.promotion?.promotion_date,
+            const resData = res.data as {
+              promo?: Record<string, unknown>;
+              promotion?: { promotion_date?: string };
             };
-            setPromotionData(promotion_data);
+            const promotion_data = {
+              ...resData?.promo,
+              promotion_date: resData?.promotion?.promotion_date,
+            };
+            setPromotionData(promotion_data as unknown as PromotionInterface);
             activateModal();
           },
           onError: (err) => {
@@ -260,7 +260,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                   </p>
                   {(event?.sales_revenue?.sales_revenue_breakdown?.length ?? 0) > 0 &&
                     event?.sales_revenue?.sales_revenue_breakdown?.map(
-                      (ticket: any, idx: number) => {
+                      (ticket, idx: number) => {
                         const totalStock = Number(ticket?.stock) || 0;
                         const bought = Number(ticket?.bought) || 0;
 
@@ -305,13 +305,13 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
                   {(event?.sales_revenue?.tickets_sold_breakdown?.length ?? 0) > 0 &&
                     event?.sales_revenue?.tickets_sold_breakdown?.map(
-                      (ticket: any, idx: number) => {
+                      (ticket, idx: number) => {
                         const totalStock = Number(ticket?.stock) || 0;
                         const percentageSold = Number(ticket?.percentage_sold) || 0;
 
                         const progressWidth =
                           ticket?.stock_type === "unlimited"
-                            ? ticket?.bought > 0
+                            ? (ticket?.bought ?? 0) > 0
                               ? "100%"
                               : "0%"
                             : totalStock > 0
@@ -320,7 +320,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
                         const percentageText =
                           ticket?.stock_type === "unlimited"
-                            ? ticket?.bought > 0
+                            ? (ticket?.bought ?? 0) > 0
                               ? "100%"
                               : "0%"
                             : totalStock > 0
@@ -357,7 +357,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                   </p>
                   {(event?.sales_revenue?.tickets_checkins_breakdown?.length ?? 0) > 0 &&
                     event?.sales_revenue?.tickets_checkins_breakdown?.map(
-                      (ticket: any, idx: number) => {
+                      (ticket, idx: number) => {
                         const totalStock = Number(ticket?.stock) || 0;
                         const checkinCount = Number(ticket?.checkin_count) || 0;
 
