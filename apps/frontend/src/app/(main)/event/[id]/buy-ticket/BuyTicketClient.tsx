@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import TopNav from "@/components/navigation/TopNav";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
@@ -80,7 +79,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
     return calculateSubtotal();
   };
 
-  const hasValidQuantity = (tickets: any[]): boolean => {
+  const hasValidQuantity = (tickets: TicketDetails[]): boolean => {
     return tickets.some((ticket) => ticket.quantity > 0);
   };
 

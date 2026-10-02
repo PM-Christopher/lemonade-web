@@ -133,7 +133,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
           }),
         );
       },
-      onError: (err: any) => {
+      onError: (err: { message?: string }) => {
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -288,7 +288,11 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                   <div className="mt-4 space-y-3">
                     {event?.isAffiliate && (event?.ticket_sold?.length ?? 0) > 0 ? (
-                      event?.ticket_sold?.map((item: any) => (
+                      (
+                        event?.ticket_sold as
+                          | Array<{ id?: number; name?: string; count?: number; price?: number }>
+                          | undefined
+                      )?.map((item) => (
                         <div
                           key={item?.id}
                           className="flex items-center justify-between rounded-xl border border-gray-100 p-3 transition hover:bg-gray-50"

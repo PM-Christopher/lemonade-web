@@ -9,14 +9,12 @@ import * as yup from "yup";
 import { useFormik, type FormikErrors, type FormikTouched } from "formik";
 import { resetEventState } from "@/features/events/event.slice";
 import { useEventTicketsQuery } from "@/features/events/queries";
-import { useEditEventTicketsMutation, useCreateEventMutation } from "@/features/events/mutations";
+import { useEditEventTicketsMutation } from "@/features/events/mutations";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
 
 // Off the initial bundle — only needed once the bank-account section is
 // opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -55,11 +53,9 @@ const AddTicketClient = ({ id }: { id: number }) => {
   const activateModal = () => {
     setToggleModal(!toggleModal);
   };
-  const { event } = useSelector((state: RootState) => state.event);
   const { data: eventTicketsData } = useEventTicketsQuery(id);
   const event_tickets = eventTicketsData?.tickets ?? [];
   const editEventTicketsMutation = useEditEventTicketsMutation(id);
-  const createEventMutation = useCreateEventMutation();
 
   const ticketSchema = yup.object().shape({
     ticket_id: yup.string(),
