@@ -137,7 +137,11 @@ const schema = yup.object({
     .when("affiliate_program", {
       is: true,
       then: (s) =>
-        s.typeError("Commission must be a number").required("Commission rate is required").min(0),
+        s
+          .typeError("Commission must be a number")
+          .required("Commission rate is required")
+          .min(0, "Commission can't be negative")
+          .max(100, "Commission can't exceed 100%"),
       otherwise: (s) => s.optional(),
     }),
 });
@@ -173,7 +177,9 @@ const buildInitialValues = (event?: EventInterface): EventFormValues => {
     end_date: end.date,
     end_time: end.time,
     affiliate_program: Boolean(event?.affiliate_program),
-    commission: event?.commission != null ? String(event.commission) : "",
+    // The backend stores commission as a fraction of the sale (0.1 = 10%); this field displays
+    // and collects a whole percent (e.g. "10"), so convert on the way in and back on submit.
+    commission: event?.commission != null ? String(event.commission * 100) : "",
     socials: socialsObj,
   };
 };
@@ -245,7 +251,7 @@ const EditEventClient = ({ id }: { id: string }) => {
             start_date: `${values.start_date}T${values.start_time}`,
             end_date: `${values.end_date}T${values.end_time}`,
             affiliate_program: values.affiliate_program,
-            commission: values.affiliate_program ? Number(values.commission) : null,
+            commission: values.affiliate_program ? Number(values.commission) / 100 : null,
             socials: filteredSocials,
           },
         };
@@ -684,7 +690,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         Enable Affiliate program
                       </p>
                       <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
-                        Affiliates will earn 0.01% per ticket sales
+                        Affiliates will earn {formik.values.commission || 0}% per ticket sale
                       </p>
                     </div>
                   </div>
@@ -740,6 +746,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
                       Commission will be based on the per ticket sold
                     </span>
+                    {formik.touched.commission && formik.errors.commission ? (
+                      <p className="text-left text-[12px] text-[#FF8D8D]">
+                        {formik.errors.commission}
+                      </p>
+                    ) : null}
                   </div>
                 )}
 

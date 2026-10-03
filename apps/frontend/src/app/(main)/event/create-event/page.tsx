@@ -132,7 +132,11 @@ const CreateEventPage = () => {
 
     commission: yup.number().when("affiliate_program", {
       is: true,
-      then: (schema) => schema.required("Commission rate is required"),
+      then: (schema) =>
+        schema
+          .required("Commission rate is required")
+          .min(0, "Commission can't be negative")
+          .max(100, "Commission can't exceed 100%"),
       otherwise: (schema) => schema.notRequired().nullable(),
     }),
     socials: yup.array(),
@@ -182,7 +186,11 @@ const CreateEventPage = () => {
           start_date: `${formik.values.start_date}T${formik.values.start_time}`,
           end_date: `${formik.values.end_date}T${formik.values.end_time}`,
           affiliate_program: formik.values.affiliate_program,
-          commission: formik.values.commission,
+          // The backend stores commission as a fraction of the sale (0.1 = 10%); this field
+          // collects a whole percent from the organizer (e.g. "2.5" meaning 2.5%).
+          commission: formik.values.affiliate_program
+            ? Number(formik.values.commission) / 100
+            : null,
           socials: filteredSocials,
         };
         dispatch(addEvent(data));
@@ -678,7 +686,7 @@ const CreateEventPage = () => {
                       Enable Affiliate program
                     </p>
                     <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
-                      Affiliates will earn 0.01% per ticket sales
+                      Affiliates will earn {formik.values.commission || 0}% per ticket sale
                     </p>
                   </div>
                 </div>
@@ -706,7 +714,9 @@ const CreateEventPage = () => {
                   <Input
                     id="fullname"
                     type="number"
-                    placeholder=""
+                    min={0}
+                    max={100}
+                    placeholder="e.g. 2.5"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={formik.values.commission ?? ""}
                     onChange={(e) => {
