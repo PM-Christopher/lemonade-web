@@ -64,9 +64,11 @@ export interface PayoutHistoryItem {
 export interface WalletSettings {
   total_amount_earned_minor: number;
   total_amount_earned: string;
-  // Lifetime total from every reward source (referrals and event-affiliate links alike) —
-  // reward money is swept into the spendable wallet the moment it's earned, so this is a
-  // running history total, not a separate spendable balance.
+  // Current, unredeemed Points balance — a real separate balance, not spendable until
+  // redeemed (see RedeemPointsPayload below). Not included in wallet_balance.
+  points_balance: number;
+  // Lifetime total from every reward source (referrals and event-affiliate links alike),
+  // whether still held as Points or already redeemed — a running history total, not a balance.
   rewards_earned_minor: number;
   rewards_earned: string;
   monetized_tribes_minor: number;
@@ -85,6 +87,20 @@ export interface RewardsHistoryItem {
 
 export interface RewardsHistoryResponse {
   affiliate_history: RewardsHistoryItem[];
+}
+
+export interface RedeemPointsPayload {
+  // Omit to redeem every point currently available.
+  points?: number;
+  idempotency_key: string;
+}
+
+export interface RedeemPointsResponse {
+  points_redeemed: number;
+  amount_minor: number;
+  amount: string;
+  currency: string;
+  points_balance: number;
 }
 
 export interface RequestPayoutPayload {
@@ -150,4 +166,7 @@ export const settingsApi = {
 
   getRewardsHistory: () =>
     browserApi.get<RewardsHistoryResponse>(userWalletRoutes.AFFILIATE_HISTORY),
+
+  redeemPoints: (data: RedeemPointsPayload) =>
+    browserApi.post<RedeemPointsResponse>(userWalletRoutes.REDEEM_POINTS, data),
 };

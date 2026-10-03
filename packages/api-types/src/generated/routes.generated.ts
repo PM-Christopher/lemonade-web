@@ -166,6 +166,8 @@ export const adminUtilitiesRoutes = Object.freeze({
 
 export const adminWalletRoutes = Object.freeze({
   DASHBOARD: "/admin/wallet", // GET
+  POINTS_RATES_LIST: "/admin/wallet/points-rates", // GET
+  POINTS_RATES_UPDATE: "/admin/wallet/points-rates/{currency}", // PATCH
   UPDATE_WITHDRAWAL_THRESHOLD: "/admin/wallet/update-withdrawal-threshold", // PATCH
   USER_ADD: "/admin/wallet/user/{id}/add", // PATCH
   USER_DEDUCT: "/admin/wallet/user/{id}/deduct", // PATCH
@@ -401,6 +403,7 @@ export const userTribesRoutes = Object.freeze({
 export const userWalletRoutes = Object.freeze({
   AFFILIATE_HISTORY: "/user/wallet/affiliate-history", // GET
   EARNINGS: "/user/wallet/earnings", // GET
+  REDEEM_POINTS: "/user/wallet/redeem-points", // POST
   REFERRAL_HISTORY: "/user/wallet/referral-history", // GET
   TRIBE_HISTORY: "/user/wallet/tribe-history", // GET
 });

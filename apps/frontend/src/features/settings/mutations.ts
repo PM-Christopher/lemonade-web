@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { settingsApi, type CreateBankAccountPayload, type RequestPayoutPayload } from "./api";
+import {
+  settingsApi,
+  type CreateBankAccountPayload,
+  type RequestPayoutPayload,
+  type RedeemPointsPayload,
+} from "./api";
 import { settingsKeys } from "./queries";
 
 export function useRequestPayoutMutation() {
@@ -21,6 +26,19 @@ export function useCreateBankAccountMutation() {
   return useMutation({
     mutationFn: (data: CreateBankAccountPayload) => settingsApi.createBankAccount(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: settingsKeys.wallet() });
+    },
+  });
+}
+
+export function useRedeemPointsMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: RedeemPointsPayload) => settingsApi.redeemPoints(data),
+    onSuccess: () => {
+      // Never optimistic for money — invalidate and let the wallet query refetch the
+      // authoritative points balance and wallet balance.
       queryClient.invalidateQueries({ queryKey: settingsKeys.wallet() });
     },
   });

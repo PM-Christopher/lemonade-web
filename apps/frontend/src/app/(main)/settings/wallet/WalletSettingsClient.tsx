@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { useWalletSettingsQuery } from "@/features/settings/queries";
-import { useRequestPayoutMutation } from "@/features/settings/mutations";
+import { useRequestPayoutMutation, useRedeemPointsMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 // Off the initial bundle — only needed once "Request payout" is clicked
@@ -32,6 +32,7 @@ function WalletSettingsClient() {
     enabled: isLoggedIn,
   });
   const requestPayoutMutation = useRequestPayoutMutation();
+  const redeemPointsMutation = useRedeemPointsMutation();
   const profileLoading = requestPayoutMutation.isPending;
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -85,6 +86,35 @@ function WalletSettingsClient() {
     }
   };
 
+  const handleRedeemPoints = () => {
+    redeemPointsMutation.mutate(
+      // No points = "redeem everything available", matching how "Request pay out" treats an
+      // omitted amount. A fresh key per click — not reused across retries — so a genuine
+      // second redemption isn't mistaken for a replay of the first.
+      { idempotency_key: crypto.randomUUID() },
+      {
+        onSuccess: (result) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: `Redeemed ${result.points_redeemed} points for N${formatNumberWithCommas(Number(result.amount) || 0)}`,
+              type: "success",
+            }),
+          );
+        },
+        onError: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Something went wrong, please try again later",
+              type: "error",
+            }),
+          );
+        },
+      },
+    );
+  };
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
@@ -110,6 +140,23 @@ function WalletSettingsClient() {
                   <p className="tracking-custom text-[18px] font-semibold">
                     N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                   </p>
+                </div>
+                <div className="border-b-mid-grey flex items-center justify-between border-b p-4">
+                  <div className="flex flex-col">
+                    <p className="text-text-grey text-[14px] font-normal">Points balance</p>
+                    <p className="tracking-custom text-[18px] font-semibold">
+                      {formatNumberWithCommas(data?.points_balance || 0)} pts
+                    </p>
+                  </div>
+                  {(data?.points_balance ?? 0) > 0 && (
+                    <Button
+                      className="bg-light-tint h-9 rounded-xl px-4 text-[13px] font-semibold"
+                      onClick={handleRedeemPoints}
+                      disabled={redeemPointsMutation.isPending}
+                    >
+                      {redeemPointsMutation.isPending ? "Redeeming..." : "Redeem"}
+                    </Button>
+                  )}
                 </div>
                 <div className="flex justify-between p-4">
                   <div className="flex flex-col">

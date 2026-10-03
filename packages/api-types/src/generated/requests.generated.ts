@@ -317,6 +317,12 @@ export interface PushNotificationSettingsRequest {
   push_notification: boolean;
 }
 
+export interface RedeemRewardPointsRequest {
+  points?: number;
+  idempotency_key: string;
+  currency?: string;
+}
+
 export interface RegisterAdminDeviceTokenRequest {
   device_token: string;
   device_type?: string;
@@ -499,6 +505,10 @@ export interface UpdateForumStatusRequest {
     | "ACTIVE"
     | "INACTIVE"
     | "SUSPENDED";
+}
+
+export interface UpdatePointsRedemptionRateRequest {
+  rate: number;
 }
 
 export interface UpdatePromotionRequest {
