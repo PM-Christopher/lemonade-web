@@ -3,12 +3,12 @@
 // this follows: the BFF proxy transport (browserApi), not the pre-BFF
 // axiosInstance.
 //
-// NOTE: /admin/affiliates/{id} (EventController::affiliate), /admin/event-
-// promotions/{id} (eventPromotion), .../schedule and .../completed have no
-// real frontend consumer — events/[id]/affiliates/page.tsx and
-// events/[id]/promotions/page.tsx are fully static placeholders that don't
-// fetch anything. Not wired up here, matching the "only build what's
-// actually used" rule this migration has followed throughout.
+// NOTE: /admin/event-promotions/{id} (eventPromotion), .../schedule and
+// .../completed have no real frontend consumer — events/[id]/promotions/page.tsx
+// is still a fully static placeholder that doesn't fetch anything. Not wired
+// up here, matching the "only build what's actually used" rule this
+// migration has followed throughout. /admin/affiliates/{id} *is* wired up
+// now — see getEventAffiliateDetail below and events/[id]/affiliates/page.tsx.
 import { browserApi } from "@/lib/browser-api";
 import {
   adminEventsRoutes,
@@ -61,6 +61,53 @@ export interface EventAffiliatesResponse {
   affiliates: EventAffiliateListItem[];
   total_affiliate_earning: number;
   total_affiliates: number;
+}
+
+export interface EventAffiliateTicketBreakdown {
+  name: string;
+  count: number;
+  stock: number;
+  price: number;
+  stock_type: string;
+}
+
+export interface EventAffiliateTicketSoldBreakdown extends EventAffiliateTicketBreakdown {
+  percentage_sold: number;
+}
+
+export interface EventAffiliateProgram {
+  event_name: string;
+  start_date: string;
+  location: string | null;
+  affiliate_link: string;
+  isAffiliate: boolean;
+  commissions: EventAffiliateTicketBreakdown[];
+  ticket_sold: EventAffiliateTicketSoldBreakdown[];
+  breakdown: {
+    total_commissions: number;
+    ticket_sold: number;
+  };
+}
+
+export interface EventAffiliateDetail {
+  id: number;
+  unique_id: string;
+  name: string;
+  image: string | null;
+  date_joined: string;
+  programs: number;
+  tickets_sold: number;
+  total_revenue: number;
+  account: {
+    account_name: string;
+    bank_name: string;
+    account_number: string;
+  } | null;
+}
+
+export interface EventAffiliateDetailResponse {
+  affiliate: EventAffiliateDetail;
+  programs: EventAffiliateProgram[];
 }
 
 export interface EventPromotionQueueItem {
@@ -131,6 +178,9 @@ export const eventsApi = {
 
   getEventDetail: (id: string | number) =>
     browserApi.get<EventDetailResponse>(buildPath(adminEventsRoutes.SHOW, { id })),
+
+  getEventAffiliateDetail: (id: string | number) =>
+    browserApi.get<EventAffiliateDetailResponse>(buildPath(adminAffiliatesRoutes.SHOW, { id })),
 
   suspendEvent: (id: string | number) =>
     browserApi.patch<{ suspended: boolean }>(buildPath(adminEventsRoutes.SUSPEND, { id }), {}),

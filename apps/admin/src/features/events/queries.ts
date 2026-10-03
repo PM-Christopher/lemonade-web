@@ -7,6 +7,7 @@ export const eventKeys = {
   list: (trxType: string) => [...eventKeys.lists(), trxType] as const,
   details: () => [...eventKeys.all(), "detail"] as const,
   detail: (id: string | number) => [...eventKeys.details(), id] as const,
+  affiliateDetail: (id: string | number) => [...eventKeys.all(), "affiliate-detail", id] as const,
 };
 
 export const promotionKeys = {
@@ -34,6 +35,18 @@ export function useEventDetailQuery(
   return useQuery({
     queryKey: eventKeys.detail(id ?? 0),
     queryFn: () => eventsApi.getEventDetail(id as string | number),
+    staleTime: 30_000,
+    enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+export function useEventAffiliateDetailQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: eventKeys.affiliateDetail(id ?? 0),
+    queryFn: () => eventsApi.getEventAffiliateDetail(id as string | number),
     staleTime: 30_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });
