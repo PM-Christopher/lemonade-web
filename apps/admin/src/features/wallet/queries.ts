@@ -9,6 +9,7 @@ export const walletKeys = {
       ? ([...walletKeys.all(), "withdrawalRequests", page] as const)
       : ([...walletKeys.all(), "withdrawalRequests"] as const),
   detail: (id: string | number) => [...walletKeys.all(), "detail", id] as const,
+  pointsRates: () => [...walletKeys.all(), "points-rates"] as const,
 };
 
 /** Wallet revenue/threshold summary — money data, never stale. */
@@ -46,5 +47,15 @@ export function useWalletDetailQuery(
     queryFn: () => walletApi.getWalletDetail(id as string | number),
     staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+/** Admin-configurable rates — reference data, 1h bucket per CLAUDE.md's staleness table. */
+export function usePointsRatesQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: walletKeys.pointsRates(),
+    queryFn: walletApi.getPointsRates,
+    staleTime: 3_600_000,
+    enabled: options?.enabled,
   });
 }

@@ -8,21 +8,29 @@ import DataCard from "@/components/global/DataCard";
 import { walletHeaders } from "@/data/tableData";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
-import { useWalletDataQuery, useWithdrawalRequestsQuery } from "@/features/wallet/queries";
+import {
+  useWalletDataQuery,
+  useWithdrawalRequestsQuery,
+  usePointsRatesQuery,
+} from "@/features/wallet/queries";
 import type { WithdrawalRequestRow } from "@/features/wallet/api";
 import { RootState } from "@/redux/store";
 import dayjs from "dayjs";
 
-// Off the initial bundle — only needed once "Edit threshold" is clicked
+// Off the initial bundle — only needed once "Edit threshold"/"Edit" (points rate) is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
 const WalletThresholdModal = dynamic(
   () => import("@/modals/wallet-management/WalletThresholdModal"),
   { ssr: false },
 );
+const PointsRateModal = dynamic(() => import("@/modals/wallet-management/PointsRateModal"), {
+  ssr: false,
+});
 
 function WalletManagementClient() {
   const router = useRouter();
   const [editThreshold, setEditThreshold] = useState(false);
+  const [editingRateCurrency, setEditingRateCurrency] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 5; // Number of items per page
@@ -39,6 +47,8 @@ function WalletManagementClient() {
     perPage: itemsPerPage,
   });
   const { data: walletData } = useWalletDataQuery({ enabled: isLoggedIn });
+  const { data: pointsRatesData } = usePointsRatesQuery({ enabled: isLoggedIn });
+  const editingRate = pointsRatesData?.rates.find((rate) => rate.currency === editingRateCurrency);
 
   const isServerPaginated = Boolean(withdrawalRequests?.meta) && !isFiltering;
 
@@ -182,6 +192,16 @@ function WalletManagementClient() {
                 isEditable={true}
                 handleChange={toggleEditThreshold}
               />
+              {pointsRatesData?.rates.map((rate) => (
+                <DataCard
+                  key={rate.currency}
+                  title={`Points Rate (${rate.currency})`}
+                  count={rate.rate_minor_per_point / 100}
+                  isPrice={rate.currency === "NGN"}
+                  isEditable={true}
+                  handleChange={() => setEditingRateCurrency(rate.currency)}
+                />
+              ))}
             </div>
             <div className="rounded-lg bg-white shadow-md">
               <table className="min-w-full table-auto border-collapse">
@@ -269,6 +289,14 @@ function WalletManagementClient() {
         </div>
       </section>
       <WalletThresholdModal isOpen={editThreshold} toggle={toggleEditThreshold} />
+      {editingRate && (
+        <PointsRateModal
+          isOpen={Boolean(editingRateCurrency)}
+          toggle={() => setEditingRateCurrency(null)}
+          currency={editingRate.currency}
+          currentRate={String(editingRate.rate_minor_per_point / 100)}
+        />
+      )}
     </MainLayout>
   );
 }

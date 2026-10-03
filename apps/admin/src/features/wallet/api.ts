@@ -48,6 +48,16 @@ export interface WithdrawalRequests {
   meta?: PaginationMeta;
 }
 
+export interface PointsRate {
+  currency: string;
+  rate_minor_per_point: number;
+  is_default: boolean;
+}
+
+export interface PointsRatesResponse {
+  rates: PointsRate[];
+}
+
 export interface WalletDetail {
   info: Record<string, unknown> & {
     fullname?: string;
@@ -106,4 +116,12 @@ export const walletApi = {
 
   deductFromWallet: (id: unknown, amount: number) =>
     browserApi.patch(buildPath(adminWalletRoutes.USER_DEDUCT, { id: String(id) }), { amount }),
+
+  getPointsRates: () => browserApi.get<PointsRatesResponse>(adminWalletRoutes.POINTS_RATES_LIST),
+
+  // rate is major units of that currency per point (e.g. 1 for NGN's "100 points = ₦100") —
+  // the backend converts to minor units itself (Money::fromUnits), same convention as
+  // updateWithdrawalThreshold above.
+  updatePointsRate: (currency: string, rate: number) =>
+    browserApi.patch(buildPath(adminWalletRoutes.POINTS_RATES_UPDATE, { currency }), { rate }),
 };

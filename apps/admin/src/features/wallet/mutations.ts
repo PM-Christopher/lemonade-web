@@ -53,3 +53,15 @@ export function useDeductFromWalletMutation(id: string | number | undefined) {
     },
   });
 }
+
+export function useUpdatePointsRateMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ currency, rate }: { currency: string; rate: number }) =>
+      walletApi.updatePointsRate(currency, rate),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.pointsRates() });
+    },
+  });
+}
