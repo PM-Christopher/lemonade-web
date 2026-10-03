@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@lemonade/ui";
-import ReferralSideMenu from "@/components/settings/ReferralSideMenu";
-import AffiliateSideMenu from "@/components/settings/AffiliateSideMenu";
+import RewardsHistorySideMenu from "@/components/settings/RewardsHistorySideMenu";
 import PayoutModal from "@/components/settings/Modal/PayoutModal";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -34,17 +33,12 @@ function WalletSettingsClient() {
   });
   const requestPayoutMutation = useRequestPayoutMutation();
   const profileLoading = requestPayoutMutation.isPending;
-  const [isRefOpen, setIsRefOpen] = useState(false);
-  const [isAfOpen, setIsAfOpen] = useState(false);
+  const [isRewardsOpen, setIsRewardsOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isPOpen, setIsPOpen] = useState(false);
 
-  const toggleRefMenu = () => {
-    setIsRefOpen(!isRefOpen);
-  };
-
-  const toggleAfMenu = () => {
-    setIsAfOpen(!isAfOpen);
+  const toggleRewardsMenu = () => {
+    setIsRewardsOpen(!isRewardsOpen);
   };
 
   const toggleModal = () => {
@@ -94,8 +88,7 @@ function WalletSettingsClient() {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <ReferralSideMenu toggleMenu={toggleRefMenu} isOpen={isRefOpen} />
-        <AffiliateSideMenu isOpen={isAfOpen} toggleMenu={toggleAfMenu} />
+        <RewardsHistorySideMenu toggleMenu={toggleRewardsMenu} isOpen={isRewardsOpen} />
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
@@ -118,23 +111,14 @@ function WalletSettingsClient() {
                     N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                   </p>
                 </div>
-                <div className="border-b-mid-grey flex justify-between border-b p-4">
-                  <div className="flex flex-col">
-                    <p className="text-text-grey text-[14px] font-normal">Referral earnings</p>
-                    <p className="tracking-custom text-[18px] font-semibold">
-                      N{formatNumberWithCommas(Number(data?.referral_earnings) || 0)}
-                    </p>
-                  </div>
-                  <ChevronRight onClick={toggleRefMenu} className="cursor-pointer" />
-                </div>
                 <div className="flex justify-between p-4">
                   <div className="flex flex-col">
-                    <p className="text-text-grey text-[14px] font-normal">Affiliate earnings</p>
+                    <p className="text-text-grey text-[14px] font-normal">Rewards earned</p>
                     <p className="tracking-custom text-[18px] font-semibold">
-                      N{formatNumberWithCommas(Number(data?.affiliate_earnings) || 0)}
+                      N{formatNumberWithCommas(Number(data?.rewards_earned) || 0)}
                     </p>
                   </div>
-                  <ChevronRight onClick={toggleAfMenu} className="cursor-pointer" />
+                  <ChevronRight onClick={toggleRewardsMenu} className="cursor-pointer" />
                 </div>
               </div>
               {data?.payout_request && (

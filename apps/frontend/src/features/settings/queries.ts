@@ -7,6 +7,7 @@ export const settingsKeys = {
   wallet: () => [...settingsKeys.all(), "wallet"] as const,
   referral: () => [...settingsKeys.all(), "referral"] as const,
   referralActivity: () => [...settingsKeys.all(), "referral-activity"] as const,
+  rewardsHistory: () => [...settingsKeys.all(), "rewards-history"] as const,
 };
 
 // User-owned content — CLAUDE.md's 60s bucket.
@@ -45,6 +46,16 @@ export function useReferralActivityQuery(options?: { enabled?: boolean }) {
     queryKey: settingsKeys.referralActivity(),
     queryFn: settingsApi.getReferralActivity,
     staleTime: 60_000,
+    enabled: options?.enabled,
+  });
+}
+
+// Itemized reward history (every referral/affiliate credit) — money-adjacent, staleTime 0.
+export function useRewardsHistoryQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: settingsKeys.rewardsHistory(),
+    queryFn: settingsApi.getRewardsHistory,
+    staleTime: 0,
     enabled: options?.enabled,
   });
 }

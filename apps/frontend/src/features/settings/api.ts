@@ -15,7 +15,7 @@
 // individual profile-field edits) is still on the legacy useRequest hook or
 // untouched — tracked as its own follow-up.
 import { browserApi } from "@/lib/browser-api";
-import { userProfileRoutes } from "@lemonade/api-types/generated";
+import { userProfileRoutes, userWalletRoutes } from "@lemonade/api-types/generated";
 
 export interface UserProfile {
   id: number;
@@ -64,16 +64,27 @@ export interface PayoutHistoryItem {
 export interface WalletSettings {
   total_amount_earned_minor: number;
   total_amount_earned: string;
-  referral_earnings_minor: number;
-  referral_earnings: string;
-  affiliate_earnings_minor: number;
-  affiliate_earnings: string;
+  // Lifetime total from every reward source (referrals and event-affiliate links alike) —
+  // reward money is swept into the spendable wallet the moment it's earned, so this is a
+  // running history total, not a separate spendable balance.
+  rewards_earned_minor: number;
+  rewards_earned: string;
   monetized_tribes_minor: number;
   monetized_tribes: string;
   payout_history: PayoutHistoryItem[];
   withdrawal_threshold_minor: number;
   withdrawal_threshold: string;
   payout_request: boolean;
+}
+
+export interface RewardsHistoryItem {
+  amount_minor: number;
+  amount: string;
+  created_at: string;
+}
+
+export interface RewardsHistoryResponse {
+  affiliate_history: RewardsHistoryItem[];
 }
 
 export interface RequestPayoutPayload {
@@ -136,4 +147,7 @@ export const settingsApi = {
   getReferralSummary: () => browserApi.get<ReferralSummary>(userProfileRoutes.REFERRAL_SHOW),
 
   getReferralActivity: () => browserApi.get<ReferralActivity>(userProfileRoutes.REFERRAL_ACTIVITY),
+
+  getRewardsHistory: () =>
+    browserApi.get<RewardsHistoryResponse>(userWalletRoutes.AFFILIATE_HISTORY),
 };
