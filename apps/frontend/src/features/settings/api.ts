@@ -107,6 +107,21 @@ export interface CreateBankAccountResponse {
   bank_account: BankAccount;
 }
 
+export interface ReferralSummary {
+  referral_code: string;
+  // Relative path only (e.g. "signup?referral=CODE") — build the full shareable URL with
+  // NEXT_PUBLIC_APP_URL, the same pattern used for event affiliate links.
+  referral_path: string;
+  commission_percent: number;
+}
+
+export interface ReferralActivity {
+  total_amount_earned_minor: number;
+  total_amount_earned: string;
+  total_referrals: number;
+  total_subscribed_referrals: number;
+}
+
 export const settingsApi = {
   getUserProfile: () => browserApi.get<UserProfile>(userProfileRoutes.SHOW),
 
@@ -117,4 +132,8 @@ export const settingsApi = {
 
   createBankAccount: (data: CreateBankAccountPayload) =>
     browserApi.post<CreateBankAccountResponse>(userProfileRoutes.BANK_ACCOUNT_CREATE, data),
+
+  getReferralSummary: () => browserApi.get<ReferralSummary>(userProfileRoutes.REFERRAL_SHOW),
+
+  getReferralActivity: () => browserApi.get<ReferralActivity>(userProfileRoutes.REFERRAL_ACTIVITY),
 };

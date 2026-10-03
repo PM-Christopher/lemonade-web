@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useCookies } from "react-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
@@ -52,6 +52,7 @@ interface GoogleSignupResponse {
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const [, setCookie] = useCookies<string>(["token", "newToken"]);
   const [termOpen, setTermOpen] = React.useState(false);
@@ -70,6 +71,10 @@ export default function SignupPage() {
       email: "",
       fullname: "",
       password: "",
+      // Prefilled from a shared referral link (/signup?referral=CODE, the same relative-path
+      // format the backend's GetReferralSummary/GenerateAffiliateLink actions emit) — still
+      // editable so a user can type a friend's code manually instead.
+      referral_code: searchParams.get("referral") ?? "",
     },
     validationSchema: signupSchema,
     validateOnMount: true,
@@ -253,6 +258,23 @@ export default function SignupPage() {
                       Password must be at least 8 character long
                     </p>
                   )}
+                </div>
+                <div className="grid gap-2">
+                  <Label
+                    htmlFor="referral_code"
+                    className="text-text-grey font-sans text-[14px] font-normal"
+                  >
+                    Referral code (optional)
+                  </Label>
+                  <Input
+                    id="referral_code"
+                    type="text"
+                    placeholder="e.g. ABC123XYZ"
+                    value={formik.values.referral_code}
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
+                  />
                 </div>
                 <FormikButton
                   loading={formik.isSubmitting}

@@ -304,7 +304,6 @@ export interface ProfileSetupRequest {
   username: string;
   bio: string;
   industry: string;
-  referral_code?: string;
 }
 
 export interface PromoteEventRequest {

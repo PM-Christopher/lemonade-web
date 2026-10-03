@@ -18,6 +18,7 @@ export const signupSchema = yup.object({
   fullname: requiredTextField("fullname"),
   email: emailField,
   password: strongPasswordField(),
+  referral_code: optionalTextField(),
 });
 
 export const forgotPasswordSchema = yup.object({
@@ -45,7 +46,6 @@ export const profileSetupSchema = yup.object({
   bio: requiredTextField("bio"),
   username: requiredTextField("username"),
   industry: requiredTextField("industry"),
-  referral_code: optionalTextField(),
 });
 
 export const skillsInterestsSchema = yup.object({

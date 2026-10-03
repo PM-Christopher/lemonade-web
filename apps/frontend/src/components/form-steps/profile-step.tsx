@@ -33,7 +33,6 @@ interface ProfileFormValues {
   bio: string;
   username: string;
   industry: string;
-  referral_code: string;
 }
 
 interface LegacyAxiosError {
@@ -62,7 +61,6 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
       bio: "",
       username: "",
       industry: "",
-      referral_code: "",
     },
     validationSchema: profileSetupSchema,
     validateOnMount: true,
@@ -267,19 +265,6 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
             {formik.touched.industry && formik.errors.industry ? (
               <p className="text-[12px] text-[#FF8D8D]">{formik.errors.industry}</p>
             ) : null}
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password" className="font-label">
-              Referral code
-            </Label>
-            <Input
-              id="referral_code"
-              type="text"
-              className="form-font bg-light_grey h-12 rounded-xl border-0"
-              value={formik.values.referral_code}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-            />
           </div>
         </CardContent>
         <CardContent className="flex flex-col space-y-2">

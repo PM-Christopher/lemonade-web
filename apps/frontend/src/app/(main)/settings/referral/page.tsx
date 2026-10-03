@@ -139,6 +139,8 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import type { RootState } from "@/redux/store";
+import { useReferralSummaryQuery, useReferralActivityQuery } from "@/features/settings/queries";
+import { formatNumberWithCommas } from "@/lib/formatNumber";
 
 function ReferralSettingsPage() {
   const router = useRouter();
@@ -146,14 +148,21 @@ function ReferralSettingsPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 
+  const { data: referralSummary } = useReferralSummaryQuery();
+  const { data: referralActivity } = useReferralActivityQuery();
+
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
 
-  const referralLink = `https://app.lemonade.com/ref=?${user.username}`;
+  const referralLink = referralSummary
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/${referralSummary.referral_path}`
+    : "";
+  const commissionPercent = referralSummary?.commission_percent ?? 0;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(user?.username);
+    if (!referralLink) return;
+    navigator.clipboard.writeText(referralLink);
     alert("Referral link copied to clipboard!");
   };
 
@@ -264,13 +273,36 @@ function ReferralSettingsPage() {
             <div className="laptop:mt-6 laptop:w-[560px] mt-0 flex w-screen flex-col gap-2 rounded-xl bg-white p-6">
               <p className="text-[16px] font-semibold">Refer friends and earn</p>
 
+              {referralActivity && (
+                <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-[18px] font-bold">
+                      N{formatNumberWithCommas(Number(referralActivity.total_amount_earned) || 0)}
+                    </p>
+                    <p className="text-text-grey text-[12px] font-normal">Total earned</p>
+                  </div>
+                  <div>
+                    <p className="text-[18px] font-bold">{referralActivity.total_referrals}</p>
+                    <p className="text-text-grey text-[12px] font-normal">Referrals</p>
+                  </div>
+                  <div>
+                    <p className="text-[18px] font-bold">
+                      {referralActivity.total_subscribed_referrals}
+                    </p>
+                    <p className="text-text-grey text-[12px] font-normal">Subscribed</p>
+                  </div>
+                </div>
+              )}
+
               <div className="mt-6 flex flex-col">
                 <div className="flex gap-4">
                   <div className="bg-light-green-10 rounded-xl p-3">
                     <ReferralIcon className="h-6 w-6" />
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-[16px] font-semibold">2% of the subscription fee</p>
+                    <p className="text-[16px] font-semibold">
+                      {commissionPercent}% of the subscription fee
+                    </p>
                     <p className="text-text-grey text-[14px] font-normal">
                       When they subscribe to Membership
                     </p>
@@ -286,7 +318,9 @@ function ReferralSettingsPage() {
                     <ReferralIcon className="h-6 w-6" />
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-[16px] font-semibold">2% of the renewal fee</p>
+                    <p className="text-[16px] font-semibold">
+                      {commissionPercent}% of the renewal fee
+                    </p>
                     <p className="text-text-grey text-[14px] font-normal">
                       When they renew their Subscription
                     </p>
