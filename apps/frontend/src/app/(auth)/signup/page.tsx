@@ -18,17 +18,6 @@ import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import dynamic from "next/dynamic";
 
-function SocialMark({ src, label }: { src: string; label: string }) {
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
-        <Image src={src} alt="" width={24} height={24} />
-      </span>
-      <span className="text-meta text-text-grey">{label}</span>
-    </div>
-  );
-}
-
 // Off the initial bundle — only needed once a legal-document link is
 // clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
 const TermsOfUseModal = dynamic(() => import("@/components/TermsOfUseModal"), {
@@ -287,15 +276,11 @@ export default function SignupPage() {
                   <p className="text-text-grey text-body-s font-normal">Or continue with</p>
                   <div className="bg-border-grey h-px flex-1" />
                 </div>
-                <div className="flex items-start justify-center gap-6">
-                  <SocialMark src="/images/apple.png" label="Apple" />
-                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
+                {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
+                  <div className="flex items-start justify-center gap-6">
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
-                  ) : (
-                    <SocialMark src="/images/google.png" label="Google" />
-                  )}
-                  <SocialMark src="/images/facebook.png" label="Facebook" />
-                </div>
+                  </div>
+                ) : null}
               </CardContent>
               <CardFooter className="mt-2 flex justify-center">
                 <p className="text-body-s max-w-[22rem] text-center font-normal">
