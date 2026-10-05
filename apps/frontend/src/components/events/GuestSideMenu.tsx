@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense };
 import CloseIcon from "@/images/icons/close.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import DotIcon from "@/images/icons/dot.svg";
@@ -9,8 +9,11 @@ import { useAppDispatch } from "@/redux/hook";
 import CheckedInModal from "@/components/events/Modals/CheckedInModal";
 import { useCheckInGuestMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { ColorRing } from "react-loader-spinner";
 import CheckIcon from "@/images/icons/checkedFilledIcon.svg";
+
+const ColorRing = lazy(() =>
+  import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),
+);
 
 export interface GuestDetails {
   id?: number;
@@ -163,7 +166,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
                   disabled={checkInLoading}
                 >
                   {checkInLoading ? (
-                    <ColorRing
+                    <Suspense fallback={null}><ColorRing
                       visible={true}
                       height="30"
                       width="30"
@@ -171,7 +174,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
                       wrapperStyle={{}}
                       wrapperClass="color-ring-wrapper"
                       colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                    />
+                    /></Suspense>
                   ) : (
                     <p className={"text-[16px] font-medium"}>Check in</p>
                   )}

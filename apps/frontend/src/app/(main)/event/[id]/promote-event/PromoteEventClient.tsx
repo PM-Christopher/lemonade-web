@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense };
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input } from "@lemonade/ui";
 import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
@@ -10,8 +10,11 @@ import { usePromotionsQuery } from "@/features/events/queries";
 import { usePayForPromotionMutation } from "@/features/events/mutations";
 import { PromotionInterface } from "@/interfaces/EventInterface";
 import moment from "moment";
-import { ColorRing } from "react-loader-spinner";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+
+const ColorRing = lazy(() =>
+  import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),
+);
 
 function PromoteEventClient({ id }: { id: number }) {
   const router = useRouter();
@@ -222,7 +225,7 @@ function PromoteEventClient({ id }: { id: number }) {
                       disabled={promotionLoading || selectedPromotion === null}
                     >
                       {promotionLoading ? (
-                        <ColorRing
+                        <Suspense fallback={null}><ColorRing
                           visible={true}
                           height="30"
                           width="30"
@@ -230,7 +233,7 @@ function PromoteEventClient({ id }: { id: number }) {
                           wrapperStyle={{}}
                           wrapperClass="color-ring-wrapper"
                           colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                        />
+                        /></Suspense>
                       ) : (
                         <p className="font-semi-normal font-sans text-[16px] text-white">Pay now</p>
                       )}
