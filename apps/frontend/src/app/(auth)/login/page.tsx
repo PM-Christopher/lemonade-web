@@ -18,6 +18,21 @@ import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { axiosInstance } from "@/lib/axiosInstane";
 
+// Apple/Facebook sign-in have no backend integration yet (no OAuth app,
+// no route, no action) — commented out rather than deleted so the button
+// markup is ready the moment that work lands. See SocialMark's commented
+// call sites below.
+// function SocialMark({ src, label }: { src: string; label: string }) {
+//   return (
+//     <div className="flex flex-col items-center gap-2">
+//       <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
+//         <Image src={src} alt="" width={24} height={24} />
+//       </span>
+//       <span className="text-meta text-text-grey">{label}</span>
+//     </div>
+//   );
+// }
+
 interface GoogleLoginResponse {
   status?: number;
   message?: string;
@@ -268,11 +283,13 @@ export default function LoginPage() {
                   </p>
                   <div className="bg-border-grey h-0.5 w-[60px]" />
                 </div>
-                {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
-                  <div className="mt-4 flex items-start justify-center gap-6">
+                <div className="mt-4 flex items-start justify-center gap-6">
+                  {/* <SocialMark src="/images/apple.png" label="Apple" /> */}
+                  {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
-                  </div>
-                ) : null}
+                  ) : null}
+                  {/* <SocialMark src="/images/facebook.png" label="Facebook" /> */}
+                </div>
               </CardContent>
             </Card>
           </form>
