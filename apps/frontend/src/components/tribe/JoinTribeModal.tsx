@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";
@@ -6,8 +6,11 @@ import { useAppDispatch } from "@/redux/hook";
 import { useJoinTribeMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { ColorRing } from "react-loader-spinner";
 import type { TribeInterface } from "@/interfaces/TribeInterface";
+
+const ColorRing = lazy(() =>
+  import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),
+);
 
 type JoinTribeInterface = {
   toggle: () => void;
@@ -68,7 +71,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
                 disabled={tribeLoading}
               >
                 {tribeLoading ? (
-                  <ColorRing
+                  <Suspense fallback={null}><ColorRing
                     visible={true}
                     height="30"
                     width="30"
@@ -76,7 +79,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
                     wrapperStyle={{}}
                     wrapperClass="color-ring-wrapper"
                     colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                  />
+                  /></Suspense>
                 ) : (
                   <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
                     Join Tribe now
