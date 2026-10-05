@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, lazy, Suspense };
+import React, { useState, lazy, Suspense } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input } from "@lemonade/ui";
 import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";

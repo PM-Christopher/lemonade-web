@@ -1,4 +1,4 @@
-import React, { lazy, Suspense };
+import React, { lazy, Suspense } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import CheckedIcon from "@/images/icons/checkedIcon.svg";

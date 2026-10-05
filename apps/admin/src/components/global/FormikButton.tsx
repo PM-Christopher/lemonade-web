@@ -1,5 +1,5 @@
 "use client";
-import React, { lazy, Suspense };
+import React, { lazy, Suspense } from "react";
 
 const ColorRing = lazy(() =>
   import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),

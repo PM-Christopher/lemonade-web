@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense };
+import React, { useState, lazy, Suspense } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import DotIcon from "@/images/icons/dot.svg";
