@@ -51,7 +51,7 @@
     "react": "^19",
     "react-cookie": "^8.1.2",
     "react-copy-to-clipboard": "^5.1.0",
-    "react-datepicker": "^7.5.0",
+    "react-datepicker": "^9.1.0",
     "react-dom": "^19",
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.6.1",
