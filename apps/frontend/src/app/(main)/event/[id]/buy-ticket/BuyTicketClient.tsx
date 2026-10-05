@@ -1,5 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
@@ -14,10 +15,14 @@ import { addTickets } from "@/features/events/event.slice";
 import { useEventTicketDataQuery } from "@/features/events/queries";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronUp } from "lucide-react";
-import TicketSummary from "@/components/events/Modals/TicketSummary";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { EventTicketDetailSkeleton } from "@/components/Skeletons";
 import { getSafeImageSrc } from "@/lib/helper";
+
+const TicketSummary = dynamic(
+  () => import("@/components/events/Modals/TicketSummary"),
+  { ssr: false },
+);
 
 const BuyTicketClient = ({ id }: { id: number }) => {
   const router = useRouter();

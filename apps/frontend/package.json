@@ -42,7 +42,7 @@
     "dayjs": "^1.11.13",
     "firebase": "^12.2.1",
     "formik": "^2.4.6",
-    "framer-motion": "^11.11.11",
+    "framer-motion": "^13.5.1",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.438.0",
     "moment": "^2.31.0",
