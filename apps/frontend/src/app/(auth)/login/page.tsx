@@ -18,20 +18,22 @@ import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { axiosInstance } from "@/lib/axiosInstane";
 
-// Apple/Facebook sign-in have no backend integration yet (no OAuth app,
-// no route, no action) — commented out rather than deleted so the button
-// markup is ready the moment that work lands. See SocialMark's commented
-// call sites below.
-// function SocialMark({ src, label }: { src: string; label: string }) {
-//   return (
-//     <div className="flex flex-col items-center gap-2">
-//       <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
-//         <Image src={src} alt="" width={24} height={24} />
-//       </span>
-//       <span className="text-meta text-text-grey">{label}</span>
-//     </div>
-//   );
-// }
+// Visual-only placeholder. Used for Google before NEXT_PUBLIC_GOOGLE_CLIENT_ID
+// is set — GoogleAuthButton's useGoogleLogin() calls Google's own script
+// unconditionally once it loads, and that script throws on an empty
+// client_id, so the real button can't safely mount yet. Also kept around,
+// commented out at its call sites below, for Apple/Facebook, which have no
+// backend integration at all (no OAuth app, no route, no action).
+function SocialMark({ src, label }: { src: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
+        <Image src={src} alt="" width={24} height={24} />
+      </span>
+      <span className="text-meta text-text-grey">{label}</span>
+    </div>
+  );
+}
 
 interface GoogleLoginResponse {
   status?: number;
@@ -287,7 +289,9 @@ export default function LoginPage() {
                   {/* <SocialMark src="/images/apple.png" label="Apple" /> */}
                   {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
-                  ) : null}
+                  ) : (
+                    <SocialMark src="/images/google.png" label="Google" />
+                  )}
                   {/* <SocialMark src="/images/facebook.png" label="Facebook" /> */}
                 </div>
               </CardContent>
