@@ -17,15 +17,15 @@
     "@typescript-eslint/parser": "^8.70.1",
     "eslint": "^10.11.0",
     "eslint-config-next": "16.3.7",
-    "eslint-plugin-boundaries": "^5.0.1",
+    "eslint-plugin-boundaries": "^7.2.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.7.2",
-    "vite": "^8.0.0",
-    "vitest": "^5.0.3",
+    "vite": "^8.3.2",
+    "vitest": "5.0.3",
     "@vitest/coverage-v8": "^4.1.0"
   }
 }

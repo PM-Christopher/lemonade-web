@@ -1,6 +1,9 @@
 "use client";
-import React from "react";
-import { ColorRing } from "react-loader-spinner";
+import React, { lazy, Suspense } from "react";
+
+const ColorRing = lazy(() =>
+  import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),
+);
 
 interface FormikButtonProps {
   loading?: boolean;
@@ -35,15 +38,17 @@ export const FormikButton = ({
     >
       {loading ? (
         <div className="flex items-center justify-center">
-          <ColorRing
-            visible={true}
-            height="30"
-            width="30"
-            ariaLabel="color-ring-loading"
-            wrapperStyle={{}}
-            wrapperClass="color-ring-wrapper"
-            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-          />
+          <Suspense fallback={null}>
+            <ColorRing
+              visible={true}
+              height="30"
+              width="30"
+              ariaLabel="color-ring-loading"
+              wrapperStyle={{}}
+              wrapperClass="color-ring-wrapper"
+              colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+            />
+          </Suspense>
         </div>
       ) : (
         <span className="font-sans font-semibold text-white">{title}</span>
