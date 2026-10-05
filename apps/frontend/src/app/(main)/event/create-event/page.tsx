@@ -590,7 +590,7 @@ const CreateEventPage = () => {
                       <CalendarIcon />
                       <DatePicker
                         selected={formik.values.end_date ? new Date(formik.values.end_date) : null}
-                        onChange={(date) => {
+                        onChange={(date: Date | null) => {
                           if (date) {
                             const localDate = new Date(
                               date.getTime() - date.getTimezoneOffset() * 60000,
@@ -624,7 +624,7 @@ const CreateEventPage = () => {
                         selected={
                           formik.values.end_time ? timeStringToDate(formik.values.end_time) : null
                         }
-                        onChange={(date) => {
+                        onChange={(date: Date | null) => {
                           if (date) {
                             formik.setFieldValue(
                               "end_time",
