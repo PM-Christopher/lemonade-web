@@ -68,7 +68,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@types/country-list": "^2.1.4",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^19",
