@@ -264,39 +264,37 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
+  const { setFieldValue } = formik;
   useEffect(() => {
     if (user) {
       switch (type) {
         case "username":
-          formik.setFieldValue("username", user.username);
+          setFieldValue("username", user.username);
           break;
         case "bio":
-          formik.setFieldValue("bio", user.bio);
+          setFieldValue("bio", user.bio);
           break;
         case "industry":
-          formik.setFieldValue("industry", user.industry);
+          setFieldValue("industry", user.industry);
           break;
         case "skills-interest":
-          formik.setFieldValue("skills", user.skills);
-          formik.setFieldValue("interests", user.interests);
+          setFieldValue("skills", user.skills);
+          setFieldValue("interests", user.interests);
           break;
         case "addresses":
-          formik.setFieldValue("address", user.address?.address);
-          formik.setFieldValue("city", user.address?.city);
-          formik.setFieldValue("country", user.address?.country);
-          formik.setFieldValue("state", user.address?.state);
+          setFieldValue("address", user.address?.address);
+          setFieldValue("city", user.address?.city);
+          setFieldValue("country", user.address?.country);
+          setFieldValue("state", user.address?.state);
           break;
         case "socials":
-          formik.setFieldValue("socials", user.socials);
+          setFieldValue("socials", user.socials);
           break;
         default:
           break;
       }
     }
-    // formik is recreated on every keystroke — adding it here would
-    // re-run this sync on every render, fighting the user's own edits.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, type]);
+  }, [user, type, setFieldValue]);
 
   const getSocialUrl = (platform: string) => {
     const social = user.socials?.find((s) => s.name === platform);

@@ -39,11 +39,7 @@ function ForumClient() {
 
   useEffect(() => {
     setSearchParams({ search: debouncedValue || undefined, page: undefined });
-    // setSearchParams's identity changes on every navigation — including it
-    // here would re-run this effect after every push and push again in a
-    // loop (same reasoning as events/EventsClient.tsx).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValue]);
+  }, [debouncedValue, setSearchParams]);
 
   const { data: queue } = useModerationQueueQuery({ enabled: isLoggedIn });
   const { data: content } = useModerationContentQuery(

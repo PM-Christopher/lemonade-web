@@ -8,7 +8,7 @@ import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutati
 
 interface FcmContextProps {
   fcmToken: string | null;
-  notification: string | null;
+  notification: MessagePayload["notification"] | null;
 }
 
 export const FcmContext = createContext<FcmContextProps>({
@@ -48,10 +48,10 @@ export const onForegroundMessage = () =>
 
 export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
-  const [notification, setNotification] = useState<any | null>(null);
+  const [notification, setNotification] = useState<MessagePayload["notification"] | null>(null);
   const [showToaster, setShowToaster] = useState(false);
   const { isLoggedIn, admin } = useAppSelector((state) => state.auth);
-  const registerDeviceTokenMutation = useRegisterDeviceTokenMutation();
+  const { mutate: registerDeviceToken } = useRegisterDeviceTokenMutation();
   // The device-token endpoint requires a real admin session — registering
   // before login 401s, and registering again on every render would spam
   // the backend for no reason, so this tracks the (token, admin) pair
@@ -66,7 +66,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
     if (registeredFor.current === registrationKey) return;
     registeredFor.current = registrationKey;
 
-    registerDeviceTokenMutation.mutate(
+    registerDeviceToken(
       { device_token: fcmToken, device_type: "web" },
       {
         onError: () => {
@@ -76,12 +76,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
         },
       },
     );
-    // registerDeviceTokenMutation's identity changes on every render (a
-    // fresh useMutation() object) — depending on it here would re-run
-    // this effect in a loop. The ref guard above is what actually
-    // prevents duplicate sends, not the dependency array.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fcmToken, isLoggedIn, admin?.id]);
+  }, [fcmToken, isLoggedIn, admin?.id, registerDeviceToken]);
 
   useEffect(() => {
     if (!messaging) return;
@@ -101,7 +96,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const unsubscribe = onMessage(activeMessaging, (payload: MessagePayload) => {
-      setNotification(payload?.notification);
+      setNotification(payload?.notification ?? null);
       setShowToaster(true);
 
       toast.custom(

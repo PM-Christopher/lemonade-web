@@ -106,12 +106,7 @@ function UsersClient() {
     // Reset to page 1 on a new search — same "reset pagination on search"
     // behavior this used to do with local currentPage state.
     setSearchParams({ q: debouncedValue, page: undefined });
-    // setSearchParams's identity changes on every navigation (it depends on
-    // useSearchParams()'s live searchParams — see hooks/useSearchParams.ts),
-    // so including it here would re-run this effect after every push and
-    // push again, in a loop.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValue]);
+  }, [debouncedValue, setSearchParams]);
 
   useEffect(() => {
     if (!["", "status"].includes(status)) {
@@ -121,8 +116,7 @@ function UsersClient() {
         setSearchParams({ status, page: undefined });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, setSearchParams]);
 
   return (
     <MainLayout>

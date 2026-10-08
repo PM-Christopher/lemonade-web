@@ -150,28 +150,23 @@ const EditBusinessClient = ({ id }: { id: number }) => {
     },
   });
 
+  const { setFieldValue } = formik;
   useEffect(() => {
     if (data?.business) {
-      formik.setFieldValue("image", data?.business?.image);
-      formik.setFieldValue("name", data?.business?.name);
-      formik.setFieldValue("categories", data?.business?.categories);
-      formik.setFieldValue("description", data?.business?.description);
-      formik.setFieldValue("city", data?.business?.city);
-      formik.setFieldValue("country", data?.business?.country);
-      formik.setFieldValue("services", data?.business?.services);
-      formik.setFieldValue("service_rate", data?.business?.service_rate);
-      formik.setFieldValue("gallery", data?.business?.gallery);
-      formik.setFieldValue("email", data?.business?.email);
-      formik.setFieldValue("phone_number", data?.business?.phone_number);
-      formik.setFieldValue("website_url", data?.business?.website_url);
+      setFieldValue("image", data?.business?.image);
+      setFieldValue("name", data?.business?.name);
+      setFieldValue("categories", data?.business?.categories);
+      setFieldValue("description", data?.business?.description);
+      setFieldValue("city", data?.business?.city);
+      setFieldValue("country", data?.business?.country);
+      setFieldValue("services", data?.business?.services);
+      setFieldValue("service_rate", data?.business?.service_rate);
+      setFieldValue("gallery", data?.business?.gallery);
+      setFieldValue("email", data?.business?.email);
+      setFieldValue("phone_number", data?.business?.phone_number);
+      setFieldValue("website_url", data?.business?.website_url);
     }
-
-    // formik's returned object is recreated on every keystroke (it embeds
-    // current values/errors), so adding it here would re-run this sync
-    // — and re-run setFieldValue — on every render, fighting the user's
-    // own edits. This effect must only fire when the loaded record changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.business]);
+  }, [data?.business, setFieldValue]);
 
   return (
     <MainLayout>

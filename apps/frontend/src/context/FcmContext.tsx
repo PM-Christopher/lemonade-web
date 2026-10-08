@@ -56,7 +56,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const authReady = useAuthReady();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
-  const registerDeviceTokenMutation = useRegisterDeviceTokenMutation();
+  const { mutate: registerDeviceToken } = useRegisterDeviceTokenMutation();
   // Remember which user + device token we already registered.
   const registeredFor = useRef<string | null>(null);
 
@@ -71,7 +71,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
     if (registeredFor.current === registrationKey) return;
     registeredFor.current = registrationKey;
 
-    registerDeviceTokenMutation.mutate(
+    registerDeviceToken(
       { device_token: fcmToken, device_type: "web" },
       {
         onError: () => {
@@ -80,9 +80,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
         },
       },
     );
-    // Mutation identity changes every render; the ref above blocks duplicates.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canRegisterDeviceToken, fcmToken, user?.id]);
+  }, [canRegisterDeviceToken, fcmToken, user?.id, registerDeviceToken]);
 
   useEffect(() => {
     if (!messaging) return;

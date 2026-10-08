@@ -14,6 +14,7 @@ function FindEventSubMenu() {
   const searchAffiliateEventsMutation = useSearchAffiliateEventsMutation();
   const affiliateEvents = searchAffiliateEventsMutation.data?.events ?? [];
   const loading = searchAffiliateEventsMutation.isPending;
+  const { reset: resetSearch } = searchAffiliateEventsMutation;
 
   const isEmpty = search.trim().length === 0;
 
@@ -22,10 +23,8 @@ function FindEventSubMenu() {
   }
 
   useEffect(() => {
-    if (isEmpty) searchAffiliateEventsMutation.reset();
-    // reset()'s identity changes with the mutation object.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEmpty]);
+    if (isEmpty) resetSearch();
+  }, [isEmpty, resetSearch]);
 
   const handleSearch = () => {
     const term = search.trim();

@@ -1,45 +1,30 @@
 import { useNavigation } from "@/hooks/useNavigation";
-import { useSearchParams as useNextSearchParams, usePathname } from "next/navigation";
+import { useSearchParams as useNextSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
-// For use in only normal client components
+// URL search params plus a stable setter for client components.
 const useSearchParams = () => {
   const searchParams = useNextSearchParams();
-  const pathname = usePathname();
   const { push } = useNavigation();
 
-  // Function to create a new query string with multiple search parameters
-  const createQueryString = useCallback(
-    (paramsObject: Record<string, string | undefined>) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      // Loop through the object and set each search param
-      Object.keys(paramsObject).forEach((key) => {
-        const value = paramsObject[key];
-        if (value) {
-          params.set(key, value);
-        } else {
-          params.delete(key); // Remove param if value is undefined or empty
-        }
-      });
-
-      return params.toString();
-    },
-    [searchParams],
-  );
-
-  // Function to update the search parameters with an object of key-value pairs
+  // Reads the live URL at call time so the setter's identity never changes.
   const setSearchParams = useCallback(
     (paramsObject: Record<string, string | undefined>) => {
-      const newQueryString = createQueryString(paramsObject);
-      // Already there — a push of the current path refreshes the page, and
-      // the search effects call this on mount with an empty value.
-      if (newQueryString === searchParams.toString()) return;
-      // An empty query must be the bare path. Pushing "/transactions?" leaves
-      // the previous search params in place, so a tab switch never leaves page=2.
-      push(newQueryString ? `${pathname}?${newQueryString}` : pathname);
+      const params = new URLSearchParams(window.location.search);
+      const current = params.toString();
+      Object.entries(paramsObject).forEach(([key, value]) => {
+        if (value) params.set(key, value);
+        else params.delete(key);
+      });
+
+      const next = params.toString();
+      // Skip a no-op push, which would refresh the page.
+      if (next === current) return;
+      // An empty query must be the bare path, or old params linger.
+      const { pathname } = window.location;
+      push(next ? `${pathname}?${next}` : pathname);
     },
-    [createQueryString, push, pathname, searchParams],
+    [push],
   );
 
   return { searchParams, setSearchParams };
