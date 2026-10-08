@@ -1,4 +1,6 @@
 import React from "react";
+import Image from "next/image";
+import { images } from "@/lib/images";
 
 // Define the type for table props
 interface TableProps {
@@ -63,16 +65,18 @@ const GlobalTable: React.FC<TableProps> = ({
                 {Object.keys(row).map((key, cellIdx) => (
                   <td
                     className={`p-4 font-sans text-sm font-medium ${
-                      key === "status" || "STATUS" ? getStatusClass(String(row[key])) : ""
+                      key === "status" || key === "STATUS" ? getStatusClass(String(row[key])) : ""
                     }`}
                     key={cellIdx}
                   >
                     {key === "avatar" ? (
                       <div className="flex items-center gap-2">
-                        <img
-                          src={(row[key] as string) || "https://via.placeholder.com/40"}
+                        <Image
+                          src={(row[key] as string) || images.AVATAR_1}
                           alt="avatar"
-                          className="h-8 w-8 rounded-full"
+                          width={32}
+                          height={32}
+                          className="h-8 w-8 rounded-full object-cover"
                         />
                         {row.fullName}
                       </div>

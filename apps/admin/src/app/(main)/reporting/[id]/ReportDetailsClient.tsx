@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import Image from "next/image";
+import { images } from "@/lib/images";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -165,11 +167,15 @@ function ReportDetailsClient({ id }: { id: string }) {
             {event ? (
               <div className="space-y-4">
                 {/* Event Image */}
-                <img
-                  src={event.event_image}
-                  alt={event.event_name}
-                  className="h-64 w-full rounded-xl object-cover"
-                />
+                {event.event_image && (
+                  <Image
+                    src={event.event_image}
+                    alt={event.event_name ?? "event"}
+                    width={672}
+                    height={256}
+                    className="h-64 w-full rounded-xl object-cover"
+                  />
+                )}
 
                 {/* Event Info */}
                 <div>
@@ -181,9 +187,11 @@ function ReportDetailsClient({ id }: { id: string }) {
 
                 {/* Organizer */}
                 <div className="flex items-center gap-3">
-                  <img
-                    src={event.owner?.image}
-                    alt={event.owner?.fullname}
+                  <Image
+                    src={event.owner?.image || images.AVATAR_1}
+                    alt={event.owner?.fullname ?? "organizer"}
+                    width={40}
+                    height={40}
                     className="h-10 w-10 rounded-full object-cover"
                   />
                   <p className="font-medium text-gray-700">{event.owner?.fullname}</p>

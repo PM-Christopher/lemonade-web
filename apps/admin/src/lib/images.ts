@@ -8,6 +8,7 @@ export const images = {
   MEDAL: "/images/medal.png",
   VERIFIED: "/images/verified.png",
   UPLOAD: "/images/upload.png",
+  AVATAR_1: "/images/avatar_1.png",
 } as const;
 
 export type AppImage = (typeof images)[keyof typeof images];
