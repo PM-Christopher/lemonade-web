@@ -1,13 +1,4 @@
-// Endpoint layer for the user domain — see features/team/api.ts for the
-// pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
-//
-// NOTE (found, not fixed — preserving exact current behavior per this
-// migration's own rule): getAccountInfo's "business" case hits the same
-// user-logs endpoint as "activities-log". This isn't unfinished routing —
-// there's no user-business route registered on the backend at all
-// (UserController::userBusiness exists but nothing in routes/v1/admin/users.php
-// wires it up), so falling through to user-logs is the only sensible choice.
+// Endpoints for the user domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { adminUsersRoutes, buildPath } from "@lemonade/api-types/generated";
 

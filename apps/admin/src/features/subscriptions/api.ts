@@ -1,6 +1,4 @@
-// Endpoint layer for the subscriptions domain — see features/team/api.ts for
-// the pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
+// Endpoints for the subscriptions domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { adminSubscriptionsRoutes, buildPath } from "@lemonade/api-types/generated";
 

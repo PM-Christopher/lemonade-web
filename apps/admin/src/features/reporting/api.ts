@@ -1,10 +1,4 @@
-// Endpoint layer for the reporting domain — see features/dashboard/api.ts
-// for the pattern this follows: the BFF proxy transport (browserApi), not
-// the pre-BFF axiosInstance.
-//
-// markCompleted takes no request body on the backend (see
-// lemonade-backend's ReportController::markCompleted) — the argument-free
-// PATCH below is correct, not a placeholder.
+// Endpoints for the reporting domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { adminReportsRoutes, buildPath } from "@lemonade/api-types/generated";
 

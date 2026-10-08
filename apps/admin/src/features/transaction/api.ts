@@ -1,16 +1,4 @@
-// Endpoint layer for the transaction domain — see features/dashboard/api.ts
-// for the pattern this follows: the BFF proxy transport (browserApi), not
-// the pre-BFF axiosInstance.
-//
-// boosting/services/promotions used to all route to PLAN_SUBSCRIPTION (found
-// during the pagination migration, fixed here) — the backend has always had
-// dedicated /admin/transaction/{boosts,services,promotions} routes, they were
-// just never wired up on this side.
-//
-// Wallet-withdrawal detail is deliberately NOT duplicated here —
-// adminTransactionRoutes.WALLET_WITHDRAWAL is the exact same endpoint the
-// already-migrated wallet domain's useWalletDetailQuery already calls; the
-// wallet-details consumer page below reuses that hook instead.
+// Endpoints for the transaction domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { adminTransactionRoutes, buildPath } from "@lemonade/api-types/generated";
 

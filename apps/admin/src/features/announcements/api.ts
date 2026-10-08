@@ -1,6 +1,4 @@
-// Endpoint layer for the announcements domain — see features/dashboard/api.ts
-// for the pattern this follows: the BFF proxy transport (browserApi), not
-// the pre-BFF axiosInstance.
+// Endpoints for the announcements domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { adminAnnouncementRoutes, buildPath } from "@lemonade/api-types/generated";
 

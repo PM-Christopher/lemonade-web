@@ -1,11 +1,4 @@
-// Endpoint layer for the businesses domain — see features/team/api.ts for
-// the pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
-//
-// Contract verified against lemonade-backend directly (not guessed):
-// app/Http/Controllers/Api/V1/Admin/BusinessController.php,
-// app/Http/Resources/Admin/AdminBusinessResource.php,
-// app/Actions/Business/*.php, app/Enums/Shared/BusinessStatusEnum.php.
+// Endpoints for the businesses domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { adminBusinessesRoutes, buildPath } from "@lemonade/api-types/generated";
 

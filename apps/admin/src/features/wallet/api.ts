@@ -1,6 +1,4 @@
-// Endpoint layer for the wallet domain — see features/dashboard/api.ts for
-// the pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
+// Endpoints for the wallet domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import {
   adminWalletRoutes,

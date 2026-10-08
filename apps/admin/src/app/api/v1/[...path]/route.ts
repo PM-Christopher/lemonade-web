@@ -7,8 +7,7 @@
 // Multipart (file upload) bodies are forwarded byte-for-byte with the
 // original Content-Type (boundary included) rather than parsed — this
 // proxy doesn't need to know what's inside an upload, only pass it through.
-// This matters now that lib/axiosInstane.ts routes everything through this
-// proxy, uploads included.
+// Browser uploads go through this proxy too.
 //
 // Both apps are on Next 15 now (Phase 3) — route handler `params` are async
 // in both. See the frontend equivalent of this file.

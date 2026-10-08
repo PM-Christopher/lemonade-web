@@ -1,6 +1,4 @@
-// Endpoint layer for the tribes domain — see features/team/api.ts for the
-// pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
+// Endpoints for the tribes domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import {
   adminTribesRoutes,

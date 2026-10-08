@@ -1,14 +1,4 @@
-// Endpoint layer for the events domain (covers what event.slice.ts and
-// promotion.slice.ts used to own) — see features/team/api.ts for the pattern
-// this follows: the BFF proxy transport (browserApi), not the pre-BFF
-// axiosInstance.
-//
-// NOTE: /admin/event-promotions/{id} (eventPromotion), .../schedule and
-// .../completed have no real frontend consumer — events/[id]/promotions/page.tsx
-// is still a fully static placeholder that doesn't fetch anything. Not wired
-// up here, matching the "only build what's actually used" rule this
-// migration has followed throughout. /admin/affiliates/{id} *is* wired up
-// now — see getEventAffiliateDetail below and events/[id]/affiliates/page.tsx.
+// Endpoints for the events domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import {
   adminEventsRoutes,

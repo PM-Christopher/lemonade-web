@@ -1,15 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { createSlice } from "@reduxjs/toolkit";
 import { UserInterface } from "@/interfaces/SystemInterface";
 import type { CurrentAdmin } from "./api";
-
-// Shaped like the one axios error field these catch blocks actually read
-// — importing AxiosError itself would trip this app's own
-// no-restricted-imports rule (axios is only allowed inside
-// lib/axiosInstane.ts's wrapper).
-interface RequestError {
-  response?: { data: unknown };
-}
 
 interface authState {
   user: UserInterface | null;
@@ -20,7 +11,6 @@ interface authState {
   adminToken: string | null;
   isLoggedIn: boolean;
   plan: Record<string, unknown> | null;
-  appSettings: Record<string, unknown> | null;
 }
 
 const initialState: authState = {
@@ -32,121 +22,7 @@ const initialState: authState = {
   authToken: null,
   isLoggedIn: false,
   plan: null,
-  appSettings: null,
 };
-
-const updateUserData = createAsyncThunk(
-  "auth/updateUser",
-  async (
-    { data, token, url }: { data: Record<string, unknown>; token: string; url: string },
-    { rejectWithValue },
-  ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    try {
-      const response = await axiosInstance.patch(`${url}`, data, { headers });
-      return response.data;
-    } catch (err: unknown) {
-      const requestError = err as RequestError;
-      if (!requestError.response) {
-        throw err;
-      }
-      return rejectWithValue(requestError.response.data);
-    }
-  },
-);
-
-const changePassword = createAsyncThunk(
-  "auth/changePassword",
-  async (
-    { data, token }: { data: Record<string, unknown>; token: string },
-    { rejectWithValue },
-  ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    try {
-      const response = await axiosInstance.patch(`/profile/settings/change-password`, data, {
-        headers,
-      });
-      return response.data;
-    } catch (err: unknown) {
-      const requestError = err as RequestError;
-      if (!requestError.response) {
-        throw err;
-      }
-      return rejectWithValue(requestError.response.data);
-    }
-  },
-);
-
-const deleteAccount = createAsyncThunk(
-  "auth/deleteAccount",
-  async (
-    { data, token }: { data: Record<string, unknown>; token: string },
-    { rejectWithValue },
-  ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-
-    try {
-      const response = await axiosInstance.post(`/profile/settings/delete-account`, data, {
-        headers,
-      });
-      return response.data;
-    } catch (err: unknown) {
-      const requestError = err as RequestError;
-      if (!requestError.response) {
-        throw err;
-      }
-      return rejectWithValue(requestError.response.data);
-    }
-  },
-);
-
-const updateAppSettings = createAsyncThunk(
-  "auth/updateAppSettings",
-  async (
-    { data, token }: { data: Record<string, unknown>; token: string },
-    { rejectWithValue },
-  ) => {
-    const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-    try {
-      const response = await axiosInstance.patch(
-        `/profile/notification-settings/update-all-notification`,
-        data,
-        { headers },
-      );
-      return response.data;
-    } catch (err: unknown) {
-      const requestError = err as RequestError;
-      if (!requestError.response) {
-        throw err;
-      }
-      return rejectWithValue(requestError.response.data);
-    }
-  },
-);
-
-// logout used to live here as a createAsyncThunk, calling `/profile/logout`
-// — missing the `/admin/` prefix, a route that never existed. Replaced by
-// useLogoutMutation() in features/authentication/mutations.ts (TanStack
-// Query), which calls the now-real /api/auth/logout -> POST
-// /v1/admin/auth/logout.
 
 const authSlice = createSlice({
   name: "auth",
@@ -198,52 +74,6 @@ const authSlice = createSlice({
       state.plan = action.payload.plan;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(updateUserData.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(updateUserData.fulfilled, (state, { payload }) => {
-      state.loading = false;
-      state.user = payload.data.user;
-    });
-    builder.addCase(updateUserData.rejected, (state) => {
-      state.loading = false;
-    });
-
-    builder.addCase(changePassword.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(changePassword.fulfilled, (state) => {
-      state.loading = false;
-    });
-    builder.addCase(changePassword.rejected, (state) => {
-      state.loading = false;
-    });
-
-    builder.addCase(deleteAccount.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(deleteAccount.fulfilled, (state) => {
-      state.loading = false;
-      state.user = null;
-      state.authToken = null;
-      state.isLoggedIn = false;
-    });
-    builder.addCase(deleteAccount.rejected, (state) => {
-      state.loading = false;
-    });
-
-    builder.addCase(updateAppSettings.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(updateAppSettings.fulfilled, (state, { payload }) => {
-      state.loading = false;
-      state.appSettings = payload.data.appSettings;
-    });
-    builder.addCase(updateAppSettings.rejected, (state) => {
-      state.loading = false;
-    });
-  },
 });
 
 export const {
@@ -260,7 +90,5 @@ export const {
   updateUser,
   setSubscriptionId,
 } = authSlice.actions;
-
-export { updateUserData, changePassword, deleteAccount, updateAppSettings };
 
 export default authSlice.reducer;
