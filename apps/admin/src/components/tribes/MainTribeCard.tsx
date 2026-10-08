@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import { DotIcon, Trash2Icon } from "lucide-react";
@@ -14,7 +15,7 @@ const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Image
-            src={thread.user?.profile_image || "/images/tribe_1.png"}
+            src={thread.user?.profile_image || images.DEFAULT_TRIBE}
             alt={thread.user?.fullname ?? "member"}
             width={32}
             height={32}

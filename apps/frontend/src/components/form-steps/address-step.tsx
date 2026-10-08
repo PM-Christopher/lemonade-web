@@ -95,8 +95,8 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="tablet:w-[480px] w-full rounded-2xl border-none shadow-none">
-        <CardHeader className="grid gap-4">
+      <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
+        <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
             <div className="bg-step-color h-0.5 w-[15px]" />
             <div className="bg-step-color h-0.5 w-[15px]" />
@@ -110,7 +110,7 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="mt-[30px] grid gap-4">
+        <CardContent className="mt-6 grid gap-4 p-0">
           <div className="grid gap-2">
             <Label htmlFor="address" className="font-label">
               Address
@@ -184,7 +184,7 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
             ) : null}
           </div>
         </CardContent>
-        <CardContent className="flex flex-col space-y-2">
+        <CardContent className="mt-4 flex flex-col space-y-2 p-0">
           <FormikButton
             loading={formik.isSubmitting}
             title="Next"

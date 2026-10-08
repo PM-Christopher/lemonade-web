@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import TicketIcon from "@/images/icons/ticketGreyIcon.svg";
@@ -16,7 +17,7 @@ const AgentEventCard = ({
   return (
     <div className="mb-6 flex flex-col">
       <Image
-        src={image || "/images/event_images/agent_image.png"}
+        src={image || images.AGENT_EVENT}
         alt="agent-image"
         width={164}
         height={164}

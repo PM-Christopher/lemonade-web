@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input, Button } from "@lemonade/ui";
@@ -14,7 +16,6 @@ import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useRouter } from "next/navigation";
 
 // Off the initial bundle — only needed once the bank-account section is
 // opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -48,7 +49,7 @@ interface RawTicket {
 
 const AddTicketClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const [toggleModal, setToggleModal] = useState(false);
   const activateModal = () => {
     setToggleModal(!toggleModal);
@@ -196,7 +197,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
             }),
           );
           dispatch(resetEventState());
-          router.push(`/event/${id}/details`);
+          push(routes.EVENT_DETAILS(id));
         },
         onError: () => {
           dispatch(
@@ -260,7 +261,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Add ticket</p>

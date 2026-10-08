@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useEffect } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -20,6 +21,7 @@ import { useEventQuery } from "@/features/events/queries";
 import { EventDetailsSkeleton } from "@/components/Skeletons";
 import { useSearchParams } from "next/navigation";
 import { getSafeImageSrc } from "@/lib/helper";
+import { routes } from "@/lib/routes";
 
 const EventClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
@@ -50,7 +52,7 @@ const EventClient = ({ id }: { id: number }) => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="flex items-center justify-between border-t border-b bg-white p-5 px-10">
-          <Link href="/event">
+          <Link href={routes.EVENT}>
             <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
               <ChevronLeft />
               <p className="tracking-custom font-sans text-[16px] font-semibold">Event details</p>
@@ -67,7 +69,7 @@ const EventClient = ({ id }: { id: number }) => {
                 {/* Event Image */}
                 <div className="laptop:w-[480px] w-full">
                   <Image
-                    src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+                    src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
                     alt={event?.event_name || "Event image"}
                     width={496}
                     height={532}

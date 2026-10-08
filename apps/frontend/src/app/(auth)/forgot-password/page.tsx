@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, Button, Input, Label } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -11,9 +10,12 @@ import { useForgotPasswordMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useFormik } from "formik";
 import { forgotPasswordSchema } from "@lemonade/validation";
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const [, setCookie] = useCookies(["newToken", "email"]);
   const forgotPasswordMutation = useForgotPasswordMutation();
@@ -46,15 +48,13 @@ export default function ForgotPasswordPage() {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
             sameSite: false,
-            // domain: env === 'development' ? '' : ''
           });
           setCookie("email", result.email, {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
             sameSite: false,
-            // domain: env === 'development' ? '' : ''
           });
-          router.push("/verify-code");
+          push(routes.VERIFY_CODE);
         },
         onError: (error: Error) => {
           dispatch(
@@ -73,25 +73,23 @@ export default function ForgotPasswordPage() {
     <AuthLayout>
       <form
         onSubmit={formik.handleSubmit}
-        className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10"
+        className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
       >
-        <div className="tablet:flex hidden min-w-0 flex-col">
-          <div>
-            <p className="font-ruso text-display-s font-bold">Forgot Password</p>
-            <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
-              Enter your email address and a 4-digit code will be sent to reset your password.
-            </p>
-          </div>
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+          <p className="font-ruso text-display-s font-bold">Forgot Password</p>
+          <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
+            Enter your email address and a 4-digit code will be sent to reset your password.
+          </p>
           <Image
-            src={"/images/forgot_password.png"}
+            src={images.FORGOT_PASSWORD}
             alt=""
             width={511}
             height={520}
-            className="mt-2 h-auto max-h-[40vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <Card className="w-full max-w-[440px] p-6">
-          <CardContent className="grid gap-4">
+        <Card className="tablet:p-6 w-full max-w-[440px] shrink-0 rounded-2xl border-none p-5 shadow-none">
+          <CardContent className="grid gap-4 p-0">
             <div className="grid gap-2">
               <Label htmlFor="email" className="font-label">
                 Email address
@@ -109,8 +107,6 @@ export default function ForgotPasswordPage() {
                 <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
               ) : null}
             </div>
-          </CardContent>
-          <CardContent className="flex flex-col space-y-2">
             <Button
               type="submit"
               disabled={loading}

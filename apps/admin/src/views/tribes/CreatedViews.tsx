@@ -1,6 +1,8 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTribeListQuery } from "@/features/tribes/queries";
@@ -16,7 +18,7 @@ const tribeHeaders = [
 ];
 
 const CreatedTribeViews = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data } = useTribeListQuery({ enabled: isLoggedIn });
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +47,7 @@ const CreatedTribeViews = () => {
               <tr
                 key={tribe.id}
                 className="border-grey-20 h-[72px] cursor-pointer border-b"
-                onClick={() => router.push(`/tribes/${tribe.id}`)}
+                onClick={() => push(routes.TRIBE_DETAIL(tribe.id))}
               >
                 <td className="p-4 font-sans text-sm font-medium">{tribe.uuid}</td>
                 <td className="p-4 font-sans text-sm font-medium">{tribe.name}</td>

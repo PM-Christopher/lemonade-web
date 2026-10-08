@@ -1,15 +1,17 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { useBillingHistoryQuery } from "@/features/authentication/queries";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+
 import MainLayout from "@/components/layouts/MainLayout";
 import { BillingHistorySkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
 
 const BillingHistoryClient = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { subscription } = useSelector((state: RootState) => state.auth);
 
   const { data, isLoading: loading } = useBillingHistoryQuery();
@@ -20,7 +22,7 @@ const BillingHistoryClient = () => {
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.push("/settings")}
+            onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Account settings</p>

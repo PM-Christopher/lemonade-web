@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -37,12 +38,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
           </div>
           <div className="mt-6">
             <div className="flex justify-center">
-              <Image
-                src={"/images/promoteEventIcon.png"}
-                alt="promotion_payment"
-                width={160}
-                height={160}
-              />
+              <Image src={images.PROMOTE_EVENT} alt="promotion_payment" width={160} height={160} />
             </div>
           </div>
           <div className="mt-6">

@@ -22,6 +22,9 @@ export const FormikButton = ({
   bgColor = null,
   errorColor = null,
 }: FormikButtonProps) => {
+  const isDisabled = loading || !error;
+  const defaultBg = bgColor === null ? (!error ? "bg-disabled-green" : "bg-gradient-green") : "";
+
   return (
     <button
       type="submit"
@@ -29,12 +32,10 @@ export const FormikButton = ({
         classes === null
           ? "flex h-12 w-fit items-center justify-center rounded-xl px-3.5 py-2.5"
           : classes
-      } ${loading && "opacity-70"} ${bgColor && !error ? errorColor : bgColor} ${
-        bgColor === null ? (!error ? "bg-mid-green" : "bg-gradient-green") : ""
-      } ${loading && "bg-light-green cursor-not-allowed opacity-70"} ${
-        !error && "cursor-not-allowed"
-      } `}
-      disabled={loading || !error}
+      } ${loading && "opacity-70"} ${bgColor && !error ? errorColor : bgColor} ${defaultBg} ${
+        loading && "bg-light-green cursor-not-allowed opacity-70"
+      } ${!error && "cursor-not-allowed"} `}
+      disabled={isDisabled}
     >
       {loading ? (
         <div className="flex items-center justify-center">

@@ -20,8 +20,18 @@ vi.mock("@/redux/hook", () => ({
   useAppDispatch: () => vi.fn(),
 }));
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+vi.mock("@/hooks/useNavigation", () => ({
+  useNavigation: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    pushWithQuery: vi.fn(),
+    pathname: "/settings/wallet",
+    search: "",
+    isActive: () => false,
+    getQueryParam: () => null,
+  }),
 }));
 
 vi.mock("@/components/settings/RewardsHistorySideMenu", () => ({

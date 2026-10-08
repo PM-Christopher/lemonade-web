@@ -1,5 +1,5 @@
 "use client";
-import { pusherCon, pusherConfig } from "@/config/pusherConfig";
+import { disconnectAuthenticatedPusher, pusherCon, pusherConfig } from "@/config/pusherConfig";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,12 +15,15 @@ export const usePusher = (channelName: string | null, eventName: string) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!channelName) return;
+    if (!channelName) {
+      // No channel: disconnect so signed-out pages do not re-authorize.
+      disconnectAuthenticatedPusher();
+      return;
+    }
 
     const isUserChannel = channelName === "user";
     const pusher = isUserChannel ? pusherCon() : pusherConfig();
-    // Backend broadcasts on the "private-"-prefixed wire name (see
-    // routes/channels.php); callers here pass the logical name.
+    // Private channels use the backend's `private-` prefix.
     const subscribeName = isUserChannel ? channelName : `private-${channelName}`;
     const channel = pusher.subscribe(subscribeName);
 

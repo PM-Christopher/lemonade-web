@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import Upcoming from "@/components/events/views/Organizer/Upcoming";
 import PastEvent from "@/components/events/views/Organizer/PastEvent";
@@ -6,7 +8,7 @@ import Draft from "@/components/events/views/Organizer/Draft";
 import PaymentSettingsModal from "@/components/events/Modals/PaymentSettingsModal";
 import { PlusIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
-import { useRouter } from "next/navigation";
+
 import { useOrganizerEventsQuery } from "@/features/events/queries";
 
 type OrganizerSectionInterface = {
@@ -19,7 +21,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
   togglePaymentModel,
 }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
-  const router = useRouter();
+  const { push } = useNavigation();
   const [orOption, setOrOption] = useState("upcoming");
   const { data: organizer_events, isLoading: eventsLoading } = useOrganizerEventsQuery();
 
@@ -92,7 +94,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
       {isMobile && (
         <div
           className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-[250px] flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full p-4 text-white"
-          onClick={() => router.push("/event/create-event")}
+          onClick={() => push(routes.EVENT_CREATE)}
         >
           <PlusIcon className="h-[19px] w-[19px]" />
         </div>

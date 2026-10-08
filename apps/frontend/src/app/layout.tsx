@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Provider from "@/redux/Provider";
@@ -26,7 +27,10 @@ export default function RootLayout({
         <MenuStateProvider>
           <Provider>
             <LayoutWrapper>
-              <FcmProvider>{children}</FcmProvider>
+              {/* useNavigation/useSearchParams need a Suspense boundary. */}
+              <FcmProvider>
+                <Suspense fallback={null}>{children}</Suspense>
+              </FcmProvider>
             </LayoutWrapper>
           </Provider>
         </MenuStateProvider>

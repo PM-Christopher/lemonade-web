@@ -1,11 +1,12 @@
-import { useSearchParams as useNextSearchParams, usePathname, useRouter } from "next/navigation";
+import { useNavigation } from "@/hooks/useNavigation";
+import { useSearchParams as useNextSearchParams, usePathname } from "next/navigation";
 import { useCallback } from "react";
 
 // For use in only normal client components
 const useNxtSearchParams = () => {
   const searchParams = useNextSearchParams();
   const pathname = usePathname();
-  const router = useRouter();
+  const { push } = useNavigation();
 
   // Function to create a new query string with multiple search parameters
   const createQueryString = useCallback(
@@ -36,9 +37,9 @@ const useNxtSearchParams = () => {
       if (newQueryString === searchParams.toString()) return;
       // An empty query must be the bare path. Pushing a trailing "?" leaves
       // the previous search params in place.
-      router.push(newQueryString ? `${pathname}?${newQueryString}` : pathname);
+      push(newQueryString ? `${pathname}?${newQueryString}` : pathname);
     },
-    [createQueryString, router, pathname, searchParams],
+    [createQueryString, push, pathname, searchParams],
   );
 
   return { nxtSearchParams: searchParams, setSearchParams };

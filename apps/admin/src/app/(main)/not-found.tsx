@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
+import { routes } from "@/lib/routes";
 
 // A page under (main) explicitly calling notFound() (e.g. "business not
 // found") lands here rather than the root not-found.tsx.
@@ -14,7 +15,7 @@ export default function MainNotFound() {
           It may not exist, or you may not have access to it.
         </p>
         <Link
-          href="/"
+          href={routes.HOME}
           className="border-step-color bg-gradient-green mt-2 rounded-xl border px-6 py-[11px]"
         >
           <p className="text-[16px] font-medium text-white">Back to overview</p>

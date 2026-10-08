@@ -1,4 +1,5 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input, Button } from "@lemonade/ui";
@@ -14,8 +15,9 @@ import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+
 import { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 // Off the initial bundle — only needed once the bank-account section is
 // opened (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -36,7 +38,7 @@ type Ticket = {
 
 const AddTicketPage = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const [toggleModal, setToggleModal] = useState(false);
   const activateModal = () => {
     setToggleModal(!toggleModal);
@@ -166,7 +168,7 @@ const AddTicketPage = () => {
               }),
             );
             dispatch(resetEventState());
-            router.push("/event");
+            push(routes.EVENT);
           },
           onError: () => {
             dispatch(
@@ -246,7 +248,7 @@ const AddTicketPage = () => {
           }),
         );
         dispatch(resetEventState());
-        router.push("/event");
+        push(routes.EVENT);
       },
       onError: () => {
         dispatch(
@@ -270,7 +272,7 @@ const AddTicketPage = () => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Add ticket</p>

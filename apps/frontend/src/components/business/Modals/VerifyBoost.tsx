@@ -1,9 +1,10 @@
 "use client";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button } from "@lemonade/ui";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 interface Boost {
   full_start_date?: string;
@@ -22,11 +23,11 @@ const VerifyBoost = ({
   toggleMenu: () => void;
   boost: Boost | null;
 }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const backToBusiness = () => {
     toggleMenu();
     const currentPath = window.location.pathname;
-    router.push(currentPath);
+    push(currentPath);
   };
   return (
     <div
@@ -42,7 +43,7 @@ const VerifyBoost = ({
         </div>
         <div className="mt-10 flex flex-col">
           <div className="flex flex-col items-center">
-            <Image src={"/images/promoteEventIcon.png"} alt="promote" width={160} height={160} />
+            <Image src={images.PROMOTE_EVENT} alt="promote" width={160} height={160} />
           </div>
           <div className="px-2.5">
             <div className="mt-6 flex flex-col items-center">

@@ -1,6 +1,8 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useBusinessQuery } from "@/features/business/queries";
@@ -42,7 +44,7 @@ interface FormValues {
 }
 
 const EditBusinessClient = ({ id }: { id: number }) => {
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState("");
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
@@ -133,7 +135,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               type: "success",
             }),
           );
-          router.push("/business");
+          push(routes.BUSINESS);
         },
         onError: () => {
           dispatch(
@@ -177,7 +179,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Edit business</p>

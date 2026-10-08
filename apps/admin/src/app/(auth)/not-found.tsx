@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
 
 export default function AuthNotFound() {
   return (
     <section className="bg-light-grey h-full min-h-screen overflow-hidden">
       <div className="flex flex-wrap items-center justify-between p-2 px-10">
-        <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+        <Image src={images.LOGO} alt="logo" width={127} height={56} />
       </div>
       <div className="mt-24 flex flex-col items-center justify-center gap-2 p-6 text-center">
         <p className="font-semiBold text-light-black text-[18px]">This page could not be found</p>
         <Link
-          href="/login"
+          href={routes.LOGIN}
           className="border-step-color bg-gradient-green mt-2 rounded-xl border px-6 py-[11px]"
         >
           <p className="text-[16px] font-medium text-white">Back to login</p>

@@ -1,4 +1,5 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PadlockIcon from "@/images/icons/padlockIcon.svg";
@@ -6,13 +7,14 @@ import ChevronRight from "@/images/icons/chevronRight.svg";
 import TrashIcon from "@/images/icons/trashIcon.svg";
 import LogoutIcon from "@/images/icons/logoutIcon.svg";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MainLayout from "@/components/layouts/MainLayout";
 import type { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 // Off the initial bundle — only needed once "Change password" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -24,7 +26,7 @@ const UpdatePasswordModal = dynamic(
 const AccountSettingsPage = () => {
   const dispatch = useAppDispatch();
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const { user } = useSelector((state: RootState) => state.auth);
   const logoutMutation = useLogoutMutation();
 
@@ -47,7 +49,7 @@ const AccountSettingsPage = () => {
         );
       },
       onSettled: () => {
-        router.push("/login");
+        push(routes.LOGIN);
       },
     });
   };
@@ -64,7 +66,7 @@ const AccountSettingsPage = () => {
       id: "delete-account",
       icon: <TrashIcon />,
       label: "Delete account",
-      onClick: () => router.push("/settings/account/delete-account"),
+      onClick: () => push(routes.SETTINGS_ACCOUNT_DELETE),
       textColor: "text-black",
     },
     {
@@ -82,7 +84,7 @@ const AccountSettingsPage = () => {
         <div className="flex items-center justify-between border-t border-b bg-white p-2 px-16">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Account settings</p>

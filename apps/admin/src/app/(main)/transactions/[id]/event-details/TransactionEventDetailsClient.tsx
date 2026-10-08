@@ -1,8 +1,10 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import { PrinterIcon } from "lucide-react";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTransactionEventDetailQuery } from "@/features/transaction/queries";
@@ -14,7 +16,7 @@ import dayjs from "dayjs";
 function TransactionEventDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
-  const router = useRouter();
+  const { push } = useNavigation();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: event } = useTransactionEventDetailQuery(id, {
@@ -88,7 +90,7 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
               <p className={"text-[14px] font-medium"}>{event?.info?.organizer}</p>
               <p
                 className={"text-light-green cursor-pointer text-[14px] font-medium"}
-                onClick={() => router.push(`/users/${event?.info?.user_id}`)}
+                onClick={() => push(routes.USER_DETAIL(event!.info!.user_id!))}
               >
                 View profile
               </p>

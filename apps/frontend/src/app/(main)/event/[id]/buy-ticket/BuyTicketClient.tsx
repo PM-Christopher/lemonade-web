@@ -1,4 +1,6 @@
 "use client";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -6,7 +8,7 @@ import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import ClockIcon from "@/images/icons/clock.svg";
 import { Button } from "@lemonade/ui";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { TicketDetails, TicketInterface } from "@/interfaces/EventInterface";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -19,13 +21,12 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { EventTicketDetailSkeleton } from "@/components/Skeletons";
 import { getSafeImageSrc } from "@/lib/helper";
 
-const TicketSummary = dynamic(
-  () => import("@/components/events/Modals/TicketSummary"),
-  { ssr: false },
-);
+const TicketSummary = dynamic(() => import("@/components/events/Modals/TicketSummary"), {
+  ssr: false,
+});
 
 const BuyTicketClient = ({ id }: { id: number }) => {
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const dispatch = useAppDispatch();
   const [summaryModal, setSummaryModal] = useState(false);
   const { data: ticket_data, isLoading: loading } = useEventTicketDataQuery(id);
@@ -111,7 +112,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
       return;
     }
     dispatch(addTickets(data));
-    router.push(buyTicketHref);
+    push(buyTicketHref);
   };
 
   const toggleSummaryModal = () => {
@@ -122,10 +123,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
         <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
-          <div
-            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
-          >
+          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft className="cursor-pointer" />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Buy ticket</p>
           </div>
@@ -141,7 +139,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     {/* Event Poster */}
                     <div className="laptop:h-[120px] laptop:w-[120px] h-[120px] w-full flex-shrink-0">
                       <Image
-                        src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+                        src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
                         alt={event?.event_name || "event poster"}
                         width={120}
                         height={120}

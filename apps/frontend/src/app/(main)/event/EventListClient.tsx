@@ -1,4 +1,5 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import SideMenu from "@/components/events/SideMenu";
 import EventsSectionView from "@/components/events/views/Events";
@@ -15,7 +16,7 @@ import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { resetFreeEventState } from "@/features/events/event.slice";
 import { useSearchEventsMutation, useFilterEventsMutation } from "@/features/events/mutations";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
 import VerifyPaymentModal, {
@@ -51,7 +52,7 @@ const EventListClient: React.FC = () => {
   const searchResults = searchEventsMutation.data?.events ?? [];
   const filterEventsMutation = useFilterEventsMutation();
 
-  const router = useRouter();
+  const { replace } = useNavigation();
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
   const verifyTransactionMutation = useVerifyTransactionMutation();
@@ -95,7 +96,7 @@ const EventListClient: React.FC = () => {
             );
             setToggleVPaymentModel(true);
             // Update the URL without reloading
-            router.replace(`?${params.toString()}`);
+            replace(`?${params.toString()}`);
           },
           onError: (err) => {
             console.error("Payment verification failed:", err);

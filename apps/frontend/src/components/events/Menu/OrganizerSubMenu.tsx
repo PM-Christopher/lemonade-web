@@ -1,16 +1,17 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import GearIcon from "@/images/icons/gear.svg";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
-import { useRouter } from "next/navigation";
 
 type OrganizerSubMenuInterface = {
   toggle: () => void;
 };
 
 const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({ toggle }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   return (
     <div className="laptop:flex hidden items-center gap-4">
       <div
@@ -22,7 +23,7 @@ const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({ toggle }) => {
       </div>
       <Button
         className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-10 w-[156px] rounded-xl border"
-        onClick={() => router.push("/event/create-event")}
+        onClick={() => push(routes.EVENT_CREATE)}
       >
         <div className="flex items-center gap-2">
           <PlusIcon />

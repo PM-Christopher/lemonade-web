@@ -1,8 +1,10 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import DataCard from "@/components/global/DataCard";
 import PaginationComp from "@/components/global/Pagination";
 import { affiliateHeaders } from "@/data/tableData";
 import useSearchParams from "@/hooks/useSearchParams";
-import { useRouter } from "next/navigation";
+
 import React, { useMemo, useState } from "react";
 import type { AffiliateListResponse, UserListResponse } from "@/features/user/api";
 
@@ -12,7 +14,7 @@ interface AffiliateViewProps {
 }
 
 const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("q");
 
@@ -93,7 +95,7 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
                   <tr
                     key={index}
                     className="border-grey-20 h-[72px] cursor-pointer border-b"
-                    onClick={() => router.push(`/users/affiliate/${row.id}`)}
+                    onClick={() => push(routes.USER_AFFILIATE(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row.name}</td>

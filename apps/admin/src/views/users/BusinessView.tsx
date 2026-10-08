@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import RocketGreenIcon from "@/icons/rocketIconGreen.svg";
 import type { AccountInfoResponse } from "@/features/user/api";
+import { images } from "@/lib/images";
 
 interface BusinessViewProps {
   userDetail: AccountInfoResponse | undefined;
@@ -17,12 +18,12 @@ const BusinessView = ({ userDetail }: BusinessViewProps) => {
     <div className="flex flex-col gap-6 p-6">
       <div
         className="relative w-full rounded-xl bg-white bg-cover bg-center bg-no-repeat p-4"
-        style={{ backgroundImage: `url('/images/business-bg.png')` }}
+        style={{ backgroundImage: `url(${images.BUSINESS_BG})` }}
       >
         <div className="flex flex-col">
           <div className="flex justify-center">
             <Image
-              src={"/images/business/jobLogo.png"}
+              src={images.BUSINESS_JOB_LOGO}
               alt="logo"
               className="border-step-color rounded-2xl border"
               width={64}
@@ -37,7 +38,7 @@ const BusinessView = ({ userDetail }: BusinessViewProps) => {
           </div>
           <div className="mt-2 flex justify-center">
             <div className="bg-mid-grey flex items-center gap-1 rounded-xl p-2">
-              <Image src={"/images/medal.png"} alt="medal" width={16} height={16} />
+              <Image src={images.MEDAL} alt="medal" width={16} height={16} />
               <p className="text-primary-black font-sans text-[14px] font-medium">
                 {/* rating value */}
               </p>
@@ -82,7 +83,7 @@ const BusinessView = ({ userDetail }: BusinessViewProps) => {
               {/*{*/}
               {/*    data?.business?.gallery?.map((item: string, index: string) => (*/}
               <Image
-                src={"/images/tribe_1.png"}
+                src={images.DEFAULT_TRIBE}
                 alt="image_1"
                 className="rounded-[4px]"
                 width={170.5}

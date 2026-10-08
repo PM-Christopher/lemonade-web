@@ -10,11 +10,7 @@ const config: Config = {
     "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/images/**/*.{js,ts,jsx,tsx,mdx}",
-    // Without this, arbitrary-value classes unique to a shared component
-    // (e.g. Dialog's top-[50%]/translate-x-[-50%]) never get JIT-generated
-    // unless the exact same string happens to also appear in this app's own
-    // scanned source — real bug found 2026-09-24 in the admin app (same
-    // shared package), fixed here too before it's independently rediscovered.
+    // Scan shared UI so its Tailwind classes are generated.
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -33,10 +29,7 @@ const config: Config = {
         "green-inset": "inset 0px 2px 0px 0px #C1FF3C, inset 0px -2px 2px 0px #658E0D",
         "green-inset-strong": "inset 0px 3px 0px 0px #C1FF3C, inset 0px -3px 3px 0px #658E0D",
       },
-      // Not shared with admin's fontWeight scale — the same key name means a
-      // different weight in each app today (e.g. "thin" is 300 here, 100 in
-      // admin's), so merging them would silently change rendered weight on
-      // one app's existing classes. See docs/ARCHITECTURE.md §7.
+      // Frontend-only weights; do not merge with admin's scale.
       fontWeight: {
         regular: "100",
         thin: "300",
@@ -59,6 +52,7 @@ const config: Config = {
         "black-light": "#121419",
         "light-green": "#405E00",
         "mid-green": "#5B8601",
+        "disabled-green": "#81966A",
         "step-color": "#80BC00",
         "light-yellow": "#F9FCED",
         "light-black": "#3C4253",

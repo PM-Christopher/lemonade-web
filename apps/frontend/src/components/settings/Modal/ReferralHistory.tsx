@@ -1,7 +1,9 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+
 import { useRequest } from "@/hooks/useRequest";
 
 type ReferralHistoryInterface = {
@@ -19,7 +21,7 @@ interface ReferralHistoryData {
 }
 
 const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { data } = useRequest<ReferralHistoryData>(`/user/wallet/referral-history`);
 
   const { totalEarned, total_referrals, total_subscribed } = useMemo(() => {
@@ -72,7 +74,7 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
             </div>
             <div
               className="flex cursor-pointer items-center gap-2 p-3 px-4"
-              onClick={() => router.push("/settings/wallet")}
+              onClick={() => push(routes.SETTINGS_WALLET)}
             >
               <p className="font-semi-normal text-light-green text-[16px]">Go to wallet</p>
               <ChevronRight />

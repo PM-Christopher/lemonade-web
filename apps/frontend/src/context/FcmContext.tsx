@@ -1,14 +1,17 @@
 "use client";
 import { useContext, createContext, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { messaging, onMessage, getToken } from "@/lib/firebase";
 import type { MessagePayload } from "firebase/messaging";
 import { toast, Toaster } from "react-hot-toast";
 import { useAppSelector } from "@/redux/hook";
 import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutations";
+import { useAuthReady } from "@/hooks/useAuthReady";
+import { isAuthPath } from "@/lib/auth-paths";
 
 interface FcmContextProps {
   fcmToken: string | null;
-  notification: string | null;
+  notification: MessagePayload["notification"] | null;
 }
 
 export const FcmContext = createContext<FcmContextProps>({
@@ -48,18 +51,21 @@ export const onForegroundMessage = () =>
 
 export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
-  const [notification, setNotification] = useState<any | null>(null);
+  const [notification, setNotification] = useState<MessagePayload["notification"] | null>(null);
   const [showToaster, setShowToaster] = useState(false);
+  const pathname = usePathname();
+  const authReady = useAuthReady();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
   const registerDeviceTokenMutation = useRegisterDeviceTokenMutation();
-  // The device-token endpoint requires a real access-token session
-  // (auth:user + ability:access) — registering before login 401s, and
-  // registering again on every render would spam the backend for no
-  // reason, so this tracks the (token, user) pair already sent.
+  // Remember which user + device token we already registered.
   const registeredFor = useRef<string | null>(null);
 
+  // Only register push tokens when signed in on a non-auth page.
+  const canRegisterDeviceToken =
+    authReady && !isAuthPath(pathname) && isLoggedIn && Boolean(user?.id) && Boolean(fcmToken);
+
   useEffect(() => {
-    if (!fcmToken || !isLoggedIn || !user?.id) return;
+    if (!canRegisterDeviceToken || !user?.id || !fcmToken) return;
 
     const registrationKey = `${user.id}:${fcmToken}`;
     if (registeredFor.current === registrationKey) return;
@@ -69,18 +75,14 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
       { device_token: fcmToken, device_type: "web" },
       {
         onError: () => {
-          // Allow a retry on the next render (e.g. after reconnecting)
-          // instead of permanently giving up on this token/user pair.
+          // Clear so the next render can retry.
           registeredFor.current = null;
         },
       },
     );
-    // registerDeviceTokenMutation's identity changes on every render (a
-    // fresh useMutation() object) — depending on it here would re-run
-    // this effect in a loop. The ref guard above is what actually
-    // prevents duplicate sends, not the dependency array.
+    // Mutation identity changes every render; the ref above blocks duplicates.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fcmToken, isLoggedIn, user?.id]);
+  }, [canRegisterDeviceToken, fcmToken, user?.id]);
 
   useEffect(() => {
     if (!messaging) return;
@@ -129,14 +131,14 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
           duration: 4000,
         },
       );
-      // Automatically hide toaster after 4 seconds
+      // Hide toaster after 4 seconds.
       setTimeout(() => {
         setShowToaster(false);
       }, 2000);
     });
 
     register();
-    // Cleanup listener on unmount
+    // Remove the listener on unmount.
     return () => unsubscribe();
   }, []);
 

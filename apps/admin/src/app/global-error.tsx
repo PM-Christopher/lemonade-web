@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { logger } from "@/lib/logger";
+import { images } from "@/lib/images";
 import "./globals.css";
 
 // Only fires if the ROOT layout itself throws — everywhere else, the
@@ -31,7 +32,7 @@ export default function GlobalError({
     <html lang="en">
       <body>
         <section className="bg-light-grey flex min-h-screen flex-col items-center justify-center gap-2 p-6 text-center">
-          <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+          <Image src={images.LOGO} alt="logo" width={127} height={56} />
           <p className="font-semiBold text-light-black mt-4 text-[18px]">Something went wrong</p>
           <p className="text-text-grey text-[14px] font-normal">
             {error.digest ? `Reference: ${error.digest}` : "Please try reloading the page."}

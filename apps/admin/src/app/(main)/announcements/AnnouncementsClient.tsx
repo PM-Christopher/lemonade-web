@@ -1,11 +1,13 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { announcementHeaders } from "@/data/tableData";
 import DataInfoCard from "@/components/global/DataInfoCard";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { capitalizeWords } from "@/utils/helper";
@@ -14,7 +16,7 @@ import { useAnnouncementsQuery } from "@/features/announcements/queries";
 import type { AnnouncementRow } from "@/features/announcements/api";
 
 const AnnouncementsClient = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
@@ -91,7 +93,7 @@ const AnnouncementsClient = () => {
                       <tr
                         key={index}
                         className="border-grey-20 h-[72px] cursor-pointer border-b"
-                        onClick={() => router.push(`/announcements/${row.id}`)}
+                        onClick={() => push(routes.ANNOUNCEMENT_DETAIL(row.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.title}</td>

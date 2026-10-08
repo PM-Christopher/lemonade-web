@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { DotIcon, XIcon } from "lucide-react";
 import { TribeDetail, TribeMemberItem } from "@/features/tribes/api";
+import { images } from "@/lib/images";
 
 interface TribeDetailsProps {
   // Optional — components/users/TribeModal.tsx (an unrelated, still-fixture
@@ -19,7 +20,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
       <div className="w-full rounded-lg bg-white p-4">
         <div className="mb-4 flex flex-col items-center gap-2">
           <Image
-            src={tribe?.image || "/images/tribe_1.png"}
+            src={tribe?.image || images.DEFAULT_TRIBE}
             alt={tribe?.name ?? "Tribe"}
             width={96}
             height={96}
@@ -58,7 +59,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
               >
                 <div className={"flex items-center gap-2"}>
                   <Image
-                    src={member.user?.profile_image || "/images/tribe_1.png"}
+                    src={member.user?.profile_image || images.DEFAULT_TRIBE}
                     alt={member.user?.fullname ?? "member"}
                     width={20}
                     height={20}

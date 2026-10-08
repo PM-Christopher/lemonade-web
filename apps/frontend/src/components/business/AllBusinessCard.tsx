@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import medal from "@/images/icons/medal.png";
@@ -20,7 +21,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
           <div className="flex justify-between">
             <div className="laptop:flex-col laptop:items-start laptop:gap-2.5 flex flex-row items-center justify-center gap-2">
               <Image
-                src={getSafeImageSrc(business.image, "/images/business_empty.png")}
+                src={getSafeImageSrc(business.image, images.BUSINESS_EMPTY)}
                 alt="Overlay Image"
                 className="border-step-color h-10 w-10 rounded-xl border object-cover"
                 width={40}

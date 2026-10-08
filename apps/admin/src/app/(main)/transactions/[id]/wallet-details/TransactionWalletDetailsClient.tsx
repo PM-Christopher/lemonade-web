@@ -1,8 +1,10 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import { PrinterIcon } from "lucide-react";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useWalletDetailQuery } from "@/features/wallet/queries";
@@ -14,7 +16,7 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 function TransactionWalletDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
-  const router = useRouter();
+  const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   // Same endpoint the already-migrated wallet domain uses — reused rather
   // than duplicated, see features/transaction/api.ts's note.
@@ -96,7 +98,7 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
               <p className={"text-[14px] font-medium"}>{wallet?.info?.fullname}</p>
               <p
                 className={"text-light-green cursor-pointer text-[14px] font-medium"}
-                onClick={() => router.push(`/users/${wallet?.history[0]?.user_id}`)}
+                onClick={() => push(routes.USER_DETAIL(wallet!.history[0]!.user_id!))}
               >
                 View profile
               </p>

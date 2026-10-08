@@ -1,14 +1,15 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import JobsCard, { type Job } from "@/components/business/JobsCard";
-import { useRouter } from "next/navigation";
+
 import { useBusinessJobDataQuery } from "@/features/business/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const JobsClient = ({ id }: { id: number }) => {
-  const router = useRouter();
+  const { back } = useNavigation();
   const [jobType, setJobType] = useState("in-progress");
 
   const renderCards = () => {
@@ -32,7 +33,7 @@ const JobsClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Jobs</p>

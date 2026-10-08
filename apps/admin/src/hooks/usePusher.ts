@@ -8,8 +8,7 @@ export const usePusher = (channelName: string, eventName: string) => {
   useEffect(() => {
     const isUserChannel = channelName === "user";
     const pusher = isUserChannel ? pusherCon() : pusherConfig();
-    // Backend broadcasts on the "private-"-prefixed wire name (see
-    // lemonade-backend's routes/channels.php); callers pass the logical name.
+    // Private channels use the backend's `private-` prefix.
     const subscribeName = isUserChannel ? channelName : `private-${channelName}`;
     const channel = pusher.subscribe(subscribeName);
 

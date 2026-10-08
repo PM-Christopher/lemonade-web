@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
@@ -36,7 +37,7 @@ const RequestCard: React.FC<RequestInterface> = ({
         <div className="flex items-center gap-3">
           {/* Avatar with lemon image and ID */}
           <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-            <Image src="/images/lemon.png" alt="lemon" fill className="object-contain" />
+            <Image src={images.LEMON} alt="lemon" fill className="object-contain" />
             <p className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-black">
               {invite?.invitee?.lemon_id_short}
             </p>

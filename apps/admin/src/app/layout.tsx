@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "@/redux/Provider";
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <WebVitalsReporter />
         <Providers>
-          <FcmProvider>{children}</FcmProvider>
+          <FcmProvider>
+            <Suspense fallback={null}>{children}</Suspense>
+          </FcmProvider>
           <AlertMessage />
         </Providers>
       </body>

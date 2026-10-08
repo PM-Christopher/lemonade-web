@@ -1,14 +1,16 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import { ReactNode, useEffect } from "react";
 import SideNav from "@/components/global/SideNav";
 import TopNav from "@/components/global/TopNav";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { useRouter } from "next/navigation";
+
 import { setIsRouting } from "@/redux/tempSlice";
 import { authSuccess } from "@/features/authentication/authSlice";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "../global/BottomNav";
+import { routes } from "@/lib/routes";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -20,7 +22,7 @@ const SESSION_MARKER = "session";
 
 const MainLayout = ({ children }: DashboardLayoutProps) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const { user } = useAppSelector((state) => state.auth);
 
@@ -43,9 +45,9 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
 
   useEffect(() => {
     if (isError && !user) {
-      router.push("/login");
+      push(routes.LOGIN);
     }
-  }, [isError, user, router]);
+  }, [isError, user, push]);
 
   return (
     <div className="flex min-h-screen">

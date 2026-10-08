@@ -3,35 +3,36 @@ import tribe_icon from "./src/images/icons/ChatIcon.png";
 import event_icon from "./src/images/icons/CalendarIcon.png";
 import business_icon from "./src/images/icons/CaseIcon.png";
 import connect_icon from "./src/images/icons/WorldIcon.png";
+import { routes } from "./src/lib/routes";
 
 export const navLinks = [
   {
     name: "Home",
-    path: "/",
+    path: routes.HOME,
     icon: home_icon,
     title: "home",
   },
   {
     name: "Tribe",
-    path: "/tribe",
+    path: routes.TRIBE,
     icon: tribe_icon,
     title: "tribe",
   },
   {
     name: "Events",
-    path: "/event",
+    path: routes.EVENT,
     icon: event_icon,
     title: "event",
   },
   {
     name: "Business",
-    path: "/business",
+    path: routes.BUSINESS,
     icon: business_icon,
     title: "business",
   },
   {
     name: "Connect",
-    path: "/connect",
+    path: routes.CONNECT,
     icon: connect_icon,
     title: "connect",
   },

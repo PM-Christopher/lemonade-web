@@ -1,14 +1,16 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import PromotionsSubMenu from "@/components/events/views/Agent/Promotions";
 import FindEventSubMenu from "@/components/events/views/Agent/FindEvent";
-import { useRouter } from "next/navigation";
+
 import { useAffiliateEventsQuery, useAffiliateDataQuery } from "@/features/events/queries";
 import { AffiliateDataSkeleton } from "@/components/Skeletons";
 
 function AgentSectionView({}) {
-  const router = useRouter();
+  const { push } = useNavigation();
   const [view, setView] = useState("promotions");
   const { data: affiliateEventsData, isLoading: affiliateLoading } = useAffiliateEventsQuery();
   const affiliate_events = affiliateEventsData?.events ?? [];
@@ -69,7 +71,7 @@ function AgentSectionView({}) {
                       <button
                         type="button"
                         className="group -ml-3 inline-flex items-center gap-2 rounded-xl px-3 py-2 transition hover:bg-gray-50"
-                        onClick={() => router.push("/settings/wallet")}
+                        onClick={() => push(routes.SETTINGS_WALLET)}
                       >
                         <span className="font-semi-normal tracking-custom text-light-green font-sans text-[15px] sm:text-[16px]">
                           Go to Wallet

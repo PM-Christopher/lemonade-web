@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label } from "@lemonade/ui";
@@ -137,12 +138,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                           key={index}
                           onClick={() => handleSelectPackage(index)}
                         >
-                          <Image
-                            src={"/images/featured.png"}
-                            alt="featured"
-                            width={74}
-                            height={74}
-                          />
+                          <Image src={images.FEATURED} alt="featured" width={74} height={74} />
                           <p className="font-semi-normal text-mid-green text-[12px]">Featured</p>
                           <p className="text-[16px] font-bold">₦{pkg.title}</p>
                           <p className="text-text-grey mt-1 w-[121.72px] text-center text-[12px] font-normal">

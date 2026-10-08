@@ -1,9 +1,11 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -22,7 +24,7 @@ type BankAccountInterface = {
 
 const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
 
   const [bankCode, setBankCode] = useState<string>("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -76,7 +78,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
             }),
           );
           dispatch(resetEventState());
-          router.push("/event");
+          push(routes.EVENT);
         },
         onError: () => {
           dispatch(

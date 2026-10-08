@@ -16,7 +16,7 @@ function EventView() {
           {/*{*/}
           {/*    thread?.created_by.user.verified && (*/}
           {/*        <div>*/}
-          {/*            <Image src={"/images/verified.png"} alt="verifed" width={13} height={13}/>*/}
+          {/*            <Image src={...} alt="verifed" width={13} height={13}/>*/}
           {/*        </div>*/}
           {/*    )*/}
           {/*}*/}

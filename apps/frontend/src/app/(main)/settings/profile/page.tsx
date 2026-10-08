@@ -1,4 +1,6 @@
 "use client";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useRef, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -12,7 +14,7 @@ import PencilIcon from "@/images/icons/pencilIcon.svg";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { formatString, splitLemonId } from "@/lib/helper";
-import { useRouter } from "next/navigation";
+
 import MainLayout from "@/components/layouts/MainLayout";
 import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
@@ -28,7 +30,7 @@ const UpdateModal = dynamic(() => import("@/components/settings/Modal/UpdateModa
 });
 
 const ProfileSettingsPage = ({}) => {
-  const router = useRouter();
+  const { back } = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const [profileType, setProfileType] = useState("");
   const dispatch = useAppDispatch();
@@ -126,7 +128,7 @@ const ProfileSettingsPage = ({}) => {
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Profile settings</p>
@@ -137,7 +139,7 @@ const ProfileSettingsPage = ({}) => {
           <div className="flex flex-col items-center">
             <div className="relative">
               <Image
-                src={user?.profile_image ?? "/images/avatar_4.png"}
+                src={user?.profile_image ?? images.AVATAR_4}
                 alt="avatar"
                 width={84}
                 height={84}

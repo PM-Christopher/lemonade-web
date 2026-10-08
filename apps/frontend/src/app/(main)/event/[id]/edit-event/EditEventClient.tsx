@@ -1,7 +1,9 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 
 import React, { useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -186,7 +188,7 @@ const buildInitialValues = (event?: EventInterface): EventFormValues => {
 
 const EditEventClient = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
 
   const eventId = Number(id);
   const { data: eventData, isLoading: loading, refetch } = useEventQuery(eventId);
@@ -265,7 +267,7 @@ const EditEventClient = ({ id }: { id: string }) => {
             type: "success",
           }),
         );
-        router.push("/event");
+        push(routes.EVENT);
       } catch (e) {
         const legacyError = e as { message?: string };
         dispatch(
@@ -316,7 +318,7 @@ const EditEventClient = ({ id }: { id: string }) => {
           <button
             type="button"
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.push("/event")}
+            onClick={() => push(routes.EVENT)}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Edit event</p>

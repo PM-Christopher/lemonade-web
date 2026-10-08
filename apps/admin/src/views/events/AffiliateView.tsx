@@ -1,7 +1,9 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import { affiliateMainHeaders, eventMainHeaders } from "@/data/tableData";
-import { useRouter } from "next/navigation";
+
 import PaginationComp from "@/components/global/Pagination";
 import type {
   EventAffiliatesResponse,
@@ -14,7 +16,7 @@ interface AffiliateViewProps {
 }
 
 const AffiliateView = ({ pageData }: AffiliateViewProps) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 10;
 
@@ -67,7 +69,7 @@ const AffiliateView = ({ pageData }: AffiliateViewProps) => {
                   <tr
                     key={index}
                     className="border-grey-20 h-[72px] cursor-pointer border-b"
-                    onClick={() => router.push(`/events/${row.id}/affiliates`)}
+                    onClick={() => push(routes.EVENT_AFFILIATES(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.name}</td>

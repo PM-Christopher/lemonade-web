@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AffiliateEventsSkeleton } from "@/components/Skeletons";
 import { useSearchAffiliateEventsMutation } from "@/features/events/mutations";
 import type { EventInterface } from "@/interfaces/EventInterface";
+import { routes } from "@/lib/routes";
 
 function FindEventSubMenu() {
   const [search, setSearch] = useState("");
@@ -112,7 +113,7 @@ function FindEventSubMenu() {
           <div className="laptop:grid-cols-3 mt-4 grid grid-cols-2 gap-4">
             {affiliateEvents.map((item: EventInterface, index: number) => (
               <div key={index} className="min-w-0">
-                <Link href={`/event/${item.id}/agent-details`}>
+                <Link href={routes.EVENT_AGENT_DETAILS(item.id)}>
                   <AgentEventCard
                     image={item?.event_image}
                     name={item?.event_name}

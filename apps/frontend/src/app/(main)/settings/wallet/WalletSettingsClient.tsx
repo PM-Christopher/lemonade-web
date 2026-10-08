@@ -1,11 +1,12 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import RewardsHistorySideMenu from "@/components/settings/RewardsHistorySideMenu";
 import PayoutModal from "@/components/settings/Modal/PayoutModal";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -16,6 +17,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useWalletSettingsQuery } from "@/features/settings/queries";
 import { useRequestPayoutMutation, useRedeemPointsMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { routes } from "@/lib/routes";
 
 // Off the initial bundle — only needed once "Request payout" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -24,7 +26,7 @@ const RequestPayoutModal = dynamic(() => import("@/components/settings/Modal/Req
 });
 
 function WalletSettingsClient() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
 
@@ -122,7 +124,7 @@ function WalletSettingsClient() {
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.push("/settings")}
+            onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Wallet</p>

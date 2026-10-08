@@ -41,36 +41,33 @@ export const AlertMessage = () => {
   }, [showToast]);
 
   return showToast.show ? (
-    <div className="fixed top-10 left-0 w-full" style={{ zIndex: 99999 }}>
-      <div className="tablet:mx-auto tablet:w-[872px] z-100 w-full px-5">
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          gutter={8}
-          toastOptions={{
-            duration: 5000,
-            style: {
-              background: "#BFDF37",
-              color: "#fff",
-              width: "100%",
+    <div className="fixed top-4 right-4 z-[99999] w-auto max-w-sm">
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 5000,
+          style: {
+            background: "#BFDF37",
+            color: "#fff",
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: "green",
+              secondary: "black",
             },
-            success: {
-              duration: 3000,
-              iconTheme: {
-                primary: "green",
-                secondary: "black",
-              },
+          },
+          error: {
+            duration: 3000,
+            iconTheme: {
+              primary: "red",
+              secondary: "white",
             },
-            error: {
-              duration: 3000,
-              iconTheme: {
-                primary: "red",
-                secondary: "white",
-              },
-            },
-          }}
-        />
-      </div>
+          },
+        }}
+      />
     </div>
   ) : null;
 };

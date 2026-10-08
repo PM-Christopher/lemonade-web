@@ -1,4 +1,5 @@
 "use client";
+import { images as imageAssets } from "@/lib/images";
 import React, { useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { sharedApi } from "@/features/shared/api";
@@ -105,7 +106,7 @@ const MultipleFileUploader = ({
             className="bg-light_grey flex h-[170px] w-[170px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 p-4 transition hover:bg-gray-100"
           >
             <input {...getInputProps()} />
-            <Image src={"/images/upload_image.png"} alt="upload" width={48} height={48} />
+            <Image src={imageAssets.UPLOAD_IMAGE} alt="upload" width={48} height={48} />
             <p className="mt-3 text-center font-sans text-[14px] leading-[21px] font-semibold text-black">
               {title}
             </p>

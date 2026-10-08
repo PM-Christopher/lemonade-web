@@ -1,9 +1,10 @@
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { useRouter } from "next/navigation";
 
 export interface PaymentConfirmJob {
   amount?: number;
@@ -21,11 +22,11 @@ const PaymentConfirmModal = ({
   toggleMenu: () => void;
   job: PaymentConfirmJob;
 }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const backToBusiness = () => {
     toggleMenu();
     const currentPath = window.location.pathname;
-    router.push(currentPath);
+    push(currentPath);
   };
   return (
     <Dialog
@@ -46,12 +47,7 @@ const PaymentConfirmModal = ({
 
           {/* Icon */}
           <div className="mt-4 flex justify-center">
-            <Image
-              src={"/images/jobVerified.png"}
-              alt="Payment Verified"
-              width={160}
-              height={160}
-            />
+            <Image src={images.JOB_VERIFIED} alt="Payment Verified" width={160} height={160} />
           </div>
 
           {/* Title & Description */}

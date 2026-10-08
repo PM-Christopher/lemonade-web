@@ -1,3 +1,6 @@
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useRef, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { FormikButton } from "@/components/global/FormikButton";
@@ -23,7 +26,7 @@ import { useFormik } from "formik";
 import { tribesApi } from "@/features/tribes/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
-import { useRouter } from "next/navigation";
+
 import { useTribeCategoriesQuery } from "@/features/tribes/queries";
 import { useCreateTribeMutation } from "@/features/tribes/mutations";
 import Switch from "react-switch";
@@ -36,7 +39,7 @@ interface CreateTribeModalProps {
 
 const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
   const createTribeMutation = useCreateTribeMutation();
   const [image, setImage] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -90,7 +93,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
           );
           activateModal();
           // redirect to the newly created tribe
-          router.push(`/tribe/${result.tribe.slug}`);
+          push(routes.TRIBE_DETAIL(result.tribe.slug));
         },
         onError: (err: { message?: string }) => {
           dispatch(
@@ -197,7 +200,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                 />
               ) : (
                 <Image
-                  src={"/images/upload.png"}
+                  src={images.UPLOAD}
                   alt="upload"
                   width={89}
                   height={83}

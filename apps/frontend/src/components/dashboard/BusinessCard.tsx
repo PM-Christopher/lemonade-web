@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
@@ -16,7 +17,7 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
     <>
       <div className="relative">
         <Image
-          src={getSafeImageSrc(business?.image, "/images/business_images/business_1.png")}
+          src={getSafeImageSrc(business?.image, images.BUSINESS_1)}
           alt="Main Image"
           className="h-[105px] w-full rounded-lg object-cover"
           width={320}
@@ -24,7 +25,7 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
         />
         <div className="absolute -bottom-7 left-4 h-14 w-14">
           <Image
-            src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
+            src={getSafeImageSrc(business?.image, images.BUSINESS_EMPTY)}
             alt="Overlay Image"
             className="border-step-color h-14 w-14 rounded-xl border object-cover"
             height={56}

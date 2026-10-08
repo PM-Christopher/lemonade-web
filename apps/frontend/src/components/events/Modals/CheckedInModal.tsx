@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -30,7 +31,7 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
           </div>
           <div className="mt-6">
             <div className="flex justify-center">
-              <Image src={"/images/checkIn.png"} alt="check in" width={311} height={160} />
+              <Image src={images.CHECK_IN} alt="check in" width={311} height={160} />
             </div>
           </div>
           <div className="mt-6">

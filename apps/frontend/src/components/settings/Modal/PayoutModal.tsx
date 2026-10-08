@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -29,7 +30,7 @@ const PayoutModal: React.FC<PayoutInterface> = ({ isOpen, toggle }) => {
           <div className="mt-10">
             <div className="flex flex-col items-center">
               <div>
-                <Image src={"/images/Payout.png"} alt="payout" width={311} height={160} />
+                <Image src={images.PAYOUT} alt="payout" width={311} height={160} />
               </div>
               <div className="mt-6">
                 <p className="text-center text-[20px] font-semibold">Payout requested</p>

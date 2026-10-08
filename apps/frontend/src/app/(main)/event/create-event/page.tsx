@@ -1,4 +1,5 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
@@ -18,13 +19,14 @@ import { useFormik } from "formik";
 import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
 import { addEvent } from "@/features/events/event.slice";
-import { useRouter } from "next/navigation";
+
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { FlatButton } from "@/components/global/FlatButton";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getTimeZones } from "@/lib/helper";
+import { routes } from "@/lib/routes";
 
 interface SocialMediaHandles {
   instagram: string;
@@ -36,7 +38,7 @@ interface SocialMediaHandles {
 
 const CreateEventPage = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
   const [eventType, setEventType] = useState("");
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
@@ -194,7 +196,7 @@ const CreateEventPage = () => {
           socials: filteredSocials,
         };
         dispatch(addEvent(data));
-        router.push("/event/add-ticket");
+        push(routes.EVENT_ADD_TICKET);
       } catch (error) {
         if (error instanceof yup.ValidationError) {
           const firstError = error.errors[0];
@@ -244,7 +246,7 @@ const CreateEventPage = () => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.push("/event")}
+            onClick={() => push(routes.EVENT)}
           >
             <ChevronLeft className="cursor-pointer" />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Add event</p>

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Card, CardContent, Label, Input } from "@lemonade/ui";
 import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
+import { images } from "@/lib/images";
 
 function ResetPasswordPage({}) {
   const resetPasswordSchema = yup.object({
@@ -26,7 +27,7 @@ function ResetPasswordPage({}) {
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
-            <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+            <Image src={images.LOGO} alt="logo" width={127} height={56} />
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">

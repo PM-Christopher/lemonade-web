@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
@@ -14,7 +15,7 @@ const EventCard: React.FC<EventCardIF> = ({ event }) => {
   return (
     <div className="laptop:w-[316px] mb-4 flex w-[165px] flex-col rounded-xl bg-white">
       <Image
-        src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+        src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
         alt="event_1"
         width={316}
         height={316}

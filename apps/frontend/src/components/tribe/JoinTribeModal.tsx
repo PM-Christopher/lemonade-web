@@ -71,15 +71,17 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
                 disabled={tribeLoading}
               >
                 {tribeLoading ? (
-                  <Suspense fallback={null}><ColorRing
-                    visible={true}
-                    height="30"
-                    width="30"
-                    ariaLabel="color-ring-loading"
-                    wrapperStyle={{}}
-                    wrapperClass="color-ring-wrapper"
-                    colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                  /></Suspense>
+                  <Suspense fallback={null}>
+                    <ColorRing
+                      visible={true}
+                      height="30"
+                      width="30"
+                      ariaLabel="color-ring-loading"
+                      wrapperStyle={{}}
+                      wrapperClass="color-ring-wrapper"
+                      colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+                    />
+                  </Suspense>
                 ) : (
                   <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
                     Join Tribe now

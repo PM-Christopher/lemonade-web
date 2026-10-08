@@ -1,4 +1,5 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -16,40 +17,80 @@ import BellIcon from "@/images/icons/bellIcon.svg";
 import WalletIcon from "@/images/icons/walletIcon.svg";
 import ReferralIcon from "@/images/icons/referralIcon.svg";
 import PaperIcon from "@/images/icons/paperIcon.svg";
-import { useRouter } from "next/navigation";
+import LogoutIcon from "@/images/icons/logoutIcon.svg";
+
 import { useSelector } from "react-redux";
 import { formatString, getInitials, splitLemonId } from "@/lib/helper";
 import MainLayout from "@/components/layouts/MainLayout";
 import { RootState } from "@/redux/store";
+import { useAppDispatch } from "@/redux/hook";
+import { useLogoutMutation } from "@/features/authentication/mutations";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
 
-interface SettingsItem {
+type SettingsItem = {
   title: string;
   icon: React.ComponentType;
-  path: string;
-}
+  path?: string;
+  onClick?: () => void;
+  textColor?: string;
+};
 
 const accountSettings: SettingsItem[] = [
-  { title: "Profile settings", icon: ProfileIcon, path: "/settings/profile" },
-  { title: "Account settings", icon: GearIcon, path: "/settings/account" },
-  { title: "Plan", icon: PricingIcon, path: "/settings/plan" },
-  { title: "Billing History", icon: BillingIcon, path: "/settings/billing-history" },
-  { title: "Notification settings", icon: BellIcon, path: "/settings/notification" },
+  { title: "Profile settings", icon: ProfileIcon, path: routes.SETTINGS_PROFILE },
+  { title: "Account settings", icon: GearIcon, path: routes.SETTINGS_ACCOUNT },
+  { title: "Plan", icon: PricingIcon, path: routes.SETTINGS_PLAN },
+  { title: "Billing History", icon: BillingIcon, path: routes.SETTINGS_BILLING_HISTORY },
+  { title: "Notification settings", icon: BellIcon, path: routes.SETTINGS_NOTIFICATION },
 ];
 
 const earnSettings: SettingsItem[] = [
-  { title: "Wallet", icon: WalletIcon, path: "/settings/wallet" },
-  { title: "Referrals", icon: ReferralIcon, path: "/settings/referral" },
-];
-
-const moreSettings: SettingsItem[] = [
-  // { title: "Support", icon: SupportIcon, path: "/settings/support" },
-  { title: "Terms and conditions", icon: PaperIcon, path: "/settings/terms-and-conditions" },
-  { title: "Privacy policy", icon: PaperIcon, path: "/settings/privacy" },
+  { title: "Wallet", icon: WalletIcon, path: routes.SETTINGS_WALLET },
+  { title: "Referrals", icon: ReferralIcon, path: routes.SETTINGS_REFERRAL },
 ];
 
 function SettingsPage() {
-  const router = useRouter();
+  const { push } = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
+  const logoutMutation = useLogoutMutation();
+
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Logged out",
+            type: "success",
+          }),
+        );
+      },
+      onSettled: () => {
+        push(routes.LOGIN);
+      },
+    });
+  };
+
+  const moreSettings: SettingsItem[] = [
+    { title: "Terms and conditions", icon: PaperIcon, path: routes.SETTINGS_TERMS },
+    { title: "Privacy policy", icon: PaperIcon, path: routes.SETTINGS_PRIVACY },
+    {
+      title: "Log out",
+      icon: LogoutIcon,
+      onClick: handleLogout,
+      textColor: "text-red-1",
+    },
+  ];
+
+  const openItem = (item: SettingsItem) => {
+    if (item.onClick) {
+      item.onClick();
+      return;
+    }
+    if (item.path) push(item.path);
+  };
 
   return (
     <MainLayout>
@@ -83,7 +124,7 @@ function SettingsPage() {
                 </div>
               </div>
               <div className="relative flex items-center justify-center">
-                <Image src={"/images/lemon.png"} alt="lemon" width={33} height={41} />
+                <Image src={images.LEMON} alt="lemon" width={33} height={41} />
                 <p className="absolute bottom-3.5 w-full text-center text-[12px] font-semibold text-black">
                   L{splitLemonId(user?.lemon_id)}
                 </p>
@@ -126,7 +167,7 @@ function SettingsPage() {
                   <div
                     key={item.title}
                     className="my-[20.5px] flex cursor-pointer items-center justify-between"
-                    onClick={() => router.push(item.path)}
+                    onClick={() => openItem(item)}
                   >
                     <div className="flex items-center gap-2">
                       <item.icon />
@@ -145,7 +186,7 @@ function SettingsPage() {
                   <div
                     key={item.title}
                     className="my-[20.5px] flex cursor-pointer items-center justify-between"
-                    onClick={() => router.push(item.path)}
+                    onClick={() => openItem(item)}
                   >
                     <div className="flex items-center gap-2">
                       <item.icon />
@@ -164,11 +205,13 @@ function SettingsPage() {
                   <div
                     key={item.title}
                     className="my-[20.5px] flex cursor-pointer items-center justify-between"
-                    onClick={() => router.push(item.path)}
+                    onClick={() => openItem(item)}
                   >
                     <div className="flex items-center gap-2">
                       <item.icon />
-                      <p className="text-[16px] font-normal">{item.title}</p>
+                      <p className={`text-[16px] font-normal ${item.textColor ?? ""}`}>
+                        {item.title}
+                      </p>
                     </div>
                     <ChevronRight />
                   </div>

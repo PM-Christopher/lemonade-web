@@ -1,21 +1,22 @@
-import type { useRouter } from "next/navigation";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { authFailure, authStart, authSuccess, loadStop } from "./authSlice";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { AppDispatch } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 interface LoginValues {
   email: string;
   password: string;
 }
 
+type Navigate = { push: (to: string) => void };
 type SetCookie = (name: string, value: string, options?: Record<string, unknown>) => void;
 
 export const login = async (
   values: LoginValues,
   dispatch: AppDispatch,
-  router: ReturnType<typeof useRouter>,
+  navigate: Navigate,
   setCookie: SetCookie,
 ) => {
   dispatch(authStart());
@@ -23,15 +24,13 @@ export const login = async (
     const { data } = await axiosInstance.post("/admin/auth/login", { ...values });
     if (data.status || data.success) {
       dispatch(setIsRouting(true));
-      dispatch(setIsRouting(true));
       if (data.data.admin.status == 0) {
         setCookie("newToken", data.data.token, {
           path: "/",
           maxAge: 3600 * 6, // Expires after 6hrs
           sameSite: false,
-          // domain: env === 'development' ? '' : ''
         });
-        router.push("/profile-setup");
+        navigate.push(routes.PROFILE_SETUP);
       } else {
         setCookie("token", data.data.token, {
           path: "/",
@@ -47,7 +46,7 @@ export const login = async (
         );
         await dispatch(authSuccess(data.data));
         setTimeout(() => {
-          router.push("/");
+          navigate.push(routes.HOME);
         }, 500);
       }
     } else {
@@ -59,11 +58,15 @@ export const login = async (
         }),
       );
     }
-  } catch {
+  } catch (error: unknown) {
+    const message =
+      error && typeof error === "object" && "response" in error
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message
+        : undefined;
     dispatch(
       updateToastifyReducer({
         show: true,
-        message: "Something went wrong. Please try again.",
+        message: message || "Something went wrong. Please try again.",
         type: "error",
       }),
     );

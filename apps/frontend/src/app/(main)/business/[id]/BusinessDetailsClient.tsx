@@ -1,4 +1,6 @@
 "use client";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useCallback, useEffect, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -26,11 +28,12 @@ import { axiosInstance } from "@/lib/axiosInstane";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal, { type Boost } from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter } from "next/navigation";
+
 import { businessButtons } from "@/lib/constant";
 import { useBusinessQuery } from "@/features/business/queries";
 import { BusinessDetailSkeleton } from "@/components/Skeletons";
 import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
+import { routes } from "@/lib/routes";
 
 // Off the initial bundle — both are only needed once their triggering
 // action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -53,7 +56,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   const [isVerifyBoost, setIsVerifyBoost] = useState(false);
   const [boost, setBoost] = useState<Boost | null>(null);
   const [boostDetails, setBoostDetails] = useState(false);
-  const router = useRouter();
+  const { replace, back } = useNavigation();
   const [isDisputeOpen, setIsDisputeOpen] = useState(false);
   const [isSubmitDisputeOpen, setIsSubmitDisputeOpen] = useState(false);
   const pathname = usePathname();
@@ -93,8 +96,8 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   }
 
   useEffect(() => {
-    if (shouldOpenDispute) router.replace(pathname);
-  }, [shouldOpenDispute, router, pathname]);
+    if (shouldOpenDispute) replace(pathname);
+  }, [shouldOpenDispute, replace, pathname]);
 
   // business reviews
   const { data: reviewData, loading: reviewLoading } = useRequest<{
@@ -119,7 +122,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
               params.delete("reference");
               setBoost(data.data.boost);
               setIsVerifyBoost(true);
-              router.replace(`?${params.toString()}`);
+              replace(`?${params.toString()}`);
             }
           }
         } catch {
@@ -129,7 +132,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
       }
     };
     verifyBusinessBoost();
-  }, [trxref, router, searchParams]);
+  }, [trxref, replace, searchParams]);
 
   const loadMore = () => {
     setDisplayCount((prevCount) => prevCount + 4); // Increase the count by 4
@@ -161,7 +164,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
       <section className="bg-light_grey pb-10">
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
-            <ChevronLeft className="cursor-pointer" onClick={() => router.back()} />
+            <ChevronLeft className="cursor-pointer" onClick={() => back()} />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Business details</p>
           </div>
         </div>
@@ -172,12 +175,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
             <>
               <div
                 className="laptop:w-[640px] relative w-full rounded-xl bg-white bg-cover bg-center bg-no-repeat p-4"
-                style={{ backgroundImage: `url('/images/business-bg.png')` }}
+                style={{ backgroundImage: `url(${images.BUSINESS_BG})` }}
               >
                 <div className="flex flex-col">
                   <div className="flex justify-center">
                     <Image
-                      src={"/images/business/jobLogo.png"}
+                      src={images.BUSINESS_JOB_LOGO}
                       alt="logo"
                       className="border-step-color flex justify-center rounded-2xl border"
                       width={64}
@@ -200,7 +203,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div className="mt-2 flex justify-center">
                     <div className="bg-mid-grey flex w-fit items-center justify-center gap-1 rounded-xl p-2">
                       <div>
-                        <Image src={"/images/medal.png"} alt="medal" width={16} height={16} />
+                        <Image src={images.MEDAL} alt="medal" width={16} height={16} />
                       </div>
                       <div>
                         <p className="font-semi-normal text-primary-black font-sans text-[14px] leading-[21px]">
@@ -241,7 +244,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
 
               {business?.owner ? (
                 <div className="mt-6 flex items-center justify-center gap-8">
-                  <Link href={`/business/${id}/jobs`}>
+                  <Link href={routes.BUSINESS_JOBS(id)}>
                     <div className="flex flex-col items-center gap-2">
                       <div className="border-grey-20 rounded-2xl border bg-white p-4">
                         <CaseIcon />
@@ -264,7 +267,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       </p>
                     </div>
                   ) : (
-                    <Link href={`/business/${id}/boost-business`}>
+                    <Link href={routes.BUSINESS_BOOST(id)}>
                       <div className="flex flex-col items-center gap-2">
                         <div className="border-grey-20 rounded-2xl border bg-white p-4">
                           <RocketIcon />
@@ -275,7 +278,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </Link>
                   )}
-                  <Link href={`/business/${id}/edit-business`}>
+                  <Link href={routes.BUSINESS_EDIT(id)}>
                     <div className="flex flex-col items-center gap-2">
                       <div className="border-grey-20 rounded-2xl border bg-white p-4">
                         <PencilIcon />
@@ -401,12 +404,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     <div className="flex justify-between">
                       <div className="bg-light_grey flex flex-col rounded-xl p-3 px-5">
                         <div className="flex justify-center">
-                          <Image
-                            src={"/images/medal.png"}
-                            alt="medal"
-                            width={20.57}
-                            height={20.57}
-                          />
+                          <Image src={images.MEDAL} alt="medal" width={20.57} height={20.57} />
                         </div>
                         <div>
                           <p className="text-center text-[20px] font-bold">
@@ -435,12 +433,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       </>
                     ) : (
                       <div className="flex flex-col items-center justify-center">
-                        <Image
-                          src={"/images/noReviews.png"}
-                          alt="no-reviews"
-                          width={114}
-                          height={98}
-                        />
+                        <Image src={images.NO_REVIEWS} alt="no-reviews" width={114} height={98} />
                         <p className="font-semi-normal text-text-grey text-[14px]">
                           No reviews yet
                         </p>

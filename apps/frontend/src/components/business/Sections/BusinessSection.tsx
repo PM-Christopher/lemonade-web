@@ -1,11 +1,12 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import BusinessCarousel from "@/components/global/BusinessCarousel";
 import AllBusinessCard from "@/components/business/AllBusinessCard";
 import { useSelector } from "react-redux";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/lib/axiosInstane";
 import PaymentConfirmModal, {
   type PaymentConfirmJob,
@@ -14,6 +15,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { setSelectedJob } from "@/redux/tempSlice";
 import { RootState } from "@/redux/store";
 import { AllBusinessSkeleton, BusinessCarouselSkeleton } from "@/components/Skeletons";
+import { routes } from "@/lib/routes";
 
 interface BusinessSectionProps {
   businesses: BusinessInterface[];
@@ -23,7 +25,7 @@ interface BusinessSectionProps {
 
 const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured, loading }) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { replace } = useNavigation();
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
   const [, setVerifyLoading] = useState(false);
@@ -49,7 +51,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
               setIsVerifyJob(true);
               dispatch(setSelectedJob(data.data.job));
               // Update the URL without reloading
-              router.replace(`?${params.toString()}`);
+              replace(`?${params.toString()}`);
             }
           }
         } catch {
@@ -59,7 +61,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
       }
     };
     verifyPayment();
-  }, [trxref, dispatch, router, searchParams]);
+  }, [trxref, dispatch, replace, searchParams]);
 
   return (
     <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
@@ -112,7 +114,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
             <AllBusinessSkeleton count={4} />
           ) : businesses?.length > 0 ? (
             businesses.map((business: BusinessInterface, index: number) => (
-              <Link href={`/business/${business.id}`} key={index}>
+              <Link href={routes.BUSINESS_DETAIL(business.id)} key={index}>
                 <AllBusinessCard business={business} />
               </Link>
             ))

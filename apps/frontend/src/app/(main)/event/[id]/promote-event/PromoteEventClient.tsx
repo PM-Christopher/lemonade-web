@@ -1,10 +1,11 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState, lazy, Suspense } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input } from "@lemonade/ui";
 import ChevronRightFilled from "@/images/icons/chevronRightFilled.svg";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter } from "next/navigation";
+
 import { useAppDispatch } from "@/redux/hook";
 import { usePromotionsQuery } from "@/features/events/queries";
 import { usePayForPromotionMutation } from "@/features/events/mutations";
@@ -17,7 +18,7 @@ const ColorRing = lazy(() =>
 );
 
 function PromoteEventClient({ id }: { id: number }) {
-  const router = useRouter();
+  const { back } = useNavigation();
   const dispatch = useAppDispatch();
   const { data: promotionsData, isLoading: loading } = usePromotionsQuery();
   const promotions = promotionsData?.promotions ?? [];
@@ -82,7 +83,7 @@ function PromoteEventClient({ id }: { id: number }) {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Promote event</p>
@@ -225,15 +226,17 @@ function PromoteEventClient({ id }: { id: number }) {
                       disabled={promotionLoading || selectedPromotion === null}
                     >
                       {promotionLoading ? (
-                        <Suspense fallback={null}><ColorRing
-                          visible={true}
-                          height="30"
-                          width="30"
-                          ariaLabel="color-ring-loading"
-                          wrapperStyle={{}}
-                          wrapperClass="color-ring-wrapper"
-                          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-                        /></Suspense>
+                        <Suspense fallback={null}>
+                          <ColorRing
+                            visible={true}
+                            height="30"
+                            width="30"
+                            ariaLabel="color-ring-loading"
+                            wrapperStyle={{}}
+                            wrapperClass="color-ring-wrapper"
+                            colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+                          />
+                        </Suspense>
                       ) : (
                         <p className="font-semi-normal font-sans text-[16px] text-white">Pay now</p>
                       )}

@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useRef, useState } from "react";
 import {
   Card,
@@ -156,8 +157,8 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="tablet:w-[480px] w-full rounded-2xl border-none shadow-none">
-        <CardHeader className="grid gap-4">
+      <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
+        <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
             <div className="bg-step-color h-0.5 w-[15px]" />
             <div className="bg-border-grey h-0.5 w-[15px]" />
@@ -171,7 +172,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="grid gap-4">
+        <CardContent className="mt-4 grid gap-4 p-0">
           <div className={"flex justify-center"}>
             {avatar ? (
               <div
@@ -186,7 +187,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
               ></div>
             ) : (
               <Image
-                src={"/images/avatar_1.png"}
+                src={images.AVATAR_1}
                 alt="avatar"
                 width={80}
                 height={80}
@@ -194,7 +195,6 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
                 className="cursor-pointer"
               />
             )}
-            {/* Hidden file input */}
             <input
               type="file"
               ref={fileInputRef}
@@ -207,7 +207,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
           ) : null}
           <p className="text-meta text-text-grey text-center">Snap shot</p>
         </CardContent>
-        <CardContent className="grid gap-4">
+        <CardContent className="mt-4 grid gap-4 p-0">
           <div className="grid gap-2">
             <Label htmlFor="username" className="font-label">
               Username
@@ -267,7 +267,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
             ) : null}
           </div>
         </CardContent>
-        <CardContent className="flex flex-col space-y-2">
+        <CardContent className="mt-4 flex flex-col space-y-2 p-0">
           <FormikButton
             loading={formik.isSubmitting}
             title="Next"

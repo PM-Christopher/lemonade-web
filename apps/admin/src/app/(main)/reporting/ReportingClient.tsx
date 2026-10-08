@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { CalendarIcon, ChevronDown, SearchIcon } from "lucide-react";
@@ -9,14 +11,14 @@ import { useReportsQuery } from "@/features/reporting/queries";
 import type { ReportRow } from "@/features/reporting/api";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
-import { useRouter } from "next/navigation";
+
 import dayjs from "dayjs";
 import useSearchParams from "@/hooks/useSearchParams";
 
 const PER_PAGE = 10;
 
 function ReportingClient() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { searchParams, setSearchParams } = useSearchParams();
   const currentPage = Number(searchParams?.get("page") ?? 1);
 
@@ -103,7 +105,7 @@ function ReportingClient() {
                       <tr
                         key={index}
                         className="border-grey-20 h-[72px] cursor-pointer border-b"
-                        onClick={() => router.push(`/reporting/${row.id}`)}
+                        onClick={() => push(routes.REPORTING_DETAIL(row.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>

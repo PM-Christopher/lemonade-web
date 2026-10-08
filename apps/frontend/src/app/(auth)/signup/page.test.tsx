@@ -22,9 +22,18 @@ vi.mock("react-cookie", () => ({
 
 let searchParamsValue = new URLSearchParams();
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
-  useSearchParams: () => searchParamsValue,
+vi.mock("@/hooks/useNavigation", () => ({
+  useNavigation: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    pushWithQuery: vi.fn(),
+    pathname: "/signup",
+    search: "",
+    isActive: () => false,
+    getQueryParam: (key: string) => searchParamsValue.get(key),
+  }),
 }));
 
 describe("SignupPage referral capture", () => {

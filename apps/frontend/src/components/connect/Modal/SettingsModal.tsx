@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -67,7 +68,7 @@ const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_conne
             <div className="flex flex-col">
               <div className="bg-light-green-10 flex w-full flex-col items-center justify-center rounded-xl pt-3 pb-3">
                 <div className="relative">
-                  <Image src={"/images/lemon.png"} alt="lemon" width={33} height={41} />
+                  <Image src={images.LEMON} alt="lemon" width={33} height={41} />
                   <p className="absolute bottom-3.5 left-2 text-center text-[12px] font-semibold text-black">
                     {user_connect?.user?.lemon_id_short}
                   </p>

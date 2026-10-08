@@ -1,6 +1,8 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import MainLayout from "@/components/layouts/MainLayout";
 import { SearchIcon, UploadIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
@@ -28,7 +30,7 @@ const PointsRateModal = dynamic(() => import("@/modals/wallet-management/PointsR
 });
 
 function WalletManagementClient() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const [editThreshold, setEditThreshold] = useState(false);
   const [editingRateCurrency, setEditingRateCurrency] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -223,7 +225,7 @@ function WalletManagementClient() {
                       <tr
                         key={index}
                         className="border-grey-20 h-[72px] cursor-pointer border-b"
-                        onClick={() => router.push(`/wallet-management/${row.id}`)}
+                        onClick={() => push(routes.WALLET_DETAIL(row.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {row?.txn_id ?? "N/A"}

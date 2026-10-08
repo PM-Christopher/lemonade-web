@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 import { EventsSkeleton, TrendingEventsSkeleton } from "@/components/Skeletons";
 import { useEventsQuery } from "@/features/events/queries";
+import { routes } from "@/lib/routes";
 
 type EventsInterface = {
   results: EventInterface[];
@@ -47,7 +48,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
             isMobile ? (
               <div className="scrollbar-hide mt-3 flex space-x-2 overflow-x-auto py-4 shadow-none">
                 {results.map((event: EventInterface, index: number) => (
-                  <Link href={`/event/${event?.id}`} key={index}>
+                  <Link href={routes.EVENT_DETAIL(event?.id)} key={index}>
                     <EventCard event={event} />
                   </Link>
                 ))}
@@ -55,7 +56,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
             ) : (
               <div className="grid grid-cols-3 gap-2">
                 {results.map((event: EventInterface, index: number) => (
-                  <Link href={`/event/${event?.id}`} key={index}>
+                  <Link href={routes.EVENT_DETAIL(event?.id)} key={index}>
                     <EventCard event={event} />
                   </Link>
                 ))}
@@ -90,7 +91,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
                 <EventsSkeleton count={3} />
               ) : (
                 filteredEvents.map((event: EventInterface, index: number) => (
-                  <Link href={`/event/${event?.id}`} key={index}>
+                  <Link href={routes.EVENT_DETAIL(event?.id)} key={index}>
                     <EventCard event={event} />
                   </Link>
                 ))
@@ -103,7 +104,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
             {isMobile ? (
               <div className="scrollbar-hide mt-3 flex space-x-2 overflow-x-auto py-4 shadow-none">
                 {events?.this_week.map((event: EventInterface, index: number) => (
-                  <Link href={`/event/${event?.id}`} key={index}>
+                  <Link href={routes.EVENT_DETAIL(event?.id)} key={index}>
                     <EventCard event={event} />
                   </Link>
                 ))}
@@ -114,7 +115,7 @@ const EventsSectionView: React.FC<EventsInterface> = ({
                   <EventsSkeleton count={6} />
                 ) : events?.this_week && events.this_week.length > 0 ? (
                   events.this_week.map((event: EventInterface, index: number) => (
-                    <Link href={`/event/${event?.id}`} key={index}>
+                    <Link href={routes.EVENT_DETAIL(event?.id)} key={index}>
                       <EventCard event={event} />
                     </Link>
                   ))

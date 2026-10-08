@@ -1,15 +1,4 @@
-// Auth broker — the only place a plaintext access token ever exists in a
-// JSON response body. It's persisted into the httpOnly cookie here and
-// stripped before the response reaches the browser for a fully-onboarded
-// user — the client only ever sees `{ user }` in that case.
-//
-// A user who hasn't finished email verification or profile setup yet is a
-// deliberate exception: that flow (verify-email / profile-setup) uses its
-// own short-lived, narrower-scoped token via a JS-readable cookie, same as
-// before this cutover — see docs/ARCHITECTURE.md and the memory note on
-// this session's auth work for why that's explicitly out of scope here.
-// This route tells the two cases apart and only gives the httpOnly
-// treatment to the real one.
+// Login broker: stores the access token in an httpOnly cookie for finished accounts.
 import { NextResponse } from "next/server";
 import { ApiError } from "@lemonade/api-client";
 import { userAuthRoutes } from "@lemonade/api-types/generated";
@@ -21,6 +10,7 @@ interface LoginUser {
   fullname: string;
   username: string | null;
   status?: number;
+  email_verified?: boolean;
 }
 
 interface LoginResponse {
@@ -30,6 +20,8 @@ interface LoginResponse {
   refresh_token?: string;
   expires_in?: number;
 }
+
+const ACCOUNT_VERIFICATION_TOKEN = "account_verification_token";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => undefined);
@@ -53,17 +45,13 @@ export async function POST(req: Request) {
         data: body,
       });
 
-    const needsOnboarding = result.user.status === 0 || result.user.username === null;
+    // Unfinished onboarding keeps a short-lived token; no main session cookie.
+    const needsOnboarding =
+      result.token_type === ACCOUNT_VERIFICATION_TOKEN ||
+      result.user.status === 0 ||
+      result.user.username === null;
 
     if (needsOnboarding) {
-      // Deliberately not relayed here — an onboarding user has no main
-      // httpOnly session (see this file's own docblock), so a signed-in
-      // cookie would incorrectly tell middleware.ts they can reach
-      // protected routes. The backend still issued a real ACCESS token
-      // (SignInUser has no onboarding branch of its own — that split is
-      // this route's decision, not the backend's), so its response does
-      // carry the Set-Cookie header; it's just the wrong signal for this
-      // branch, so it's read no further.
       return NextResponse.json({
         success: true,
         message: "Login successful",

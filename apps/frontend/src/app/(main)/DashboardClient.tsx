@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import TribeCard from "@/components/dashboard/TribeCard";
 import EventCard from "@/components/dashboard/EventCard";
@@ -16,7 +18,7 @@ import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import BusinessCard from "@/components/dashboard/BusinessCard";
 import { BusinessesSkeleton, EventsSkeleton, TribesSkeleton } from "@/components/Skeletons";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 import ChevronRight from "@/images/icons/chevronRight.svg";
 
 const SeeMore = ({ href }: { href: string }) => (
@@ -30,7 +32,7 @@ const SeeMore = ({ href }: { href: string }) => (
 );
 
 const DashboardClient = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: tribesData, isLoading: tribeLoading } = useDashboardTribesQuery({
     enabled: isLoggedIn,
@@ -52,7 +54,7 @@ const DashboardClient = () => {
         <section id="forums" className="phone:mx-10 m-4 mx-4 rounded-lg bg-white p-4">
           <div className="flex items-center justify-between gap-4">
             <p className="text-title-r font-sans font-semibold">Tribe activities</p>
-            <SeeMore href="/tribe" />
+            <SeeMore href={routes.TRIBE} />
           </div>
           <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto py-4 shadow-none">
             {tribeLoading ? (
@@ -76,7 +78,7 @@ const DashboardClient = () => {
         <section id="events" className="phone:mx-10 m-4 mx-4 rounded-lg bg-white p-4">
           <div className="flex items-center justify-between gap-4">
             <p className="text-title-r font-sans font-semibold">Trending events</p>
-            <SeeMore href="/event" />
+            <SeeMore href={routes.EVENT} />
           </div>
           <div className="scrollbar-hide phone:max-w-[1280px] mt-3 flex gap-4 overflow-x-auto py-4">
             {eventLoading ? (
@@ -86,7 +88,7 @@ const DashboardClient = () => {
                 <div
                   className="phone:w-[200px] w-[78vw] shrink-0 cursor-pointer"
                   key={idx}
-                  onClick={() => router.push(`/event/${event.id}`)}
+                  onClick={() => push(routes.EVENT_DETAIL(event.id))}
                 >
                   <EventCard event={event} />
                 </div>
@@ -104,7 +106,7 @@ const DashboardClient = () => {
         <section id="business" className="phone:mx-10 mx-4 my-10 rounded-lg bg-white p-4 pb-7">
           <div className="flex items-center justify-between gap-4">
             <p className="text-title-r font-sans font-semibold">Featured businesses</p>
-            <SeeMore href="/business" />
+            <SeeMore href={routes.BUSINESS} />
           </div>
           <div className="scrollbar-hide mt-3 flex gap-4 overflow-x-auto py-4 shadow-none">
             {businessLoading ? (
@@ -114,7 +116,7 @@ const DashboardClient = () => {
                 <div
                   className="tablet:w-80 w-[78vw] max-w-80 shrink-0 cursor-pointer"
                   key={idx}
-                  onClick={() => router.push(`/business/${business.id}`)}
+                  onClick={() => push(routes.BUSINESS_DETAIL(business.id))}
                 >
                   <BusinessCard key={idx} business={business} />
                 </div>

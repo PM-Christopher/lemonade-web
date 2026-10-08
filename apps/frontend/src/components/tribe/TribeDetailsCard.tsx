@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
@@ -45,7 +46,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           <div className="mt-10 flex justify-center">
             <div className="h-24 w-24 overflow-hidden rounded-3xl border-2">
               <Image
-                src={tribe?.image || "/images/placeholder.png"} // fallback
+                src={tribe?.image || images.PLACEHOLDER} // fallback
                 alt="tribe"
                 width={96}
                 height={96}

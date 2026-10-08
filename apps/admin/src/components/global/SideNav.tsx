@@ -1,18 +1,19 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import { pageLinks } from "@/utils/pageLinks";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
 
 function SideNav({}) {
-  const pathname = usePathname();
-  const profileActive = pathname === "/profile" || pathname.startsWith("/profile");
+  const { push, pathname } = useNavigation();
+  const profileActive = pathname === routes.PROFILE || pathname.startsWith(`${routes.PROFILE}/`);
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const logoutMutation = useLogoutMutation();
   const { data: currentAdmin } = useCurrentAdminQuery();
   const visibleLinks = pageLinks.filter(
@@ -32,14 +33,14 @@ function SideNav({}) {
         );
       },
       onSettled: () => {
-        router.push("/login");
+        push(routes.LOGIN);
       },
     });
   };
   return (
     <aside className="bg-gray-20 border-r-grey-20 flex w-64 flex-col gap-5 border-r bg-white p-4">
       <div className="mb-8 text-2xl font-bold">
-        <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+        <Image src={images.LOGO} alt="logo" width={127} height={56} />
       </div>
       <nav>
         <ul className="space-y-2">
@@ -64,7 +65,7 @@ function SideNav({}) {
       </nav>
       <div className="border-t-grey-20 mt-auto border-t pt-4 pb-4">
         <a
-          href={"/profile"}
+          href={routes.PROFILE}
           className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-48 rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal ${
             profileActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
           }`}

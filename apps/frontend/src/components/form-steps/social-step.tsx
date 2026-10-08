@@ -1,6 +1,9 @@
 "use client";
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, Input } from "@lemonade/ui";
+import { Card, CardContent, CardHeader } from "@lemonade/ui";
 import Image from "next/image";
 
 import { axiosInstance } from "@/lib/axiosInstane";
@@ -11,7 +14,6 @@ import * as yup from "yup";
 import { FormikButton } from "@/components/global/FormikButton";
 import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";
 import { useCookies } from "react-cookie";
-import { useRouter } from "next/navigation";
 
 interface SocialInterface {
   loading: boolean;
@@ -32,7 +34,7 @@ interface LegacyAxiosError {
 
 const SocialStep: React.FC<SocialInterface> = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
   const [cookie, , removeCookie] = useCookies(["token", "newToken"]);
   const [socials, setSocials] = useState<SocialMediaHandles>({
     instagram: "",
@@ -99,7 +101,7 @@ const SocialStep: React.FC<SocialInterface> = () => {
             type: "success",
           }),
         );
-        router.push("/");
+        push(routes.HOME);
       } else {
         dispatch(
           updateToastifyReducer({
@@ -126,8 +128,8 @@ const SocialStep: React.FC<SocialInterface> = () => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Card className="tablet:w-[480px] w-full rounded-2xl border-none shadow-none">
-        <CardHeader className="grid gap-4">
+      <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
+        <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
             <div className="bg-step-color h-0.5 w-[15px]" />
             <div className="bg-step-color h-0.5 w-[15px]" />
@@ -142,65 +144,34 @@ const SocialStep: React.FC<SocialInterface> = () => {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="mt-[30px] grid gap-4">
-          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-            <div className="">
-              <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
-            </div>
-            <Input
-              name="facebook"
-              id="facebook"
-              type="text"
-              className="form-font border-0 shadow-none"
-              placeholder="Username"
-              value={socials.facebook}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-            <div className="">
-              <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
-            </div>
-            <Input
-              name="linkedin"
-              id="linkedin"
-              type="text"
-              className="form-font border-0 shadow-none"
-              placeholder="Username"
-              value={socials.linkedin}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-            <div className="">
-              <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
-            </div>
-            <Input
-              name="twitter"
-              id="twitter"
-              type="text"
-              className="form-font border-0 shadow-none"
-              placeholder="Username"
-              value={socials.twitter}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-            <div className="">
-              <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
-            </div>
-            <Input
-              name="instagram"
-              id="instagram"
-              type="text"
-              className="form-font border-0 shadow-none"
-              placeholder="Username"
-              value={socials.instagram}
-              onChange={handleChange}
-            />
-          </div>
+        <CardContent className="mt-6 grid gap-4 p-0">
+          {(
+            [
+              { name: "facebook", icon: images.FACEBOOK, value: socials.facebook },
+              { name: "linkedin", icon: images.LINKEDIN, value: socials.linkedin },
+              { name: "twitter", icon: images.TWITTER, value: socials.twitter },
+              { name: "instagram", icon: images.INSTAGRAM, value: socials.instagram },
+            ] as const
+          ).map((field) => (
+            <label
+              key={field.name}
+              htmlFor={field.name}
+              className="bg-light_grey focus-within:border-step-color flex h-14 w-full items-center gap-3 rounded-xl border border-transparent px-5"
+            >
+              <Image src={field.icon} alt="" width={20} height={20} className="h-5 w-5 shrink-0" />
+              <input
+                name={field.name}
+                id={field.name}
+                type="text"
+                className="form-font placeholder:text-text-grey h-full w-full min-w-0 flex-1 border-0 bg-transparent p-0 shadow-none outline-none focus:border-0 focus:ring-0 focus:outline-none focus-visible:outline-none"
+                placeholder="Username"
+                value={field.value}
+                onChange={handleChange}
+              />
+            </label>
+          ))}
         </CardContent>
-        <CardContent className="flex flex-col">
+        <CardContent className="mt-4 flex flex-col p-0">
           <div className="mt-2 mb-6 flex justify-center">
             <button
               type="submit"

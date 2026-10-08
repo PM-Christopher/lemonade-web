@@ -1,8 +1,10 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PrinterIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { usePlanSubscriptionDetailQuery } from "@/features/transaction/queries";
@@ -13,7 +15,7 @@ import PaginationComp from "@/components/global/Pagination";
 function SubscriptionDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
-  const router = useRouter();
+  const { push } = useNavigation();
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
@@ -101,7 +103,7 @@ function SubscriptionDetailsClient({ id }: { id: string }) {
               <p className="text-sm font-medium">{subscription?.info?.fullname}</p>
               <p
                 className="text-light-green cursor-pointer text-sm font-medium"
-                onClick={() => router.push(`/users/${subscription?.info?.user_id}`)}
+                onClick={() => push(routes.USER_DETAIL(subscription!.info!.user_id!))}
               >
                 View profile
               </p>

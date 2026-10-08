@@ -1,9 +1,12 @@
 "use client";
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import { useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+
 import { useDispatch } from "react-redux";
 import { XIcon } from "lucide-react";
 import {
@@ -35,7 +38,7 @@ interface CreateTribeModalProps {
 
 const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const { push } = useNavigation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const { data: categoriesData } = useTribeCategoriesQuery({ enabled: isOpen });
@@ -87,7 +90,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
     createTribeMutation.mutate(data, {
       onSuccess: (result) => {
         closeAndReset();
-        router.push(`/tribes/${result.tribe.id}`);
+        push(routes.TRIBE_DETAIL(result.tribe.id));
       },
       onError: (error) => {
         if (error instanceof ApiError && error.fieldErrors) {
@@ -143,7 +146,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 />
               ) : (
                 <Image
-                  src={"/images/upload.png"}
+                  src={images.UPLOAD}
                   alt="upload"
                   width={89}
                   height={83}

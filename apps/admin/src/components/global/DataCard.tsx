@@ -1,6 +1,6 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
-import { useRouter } from "next/navigation";
 
 function DataCard({
   styles,
@@ -23,7 +23,7 @@ function DataCard({
   pageLink?: string;
   handleChange?: () => void;
 }) {
-  const router = useRouter();
+  const { push } = useNavigation();
   return (
     <div className={`shadow-card-shadow flex justify-between rounded-xl bg-white p-4 ${styles}`}>
       <div className={"flex flex-col gap-4"}>
@@ -45,7 +45,7 @@ function DataCard({
       {isLink && pageLink && (
         <p
           className={"text-light-green cursor-pointer text-[14px] font-medium"}
-          onClick={() => router.push(pageLink)}
+          onClick={() => push(pageLink)}
         >
           View
         </p>

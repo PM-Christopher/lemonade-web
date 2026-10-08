@@ -1,10 +1,12 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useRef, useState, use } from "react";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input } from "@lemonade/ui";
 import MultipleTicketCard from "@/components/events/MultipleTicketCard";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Switch from "react-switch";
 import { useSelector } from "react-redux";
 import { TicketDetails } from "@/interfaces/EventInterface";
@@ -23,7 +25,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
   const [checked, setChecked] = useState(false);
   const COUNTDOWN_DURATION = 10 * 60;
   const [timeLeft, setTimeLeft] = useState(COUNTDOWN_DURATION); // 10 minutes in seconds
-  const router = useRouter();
+  const { push, replace, back } = useNavigation();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -113,7 +115,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                 completed: true,
               };
               dispatch(freeEventState(data));
-              router.push("/event");
+              push(routes.EVENT);
             } else if (result.payment_url) {
               dispatch(
                 updateToastifyReducer({
@@ -158,7 +160,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
       if (remaining <= 0) {
         clear();
         localStorage.removeItem(key);
-        router.push(assignTicketHref);
+        push(assignTicketHref);
       }
     };
 
@@ -168,7 +170,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
     return () => {
       clear();
     };
-  }, [router, params.id, key, COUNTDOWN_DURATION, assignTicketHref]);
+  }, [push, params.id, key, COUNTDOWN_DURATION, assignTicketHref]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -202,17 +204,14 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
     const nextParams = new URLSearchParams(searchParams.toString());
     nextParams.set("referral", referralFromState);
 
-    router.replace(`${pathname}?${nextParams.toString()}`);
-  }, [pathname, router, searchParams, referralFromState]);
+    replace(`${pathname}?${nextParams.toString()}`);
+  }, [pathname, replace, searchParams, referralFromState]);
 
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
-          <div
-            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
-          >
+          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft className="cursor-pointer" />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Assign ticket</p>
           </div>

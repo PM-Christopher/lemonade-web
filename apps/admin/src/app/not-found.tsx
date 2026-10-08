@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
+import { routes } from "@/lib/routes";
 
 // Next resolves not-found by closest matching layout tree — a path that
 // doesn't match any real route under (main) or (auth) at all (genuinely
@@ -23,7 +24,7 @@ export default function RootNotFound() {
           It may not exist, or you may not have access to it.
         </p>
         <Link
-          href="/"
+          href={routes.HOME}
           className="border-step-color bg-gradient-green mt-2 rounded-xl border px-6 py-[11px]"
         >
           <p className="text-[16px] font-medium text-white">Back to overview</p>

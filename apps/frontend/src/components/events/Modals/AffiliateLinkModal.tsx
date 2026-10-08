@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -48,7 +49,7 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
               <div className="flex justify-center">
                 <div className="relative h-40 w-40 sm:h-[200px] sm:w-[200px]">
                   <Image
-                    src="/images/affliliateLink.png"
+                    src={images.AFFILIATE_LINK}
                     alt="affiliate-link"
                     fill
                     className="object-contain"

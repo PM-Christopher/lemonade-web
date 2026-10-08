@@ -1,20 +1,22 @@
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import Image from "next/image";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import { getSafeImageSrc } from "@/lib/helper";
-import { useRouter } from "next/navigation";
 
 type TribeIF = {
   tribe: TribeInterface;
 };
 
 const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   return (
     <div className="bg-light-yellow flex w-full flex-col rounded-2xl p-4 shadow-none">
       <div className="flex-shrink-0">
         <Image
-          src={getSafeImageSrc(tribe?.image, "/images/tribe_1.png")}
+          src={getSafeImageSrc(tribe?.image, images.DEFAULT_TRIBE)}
           alt="forum_icon"
           width={48}
           height={48}
@@ -31,33 +33,18 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
             {tribe?.description}
           </p>
         </div>
-        <div className="ml-2 flex-shrink-0">
-          {/*<Image src={"/images/forum_image.png"} alt="" width={48} height={48}/>*/}
-        </div>
       </div>
 
       <div className="mt-3 flex justify-between">
         <div className="flex gap-2">
           <div className="flex items-center justify-between gap-1">
-            <Image
-              src={"/images/heart.png"}
-              alt="like"
-              width={16}
-              height={16}
-              className="h-4 w-4"
-            />
+            <Image src={images.HEART} alt="like" width={16} height={16} className="h-4 w-4" />
             <p className="font-semi-normal text-light-black text-body-s font-sans">
               {tribe?.likes}
             </p>
           </div>
           <div className="flex items-center justify-between gap-1">
-            <Image
-              src={"/images/chat.png"}
-              alt="comment"
-              width={16}
-              height={16}
-              className="h-4 w-4"
-            />
+            <Image src={images.CHAT} alt="comment" width={16} height={16} className="h-4 w-4" />
             <p className="font-semi-normal text-light-black text-body-s font-sans">
               {tribe?.comments}
             </p>
@@ -66,11 +53,11 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
 
         <div
           className="flex cursor-pointer items-center justify-between gap-1 transition-opacity hover:opacity-80"
-          onClick={() => router.push(`/tribe/${tribe?.slug}`)}
+          onClick={() => push(routes.TRIBE_DETAIL(tribe?.slug))}
         >
           <p className="font-semi-normal text-light-green text-body-s font-sans">View</p>
           <Image
-            src={"/images/arrow-left.png"}
+            src={images.ARROW_LEFT}
             alt="arrow left"
             width={12.5}
             height={12.5}

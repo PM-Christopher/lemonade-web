@@ -1,18 +1,18 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter } from "next/navigation";
 
 const PrivacyPage = ({}) => {
-  const router = useRouter();
+  const { back } = useNavigation();
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Privacy Policy</p>

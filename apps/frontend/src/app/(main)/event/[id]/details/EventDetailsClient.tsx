@@ -1,4 +1,6 @@
 "use client";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -16,7 +18,7 @@ import PaymentSuccessfulModal from "@/components/events/Modals/PaymentSuccessful
 import PromotionDetailsModal from "@/components/events/Modals/PromotionDetailsModal";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEventQuery, eventKeys } from "@/features/events/queries";
 import { useEventPromotionMutation } from "@/features/events/mutations";
@@ -26,6 +28,7 @@ import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { EventProgramDetailSkeleton } from "@/components/Skeletons";
 import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
 import { PromotionInterface } from "@/interfaces/EventInterface";
+import { routes } from "@/lib/routes";
 
 const EventDetailsClient = ({ id }: { id: number }) => {
   const queryClient = useQueryClient();
@@ -33,7 +36,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { data: eventData, isLoading: loading } = useEventQuery(id);
   const event = eventData?.event;
-  const router = useRouter();
+  const { replace, back } = useNavigation();
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
   const [promotionData, setPromotionData] = useState<PromotionInterface | null>(null);
@@ -61,7 +64,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
             params_.delete("trxref");
             params_.delete("reference");
             // Update the URL without reloading
-            router.replace(`?${params_.toString()}`);
+            replace(`?${params_.toString()}`);
             const resData = res.data as {
               promo?: Record<string, unknown>;
               promotion?: { promotion_date?: string };
@@ -100,7 +103,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Event details</p>
@@ -116,7 +119,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                   <div className="bg-green-tint/60 flex items-center gap-6 rounded-xl p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     <div className="relative overflow-hidden rounded-lg shadow-md">
                       <Image
-                        src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+                        src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
                         alt={event?.event_name || "Event"}
                         width={120}
                         height={120}
@@ -164,7 +167,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         </p>
                       </div>
                     ) : (
-                      <Link href={`/event/${id}/promote-event`}>
+                      <Link href={routes.EVENT_PROMOTE(id)}>
                         <div className="flex flex-col items-center gap-2">
                           <div className="border-grey-20 rounded-2xl border p-4">
                             <MicIcon />
@@ -175,7 +178,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         </div>
                       </Link>
                     )}
-                    <Link href={`/event/${id}/guest-list`}>
+                    <Link href={routes.EVENT_GUEST_LIST(id)}>
                       <div className="flex flex-col items-center gap-2">
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <QrIcon />
@@ -185,7 +188,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         </p>
                       </div>
                     </Link>
-                    <Link href={`/event/${id}/edit-event`}>
+                    <Link href={routes.EVENT_EDIT(id)}>
                       <div className="flex flex-col items-center gap-2">
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <EditIcon />
@@ -197,7 +200,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         </div>
                       </div>
                     </Link>
-                    <Link href={`/event/${id}/add-ticket`}>
+                    <Link href={routes.EVENT_ADD_TICKET_ID(id)}>
                       <div className="flex flex-col items-center gap-2">
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <TicketIcon />
@@ -208,7 +211,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </Link>
                   </div>
-                  <Link href={"/event/5/guest-list"}>
+                  <Link href={routes.EVENT_GUEST_LIST(id)}>
                     <div className="border-mid-grey mt-6 flex items-center justify-between rounded-xl border-2 p-3 px-4">
                       <div className="flex items-center gap-2">
                         <AffiliateUsersIcon />

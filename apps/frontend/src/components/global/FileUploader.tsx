@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
@@ -98,7 +99,7 @@ export const SingleFileUploader = ({
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
                 <div className="flex w-[175.05px] flex-col items-center">
-                  <Image src={"/images/upload_image.png"} alt="upload" width={56} height={56} />
+                  <Image src={images.UPLOAD_IMAGE} alt="upload" width={56} height={56} />
                   <p className="font-semi-normal tracking-custom mt-3 w-[155px] text-center font-sans text-[14px] leading-[21px]">
                     {title}
                   </p>

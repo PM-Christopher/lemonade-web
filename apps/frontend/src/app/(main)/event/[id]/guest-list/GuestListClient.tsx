@@ -1,8 +1,9 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { useRouter } from "next/navigation";
+
 import SearchIcon from "@/images/icons/search.svg";
 import UploadIcon from "@/images/icons/uploadIcon.svg";
 import GuestListCard from "@/components/events/GuestListCard";
@@ -20,7 +21,7 @@ import useDebounce from "@/hooks/useDebounce";
 const GuestListClient = ({ id }: { id: number }) => {
   const { data: guestListData, isLoading: loading } = useGuestListQuery(id);
   const guestList = guestListData?.guest_list ?? [];
-  const router = useRouter();
+  const { back } = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedGuest, setSelectedGuest] = useState<GuestListCardProps | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,7 +69,7 @@ const GuestListClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Guest list</p>

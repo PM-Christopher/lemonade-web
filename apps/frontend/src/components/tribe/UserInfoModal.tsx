@@ -14,6 +14,7 @@ import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import Link from "next/link";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { routes } from "@/lib/routes";
 
 export interface TribeUserInfo {
   id?: number;
@@ -128,7 +129,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
               )}
               {!tribe?.owner &&
                 (user?.has_connected ? (
-                  <Link href={"/connect"}>
+                  <Link href={routes.CONNECT}>
                     <div className="mt-4">
                       <div className="border-light-grey-50 flex h-12 w-[343px] cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12">
                         <ChatIcon />

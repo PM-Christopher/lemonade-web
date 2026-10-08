@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, Button, Input, Label } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -10,9 +9,12 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useResetPasswordMutation } from "@/features/authentication/mutations";
 import { useFormik } from "formik";
 import { resetPasswordSchema } from "@lemonade/validation";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export default function ResetPasswordPage() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const resetPasswordMutation = useResetPasswordMutation();
   const loading = resetPasswordMutation.isPending;
@@ -41,7 +43,7 @@ export default function ResetPasswordPage() {
               type: "success",
             }),
           );
-          router.push("/login");
+          push(routes.LOGIN);
         },
         onError: (error: Error) => {
           dispatch(
@@ -60,26 +62,24 @@ export default function ResetPasswordPage() {
     <AuthLayout>
       <form
         onSubmit={formik.handleSubmit}
-        className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10"
+        className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
       >
-        <div className="tablet:flex hidden min-w-0 flex-col">
-          <div>
-            <p className="font-ruso text-display-s font-bold">Reset password</p>
-            <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
-              Stronger password, stronger protection! Combine uppercase, lowercase, numbers, and
-              symbols to protect your account.
-            </p>
-          </div>
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+          <p className="font-ruso text-display-s font-bold">Reset password</p>
+          <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
+            Stronger password, stronger protection! Combine uppercase, lowercase, numbers, and
+            symbols to protect your account.
+          </p>
           <Image
-            src={"/images/reset_password.png"}
+            src={images.RESET_PASSWORD}
             alt=""
             width={511}
             height={520}
-            className="mt-2 h-auto max-h-[36vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <Card className="w-full max-w-[440px] p-6">
-          <CardContent className="grid gap-4">
+        <Card className="tablet:p-6 w-full max-w-[440px] shrink-0 rounded-2xl border-none p-5 shadow-none">
+          <CardContent className="grid gap-4 p-0">
             <div className="grid gap-2">
               <Label htmlFor="password" className="font-label">
                 Password
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
               ) : null}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password" className="font-label">
+              <Label htmlFor="confirm_password" className="font-label">
                 Confirm password
               </Label>
               <Input
@@ -117,8 +117,6 @@ export default function ResetPasswordPage() {
                 </p>
               ) : null}
             </div>
-          </CardContent>
-          <CardContent className="flex flex-col space-y-2">
             <Button
               type="submit"
               disabled={loading || !formik.isValid || !formik.dirty}

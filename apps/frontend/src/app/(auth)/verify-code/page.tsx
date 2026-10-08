@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@lemonade/ui";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -15,15 +14,19 @@ import {
   useResendOtpMutation,
   useVerifyPasswordResetOtpMutation,
 } from "@/features/authentication/mutations";
-import type { VerifyOtpPayload } from "@/features/authentication/api";
+import { ApiError } from "@lemonade/api-client";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { setIsRouting } from "@/redux/tempSlice";
 import { FormikButton } from "@/components/global/FormikButton";
 import type { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export default function VerifyCodePage() {
   const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
   const STORAGE_KEY = process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY || "otp_timer_start";
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const [cookie, setCookie] = useCookies(["newToken", "email"]);
   const { user } = useSelector((state: RootState) => state.auth);
@@ -31,6 +34,7 @@ export default function VerifyCodePage() {
   const [canResend, setCanResend] = useState<boolean>(false);
   const resendOtpMutation = useResendOtpMutation();
   const verifyPasswordResetOtpMutation = useVerifyPasswordResetOtpMutation();
+  const isVerifying = verifyPasswordResetOtpMutation.isPending;
 
   useEffect(() => {
     const frame = window.setTimeout(() => {
@@ -103,7 +107,6 @@ export default function VerifyCodePage() {
     });
   };
 
-  //form validation
   const formik = useFormik({
     initialValues: {
       code: "",
@@ -112,22 +115,9 @@ export default function VerifyCodePage() {
     validateOnMount: true,
     validateOnChange: false,
     onSubmit: async (values) => {
-      await verifyOtp(values);
-    },
-  });
-
-  const [, setOtp] = useState(formik.values.code);
-
-  const verifyOtp = (values: VerifyOtpPayload) => {
-    verifyPasswordResetOtpMutation.mutate(values, {
-      onSuccess: (result) => {
-        // check-otp deletes the forgot-password token it was called
-        // with and issues a new, differently-scoped one (ability
-        // "password_reset", not "password_reset_verification") —
-        // reset-password only accepts that new token. Confirmed
-        // live: calling reset-password with the old cookie value
-        // 403s "Invalid Token" even though check-otp itself
-        // succeeded.
+      try {
+        // check-otp swaps the verification token for a password_reset token.
+        const result = await verifyPasswordResetOtpMutation.mutateAsync(values);
         setCookie("newToken", result.token, {
           path: "/",
           maxAge: 3600 * 6,
@@ -140,51 +130,49 @@ export default function VerifyCodePage() {
             type: "success",
           }),
         );
-        formik.resetForm();
-        router.push("/reset-password");
-      },
-      onError: (error: { message?: string }) => {
+        dispatch(setIsRouting(true));
+        push(routes.RESET_PASSWORD);
+      } catch (error) {
         setCanResend(true);
+        formik.setFieldValue("code", null);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: error?.message,
+            message: error instanceof ApiError ? error.message : "Invalid code",
             type: "error",
           }),
         );
-        formik.setFieldValue("code", null);
-      },
-    });
-  };
+      }
+    },
+  });
+
+  const [, setOtp] = useState(formik.values.code);
 
   return (
     <AuthLayout>
-      <div className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10">
-        <div className="tablet:flex hidden min-w-0 flex-col">
-          <div>
-            <p className="font-ruso text-display-s font-bold">Verification code</p>
-            <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
-              Enter the 4-digit code sent to {cookie.email} to verify your account
-            </p>
-          </div>
+      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+          <p className="font-ruso text-display-s font-bold">Verification code</p>
+          <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
+            Enter the 4-digit code sent to {cookie.email} to verify your account
+          </p>
           <Image
-            src={"/images/verification.png"}
+            src={images.VERIFICATION}
             alt=""
             width={320}
             height={258}
-            className="mt-4 h-auto max-h-[36vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <form onSubmit={formik.handleSubmit} className="w-full max-w-[440px]">
-          <Card className="w-full p-6">
-            <CardContent className="flex justify-center">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-[440px] shrink-0">
+          <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
+            <CardContent className="grid gap-6 p-0">
               <div className="flex flex-col items-center justify-center">
                 <OtpInput
                   value={formik.values.code}
                   onChange={(e) => {
                     setOtp(e);
                     formik.setFieldValue("code", e, true);
-                    // Automatically submit when OTP is fully entered
                     if (e.length === 4) {
                       setTimeout(() => {
                         formik.submitForm();
@@ -197,8 +185,8 @@ export default function VerifyCodePage() {
                     <div
                       style={{
                         borderRadius: "12px",
-                        padding: "2px", // thickness of gradient border
-                        background: "linear-gradient(90deg, #9BE303, #7FBB00)", // gradient green
+                        padding: "2px",
+                        background: "linear-gradient(90deg, #9BE303, #7FBB00)",
                       }}
                     >
                       <input
@@ -206,9 +194,9 @@ export default function VerifyCodePage() {
                         style={{
                           width: "56px",
                           height: "56px",
-                          borderRadius: "10px", // slightly smaller to show gradient
+                          borderRadius: "10px",
                           border: "none",
-                          backgroundColor: "#E5E7EB", // gray background
+                          backgroundColor: "#E5E7EB",
                           color: "#111827",
                           textAlign: "center",
                           fontSize: "20px",
@@ -228,28 +216,25 @@ export default function VerifyCodePage() {
                   <p className="mt-2 text-[12px] text-[#FF8D8D]">{formik.errors.code}</p>
                 ) : null}
               </div>
-            </CardContent>
-            <CardContent className="mt-2.5 mb-2.5 flex justify-center">
-              <div className="mt-2.5 mb-[5px] flex cursor-pointer justify-center">
+              <div className="flex justify-center">
                 {canResend ? (
-                  <p
+                  <button
+                    type="button"
                     className="font-semi-normal text-light-green cursor-pointer font-sans text-[16px]"
                     onClick={handleResend}
                   >
                     Send code again
-                  </p>
+                  </button>
                 ) : (
                   <p className="font-semi-normal text-light-green font-sans text-[16px]">
                     Resend code in {seconds} secs
                   </p>
                 )}
               </div>
-            </CardContent>
-            <CardContent className="flex flex-col space-y-2">
               <FormikButton
-                loading={formik.isSubmitting}
+                loading={formik.isSubmitting || isVerifying}
                 title="Verify"
-                error={formik.isValid}
+                error={formik.isValid && !isVerifying}
                 classes="w-full h-12 rounded-xl"
               />
             </CardContent>

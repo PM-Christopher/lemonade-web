@@ -1,11 +1,12 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useCallback, useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PricingCard, { type PricingPlan } from "@/components/settings/PricingCard";
 import { useSelector } from "react-redux";
 import { useSubscriptionPlansQuery } from "@/features/authentication/queries";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTransactionPolling } from "@/hooks/useTransactionPolling";
 import { SubscriptionsSkeleton } from "@/components/Skeletons";
@@ -33,7 +34,7 @@ const VerifiedSubscriptionModal = dynamic(
 
 const PlanClient = () => {
   const { subscription } = useSelector((state: RootState) => state.auth);
-  const router = useRouter();
+  const { back } = useNavigation();
   const dispatch = useAppDispatch();
   const subscriptionPlanMutation = useSubscriptionPlanMutation();
   const pricing = subscriptionPlanMutation.data;
@@ -88,7 +89,7 @@ const PlanClient = () => {
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Plan</p>

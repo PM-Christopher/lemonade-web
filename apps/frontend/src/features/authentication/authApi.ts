@@ -1,12 +1,12 @@
-import type { useRouter } from "next/navigation";
 import type { useCookies } from "react-cookie";
 import { axiosInstance } from "@/lib/axiosInstane";
 import { authFailure, authStart, authSuccess, authUser, loadStop } from "./authSlice";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { AppDispatch } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
-type Router = ReturnType<typeof useRouter>;
+type Navigate = { push: (to: string) => void };
 type SetCookie = ReturnType<typeof useCookies<string>>[1];
 
 interface LegacyApiError {
@@ -16,7 +16,7 @@ interface LegacyApiError {
 export const signup = async (
   values: Record<string, unknown>,
   dispatch: AppDispatch,
-  router: Router,
+  navigate: Navigate,
   setCookie: SetCookie,
 ) => {
   dispatch(authStart());
@@ -38,7 +38,7 @@ export const signup = async (
         sameSite: false,
       });
       await dispatch(authUser(data.data));
-      router.push("/verify-email");
+      navigate.push(routes.VERIFY_EMAIL);
     } else {
       dispatch(
         updateToastifyReducer({
@@ -66,7 +66,7 @@ export const signup = async (
 export const login = async (
   values: Record<string, unknown>,
   dispatch: AppDispatch,
-  router: Router,
+  navigate: Navigate,
   setCookie: SetCookie,
   nextPath: string = "/",
 ) => {
@@ -80,10 +80,9 @@ export const login = async (
 
       const user = data?.data?.user;
 
-      // helper to preserve "next" through onboarding flows
+      // Keep the post-login `next` path through onboarding.
       const pushWithNext = (path: string) => {
-        const url = `${path}?next=${encodeURIComponent(nextPath)}`;
-        router.push(url);
+        navigate.push(`${path}?next=${encodeURIComponent(nextPath)}`);
       };
 
       if (user.status == 0) {
@@ -93,7 +92,7 @@ export const login = async (
           sameSite: false,
         });
 
-        pushWithNext("/verify-email");
+        pushWithNext(routes.VERIFY_EMAIL);
       } else if (user.username === null) {
         setCookie("newToken", data.data.token, {
           path: "/",
@@ -101,7 +100,7 @@ export const login = async (
           sameSite: false,
         });
 
-        pushWithNext("/profile-setup");
+        pushWithNext(routes.PROFILE_SETUP);
       } else {
         setCookie("token", data.data.token, {
           path: "/",
@@ -126,8 +125,8 @@ export const login = async (
         await dispatch(authSuccess(data.data));
 
         setTimeout(() => {
-          // ✅ redirect back to originally entered URL
-          router.push(nextPath || "/");
+          // Go to the original destination, or home.
+          navigate.push(nextPath || routes.HOME);
         }, 500);
       }
     } else {

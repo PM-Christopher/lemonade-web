@@ -1,7 +1,10 @@
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import Image from "next/image";
 import { Button } from "@lemonade/ui";
-import { useRouter } from "next/navigation";
+
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { AllBusinessSkeleton } from "@/components/Skeletons";
 import Link from "next/link";
@@ -13,7 +16,7 @@ interface ListingInterface {
 }
 
 const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
 
   return (
     <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
@@ -30,7 +33,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
         <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
           <div className="flex max-w-md flex-col items-center text-center">
             <Image
-              src="/images/business_empty.png"
+              src={images.BUSINESS_EMPTY}
               alt="No businesses"
               width={160}
               height={148}
@@ -42,7 +45,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
             </p>
             <Button
               className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
-              onClick={() => router.push("/business/add-business")}
+              onClick={() => push(routes.BUSINESS_ADD)}
             >
               <span className="font-semi-normal text-base">Add business</span>
             </Button>
@@ -55,7 +58,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
             <h2 className="mb-4 font-sans text-lg font-semibold sm:text-xl">All Listings</h2>
             <Button
               className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
-              onClick={() => router.push("/business/add-business")}
+              onClick={() => push(routes.BUSINESS_ADD)}
             >
               <span className="font-semi-normal text-base">Add business</span>
             </Button>
@@ -63,7 +66,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
           <div className="laptop:grid-cols-4 grid grid-cols-1 gap-2">
             {businesses.map((business: BusinessInterface) => (
               <Link
-                href={`/business/${business.id}`}
+                href={routes.BUSINESS_DETAIL(business.id)}
                 key={business.id}
                 className="transition-transform hover:scale-[1.02] active:scale-[0.98]"
               >

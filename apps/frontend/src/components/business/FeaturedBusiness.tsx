@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import Image from "next/image";
@@ -18,7 +19,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
         {/* Use fill to take full card width */}
         <div className="relative h-[130px] w-full bg-gray-100 sm:h-[140px]">
           <Image
-            src={getSafeImageSrc(business?.image, "/images/business_images/business_1.png")}
+            src={getSafeImageSrc(business?.image, images.BUSINESS_1)}
             alt="Main Image"
             fill
             className="object-cover"
@@ -30,7 +31,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
         <div className="absolute -bottom-7 left-4">
           <div className="border-step-color h-14 w-14 overflow-hidden rounded-xl border bg-white shadow">
             <Image
-              src={getSafeImageSrc(business?.image, "/images/business_empty.png")}
+              src={getSafeImageSrc(business?.image, images.BUSINESS_EMPTY)}
               alt="Overlay Image"
               width={56}
               height={56}

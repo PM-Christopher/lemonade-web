@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
@@ -210,7 +211,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           <div className="flex items-center gap-1">
             <p className="text-sm font-semibold">{thread?.created_by?.user?.username}</p>
             {thread?.created_by?.user?.verified && (
-              <Image src="/images/verified.png" alt="verified" width={13} height={13} />
+              <Image src={images.VERIFIED} alt="verified" width={13} height={13} />
             )}
           </div>
           <span className="text-xs text-gray-500">{thread?.created_at}</span>

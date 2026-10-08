@@ -1,9 +1,11 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Button, Label } from "@lemonade/ui";
 import EyeIcon from "@/images/icons/eyeIcon.svg";
-import { useRouter } from "next/navigation";
+
 import { useAppDispatch } from "@/redux/hook";
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -13,7 +15,7 @@ import { FormikButton } from "@/components/global/FormikButton";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const ConfirmDeletePage = () => {
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const dispatch = useAppDispatch();
   const deleteAccountMutation = useDeleteAccountMutation();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -43,7 +45,7 @@ const ConfirmDeletePage = () => {
             }),
           );
           // redirect user to login
-          router.push("/login");
+          push(routes.LOGIN);
         },
         onError: (error: { message?: string }) => {
           dispatch(
@@ -63,7 +65,7 @@ const ConfirmDeletePage = () => {
         <div className="flex items-center justify-between border-t border-b bg-white p-2 px-16">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
+            onClick={() => back()}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Delete account</p>
@@ -111,7 +113,7 @@ const ConfirmDeletePage = () => {
                 />
                 <Button
                   className="h-12 w-full border-none bg-transparent shadow-none"
-                  onClick={() => router.push("/delete-account")}
+                  onClick={() => push(routes.SETTINGS_ACCOUNT_DELETE)}
                 >
                   <p className="font-semi-normal text-light-green text-[16px]">Cancel</p>
                 </Button>

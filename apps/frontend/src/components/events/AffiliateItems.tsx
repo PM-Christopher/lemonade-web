@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import { EventInterface } from "@/interfaces/EventInterface";
 import Link from "next/link";
@@ -7,17 +8,18 @@ import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import Image from "next/image";
 import { getSafeImageSrc } from "@/lib/helper";
+import { routes } from "@/lib/routes";
 
 const AffiliateItems = ({ event }: { event: EventInterface }) => {
   return (
-    <Link href={`/event/${event?.id}/program-details`} className="block">
+    <Link href={routes.EVENT_PROGRAM_DETAILS(event?.id)} className="block">
       <div className="group flex w-full cursor-pointer items-start justify-between gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition hover:border-gray-200 hover:shadow-md sm:p-4">
         {/* Left: image + content */}
         <div className="flex min-w-0 gap-3">
           {/* Image */}
           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-[84px] sm:w-[84px]">
             <Image
-              src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+              src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
               alt={event?.event_name ?? "event"}
               fill
               className="object-cover"

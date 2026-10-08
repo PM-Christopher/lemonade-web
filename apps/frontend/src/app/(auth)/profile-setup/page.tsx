@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileStep from "@/components/form-steps/profile-step";
 import AddressStep from "@/components/form-steps/address-step";
@@ -10,30 +9,23 @@ import AuthLayout from "@/components/layouts/AuthLayout";
 import { ColorRing } from "react-loader-spinner";
 import { ApiError } from "@lemonade/api-client";
 import { useUserProfileQuery } from "@/features/settings/queries";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export default function ProfileStepsPage() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const [loading] = useState(false);
   const [step, setStep] = useState(1);
-  // No token needed — the BFF proxy reads the onboarding cookie
-  // server-side for exactly this pre-session case (see
-  // app/api/v1/[...path]/route.ts's onboardingToken handling).
-  // This is the only source of truth for the name shown below — never the
-  // Redux auth snapshot, which can outlive the session it was copied from
-  // (it's persisted to disk) and would otherwise render a real name for a
-  // visitor this query just told us isn't actually signed in.
+  // Profile comes from the query, not Redux (Redux can outlive the session).
   const { data, isLoading, isError, error } = useUserProfileQuery();
 
-  // browserApi's onUnauthorized intentionally skips this route (see
-  // src/lib/browser-api.ts's AUTH_PATHS) to avoid bouncing someone
-  // mid-onboarding back to /login on a transient 401. That means this
-  // page, specifically, is responsible for noticing a real auth failure
-  // itself instead of silently rendering stale state forever.
+  // Auth pages skip the global 401 redirect — send real auth failures to login.
   useEffect(() => {
     if (isError && error instanceof ApiError && error.kind === "auth") {
-      router.push("/login");
+      push(routes.LOGIN);
     }
-  }, [isError, error, router]);
+  }, [isError, error, push]);
 
   const suggestedStep =
     data?.bio === null
@@ -55,7 +47,7 @@ export default function ProfileStepsPage() {
   const prevStep = () => setStep(step - 1);
 
   const onComplete: () => Promise<void> = async () => {
-    router.push("/");
+    push(routes.HOME);
   };
 
   if (isLoading) {
@@ -92,8 +84,8 @@ export default function ProfileStepsPage() {
 
   return (
     <AuthLayout>
-      <div className="flex h-full w-full max-w-[1180px] items-center justify-center gap-10">
-        <div className="tablet:flex hidden min-w-0 flex-col">
+      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
           <p className="text-title-l font-sans font-semibold">Welcome,</p>
           <p className="font-ruso text-mid-green text-display-xs font-bold">{data?.fullname}</p>
           <p className="text-body-xl text-text-grey mt-3 max-w-[26rem] font-sans font-normal">
@@ -101,14 +93,14 @@ export default function ProfileStepsPage() {
             worry this will take less than a minute.
           </p>
           <Image
-            src="/images/profile_verification.png"
+            src={images.PROFILE_VERIFICATION}
             alt=""
             width={320}
             height={361}
-            className="mt-4 h-auto max-h-[40vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex h-full min-h-0 w-full max-w-[480px] flex-col justify-center overflow-y-auto">
+        <div className="flex min-h-0 w-full max-w-[480px] shrink-0 flex-col overflow-y-auto">
           <div className="tablet:hidden mb-2">
             <p className="text-title-l font-sans font-semibold">Welcome,</p>
             <p className="font-ruso text-mid-green text-title-xl font-bold">{data?.fullname}</p>

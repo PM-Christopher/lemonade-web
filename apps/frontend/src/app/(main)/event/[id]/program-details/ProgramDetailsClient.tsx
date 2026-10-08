@@ -1,4 +1,7 @@
 "use client";
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -10,7 +13,7 @@ import CopyIcon from "@/images/icons/copyIcon.svg";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useRouter } from "next/navigation";
+
 import { useAffiliateEventDetailQuery } from "@/features/events/queries";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -29,7 +32,7 @@ interface TicketBreakdown {
 const ProgramDetailsClient = ({ id }: { id: number }) => {
   const [, setCopied] = useState(false);
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const { data: programDetails } = useAffiliateEventDetailQuery(id);
 
   const handleCopy = (textToCopy: string) => {
@@ -50,10 +53,7 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="flex items-center justify-between border-t border-b bg-white p-5 px-10">
-          <div
-            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.back()}
-          >
+          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Program details</p>
           </div>
@@ -65,10 +65,7 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
               <div className="laptop:p-6 p-0">
                 <div className="bg-green-tint laptop:w-full flex w-screen items-center gap-3 rounded-[8px] p-2 px-4">
                   <Image
-                    src={getSafeImageSrc(
-                      programDetails?.events?.event_image,
-                      "/images/default-event.jpg",
-                    )}
+                    src={getSafeImageSrc(programDetails?.events?.event_image, images.DEFAULT_EVENT)}
                     alt="details"
                     width={120}
                     height={120}
@@ -128,7 +125,7 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
                       className={
                         "bg-gradient-green hover:bg-mid-green flex h-12 cursor-pointer items-center justify-center rounded-xl"
                       }
-                      onClick={() => router.push(`/event/${id}/agent-details`)}
+                      onClick={() => push(routes.EVENT_AGENT_DETAILS(id))}
                     >
                       <p className={"font-medium text-white"}>Generate payment link</p>
                     </div>

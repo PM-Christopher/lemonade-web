@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { authSuccess } from "@/features/authentication/authSlice";
 import { useCurrentUserQuery } from "@/features/authentication/queries";
 import TopNav from "@/components/navigation/TopNav";
-import { useMediaQuery } from "react-responsive";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import BottomNav from "@/components/navigation/BottomNav";
 
 // Non-secret placeholder — see features/authentication/mutations.ts for why
@@ -13,7 +13,7 @@ import BottomNav from "@/components/navigation/BottomNav";
 const SESSION_MARKER = "session";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const isMobile = useMediaQuery({ query: "(max-width: 766px)" });
+  const isMobile = useIsMobile(767);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 

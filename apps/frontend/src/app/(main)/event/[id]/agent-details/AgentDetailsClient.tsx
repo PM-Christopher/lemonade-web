@@ -1,5 +1,6 @@
 "use client";
 
+import { images } from "@/lib/images";
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +26,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { getSafeImageSrc } from "@/lib/helper";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
+import { routes } from "@/lib/routes";
 
 type SocialIconName = "facebook" | "instagram" | "linkedin" | "twitter" | "website";
 
@@ -155,7 +157,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
         <div className="border-y border-gray-100 bg-white">
           <div className="tablet:px-6 laptop:px-10 mx-auto flex w-full max-w-[1312px] items-center justify-between px-4 py-4">
             <Link
-              href="/event"
+              href={routes.EVENT}
               className="inline-flex items-center gap-2 rounded-xl px-2 py-2 transition hover:bg-gray-50"
             >
               <ChevronLeft />
@@ -185,7 +187,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                     <div className="laptop:w-[480px] w-full">
                       <div className="laptop:aspect-[496/532] relative aspect-[16/11] w-full bg-gray-100">
                         <Image
-                          src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+                          src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
                           alt={event?.event_name || "event image"}
                           fill
                           priority={false}

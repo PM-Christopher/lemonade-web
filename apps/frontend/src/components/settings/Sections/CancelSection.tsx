@@ -1,3 +1,5 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import { Button } from "@lemonade/ui";
 import { useSelector } from "react-redux";
@@ -9,11 +11,10 @@ import { useChangePlanMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { cancelReason } from "../../../../pageData";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useRouter } from "next/navigation";
 
 const CancelSection = ({}) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
   const { subscription, downgradeData } = useSelector((state: RootState) => state.auth);
   const changePlanMutation = useChangePlanMutation();
   const upgradeLoading = changePlanMutation.isPending;
@@ -41,7 +42,7 @@ const CancelSection = ({}) => {
           }),
         );
         dispatch(clearReason());
-        router.push("/settings/plan");
+        push(routes.SETTINGS_PLAN);
       },
       onError: (error: { message?: string }) => {
         dispatch(

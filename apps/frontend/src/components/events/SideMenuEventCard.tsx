@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
@@ -22,7 +23,7 @@ const SideMenuEventCard = ({
       <div className="flex items-center gap-2">
         <div>
           <Image
-            src={getSafeImageSrc(event.event_image, "/images/default-event.jpg")}
+            src={getSafeImageSrc(event.event_image, images.DEFAULT_EVENT)}
             alt="upcoming_event"
             width={94}
             height={94}

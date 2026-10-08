@@ -1,9 +1,11 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
-import { useRouter } from "next/navigation";
+
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useRequestJobPaymentMutation } from "@/features/business/mutations";
 const ConfirmPaymentModal = ({
@@ -18,7 +20,7 @@ const ConfirmPaymentModal = ({
   job: { id?: number; business_id?: number };
 }) => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const { push } = useNavigation();
   const requestJobPaymentMutation = useRequestJobPaymentMutation(job?.id ?? 0);
   const requestPLoading = requestJobPaymentMutation.isPending;
 
@@ -34,7 +36,7 @@ const ConfirmPaymentModal = ({
         );
         toggleMenu();
         sMenu();
-        router.push(`/business/${job?.business_id}/jobs`);
+        push(routes.BUSINESS_JOBS(job!.business_id!));
       },
       onError: () => {
         dispatch(

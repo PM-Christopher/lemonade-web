@@ -1,4 +1,7 @@
 "use client";
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -8,7 +11,7 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatStringUCFirst, getInitials } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useRouter } from "next/navigation";
+
 import ConfirmPaymentModal from "@/components/business/Modals/ConfirmPaymentModal";
 import CheckGIcon from "@/images/icons/checkGreenIcon.svg";
 import CheckPIcon from "@/images/icons/checkPurpleIcon.svg";
@@ -49,7 +52,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPayNowOpen, setIsPayNowOpen] = useState(false);
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const markJobRequestMutation = useMarkJobRequestMutation(job?.id ?? 0);
   const markLoading = markJobRequestMutation.isPending;
@@ -79,7 +82,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
             }),
           );
           toggleMenu();
-          router.push(`/business/${job?.business_id}/jobs`);
+          push(routes.BUSINESS_JOBS(job!.business_id!));
         },
         onError: () => {
           dispatch(
@@ -156,7 +159,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
   };
 
   const navigateDispute = () => {
-    router.push(`/business/${job?.business_id}?modal=disputeOpen`);
+    push(`${routes.BUSINESS_DETAIL(job!.business_id!)}?modal=disputeOpen`);
   };
 
   return (
@@ -187,7 +190,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               {/* User or Job Image Card */}
               <div
                 className="relative flex w-full flex-col items-center justify-center rounded-2xl bg-cover bg-center p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
-                style={{ backgroundImage: `url('/images/business-bg.png')` }}
+                style={{ backgroundImage: `url(${images.BUSINESS_BG})` }}
               >
                 {job?.status === "PENDING" || job?.status === "ACCEPTED" ? (
                   <>

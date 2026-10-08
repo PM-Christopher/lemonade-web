@@ -1,11 +1,13 @@
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import { XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+
 import { AppDispatch } from "@/redux/store";
 import { useDeleteTribeMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { routes } from "@/lib/routes";
 
 interface DeleteTribeModalProps {
   isOpen: boolean;
@@ -15,7 +17,7 @@ interface DeleteTribeModalProps {
 
 function DeleteTribeModal({ isOpen, toggle, id }: DeleteTribeModalProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const { push } = useNavigation();
   const deleteTribeMutation = useDeleteTribeMutation(id);
 
   const submitAction = () => {
@@ -23,7 +25,7 @@ function DeleteTribeModal({ isOpen, toggle, id }: DeleteTribeModalProps) {
     deleteTribeMutation.mutate(undefined, {
       onSuccess: () => {
         toggle();
-        router.push("/tribes");
+        push(routes.TRIBES);
       },
       onError: (error) => {
         dispatch(

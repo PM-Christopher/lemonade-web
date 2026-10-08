@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
@@ -140,7 +141,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
       ) : (
         <div className="mt-[150px] flex items-center justify-center">
           <div className="flex flex-col items-center">
-            <Image src={"/images/jobEmpty.png"} alt="empty_jobs" width={160} height={141} />
+            <Image src={images.JOB_EMPTY} alt="empty_jobs" width={160} height={141} />
             <p>No jobs yet</p>
           </div>
         </div>

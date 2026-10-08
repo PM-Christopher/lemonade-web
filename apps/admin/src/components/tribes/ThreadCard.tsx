@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import Image from "next/image";
 import { DotIcon, MoreVerticalIcon } from "lucide-react";
@@ -25,7 +26,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
           <div className="flex items-center gap-2">
             <div>
               <Image
-                src={"/images/tribe_1.png"}
+                src={images.DEFAULT_TRIBE}
                 alt=""
                 width={48}
                 height={48}
@@ -36,7 +37,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({ thread }) => {
               <p className="font-semi-normal font-sans text-[14px] leading-[14.4px]">christjoe</p>
             </div>
             <div>
-              <Image src={"/images/verified.png"} alt="verifed" width={13} height={13} />
+              <Image src={images.VERIFIED} alt="verifed" width={13} height={13} />
             </div>
             <div>
               <DotIcon className="h-[3px] w-[3px]" />

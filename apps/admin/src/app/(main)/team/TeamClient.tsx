@@ -1,10 +1,12 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { teamHeaders } from "@/data/tableData";
-import { useRouter } from "next/navigation";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { capitalizeWords } from "@/utils/helper";
@@ -22,7 +24,7 @@ const AddMember = dynamic(() => import("@/modals/team/AddMemberModal"), {
 });
 
 function TeamClient() {
-  const router = useRouter();
+  const { push } = useNavigation();
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
@@ -132,7 +134,7 @@ function TeamClient() {
                       <tr
                         key={index}
                         className="border-grey-20 h-[72px] cursor-pointer border-b"
-                        onClick={() => router.push(`/team/${row.id}`)}
+                        onClick={() => push(routes.TEAM_DETAIL(row.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.name}</td>

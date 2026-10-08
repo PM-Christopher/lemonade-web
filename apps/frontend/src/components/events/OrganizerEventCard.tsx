@@ -1,4 +1,7 @@
 "use client";
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
@@ -8,7 +11,7 @@ import { EventInterface } from "@/interfaces/EventInterface";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import PencilIcon from "@/images/icons/pencilIcon.svg";
 import TrashIcon from "@/images/icons/trashIcon.svg";
-import { useRouter } from "next/navigation";
+
 import GoLive from "@/images/icons/goLive.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { usePublishEventMutation } from "@/features/events/mutations";
@@ -29,7 +32,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
   const [isModalVisible, setModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
   const moreIconRef = useRef<HTMLDivElement | null>(null);
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const publishEventMutation = usePublishEventMutation();
   const loading = publishEventMutation.isPending;
@@ -66,7 +69,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
       <div className="flex flex-col">
         <div className="relative">
           <Image
-            src={getSafeImageSrc(event?.event_image, "/images/default-event.jpg")}
+            src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
             alt="event_1"
             className="laptop:h-[230px] laptop:w-[230px] h-[150px] w-full rounded-[8px]"
             width={230}
@@ -110,7 +113,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
             >
               {/* Menu Item */}
               <button
-                onClick={() => router.push(`/event/${event.id}/edit-event`)}
+                onClick={() => push(routes.EVENT_EDIT(event.id))}
                 className="flex w-full items-center gap-2 rounded-t-xl px-4 py-3 text-left text-gray-700 transition-colors hover:bg-gray-50"
               >
                 <PencilIcon className="h-4 w-4 text-gray-500" />

@@ -1,9 +1,11 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import DataCard from "@/components/global/DataCard";
 import { planHeaders, walletHeaders } from "@/data/tableData";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
-import { useRouter } from "next/navigation";
+
 import type { TransactionListResponse } from "@/features/transaction/api";
 
 interface PlanIF {
@@ -16,7 +18,7 @@ interface PlanIF {
 // is already just the current page; page/onPageChange are URL state owned
 // by TransactionsClient.
 function PlansViews({ trx_data, page, onPageChange }: PlanIF) {
-  const router = useRouter();
+  const { push } = useNavigation();
   const totalPages = trx_data?.meta?.last_page ?? 1;
   const perPage = trx_data?.meta?.per_page ?? 10;
   const paginatedData = trx_data?.history;
@@ -59,7 +61,7 @@ function PlansViews({ trx_data, page, onPageChange }: PlanIF) {
                 <tr
                   key={index}
                   className="border-grey-20 h-[72px] cursor-pointer border-b"
-                  onClick={() => router.push(`/transactions/${row.id}/subscription-details`)}
+                  onClick={() => push(routes.TRANSACTION_SUBSCRIPTION(row.id!))}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.txn_id}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>

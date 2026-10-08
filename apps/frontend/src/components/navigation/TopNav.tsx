@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,13 +7,14 @@ import { navLinks } from "../../../pageLinks";
 import { isActiveLink } from "@/lib/activeLink";
 import { useSelector } from "react-redux";
 import { formatName, getInitials } from "@/lib/helper";
-import { useMediaQuery } from "react-responsive";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemonade/ui";
 import { useRequest } from "@/hooks/useRequest";
 import dayjs from "dayjs";
 import { FaBell } from "react-icons/fa";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import type { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 interface NotificationMeta {
   image?: string;
@@ -47,7 +49,7 @@ interface AppNotification {
 const TopNav = () => {
   const pathname = usePathname();
   const { user } = useSelector((state: RootState) => state.auth);
-  const isMobile = useMediaQuery({ query: "(max-width: 640px)" });
+  const isMobile = useIsMobile(641);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
 
   const [selectedNotification, setSelectedNotification] = useState<AppNotification | null>(null);
@@ -66,9 +68,9 @@ const TopNav = () => {
       <nav className="flex flex-wrap items-center justify-between bg-white p-2 px-10">
         <div>
           {isMobile ? (
-            <Image src={"/images/logo.png"} alt="logo" width={73} height={32} priority />
+            <Image src={images.LOGO} alt="logo" width={73} height={32} priority />
           ) : (
-            <Image src={"/images/logo.png"} alt="logo" width={127} height={56} priority />
+            <Image src={images.LOGO} alt="logo" width={127} height={56} priority />
           )}
         </div>
 
@@ -104,7 +106,7 @@ const TopNav = () => {
         <div className="flex items-center gap-2">
           <div>
             <Image
-              src={"/images/bellIcon.png"}
+              src={images.BELL}
               alt="notification"
               width={28}
               height={28}
@@ -121,7 +123,7 @@ const TopNav = () => {
             </p>
           </div>
           <div className="group cursor-pointer transition-all duration-300">
-            <Link href="/settings">
+            <Link href={routes.SETTINGS}>
               {user?.profile_image ? (
                 <Image
                   src={user?.profile_image}

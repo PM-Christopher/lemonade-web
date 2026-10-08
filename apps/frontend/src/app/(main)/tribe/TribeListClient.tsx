@@ -13,6 +13,7 @@ import { useSearchTribeMutation } from "@/features/tribes/mutations";
 import { TribeListSkeleton } from "@/components/Skeletons";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import dynamic from "next/dynamic";
+import { routes } from "@/lib/routes";
 
 // Off the initial bundle — only needed once "Create tribe" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -138,7 +139,7 @@ export default function TribeListClient() {
           ) : tribes?.length > 0 ? (
             <div className="hide-scrollbar max-h-[80vh] space-y-4 overflow-y-auto">
               {tribes.map((tribe: TribeInterface, index: number) => (
-                <Link href={`/tribe/${tribe.slug}`} key={index}>
+                <Link href={routes.TRIBE_DETAIL(tribe.slug)} key={index}>
                   <TribeCardList tribe={tribe} />
                 </Link>
               ))}
@@ -187,7 +188,7 @@ export default function TribeListClient() {
                 <div className="divide-y divide-gray-100">
                   {searchResults.map((tribe: TribeInterface, index: number) => (
                     <Link
-                      href={`/tribe/${tribe.slug}`}
+                      href={routes.TRIBE_DETAIL(tribe.slug)}
                       key={tribe.slug || index}
                       className="group flex items-center gap-3 px-3 py-3 transition-all duration-200 first:rounded-t-lg last:rounded-b-lg hover:bg-gradient-to-r hover:from-gray-50 hover:to-transparent"
                     >

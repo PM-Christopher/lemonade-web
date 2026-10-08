@@ -1,34 +1,67 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@lemonade/ui";
 import Image from "next/image";
 import OtpInput from "react-otp-input";
 import { useFormik } from "formik";
 import { otpSchema } from "@lemonade/validation";
+import { useCookies } from "react-cookie";
 import { FormikButton } from "@/components/global/FormikButton";
 import {
+  useLogoutMutation,
   useResendOtpMutation,
   useVerifyAccountOtpMutation,
 } from "@/features/authentication/mutations";
+import { resetAuth } from "@/features/authentication/authSlice";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import type { VerifyOtpPayload } from "@/features/authentication/api";
+import { ApiError } from "@lemonade/api-client";
+import { setIsRouting } from "@/redux/tempSlice";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
+import { useNavigation } from "@/hooks/useNavigation";
+
+function isVerificationSessionExpired(error: unknown): error is ApiError {
+  return error instanceof ApiError && error.status === 401 && error.errorCode === "unauthorized";
+}
 
 export default function VerifyPage() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
+  const [, , removeCookie] = useCookies([ONBOARDING_TOKEN_COOKIE]);
+  const logoutMutation = useLogoutMutation();
   const resendOtpMutation = useResendOtpMutation();
   const verifyAccountOtpMutation = useVerifyAccountOtpMutation();
+  const isVerifying = verifyAccountOtpMutation.isPending;
   const COUNTDOWN_DURATION = Number(process.env.NEXT_PUBLIC_COUNTDOWN_DURATION) || 60;
   const STORAGE_KEY = process.env.NEXT_PUBLIC_COUNTDOWN_STORAGE_KEY || "otp_timer_start";
 
   const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
   const [canResend, setCanResend] = useState<boolean>(false);
+
+  // Drop the onboarding bearer and send them to login for a fresh session.
+  const endVerificationSession = (message: string) => {
+    removeCookie(ONBOARDING_TOKEN_COOKIE, { path: "/" });
+    localStorage.removeItem(STORAGE_KEY);
+    dispatch(resetAuth());
+    dispatch(
+      updateToastifyReducer({
+        show: true,
+        message,
+        type: "error",
+      }),
+    );
+    logoutMutation.mutate(undefined, {
+      onSettled: () => {
+        push(routes.LOGIN);
+      },
+    });
+  };
 
   useEffect(() => {
     const frame = window.setTimeout(() => {
@@ -88,12 +121,16 @@ export default function VerifyPage() {
         setSeconds(COUNTDOWN_DURATION);
         setCanResend(false);
       },
-      onError: (error: { message?: string }) => {
+      onError: (error: unknown) => {
+        if (isVerificationSessionExpired(error)) {
+          endVerificationSession(error.message);
+          return;
+        }
         setCanResend(true);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: error?.message,
+            message: error instanceof ApiError ? error.message : "Could not resend code",
             type: "error",
           }),
         );
@@ -101,7 +138,6 @@ export default function VerifyPage() {
     });
   };
 
-  //form validation
   const formik = useFormik({
     initialValues: {
       code: "",
@@ -110,15 +146,8 @@ export default function VerifyPage() {
     validateOnMount: true,
     validateOnChange: false,
     onSubmit: async (values) => {
-      await verifyOtp(values);
-    },
-  });
-
-  const [, setOtp] = useState(formik.values.code);
-
-  const verifyOtp = (values: VerifyOtpPayload) => {
-    verifyAccountOtpMutation.mutate(values, {
-      onSuccess: () => {
+      try {
+        await verifyAccountOtpMutation.mutateAsync(values);
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -126,21 +155,33 @@ export default function VerifyPage() {
             type: "success",
           }),
         );
-        formik.resetForm();
-        router.push("/profile-setup");
-      },
-      onError: () => {
+        dispatch(setIsRouting(true));
+        push(routes.PROFILE_SETUP);
+      } catch (error) {
+        if (isVerificationSessionExpired(error)) {
+          endVerificationSession(error.message);
+          return;
+        }
         setCanResend(true);
         formik.setFieldError("code", "Invalid code");
-      },
-    });
-  };
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error instanceof ApiError ? error.message : "Invalid code",
+            type: "error",
+          }),
+        );
+      }
+    },
+  });
+
+  const [, setOtp] = useState(formik.values.code);
   const invalidCode = Boolean(formik.errors.code);
 
   return (
     <AuthLayout>
-      <div className="flex h-full w-full max-w-[1100px] items-center justify-center gap-10">
-        <div className="tablet:flex hidden min-w-0 flex-col">
+      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Verify email address</p>
           <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
             Enter the 4-digit code sent{" "}
@@ -148,14 +189,14 @@ export default function VerifyPage() {
             account
           </p>
           <Image
-            src="/images/verification.png"
+            src={images.VERIFICATION}
             alt=""
             width={320}
             height={258}
-            className="mt-6 h-auto max-h-[36vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex h-full min-h-0 w-full max-w-[440px] flex-col justify-center">
+        <div className="flex w-full max-w-[440px] shrink-0 flex-col">
           <div className="tablet:hidden mb-4 text-center">
             <p className="font-ruso text-title-xl font-bold">Verify email address</p>
             <p className="text-body-l text-text-grey mt-2 font-sans font-normal">
@@ -165,8 +206,8 @@ export default function VerifyPage() {
             </p>
           </div>
           <form onSubmit={formik.handleSubmit} className="w-full">
-            <Card className="w-full rounded-2xl border-none p-6 shadow-none">
-              <CardContent className="grid gap-6">
+            <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
+              <CardContent className="grid gap-6 p-0">
                 <div className="flex flex-col items-center">
                   <OtpInput
                     value={formik.values.code || ""}
@@ -227,9 +268,9 @@ export default function VerifyPage() {
                   )}
                 </div>
                 <FormikButton
-                  loading={formik.isSubmitting}
+                  loading={formik.isSubmitting || isVerifying}
                   title="Verify"
-                  error={(formik.values.code?.length ?? 0) === 4 && !invalidCode}
+                  error={(formik.values.code?.length ?? 0) === 4 && !invalidCode && !isVerifying}
                   classes="w-full h-12 rounded-xl"
                 />
               </CardContent>

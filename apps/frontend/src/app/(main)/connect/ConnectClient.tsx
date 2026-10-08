@@ -13,20 +13,23 @@ import { useChatHistoryQuery, useChatQuery, useConnectionQuery } from "@/feature
 import OpenedChat from "@/components/connect/OpenedChat";
 import EmptyChat from "@/components/connect/EmptyChat";
 import { usePusher } from "@/hooks/usePusher";
+import { useAuthReady } from "@/hooks/useAuthReady";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useMediaQuery } from "react-responsive";
 import { ChatListCardSkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 const ConnectClient = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(0);
   const [selectedReceiverId, setSelectedReceiverId] = useState<number | undefined>(undefined);
-  const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
+  const isMobile = useIsMobile(1024);
   const [chatOpened, setChatOpened] = useState(false);
+  const authReady = useAuthReady();
   const { user } = useSelector((state: RootState) => state.auth);
-  usePusher(user?.id ? `chat.${user.id}` : null, "message.sent");
+  usePusher(authReady && user?.id ? `chat.${user.id}` : null, "message.sent");
 
   const { data: chatHistory, isLoading: loadingChat } = useChatHistoryQuery({
     enabled: Boolean(user?.id),
@@ -72,7 +75,7 @@ const ConnectClient = () => {
             <p className="text-[14px] font-semibold">Connect</p>
           </div>
           <div className="flex items-center gap-2">
-            <Link href={"/connect/requests"}>
+            <Link href={routes.CONNECT_REQUESTS}>
               <div className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-3.5">
                 <RequestIcon />
                 <p className="font-semi-normal text-black-light laptop:block hidden font-sans text-[16px]">
@@ -212,7 +215,7 @@ const ConnectClient = () => {
                     />
                   ))
                 ) : (
-                  <Link href={"/connect/requests"}>
+                  <Link href={routes.CONNECT_REQUESTS}>
                     <div className={"mt-32 flex w-full flex-col items-center justify-center gap-4"}>
                       <p className={"font-ruso text-center"}>
                         Connect with someone new today to start chatting

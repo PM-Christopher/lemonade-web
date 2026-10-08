@@ -1,8 +1,10 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import { eventMainHeaders } from "@/data/tableData";
 import PaginationComp from "@/components/global/Pagination";
-import { useRouter } from "next/navigation";
+
 import dynamic from "next/dynamic";
 import useSearchParams from "@/hooks/useSearchParams";
 import type {
@@ -22,7 +24,7 @@ interface EventViewProps {
 }
 
 const EventView = ({ pageData }: EventViewProps) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("search");
   // State for current page and items per page
@@ -106,7 +108,7 @@ const EventView = ({ pageData }: EventViewProps) => {
                   <tr
                     key={index}
                     className="border-grey-20 h-[72px] cursor-pointer border-b"
-                    onClick={() => router.push(`/events/${row.id}`)}
+                    onClick={() => push(routes.EVENT_DETAIL(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.event_name}</td>

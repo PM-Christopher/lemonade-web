@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
@@ -8,7 +10,7 @@ import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import { Thread } from "@/interfaces/TribeInterface";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import EditIcon from "@/images/icons/edit.svg";
 import { useMediaQuery } from "react-responsive";
@@ -76,7 +78,7 @@ const TribeClient = ({ id }: { id: string }) => {
   const verifyTransactionMutation = useVerifyTransactionMutation();
 
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
-  const router = useRouter();
+  const { push, replace } = useNavigation();
   const searchParams = useSearchParams();
   const { setSearchParams, nxtSearchParams } = useNxtSearchParams();
 
@@ -123,7 +125,7 @@ const TribeClient = ({ id }: { id: string }) => {
             );
             setJoinedTribeModal(true);
             // Update the URL without reloading
-            router.replace(`?${params_.toString()}`);
+            replace(`?${params_.toString()}`);
           },
           onError: (err) => {
             console.error("Payment verification failed:", err);
@@ -208,7 +210,7 @@ const TribeClient = ({ id }: { id: string }) => {
         <div className="tablet:flex-row tablet:items-center flex flex-col justify-between gap-4 border-t border-b bg-white p-5 px-10">
           <div
             className="flex cursor-pointer items-center gap-2"
-            onClick={() => router.push("/tribe")}
+            onClick={() => push(routes.TRIBE)}
           >
             <div>
               <ChevronLeft />

@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
@@ -95,7 +96,7 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
           <div className="mb-1 flex items-center gap-2">
             <span className="text-black-light text-sm font-semibold">{comment.user.username}</span>
             {comment.user.verified && (
-              <Image src="/images/verified.png" alt="verified" width={12} height={12} />
+              <Image src={images.VERIFIED} alt="verified" width={12} height={12} />
             )}
             <DotIcon className="h-1 w-1 text-gray-400" />
             <span className="text-xs text-gray-500">{formatTimeAgo(comment.created_at)}</span>

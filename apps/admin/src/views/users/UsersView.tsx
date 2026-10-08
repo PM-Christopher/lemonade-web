@@ -1,8 +1,10 @@
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import { usersHeaders } from "@/data/tableData";
 import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
-import { useRouter } from "next/navigation";
+
 import useSearchParams from "@/hooks/useSearchParams";
 import type { AffiliateListResponse, UserListResponse } from "@/features/user/api";
 
@@ -21,7 +23,7 @@ interface UsersViewsProps {
 // and this component falls back to exactly the client-side filter + slice
 // it always did, with its own local page state.
 function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: UsersViewsProps) {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("q");
   const status = searchParams?.get("status");
@@ -107,7 +109,7 @@ function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: U
                 <tr
                   key={index}
                   className="border-grey-20 h-[72px] cursor-pointer border-b"
-                  onClick={() => router.push(`/users/${row.id}`)}
+                  onClick={() => push(routes.USER_DETAIL(row.id))}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>

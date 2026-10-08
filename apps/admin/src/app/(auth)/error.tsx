@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { logger } from "@/lib/logger";
+import { images } from "@/lib/images";
 
 // Deliberately not wrapped in AuthLayout — that component redirects based
 // on pathname/cookie checks (see components/layouts/AuthLayout.tsx), which
@@ -28,7 +29,7 @@ export default function AuthError({
   return (
     <section className="bg-light-grey h-full min-h-screen overflow-hidden">
       <div className="flex flex-wrap items-center justify-between p-2 px-10">
-        <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+        <Image src={images.LOGO} alt="logo" width={127} height={56} />
       </div>
       <div className="mt-24 flex flex-col items-center justify-center gap-2 p-6 text-center">
         <p className="font-semiBold text-light-black text-[18px]">Something went wrong</p>

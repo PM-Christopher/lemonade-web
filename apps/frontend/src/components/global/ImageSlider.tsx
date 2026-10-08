@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { CalendarIcon } from "lucide-react";
@@ -56,7 +57,7 @@ const Carousel: React.FC<ImageSlider> = ({
             }`}
           >
             <Image
-              src={getSafeImageSrc(item?.event_image, "/images/default-event.jpg")}
+              src={getSafeImageSrc(item?.event_image, images.DEFAULT_EVENT)}
               alt={item?.event_name ? `${item.event_name} banner` : `Slide ${index + 1}`}
               fill
               priority={index === 0}

@@ -1,4 +1,5 @@
 "use client";
+import { images } from "@/lib/images";
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -512,62 +513,53 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
 
                   {type === "socials" && (
                     <div className="mt-6 grid gap-1">
-                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-                        <div className="">
-                          <Image src={"/images/facebook.png"} alt="" width={19.2} height={19.2} />
-                        </div>
-                        <Input
-                          name="facebook"
-                          id="facebook"
-                          type="text"
-                          className="form-font border-0 shadow-none"
-                          placeholder="Username"
-                          value={socials.facebook || getSocialUrl("facebook")}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-                        <div className="">
-                          <Image src={"/images/linkedin.png"} alt="" width={19.2} height={19.2} />
-                        </div>
-                        <Input
-                          name="linkedin"
-                          id="linkedin"
-                          type="text"
-                          className="form-font border-0 shadow-none"
-                          placeholder="Username"
-                          value={socials.linkedin || getSocialUrl("linkedin")}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-                        <div className="">
-                          <Image src={"/images/twitter.png"} alt="" width={19.2} height={19.2} />
-                        </div>
-                        <Input
-                          name="twitter"
-                          id="twitter"
-                          type="text"
-                          className="form-font border-0 shadow-none"
-                          placeholder="Username"
-                          value={socials.twitter || getSocialUrl("twitter")}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="bg-light_grey flex h-14 items-center gap-2 rounded-xl border-0 p-2 px-5">
-                        <div className="">
-                          <Image src={"/images/instagram.png"} alt="" width={19.2} height={19.2} />
-                        </div>
-                        <Input
-                          name="instagram"
-                          id="instagram"
-                          type="text"
-                          className="form-font border-0 shadow-none"
-                          placeholder="Username"
-                          value={socials.instagram || getSocialUrl("instagram")}
-                          onChange={handleChange}
-                        />
-                      </div>
+                      {(
+                        [
+                          {
+                            name: "facebook",
+                            icon: images.FACEBOOK,
+                            value: socials.facebook || getSocialUrl("facebook"),
+                          },
+                          {
+                            name: "linkedin",
+                            icon: images.LINKEDIN,
+                            value: socials.linkedin || getSocialUrl("linkedin"),
+                          },
+                          {
+                            name: "twitter",
+                            icon: images.TWITTER,
+                            value: socials.twitter || getSocialUrl("twitter"),
+                          },
+                          {
+                            name: "instagram",
+                            icon: images.INSTAGRAM,
+                            value: socials.instagram || getSocialUrl("instagram"),
+                          },
+                        ] as const
+                      ).map((field) => (
+                        <label
+                          key={field.name}
+                          htmlFor={field.name}
+                          className="bg-light_grey focus-within:border-step-color flex h-14 w-full items-center gap-3 rounded-xl border border-transparent px-5"
+                        >
+                          <Image
+                            src={field.icon}
+                            alt=""
+                            width={20}
+                            height={20}
+                            className="h-5 w-5 shrink-0"
+                          />
+                          <input
+                            name={field.name}
+                            id={field.name}
+                            type="text"
+                            className="form-font placeholder:text-text-grey h-full w-full min-w-0 flex-1 border-0 bg-transparent p-0 shadow-none outline-none focus:border-0 focus:ring-0 focus:outline-none focus-visible:outline-none"
+                            placeholder="Username"
+                            value={field.value}
+                            onChange={handleChange}
+                          />
+                        </label>
+                      ))}
                     </div>
                   )}
                 </div>

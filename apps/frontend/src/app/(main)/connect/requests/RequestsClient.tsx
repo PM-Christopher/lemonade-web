@@ -1,11 +1,12 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import SearchIcon from "@/images/icons/search.svg";
 import RequestCard from "@/components/connect/RequestCard";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+
 import MainLayout from "@/components/layouts/MainLayout";
 import { useInvitesQuery } from "@/features/connect/queries";
 import { useFindUserMutation } from "@/features/connect/mutations";
@@ -13,6 +14,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { InviteSkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 // Off the initial bundle — both are only needed once their triggering
 // action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -24,7 +26,7 @@ const ConnectModal = dynamic(() => import("@/components/connect/Modal/ConnectMod
 });
 
 const RequestsClient = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const [isConnectOpen, setIsConnectOpen] = useState(false);
   const [inviteIndex, setInviteIndex] = useState<number | null>(null);
@@ -92,7 +94,7 @@ const RequestsClient = () => {
         <div className="laptop:flex-row laptop:items-center laptop:px-16 flex flex-col items-start justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.push("/connect")}
+            onClick={() => push(routes.CONNECT)}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">

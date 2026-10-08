@@ -1,12 +1,14 @@
 "use client";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import { XIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDeleteBusinessMutation } from "@/features/businesses/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { routes } from "@/lib/routes";
 
 interface DeleteModalProps {
   isOpen: boolean;
@@ -17,7 +19,7 @@ interface DeleteModalProps {
 function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const { push } = useNavigation();
   const deleteBusinessMutation = useDeleteBusinessMutation(id);
 
   const submitAction = () => {
@@ -28,7 +30,7 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
           updateToastifyReducer({ show: true, message: "Business deleted", type: "success" }),
         );
         toggle();
-        router.push("/businesses");
+        push(routes.BUSINESSES);
       },
       onError: (error) => {
         dispatch(

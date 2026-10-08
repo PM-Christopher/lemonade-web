@@ -1,11 +1,13 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import dynamic from "next/dynamic";
 import { useNotificationSettingsQuery } from "@/features/authentication/queries";
 import type { AppSettings } from "@/features/authentication/api";
-import { useRouter } from "next/navigation";
+
 import MainLayout from "@/components/layouts/MainLayout";
 
 // Off the initial bundle — only needed once a notification row is clicked
@@ -16,7 +18,7 @@ const NotificationSettingsModal = dynamic(
 );
 
 const NotificationSettingsClient = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { data } = useNotificationSettingsQuery();
   const [isOpen, setIsOpen] = useState(false);
   const [notificationType, setNotificationType] = useState("");
@@ -94,7 +96,7 @@ const NotificationSettingsClient = () => {
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => router.push("/settings")}
+            onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
             <p className="tracking-custom font-sans text-[16px] font-semibold">

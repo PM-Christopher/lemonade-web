@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useCookies } from "react-cookie";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch } from "@/redux/hook";
 import { checkError } from "@lemonade/domain";
 import { useFormik } from "formik";
@@ -17,17 +16,15 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import dynamic from "next/dynamic";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { useNavigation } from "@/hooks/useNavigation";
 
-// Visual-only placeholder. Used for Google before NEXT_PUBLIC_GOOGLE_CLIENT_ID
-// is set — GoogleAuthButton's useGoogleLogin() calls Google's own script
-// unconditionally once it loads, and that script throws on an empty
-// client_id, so the real button can't safely mount yet. Also kept around,
-// commented out at its call sites below, for Apple/Facebook, which have no
-// backend integration at all (no OAuth app, no route, no action).
+// Placeholder mark when Google is not configured, or for unused Apple/Facebook UI.
 function SocialMark({ src, label }: { src: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
-      <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
+      <span className="border-border-grey flex h-14 w-14 cursor-pointer items-center justify-center rounded-xl border bg-white">
         <Image src={src} alt="" width={24} height={24} />
       </span>
       <span className="text-meta text-text-grey">{label}</span>
@@ -57,8 +54,7 @@ interface GoogleSignupResponse {
 }
 
 export default function SignupPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const { push, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
   const [, setCookie] = useCookies<string>(["token", "newToken"]);
   const [termOpen, setTermOpen] = React.useState(false);
@@ -77,15 +73,13 @@ export default function SignupPage() {
       email: "",
       fullname: "",
       password: "",
-      // Prefilled from a shared referral link (/signup?referral=CODE, the same relative-path
-      // format the backend's GetReferralSummary/GenerateAffiliateLink actions emit) — still
-      // editable so a user can type a friend's code manually instead.
-      referral_code: searchParams.get("referral") ?? "",
+      // Prefill from ?referral=CODE; still editable.
+      referral_code: getQueryParam("referral") ?? "",
     },
     validationSchema: signupSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
-      await signup({ ...values }, dispatch, router, setCookie);
+      await signup({ ...values }, dispatch, { push }, setCookie);
     },
   });
 
@@ -108,7 +102,7 @@ export default function SignupPage() {
             sameSite: false,
           });
           dispatch(authUser(res?.data?.data));
-          router.push("/verify-email");
+          push(routes.VERIFY_EMAIL);
         } else {
           const user = res.data?.data?.user;
           const token = res.data?.data?.token;
@@ -117,17 +111,15 @@ export default function SignupPage() {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
-              // domain: env === 'development' ? '' : ''
             });
-            router.push("/verify-email");
+            push(routes.VERIFY_EMAIL);
           } else if (user?.username === null) {
             setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
-              // domain: env === 'development' ? '' : ''
             });
-            router.push("/profile-setup");
+            push(routes.PROFILE_SETUP);
           } else {
             setCookie("newToken", token, {
               path: "/",
@@ -143,7 +135,7 @@ export default function SignupPage() {
             );
             dispatch(authSuccess(res.data?.data));
             setTimeout(() => {
-              router.push("/");
+              push(routes.HOME);
             }, 500);
           }
         }
@@ -176,34 +168,35 @@ export default function SignupPage() {
 
   return (
     <AuthLayout>
-      <div className="mx-auto flex w-full max-w-[1180px] items-center justify-center gap-8">
-        <div className="tablet:flex hidden min-w-0 flex-col">
+      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Create account</p>
           <p className="text-body-xl text-text-grey mt-2 font-sans font-normal">
             Join the network of diverse pool of talents.
           </p>
           <Image
-            src={"/images/signup_image.png"}
+            src={images.SIGNUP_BG}
             alt=""
             width={511}
             height={520}
             priority
-            className="mt-2 h-auto max-h-[42vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex w-full max-w-[440px] flex-col">
+        <div className="flex w-full max-w-[440px] shrink-0 flex-col">
           <div className="tablet:hidden mb-4 shrink-0 text-center">
             <p className="font-ruso text-title-xl text-primary-black font-bold">Create account</p>
             <p className="text-body-l text-text-grey mt-1 font-sans font-normal">
               Join the network of diverse pool of talents.
             </p>
           </div>
-          <form onSubmit={formik.handleSubmit} className="min-h-0 w-full overflow-y-auto">
+          <form onSubmit={formik.handleSubmit} className="w-full">
+            {/* p-0 on content/footer — Card already owns padding; default Card* p-6 left empty space. */}
             <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
-              <CardContent className="grid gap-4">
+              <CardContent className="grid gap-4 p-0">
                 <div className="grid gap-2">
                   <Label
-                    htmlFor="username"
+                    htmlFor="fullname"
                     className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Full name
@@ -294,16 +287,16 @@ export default function SignupPage() {
                   <div className="bg-border-grey h-px flex-1" />
                 </div>
                 <div className="flex items-start justify-center gap-6">
-                  {/* <SocialMark src="/images/apple.png" label="Apple" /> */}
+                  {/* <SocialMark src={images.APPLE} label="Apple" /> */}
                   {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
                   ) : (
-                    <SocialMark src="/images/google.png" label="Google" />
+                    <SocialMark src={images.GOOGLE} label="Google" />
                   )}
-                  {/* <SocialMark src="/images/facebook.png" label="Facebook" /> */}
+                  {/* <SocialMark src={images.FACEBOOK} label="Facebook" /> */}
                 </div>
               </CardContent>
-              <CardFooter className="mt-2 flex justify-center">
+              <CardFooter className="mt-4 flex justify-center p-0">
                 <p className="text-body-s max-w-[22rem] text-center font-normal">
                   By continuing you agree with Lemonade network&apos;s{" "}
                   <button

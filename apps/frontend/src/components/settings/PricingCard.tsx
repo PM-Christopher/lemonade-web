@@ -1,3 +1,6 @@
+import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import VerIcon from "@/images/icons/verifiedFilledIcon.svg";
 import PadlockIcon from "@/images/icons/padlockFilledIcon.svg";
@@ -9,7 +12,7 @@ import BagIcon from "@/images/icons/caseFilledIcon.svg";
 import WebIcon from "@/images/icons/webFilledIcon.svg";
 import ReferralIcon from "@/images/icons/referralFilledIcon.svg";
 import { Button } from "@lemonade/ui";
-import { useRouter } from "next/navigation";
+
 import CheckIcon from "@/images/icons/checkGreenIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { changeReason, setSubscriptionId } from "@/features/authentication/authSlice";
@@ -48,7 +51,7 @@ const PricingCard: React.FC<PricingInterface> = ({
   toggleSubMode,
   fetchPlan,
 }) => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const { subscription: user_sub } = useSelector((state: RootState) => state.auth);
 
@@ -63,7 +66,7 @@ const PricingCard: React.FC<PricingInterface> = ({
         toggleSubMode("downgrade");
         dispatch(changeReason({ sub_id: id }));
         dispatch(setSubscriptionId({ id, plan: subscription }));
-        router.push("/settings/plan/cancel-subscription");
+        push(routes.SETTINGS_PLAN_CANCEL);
       }
     }
   };
@@ -72,7 +75,7 @@ const PricingCard: React.FC<PricingInterface> = ({
     <div className="flex flex-col items-center">
       <div
         className="w-[260px] rounded-tl-2xl rounded-tr-2xl px-12 pt-4"
-        style={{ background: `${active ? "url('/images/pricingbg.png')" : "#F4F4F6"}` }}
+        style={{ background: active ? `url(${images.PRICING_BG})` : "#F4F4F6" }}
       >
         <p className="font-ruso text-center text-[20px] font-normal">{subscription?.title}</p>
         <p className="text-light-black text-center text-[16px] font-normal">

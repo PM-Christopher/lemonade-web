@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -112,7 +113,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
           <div className="mt-6 flex flex-col items-center space-y-2 text-center">
             {/* Profile Avatar */}
             <div className="relative h-10 w-10">
-              <Image src="/images/lemon.png" alt="lemon" width={40} height={40} />
+              <Image src={images.LEMON} alt="lemon" width={40} height={40} />
               <p className="absolute bottom-2 left-2 text-[12px] font-semibold text-black">
                 L{user?.short_lemon_id}
               </p>

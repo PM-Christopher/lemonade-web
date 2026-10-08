@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
@@ -7,7 +9,7 @@ import MessageIcon from "@/images/icons/messageIcon.svg";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import CloseIcon from "@/images/icons/close.svg";
-import { useRouter } from "next/navigation";
+
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useAppDispatch } from "@/redux/hook";
@@ -41,7 +43,7 @@ interface FormValues {
 }
 
 const AddBusinessClient = () => {
-  const router = useRouter();
+  const { push, back } = useNavigation();
   const dispatch = useAppDispatch();
   const createListingMutation = useCreateListingMutation();
   const [inputValue, setInputValue] = useState("");
@@ -126,7 +128,7 @@ const AddBusinessClient = () => {
               type: "success",
             }),
           );
-          router.push("/business");
+          push(routes.BUSINESS);
         },
         onError: () => {
           dispatch(
@@ -146,7 +148,7 @@ const AddBusinessClient = () => {
       <section className="laptop:bg-light_grey bg-white pb-10">
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
-            <ChevronLeft className="cursor-pointer" onClick={() => router.back()} />
+            <ChevronLeft className="cursor-pointer" onClick={() => back()} />
             <p className="tracking-custom font-sans text-[16px] font-semibold">Add business</p>
           </div>
         </div>

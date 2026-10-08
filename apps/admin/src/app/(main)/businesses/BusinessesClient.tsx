@@ -1,6 +1,8 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { SearchIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -32,7 +34,7 @@ function searchableFields(business: AdminBusiness): string[] {
 }
 
 function BusinessesClient() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [status, setStatus] = useState("pending");
   const [searchValue, setSearchValue] = useState("");
@@ -107,7 +109,7 @@ function BusinessesClient() {
                       <tr
                         key={business.id}
                         className="border-grey-20 h-[72px] cursor-pointer border-b"
-                        onClick={() => router.push(`/businesses/${business.id}`)}
+                        onClick={() => push(routes.BUSINESS_DETAIL(business.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{business.name}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
