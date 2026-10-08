@@ -1,4 +1,5 @@
 // Auth endpoints: login/logout hit local BFF routes; other reads use browserApi.
+import { createApiClient } from "@lemonade/api-client";
 import { browserApi } from "@/lib/browser-api";
 import {
   userAuthRoutes,
@@ -24,7 +25,7 @@ export interface CurrentUser {
   [key: string]: unknown;
 }
 
-/** Token plus user returned by signup, Google sign-in and the final onboarding step. */
+/** Token plus user returned by signup (the token is the onboarding token). */
 export interface AuthTokenResult {
   user: CurrentUser;
   token: string;
@@ -40,27 +41,11 @@ export interface LoginResult {
   user: CurrentUser;
   needsOnboarding?: boolean;
   token?: string; // Present during unfinished onboarding only.
+  token_type?: string;
 }
 
-async function postJson<T>(path: string, body?: unknown): Promise<T> {
-  const response = await fetch(path, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-
-  const envelope = await response.json();
-
-  if (!response.ok) {
-    throw Object.assign(new Error(envelope?.message ?? "Request failed"), {
-      status: response.status,
-      errorCode: envelope?.error_code,
-      fieldErrors: envelope?.errors,
-    });
-  }
-
-  return envelope.data as T;
-}
+// Same-origin /api/auth/* Route Handlers that own the httpOnly session cookies.
+const authBff = createApiClient({ baseURL: "/api/auth" });
 
 // Pre-login flows; the BFF sends the onboarding cookie as the bearer token.
 export interface VerifyOtpPayload {
@@ -194,7 +179,8 @@ export const authApi = {
   register: (data: SignUpRequest) =>
     browserApi.post<AuthTokenResult>(userAuthRoutes.REGISTER, data),
 
-  googleAuth: (token: string) => browserApi.post<AuthTokenResult>(userAuthRoutes.GOOGLE, { token }),
+  // The BFF stores the session for finished accounts and only returns a token mid-onboarding.
+  googleAuth: (token: string) => authBff.post<LoginResult>("/google", { token }),
 
   // Onboarding steps, authorized by the onboarding cookie the BFF forwards.
   profileSetUp: (data: ProfileSetupRequest) =>
@@ -206,11 +192,12 @@ export const authApi = {
   skillsSetUp: (data: SkillsAndInterestsRequest) =>
     browserApi.post<unknown>(userProfileRoutes.SKILLS_SET_UP, data),
 
-  socialsSetUp: (data: SocialsRequest) =>
-    browserApi.post<AuthTokenResult>(userProfileRoutes.SOCIALS_SET_UP, data),
+  // Last onboarding step; the BFF turns it into a full session.
+  completeOnboarding: (data: SocialsRequest) =>
+    authBff.post<{ user: CurrentUser }>("/complete-onboarding", data),
 
-  login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
-  logout: () => postJson<void>("/api/auth/logout"),
+  login: (payload: LoginPayload) => authBff.post<LoginResult>("/login", payload),
+  logout: () => authBff.post<void>("/logout"),
   getCurrentUser: () => browserApi.get<CurrentUser>(userProfileRoutes.SHOW),
 
   // Verify-email OTP.

@@ -8,6 +8,10 @@ vi.mock("@/features/authentication/authApi", () => ({
   signup: (...args: unknown[]) => signupMock(...args),
 }));
 
+vi.mock("@/features/authentication/mutations", () => ({
+  useGoogleAuthMutation: () => ({ mutateAsync: vi.fn() }),
+}));
+
 vi.mock("@/components/layouts/AuthLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));

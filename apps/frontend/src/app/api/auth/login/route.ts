@@ -1,27 +1,8 @@
 // Login broker: stores the access token in an httpOnly cookie for finished accounts.
 import { NextResponse } from "next/server";
-import { ApiError } from "@lemonade/api-client";
 import { userAuthRoutes } from "@lemonade/api-types/generated";
 import { backendApi, persistUserSession, syncSignedInCookieFromHeaders } from "@/lib/server-api";
-
-interface LoginUser {
-  id: string | number;
-  email: string;
-  fullname: string;
-  username: string | null;
-  status?: number;
-  email_verified?: boolean;
-}
-
-interface LoginResponse {
-  user: LoginUser;
-  token: string;
-  token_type: string;
-  refresh_token?: string;
-  expires_in?: number;
-}
-
-const ACCOUNT_VERIFICATION_TOKEN = "account_verification_token";
+import { bffErrorResponse, needsOnboarding, type BackendAuthResult } from "@/lib/auth-bff";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => undefined);
@@ -39,19 +20,14 @@ export async function POST(req: Request) {
 
   try {
     const { data: result, headers: responseHeaders } =
-      await backendApi.requestWithHeaders<LoginResponse>({
+      await backendApi.requestWithHeaders<BackendAuthResult>({
         url: userAuthRoutes.LOGIN,
         method: "post",
         data: body,
       });
 
     // Unfinished onboarding keeps a short-lived token; no main session cookie.
-    const needsOnboarding =
-      result.token_type === ACCOUNT_VERIFICATION_TOKEN ||
-      result.user.status === 0 ||
-      result.user.username === null;
-
-    if (needsOnboarding) {
+    if (needsOnboarding(result)) {
       return NextResponse.json({
         success: true,
         message: "Login successful",
@@ -68,17 +44,6 @@ export async function POST(req: Request) {
       data: { user: result.user },
     });
   } catch (err) {
-    if (err instanceof ApiError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: err.message,
-          error_code: err.errorCode,
-          ...(err.fieldErrors ? { errors: err.fieldErrors } : {}),
-        },
-        { status: err.status || 502 },
-      );
-    }
-    return NextResponse.json({ success: false, message: "Unexpected error." }, { status: 500 });
+    return bffErrorResponse(err);
   }
 }

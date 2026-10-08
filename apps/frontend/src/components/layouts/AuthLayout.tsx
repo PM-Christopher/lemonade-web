@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
+import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { setIsRouting } from "@/redux/tempSlice";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { routes } from "@/lib/routes";
@@ -24,15 +25,11 @@ const HEADER_ACTION: Record<string, { href: string; label: string } | null> = {
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const { pathname, replace } = useNavigation();
   const dispatch = useAppDispatch();
-  const [cookies] = useCookies(["newToken", "token"]);
-  const newToken = cookies.newToken;
-  const token = cookies.token;
+  const [cookies] = useCookies([ONBOARDING_TOKEN_COOKIE]);
+  const newToken = cookies[ONBOARDING_TOKEN_COOKIE];
 
+  // Onboarding pages need the onboarding token; without it, send the visitor to login.
   useEffect(() => {
-    if (token) {
-      replace(routes.HOME);
-      return;
-    }
     if (!newToken) {
       const isAuthRoute =
         pathname === routes.SIGNUP ||
@@ -43,7 +40,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         replace(routes.LOGIN);
       }
     }
-  }, [pathname, newToken, token, replace]);
+  }, [pathname, newToken, replace]);
 
   useEffect(() => {
     dispatch(setIsRouting(false));

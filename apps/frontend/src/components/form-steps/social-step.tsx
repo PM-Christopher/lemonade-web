@@ -6,14 +6,13 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@lemonade/ui";
 import Image from "next/image";
 
-import { authApi } from "@/features/authentication/api";
+import { useCompleteOnboardingMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { FormikButton } from "@/components/global/FormikButton";
-import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";
-import { useCookies } from "react-cookie";
+import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { errorMessage } from "@/lib/api-error";
 
 interface SocialInterface {
@@ -32,7 +31,7 @@ interface SocialMediaHandles {
 const SocialStep: React.FC<SocialInterface> = () => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
-  const [, , removeCookie] = useCookies(["newToken"]);
+  const completeOnboarding = useCompleteOnboardingMutation();
   const [socials, setSocials] = useState<SocialMediaHandles>({
     instagram: "",
     linkedin: "",
@@ -74,9 +73,8 @@ const SocialStep: React.FC<SocialInterface> = () => {
 
     dispatch(authStart());
     try {
-      const result = await authApi.socialsSetUp(requestBody);
-      dispatch(authSuccess(result));
-      removeCookie("newToken");
+      // Starts the session server-side and clears the onboarding cookie.
+      await completeOnboarding.mutateAsync(requestBody);
       dispatch(
         updateToastifyReducer({
           show: true,

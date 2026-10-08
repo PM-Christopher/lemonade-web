@@ -12,9 +12,11 @@ import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { authSuccess, authUser } from "@/features/authentication/authSlice";
+import { authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
-import { authApi, type AuthTokenResult } from "@/features/authentication/api";
+import { useGoogleAuthMutation } from "@/features/authentication/mutations";
+import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
+import { errorMessage } from "@/lib/api-error";
 import dynamic from "next/dynamic";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
@@ -44,7 +46,8 @@ const PrivacyPolicyModal = dynamic(() => import("@/components/PrivacyPolicyModal
 export default function SignupPage() {
   const { push, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
-  const [, setCookie] = useCookies<string>(["token", "newToken"]);
+  const [, setCookie] = useCookies<string>([ONBOARDING_TOKEN_COOKIE]);
+  const googleAuthMutation = useGoogleAuthMutation();
   const [termOpen, setTermOpen] = React.useState(false);
   const [privacyOpen, setPrivacyOpen] = React.useState(false);
 
@@ -71,73 +74,35 @@ export default function SignupPage() {
     },
   });
 
-  const handleLoginSuccess = async (result: AuthTokenResult) => {
+  // Google sign-up: resume onboarding, or go home when the account is already finished.
+  const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
+      const result = await googleAuthMutation.mutateAsync(tokenResponse.access_token);
       dispatch(setIsRouting(true));
+      dispatch(updateToastifyReducer({ show: true, message: "Successful", type: "success" }));
+
+      if (result.needsOnboarding) {
+        setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
+          path: "/",
+          maxAge: 3600 * 6,
+          sameSite: false,
+        });
+        dispatch(authUser({ user: result.user }));
+        push(result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
+        return;
+      }
+
+      setTimeout(() => {
+        push(routes.HOME);
+      }, 500);
+    } catch (error) {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Successful",
-          type: "success",
+          message: errorMessage(error, "Google sign-up failed"),
+          type: "error",
         }),
       );
-
-      if (result.token_type === "account_verification_token") {
-        setCookie("newToken", result.token, {
-          path: "/",
-          maxAge: 3600 * 6, // Expires after 6hrs
-          sameSite: false,
-        });
-        dispatch(authUser(result));
-        push(routes.VERIFY_EMAIL);
-      } else {
-        const user = result.user;
-        const token = result.token;
-        if (user?.status == 0) {
-          setCookie("newToken", token, {
-            path: "/",
-            maxAge: 3600 * 6, // Expires after 6hrs
-            sameSite: false,
-          });
-          push(routes.VERIFY_EMAIL);
-        } else if (user?.username === null) {
-          setCookie("newToken", token, {
-            path: "/",
-            maxAge: 3600 * 6, // Expires after 6hrs
-            sameSite: false,
-          });
-          push(routes.PROFILE_SETUP);
-        } else {
-          setCookie("newToken", token, {
-            path: "/",
-            maxAge: 3600 * 6, // Expires after 6hrs
-            sameSite: false,
-          });
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "successful",
-              type: "success",
-            }),
-          );
-          dispatch(authSuccess(result));
-          setTimeout(() => {
-            push(routes.HOME);
-          }, 500);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Login failed!");
-    }
-  };
-
-  const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
-    try {
-      const result = await authApi.googleAuth(tokenResponse.access_token);
-      await handleLoginSuccess(result);
-    } catch (error) {
-      console.error("Error sending code to backend:", error);
     }
   };
 

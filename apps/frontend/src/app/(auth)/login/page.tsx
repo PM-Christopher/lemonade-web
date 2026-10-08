@@ -9,13 +9,15 @@ import { loginSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
-import { useLoginMutation } from "@/features/authentication/mutations";
+import { useGoogleAuthMutation, useLoginMutation } from "@/features/authentication/mutations";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { authSuccess, authUser } from "@/features/authentication/authSlice";
+import { authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
-import { authApi, type AuthTokenResult } from "@/features/authentication/api";
+import type { LoginResult } from "@/features/authentication/api";
+import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
+import { errorMessage } from "@/lib/api-error";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 import { localLoginDefaults } from "@/lib/env.client";
@@ -44,10 +46,42 @@ function safeNext(raw: string | null) {
 export default function LoginPage() {
   const { push, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
-  // Google login still uses a JS-readable token cookie.
-  const [, setCookie] = useCookies(["newToken", "token"]);
+  const [, setCookie] = useCookies([ONBOARDING_TOKEN_COOKIE]);
   const loginMutation = useLoginMutation();
+  const googleAuthMutation = useGoogleAuthMutation();
   const next = useMemo(() => safeNext(getQueryParam("next")), [getQueryParam]);
+
+  // Shared by password and Google sign-in: resume onboarding, or go to the original page.
+  const handleAuthResult = (result: LoginResult) => {
+    dispatch(setIsRouting(true));
+
+    if (result.needsOnboarding) {
+      // Resume signup: verified email → profile setup, otherwise verify email.
+      setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
+        path: "/",
+        maxAge: 3600 * 6,
+        sameSite: false,
+      });
+      dispatch(authUser({ user: result.user }));
+      push(result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
+      return;
+    }
+
+    dispatch(updateToastifyReducer({ show: true, message: "successful", type: "success" }));
+    setTimeout(() => {
+      push(next || routes.HOME);
+    }, 500);
+  };
+
+  const showLoginError = (error: unknown) => {
+    dispatch(
+      updateToastifyReducer({
+        show: true,
+        message: errorMessage(error, "Error trying to login"),
+        type: "error",
+      }),
+    );
+  };
 
   const formik = useFormik({
     initialValues: localLoginDefaults(),
@@ -55,106 +89,18 @@ export default function LoginPage() {
     validateOnMount: true,
     onSubmit: async (values) => {
       try {
-        const result = await loginMutation.mutateAsync(values);
-        dispatch(setIsRouting(true));
-
-        if (result.needsOnboarding) {
-          // Resume signup: verified email → profile setup, otherwise verify email.
-          setCookie("newToken", result.token, {
-            path: "/",
-            maxAge: 3600 * 6, // Expires after 6hrs
-            sameSite: false,
-          });
-          dispatch(authUser({ user: result.user }));
-          push(result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
-          return;
-        }
-
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "successful",
-            type: "success",
-          }),
-        );
-
-        setTimeout(() => {
-          push(next || routes.HOME);
-        }, 500);
+        handleAuthResult(await loginMutation.mutateAsync(values));
       } catch (error) {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error instanceof Error ? error.message : "Error trying to login",
-            type: "error",
-          }),
-        );
+        showLoginError(error);
       }
     },
   });
 
-  // Google still talks to the backend directly (not the password-login BFF).
-  const handleLoginSuccess = async (result: AuthTokenResult) => {
-    try {
-      dispatch(setIsRouting(true));
-      dispatch(
-        updateToastifyReducer({
-          show: true,
-          message: "Successful",
-          type: "success",
-        }),
-      );
-
-      if (result.token_type === "account_verification_token") {
-        setCookie("newToken", result.token, {
-          path: "/",
-          maxAge: 3600 * 6, // Expires after 6hrs
-          sameSite: false,
-        });
-        dispatch(authUser(result));
-        // Resume signup based on whether email is already verified.
-        push(result.user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
-      } else {
-        const user = result.user;
-        const token = result.token;
-        if (user?.status == 0 || user?.username === null) {
-          setCookie("newToken", token, {
-            path: "/",
-            maxAge: 3600 * 6, // Expires after 6hrs
-            sameSite: false,
-          });
-          push(user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
-        } else {
-          setCookie("token", token, {
-            path: "/",
-            maxAge: 3600 * 6, // Expires after 6hrs
-            sameSite: false,
-          });
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "successful",
-              type: "success",
-            }),
-          );
-          dispatch(authSuccess(result));
-          setTimeout(() => {
-            push(routes.HOME);
-          }, 500);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Login failed!");
-    }
-  };
-
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
-      const result = await authApi.googleAuth(tokenResponse.access_token);
-      await handleLoginSuccess(result);
+      handleAuthResult(await googleAuthMutation.mutateAsync(tokenResponse.access_token));
     } catch (error) {
-      console.error("Error sending code to backend:", error);
+      showLoginError(error);
     }
   };
 
