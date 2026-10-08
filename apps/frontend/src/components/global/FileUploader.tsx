@@ -6,6 +6,7 @@ import Image from "next/image";
 import { sharedApi } from "@/features/shared/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
+import { errorMessage } from "@/lib/api-error";
 
 interface FormikSetField {
   setFieldValue: (field: string, value: unknown) => unknown;
@@ -44,37 +45,26 @@ export const SingleFileUploader = ({
       const formData = new FormData();
       formData.append("file", files[0]);
       try {
-        const { data } = await sharedApi.uploadFile(formData);
-        if (data.status) {
-          if (type === "event") {
-            await setField.setFieldValue("event_image", data.data.image);
-            setElementImage(data.data.image);
-          } else if (type === "business") {
-            await setField.setFieldValue("image", data.data.image);
-            setElementImage(data.data.image);
-          }
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Image uploaded",
-              type: "success",
-            }),
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error uploading image",
-              type: "error",
-            }),
-          );
+        const result = await sharedApi.uploadFile(formData);
+        if (type === "event") {
+          await setField.setFieldValue("event_image", result.image);
+          setElementImage(result.image);
+        } else if (type === "business") {
+          await setField.setFieldValue("image", result.image);
+          setElementImage(result.image);
         }
-      } catch (err) {
-        const legacyError = err as { response?: { data?: { message?: string } } };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.response?.data?.message || "error",
+            message: "Image uploaded",
+            type: "success",
+          }),
+        );
+      } catch (err) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(err, "error"),
             type: "error",
           }),
         );

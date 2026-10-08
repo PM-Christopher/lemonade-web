@@ -1,18 +1,4 @@
-// Endpoint layer for the tribes (community/threads) domain — see
-// features/business/api.ts for the pattern this follows: the BFF proxy
-// transport (browserApi), not the pre-BFF axiosInstance.
-//
-// NOT covered here: tribe.slice.ts's old verifyTribePayment thunk, which
-// called `/tribes/payment/verify` via a raw axiosInstance.get — no matching
-// route exists in the current backend contract (confirmed again via
-// `route:list`). The two call sites that imported it (app/(main)/event/page.tsx
-// and app/(main)/event/[id]/page.tsx) never actually invoked it — dead
-// imports, removed as part of this migration. Left undocumented-but-broken
-// here, matching the pre-existing, already-flagged decision not to guess a
-// route. getComments is also dropped: zero real consumers (thread comments
-// arrive embedded in ThreadResource.all_comments, confirmed via grep) —
-// same "dead code, dropped rather than migrated" rule as business's
-// getListing.
+// Endpoints for the tribes domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import {
   userTribesRoutes,

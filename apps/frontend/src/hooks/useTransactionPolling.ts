@@ -1,15 +1,16 @@
 import { useEffect, useState, useRef } from "react";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { transactionApi, type VerifyTransactionResponse } from "@/features/transaction/api";
 
-export const useTransactionPolling = <T = unknown>(
+/** Polls the transaction verify endpoint until `isSuccess` passes. */
+export const useTransactionPolling = <TData = unknown>(
   config: null | {
     transactionId: string;
-    isSuccess: (data: T) => boolean;
-    onSuccess: (data: T) => void;
+    isSuccess: (result: VerifyTransactionResponse<TData>) => boolean;
+    onSuccess: (result: VerifyTransactionResponse<TData>) => void;
     pollingInterval: number;
   },
 ) => {
-  const [data, setData] = useState<T | null>(null);
+  const [data, setData] = useState<VerifyTransactionResponse<TData> | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -21,14 +22,11 @@ export const useTransactionPolling = <T = unknown>(
     const verifyTransaction = async () => {
       try {
         setLoading(true);
-        const res = await axiosInstance.post(`/user/transaction/verify-transaction`, {
-          trx_ref: transactionId,
-        });
-        const resData = res?.data?.data;
-        setData(resData);
+        const result = await transactionApi.verifyTransaction<TData>({ trx_ref: transactionId });
+        setData(result);
 
-        if (isSuccess(resData)) {
-          if (onSuccess) onSuccess(resData);
+        if (isSuccess(result)) {
+          onSuccess(result);
           if (intervalRef.current) clearInterval(intervalRef.current);
         }
       } catch (error) {
@@ -40,15 +38,10 @@ export const useTransactionPolling = <T = unknown>(
     verifyTransaction();
     intervalRef.current = setInterval(verifyTransaction, pollingInterval);
 
-    //cleanup
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    // Deliberately keyed on transactionId alone: config is typically a
-    // fresh object/callbacks from the caller on every render (see
-    // settings/plan/page.tsx's pollingConfig), and restarting the
-    // interval on every such render would re-fire verifyTransaction
-    // immediately each time instead of polling on pollingInterval.
+    // Keyed on transactionId only: callers pass fresh callbacks each render, which would restart polling.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config?.transactionId]);
 

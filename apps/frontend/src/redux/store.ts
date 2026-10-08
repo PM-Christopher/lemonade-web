@@ -16,7 +16,6 @@ import authReducer from "@/features/authentication/authSlice";
 import eventReducer from "@/features/events/event.slice";
 import tempReducer from "./tempSlice";
 import toastifyReducer from "./toastifySlice";
-import generalReducer from "./general.slice";
 
 const persistConfig = {
   key: "root",
@@ -29,7 +28,6 @@ const reducers = combineReducers({
   temp: tempReducer,
   toast: toastifyReducer,
   event: eventReducer,
-  general: generalReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);

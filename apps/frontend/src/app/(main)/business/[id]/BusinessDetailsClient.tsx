@@ -19,18 +19,25 @@ import RatingsBar from "@/components/global/RatingsBar";
 import Reviews, { type Review } from "@/components/global/Reviews";
 import ReviewModal from "@/components/business/Modals/ReviewModal";
 import dynamic from "next/dynamic";
-import { useRequest } from "@/hooks/useRequest";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatDecimal, formatStringUCFirst } from "@/lib/helper";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { axiosInstance } from "@/lib/axiosInstane";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal, { type Boost } from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
 
 import { businessButtons } from "@/lib/constant";
-import { useBusinessQuery } from "@/features/business/queries";
+import { useQueryClient } from "@tanstack/react-query";
+import { businessApi } from "@/features/business/api";
+import {
+  businessKeys,
+  useBusinessQuery,
+  useBusinessReviewsQuery,
+} from "@/features/business/queries";
+import { useAppDispatch } from "@/redux/hook";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { errorMessage } from "@/lib/api-error";
 import { BusinessDetailSkeleton } from "@/components/Skeletons";
 import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
 import { routes } from "@/lib/routes";
@@ -47,6 +54,8 @@ const SubmitDisputeModal = dynamic(
 );
 
 const BusinessDetailsClient = ({ id }: { id: number }) => {
+  const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [displayCount, setDisplayCount] = useState(4); // Initial number of reviews to show
@@ -100,39 +109,39 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   }, [shouldOpenDispute, replace, pathname]);
 
   // business reviews
-  const { data: reviewData, loading: reviewLoading } = useRequest<{
-    reviews?: Review[];
-    subReviews?: Array<{ rating: number; count: number }>;
-  }>(`/user/business/${id}/business-reviews`);
+  const { data: reviewData, isPending: reviewLoading } = useBusinessReviewsQuery(id);
   const reviews: Review[] = reviewData?.reviews ?? [];
 
+  // Confirm a boost checkout when Paystack redirects back with a reference.
   useEffect(() => {
+    if (!trxref) return;
     const verifyBusinessBoost = async () => {
-      if (trxref) {
-        setVerifyLoading(true);
-        try {
-          const { data } = await axiosInstance.patch(
-            `listing/verify-business-boost?reference=${trxref}`,
-            {},
-          );
-          if (data.status) {
-            if (data.data.verified) {
-              const params = new URLSearchParams(searchParams);
-              params.delete("trxref");
-              params.delete("reference");
-              setBoost(data.data.boost);
-              setIsVerifyBoost(true);
-              replace(`?${params.toString()}`);
-            }
-          }
-        } catch {
-        } finally {
-          setVerifyLoading(false);
+      setVerifyLoading(true);
+      try {
+        const result = await businessApi.verifyBoostPayment(trxref);
+        if (result.verified) {
+          const params = new URLSearchParams(searchParams);
+          params.delete("trxref");
+          params.delete("reference");
+          setBoost(result.boost);
+          setIsVerifyBoost(true);
+          void queryClient.invalidateQueries({ queryKey: businessKeys.detail(id) });
+          replace(`?${params.toString()}`);
         }
+      } catch (error) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(error, "We couldn't confirm your boost payment."),
+            type: "error",
+          }),
+        );
+      } finally {
+        setVerifyLoading(false);
       }
     };
     verifyBusinessBoost();
-  }, [trxref, replace, searchParams]);
+  }, [trxref, replace, searchParams, queryClient, id, dispatch]);
 
   const loadMore = () => {
     setDisplayCount((prevCount) => prevCount + 4); // Increase the count by 4

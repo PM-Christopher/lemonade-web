@@ -1,45 +1,21 @@
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useMemo } from "react";
+import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { ChevronRight } from "lucide-react";
 
-import { useRequest } from "@/hooks/useRequest";
+import type { ReferralActivity } from "@/features/settings/api";
+import { formatNumberWithCommas } from "@/lib/formatNumber";
 
 type ReferralHistoryInterface = {
   toggle: () => void;
   isOpen: boolean;
+  activity: ReferralActivity | undefined;
 };
 
-interface ReferralEntry {
-  amount?: number;
-  type?: string;
-}
-
-interface ReferralHistoryData {
-  referral_history?: ReferralEntry[];
-}
-
-const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle }) => {
+// Shows the server-computed referral totals.
+const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle, activity }) => {
   const { push } = useNavigation();
-  const { data } = useRequest<ReferralHistoryData>(`/user/wallet/referral-history`);
-
-  const { totalEarned, total_referrals, total_subscribed } = useMemo(() => {
-    if (!data?.referral_history) return { totalEarned: 0, total_referrals: 0, total_subscribed: 0 };
-
-    const totalEarned = data.referral_history.reduce(
-      (acc: number, cur: ReferralEntry) => acc + (cur.amount || 0),
-      0,
-    );
-
-    const total_referrals = data?.referral_history?.length;
-
-    const total_subscribed = data?.referral_history?.filter(
-      (ref: ReferralEntry) => ref?.type?.toLowerCase() === "subscription",
-    )?.length;
-
-    return { totalEarned, total_referrals, total_subscribed };
-  }, [data]);
 
   return (
     <div
@@ -61,16 +37,20 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
             <div className="border-b-mid-grey flex flex-col border-b p-4">
               <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
               <p className="tracking-custom text-[18px] font-semibold">
-                ₦{Number(totalEarned)?.toLocaleString() ?? 0}
+                ₦{formatNumberWithCommas(Number(activity?.total_amount_earned) || 0)}
               </p>
             </div>
             <div className="border-b-mid-grey flex flex-col border-b p-4">
               <p className="text-text-grey text-[14px] font-normal">Total referrals</p>
-              <p className="tracking-custom text-[18px] font-semibold">{total_referrals ?? 0}</p>
+              <p className="tracking-custom text-[18px] font-semibold">
+                {activity?.total_referrals ?? 0}
+              </p>
             </div>
             <div className="border-b-mid-grey flex flex-col border-b p-4">
               <p className="text-text-grey text-[14px] font-normal">Total subscribed referrals</p>
-              <p className="tracking-custom text-[18px] font-semibold">{total_subscribed ?? 0}</p>
+              <p className="tracking-custom text-[18px] font-semibold">
+                {activity?.total_subscribed_referrals ?? 0}
+              </p>
             </div>
             <div
               className="flex cursor-pointer items-center gap-2 p-3 px-4"

@@ -17,6 +17,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { errorMessage } from "@/lib/api-error";
 
 type CreateThreadInterface = {
   toggle: () => void;
@@ -112,33 +113,21 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
 
       if (formData.has("files[]")) {
         try {
-          const { data } = await tribesApi.uploadMultiple(formData);
-
-          if (data.success) {
-            setMediaFiles((prev) => [...prev, ...data.data.images]);
-            await formik.setFieldValue("media", data.data.images);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Images uploaded",
-                type: "success",
-              }),
-            );
-          } else {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Error uploading image",
-                type: "error",
-              }),
-            );
-          }
-        } catch (err) {
-          const legacyError = err as { response?: { data?: { message?: string } } };
+          const result = await tribesApi.uploadMultiple(formData);
+          setMediaFiles((prev) => [...prev, ...result.images]);
+          await formik.setFieldValue("media", result.images);
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: legacyError?.response?.data?.message || "Error",
+              message: "Images uploaded",
+              type: "success",
+            }),
+          );
+        } catch (err) {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: errorMessage(err, "Error"),
               type: "error",
             }),
           );
@@ -163,32 +152,21 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
         formData.append(`files[]`, file); // Add each file to the `file[]` key
       });
       try {
-        const { data } = await tribesApi.uploadMultiple(formData);
-        if (data.success) {
-          setVideoFiles((prev) => [...prev, ...data.data.images]);
-          await formik.setFieldValue("videos", data.data.images);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Videos uploaded",
-              type: "success",
-            }),
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error uploading video",
-              type: "error",
-            }),
-          );
-        }
-      } catch (err) {
-        const legacyError = err as { response?: { data?: { message?: string } } };
+        const result = await tribesApi.uploadMultiple(formData);
+        setVideoFiles((prev) => [...prev, ...result.images]);
+        await formik.setFieldValue("videos", result.images);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.response?.data?.message || "error",
+            message: "Videos uploaded",
+            type: "success",
+          }),
+        );
+      } catch (err) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(err, "error"),
             type: "error",
           }),
         );

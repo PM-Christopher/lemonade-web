@@ -7,8 +7,7 @@
 // Multipart (file upload) bodies are forwarded byte-for-byte with the
 // original Content-Type (boundary included) rather than parsed — this
 // proxy doesn't need to know what's inside an upload, only pass it through.
-// This matters now that lib/axiosInstane.ts routes everything through this
-// proxy, uploads included (see features/shared/api.ts).
+// Browser uploads go through this proxy too (see features/shared/api.ts).
 //
 // Pre-login onboarding fallback: signup/email-verification/reset-password
 // calls (features/authentication/{api,mutations}.ts's verifyAccountOtp/

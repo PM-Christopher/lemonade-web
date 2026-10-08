@@ -22,6 +22,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
 import { setIsRouting } from "@/redux/tempSlice";
 import type { RootState } from "@/redux/store";
+import { errorMessage } from "@/lib/api-error";
 
 // Off the initial bundle — only needed once a field's edit button is
 // clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -41,7 +42,7 @@ const ProfileSettingsPage = ({}) => {
     setIsOpen(!isOpen);
   };
 
-  const [, setAvatar] = useState(null);
+  const [, setAvatar] = useState<string | null>(null);
 
   // Handle file input change (when a file is selected)
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,38 +52,14 @@ const ProfileSettingsPage = ({}) => {
       formData.append("file", file);
       try {
         dispatch(setIsRouting(true));
-        const { data } = await sharedApi.uploadFile(formData);
-        // Found live: the BFF envelope key is `success`, not `status` — this
-        // check was always false, so a successful upload always showed the
-        // "error" toast below. Not otherwise touching this call (upload
-        // stays on axiosInstance; see features/shared/api.ts's NOTE).
-        if (data.success) {
-          setAvatar(data.data.image);
-          // await formik.setFieldValue("profile_image", data.data.image)
-          //   dispatch(
-          //     updateToastifyReducer({
-          //       show: true,
-          //       message: "Image uploaded",
-          //       type: "success",
-          //     })
-          //   );
-
-          updateImageFunc(data.data.image);
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error uploading image",
-              type: "error",
-            }),
-          );
-        }
+        const result = await sharedApi.uploadFile(formData);
+        setAvatar(result.image);
+        updateImageFunc(result.image);
       } catch (err) {
-        const legacyError = err as { response?: { data?: { message?: string } } };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.response?.data?.message || "error",
+            message: errorMessage(err, "error"),
             type: "error",
           }),
         );

@@ -15,14 +15,15 @@ import {
   SelectValue,
 } from "@lemonade/ui";
 import Image from "next/image";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { authApi } from "@/features/authentication/api";
+import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useFormik } from "formik";
 import { profileSetupSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
-import { useCookies } from "react-cookie";
+import { errorMessage } from "@/lib/api-error";
 
 interface ProfileInterface {
   loading: boolean;
@@ -36,24 +37,10 @@ interface ProfileFormValues {
   industry: string;
 }
 
-interface LegacyAxiosError {
-  response?: { data?: { message?: string } };
-}
-
 const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [avatar, setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
   const dispatch = useAppDispatch();
-  const [cookie] = useCookies(["token", "newToken"]);
-
-  const getHeader = () => {
-    const token = cookie.newToken;
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  };
 
   //form validation
   const formik = useFormik({
@@ -74,29 +61,14 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
     dispatch(authStart());
 
     try {
-      const { data } = await axiosInstance.post(
-        "/user/profile/profile-set-up",
-        { ...values },
-        getHeader(),
-      );
-      if (data.success) {
-        next_step();
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Something went wrong",
-            type: "error",
-          }),
-        );
-      }
+      await authApi.profileSetUp(values);
+      next_step();
     } catch (err) {
-      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: legacyError?.response?.data?.message || "error",
+          message: errorMessage(err, "error"),
           type: "error",
         }),
       );
@@ -118,36 +90,21 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
       const formData = new FormData();
       formData.append("file", file);
       try {
-        const { data } = await axiosInstance.post("/shared/utilities/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        if (data.success) {
-          setAvatar(data.data.image);
-          await formik.setFieldValue("profile_image", data.data.image);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Image uploaded",
-              type: "success",
-            }),
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error uploading image",
-              type: "error",
-            }),
-          );
-        }
-      } catch (err) {
-        const legacyError = err as LegacyAxiosError;
+        const result = await sharedApi.uploadFile(formData);
+        setAvatar(result.image);
+        await formik.setFieldValue("profile_image", result.image);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.response?.data?.message || "error",
+            message: "Image uploaded",
+            type: "success",
+          }),
+        );
+      } catch (err) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(err, "error"),
             type: "error",
           }),
         );

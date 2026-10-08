@@ -1,27 +1,4 @@
-// Endpoint layer for the business domain — see features/connect/api.ts for
-// the pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
-//
-// NOTE: getListing/GetBusinessListing had zero real frontend consumers
-// (dead code, dropped here rather than migrated) — confirmed via grep, same
-// as this migration's rule throughout the session. Also out of scope:
-// business-categories, business-reviews (shared-utility/business-detail
-// reads still on the legacy useRequest hook, not wired to this slice at
-// all) and the business/listing verify-payment flows (raw axiosInstance
-// calls, not wired to this slice either) — tracked as follow-ups, not
-// migrated in this pass. listing/boosts was migrated below (Phase 6
-// follow-up) since boost-business/page.tsx needed it on TanStack Query to
-// become a Server Component candidate.
-//
-// Job objects (getJob/jobsData/markJobRequest/etc.) are intentionally typed
-// loosely (unknown) rather than modeled field-by-field: comparing
-// ServiceRequestJobResource (backend) against what the job-related
-// components actually read turned up several real mismatches
-// (`is_owner` vs `job.isOwner`, `additional_info` vs
-// `job.additional_information`, `business.city`/`business.country` vs
-// `job.city`/`job.country` read directly on the job) — not something a
-// transport migration should silently paper over by guessing which side is
-// "right". See docs/ARCHITECTURE.md's Phase 5 status for the full note.
+// Endpoints for the business domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { userBusinessRoutes, userListingRoutes, buildPath } from "@lemonade/api-types/generated";
 import type { BusinessInterface } from "@/interfaces/BusinessInterface";
@@ -64,6 +41,37 @@ export interface BoostBusinessPayload {
 
 export interface BoostBusinessResponse {
   payment: string;
+}
+
+/** A boost's schedule, as the backend's BusinessBoostResource returns it. */
+export interface BusinessBoostSchedule {
+  full_start_date: string;
+  full_end_date: string;
+  start_date: string;
+  start_time: string;
+  duration: number | null;
+}
+
+/** A service request job, as the backend's ServiceRequestJobResource returns it. */
+export interface ServiceRequestJob {
+  id: number;
+  business: { id: number; name: string; image: string | null; user_id: number } | null;
+  amount: number;
+  services: unknown[];
+  status: string;
+  payment_made: boolean;
+  created_at: string;
+}
+
+export interface VerifyJobPaymentResponse {
+  verified: boolean;
+  paid_at: string | null;
+  job: ServiceRequestJob;
+}
+
+export interface VerifyBoostPaymentResponse {
+  verified: boolean;
+  boost: BusinessBoostSchedule;
 }
 
 export interface JobsDataResponse {
@@ -130,7 +138,35 @@ export interface BoostPackagesResponse {
   packages: BoostPackage[];
 }
 
+export interface BusinessReview {
+  user: { id: number; username: string; avatar: string };
+  title: string;
+  description: string;
+  rating: number;
+  created_at: string;
+}
+
+export interface BusinessReviewsResponse {
+  reviews: BusinessReview[];
+  subReviews: Array<{ rating: number; count: number }>;
+  average_rating: number;
+}
+
 export const businessApi = {
+  // Confirm a Paystack checkout after the redirect back to the app.
+  verifyJobPayment: (reference: string) =>
+    browserApi.post<VerifyJobPaymentResponse>(userBusinessRoutes.JOBS_VERIFY_PAYMENT, {
+      reference,
+    }),
+
+  verifyBoostPayment: (reference: string) =>
+    browserApi.post<VerifyBoostPaymentResponse>(userBusinessRoutes.VERIFY_BOOST_PAYMENT, {
+      reference,
+    }),
+
+  getBusinessReviews: (id: number | string) =>
+    browserApi.get<BusinessReviewsResponse>(buildPath(userBusinessRoutes.REVIEWS, { id })),
+
   getListings: () => browserApi.get<ListingsResponse>(userListingRoutes.LIST),
 
   createListing: (values: CreateOrUpdateBusinessPayload) =>

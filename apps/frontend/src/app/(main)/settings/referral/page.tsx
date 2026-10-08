@@ -215,7 +215,7 @@ function ReferralSettingsPage() {
           </div>
         </section>
 
-        <ReferralHistory toggle={toggleModal} isOpen={isOpen} />
+        <ReferralHistory toggle={toggleModal} isOpen={isOpen} activity={referralActivity} />
       </section>
     </MainLayout>
   );

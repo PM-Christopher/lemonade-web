@@ -5,6 +5,13 @@
 // per docs/ARCHITECTURE.md's import rules (enforced by
 // boundaries/entry-point in eslint.config.mjs).
 export { sharedApi } from "./api";
-export type { Bank, GetAllBanksResponse, VerifyAccountResponse, UploadFileResponse } from "./api";
-export { sharedKeys, useBanksQuery } from "./queries";
+export type {
+  Bank,
+  GetAllBanksResponse,
+  VerifyAccountResponse,
+  UploadFileResponse,
+  UploadMultipleFilesResponse,
+  EventCategory,
+} from "./api";
+export { sharedKeys, useBanksQuery, useEventCategoriesQuery } from "./queries";
 export { useVerifyAccountMutation } from "./mutations";

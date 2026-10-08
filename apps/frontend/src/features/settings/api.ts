@@ -1,19 +1,4 @@
-// Endpoint layer for the settings/profile domain — see features/dashboard/api.ts
-// for the pattern this follows: the BFF proxy transport (browserApi), not
-// the pre-BFF axiosInstance.
-//
-// NOTE: this only covers what profile.slice.ts + the direct settingsApi
-// consumers actually use today (profile read, wallet read, request payout,
-// create bank account). ProfileController owns ~30 more routes (notification
-// settings, subscription/billing, account deletion, individual profile-field
-// edits) — several of those (notification-settings, subscription,
-// billing-history) were migrated in Phase 6, but into
-// features/authentication instead of here, since their existing mutations
-// (updateNotificationSettings, changePlan) already live there and
-// eslint-plugin-boundaries doesn't allow one feature's mutations to
-// invalidate another feature's query keys. What's left (account deletion,
-// individual profile-field edits) is still on the legacy useRequest hook or
-// untouched — tracked as its own follow-up.
+// Endpoints for the settings domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { userProfileRoutes, userWalletRoutes } from "@lemonade/api-types/generated";
 

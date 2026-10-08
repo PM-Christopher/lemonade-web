@@ -10,11 +10,11 @@ import { Card, CardContent, CardFooter, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
 import { FormikButton } from "@/components/global/FormikButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import { axiosInstance } from "@/lib/axiosInstane";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+import { authApi, type AuthTokenResult } from "@/features/authentication/api";
 import dynamic from "next/dynamic";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
@@ -40,18 +40,6 @@ const TermsOfUseModal = dynamic(() => import("@/components/TermsOfUseModal"), {
 const PrivacyPolicyModal = dynamic(() => import("@/components/PrivacyPolicyModal"), {
   ssr: false,
 });
-
-interface GoogleSignupResponse {
-  status?: number;
-  message?: string;
-  data?: {
-    data?: {
-      token_type?: string;
-      token?: string;
-      user?: { status?: number; username?: string | null };
-    };
-  };
-}
 
 export default function SignupPage() {
   const { push, getQueryParam } = useNavigation();
@@ -83,70 +71,60 @@ export default function SignupPage() {
     },
   });
 
-  const handleLoginSuccess = async (res: GoogleSignupResponse) => {
+  const handleLoginSuccess = async (result: AuthTokenResult) => {
     try {
-      if (res.status) {
-        dispatch(setIsRouting(true));
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Successful",
-            type: "success",
-          }),
-        );
+      dispatch(setIsRouting(true));
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Successful",
+          type: "success",
+        }),
+      );
 
-        if (res.data?.data?.token_type === "account_verification_token") {
-          setCookie("newToken", res.data.data.token, {
+      if (result.token_type === "account_verification_token") {
+        setCookie("newToken", result.token, {
+          path: "/",
+          maxAge: 3600 * 6, // Expires after 6hrs
+          sameSite: false,
+        });
+        dispatch(authUser(result));
+        push(routes.VERIFY_EMAIL);
+      } else {
+        const user = result.user;
+        const token = result.token;
+        if (user?.status == 0) {
+          setCookie("newToken", token, {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
             sameSite: false,
           });
-          dispatch(authUser(res?.data?.data));
           push(routes.VERIFY_EMAIL);
+        } else if (user?.username === null) {
+          setCookie("newToken", token, {
+            path: "/",
+            maxAge: 3600 * 6, // Expires after 6hrs
+            sameSite: false,
+          });
+          push(routes.PROFILE_SETUP);
         } else {
-          const user = res.data?.data?.user;
-          const token = res.data?.data?.token;
-          if (user?.status == 0) {
-            setCookie("newToken", token, {
-              path: "/",
-              maxAge: 3600 * 6, // Expires after 6hrs
-              sameSite: false,
-            });
-            push(routes.VERIFY_EMAIL);
-          } else if (user?.username === null) {
-            setCookie("newToken", token, {
-              path: "/",
-              maxAge: 3600 * 6, // Expires after 6hrs
-              sameSite: false,
-            });
-            push(routes.PROFILE_SETUP);
-          } else {
-            setCookie("newToken", token, {
-              path: "/",
-              maxAge: 3600 * 6, // Expires after 6hrs
-              sameSite: false,
-            });
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "successful",
-                type: "success",
-              }),
-            );
-            dispatch(authSuccess(res.data?.data));
-            setTimeout(() => {
-              push(routes.HOME);
-            }, 500);
-          }
+          setCookie("newToken", token, {
+            path: "/",
+            maxAge: 3600 * 6, // Expires after 6hrs
+            sameSite: false,
+          });
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "successful",
+              type: "success",
+            }),
+          );
+          dispatch(authSuccess(result));
+          setTimeout(() => {
+            push(routes.HOME);
+          }, 500);
         }
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: res.message || "error",
-            type: "error",
-          }),
-        );
       }
     } catch (error) {
       console.error(error);
@@ -156,11 +134,8 @@ export default function SignupPage() {
 
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
-      const res = await axiosInstance.post(`/user/auth/google`, {
-        token: tokenResponse.access_token,
-      });
-
-      await handleLoginSuccess(res);
+      const result = await authApi.googleAuth(tokenResponse.access_token);
+      await handleLoginSuccess(result);
     } catch (error) {
       console.error("Error sending code to backend:", error);
     }

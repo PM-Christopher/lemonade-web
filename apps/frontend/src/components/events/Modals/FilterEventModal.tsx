@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
-import { useRequest } from "@/hooks/useRequest";
+import { useEventCategoriesQuery } from "@/features/shared";
 import CalendarIcon from "@/images/icons/eventCalendarIcon.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -38,9 +38,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
     setLocation(value);
   };
 
-  const { data, loading } = useRequest<{ categories?: Array<{ name?: string }> }>(
-    `/shared/utilities/event-categories`,
-  );
+  const { data, isPending: loading } = useEventCategoriesQuery();
 
   const handleCategoryClick = (category: string) => {
     if (category === clickedCategory) {

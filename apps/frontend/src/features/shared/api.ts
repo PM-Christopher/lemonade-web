@@ -1,13 +1,4 @@
-// Endpoint layer for cross-cutting /shared/utilities/* routes — these
-// don't belong to any one feature domain, so they get their own small
-// service file rather than being duplicated inline at each component that
-// needs an upload. See features/events/api.ts for the pattern this follows.
-//
-// NOTE: getBanks/verifyAccount migrated to browserApi as a byproduct of the
-// settings domain migration (both settings' RequestPayoutModal/
-// BankAccountModal need them) — uploadFile/uploadMultiple below are still
-// on axiosInstance, not yet migrated.
-import { axiosInstance } from "@/lib/axiosInstane";
+// Endpoints for cross-cutting /shared/utilities/* routes.
 import { browserApi } from "@/lib/browser-api";
 import { sharedUtilitiesRoutes } from "@lemonade/api-types/generated";
 
@@ -30,11 +21,29 @@ export interface UploadFileResponse {
   image: string;
 }
 
+export interface UploadMultipleFilesResponse {
+  images: string[];
+}
+
+// Uploads can be large, so they get more time than the default request timeout.
+const UPLOAD_CONFIG = { headers: { "Content-Type": "multipart/form-data" }, timeout: 60_000 };
+
 export interface BusinessCategory {
   id: number;
   name: string;
   slug: string;
   description: string;
+}
+
+export interface EventCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+}
+
+export interface EventCategoriesResponse {
+  categories: EventCategory[];
 }
 
 export interface BusinessCategoriesResponse {
@@ -43,6 +52,9 @@ export interface BusinessCategoriesResponse {
 
 export const sharedApi = {
   getBanks: () => browserApi.get<GetAllBanksResponse>(sharedUtilitiesRoutes.ALL_BANKS),
+
+  getEventCategories: () =>
+    browserApi.get<EventCategoriesResponse>(sharedUtilitiesRoutes.EVENT_CATEGORIES),
 
   getBusinessCategories: () =>
     browserApi.get<BusinessCategoriesResponse>(sharedUtilitiesRoutes.BUSINESS_CATEGORIES),
@@ -54,12 +66,12 @@ export const sharedApi = {
     }),
 
   uploadFile: (formData: FormData) =>
-    axiosInstance.post(sharedUtilitiesRoutes.UPLOAD, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    browserApi.post<UploadFileResponse>(sharedUtilitiesRoutes.UPLOAD, formData, UPLOAD_CONFIG),
 
   uploadMultipleFiles: (formData: FormData) =>
-    axiosInstance.post(sharedUtilitiesRoutes.UPLOAD_MULTIPLE, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    browserApi.post<UploadMultipleFilesResponse>(
+      sharedUtilitiesRoutes.UPLOAD_MULTIPLE,
+      formData,
+      UPLOAD_CONFIG,
+    ),
 };

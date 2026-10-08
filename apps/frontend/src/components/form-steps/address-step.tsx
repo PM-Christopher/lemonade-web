@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, Label, Input } from "@lemonade/ui";
 
-import { axiosInstance } from "@/lib/axiosInstane";
+import { authApi } from "@/features/authentication/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { checkError } from "@lemonade/domain";
@@ -10,8 +10,8 @@ import { useFormik } from "formik";
 import { contactAddressSchema } from "@lemonade/validation";
 import { FormikButton } from "@/components/global/FormikButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
-import { useCookies } from "react-cookie";
 import CountryList from "country-list-with-dial-code-and-flag";
+import { errorMessage } from "@/lib/api-error";
 
 interface AddressInterface {
   loading: boolean;
@@ -26,22 +26,8 @@ interface AddressFormValues {
   state: string;
 }
 
-interface LegacyAxiosError {
-  response?: { data?: { message?: string } };
-}
-
 const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
   const dispatch = useAppDispatch();
-  const [cookie] = useCookies(["token", "newToken"]);
-
-  const getHeader = () => {
-    const token = cookie.newToken;
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  };
 
   //form validation
   const formik = useFormik({
@@ -62,29 +48,14 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
     dispatch(authStart());
 
     try {
-      const { data } = await axiosInstance.post(
-        "/user/profile/address-set-up",
-        { ...values },
-        getHeader(),
-      );
-      if (data.success) {
-        next_step();
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Something went wrong",
-            type: "error",
-          }),
-        );
-      }
+      await authApi.addressSetUp(values);
+      next_step();
     } catch (err) {
-      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: legacyError?.response?.data?.message || "error",
+          message: errorMessage(err, "error"),
           type: "error",
         }),
       );

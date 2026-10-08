@@ -9,6 +9,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTransactionPolling } from "@/hooks/useTransactionPolling";
+import type { VerifyTransactionResponse } from "@/features/transaction/api";
 import { SubscriptionsSkeleton } from "@/components/Skeletons";
 import { useAppDispatch } from "@/redux/hook";
 import { changeSubscription } from "@/features/authentication/authSlice";
@@ -16,10 +17,12 @@ import { useSubscriptionPlanMutation } from "@/features/authentication/mutations
 import { RootState } from "@/redux/store";
 import type { Subscription } from "@/components/settings/Modal/VerifiedSubscriptionModal";
 
-interface VerifyTransactionResult {
-  status?: string;
-  data?: { history?: unknown; subscription?: Subscription };
+interface SubscriptionTransactionMeta {
+  history?: unknown;
+  subscription?: Subscription;
 }
+
+type VerifyTransactionResult = VerifyTransactionResponse<SubscriptionTransactionMeta | undefined>;
 
 // Off the initial bundle — both are only needed once a plan-change is
 // triggered or a payment completes (docs/ARCHITECTURE.md Phase 6,
@@ -80,8 +83,9 @@ const PlanClient = () => {
     };
   }, [trxref, dispatch, toggleVerMembership]);
 
-  const { data: verData, loading: verifying } =
-    useTransactionPolling<VerifyTransactionResult>(pollingConfig);
+  const { data: verData, loading: verifying } = useTransactionPolling<
+    SubscriptionTransactionMeta | undefined
+  >(pollingConfig);
 
   return (
     <MainLayout>

@@ -35,6 +35,7 @@ import { useUpdateEventMutation } from "@/features/events/mutations";
 import { getTimeZones } from "@/lib/helper";
 import { EventFormSkeleton } from "@/components/Skeletons";
 import type { EventInterface } from "@/interfaces/EventInterface";
+import { errorMessage } from "@/lib/api-error";
 
 type SocialMediaHandles = {
   instagram: string;
@@ -269,11 +270,10 @@ const EditEventClient = ({ id }: { id: string }) => {
         );
         push(routes.EVENT);
       } catch (e) {
-        const legacyError = e as { message?: string };
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.message ?? "Error updating event",
+            message: errorMessage(e, "Error updating event"),
             type: "error",
           }),
         );

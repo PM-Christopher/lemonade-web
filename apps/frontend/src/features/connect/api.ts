@@ -1,6 +1,4 @@
-// Endpoint layer for the connect (chat/connections) domain — see
-// features/settings/api.ts for the pattern this follows: the BFF proxy
-// transport (browserApi), not the pre-BFF axiosInstance.
+// Endpoints for the connect domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { userConnectRoutes, userMessagesRoutes, buildPath } from "@lemonade/api-types/generated";
 import { sharedApi } from "@/features/shared";

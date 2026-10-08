@@ -9,42 +9,12 @@ import { useSelector } from "react-redux";
 import { formatName, getInitials } from "@/lib/helper";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemonade/ui";
-import { useRequest } from "@/hooks/useRequest";
+import { useNotificationsQuery, type AppNotification } from "@/features/notifications";
 import dayjs from "dayjs";
 import { FaBell } from "react-icons/fa";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
-
-interface NotificationMeta {
-  image?: string;
-  tribe_name?: string;
-  category?: string;
-  description?: string;
-  monetized?: boolean;
-  private?: boolean;
-  title?: string;
-  content?: string;
-  date_scheduled?: string;
-  status?: string;
-  message?: string;
-  user_id?: string;
-  created_at?: string;
-  event_image?: string;
-  event_name?: string;
-  start_date?: string;
-  location?: string;
-  event_description?: string;
-  socials?: Array<{ name?: string; value?: string }>;
-}
-
-interface AppNotification {
-  title?: string;
-  body?: string;
-  type?: string;
-  created_at?: string;
-  meta?: NotificationMeta;
-}
 
 const TopNav = () => {
   const pathname = usePathname();
@@ -55,7 +25,7 @@ const TopNav = () => {
   const [selectedNotification, setSelectedNotification] = useState<AppNotification | null>(null);
   const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
 
-  const { data } = useRequest<{ notifications?: AppNotification[] }>("/user/notification");
+  const { data } = useNotificationsQuery();
   const { setSelectedMenu } = usePersistentMenuState();
 
   const handleViewMore = (notification: AppNotification) => {
@@ -152,11 +122,11 @@ const TopNav = () => {
             </DialogTitle>
           </DialogHeader>
           {(data?.notifications?.length ?? 0) > 0 ? (
-            data!.notifications!.map((notification: AppNotification, index: number) => (
+            data!.notifications.map((notification: AppNotification, index: number) => (
               <div
                 key={index}
                 className={`${index !== 0 && "mt-4"} ${
-                  index !== data!.notifications!.length - 1 && "border-b border-gray-200 pb-4"
+                  index !== data!.notifications.length - 1 && "border-b border-gray-200 pb-4"
                 } flex flex-col gap-3`}
               >
                 <div className="flex items-start gap-3">

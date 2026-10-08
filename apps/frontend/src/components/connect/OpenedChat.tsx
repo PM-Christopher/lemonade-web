@@ -18,6 +18,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { connectApi } from "@/features/connect/api";
 import { Loader2 } from "lucide-react";
 import type { RootState } from "@/redux/store";
+import { errorMessage } from "@/lib/api-error";
 
 type OpenChatProps = {
   toggleModal: () => void;
@@ -134,38 +135,22 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
       if (formData.has("files[]")) {
         try {
-          const { data } = await connectApi.uploadMultiple(formData);
-
-          // Found live: the envelope key is `success`, not `status`
-          // — this was always false, so a successful upload always
-          // showed the "error" toast below.
-          if (data.success) {
-            setMediaLoading(false);
-            setMediaFiles((prev) => [...prev, ...data.data.images]);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Images uploaded",
-                type: "success",
-              }),
-            );
-          } else {
-            setMediaLoading(false);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Error uploading image",
-                type: "error",
-              }),
-            );
-          }
+          const result = await connectApi.uploadMultiple(formData);
+          setMediaLoading(false);
+          setMediaFiles((prev) => [...prev, ...result.images]);
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Images uploaded",
+              type: "success",
+            }),
+          );
         } catch (err) {
-          const legacyError = err as { response?: { data?: { message?: string } } };
           setMediaLoading(false);
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: legacyError?.response?.data?.message || "Error",
+              message: errorMessage(err, "Error"),
               type: "error",
             }),
           );

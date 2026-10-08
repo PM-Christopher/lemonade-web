@@ -9,6 +9,7 @@ export const businessKeys = {
   jobsData: () => [...businessKeys.all(), "jobsData"] as const,
   businessJobData: (id: number | string) => [...businessKeys.all(), "businessJobData", id] as const,
   boostPackages: () => [...businessKeys.all(), "boostPackages"] as const,
+  reviews: (id: number | string) => [...businessKeys.all(), "reviews", id] as const,
 };
 
 // Public browse of other users' businesses — CLAUDE.md's "discovery content"
@@ -73,5 +74,14 @@ export function useBoostPackagesQuery(options?: { enabled?: boolean }) {
     queryFn: businessApi.getBoostPackages,
     staleTime: 60 * 60_000,
     enabled: options?.enabled,
+  });
+}
+
+// Reviews on one business — user-owned content, 60s bucket.
+export function useBusinessReviewsQuery(id: number | string) {
+  return useQuery({
+    queryKey: businessKeys.reviews(id),
+    queryFn: () => businessApi.getBusinessReviews(id),
+    staleTime: 60_000,
   });
 }

@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@lemonade/ui";
 import Image from "next/image";
 
-import { axiosInstance } from "@/lib/axiosInstane";
+import { authApi } from "@/features/authentication/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useFormik } from "formik";
@@ -14,6 +14,7 @@ import * as yup from "yup";
 import { FormikButton } from "@/components/global/FormikButton";
 import { authFailure, authStart, authSuccess, loadStop } from "@/features/authentication/authSlice";
 import { useCookies } from "react-cookie";
+import { errorMessage } from "@/lib/api-error";
 
 interface SocialInterface {
   loading: boolean;
@@ -28,14 +29,10 @@ interface SocialMediaHandles {
   twitter: string;
 }
 
-interface LegacyAxiosError {
-  response?: { data?: { message?: string } };
-}
-
 const SocialStep: React.FC<SocialInterface> = () => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
-  const [cookie, , removeCookie] = useCookies(["token", "newToken"]);
+  const [, , removeCookie] = useCookies(["newToken"]);
   const [socials, setSocials] = useState<SocialMediaHandles>({
     instagram: "",
     linkedin: "",
@@ -46,15 +43,6 @@ const SocialStep: React.FC<SocialInterface> = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSocials((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const getHeader = () => {
-    const token = cookie.newToken;
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
   };
 
   //form validation
@@ -86,38 +74,23 @@ const SocialStep: React.FC<SocialInterface> = () => {
 
     dispatch(authStart());
     try {
-      const { data } = await axiosInstance.post(
-        "/user/profile/socials-set-up",
-        requestBody,
-        getHeader(),
+      const result = await authApi.socialsSetUp(requestBody);
+      dispatch(authSuccess(result));
+      removeCookie("newToken");
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Account created successfully",
+          type: "success",
+        }),
       );
-      if (data.success) {
-        dispatch(authSuccess(data.data));
-        removeCookie("newToken");
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Account created successfully",
-            type: "success",
-          }),
-        );
-        push(routes.HOME);
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Something went wrong",
-            type: "error",
-          }),
-        );
-      }
+      push(routes.HOME);
     } catch (err) {
-      const legacyError = err as LegacyAxiosError;
       dispatch(authFailure());
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: legacyError?.response?.data?.message || "error",
+          message: errorMessage(err, "error"),
           type: "error",
         }),
       );

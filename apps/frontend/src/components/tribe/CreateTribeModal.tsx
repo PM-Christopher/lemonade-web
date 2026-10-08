@@ -31,6 +31,7 @@ import { useTribeCategoriesQuery } from "@/features/tribes/queries";
 import { useCreateTribeMutation } from "@/features/tribes/mutations";
 import Switch from "react-switch";
 import { useMediaQuery } from "react-responsive";
+import { errorMessage } from "@/lib/api-error";
 
 interface CreateTribeModalProps {
   modalFlag: boolean;
@@ -41,7 +42,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
   const createTribeMutation = useCreateTribeMutation();
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [monetizedCheck, setMonetizedChecked] = useState(false);
   const [privateCheck, setPrivateCheck] = useState(false);
@@ -124,32 +125,21 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
       const formData = new FormData();
       formData.append("file", file);
       try {
-        const { data } = await tribesApi.upload(formData);
-        if (data.success) {
-          setImage(data.data.image);
-          await formik.setFieldValue("image", data.data.image);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Image uploaded",
-              type: "success",
-            }),
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error uploading image",
-              type: "error",
-            }),
-          );
-        }
-      } catch (err) {
-        const legacyError = err as { response?: { data?: { message?: string } } };
+        const result = await tribesApi.upload(formData);
+        setImage(result.image);
+        await formik.setFieldValue("image", result.image);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.response?.data?.message || "error",
+            message: "Image uploaded",
+            type: "success",
+          }),
+        );
+      } catch (err) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(err, "error"),
             type: "error",
           }),
         );

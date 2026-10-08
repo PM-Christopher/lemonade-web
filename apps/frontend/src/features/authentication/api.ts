@@ -1,9 +1,17 @@
 // Auth endpoints: login/logout hit local BFF routes; other reads use browserApi.
 import { browserApi } from "@/lib/browser-api";
 import {
+  userAuthRoutes,
   userProfileRoutes,
   userSubscriptionRoutes,
   buildPath,
+} from "@lemonade/api-types/generated";
+import type {
+  AddressRequest,
+  ProfileSetupRequest,
+  SignUpRequest,
+  SkillsAndInterestsRequest,
+  SocialsRequest,
 } from "@lemonade/api-types/generated";
 
 export interface CurrentUser {
@@ -14,6 +22,13 @@ export interface CurrentUser {
   status?: number;
   email_verified?: boolean;
   [key: string]: unknown;
+}
+
+/** Token plus user returned by signup, Google sign-in and the final onboarding step. */
+export interface AuthTokenResult {
+  user: CurrentUser;
+  token: string;
+  token_type: string;
 }
 
 export interface LoginPayload {
@@ -176,6 +191,24 @@ export interface BillingHistoryResponse {
 }
 
 export const authApi = {
+  register: (data: SignUpRequest) =>
+    browserApi.post<AuthTokenResult>(userAuthRoutes.REGISTER, data),
+
+  googleAuth: (token: string) => browserApi.post<AuthTokenResult>(userAuthRoutes.GOOGLE, { token }),
+
+  // Onboarding steps, authorized by the onboarding cookie the BFF forwards.
+  profileSetUp: (data: ProfileSetupRequest) =>
+    browserApi.post<unknown>(userProfileRoutes.PROFILE_SET_UP, data),
+
+  addressSetUp: (data: AddressRequest) =>
+    browserApi.post<unknown>(userProfileRoutes.ADDRESS_SET_UP, data),
+
+  skillsSetUp: (data: SkillsAndInterestsRequest) =>
+    browserApi.post<unknown>(userProfileRoutes.SKILLS_SET_UP, data),
+
+  socialsSetUp: (data: SocialsRequest) =>
+    browserApi.post<AuthTokenResult>(userProfileRoutes.SOCIALS_SET_UP, data),
+
   login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
   logout: () => postJson<void>("/api/auth/logout"),
   getCurrentUser: () => browserApi.get<CurrentUser>(userProfileRoutes.SHOW),

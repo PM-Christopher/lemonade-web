@@ -1,22 +1,4 @@
-// Endpoint layer for the events domain — see features/tribes/api.ts for the
-// pattern this follows: the BFF proxy transport (browserApi), not the
-// pre-BFF axiosInstance.
-//
-// NOTE: getAffiliateData/GetAffiliateDashboard's backend action returns
-// `[[ ...fields ]]` — a numerically-indexed array wrapping a single object,
-// not the object directly (confirmed by reading the action source). The
-// pre-migration frontend already relied on this exact shape (`reduce`-ing
-// over what is really a one-element array), so AffiliateDashboardResponse
-// is typed to match reality rather than what looks intended — a real
-// backend inconsistency, documented rather than silently "fixed" here.
-//
-// getMyTickets/getMyTicket aren't reached through event.slice.ts at all —
-// components/events/SideMenu.tsx calls them directly via the legacy
-// useRequest hook (a real, live consumer, just not one grep for the slice's
-// thunks would find) — migrated here too since they're the same domain and
-// already surfaced. deleteEvent genuinely has zero real consumers
-// (confirmed via grep) — not migrated, matching the "dead code, dropped
-// rather than migrated" rule from every other domain this session.
+// Endpoints for the events domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import { userEventsRoutes, buildPath } from "@lemonade/api-types/generated";
 import type {

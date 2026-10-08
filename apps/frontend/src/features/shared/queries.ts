@@ -5,6 +5,7 @@ export const sharedKeys = {
   all: () => ["shared"] as const,
   banks: () => [...sharedKeys.all(), "banks"] as const,
   businessCategories: () => [...sharedKeys.all(), "businessCategories"] as const,
+  eventCategories: () => [...sharedKeys.all(), "eventCategories"] as const,
 };
 
 // Reference data (the servicing-bank list) — CLAUDE.md's "reference data"
@@ -28,5 +29,14 @@ export function useBusinessCategoriesQuery(options?: { enabled?: boolean }) {
     queryFn: sharedApi.getBusinessCategories,
     staleTime: 60 * 60_000,
     enabled: options?.enabled,
+  });
+}
+
+// Event category catalog — reference data, 1h bucket.
+export function useEventCategoriesQuery() {
+  return useQuery({
+    queryKey: sharedKeys.eventCategories(),
+    queryFn: sharedApi.getEventCategories,
+    staleTime: 60 * 60_000,
   });
 }

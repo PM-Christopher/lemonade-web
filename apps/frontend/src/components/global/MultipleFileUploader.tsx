@@ -7,6 +7,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
 import { ImagesLoadingSkeleton } from "@/components/Skeletons";
+import { errorMessage } from "@/lib/api-error";
 
 interface FormikSetField {
   setFieldValue: (field: string, value: unknown) => unknown;
@@ -45,41 +46,29 @@ const MultipleFileUploader = ({
         formData.append("files[]", file);
       });
       try {
-        const { data } = await sharedApi.uploadMultipleFiles(formData);
-        if (data.status) {
-          setLoading(false);
-          if (type === "business") {
-            await setField.setFieldValue("gallery", [...data.data.images]);
-            setPortfolioImages((prevImages) => [...prevImages, ...data.data.images]);
-          }
-          if (type === "dispute") {
-            await setField.setFieldValue("attachments", [...data.data.images]);
-            setPortfolioImages((prevImages) => [...prevImages, ...data.data.images]);
-          }
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Image uploaded",
-              type: "success",
-            }),
-          );
-        } else {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error uploading image",
-              type: "error",
-            }),
-          );
+        const result = await sharedApi.uploadMultipleFiles(formData);
+        setLoading(false);
+        if (type === "business") {
+          await setField.setFieldValue("gallery", [...result.images]);
+          setPortfolioImages((prevImages) => [...prevImages, ...result.images]);
         }
+        if (type === "dispute") {
+          await setField.setFieldValue("attachments", [...result.images]);
+          setPortfolioImages((prevImages) => [...prevImages, ...result.images]);
+        }
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Image uploaded",
+            type: "success",
+          }),
+        );
       } catch (err) {
-        const legacyError = err as { response?: { data?: { message?: string } } };
         setLoading(false);
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: legacyError?.response?.data?.message || "error",
+            message: errorMessage(err, "error"),
             type: "error",
           }),
         );

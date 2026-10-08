@@ -15,7 +15,7 @@ import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
-import { axiosInstance } from "@/lib/axiosInstane";
+import { authApi, type AuthTokenResult } from "@/features/authentication/api";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 import { localLoginDefaults } from "@/lib/env.client";
@@ -31,18 +31,6 @@ function SocialMark({ src, label }: { src: string; label: string }) {
       <span className="text-meta text-text-grey">{label}</span>
     </div>
   );
-}
-
-interface GoogleLoginResponse {
-  status?: number;
-  message?: string;
-  data?: {
-    data?: {
-      token_type?: string;
-      token?: string;
-      user?: { status?: number; username?: string | null; email_verified?: boolean };
-    };
-  };
 }
 
 function safeNext(raw: string | null) {
@@ -106,64 +94,54 @@ export default function LoginPage() {
   });
 
   // Google still talks to the backend directly (not the password-login BFF).
-  const handleLoginSuccess = async (res: GoogleLoginResponse) => {
+  const handleLoginSuccess = async (result: AuthTokenResult) => {
     try {
-      if (res.status) {
-        dispatch(setIsRouting(true));
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Successful",
-            type: "success",
-          }),
-        );
+      dispatch(setIsRouting(true));
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Successful",
+          type: "success",
+        }),
+      );
 
-        if (res.data?.data?.token_type === "account_verification_token") {
-          setCookie("newToken", res.data.data.token, {
+      if (result.token_type === "account_verification_token") {
+        setCookie("newToken", result.token, {
+          path: "/",
+          maxAge: 3600 * 6, // Expires after 6hrs
+          sameSite: false,
+        });
+        dispatch(authUser(result));
+        // Resume signup based on whether email is already verified.
+        push(result.user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
+      } else {
+        const user = result.user;
+        const token = result.token;
+        if (user?.status == 0 || user?.username === null) {
+          setCookie("newToken", token, {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
             sameSite: false,
           });
-          dispatch(authUser(res?.data?.data));
-          // Resume signup based on whether email is already verified.
-          push(res.data?.data?.user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
+          push(user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
         } else {
-          const user = res.data?.data?.user;
-          const token = res.data?.data?.token;
-          if (user?.status == 0 || user?.username === null) {
-            setCookie("newToken", token, {
-              path: "/",
-              maxAge: 3600 * 6, // Expires after 6hrs
-              sameSite: false,
-            });
-            push(user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
-          } else {
-            setCookie("token", token, {
-              path: "/",
-              maxAge: 3600 * 6, // Expires after 6hrs
-              sameSite: false,
-            });
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "successful",
-                type: "success",
-              }),
-            );
-            dispatch(authSuccess(res.data?.data));
-            setTimeout(() => {
-              push(routes.HOME);
-            }, 500);
-          }
+          setCookie("token", token, {
+            path: "/",
+            maxAge: 3600 * 6, // Expires after 6hrs
+            sameSite: false,
+          });
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "successful",
+              type: "success",
+            }),
+          );
+          dispatch(authSuccess(result));
+          setTimeout(() => {
+            push(routes.HOME);
+          }, 500);
         }
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: res.message || "error",
-            type: "error",
-          }),
-        );
       }
     } catch (error) {
       console.error(error);
@@ -173,11 +151,8 @@ export default function LoginPage() {
 
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
-      const res = await axiosInstance.post(`/user/auth/google`, {
-        token: tokenResponse.access_token,
-      });
-
-      await handleLoginSuccess(res);
+      const result = await authApi.googleAuth(tokenResponse.access_token);
+      await handleLoginSuccess(result);
     } catch (error) {
       console.error("Error sending code to backend:", error);
     }

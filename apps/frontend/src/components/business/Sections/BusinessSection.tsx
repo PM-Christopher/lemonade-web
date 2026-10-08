@@ -3,17 +3,20 @@ import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import BusinessCarousel from "@/components/global/BusinessCarousel";
 import AllBusinessCard from "@/components/business/AllBusinessCard";
-import { useSelector } from "react-redux";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { axiosInstance } from "@/lib/axiosInstane";
+import dayjs from "dayjs";
+import { useQueryClient } from "@tanstack/react-query";
+import { businessApi } from "@/features/business/api";
+import { businessKeys } from "@/features/business/queries";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { errorMessage } from "@/lib/api-error";
 import PaymentConfirmModal, {
   type PaymentConfirmJob,
 } from "@/components/business/Modals/PaymentConfirmModal";
 import { useAppDispatch } from "@/redux/hook";
 import { setSelectedJob } from "@/redux/tempSlice";
-import { RootState } from "@/redux/store";
 import { AllBusinessSkeleton, BusinessCarouselSkeleton } from "@/components/Skeletons";
 import { routes } from "@/lib/routes";
 
@@ -30,38 +33,49 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
   const trxref = searchParams.get("trxref");
   const [, setVerifyLoading] = useState(false);
   const [isVerifyJob, setIsVerifyJob] = useState(false);
-  const { selectedJob: job } = useSelector((state: RootState) => state.temp);
+  const [paidJob, setPaidJob] = useState<PaymentConfirmJob | null>(null);
+  const queryClient = useQueryClient();
 
   const toggleVerifyJob = () => {
     setIsVerifyJob(!isVerifyJob);
   };
 
+  // Confirm a job checkout when Paystack redirects back with a reference.
   useEffect(() => {
+    if (!trxref) return;
     const verifyPayment = async () => {
-      if (trxref) {
-        setVerifyLoading(true);
-        try {
-          const { data } = await axiosInstance.patch(`business/verify-payment?reference=${trxref}`);
-          if (data.status) {
-            if (data.data.verified) {
-              // Remove trxref from URL
-              const params = new URLSearchParams(searchParams);
-              params.delete("trxref");
-              params.delete("reference");
-              setIsVerifyJob(true);
-              dispatch(setSelectedJob(data.data.job));
-              // Update the URL without reloading
-              replace(`?${params.toString()}`);
-            }
-          }
-        } catch {
-        } finally {
-          setVerifyLoading(false);
+      setVerifyLoading(true);
+      try {
+        const result = await businessApi.verifyJobPayment(trxref);
+        if (result.verified) {
+          const params = new URLSearchParams(searchParams);
+          params.delete("trxref");
+          params.delete("reference");
+          setPaidJob({
+            amount: result.job.amount,
+            name: result.job.business?.name,
+            services: result.job.services,
+            updated_at: result.paid_at ? dayjs(result.paid_at).format("MMM D, YYYY") : undefined,
+          });
+          setIsVerifyJob(true);
+          dispatch(setSelectedJob(result.job));
+          void queryClient.invalidateQueries({ queryKey: businessKeys.jobsData() });
+          replace(`?${params.toString()}`);
         }
+      } catch (error) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(error, "We couldn't confirm your payment."),
+            type: "error",
+          }),
+        );
+      } finally {
+        setVerifyLoading(false);
       }
     };
     verifyPayment();
-  }, [trxref, dispatch, replace, searchParams]);
+  }, [trxref, dispatch, replace, searchParams, queryClient]);
 
   return (
     <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
@@ -147,11 +161,9 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
         </div>
       </div>
 
-      <PaymentConfirmModal
-        isOpen={isVerifyJob}
-        toggleMenu={toggleVerifyJob}
-        job={job as PaymentConfirmJob}
-      />
+      {paidJob && (
+        <PaymentConfirmModal isOpen={isVerifyJob} toggleMenu={toggleVerifyJob} job={paidJob} />
+      )}
     </section>
   );
 };
