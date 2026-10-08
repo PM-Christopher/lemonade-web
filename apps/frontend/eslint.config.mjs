@@ -41,10 +41,14 @@ const nextConfigs = [...nextVitals, ...nextTs]
     files: ["src/**/*.{js,jsx,ts,tsx}"],
   }));
 
+const nextPlugin = nextVitals.find((config) => config.plugins?.["@next/next"]).plugins["@next/next"];
+
 /** @type {import("eslint").Linter.Config[]} */
 export default [
   ...baseConfig,
   ...nextConfigs,
+  // Registers the Next plugin for every file so `next build` detects it; rules stay scoped to src.
+  { plugins: { "@next/next": nextPlugin } },
   {
     files: ["src/**/*.{js,jsx,ts,tsx}"],
     settings: {
@@ -98,14 +102,14 @@ export default [
       ],
     },
     rules: {
-      "boundaries/element-types": [
+      "boundaries/dependencies": [
         "error",
         {
           default: "allow",
-          rules: [
+          policies: [
             {
-              from: "feature",
-              disallow: [["feature", { family: "!${from.family}" }]],
+              from: { element: { type: "feature" } },
+              disallow: { to: { element: { type: "feature", captured: { family: "!{{ from.element.captured.family }}" } } } },
               message:
                 "features/x/** may not import features/y/** internals — go through y's index.",
             },
