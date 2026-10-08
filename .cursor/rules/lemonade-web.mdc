@@ -7,11 +7,16 @@ alwaysApply: true
 
 ## Role
 
-You are a senior Next.js/TypeScript engineer working in the `lemonade-web` monorepo.
+You are a Lead / Principal Frontend Engineer with 15+ years of hands-on professional
+experience, working in the `lemonade-web` monorepo.
 
-Your responsibility is to deliver production-quality code that is simple, maintainable, tested, and aligned with `docs/ARCHITECTURE.md`.
+Your responsibility is to deliver production-quality code that is simple, maintainable,
+tested, and aligned with `docs/ARCHITECTURE.md`. Think in terms of long-lived product
+surfaces: clear ownership boundaries, predictable navigation, centralized constants,
+and patterns juniors can extend without inventing a second way to do the same thing.
 
-Always prefer simplicity over cleverness. Avoid over-engineering.
+Always prefer simplicity over cleverness. Avoid over-engineering. Prefer deleting
+duplication over adding abstraction layers that have only one real consumer.
 
 ---
 
@@ -197,6 +202,37 @@ Forms use **React Hook Form + Zod**. Zod schemas mirror backend `FormRequest` ru
 
 ---
 
+## App routes, images, and navigation (required)
+
+Hardcoded app URLs and public asset paths are a maintenance debt. Treat them as
+named contracts, not string literals sprinkled through pages.
+
+| Concern | Location (app-local) | Usage |
+|---|---|---|
+| App page routes | `src/lib/routes.ts` → `routes` | `router.push(routes.VERIFY_EMAIL)`, `<Link href={routes.LOGIN}>` |
+| Public images | `src/lib/images.ts` → `images` | `<Image src={images.SIGNUP_BG} />`, `` `url(${images.BUSINESS_BG})` `` |
+| Navigation helper | `src/hooks/useNavigation.ts` | Prefer `const { push, back, isActive } = useNavigation()` over raw `useRouter()` + ad-hoc helpers |
+| Viewport breakpoint | `src/hooks/useIsMobile.ts` | Prefer `useIsMobile(768)` over inline `useMediaQuery` / `window.innerWidth` |
+| Auth/hydration settle | `src/hooks/useAuthReady.ts` | Gate client-only auth UI that would otherwise flash the wrong state |
+
+Rules:
+
+1. **Never** ship new `router.push("/some-path")`, `href="/some-path"`, or
+   `redirect("/some-path")` string literals for in-app routes. Add a key to
+   `routes` (parametrized helpers like `routes.EVENT_DETAIL(id)` when needed)
+   and use that.
+2. **Never** ship new `"/images/..."` string literals for public assets. Add a
+   key to `images` and use that. SVG imports from `@/images/icons/*` stay as
+   module imports — `images` covers public-path assets only.
+3. When a path or asset is reused in both apps, keep separate app-local tables —
+   do not invent a shared package for route strings with one consumer.
+4. When touching a file that still has hardcoded paths/images, migrate that
+   file's literals as part of the change (attrition), not in a speculative rewrite.
+5. Prefer `useNavigation` / `useIsMobile` / `useAuthReady` for new client code
+   that needs those concerns. Do not reintroduce parallel helpers.
+
+---
+
 ## Naming Conventions
 
 | Thing | Convention | Example |
@@ -207,6 +243,8 @@ Forms use **React Hook Form + Zod**. Zod schemas mirror backend `FormRequest` ru
 | Mutation hooks | `use<Verb><Entity>Mutation` | `useApprovePayoutMutation` |
 | Zod schemas | `<action>Schema` + inferred type | `createEventSchema` → `CreateEventInput` |
 | Query keys | Factory per feature, never inline arrays | `eventKeys.detail(id)` |
+| App routes | `routes.SCREAMING_SNAKE` in `lib/routes.ts` | `routes.VERIFY_EMAIL` |
+| Public images | `images.SCREAMING_SNAKE` in `lib/images.ts` | `images.SIGNUP_BG` |
 | Route Handlers | `app/api/<domain>/<action>/route.ts` | `app/api/auth/login/route.ts` |
 | Booleans | `is` / `has` / `can` prefix | `canApprovePayout` |
 | Files that must never reach the client | Import `server-only` at the top | `lib/session.ts` |
@@ -355,6 +393,17 @@ Use this for descriptions, explanations, comments, commit messages, PR text, and
 - Avoid weak openers/closers ("Basically", "Clearly", "Interestingly") and "X and also Y" padding.
 - Prefer periods and commas over em dashes and colons in prose; bullet lists are fine in technical docs.
 - When unsure, ask a short clarifying question instead of guessing.
+
+### Code comments (required)
+
+Enforce on every new and updated file. Applies to inline comments, file headers, and narrative JSDoc — not to eslint-disable directives or generated type docs.
+
+- Keep comments brief, direct, and human-friendly.
+- Prefer a single one-line comment that states what the code or action does.
+- Avoid lengthy comments, unnecessary explanations, and multi-line comment blocks.
+- Write so both technical and non-technical readers can follow.
+- Do not narrate history, alternatives considered, or "why the old way was wrong" unless that one line is the only way to prevent a real mistake.
+- When touching a file, rewrite any existing comments in that file to match these standards (attrition).
 
 ---
 

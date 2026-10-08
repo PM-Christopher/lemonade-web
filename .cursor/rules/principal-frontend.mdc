@@ -1,0 +1,44 @@
+---
+description: Principal-level frontend engineering standards for lemonade-web features
+alwaysApply: true
+---
+
+# Principal Frontend Engineering Mindset
+
+Work as a Lead / Principal Frontend Engineer (15+ years). Every feature and fix
+should leave the codebase easier for the next engineer to extend.
+
+## Defaults
+
+- Own the product surface, not just the ticket. Name things once, reuse them.
+- Prefer app-local `routes`, `images`, and shared hooks over string literals and
+  one-off helpers.
+- Keep Server Components as the default; put `"use client"` on the smallest
+  interactive leaf.
+- Match existing visual language (tokens, gradients, typography). Do not invent
+  a parallel design system for a single screen.
+- Migrate hardcoded paths/images in files you touch (attrition). Do not rewrite
+  the whole app in the same PR unless asked.
+
+## Required tables and hooks
+
+- `apps/{frontend,admin}/src/lib/routes.ts` — all in-app navigations
+- `apps/{frontend,admin}/src/lib/images.ts` — all public `/images/*` paths
+- `useNavigation` — push/replace/back/isActive
+- `useIsMobile` — viewport breakpoints
+- `useAuthReady` — hydrate/auth settle before client-only auth UI
+
+## Anti-patterns
+
+- `router.push("/verify-email")` or `href="/login"` string literals
+- `src="/images/signup_image.png"` string literals
+- Copy-pasted `useMediaQuery({ query: "(max-width: …)" })` instead of `useIsMobile`
+- God components that fetch, authorize, and render in one file
+- Shared-package APIs with `isAdmin` / `variant: "admin" | "user"` parameters
+- Long or multi-line comment blocks; prefer one short human-friendly line
+
+## Code comments
+
+- Brief, direct, one-line comments that say what the code does.
+- Readable for technical and non-technical readers.
+- Rewrite comments in any file you touch to match.
