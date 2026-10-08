@@ -81,7 +81,7 @@ export interface BioRequest {
 }
 
 export interface BoostBusinessRequest {
-  package: number;
+  package: string;
   option: number;
   start_date: string;
   start_time: string;
@@ -547,6 +547,10 @@ export interface VerifyAdminPasswordResetOtpRequest {}
 
 export interface VerifyPasswordResetOtpRequest {
   code: number;
+}
+
+export interface VerifyPaymentReferenceRequest {
+  reference: string;
 }
 
 export interface VoteOnTribePollRequest {

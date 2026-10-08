@@ -222,10 +222,12 @@ export const userBusinessRoutes = Object.freeze({
   JOBS_REVIEW: "/user/business/jobs/{id}/review", // POST
   JOBS_SENT_OFFERS: "/user/business/jobs/sent-offers", // GET
   JOBS_SHOW: "/user/business/jobs/job/{id}", // GET
+  JOBS_VERIFY_PAYMENT: "/user/business/jobs/verify-payment", // POST
   LIST: "/user/business", // GET
   REQUEST_SERVICE: "/user/business/{id}/request-service", // POST
   REVIEWS: "/user/business/{id}/business-reviews", // GET
   SHOW: "/user/business/{id}", // GET
+  VERIFY_BOOST_PAYMENT: "/user/business/verify-boost-payment", // POST
   WRITE_REVIEW: "/user/business/{id}/write-review", // POST
 });
 

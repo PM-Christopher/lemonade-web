@@ -1291,8 +1291,8 @@
     "guard": "user",
     "formRequest": "App\\Http\\Requests\\Business\\BoostBusinessRequest",
     "fields": {
-      "package": ["numeric", "required"],
-      "option": ["numeric", "required"],
+      "package": ["required", "uuid"],
+      "option": ["required", "integer", "min:0"],
       "start_date": ["string", "required"],
       "start_time": ["string", "required"],
       "callback_url": ["string", "sometimes"]
@@ -1397,6 +1397,16 @@
     "fields": null
   },
   {
+    "method": "POST",
+    "uri": "/v1/user/business/jobs/verify-payment",
+    "name": "v1.user.business.jobs.verify-payment",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Payment\\VerifyPaymentReferenceRequest",
+    "fields": {
+      "reference": ["required", "string", "max:255"]
+    }
+  },
+  {
     "method": "GET",
     "uri": "/v1/user/business",
     "name": "v1.user.business.list",
@@ -1431,6 +1441,16 @@
     "guard": "user",
     "formRequest": null,
     "fields": null
+  },
+  {
+    "method": "POST",
+    "uri": "/v1/user/business/verify-boost-payment",
+    "name": "v1.user.business.verify-boost-payment",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Payment\\VerifyPaymentReferenceRequest",
+    "fields": {
+      "reference": ["required", "string", "max:255"]
+    }
   },
   {
     "method": "POST",
@@ -1943,8 +1963,8 @@
     "guard": "user",
     "formRequest": "App\\Http\\Requests\\Business\\BoostBusinessRequest",
     "fields": {
-      "package": ["numeric", "required"],
-      "option": ["numeric", "required"],
+      "package": ["required", "uuid"],
+      "option": ["required", "integer", "min:0"],
       "start_date": ["string", "required"],
       "start_time": ["string", "required"],
       "callback_url": ["string", "sometimes"]
