@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import React, { useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
 
@@ -17,17 +16,16 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { authSuccess, authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { axiosInstance } from "@/lib/axiosInstane";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { localLoginDefaults } from "@/lib/env.client";
+import { useNavigation } from "@/hooks/useNavigation";
 
-// Visual-only placeholder. Used for Google before NEXT_PUBLIC_GOOGLE_CLIENT_ID
-// is set — GoogleAuthButton's useGoogleLogin() calls Google's own script
-// unconditionally once it loads, and that script throws on an empty
-// client_id, so the real button can't safely mount yet. Also kept around,
-// commented out at its call sites below, for Apple/Facebook, which have no
-// backend integration at all (no OAuth app, no route, no action).
+// Placeholder mark when Google is not configured, or for unused Apple/Facebook UI.
 function SocialMark({ src, label }: { src: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
-      <span className="border-border-grey flex h-14 w-14 items-center justify-center rounded-xl border bg-white">
+      <span className="border-border-grey flex h-14 w-14 cursor-pointer items-center justify-center rounded-xl border bg-white">
         <Image src={src} alt="" width={24} height={24} />
       </span>
       <span className="text-meta text-text-grey">{label}</span>
@@ -42,13 +40,13 @@ interface GoogleLoginResponse {
     data?: {
       token_type?: string;
       token?: string;
-      user?: { status?: number; username?: string | null };
+      user?: { status?: number; username?: string | null; email_verified?: boolean };
     };
   };
 }
 
 function safeNext(raw: string | null) {
-  // Prevent open redirects: only allow relative paths
+  // Only allow same-site relative paths.
   if (!raw) return "/";
   if (!raw.startsWith("/")) return "/";
   if (raw.startsWith("//")) return "/";
@@ -56,20 +54,15 @@ function safeNext(raw: string | null) {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const { push, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
-  // "token" here is only for the Google OAuth flow below (handleLoginSuccess),
-  // which isn't covered by this cutover — see its own comment.
+  // Google login still uses a JS-readable token cookie.
   const [, setCookie] = useCookies(["newToken", "token"]);
   const loginMutation = useLoginMutation();
-  const next = useMemo(() => safeNext(searchParams.get("next")), [searchParams]);
+  const next = useMemo(() => safeNext(getQueryParam("next")), [getQueryParam]);
 
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: localLoginDefaults(),
     validationSchema: loginSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
@@ -78,16 +71,14 @@ export default function LoginPage() {
         dispatch(setIsRouting(true));
 
         if (result.needsOnboarding) {
-          // Pre-verification / profile-incomplete state — this
-          // narrower flow keeps its own short-lived, JS-readable
-          // token, unchanged from before the httpOnly cutover.
-          // See app/api/auth/login/route.ts.
+          // Resume signup: verified email → profile setup, otherwise verify email.
           setCookie("newToken", result.token, {
             path: "/",
             maxAge: 3600 * 6, // Expires after 6hrs
             sameSite: false,
           });
-          router.push(result.user.status == 0 ? "/verify-email" : "/profile-setup");
+          dispatch(authUser({ user: result.user }));
+          push(result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
           return;
         }
 
@@ -100,7 +91,7 @@ export default function LoginPage() {
         );
 
         setTimeout(() => {
-          router.push(next || "/");
+          push(next || routes.HOME);
         }, 500);
       } catch (error) {
         dispatch(
@@ -114,12 +105,7 @@ export default function LoginPage() {
     },
   });
 
-  // Google OAuth flow — deliberately NOT covered by the httpOnly cutover.
-  // It still calls the backend directly and sets a JS-readable "token"
-  // cookie, same as every path did before this cutover. Bringing it onto
-  // the same secure flow as email/password login needs its own BFF route
-  // (a /api/auth/google mirroring app/api/auth/login/route.ts) — real,
-  // separate follow-up work, not something to fold in here silently.
+  // Google still talks to the backend directly (not the password-login BFF).
   const handleLoginSuccess = async (res: GoogleLoginResponse) => {
     try {
       if (res.status) {
@@ -139,26 +125,18 @@ export default function LoginPage() {
             sameSite: false,
           });
           dispatch(authUser(res?.data?.data));
-          router.push("/verify-email");
+          // Resume signup based on whether email is already verified.
+          push(res.data?.data?.user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
         } else {
           const user = res.data?.data?.user;
           const token = res.data?.data?.token;
-          if (user?.status == 0) {
+          if (user?.status == 0 || user?.username === null) {
             setCookie("newToken", token, {
               path: "/",
               maxAge: 3600 * 6, // Expires after 6hrs
               sameSite: false,
-              // domain: env === 'development' ? '' : ''
             });
-            router.push("/verify-email");
-          } else if (user?.username === null) {
-            setCookie("newToken", token, {
-              path: "/",
-              maxAge: 3600 * 6, // Expires after 6hrs
-              sameSite: false,
-              // domain: env === 'development' ? '' : ''
-            });
-            router.push("/profile-setup");
+            push(user?.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
           } else {
             setCookie("token", token, {
               path: "/",
@@ -174,7 +152,7 @@ export default function LoginPage() {
             );
             dispatch(authSuccess(res.data?.data));
             setTimeout(() => {
-              router.push("/");
+              push(routes.HOME);
             }, 500);
           }
         }
@@ -207,24 +185,23 @@ export default function LoginPage() {
 
   return (
     <AuthLayout>
-      <div className="mx-auto flex w-full max-w-[1180px] items-center justify-center gap-8">
-        <div className="tablet:flex hidden min-w-0 flex-col">
-          <div>
-            <p className="font-ruso text-display-s font-bold">Login</p>
-            <p className="text-body-xl mt-2 font-sans font-normal">
-              Let&apos;s get you back into your account
-            </p>
-          </div>
+      {/* Same shell as signup — natural art size + tight gap (Figma). */}
+      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+          <p className="font-ruso text-display-s font-bold">Login</p>
+          <p className="text-body-xl text-text-grey mt-2 font-sans font-normal">
+            Let&apos;s get you back into your account
+          </p>
           <Image
-            src={"/images/signup_image.png"}
+            src={images.SIGNUP_BG}
             alt=""
             width={511}
             height={520}
             priority
-            className="mt-2 h-auto max-h-[42vh] w-auto object-contain"
+            className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex w-full max-w-[440px] flex-col">
+        <div className="flex w-full max-w-[440px] shrink-0 flex-col">
           <div className="tablet:hidden mb-4 shrink-0 text-center">
             <p className="font-ruso text-title-xl text-primary-black font-bold">Login</p>
             <p className="text-body-l text-text-grey mt-1 font-sans font-normal">
@@ -232,12 +209,12 @@ export default function LoginPage() {
             </p>
           </div>
           <form onSubmit={formik.handleSubmit} className="w-full">
-            <Card className="w-full rounded-2xl border-none p-6 shadow-none">
-              <CardContent className="grid gap-4">
+            <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
+              <CardContent className="grid gap-4 p-0">
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="text-text-grey text-label font-sans font-normal"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Email address
                   </Label>
@@ -254,7 +231,7 @@ export default function LoginPage() {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="password"
-                    className="text-text-grey text-label font-sans font-normal"
+                    className="text-text-grey font-sans text-[14px] font-normal"
                   >
                     Password
                   </Label>
@@ -267,7 +244,7 @@ export default function LoginPage() {
                     onBlur={formik.handleBlur}
                   />
                 </div>
-                <Link href="/forgot-password">
+                <Link href={routes.FORGOT_PASSWORD}>
                   <p className="text-bl text-light-green cursor-pointer font-sans underline">
                     Forgot password?
                   </p>
@@ -278,21 +255,19 @@ export default function LoginPage() {
                   error={formik.isValid}
                   classes="w-full h-12 rounded-xl"
                 />
-                <div className="flex items-center justify-around">
-                  <div className="bg-border-grey h-0.5 w-[60px]" />
-                  <p className="text-grey-light text-body-s text-center font-normal">
-                    Or continue with
-                  </p>
-                  <div className="bg-border-grey h-0.5 w-[60px]" />
+                <div className="flex items-center gap-3">
+                  <div className="bg-border-grey h-px flex-1" />
+                  <p className="text-text-grey text-body-s font-normal">Or continue with</p>
+                  <div className="bg-border-grey h-px flex-1" />
                 </div>
-                <div className="mt-4 flex items-start justify-center gap-6">
-                  {/* <SocialMark src="/images/apple.png" label="Apple" /> */}
+                <div className="flex items-start justify-center gap-6">
+                  {/* <SocialMark src={images.APPLE} label="Apple" /> */}
                   {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                     <GoogleAuthButton onSuccess={handleGoogleSuccess} />
                   ) : (
-                    <SocialMark src="/images/google.png" label="Google" />
+                    <SocialMark src={images.GOOGLE} label="Google" />
                   )}
-                  {/* <SocialMark src="/images/facebook.png" label="Facebook" /> */}
+                  {/* <SocialMark src={images.FACEBOOK} label="Facebook" /> */}
                 </div>
               </CardContent>
             </Card>

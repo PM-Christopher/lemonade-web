@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import Image from "next/image";
 import { Card, CardContent, Input, Label } from "@lemonade/ui";
@@ -11,18 +10,19 @@ import { useLoginMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { localLoginDefaults } from "@/lib/env.client";
+import { useNavigation } from "@/hooks/useNavigation";
 
 function LoginPage({}) {
-  const router = useRouter();
+  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const [, setCookie] = useCookies(["newToken"]);
   const loginMutation = useLoginMutation();
 
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: localLoginDefaults(),
     validationSchema: loginSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
@@ -30,16 +30,13 @@ function LoginPage({}) {
         const result = await loginMutation.mutateAsync(values);
 
         if (result.needsOnboarding) {
-          // Profile-incomplete admin — narrower flow keeps its
-          // own short-lived, JS-readable token, unchanged from
-          // before the httpOnly cutover. See
-          // app/api/auth/login/route.ts.
+          // Incomplete admin profile — keep a short-lived onboarding token.
           setCookie("newToken", result.token, {
             path: "/",
             maxAge: 3600 * 6,
             sameSite: false,
           });
-          router.push("/profile-setup");
+          push(routes.PROFILE_SETUP);
           return;
         }
 
@@ -52,7 +49,7 @@ function LoginPage({}) {
         );
 
         setTimeout(() => {
-          router.push("/");
+          push(routes.HOME);
         }, 500);
       } catch (error) {
         dispatch(
@@ -72,7 +69,7 @@ function LoginPage({}) {
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
-            <Image src={"/images/logo.png"} alt="logo" width={127} height={56} />
+            <Image src={images.LOGO} alt="logo" width={127} height={56} />
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">

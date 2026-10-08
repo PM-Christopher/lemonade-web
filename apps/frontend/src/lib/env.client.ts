@@ -92,4 +92,20 @@ export const clientEnv = {
     process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   ),
   NEXT_PUBLIC_FIREBASE_VAPID_KEY: optionalString(process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY),
+
+  // Local login form defaults only — never used outside development.
+  NEXT_PUBLIC_USERNAME: optionalString(process.env.NEXT_PUBLIC_USERNAME),
+  NEXT_PUBLIC_PASSWORD: optionalString(process.env.NEXT_PUBLIC_PASSWORD),
 };
+
+/** Prefills the login form in `next dev` when local credentials are set. */
+export function localLoginDefaults(): { email: string; password: string } {
+  if (process.env.NODE_ENV !== "development") {
+    return { email: "", password: "" };
+  }
+
+  return {
+    email: clientEnv.NEXT_PUBLIC_USERNAME ?? "",
+    password: clientEnv.NEXT_PUBLIC_PASSWORD ?? "",
+  };
+}
