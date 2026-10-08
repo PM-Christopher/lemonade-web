@@ -14,8 +14,6 @@ interface authState {
   loading: boolean;
   error: boolean;
   authToken: string | null;
-  admin: any;
-  adminToken: string | null;
   isLoggedIn: boolean;
   subscription: {
     title: string;
@@ -46,8 +44,6 @@ interface authState {
 
 const initialState: authState = {
   user: null,
-  admin: null,
-  adminToken: null,
   loading: false,
   error: false,
   authToken: null,
@@ -89,7 +85,6 @@ const authSlice = createSlice({
       state.user = null;
       state.authToken = null;
       state.isLoggedIn = false;
-      state.admin = null;
     },
     authUser: (state, action) => {
       state.loading = false;
@@ -108,11 +103,6 @@ const authSlice = createSlice({
     },
     updateHasBankAccount: (state) => {
       state.user = { ...state.user, has_bank_account: true };
-    },
-    adminUser: (state, action) => {
-      state.loading = false;
-      state.error = false;
-      state.admin = action.payload;
     },
     updateUser: (state, action) => {
       state.user = { ...state.user, ...action.payload };
@@ -150,7 +140,6 @@ export const {
   authUser,
   updateHasPin,
   updateCreatedAccount,
-  adminUser,
   updateProfileImage,
   updateUser,
   setSubscriptionId,

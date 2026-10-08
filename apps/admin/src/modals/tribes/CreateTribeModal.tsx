@@ -3,7 +3,7 @@ import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useRef, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 
@@ -48,7 +48,6 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
     register,
     handleSubmit,
     control,
-    watch,
     setValue,
     setError,
     reset,
@@ -58,7 +57,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
     defaultValues: { tribe_name: "", image: "", category: "", description: "" },
   });
 
-  const image = watch("image");
+  const image = useWatch({ control, name: "image" });
 
   const handleImageClick = () => fileInputRef.current?.click();
 
