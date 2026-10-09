@@ -2,8 +2,7 @@
 import React from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import WithdrawalApproval from "@/modals/wallet-management/WithdrawalApproval";
-import WithdrawalReject from "@/modals/wallet-management/WithdrawalReject";
+import WithdrawalDecisionModal from "@/modals/wallet-management/WithdrawalDecisionModal";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
 import PayoutHistory from "@/modals/wallet-management/PayoutHistory";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
@@ -179,8 +178,20 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
           </div>
         </div>
       </section>
-      <WithdrawalApproval isOpen={isOpen} toggle={toggleWithdrawalAction} />
-      <WithdrawalReject isOpen={isRejectOpen} toggle={toggleWithdrawalReject} />
+      <WithdrawalDecisionModal
+        isOpen={isOpen}
+        toggle={toggleWithdrawalAction}
+        decision="approve"
+        withdrawalId={id}
+        withdrawal={walletDetail?.info}
+      />
+      <WithdrawalDecisionModal
+        isOpen={isRejectOpen}
+        toggle={toggleWithdrawalReject}
+        decision="reject"
+        withdrawalId={id}
+        withdrawal={walletDetail?.info}
+      />
       <UpdateBalance
         isOpen={isUpdateOpen}
         toggle={toggleUpdateBalance}

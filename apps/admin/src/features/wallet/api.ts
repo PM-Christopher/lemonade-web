@@ -19,7 +19,7 @@ export interface WalletData {
 }
 
 export interface WithdrawalRequestRow {
-  id: number;
+  id: string;
   txn_id?: string;
   fullname: string;
   amount: number;
@@ -84,6 +84,14 @@ export interface WalletDetail {
   }>;
 }
 
+/** Outcome of approving or rejecting; an approved payout can still fail at the gateway. */
+export interface WithdrawalDecisionResult {
+  status: string;
+  payout_status:
+    "pending" | "approved" | "processing" | "paid" | "failed" | "reversed" | "rejected" | null;
+  failure_reason: string | null;
+}
+
 export const walletApi = {
   getWalletData: () => browserApi.get<WalletData>(adminWalletRoutes.DASHBOARD),
 
@@ -101,10 +109,11 @@ export const walletApi = {
   updateWithdrawalThreshold: (threshold: number) =>
     browserApi.patch(adminWalletRoutes.UPDATE_WITHDRAWAL_THRESHOLD, { threshold }),
 
-  withdrawalRequestDecision: (id: unknown, type: string) =>
-    browserApi.patch(buildPath(adminWalletRoutes.USER_WITHDRAWAL_REQUEST, { id: String(id) }), {
-      type,
-    }),
+  withdrawalRequestDecision: (id: string | number, type: "approve" | "reject") =>
+    browserApi.patch<WithdrawalDecisionResult>(
+      buildPath(adminWalletRoutes.USER_WITHDRAWAL_REQUEST, { id: String(id) }),
+      { type },
+    ),
 
   // amount must go out as a JSON number — the backend's Money::fromUnits()
   // rejects a string outright (found live-testing this migration; the

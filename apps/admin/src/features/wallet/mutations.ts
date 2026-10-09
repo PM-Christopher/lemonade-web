@@ -17,7 +17,7 @@ export function useUpdateWithdrawalThresholdMutation() {
   });
 }
 
-export function useWithdrawalRequestDecisionMutation(id: string | number | undefined) {
+export function useWithdrawalRequestDecisionMutation(id: string | number) {
   const queryClient = useQueryClient();
 
   return useMutation({
