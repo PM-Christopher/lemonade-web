@@ -5,6 +5,8 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useChangePlanMutation } from "@/features/authentication/mutations";
+import { routes } from "@/lib/routes";
+import { errorMessage } from "@/lib/api-error";
 
 interface MembershipOption {
   id: number;
@@ -51,7 +53,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
       subscription_id: sub_id,
       type: subType,
       mode: subMode,
-      redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/plan`,
+      redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}${routes.SETTINGS_PLAN}`,
     };
 
     changePlanMutation.mutate(data, {
@@ -67,9 +69,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
           );
           window.location.href = result.payment;
         } else {
-          // A free-plan switch applies immediately server-side —
-          // no payment redirect needed (the old code treated this
-          // branch as an error even on a real success).
+          // A free-plan switch applies immediately, with no payment step.
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -79,11 +79,11 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
           );
         }
       },
-      onError: (error: { message?: string }) => {
+      onError: (error) => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: error?.message || "Something went wrong. Please try again!!!",
+            message: errorMessage(error, "Something went wrong. Please try again."),
             type: "error",
           }),
         );
@@ -104,10 +104,15 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
           <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="cursor-pointer" onClick={toggle}>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="cursor-pointer"
+                  onClick={toggle}
+                >
                   <CloseIcon />
-                </div>
-                <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
+                </button>
+                <p className="tracking-custom font-sans text-lg leading-[27px] font-semibold">
                   Membership
                 </p>
               </div>
@@ -155,8 +160,10 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
             <div className="mt-10">
               <div className={"flex flex-col gap-4"}>
                 {pricing?.map((membership) => (
-                  <div
-                    className={`cursor-pointer rounded-xl p-4 ${selected === membership.id ? "border-step-color bg-light-green-10 border" : "bg-mid-grey"}`}
+                  <button
+                    type="button"
+                    aria-pressed={selected === membership.id}
+                    className={`w-full cursor-pointer rounded-xl p-4 text-left ${selected === membership.id ? "border-step-color bg-light-green-10 border" : "bg-mid-grey"}`}
                     key={membership.id}
                     onClick={() => handleSelectedPlan(membership)}
                   >
@@ -171,7 +178,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
                     <p className={"text-text-grey text-[14px] font-normal"}>
                       Billed {membership.type}
                     </p>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
