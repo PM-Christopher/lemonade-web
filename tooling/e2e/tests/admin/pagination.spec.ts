@@ -5,20 +5,21 @@ import { test, expect } from "@playwright/test";
 test("clicking page 2 on /users fetches a different page from the server, updates the URL", async ({
   page,
 }) => {
+  test.setTimeout(90_000);
   await page.goto("/users");
 
   const firstRowBefore = page.locator("tbody tr").first();
-  await expect(firstRowBefore).toBeVisible({ timeout: 15_000 });
+  await expect(firstRowBefore).toBeVisible({ timeout: 30_000 });
   const firstRowTextBefore = await firstRowBefore.textContent();
 
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
 
   const pageTwoButton = page.getByRole("button", { name: "2", exact: true });
-  await expect(pageTwoButton).toBeVisible();
+  await expect(pageTwoButton).toBeVisible({ timeout: 30_000 });
   await pageTwoButton.click();
 
-  await expect(page).toHaveURL(/[?&]page=2/);
+  await expect(page).toHaveURL(/[?&]page=2/, { timeout: 30_000 });
 
   const firstRowAfter = page.locator("tbody tr").first();
   await expect(firstRowAfter).toBeVisible();

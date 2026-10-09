@@ -96,6 +96,8 @@ jobs:
           php artisan migrate --force
           php artisan db:seed --class="Database\Seeders\ReferenceSeeder" --force
           php artisan db:seed --class="Database\Seeders\LocalDemoSeeder" --force
+          # Bulk users, tribes, events and businesses so pagination and detail specs have real rows.
+          php artisan db:seed --class="Database\Seeders\StagingStressDataSeeder" --force
 
       - name: Start backend
         working-directory: lemonade-backend

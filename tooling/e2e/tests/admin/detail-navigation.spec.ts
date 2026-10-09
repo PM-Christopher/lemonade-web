@@ -16,15 +16,16 @@ const ROUTES = ["/events", "/team", "/transactions"];
 
 for (const list of ROUTES) {
   test(`clicking a real row on ${list} navigates to a detail page`, async ({ page }) => {
+    test.setTimeout(90_000);
     await page.goto(list, { waitUntil: "domcontentloaded" });
 
     // The empty-state row renders before the query resolves. Clicking it
     // does nothing, so wait for a real data row.
     const row = page.locator("tbody tr").filter({ hasNotText: "No data available" }).first();
-    await expect(row).toBeVisible({ timeout: 15_000 });
+    await expect(row).toBeVisible({ timeout: 30_000 });
     await row.click();
-
-    await expect(page).toHaveURL(new RegExp(`${list}/[^/]+`), { timeout: 20_000 });
+    // Detail routes cold-compile under next dev; give the soft nav time.
+    await expect(page).toHaveURL(new RegExp(`${list}/[^/]+`), { timeout: 45_000 });
 
     const pageErrors: Error[] = [];
     page.on("pageerror", (error) => pageErrors.push(error));

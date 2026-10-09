@@ -57,13 +57,12 @@ test("sign up, verify email with a real OTP, and complete profile setup", async 
   const email = `e2e-signup-${uniqueSuffix}@example.com`;
   const password = "TestPass123!";
 
-  await page.goto("/signup");
+  await page.goto("/signup", { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.locator("#fullname").fill("E2E Signup Test");
   await page.locator("#email").fill(email);
   await page.locator("#password").fill(password);
   await page.getByRole("button", { name: "Create account" }).click();
-
-  await expect(page).toHaveURL(/\/verify-email/, { timeout: 15_000 });
+  await expect(page).toHaveURL(/\/verify-email/, { timeout: 45_000 });
 
   const code = await readSignupOtp(email);
 
@@ -86,7 +85,9 @@ test("sign up, verify email with a real OTP, and complete profile setup", async 
   // Radix Select also renders a hidden native <select> with the same
   // option text for form-compat — scope to the open listbox to avoid it.
   await page.getByRole("listbox").getByText("Software Development", { exact: true }).click();
-  await page.getByRole("button", { name: "Next" }).click();
+  // Radix blocks pointer events while the listbox is open; wait for it to close.
+  await expect(page.getByRole("listbox")).toBeHidden();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
 
   // Step 2 — address-step.tsx. Country is a plain native <select>, not the
   // shadcn one industry above used.
@@ -95,7 +96,7 @@ test("sign up, verify email with a real OTP, and complete profile setup", async 
   await page.locator("#city").fill("Lagos");
   await page.locator("#country").selectOption("Nigeria");
   await page.locator("#state").fill("Lagos");
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
 
   // Step 3 — skills-step.tsx. Both lists require at least 3 picks each;
   // each item is a clickable div, not a real form control.
@@ -106,7 +107,7 @@ test("sign up, verify email with a real OTP, and complete profile setup", async 
   for (const interest of ["Arts", "Sports", "Music"]) {
     await page.getByText(interest, { exact: true }).click();
   }
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
 
   // Step 4 — social-step.tsx. Every field is optional (yup.array(), no
   // .required()) — submitting empty is a legitimate real path, not a
@@ -118,5 +119,5 @@ test("sign up, verify email with a real OTP, and complete profile setup", async 
   // the same real "you're fully signed in now" transition login/refresh
   // use, proving the whole onboarding flow actually hands off to a real
   // session, not just that the last API call returned 200.
-  await expect(page).toHaveURL("/", { timeout: 15_000 });
+  await expect(page).toHaveURL("/", { timeout: 45_000 });
 });

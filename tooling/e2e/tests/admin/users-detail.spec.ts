@@ -4,6 +4,7 @@ import { test, expect } from "@playwright/test";
 // list → detail flow admin actually uses day to day (moderation,
 // support). See docs/ARCHITECTURE.md §17.
 test("clicking a real user row navigates to their detail page", async ({ page }) => {
+  test.setTimeout(90_000);
   await page.goto("/users", { waitUntil: "domcontentloaded" });
 
   // Click a row by its known content (the e2e admin's own account, always
@@ -11,10 +12,9 @@ test("clicking a real user row navigates to their detail page", async ({ page })
   // get replaced once real data resolves, and a position-based locator can
   // click a row that's about to be swapped out from under it.
   const row = page.getByRole("row", { name: /Demo User/ });
-  await expect(row).toBeVisible({ timeout: 15_000 }); // 708 real users to fetch and render
+  await expect(row).toBeVisible({ timeout: 30_000 }); // 708 real users to fetch and render
   await row.click();
-
-  await expect(page).toHaveURL(/\/users\/[^/]+$/, { timeout: 20_000 });
+  await expect(page).toHaveURL(/\/users\/[^/]+$/, { timeout: 45_000 });
 
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

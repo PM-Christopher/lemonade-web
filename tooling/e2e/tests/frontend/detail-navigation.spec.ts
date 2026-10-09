@@ -18,14 +18,14 @@ const CASES = [
 
 for (const { list, linkPrefix, label } of CASES) {
   test(`clicking a real ${label} card navigates to its detail page`, async ({ page }) => {
+    test.setTimeout(90_000);
     await page.goto(list, { waitUntil: "domcontentloaded" });
 
     const link = page.locator(`a[href^="${linkPrefix}"]`).first();
-    await expect(link).toBeVisible({ timeout: 15_000 });
+    await expect(link).toBeVisible({ timeout: 30_000 });
     await link.click();
-
     await expect(page).toHaveURL(new RegExp(`${linkPrefix.replace("/", "\\/")}[^/]+`), {
-      timeout: 20_000,
+      timeout: 45_000,
     });
 
     const pageErrors: Error[] = [];

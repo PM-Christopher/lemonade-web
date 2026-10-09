@@ -31,6 +31,9 @@ export default defineConfig({
   // suite is meant to be trustworthy on merge, not fast — a slower,
   // reliable 2 minutes beats a faster, flaky 1.
   workers: 1,
+  // next dev cold-compiles each new route; 30s was cutting off real waits.
+  timeout: 60_000,
+  expect: { timeout: 15_000 },
   forbidOnly: !!process.env.CI,
   // 1 even locally, not just in CI — session.spec.ts's post-reload check
   // against a real dev server has shown occasional single-retry flakiness
@@ -43,6 +46,8 @@ export default defineConfig({
   use: {
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
+    actionTimeout: 15_000,
+    navigationTimeout: 45_000,
   },
   projects: [
     {

@@ -4,10 +4,9 @@ const authFile = ".auth/restricted-admin.json";
 
 // A second admin identity, alongside auth.setup.ts's full-permission one —
 // customer-support role, zero permissions (see permission-gating.spec.ts).
-// File-based storageState, computed once, same as auth.setup.ts and for the
-// same reason: a live login per test would blow through the backend's
-// throttle:auth (5/min) once retries pile up.
 setup("authenticate as a restricted admin", async ({ page }) => {
+  setup.setTimeout(90_000);
+
   const email = process.env.E2E_RESTRICTED_ADMIN_EMAIL;
   const password = process.env.E2E_RESTRICTED_ADMIN_PASSWORD;
   if (!email || !password) {
@@ -21,7 +20,10 @@ setup("authenticate as a restricted admin", async ({ page }) => {
   await page.locator("#password").fill(password);
   await page.getByRole("button", { name: "Login" }).click();
 
-  await expect(page.locator("#password")).toHaveCount(0, { timeout: 15_000 });
+  // next dev compiles the destination on first hit — wait for URL, not just the form.
+  await expect(page).toHaveURL((url) => !url.pathname.startsWith("/login"), {
+    timeout: 60_000,
+  });
 
   await page.context().storageState({ path: authFile });
 });
