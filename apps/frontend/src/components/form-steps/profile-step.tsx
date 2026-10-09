@@ -184,7 +184,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
           </div>
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="username" className="font-label">
+              <Label htmlFor="bio" className="font-label">
                 Bio
               </Label>
               <span className="text-meta text-text-grey">200 characters</span>
@@ -202,14 +202,14 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
             ) : null}
           </div>
           <div className="my-2 grid gap-2">
-            <Label htmlFor="email" className="font-label">
+            <Label htmlFor="industry" className="font-label">
               Industry
             </Label>
             <Select
               onValueChange={(value) => formik.setFieldValue("industry", value)} // Update value with Formik
               value={formik.values.industry}
             >
-              <SelectTrigger aria-label="Industry">
+              <SelectTrigger id="industry" aria-label="Industry">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent className="form-font">
