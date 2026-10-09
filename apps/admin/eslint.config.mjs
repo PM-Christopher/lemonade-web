@@ -8,7 +8,7 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import boundaries from "eslint-plugin-boundaries";
-import baseConfig from "@lemonade/config/eslint";
+import baseConfig, { noClientPagesOrLayouts } from "@lemonade/config/eslint";
 
 // Scoped to src/** — root-level config files (next.config.mjs,
 // eslint.config.mjs itself, tailwind/postcss config) were never meant to be
@@ -126,4 +126,9 @@ export default [
             ],
         },
     },
+    // Pages still marked "use client" — split them and delete the entry.
+    noClientPagesOrLayouts([
+        "src/app/(main)/tribes/page.tsx",
+        "src/app/(main)/tribes/[[]id]/page.tsx",
+    ]),
 ];

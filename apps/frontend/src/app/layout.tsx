@@ -11,7 +11,7 @@ import { WebVitalsReporter } from "@/components/global/WebVitalsReporter";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Lemonade",
+  title: { default: "Lemonade", template: "%s | Lemonade" },
   description: "Lemonade",
 };
 

@@ -1,8 +1,7 @@
-"use client";
 import { routes } from "@/lib/routes";
-import { useNavigation } from "@/hooks/useNavigation";
+import Link from "next/link";
 import React from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
+import { BackHeader } from "@/components/global/BackHeader";
 import ChatIcon from "@/images/icons/chatIcon.svg";
 import CalendarIcon from "@/images/icons/calendarIcon.svg";
 import BagIcon from "@/images/icons/caseIcon.svg";
@@ -14,19 +13,10 @@ import { Button } from "@lemonade/ui";
 import MainLayout from "@/components/layouts/MainLayout";
 
 const DeleteAccountPage = () => {
-  const { push, back } = useNavigation();
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t border-b bg-white p-2 px-16">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => back()}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Delete account</p>
-          </div>
-        </div>
+        <BackHeader title="Delete account" />
         <section className="mt-4 flex flex-col items-center">
           <div className="laptop:w-[640px] laptop:bg-white flex w-full flex-col gap-4 rounded-xl bg-none p-6">
             <p className="text-light-black max-w-[592px] text-[14px] font-normal">
@@ -76,13 +66,17 @@ const DeleteAccountPage = () => {
             </div>
             <div className="mt-6 flex justify-between gap-4">
               <Button
+                asChild
                 className="border-red-2 bg-red-1 h-12 w-full rounded-xl border shadow-none"
-                onClick={() => push(routes.SETTINGS_ACCOUNT_CONFIRM_DELETE)}
               >
-                <p className="font-semi-normal text-[16px]">Delete account</p>
+                <Link href={routes.SETTINGS_ACCOUNT_CONFIRM_DELETE}>
+                  <span className="font-semi-normal text-[16px]">Delete account</span>
+                </Link>
               </Button>
-              <Button className="h-12 w-full border-none bg-transparent shadow-none">
-                <p className="font-semi-normal text-light-green text-[16px]">Cancel</p>
+              <Button asChild className="h-12 w-full border-none bg-transparent shadow-none">
+                <Link href={routes.SETTINGS_ACCOUNT}>
+                  <span className="font-semi-normal text-light-green text-[16px]">Cancel</span>
+                </Link>
               </Button>
             </div>
           </div>

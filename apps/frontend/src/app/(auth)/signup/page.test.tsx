@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import SignupPage from "./page";
+import SignupPage from "./SignupClient";
 
 const signupMock = vi.fn();
 

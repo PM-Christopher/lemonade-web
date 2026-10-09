@@ -28,7 +28,7 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import boundaries from "eslint-plugin-boundaries";
-import baseConfig from "@lemonade/config/eslint";
+import baseConfig, { noClientPagesOrLayouts } from "@lemonade/config/eslint";
 
 // Scoped to src/** — root-level config files (next.config.mjs,
 // eslint.config.mjs itself, tailwind/postcss config) were never meant to be
@@ -160,4 +160,16 @@ export default [
       ],
     },
   },
+  // Pages still marked "use client" — split them and delete the entry.
+  noClientPagesOrLayouts([
+    "src/app/(main)/settings/referral/page.tsx",
+    "src/app/(main)/settings/page.tsx",
+    "src/app/(main)/settings/plan/cancel-subscription/page.tsx",
+    "src/app/(main)/settings/profile/page.tsx",
+    "src/app/(main)/settings/account/page.tsx",
+    "src/app/(main)/settings/account/confirm-delete/page.tsx",
+    "src/app/(main)/event/create-event/page.tsx",
+    "src/app/(main)/event/add-ticket/page.tsx",
+    "src/app/(main)/event/[[]id]/assign-ticket/page.tsx",
+  ]),
 ];

@@ -10,7 +10,7 @@ import { FcmProvider } from "@/context/FcmContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Lemonade Admin",
+  title: { default: "Lemonade Admin", template: "%s | Lemonade Admin" },
   description: "Lemonade Admin Dashboard",
 };
 

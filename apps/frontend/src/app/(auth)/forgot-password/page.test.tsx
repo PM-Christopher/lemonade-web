@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { axe } from "jest-axe";
 import { ApiError } from "@lemonade/api-client";
-import ForgotPasswordPage from "./page";
+import ForgotPasswordPage from "./ForgotPasswordClient";
 import { routes } from "@/lib/routes";
 
 const forgotMutate = vi.fn();

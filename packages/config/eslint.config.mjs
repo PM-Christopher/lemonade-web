@@ -11,6 +11,34 @@ import boundaries from "eslint-plugin-boundaries";
 import reactHooks from "eslint-plugin-react-hooks";
 import local from "./eslint-rules/no-hardcoded-pixel-class.js";
 
+const noTokenInLocalStorage = {
+  selector:
+    "CallExpression[callee.object.name='localStorage'][callee.property.name='setItem'] Literal[value=/token/i]",
+  message: "Tokens must live in httpOnly cookies, never localStorage. See docs/ARCHITECTURE.md §13.",
+};
+
+/**
+ * Pages and layouts stay Server Components; put "use client" on a smaller child.
+ * `allowlist` names the pages still waiting to be split — shrink it, never grow it.
+ */
+export function noClientPagesOrLayouts(allowlist = []) {
+  return {
+    files: ["src/app/**/page.tsx", "src/app/**/layout.tsx"],
+    ignores: allowlist,
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        noTokenInLocalStorage,
+        {
+          selector: "Program > ExpressionStatement[directive='use client']",
+          message:
+            'Keep pages and layouts as Server Components; move "use client" into a child component.',
+        },
+      ],
+    },
+  };
+}
+
 /** @type {import("eslint").Linter.Config[]} */
 export default [
   {
@@ -76,15 +104,7 @@ export default [
 
       // Tokens must never return to JS-readable storage once the BFF auth
       // flow (httpOnly cookies) lands. See docs/ARCHITECTURE.md §13.
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector:
-            "CallExpression[callee.object.name='localStorage'][callee.property.name='setItem'] Literal[value=/token/i]",
-          message:
-            "Tokens must live in httpOnly cookies, never localStorage. See docs/ARCHITECTURE.md §13.",
-        },
-      ],
+      "no-restricted-syntax": ["error", noTokenInLocalStorage],
     },
   },
 ];

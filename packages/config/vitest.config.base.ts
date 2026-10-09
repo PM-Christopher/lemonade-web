@@ -6,6 +6,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     globals: true,
+    // axe accessibility checks are slow on busy CI runners; the 5s default flakes.
+    testTimeout: 15_000,
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
