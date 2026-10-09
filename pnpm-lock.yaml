@@ -126,6 +126,9 @@ importers:
       '@testing-library/react':
         specifier: ^16.1.0
         version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@types/jest-axe':
+        specifier: ^3.5.9
+        version: 3.5.9
       '@types/node':
         specifier: ^26
         version: 26.6.4
@@ -153,6 +156,9 @@ importers:
       eslint-plugin-boundaries:
         specifier: ^7.2.0
         version: 7.2.0(@typescript-eslint/parser@8.71.0(eslint@10.11.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.11.0(jiti@2.7.0))
+      jest-axe:
+        specifier: ^11.0.0
+        version: 11.0.0
       jsdom:
         specifier: ^30.1.1
         version: 30.1.1
@@ -328,6 +334,9 @@ importers:
       '@types/country-list':
         specifier: ^2.1.4
         version: 2.1.4
+      '@types/jest-axe':
+        specifier: ^3.5.9
+        version: 3.5.9
       '@types/node':
         specifier: ^26
         version: 26.6.4
@@ -355,6 +364,9 @@ importers:
       eslint-plugin-boundaries:
         specifier: ^7.2.0
         version: 7.2.0(@typescript-eslint/parser@8.71.0(eslint@10.11.0(jiti@2.7.0))(typescript@5.9.3))(eslint@10.11.0(jiti@2.7.0))
+      jest-axe:
+        specifier: ^11.0.0
+        version: 11.0.0
       jsdom:
         specifier: ^30.1.1
         version: 30.1.1
