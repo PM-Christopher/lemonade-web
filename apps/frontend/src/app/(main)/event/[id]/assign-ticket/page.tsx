@@ -19,6 +19,7 @@ import { useBuyTicketMutation } from "@/features/events/mutations";
 import MainLayout from "@/components/layouts/MainLayout";
 import { RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { errorMessage } from "@/lib/api-error";
 
 const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
   const params = use(props.params);
@@ -59,8 +60,8 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
 
   const referralFromUrl = searchParams.get("referral");
   const assignTicketHref = referralFromUrl
-    ? `/event/${params.id}/buy-ticket?referral=${encodeURIComponent(referralFromUrl)}`
-    : `/event/${params.id}/buy-ticket`;
+    ? `${routes.EVENT_BUY_TICKET(params.id)}?referral=${encodeURIComponent(referralFromUrl)}`
+    : routes.EVENT_BUY_TICKET(params.id);
 
   const formik = useFormik({
     initialValues: {
@@ -84,8 +85,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
           quantity: ticket.quantity,
         });
       });
-      const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/event`;
-      // const formValues = { tickets: allTickets, redirect_url, ...values };
+      const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}${routes.EVENT}`;
       let formValues;
       if (values.assign_multiple) {
         formValues = {
@@ -126,6 +126,15 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
               );
               window.location.href = result.payment_url;
             }
+          },
+          onError: (error) => {
+            dispatch(
+              updateToastifyReducer({
+                show: true,
+                message: errorMessage(error, "We couldn't complete your ticket purchase."),
+                type: "error",
+              }),
+            );
           },
         },
       );
@@ -272,6 +281,7 @@ const AssignTicketPage = (props: { params: Promise<{ id: number }> }) => {
                         formik.setFieldValue("assign_multiple", change);
                       }}
                       checked={checked}
+                      aria-label="Assign multiple people"
                       checkedIcon={false}
                       uncheckedIcon={false}
                       onColor="#9BE303"
