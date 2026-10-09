@@ -43,7 +43,6 @@ export const images = {
   JOB_VERIFIED: "/images/jobVerified.png",
   JOB_EMPTY: "/images/jobEmpty.png",
   AFFILIATE_LINK: "/images/affliliateLink.png",
-  PAYOUT: "/images/Payout.png",
   PRICING_BG: "/images/pricingbg.png",
 } as const;
 

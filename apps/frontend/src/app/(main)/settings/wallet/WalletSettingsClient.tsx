@@ -5,7 +5,6 @@ import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import RewardsHistorySideMenu from "@/components/settings/RewardsHistorySideMenu";
-import PayoutModal from "@/components/settings/Modal/PayoutModal";
 
 import { useSelector } from "react-redux";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -16,6 +15,7 @@ import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { useWalletSettingsQuery } from "@/features/settings/queries";
 import { useRequestPayoutMutation, useRedeemPointsMutation } from "@/features/settings/mutations";
+import { errorMessage } from "@/lib/api-error";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { routes } from "@/lib/routes";
 
@@ -38,7 +38,6 @@ function WalletSettingsClient() {
   const profileLoading = requestPayoutMutation.isPending;
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isPOpen, setIsPOpen] = useState(false);
 
   const toggleRewardsMenu = () => {
     setIsRewardsOpen(!isRewardsOpen);
@@ -48,17 +47,9 @@ function WalletSettingsClient() {
     setIsOpen(!isOpen);
   };
 
-  const togglePModal = () => {
-    setIsPOpen(!isPOpen);
-  };
-
   const handlePayoutRequest = () => {
     if (user?.has_bank_account) {
-      // No amount = "pay out everything available", the backend's
-      // documented default (RequestWithdrawal action) — matches this
-      // button's original intent better than the old hardcoded
-      // amount: 100000, which the backend used to ignore outright but
-      // now honours literally (a smaller payout than available).
+      // No amount means "pay out everything available", the backend's default.
       requestPayoutMutation.mutate(
         {},
         {
@@ -66,17 +57,16 @@ function WalletSettingsClient() {
             dispatch(
               updateToastifyReducer({
                 show: true,
-                message:
-                  "Your payment is being processed and will be disbursed into the account details provided below",
+                message: "Payout requested. It will be paid into your saved bank account.",
                 type: "success",
               }),
             );
           },
-          onError: () => {
+          onError: (error) => {
             dispatch(
               updateToastifyReducer({
                 show: true,
-                message: "Something went wrong, please try again later",
+                message: errorMessage(error, "Something went wrong, please try again later"),
                 type: "error",
               }),
             );
@@ -280,7 +270,6 @@ function WalletSettingsClient() {
           </div>
         </section>
         <RequestPayoutModal isOpen={isOpen} toggle={toggleModal} />
-        <PayoutModal isOpen={isPOpen} toggle={togglePModal} />
       </section>
     </MainLayout>
   );

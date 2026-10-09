@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { ApiError } from "@lemonade/api-client";
 import WalletSettingsClient from "./WalletSettingsClient";
 
 // This app's Vitest config doesn't run .svg imports through SVGR (only the real Next.js build
@@ -16,8 +17,10 @@ vi.mock("react-redux", () => ({
   useSelector: () => ({ user: { has_bank_account: true }, isLoggedIn: true }),
 }));
 
+const dispatchMock = vi.fn();
+
 vi.mock("@/redux/hook", () => ({
-  useAppDispatch: () => vi.fn(),
+  useAppDispatch: () => dispatchMock,
 }));
 
 vi.mock("@/hooks/useNavigation", () => ({
@@ -42,19 +45,16 @@ vi.mock("@/components/settings/Modal/RequestPayoutModal", () => ({
   default: () => null,
 }));
 
-vi.mock("@/components/settings/Modal/PayoutModal", () => ({
-  default: () => null,
-}));
-
 const walletQueryMock = vi.fn();
 const redeemMutateMock = vi.fn();
+const payoutMutateMock = vi.fn();
 
 vi.mock("@/features/settings/queries", () => ({
   useWalletSettingsQuery: (...args: unknown[]) => walletQueryMock(...args),
 }));
 
 vi.mock("@/features/settings/mutations", () => ({
-  useRequestPayoutMutation: () => ({ mutate: vi.fn(), isPending: false }),
+  useRequestPayoutMutation: () => ({ mutate: payoutMutateMock, isPending: false }),
   useRedeemPointsMutation: () => ({ mutate: redeemMutateMock, isPending: false }),
 }));
 
@@ -121,5 +121,66 @@ describe("WalletSettingsClient — Points balance", () => {
     expect(payload.points).toBeUndefined();
     expect(typeof payload.idempotency_key).toBe("string");
     expect(payload.idempotency_key.length).toBeGreaterThan(0);
+  });
+});
+
+const walletData = {
+  total_amount_earned: "150000.00",
+  points_balance: 0,
+  rewards_earned: "0.00",
+  payout_history: [],
+  payout_request: true,
+};
+
+describe("WalletSettingsClient — payout request", () => {
+  beforeEach(() => {
+    payoutMutateMock.mockReset();
+    dispatchMock.mockReset();
+    walletQueryMock.mockReturnValue({ data: walletData, isLoading: false });
+  });
+
+  it("requests a payout of the full available balance, leaving the amount to the server", () => {
+    render(<WalletSettingsClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: /request pay ?out/i }));
+
+    expect(payoutMutateMock).toHaveBeenCalledWith({}, expect.any(Object));
+  });
+
+  it("shows the server's reason when a payout is refused", () => {
+    payoutMutateMock.mockImplementation((_payload, opts) =>
+      opts.onError(
+        new ApiError({
+          status: 400,
+          errorCode: "not-specified",
+          message: "Your available balance is below the minimum payout of 100000",
+          kind: "server",
+        }),
+      ),
+    );
+    render(<WalletSettingsClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: /request pay ?out/i }));
+
+    expect(dispatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          message: "Your available balance is below the minimum payout of 100000",
+          type: "error",
+        }),
+      }),
+    );
+  });
+});
+
+describe("WalletSettingsClient — payout eligibility", () => {
+  it("hides the payout button until the server says a payout is available", () => {
+    walletQueryMock.mockReturnValue({
+      data: { ...walletData, payout_request: false },
+      isLoading: false,
+    });
+    render(<WalletSettingsClient />);
+
+    expect(screen.queryByRole("button", { name: /request pay ?out/i })).not.toBeInTheDocument();
   });
 });

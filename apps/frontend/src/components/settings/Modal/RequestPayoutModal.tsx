@@ -45,18 +45,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
     validationSchema: bankAccountSchema,
     validateOnMount: true,
     onSubmit: async (values) => {
-      // FOUND, FIXED (found live-testing, not a guess — see the
-      // matching NOTE in features/settings/api.ts): this modal is
-      // shown exactly when the user has no bank account yet
-      // (wallet/page.tsx's handlePayoutRequest), collects bank_name/
-      // account_number/account_name, and its own success toast says
-      // "Error creating account" and dispatches updateHasBankAccount()
-      // — every sign this was always meant to create a bank account.
-      // The old code called settingsApi.requestPayout with this exact
-      // payload instead, which the backend's RequestWithdrawalRequest
-      // doesn't accept at all (it only takes amount/bank_account_id),
-      // so this modal could never have actually worked. Now calls
-      // createBankAccount, matching the payload it already builds.
+      // This modal adds the user's bank account; payouts need one first.
       createBankAccountMutation.mutate(values, {
         onSuccess: () => {
           formik.resetForm();
@@ -105,10 +94,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
     if (accountNumber.length === 10) {
       getAccount();
     }
-    // getAccount closes over formik (recreated every keystroke) and the
-    // mutation object (recreated every render) — including it here would
-    // re-verify on every render instead of only when accountNumber
-    // reaches 10 digits.
+    // Verify only when the number changes; getAccount is recreated every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountNumber]);
 
@@ -125,10 +111,15 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
           <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="cursor-pointer" onClick={toggle}>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="cursor-pointer"
+                  onClick={toggle}
+                >
                   <CloseIcon />
-                </div>
-                <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
+                </button>
+                <p className="tracking-custom font-sans text-lg leading-[27px] font-semibold">
                   Bank Account
                 </p>
               </div>
@@ -139,12 +130,13 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
             <div className="mt-10">
               <div className="mt-6 grid gap-2">
                 <Label
-                  htmlFor="fullname"
+                  htmlFor="bank_name"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Bank Name
                 </Label>
                 <select
+                  id="bank_name"
                   value={formik.values.bank_name}
                   className="form-font bg-light_grey h-12 w-full rounded-xl border-0 p-2"
                   onChange={(e) => {
@@ -169,13 +161,13 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
-                  htmlFor="fullname"
+                  htmlFor="account_number"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Account number
                 </Label>
                 <Input
-                  id="fullname"
+                  id="account_number"
                   type="number"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
@@ -187,13 +179,13 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
-                  htmlFor="fullname"
+                  htmlFor="account_name"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Account name
                 </Label>
                 <Input
-                  id="fullname"
+                  id="account_name"
                   type="text"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
