@@ -10,11 +10,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 
 interface Comment {
-  id: number;
-  thread_id: number;
+  id: string;
+  thread_id: string;
   owner: boolean;
   body: string;
-  user_id: number;
+  user_id: string;
   user: {
     fullname: string;
     username: string;
@@ -31,13 +31,13 @@ interface CommentsProps {
   comments: Comment[];
   isVisible: boolean;
   onToggleVisibility: () => void;
-  onLikeComment?: (commentId: number) => void;
-  onReplyToComment?: (commentId: number, parentId?: number) => void;
+  onLikeComment?: (commentId: string) => void;
+  onReplyToComment?: (commentId: string, parentId?: string) => void;
   thread: Thread | null;
 }
 
 const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
-  const [expandedReplies] = useState<Set<number>>(new Set());
+  const [expandedReplies] = useState<Set<string>>(new Set());
 
   // This state forces re-render every minute
   const [, setTick] = useState(0);

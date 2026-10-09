@@ -93,7 +93,7 @@ function ReferralSettingsPage() {
                 <div className="flex items-center justify-between gap-0.5">
                   <div className="bg-light-tint-4 w-full rounded-tl-xl rounded-bl-xl p-[10.5px] px-3">
                     <p className="text-mid-green text-[18px] font-bold">
-                      {user.username.toUpperCase()}
+                      {user?.username?.toUpperCase()}
                     </p>
                   </div>
                   <div

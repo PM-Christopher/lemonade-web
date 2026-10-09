@@ -146,8 +146,8 @@ const ProfileSettingsPage = ({}) => {
               <div className="my-2 flex items-center justify-between">
                 <p className="text-text-grey text-[14px] font-normal">Lemonade tag</p>
                 <p className="font-semi-normal text-black-light text-[14px]">
-                  Lemon {splitLemonId(user?.lemon_id)} (L
-                  {splitLemonId(user?.lemon_id)})
+                  Lemon {splitLemonId(user?.lemon_id ?? "")} (L
+                  {splitLemonId(user?.lemon_id ?? "")})
                 </p>
               </div>
               <div className="my-2 flex items-center justify-between">
@@ -182,7 +182,7 @@ const ProfileSettingsPage = ({}) => {
                 <p className="text-text-grey text-[14px] font-normal">Profession</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light text-[14px]">
-                    {formatString(user?.industry)}
+                    {formatString(user?.industry ?? undefined)}
                   </p>
                   <PencilIcon
                     className="h-4 w-4 cursor-pointer"
@@ -212,7 +212,7 @@ const ProfileSettingsPage = ({}) => {
                 <p className="text-text-grey text-[14px] font-normal">Skills & interests</p>
                 <div className="flex items-center gap-2">
                   <p className="font-semi-normal text-black-light text-[14px]">
-                    {user?.skills.length + user?.interests.length}
+                    {(user?.skills?.length ?? 0) + (user?.interests?.length ?? 0)}
                   </p>
                   <PencilIcon
                     className="h-4 w-4 cursor-pointer"
@@ -227,7 +227,7 @@ const ProfileSettingsPage = ({}) => {
                 <p className="text-text-grey text-[14px] font-normal">Socials</p>
                 <div className="flex items-center gap-2">
                   <div className="bg-light_grey flex items-center gap-2 rounded-[18px] p-1">
-                    {user?.socials.map((link: { name?: string; value?: string }) => (
+                    {user?.socials?.map((link: { name?: string; value?: string }) => (
                       <a
                         href={link.value}
                         target="_blank"

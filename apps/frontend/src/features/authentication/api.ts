@@ -16,15 +16,46 @@ import type {
   SocialsRequest,
 } from "@lemonade/api-types/generated";
 
-export interface CurrentUser {
-  id: string | number;
-  email: string;
-  fullname: string;
-  username: string | null;
-  status?: number;
-  email_verified?: boolean;
-  [key: string]: unknown;
+export interface UserAddress {
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
 }
+
+export interface UserSocial {
+  name: string;
+  value: string;
+}
+
+/** The signed-in user, as the backend's UserResource returns it, plus client-only flags. */
+export interface SessionUser {
+  id: string;
+  fullname: string;
+  email: string;
+  username: string | null;
+  referred_by?: string | null;
+  lemon_id?: string | null;
+  bio?: string | null;
+  industry?: string | null;
+  profile_image?: string | null;
+  status?: number;
+  verified?: boolean;
+  email_verified?: boolean;
+  has_bank_account?: boolean;
+  skills?: string[];
+  interests?: string[];
+  socials?: UserSocial[];
+  address?: UserAddress | null;
+  referral_code?: string | null;
+  // Not sent by today's user resources; read for the connect distance badge.
+  connect_info?: { latitude?: number; longitude?: number } | null;
+  // Set locally by onboarding and payment screens, not by the backend.
+  hasPin?: boolean;
+  createdAccount?: boolean;
+}
+
+export type CurrentUser = SessionUser;
 
 /** Token plus user returned by signup (the token is the onboarding token). */
 export interface AuthTokenResult {

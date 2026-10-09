@@ -60,7 +60,7 @@ const TribeClient = ({ id }: { id: string }) => {
   const [addUserModal, setAddUserModal] = useState(false);
   const [joinedTribeModal, setJoinedTribeModal] = useState(false);
 
-  const [threadId, setThreadId] = useState<number | null>(null);
+  const [threadId, setThreadId] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -139,12 +139,12 @@ const TribeClient = ({ id }: { id: string }) => {
     setCreateThreadModalOpen(!createThreadModalOpen);
   };
 
-  const switchUserId = (id: number) => {
+  const switchUserId = (id: string) => {
     viewProfileMutation.mutate(id);
     activateUserInfoModal();
   };
 
-  const setPinThread = (id: number) => {
+  const setPinThread = (id: string) => {
     const current = threads.find((t) => t.id === id);
     pinThreadMutation.mutate({
       threadId: id,
@@ -173,12 +173,12 @@ const TribeClient = ({ id }: { id: string }) => {
     filterThreadsMutation.mutate({ tribeId: tribe.id, filter: value });
   };
 
-  const toggleThreadId = (id: number) => {
+  const toggleThreadId = (id: string) => {
     setThreadId(id);
     activateReportThreadModal();
   };
 
-  const toggleDeleteThreadModal = (id: number) => {
+  const toggleDeleteThreadModal = (id: string) => {
     setThreadId(id);
     activateDeleteThreadModal();
   };
@@ -187,7 +187,7 @@ const TribeClient = ({ id }: { id: string }) => {
     setDeleteThreadModal(!deleteThreadModal);
   };
 
-  const handleScroll = (id: number) => {
+  const handleScroll = (id: string) => {
     const itemId = `pinned-${id}`;
     const element = document.getElementById(itemId);
     if (element) {

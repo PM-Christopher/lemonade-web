@@ -8,8 +8,8 @@ import { useDeleteThreadMutation } from "@/features/tribes/mutations";
 interface DeleteThreadIF {
   toggle: () => void;
   isOpen: boolean;
-  threadId: number | null;
-  setThreadId: (threadId: number | null) => void;
+  threadId: string | null;
+  setThreadId: (threadId: string | null) => void;
   tribeId: string;
 }
 

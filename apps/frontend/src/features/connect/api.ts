@@ -18,10 +18,10 @@ export interface ChatHistoryResponse {
 // sender/receiver are raw user ids here, unlike MessageInterface's
 // viewer-relative booleans (ChatMessageResource, used by getChat/history).
 export interface OutgoingChatMessage {
-  id: number;
+  id: string;
   message: string;
-  sender: number;
-  receiver: number;
+  sender: string;
+  receiver: string;
   media: string[] | null;
   created_at: string;
 }
@@ -32,7 +32,7 @@ export interface SendChatResponse {
 }
 
 export interface ChatInvite {
-  id: number;
+  id: string;
   fullname: string;
   invitee: {
     lemon_id_short: string;
@@ -54,7 +54,7 @@ export interface InviteResponseResult {
 }
 
 export interface FoundUser {
-  id: number;
+  id: string;
   fullname: string;
   username: string;
   industry: string | null;
@@ -74,7 +74,7 @@ export interface FoundUser {
 }
 
 export interface SendInvitePayload {
-  invitee_id: number;
+  invitee_id: string;
   message?: string;
 }
 
@@ -107,19 +107,19 @@ export interface UpdateVisibilityResponse {
 }
 
 export const connectApi = {
-  getChat: (receiverId: number) =>
+  getChat: (receiverId: string) =>
     browserApi.get<ChatDetailResponse>(userMessagesRoutes.CHAT, {
       params: { receiver_id: receiverId },
     }),
 
-  sendChat: (receiverId: number | null, message: string | null, media: string[]) =>
+  sendChat: (receiverId: string | null, message: string | null, media: string[]) =>
     browserApi.post<SendChatResponse>(
       userMessagesRoutes.SEND,
       { message, media },
       { params: { receiver_id: receiverId } },
     ),
 
-  inviteResponse: (id: number, option: "accepted" | "rejected") =>
+  inviteResponse: (id: string, option: "accepted" | "rejected") =>
     browserApi.post<InviteResponseResult>(buildPath(userConnectRoutes.INVITES_RESPOND, { id }), {
       option,
     }),

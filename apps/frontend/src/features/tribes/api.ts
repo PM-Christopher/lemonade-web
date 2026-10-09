@@ -86,7 +86,7 @@ export interface ReportThreadPayload {
 }
 
 export interface DeleteThreadResponse {
-  thread_id: number;
+  thread_id: string;
 }
 
 export interface SearchTribeResponse {
@@ -153,7 +153,7 @@ export const tribesApi = {
 
   submitVote: (
     tribeId: number | string,
-    threadId: number | string,
+    threadId: string | string,
     pollId: number | string,
     data: SubmitVotePayload,
   ) =>
@@ -193,7 +193,7 @@ export const tribesApi = {
   addTribeMember: (id: string, data: AddTribeMemberPayload) =>
     browserApi.post<AddTribeMemberResponse>(buildPath(userTribesRoutes.ADD_MEMBER, { id }), data),
 
-  postComment: (tribeId: number | string, threadId: number | string, data: PostCommentPayload) =>
+  postComment: (tribeId: number | string, threadId: string | string, data: PostCommentPayload) =>
     browserApi.post<PostCommentResponse>(
       buildPath(userThreadsRoutes.POST_COMMENT, { tribe_id: tribeId, id: threadId }),
       data,

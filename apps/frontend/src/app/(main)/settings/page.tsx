@@ -126,14 +126,14 @@ function SettingsPage() {
               <div className="relative flex items-center justify-center">
                 <Image src={images.LEMON} alt="lemon" width={33} height={41} />
                 <p className="absolute bottom-3.5 w-full text-center text-[12px] font-semibold text-black">
-                  L{splitLemonId(user?.lemon_id)}
+                  L{splitLemonId(user?.lemon_id ?? "")}
                 </p>
               </div>
             </div>
             <div className="laptop:w-[632px] w-full rounded-br-2xl rounded-bl-2xl bg-white p-4">
               <p className="font-semi-normal text-text-grey text-[12px]">Industry</p>
               <p className="text-black-light text-[14px] font-normal">
-                {formatString(user?.industry)}
+                {formatString(user?.industry ?? undefined)}
               </p>
               <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Bio</p>
               <p className="text-black-light max-w-[600px] text-[14px] font-normal">{user?.bio}</p>

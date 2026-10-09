@@ -16,7 +16,7 @@ type ConnectInterface = {
   toggle: () => void;
   isOpen: boolean;
   users: FoundUser[];
-  authUser: FoundUser;
+  authUser: { connect_info?: { latitude?: number; longitude?: number } | null } | null;
 };
 
 const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authUser }) => {
@@ -41,7 +41,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
 
   const sendConnect = (values: { message: string }) => {
     sendInviteMutation.mutate(
-      { ...values, invitee_id: user.id as number },
+      { ...values, invitee_id: user.id },
       {
         onSuccess: () => {
           dispatch(

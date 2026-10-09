@@ -9,7 +9,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 type ReportThreadIF = {
   toggle: () => void;
   isOpen: boolean;
-  threadId: null | number;
+  threadId: null | string;
 };
 
 const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId }) => {

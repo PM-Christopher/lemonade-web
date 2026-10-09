@@ -1,5 +1,5 @@
 interface UserInterface {
-  id: number;
+  id: string;
   fullname: string;
   username: string;
   avatar: string;
@@ -34,7 +34,7 @@ export interface TribeMemberInterface {
 }
 
 interface User {
-  id: number;
+  id: string;
   fullname: string;
   username: string;
   email: string;
@@ -75,11 +75,11 @@ interface ThreadPolls {
 // Thread.all_comments, which never matched what postComment/getThreads
 // actually return (comment objects).
 export interface ThreadComment {
-  id: number;
-  thread_id: number;
+  id: string;
+  thread_id: string;
   owner: boolean;
   body: string;
-  user_id: number;
+  user_id: string;
   user: {
     fullname: string;
     username: string;
@@ -93,7 +93,7 @@ export interface ThreadComment {
 }
 
 export interface Thread {
-  id: number;
+  id: string;
   owner: boolean;
   user: UserInterface;
   topic: string;

@@ -23,8 +23,8 @@ import { routes } from "@/lib/routes";
 const ConnectClient = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(0);
-  const [selectedReceiverId, setSelectedReceiverId] = useState<number | undefined>(undefined);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [selectedReceiverId, setSelectedReceiverId] = useState<string | undefined>(undefined);
   const isMobile = useIsMobile(1024);
   const [chatOpened, setChatOpened] = useState(false);
   const authReady = useAuthReady();
@@ -53,9 +53,9 @@ const ConnectClient = () => {
     setIsSettingsOpen(!isSettingsOpen);
   };
 
-  const toggleSelectedChat: (receiver_id: number, chat_id: number) => void = (
-    receiver_id: number,
-    chat_id: number,
+  const toggleSelectedChat: (receiver_id: string, chat_id: string) => void = (
+    receiver_id: string,
+    chat_id: string,
   ) => {
     setSelectedReceiverId(receiver_id);
     setSelectedChatId(chat_id);
@@ -64,7 +64,7 @@ const ConnectClient = () => {
 
   const toggleChatOpened = () => {
     setChatOpened(!chatOpened);
-    setSelectedChatId(0);
+    setSelectedChatId(null);
     setSelectedReceiverId(undefined);
   };
   return (

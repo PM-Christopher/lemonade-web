@@ -32,10 +32,10 @@ interface ThreadCardProps {
   thread: Thread;
   tribe_id: number | undefined;
   toggle: () => void;
-  switchUserId: (id: number) => void;
-  pinThread: (id: number) => void;
-  toggleThreadId: (id: number) => void;
-  toggleDeleteThread: (id: number) => void;
+  switchUserId: (id: string) => void;
+  pinThread: (id: string) => void;
+  toggleThreadId: (id: string) => void;
+  toggleDeleteThread: (id: string) => void;
   tribe: TribeInterface | null;
 }
 

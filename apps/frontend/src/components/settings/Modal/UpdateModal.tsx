@@ -14,12 +14,17 @@ import { useUpdateProfileFieldMutation } from "@/features/authentication/mutatio
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 interface UpdateModalUser {
-  username?: string;
-  bio?: string;
-  industry?: string;
+  username?: string | null;
+  bio?: string | null;
+  industry?: string | null;
   skills?: string[];
   interests?: string[];
-  address?: { address?: string; city?: string; country?: string; state?: string };
+  address?: {
+    address?: string | null;
+    city?: string | null;
+    country?: string | null;
+    state?: string | null;
+  } | null;
   socials?: Array<{ name: string; value: string }>;
 }
 
@@ -27,7 +32,7 @@ type UpdateInterface = {
   toggle: () => void;
   isOpen: boolean;
   type: string;
-  user: UpdateModalUser;
+  user: UpdateModalUser | null;
 };
 
 type FormValues = {
@@ -297,7 +302,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
   }, [user, type, setFieldValue]);
 
   const getSocialUrl = (platform: string) => {
-    const social = user.socials?.find((s) => s.name === platform);
+    const social = user?.socials?.find((s) => s.name === platform);
     return social ? social.value : ""; // Return empty string if not found
   };
 

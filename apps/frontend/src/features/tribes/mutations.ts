@@ -53,7 +53,7 @@ export function useCreateThreadMutation(tribeSlug: string) {
 // server's thread back into state either.
 export function useLikeThreadMutation() {
   return useMutation({
-    mutationFn: ({ tribeId, threadId }: { tribeId: string | number; threadId: number }) =>
+    mutationFn: ({ tribeId, threadId }: { tribeId: string | number; threadId: string }) =>
       tribesApi.likeThread(tribeId, threadId),
   });
 }
@@ -69,7 +69,7 @@ export function useSubmitVoteMutation(tribeSlug: string) {
       data,
     }: {
       tribeId: string | number;
-      threadId: number;
+      threadId: string;
       pollId: number;
       data: SubmitVotePayload;
     }) => tribesApi.submitVote(tribeId, threadId, pollId, data),
@@ -99,7 +99,7 @@ export function useFilterThreadsMutation(tribeSlug: string) {
 // caller reads `.data` directly instead of a Redux `user` field.
 export function useViewProfileMutation() {
   return useMutation({
-    mutationFn: (id: number) => tribesApi.viewProfile(id),
+    mutationFn: (id: string) => tribesApi.viewProfile(id),
   });
 }
 
@@ -115,7 +115,7 @@ export function usePinThreadMutation(tribeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ threadId }: { threadId: number; wasPinned: boolean }) =>
+    mutationFn: ({ threadId }: { threadId: string; wasPinned: boolean }) =>
       tribesApi.pinThread(threadId),
     onSuccess: (result, variables) => {
       const thread = result.message;
@@ -146,7 +146,7 @@ export function usePinThreadMutation(tribeSlug: string) {
 
 export function useReportThreadMutation() {
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: ReportThreadPayload }) =>
+    mutationFn: ({ id, data }: { id: string; data: ReportThreadPayload }) =>
       tribesApi.reportThread(id, data),
   });
 }
@@ -155,7 +155,7 @@ export function useDeleteThreadMutation(tribeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) => tribesApi.deleteThread(id),
+    mutationFn: (id: string) => tribesApi.deleteThread(id),
     onSuccess: (result) => {
       queryClient.setQueryData<ThreadsResponse>(tribeKeys.threads(tribeSlug), (old) =>
         old ? { threads: old.threads.filter((t) => t.id !== result.thread_id) } : old,
@@ -196,7 +196,7 @@ export function usePostCommentMutation(tribeSlug: string) {
       data,
     }: {
       tribeId: string | number;
-      threadId: number;
+      threadId: string;
       data: PostCommentPayload;
     }) => tribesApi.postComment(tribeId, threadId, data),
     onSuccess: (result) => {

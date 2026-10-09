@@ -11,7 +11,7 @@ export function useSendChatMutation() {
       message,
       media,
     }: {
-      receiverId: number | null;
+      receiverId: string | null;
       message: string | null;
       media: string[];
     }) => connectApi.sendChat(receiverId, message, media),
@@ -28,7 +28,7 @@ export function useInviteResponseMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, option }: { id: number; option: "accepted" | "rejected" }) =>
+    mutationFn: ({ id, option }: { id: string; option: "accepted" | "rejected" }) =>
       connectApi.inviteResponse(id, option),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectKeys.invites() });

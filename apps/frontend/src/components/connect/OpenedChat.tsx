@@ -24,7 +24,7 @@ type OpenChatProps = {
   toggleModal: () => void;
   messages: MessageInterface[];
   chat: ChatInterface | null;
-  user_id: number;
+  user_id: string | undefined;
   toggleOpenedChat?: () => void;
 };
 
@@ -67,7 +67,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const sendMessage = () => {
     if (!text.trim() && mediaFiles.length < 1) return; // Don't send empty messages
 
-    const receiver_id: number | null = chat
+    const receiver_id: string | null = chat
       ? user_id === chat.sender.id
         ? chat.receiver.id
         : chat.sender.id
@@ -81,7 +81,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
           // Same shape/target as a Pusher-pushed message (both are the
           // raw OutgoingChatMessage), so this reuses the same append
           // logic rather than duplicating the viewer-relative mapping.
-          appendIncomingChatMessage(queryClient, authUser.id, res.new_message);
+          if (authUser) appendIncomingChatMessage(queryClient, authUser.id, res.new_message);
         },
       },
     );

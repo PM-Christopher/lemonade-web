@@ -3,6 +3,7 @@ import {
   authApi,
   type ChangePasswordPayload,
   type CurrentUser,
+  type SessionUser,
   type ChangePlanPayload,
   type DeleteAccountPayload,
   type ForgotPasswordPayload,
@@ -118,7 +119,7 @@ export function useResetPasswordMutation() {
 function syncUser(
   dispatch: ReturnType<typeof useAppDispatch>,
   queryClient: ReturnType<typeof useQueryClient>,
-  user: unknown,
+  user: Partial<SessionUser>,
 ) {
   dispatch(updateUser(user));
   queryClient.setQueryData(authKeys.currentUser(), (old: unknown) => ({

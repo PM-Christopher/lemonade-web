@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { SessionUser } from "./api";
 
 // Session + small client-state slice. Server data that used to live here
 // (profile edits, OTP/password-reset, notification settings, subscription
@@ -10,7 +11,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // reason, which plan is mid-selection) that don't belong in a query cache.
 
 interface authState {
-  user: any | null;
+  user: SessionUser | null;
   loading: boolean;
   error: boolean;
   authToken: string | null;
@@ -92,20 +93,21 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.code = action.payload.code;
     },
+    // Local flags only apply once a user is loaded.
     updateHasPin: (state) => {
-      state.user = { ...state.user, hasPin: true };
+      if (state.user) state.user.hasPin = true;
     },
-    updateProfileImage: (state, action) => {
-      state.user = { ...state.user, profile_image: action.payload };
+    updateProfileImage: (state, action: PayloadAction<string>) => {
+      if (state.user) state.user.profile_image = action.payload;
     },
     updateCreatedAccount: (state) => {
-      state.user = { ...state.user, createdAccount: true };
+      if (state.user) state.user.createdAccount = true;
     },
     updateHasBankAccount: (state) => {
-      state.user = { ...state.user, has_bank_account: true };
+      if (state.user) state.user.has_bank_account = true;
     },
-    updateUser: (state, action) => {
-      state.user = { ...state.user, ...action.payload };
+    updateUser: (state, action: PayloadAction<Partial<SessionUser>>) => {
+      if (state.user) Object.assign(state.user, action.payload);
     },
     setSubscriptionId: (state, action) => {
       state.subscription_id = action.payload.id;

@@ -6,8 +6,8 @@ import { formatTimeAgo } from "@/lib/helper";
 type ChatListInterface = {
   active: boolean;
   chat: ChatInterface;
-  toggleChat: (receiver_id: number, chat_id: number) => void;
-  user_id: number;
+  toggleChat: (receiver_id: string, chat_id: string) => void;
+  user_id: string | undefined;
 };
 
 const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, user_id }) => {

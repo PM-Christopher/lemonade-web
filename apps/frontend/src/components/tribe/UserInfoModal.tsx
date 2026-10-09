@@ -17,7 +17,7 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { routes } from "@/lib/routes";
 
 export interface TribeUserInfo {
-  id?: number;
+  id?: string;
   profile_image?: string;
   fullname?: string;
   username?: string;
@@ -40,7 +40,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
 
   const sendConnect = () => {
     sendInviteMutation.mutate(
-      { message: "I want to connect with you.", invitee_id: user?.id as number },
+      { message: "I want to connect with you.", invitee_id: user?.id ?? "" },
       {
         onSuccess: () => {
           dispatch(

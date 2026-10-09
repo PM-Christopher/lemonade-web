@@ -1,5 +1,5 @@
 interface User {
-  id: number;
+  id: string;
   username: string;
   lemon_id: string;
   avatar: string;
@@ -12,7 +12,7 @@ interface LatestMessage {
 }
 
 export interface ChatInterface {
-  id: number;
+  id: string;
   sender: User;
   receiver: User;
   latest: LatestMessage;
@@ -21,7 +21,7 @@ export interface ChatInterface {
 }
 
 export interface MessageInterface {
-  id: number;
+  id: string;
   message: string;
   sender: boolean;
   receiver: boolean;

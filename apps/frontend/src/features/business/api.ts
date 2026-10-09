@@ -54,8 +54,8 @@ export interface BusinessBoostSchedule {
 
 /** A service request job, as the backend's ServiceRequestJobResource returns it. */
 export interface ServiceRequestJob {
-  id: number;
-  business: { id: number; name: string; image: string | null; user_id: number } | null;
+  id: string;
+  business: { id: string; name: string; image: string | null; user_id: string } | null;
   amount: number;
   services: unknown[];
   status: string;

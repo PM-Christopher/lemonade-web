@@ -4,7 +4,7 @@ import { connectApi, type ChatDetailResponse, type OutgoingChatMessage } from ".
 export const connectKeys = {
   all: () => ["connect"] as const,
   chats: () => [...connectKeys.all(), "chats"] as const,
-  chat: (receiverId: number) => [...connectKeys.all(), "chat", receiverId] as const,
+  chat: (receiverId: string) => [...connectKeys.all(), "chat", receiverId] as const,
   invites: () => [...connectKeys.all(), "invites"] as const,
   connection: () => [...connectKeys.all(), "connection"] as const,
 };
@@ -21,10 +21,10 @@ export function useChatHistoryQuery(options?: { enabled?: boolean }) {
   });
 }
 
-export function useChatQuery(receiverId: number | undefined, options?: { enabled?: boolean }) {
+export function useChatQuery(receiverId: string | undefined, options?: { enabled?: boolean }) {
   return useQuery({
-    queryKey: connectKeys.chat(receiverId ?? 0),
-    queryFn: () => connectApi.getChat(receiverId as number),
+    queryKey: connectKeys.chat(receiverId ?? ""),
+    queryFn: () => connectApi.getChat(receiverId as string),
     staleTime: 60_000,
     enabled: Boolean(receiverId) && options?.enabled !== false,
   });
@@ -64,7 +64,7 @@ export function useConnectionQuery(options?: { enabled?: boolean }) {
  */
 export function appendIncomingChatMessage(
   queryClient: QueryClient,
-  currentUserId: number,
+  currentUserId: string,
   raw: OutgoingChatMessage,
 ): void {
   const otherPartyId = raw.sender === currentUserId ? raw.receiver : raw.sender;

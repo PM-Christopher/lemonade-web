@@ -6,7 +6,7 @@ import { getDistanceFromLatLonInKm } from "@/lib/helper";
 import type { ChatInvite } from "@/features/connect/api";
 
 interface ConnectAuthUser {
-  connect_info?: { latitude?: number; longitude?: number };
+  connect_info?: { latitude?: number; longitude?: number } | null;
 }
 
 type RequestInterface = {
@@ -14,7 +14,7 @@ type RequestInterface = {
   invite: ChatInvite;
   toggleInviteIndex: (index: number) => void;
   index: number;
-  user: ConnectAuthUser;
+  user: ConnectAuthUser | null;
 };
 
 const RequestCard: React.FC<RequestInterface> = ({
