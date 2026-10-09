@@ -128,14 +128,11 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # Non-blocking for now: 74 pre-existing advisories (6 critical, 32
-      # high), almost all in transitive deps of antd/draft-js/sharp — making
-      # this a hard gate today would fail every PR on debt it didn't
-      # introduce. Dependabot (.github/dependabot.yml) is what actually
-      # burns this down over time; this job's job is to keep the count
-      # visible in every PR, not to block on it yet. Flip to blocking once
-      # the count is near zero.
-      - name: Audit (report only)
+      # Critical advisories block the PR; high and below are reported for Dependabot to burn down.
+      - name: Audit (blocks on critical)
+        run: pnpm audit --audit-level=critical
+
+      - name: Audit (report high)
         run: pnpm audit --audit-level=high || true
 
   # Fails on First Load JS regression vs. the PR's base branch — never on an

@@ -26,3 +26,7 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@next/eslint-plugin-next@16.3.7'
   - eslint-config-next@16.3.7
+
+overrides:
+  # Patched for GHSA critical advisories; only reached via eslint-plugin-boundaries.
+  handlebars: ">=4.7.10"
