@@ -68,9 +68,7 @@ export default function LoginPage() {
     }
 
     dispatch(updateToastifyReducer({ show: true, message: "successful", type: "success" }));
-    setTimeout(() => {
-      push(next || routes.HOME);
-    }, 500);
+    push(next || routes.HOME);
   };
 
   const showLoginError = (error: unknown) => {

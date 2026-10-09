@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@lemonade/api-client";
 import { DEFAULT_ERROR_CODE } from "@lemonade/api-types";
 import { signup } from "./authApi";
@@ -13,12 +13,19 @@ describe("signup", () => {
   const dispatch = vi.fn();
   const push = vi.fn();
   const setCookie = vi.fn();
+  const assign = vi.fn();
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
 
   beforeEach(() => {
     register.mockReset();
     dispatch.mockReset();
     push.mockReset();
     setCookie.mockReset();
+    assign.mockReset();
+    vi.stubGlobal("window", { location: { assign } });
   });
 
   it("stores the onboarding token and sends the user to verify their email", async () => {
@@ -28,7 +35,8 @@ describe("signup", () => {
 
     expect(register).toHaveBeenCalledWith(values);
     expect(setCookie).toHaveBeenCalledWith("newToken", "onboarding-token", expect.any(Object));
-    expect(push).toHaveBeenCalledWith(routes.VERIFY_EMAIL);
+    expect(assign).toHaveBeenCalledWith(routes.VERIFY_EMAIL);
+    expect(push).not.toHaveBeenCalled();
   });
 
   it("shows the server's message when signup is rejected", async () => {
@@ -44,6 +52,7 @@ describe("signup", () => {
     await signup(values, dispatch, { push }, setCookie);
 
     expect(push).not.toHaveBeenCalled();
+    expect(assign).not.toHaveBeenCalled();
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({
         payload: expect.objectContaining({

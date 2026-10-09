@@ -47,10 +47,7 @@ function LoginPage({}) {
             type: "success",
           }),
         );
-
-        setTimeout(() => {
-          push(routes.HOME);
-        }, 500);
+        push(routes.HOME);
       } catch (error) {
         dispatch(
           updateToastifyReducer({

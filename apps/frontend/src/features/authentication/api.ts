@@ -3,6 +3,7 @@ import { createApiClient } from "@lemonade/api-client";
 import { browserApi } from "@/lib/browser-api";
 import {
   userAuthRoutes,
+  userOtpRoutes,
   userProfileRoutes,
   userSubscriptionRoutes,
   buildPath,
@@ -37,12 +38,10 @@ export interface LoginPayload {
   password: string;
 }
 
-export interface LoginResult {
-  user: CurrentUser;
-  needsOnboarding?: boolean;
-  token?: string; // Present during unfinished onboarding only.
-  token_type?: string;
-}
+/** A finished account gets a server-side session; an unfinished one gets its onboarding token. */
+export type LoginResult =
+  | { user: CurrentUser; needsOnboarding?: false }
+  | { user: CurrentUser; needsOnboarding: true; token: string; token_type?: string };
 
 // Same-origin /api/auth/* Route Handlers that own the httpOnly session cookies.
 const authBff = createApiClient({ baseURL: "/api/auth" });
@@ -201,33 +200,36 @@ export const authApi = {
   getCurrentUser: () => browserApi.get<CurrentUser>(userProfileRoutes.SHOW),
 
   // Verify-email OTP.
-  verifyAccountOtp: (data: VerifyOtpPayload) => browserApi.post<void>("/user/otp/verify", data),
+  verifyAccountOtp: (data: VerifyOtpPayload) => browserApi.post<void>(userOtpRoutes.VERIFY, data),
 
   // Password-reset OTP; save `result.token` before going to reset-password.
   verifyPasswordResetOtp: (data: VerifyOtpPayload) =>
-    browserApi.post<VerifyPasswordResetOtpResult>("/user/auth/check-otp", data),
+    browserApi.post<VerifyPasswordResetOtpResult>(userAuthRoutes.CHECK_OTP, data),
 
   // Resend account OTP (also used by the password-reset verify screen today).
-  resendOtp: () => browserApi.post<void>("/user/otp/resend"),
+  resendOtp: () => browserApi.post<void>(userOtpRoutes.RESEND),
 
   forgotPassword: (data: ForgotPasswordPayload) =>
-    browserApi.post<ForgotPasswordResult>("/user/auth/forgot-password", data),
+    browserApi.post<ForgotPasswordResult>(userAuthRoutes.FORGOT_PASSWORD, data),
 
   resetPassword: (data: ResetPasswordPayload) =>
-    browserApi.post<void>("/user/auth/reset-password", data),
+    browserApi.post<void>(userAuthRoutes.RESET_PASSWORD, data),
 
   // Shared helper for the profile settings change-* endpoints.
   updateProfileField: (url: string, data: unknown) =>
     browserApi.patch<UpdateProfileFieldResult>(url, data),
 
   changePassword: (data: ChangePasswordPayload) =>
-    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-password", data),
+    browserApi.patch<UpdateProfileFieldResult>(userProfileRoutes.SETTINGS_CHANGE_PASSWORD, data),
 
   changeProfileImage: (data: { profile_image: string }) =>
-    browserApi.patch<UpdateProfileFieldResult>("/user/profile/settings/change-profile-image", data),
+    browserApi.patch<UpdateProfileFieldResult>(
+      userProfileRoutes.SETTINGS_CHANGE_PROFILE_IMAGE,
+      data,
+    ),
 
   deleteAccount: (data: DeleteAccountPayload) =>
-    browserApi.post<{ user: null }>("/user/profile/settings/delete-account", data),
+    browserApi.post<{ user: null }>(userProfileRoutes.SETTINGS_DELETE_ACCOUNT, data),
 
   getNotificationSettings: () =>
     browserApi.get<AppSettingsResponse>(userProfileRoutes.NOTIFICATION_SETTINGS_SHOW),

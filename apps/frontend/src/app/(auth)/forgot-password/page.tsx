@@ -13,6 +13,7 @@ import { forgotPasswordSchema } from "@lemonade/validation";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
+import { applyFieldErrors, errorMessage } from "@/lib/api-error";
 
 export default function ForgotPasswordPage() {
   const { push } = useNavigation();
@@ -56,11 +57,13 @@ export default function ForgotPasswordPage() {
           });
           push(routes.VERIFY_CODE);
         },
-        onError: (error: Error) => {
+        onError: (error) => {
+          // Field problems show under the field; anything else as a toast.
+          if (applyFieldErrors(error, ["email"], formik.setFieldError)) return;
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: error.message,
+              message: errorMessage(error, "Something went wrong. Please try again."),
               type: "error",
             }),
           );

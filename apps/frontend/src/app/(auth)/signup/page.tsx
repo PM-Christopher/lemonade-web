@@ -85,10 +85,12 @@ export default function SignupPage() {
         setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
           path: "/",
           maxAge: 3600 * 6,
-          sameSite: false,
+          sameSite: "lax",
         });
         dispatch(authUser({ user: result.user }));
-        push(result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
+        window.location.assign(
+          result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL,
+        );
         return;
       }
 

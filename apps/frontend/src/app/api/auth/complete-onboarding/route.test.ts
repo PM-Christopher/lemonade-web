@@ -57,6 +57,6 @@ describe("POST /api/auth/complete-onboarding", () => {
     );
     expect(persistUserSession).toHaveBeenCalledWith("access", "refresh", 3600);
     expect(body.data).toEqual({ user });
-    expect(res.headers.get("set-cookie")).toMatch(/newToken=;.*Max-Age=0/i);
+    expect(res.headers.get("set-cookie")).toMatch(/newToken=;.*Expires=Thu, 01 Jan 1970/i);
   });
 });

@@ -12,15 +12,11 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
     <CookiesProvider>
       <QueryProvider>
         <Provider store={store}>
-          <ProgressProvider
-            height="4px"
-            color="#80BC00"
-            options={{ showSpinner: true }}
-            shallowRouting
-          />
-          <PersistGate loading={null} persistor={persistor}>
-            {children}
-          </PersistGate>
+          <ProgressProvider height="4px" color="#80BC00" options={{ showSpinner: true }}>
+            <PersistGate loading={null} persistor={persistor}>
+              {children}
+            </PersistGate>
+          </ProgressProvider>
         </Provider>
       </QueryProvider>
     </CookiesProvider>

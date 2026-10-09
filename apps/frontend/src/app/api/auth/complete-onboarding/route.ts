@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       data: { user: result.user },
     });
     // Clear the onboarding cookie on the same path the client set it on.
-    response.cookies.set(ONBOARDING_TOKEN_COOKIE, "", { path: "/", maxAge: 0 });
+    response.cookies.set(ONBOARDING_TOKEN_COOKIE, "", { path: "/", expires: new Date(0) });
     return response;
   } catch (err) {
     return bffErrorResponse(err);

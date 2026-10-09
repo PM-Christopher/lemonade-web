@@ -197,11 +197,13 @@ export const businessApi = {
       data,
     ),
 
-  // `type` is always "business" or "listing" — a real dynamic path
-  // segment, not a suffix on a fixed prefix, so it isn't threaded through
-  // a named constant the way the rest of this file is.
+  // A job is viewed either as the requester ("business") or as the listing owner ("listing").
   getJob: (type: string, id: number) =>
-    browserApi.get<GetJobResponse>(`/user/${type}/jobs/job/${id}`),
+    browserApi.get<GetJobResponse>(
+      buildPath(type === "listing" ? userListingRoutes.JOBS_SHOW : userBusinessRoutes.JOBS_SHOW, {
+        id,
+      }),
+    ),
 
   filterBusiness: (value: {
     location: string;

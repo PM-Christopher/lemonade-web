@@ -28,9 +28,14 @@ export const signup = async (
     setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
       path: "/",
       maxAge: 3600 * 6,
-      sameSite: false,
+      sameSite: "lax",
     });
     dispatch(authUser(result));
+    // Full navigation so the onboarding cookie is on the next document request.
+    if (typeof window !== "undefined") {
+      window.location.assign(routes.VERIFY_EMAIL);
+      return;
+    }
     navigate.push(routes.VERIFY_EMAIL);
   } catch (error) {
     dispatch(

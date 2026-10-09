@@ -30,16 +30,22 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
   // Onboarding pages need the onboarding token; without it, send the visitor to login.
   useEffect(() => {
-    if (!newToken) {
-      const isAuthRoute =
-        pathname === routes.SIGNUP ||
-        pathname === routes.LOGIN ||
-        pathname === routes.FORGOT_PASSWORD ||
-        pathname === routes.RESET_PASSWORD;
-      if (!isAuthRoute) {
-        replace(routes.LOGIN);
-      }
-    }
+    if (newToken) return;
+
+    const isAuthRoute =
+      pathname === routes.SIGNUP ||
+      pathname === routes.LOGIN ||
+      pathname === routes.FORGOT_PASSWORD ||
+      pathname === routes.RESET_PASSWORD;
+    if (isAuthRoute) return;
+
+    // Signup setCookie can beat react-cookie's hook update; check the real cookie too.
+    const onboardingCookieSet = document.cookie
+      .split(";")
+      .some((part) => part.trim().startsWith(`${ONBOARDING_TOKEN_COOKIE}=`));
+    if (onboardingCookieSet) return;
+
+    replace(routes.LOGIN);
   }, [pathname, newToken, replace]);
 
   useEffect(() => {
