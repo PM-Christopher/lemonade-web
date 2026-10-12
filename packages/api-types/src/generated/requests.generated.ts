@@ -317,6 +317,13 @@ export interface PushNotificationSettingsRequest {
   push_notification: boolean;
 }
 
+export interface QuoteEventTicketsRequest {
+  tickets: {
+    id: string;
+    quantity: number;
+  }[];
+}
+
 export interface RedeemRewardPointsRequest {
   points?: number;
   idempotency_key: string;

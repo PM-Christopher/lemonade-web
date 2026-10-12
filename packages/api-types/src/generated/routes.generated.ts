@@ -257,6 +257,7 @@ export const userEventsRoutes = Object.freeze({
   ATTENDEES_LIST: "/user/events/attendees", // GET
   ATTENDEES_MY_TICKET: "/user/events/attendees/my-ticket/{id}", // GET
   ATTENDEES_MY_TICKETS: "/user/events/attendees/my-tickets", // GET
+  ATTENDEES_TICKET_QUOTE: "/user/events/attendees/{id}/ticket-quote", // POST
   ATTENDEES_TICKETS: "/user/events/attendees/{id}/tickets", // GET
   CHECK_IN: "/user/events/{id}/{guest_id}/check-in", // PATCH
   CREATE: "/user/events/create-event", // POST

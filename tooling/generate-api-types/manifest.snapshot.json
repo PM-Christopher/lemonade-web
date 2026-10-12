@@ -1635,6 +1635,18 @@
     "fields": null
   },
   {
+    "method": "POST",
+    "uri": "/v1/user/events/attendees/{id}/ticket-quote",
+    "name": "v1.user.events.attendees.ticket-quote",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Event\\QuoteEventTicketsRequest",
+    "fields": {
+      "tickets": ["array", "required"],
+      "tickets.*.id": ["uuid", "required"],
+      "tickets.*.quantity": ["numeric", "required"]
+    }
+  },
+  {
     "method": "GET",
     "uri": "/v1/user/events/attendees/{id}/tickets",
     "name": "v1.user.events.attendees.tickets",
