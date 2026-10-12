@@ -39,3 +39,9 @@ overrides:
   "source-map-js@<1.2.2": "^1.2.2"
   # Firestore pins ~1.9.0, which has the getAuthContext and error-leak advisories.
   "@grpc/grpc-js@<1.13.6": "^1.13.6"
+  # Lighthouse CI only. tmp path-traversal fix; callers only use fileSync.
+  "tmp@<0.2.6": "^0.2.6"
+  # Lighthouse CI only. basic-ftp 5.x has a listing-parser DoS; 6.x only tightens FTP defaults.
+  "basic-ftp@<6.2.1": "^6.2.1"
+  # Lighthouse CI only. uuid 11 still ships CommonJS and v4().
+  "uuid@<11.1.1": "^11.1.1"
