@@ -2,28 +2,19 @@ import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
-import { getDistanceFromLatLonInKm } from "@/lib/helper";
+import { formatDistanceAway } from "@/lib/helper";
 import type { ChatInvite } from "@/features/connect/api";
-
-interface ConnectAuthUser {
-  connect_info?: { latitude?: number; longitude?: number } | null;
-}
 
 type RequestInterface = {
   toggle: () => void;
   invite: ChatInvite;
   toggleInviteIndex: (index: number) => void;
   index: number;
-  user: ConnectAuthUser | null;
 };
 
-const RequestCard: React.FC<RequestInterface> = ({
-  toggle,
-  invite,
-  toggleInviteIndex,
-  index,
-  user,
-}) => {
+const RequestCard: React.FC<RequestInterface> = ({ toggle, invite, toggleInviteIndex, index }) => {
+  const distance = formatDistanceAway(invite?.distance_km);
+
   return (
     <>
       <div
@@ -51,16 +42,12 @@ const RequestCard: React.FC<RequestInterface> = ({
             </p>
 
             <div className="mt-1 flex items-center gap-2 text-[12px] text-gray-500">
-              <p className="whitespace-nowrap">
-                {getDistanceFromLatLonInKm(
-                  user?.connect_info?.latitude,
-                  user?.connect_info?.longitude,
-                  invite?.location?.latitude,
-                  invite?.location?.longitude,
-                )}{" "}
-                km away
-              </p>
-              <span className="text-gray-300">|</span>
+              {distance && (
+                <>
+                  <p className="whitespace-nowrap">{distance}</p>
+                  <span className="text-gray-300">|</span>
+                </>
+              )}
               <p className="laptop:max-w-full max-w-[180px] truncate">{invite?.message}</p>
             </div>
           </div>

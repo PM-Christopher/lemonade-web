@@ -137,7 +137,6 @@ const RequestsClient = () => {
                     key={index}
                     invite={invite}
                     toggle={toggleMenu}
-                    user={user}
                   />
                 ))
               ) : (
@@ -174,12 +173,7 @@ const RequestsClient = () => {
           <InviteModal invite={invites[inviteIndex]} toggle={toggleMenu} isOpen={isOpen} />
         )}
         {connUser && (
-          <ConnectModal
-            users={connUser}
-            toggle={toggleConnectModal}
-            isOpen={isConnectOpen}
-            authUser={user}
-          />
+          <ConnectModal users={connUser} toggle={toggleConnectModal} isOpen={isConnectOpen} />
         )}
       </section>
     </MainLayout>

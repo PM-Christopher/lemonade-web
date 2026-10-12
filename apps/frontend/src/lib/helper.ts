@@ -87,28 +87,11 @@ export const formatSingleTime = (timeString: string) => {
   return moment(timeString).format("HH:mm");
 };
 
-export const getDistanceFromLatLonInKm = (
-  lat1: number | null | undefined,
-  lon1: number | null | undefined,
-  lat2: number | null | undefined,
-  lon2: number | null | undefined,
-) => {
-  const toRad = (value: number) => (value * Math.PI) / 180;
-
-  const R = 6371; // Earth's radius in km
-  const dLat = toRad((lat2 ?? 0) - (lat1 ?? 0));
-  const dLon = toRad((lon2 ?? 0) - (lon1 ?? 0));
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1 ?? 0)) *
-      Math.cos(toRad(lat2 ?? 0)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  // Distance in km
-  return Math.round(R * c);
+// Label for a server-computed whole-km distance; null when the server has none.
+export const formatDistanceAway = (km: number | null | undefined): string | null => {
+  if (km === null || km === undefined) return null;
+  if (km < 1) return "Under 1 km away";
+  return `${km.toLocaleString("en-US")} km away`;
 };
 
 export const getInitials = (name?: string | null): string => {

@@ -4,12 +4,10 @@ import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { formatStringUCFirst, getDistanceFromLatLonInKm } from "@/lib/helper";
+import { formatDistanceAway, formatStringUCFirst } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { useInviteResponseMutation } from "@/features/connect/mutations";
-import { useSelector } from "react-redux";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import type { RootState } from "@/redux/store";
 import type { ChatInvite } from "@/features/connect/api";
 
 type InviteInterface = {
@@ -20,7 +18,7 @@ type InviteInterface = {
 
 const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
   const dispatch = useAppDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const distance = formatDistanceAway(invite?.distance_km);
   const inviteResponseMutation = useInviteResponseMutation();
 
   const requestAction = (action: "accepted" | "rejected") => {
@@ -99,18 +97,12 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
             )}
 
             {/* Distance */}
-            <div className="text-mid-green mt-2 flex items-center gap-2 text-[12px]">
-              <LocationIcon />
-              <p>
-                {getDistanceFromLatLonInKm(
-                  user?.connect_info?.latitude,
-                  user?.connect_info?.longitude,
-                  invite?.location?.latitude,
-                  invite?.location?.longitude,
-                )}{" "}
-                kms away
-              </p>
-            </div>
+            {distance && (
+              <div className="text-mid-green mt-2 flex items-center gap-2 text-[12px]">
+                <LocationIcon />
+                <p>{distance}</p>
+              </div>
+            )}
 
             {/* Message */}
             {invite?.message && (

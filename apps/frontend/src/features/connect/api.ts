@@ -42,7 +42,8 @@ export interface ChatInvite {
     bio: string | null;
   };
   message: string | null;
-  location: { longitude: number | null; latitude: number | null };
+  // Whole km from the viewer, computed by the backend; null when unknown.
+  distance_km: number | null;
 }
 
 export interface InvitesResponse {
@@ -64,12 +65,8 @@ export interface FoundUser {
   bio: string | null;
   socials: Array<{ name: string; value: string }>;
   profile_image: string | null;
-  connect_info: {
-    longitude: number | null;
-    latitude: number | null;
-    location: string | null;
-    visibility: boolean | null;
-  };
+  // Whole km from the viewer, computed by the backend; null when unknown.
+  distance_km: number | null;
   hasConnected: boolean;
 }
 

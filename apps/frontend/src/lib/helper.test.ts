@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getSafeImageSrc } from "./helper";
+import { formatDistanceAway, getSafeImageSrc } from "./helper";
 
 // next/image throws "Invalid src prop" and crashes the whole page for any
 // hostname not in next.config.mjs's images.remotePatterns — caught by a
@@ -29,5 +29,21 @@ describe("getSafeImageSrc", () => {
 
     const bucketUrl = "https://dev-lemonade-bucket.lon1.digitaloceanspaces.com/events/foo.jpg";
     expect(getSafeImageSrc(bucketUrl, "/fallback.jpg")).toBe(bucketUrl);
+  });
+});
+
+describe("formatDistanceAway", () => {
+  it("returns null when the server sent no distance", () => {
+    expect(formatDistanceAway(null)).toBeNull();
+    expect(formatDistanceAway(undefined)).toBeNull();
+  });
+
+  it("labels sub-kilometre distances", () => {
+    expect(formatDistanceAway(0)).toBe("Under 1 km away");
+  });
+
+  it("renders the server's whole-km value with separators", () => {
+    expect(formatDistanceAway(526)).toBe("526 km away");
+    expect(formatDistanceAway(1204)).toBe("1,204 km away");
   });
 });

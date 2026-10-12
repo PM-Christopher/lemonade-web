@@ -9,21 +9,21 @@ import { useFormik } from "formik";
 import { useAppDispatch } from "@/redux/hook";
 import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { getDistanceFromLatLonInKm } from "@/lib/helper";
+import { formatDistanceAway } from "@/lib/helper";
 import type { FoundUser } from "@/features/connect/api";
 
 type ConnectInterface = {
   toggle: () => void;
   isOpen: boolean;
   users: FoundUser[];
-  authUser: { connect_info?: { latitude?: number; longitude?: number } | null } | null;
 };
 
-const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authUser }) => {
+const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => {
   const dispatch = useAppDispatch();
   const sendInviteMutation = useSendInviteMutation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const user = users[currentIndex];
+  const distance = formatDistanceAway(user?.distance_km);
   const connectSchema = yup.object({
     message: yup.string(),
   });
@@ -125,18 +125,12 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users, authU
             <p className="text-[12px] text-gray-500">{user?.industry}</p>
 
             {/* Distance */}
-            <div className="text-mid-green mt-3 flex items-center gap-2 text-[12px]">
-              <LocationIcon />
-              <p>
-                {getDistanceFromLatLonInKm(
-                  authUser?.connect_info?.latitude,
-                  authUser?.connect_info?.longitude,
-                  user?.connect_info?.latitude,
-                  user?.connect_info?.longitude,
-                )}{" "}
-                kms away
-              </p>
-            </div>
+            {distance && (
+              <div className="text-mid-green mt-3 flex items-center gap-2 text-[12px]">
+                <LocationIcon />
+                <p>{distance}</p>
+              </div>
+            )}
 
             {/* Already Connected */}
             {user?.hasConnected ? (

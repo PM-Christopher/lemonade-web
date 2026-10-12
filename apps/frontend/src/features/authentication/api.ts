@@ -48,8 +48,6 @@ export interface SessionUser {
   socials?: UserSocial[];
   address?: UserAddress | null;
   referral_code?: string | null;
-  // Not sent by today's user resources; read for the connect distance badge.
-  connect_info?: { latitude?: number; longitude?: number } | null;
   // Set locally by onboarding and payment screens, not by the backend.
   hasPin?: boolean;
   createdAccount?: boolean;
