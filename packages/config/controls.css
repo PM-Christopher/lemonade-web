@@ -51,3 +51,14 @@
   border: 1px solid #3b4152;
   padding: 8px 16px;
 }
+
+/* Placeholders read as hints, not values: normal weight in the muted colour. */
+@layer base {
+  input::placeholder,
+  textarea::placeholder,
+  [role="combobox"][data-placeholder] > span {
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+    opacity: 1;
+  }
+}
