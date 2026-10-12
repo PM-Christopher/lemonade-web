@@ -53,11 +53,11 @@ function WalletSettingsClient() {
       requestPayoutMutation.mutate(
         {},
         {
-          onSuccess: () => {
+          onSuccess: (result) => {
             dispatch(
               updateToastifyReducer({
                 show: true,
-                message: "Payout requested. It will be paid into your saved bank account.",
+                message: `Payout of ₦${formatNumberWithCommas(Number(result.amount) || 0)} requested. It will be paid into your saved bank account.`,
                 type: "success",
               }),
             );

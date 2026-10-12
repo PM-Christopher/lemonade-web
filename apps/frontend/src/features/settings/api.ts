@@ -97,6 +97,8 @@ export interface RequestPayoutResponse {
   message: string;
   withdrawal_request_id: string;
   amount_minor: number;
+  // Server-formatted major units, e.g. "150000.00".
+  amount: string;
 }
 
 export interface CreateBankAccountPayload {

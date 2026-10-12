@@ -147,6 +147,29 @@ describe("WalletSettingsClient — payout request", () => {
     expect(payoutMutateMock).toHaveBeenCalledWith({}, expect.any(Object));
   });
 
+  it("shows the server-formatted payout amount in the success toast", () => {
+    payoutMutateMock.mockImplementation((_payload, opts) =>
+      opts.onSuccess({
+        message: "Your payout request has been submitted",
+        withdrawal_request_id: "wr-1",
+        amount_minor: 15000000,
+        amount: "150000.00",
+      }),
+    );
+    render(<WalletSettingsClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: /request pay ?out/i }));
+
+    expect(dispatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          message: expect.stringContaining("Payout of ₦150,000 requested"),
+          type: "success",
+        }),
+      }),
+    );
+  });
+
   it("shows the server's reason when a payout is refused", () => {
     payoutMutateMock.mockImplementation((_payload, opts) =>
       opts.onError(
