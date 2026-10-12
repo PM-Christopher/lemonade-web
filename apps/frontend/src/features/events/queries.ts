@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import type { QuoteEventTicketsRequest } from "@lemonade/api-types/generated";
 import { eventsApi } from "./api";
 
 export const eventKeys = {
@@ -12,6 +13,8 @@ export const eventKeys = {
     [...eventKeys.all(), "affiliateEventDetail", id] as const,
   affiliateData: () => [...eventKeys.all(), "affiliateData"] as const,
   ticketData: (id: number | string) => [...eventKeys.all(), "ticketData", id] as const,
+  ticketQuote: (id: number | string, tickets: QuoteEventTicketsRequest["tickets"]) =>
+    [...eventKeys.all(), "ticketQuote", id, tickets] as const,
   guestList: (id: number | string) => [...eventKeys.all(), "guestList", id] as const,
   guestDetails: (id: number | string, guestId: number | string) =>
     [...eventKeys.all(), "guestDetails", id, guestId] as const,
@@ -110,6 +113,21 @@ export function useEventTicketDataQuery(
     queryFn: () => eventsApi.getEventTicketData(id as number),
     staleTime: 30_000,
     enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+// Server price for the current selection. Money and availability, so never stale.
+export function useTicketQuoteQuery(
+  id: number | string | undefined,
+  tickets: QuoteEventTicketsRequest["tickets"],
+) {
+  return useQuery({
+    queryKey: eventKeys.ticketQuote(id ?? 0, tickets),
+    queryFn: () => eventsApi.getTicketQuote(id as number, { tickets }),
+    staleTime: 0,
+    placeholderData: keepPreviousData,
+    retry: false,
+    enabled: Boolean(id) && tickets.length > 0,
   });
 }
 

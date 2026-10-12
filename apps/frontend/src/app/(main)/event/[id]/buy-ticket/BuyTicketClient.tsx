@@ -11,10 +11,12 @@ import { Button } from "@lemonade/ui";
 import { useSearchParams } from "next/navigation";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { TicketDetails, TicketInterface } from "@/interfaces/EventInterface";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { addTickets } from "@/features/events/event.slice";
-import { useEventTicketDataQuery } from "@/features/events/queries";
+import { useEventTicketDataQuery, useTicketQuoteQuery } from "@/features/events/queries";
+import useDebounce from "@/hooks/useDebounce";
+import { routes } from "@/lib/routes";
+import { TicketQuoteBreakdown } from "@/components/events/TicketQuoteBreakdown";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronUp } from "lucide-react";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -40,7 +42,6 @@ const BuyTicketClient = ({ id }: { id: number }) => {
       ticket_name: ticket.name,
       ticket_description: ticket.description,
       quantity: 0,
-      price: ticket.price,
       purchase_limit: ticket.purchase_limit,
     }));
   }, [tickets]);
@@ -55,7 +56,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
     setQuantities((prevQuantities) =>
       prevQuantities.map((ticketDetail, i) => {
         if (i == index) {
-          // Only increment if the quantity is less than purchase_limit
+          // Stop at the ticket's purchase limit
           if (ticketDetail.quantity < ticketDetail.purchase_limit) {
             return { ...ticketDetail, quantity: ticketDetail.quantity + 1 };
           }
@@ -75,33 +76,33 @@ const BuyTicketClient = ({ id }: { id: number }) => {
     );
   };
 
-  const calculateSubtotal = () => {
-    return quantities.reduce((total, ticket) => {
-      return total + ticket.quantity * ticket.price;
-    }, 0);
+  const selectedTickets = quantities.filter((ticket) => ticket.quantity > 0);
+  const selection = useMemo(
+    () =>
+      quantities
+        .filter((ticket) => ticket.quantity > 0)
+        .map((ticket) => ({ id: String(ticket.id), quantity: ticket.quantity })),
+    [quantities],
+  );
+  // Wait for the stepper to settle before asking the server for a price.
+  const { debouncedValue: debouncedSelection } = useDebounce(selection, 300);
+  const quoteQuery = useTicketQuoteQuery(id, debouncedSelection);
+  const hasSelection = selection.length > 0;
+  const quoteState = {
+    quote: quoteQuery.data,
+    hasSelection,
+    isPending: quoteQuery.isFetching || selection !== debouncedSelection,
+    error: quoteQuery.error,
   };
-
-  const totalAmount = () => {
-    return calculateSubtotal();
-  };
-
-  const hasValidQuantity = (tickets: TicketDetails[]): boolean => {
-    return tickets.some((ticket) => ticket.quantity > 0);
-  };
+  const totalLabel = hasSelection ? (quoteQuery.data?.total_display ?? "…") : "₦0.00";
 
   const referralFromUrl = searchParams.get("referral");
-  const buyTicketHref = referralFromUrl
-    ? `/event/${id}/assign-ticket?referral=${encodeURIComponent(referralFromUrl)}`
-    : `/event/${id}/assign-ticket`;
+  const assignTicketHref = referralFromUrl
+    ? `${routes.EVENT_ASSIGN_TICKET(id)}?referral=${encodeURIComponent(referralFromUrl)}`
+    : routes.EVENT_ASSIGN_TICKET(id);
 
   const proceed = () => {
-    const validTickets = quantities.filter((ticket) => ticket.quantity > 0);
-
-    const data = {
-      tickets: validTickets,
-      total: totalAmount(),
-    };
-    if (!hasValidQuantity(data.tickets)) {
+    if (selectedTickets.length === 0) {
       dispatch(
         updateToastifyReducer({
           show: true,
@@ -111,8 +112,8 @@ const BuyTicketClient = ({ id }: { id: number }) => {
       );
       return;
     }
-    dispatch(addTickets(data));
-    push(buyTicketHref);
+    dispatch(addTickets({ tickets: selectedTickets }));
+    push(assignTicketHref);
   };
 
   const toggleSummaryModal = () => {
@@ -179,30 +180,37 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                             {ticket.name}
                           </p>
                           <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                            {ticket?.price === 0 ? "Free" : `₦ ${ticket?.price}`}
+                            {ticket.price === 0 ? "Free" : ticket.price_display}
                           </p>
                           <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
                             {ticket.description}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div
+                          <button
+                            type="button"
+                            aria-label={`Remove one ${ticket.name}`}
                             className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-[8px] p-3"
                             onClick={() => handleDecrement(index)}
                           >
-                            <p className="">-</p>
-                          </div>
+                            -
+                          </button>
                           <div className="bg-light-white flex h-7 w-[27.75px] items-center justify-center rounded-[8px] p-4">
-                            <p className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]">
+                            <p
+                              data-testid={`quantity-${ticket.id}`}
+                              className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]"
+                            >
                               {quantities[index]?.quantity}
                             </p>
                           </div>
-                          <div
+                          <button
+                            type="button"
+                            aria-label={`Add one ${ticket.name}`}
                             className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-[8px] p-3"
                             onClick={() => handleIncrement(index)}
                           >
-                            <p className="">+</p>
-                          </div>
+                            +
+                          </button>
                         </div>
                       </div>
                       <div className="border-grey-20 my-2 border-t"></div>
@@ -212,17 +220,10 @@ const BuyTicketClient = ({ id }: { id: number }) => {
               )}
               <div className="laptop:hidden flex items-center justify-center gap-4">
                 <div className="flex w-[147px] items-center gap-4">
-                  <p className="text-mid-green text-[20px] font-bold">
-                    {totalAmount() === 0 ? (
-                      <>₦ {totalAmount()}</>
-                    ) : (
-                      <>₦ {formatNumberWithCommas(totalAmount())}</>
-                    )}
-                  </p>
-                  <ChevronUp
-                    className="text-mid-green cursor-pointer"
-                    onClick={toggleSummaryModal}
-                  />
+                  <p className="text-mid-green text-[20px] font-bold">{totalLabel}</p>
+                  <button type="button" aria-label="Show summary" onClick={toggleSummaryModal}>
+                    <ChevronUp className="text-mid-green cursor-pointer" />
+                  </button>
                 </div>
                 <Button
                   className="bg-gradient-green h-12 w-[180px] rounded-xl border-b-2 px-12 py-3.5 shadow-none"
@@ -235,61 +236,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
             <div className="laptop:block hidden">
               <div className="w-[480px] rounded-xl bg-white px-2.5 py-3">
                 <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
-                {quantities?.map(
-                  (quantity: TicketDetails, index: number) =>
-                    quantity.quantity > 0 && (
-                      <div className="mt-4 flex justify-between" key={index}>
-                        <div>
-                          <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
-                            {quantity.quantity} {quantity.ticket_name}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
-                            {quantity.price * quantity.quantity === 0 ? (
-                              <>₦ {quantity.price * quantity.quantity}</>
-                            ) : (
-                              <>₦ {formatNumberWithCommas(quantity.price * quantity.quantity)}</>
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                    ),
-                )}
-                <div className="border-grey-20 my-4 border-t"></div>
-                <div className="mt-4 flex justify-between">
-                  <div>
-                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
-                      Subtotal
-                    </p>
-                  </div>
-                  <div>
-                    <p className="tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold">
-                      {calculateSubtotal() === 0 ? (
-                        <>₦ {calculateSubtotal()}</>
-                      ) : (
-                        <>₦ {formatNumberWithCommas(calculateSubtotal())}</>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="border-grey-20 my-4 border-t"></div>
-                <div className="mt-4 flex justify-between">
-                  <div>
-                    <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[27px] font-normal">
-                      Total
-                    </p>
-                  </div>
-                  <div>
-                    <p className="tracking-custom text-light-black font-sans text-[18px] leading-[27px] font-semibold">
-                      {totalAmount() === 0 ? (
-                        <>₦ {totalAmount()}</>
-                      ) : (
-                        <>₦ {formatNumberWithCommas(totalAmount())}</>
-                      )}
-                    </p>
-                  </div>
-                </div>
+                <TicketQuoteBreakdown {...quoteState} />
                 <div className="mt-5 flex items-center justify-between">
                   <div>
                     <p className="tracking-custom text-text-grey pl-10 font-sans text-[18px] leading-[27px] font-normal">
@@ -315,11 +262,10 @@ const BuyTicketClient = ({ id }: { id: number }) => {
         </section>
       </section>
       <TicketSummary
-        quantities={quantities}
         isOpen={summaryModal}
         toggle={toggleSummaryModal}
-        total={totalAmount()}
-        subtotal={calculateSubtotal()}
+        totalLabel={totalLabel}
+        quoteState={quoteState}
         proceed={proceed}
       />
     </MainLayout>

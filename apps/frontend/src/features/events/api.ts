@@ -1,6 +1,10 @@
 // Endpoints for the events domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
-import { userEventsRoutes, buildPath } from "@lemonade/api-types/generated";
+import {
+  userEventsRoutes,
+  buildPath,
+  type QuoteEventTicketsRequest,
+} from "@lemonade/api-types/generated";
 import type {
   EventInterface,
   TicketInterface,
@@ -194,6 +198,35 @@ export interface BuyTicketResponse {
   order_id?: number | string;
 }
 
+// Mirrors the backend TicketQuoteResource. Every figure is server-priced.
+export interface TicketQuoteLine {
+  ticket_id: string;
+  name: string;
+  quantity: number;
+  unit_price_minor: number;
+  unit_price_display: string;
+  unit_fee_minor: number;
+  unit_fee_display: string;
+  subtotal_minor: number;
+  subtotal_display: string;
+  fees_minor: number;
+  fees_display: string;
+  total_minor: number;
+  total_display: string;
+}
+
+export interface TicketQuoteResponse {
+  event_id: string;
+  currency: string;
+  lines: TicketQuoteLine[];
+  subtotal_minor: number;
+  subtotal_display: string;
+  fees_minor: number;
+  fees_display: string;
+  total_minor: number;
+  total_display: string;
+}
+
 export interface MyTicketsResponse {
   upcoming: MyTicketInterface[];
   past: MyTicketInterface[];
@@ -271,6 +304,13 @@ export const eventsApi = {
   buyTicket: (eventId: number | string, data: BuyTicketPayload) =>
     browserApi.post<BuyTicketResponse>(
       buildPath(userEventsRoutes.ATTENDEES_ASSIGN_TICKETS, { id: eventId }),
+      data,
+    ),
+
+  // Prices a selection exactly as checkout will charge it.
+  getTicketQuote: (eventId: number | string, data: QuoteEventTicketsRequest) =>
+    browserApi.post<TicketQuoteResponse>(
+      buildPath(userEventsRoutes.ATTENDEES_TICKET_QUOTE, { id: eventId }),
       data,
     ),
 

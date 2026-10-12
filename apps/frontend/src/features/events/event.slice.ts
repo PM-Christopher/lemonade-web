@@ -9,7 +9,6 @@ import { EventInterface, TicketDetails } from "@/interfaces/EventInterface";
 // lists, ...) now lives in features/events/queries.ts and mutations.ts.
 interface eventState {
   tickets: TicketDetails[];
-  total: number;
   event: EventInterface | null;
   newTickets: unknown[];
   free_event: { completed?: boolean } | null;
@@ -18,7 +17,6 @@ interface eventState {
 
 const initialState: eventState = {
   tickets: [],
-  total: 0,
   event: null,
   newTickets: [],
   free_event: {},
@@ -29,9 +27,8 @@ const eventSlice = createSlice({
   name: "event",
   initialState,
   reducers: {
-    addTickets: (state, { payload }) => {
-      state.total = payload.total;
-      state.tickets = payload.tickets;
+    addTickets: (state, action: PayloadAction<{ tickets: TicketDetails[] }>) => {
+      state.tickets = action.payload.tickets;
     },
     addEvent: (state, { payload }) => {
       state.event = payload;

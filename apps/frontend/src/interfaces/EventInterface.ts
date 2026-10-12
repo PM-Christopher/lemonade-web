@@ -48,6 +48,7 @@ export interface TicketInterface {
   id: number;
   name: string;
   price: number;
+  price_display?: string;
   purchase_limit: number;
   stock_type: string;
   ticket_id: string;
@@ -62,7 +63,6 @@ export interface TicketDetails {
   ticket_name: string;
   ticket_description: string;
   quantity: number;
-  price: number;
   purchase_limit: number;
 }
 
