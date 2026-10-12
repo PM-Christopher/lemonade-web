@@ -7,18 +7,18 @@ import OtpInput from "react-otp-input";
 import { checkError } from "@lemonade/domain";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
-import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { otpSchema } from "@lemonade/validation";
 import {
-  useResendOtpMutation,
+  useForgotPasswordMutation,
   useVerifyPasswordResetOtpMutation,
 } from "@/features/authentication/mutations";
+import { errorMessage } from "@/lib/api-error";
+import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { ApiError } from "@lemonade/api-client";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { setIsRouting } from "@/redux/tempSlice";
 import { FormikButton } from "@/components/global/FormikButton";
-import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -29,10 +29,9 @@ export default function VerifyCodePage() {
   const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const [cookie, setCookie] = useCookies(["newToken", "email"]);
-  const { user } = useSelector((state: RootState) => state.auth);
   const [seconds, setSeconds] = useState<number>(COUNTDOWN_DURATION);
   const [canResend, setCanResend] = useState<boolean>(false);
-  const resendOtpMutation = useResendOtpMutation();
+  const forgotPasswordMutation = useForgotPasswordMutation();
   const verifyPasswordResetOtpMutation = useVerifyPasswordResetOtpMutation();
   const isVerifying = verifyPasswordResetOtpMutation.isPending;
 
@@ -80,31 +79,40 @@ export default function VerifyCodePage() {
 
   const handleResend = () => {
     formik.setFieldValue("code", null);
-    resendOtpMutation.mutate(undefined, {
-      onSuccess: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: `A new code has been sent to ${user?.email}. Please try again`,
-            type: "success",
-          }),
-        );
-        const newStartTime = Date.now();
-        localStorage.setItem(STORAGE_KEY, newStartTime.toString());
-        setSeconds(COUNTDOWN_DURATION);
-        setCanResend(false);
+    // A new reset request sends a fresh code and a fresh reset session.
+    forgotPasswordMutation.mutate(
+      { email: cookie.email },
+      {
+        onSuccess: (result) => {
+          setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
+            path: "/",
+            maxAge: 3600 * 6,
+            sameSite: "lax",
+          });
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: `A new code has been sent to ${result.email}. Please try again`,
+              type: "success",
+            }),
+          );
+          const newStartTime = Date.now();
+          localStorage.setItem(STORAGE_KEY, newStartTime.toString());
+          setSeconds(COUNTDOWN_DURATION);
+          setCanResend(false);
+        },
+        onError: (error) => {
+          setCanResend(true);
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: errorMessage(error, "We couldn't send a new code. Please try again."),
+              type: "error",
+            }),
+          );
+        },
       },
-      onError: (error: { message?: string }) => {
-        setCanResend(true);
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error?.message,
-            type: "error",
-          }),
-        );
-      },
-    });
+    );
   };
 
   const formik = useFormik({
