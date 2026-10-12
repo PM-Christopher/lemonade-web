@@ -30,3 +30,12 @@ minimumReleaseAgeExclude:
 overrides:
   # Patched for GHSA critical advisories; only reached via eslint-plugin-boundaries.
   handlebars: ">=4.7.10"
+  # Next pins postcss 8.4.31, which has sourceMappingURL file-read advisories.
+  "postcss@<8.5.23": "^8.5.23"
+  # Lint-time DoS advisories in minimatch's brace-expansion, one entry per major line.
+  "brace-expansion@<1.1.21": "^1.1.21"
+  "brace-expansion@>=4.0.0 <5.0.12": "^5.0.12"
+  # Event-loop DoS advisory, reached via postcss and Tailwind.
+  "source-map-js@<1.2.2": "^1.2.2"
+  # Firestore pins ~1.9.0, which has the getAuthContext and error-leak advisories.
+  "@grpc/grpc-js@<1.13.6": "^1.13.6"
