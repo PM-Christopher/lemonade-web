@@ -1,47 +1,18 @@
-"use client";
-import { useNavigation } from "@/hooks/useNavigation";
-import React, { useState } from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
-import CancelSection from "@/components/settings/Sections/CancelSection";
-import ReasonSection from "@/components/settings/Sections/ReasonSection";
+import type { Metadata } from "next";
+import React from "react";
+import { BackHeader } from "@/components/global/BackHeader";
 import MainLayout from "@/components/layouts/MainLayout";
+import CancelSubscriptionClient from "./CancelSubscriptionClient";
 
-const CancelSubscriptionPage = () => {
-  const [section, setSection] = useState("reason");
-  const { back } = useNavigation();
+export const metadata: Metadata = { title: "Cancel subscription" };
 
-  const toggleSection = (secName: string) => {
-    setSection(secName);
-  };
-
-  const renderSection = () => {
-    switch (section) {
-      case "cancel":
-        return <CancelSection />;
-      case "reason":
-        return <ReasonSection toggle={toggleSection} />;
-      default:
-        return <CancelSection />;
-    }
-  };
+export default function CancelSubscriptionPage() {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => back()}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">
-              Cancel subscription
-            </p>
-          </div>
-        </div>
-        <section className="mt-12 flex flex-col items-center">{renderSection()}</section>
+        <BackHeader title="Cancel subscription" />
+        <CancelSubscriptionClient />
       </section>
     </MainLayout>
   );
-};
-
-export default CancelSubscriptionPage;
+}
