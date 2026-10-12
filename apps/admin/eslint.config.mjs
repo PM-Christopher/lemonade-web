@@ -126,9 +126,6 @@ export default [
             ],
         },
     },
-    // Pages still marked "use client" — split them and delete the entry.
-    noClientPagesOrLayouts([
-        "src/app/(main)/tribes/page.tsx",
-        "src/app/(main)/tribes/[[]id]/page.tsx",
-    ]),
+    // Pages and layouts stay Server Components; keep this allowlist empty.
+    noClientPagesOrLayouts([]),
 ];

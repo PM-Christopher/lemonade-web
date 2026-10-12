@@ -160,16 +160,6 @@ export default [
       ],
     },
   },
-  // Pages still marked "use client" — split them and delete the entry.
-  noClientPagesOrLayouts([
-    "src/app/(main)/settings/referral/page.tsx",
-    "src/app/(main)/settings/page.tsx",
-    "src/app/(main)/settings/plan/cancel-subscription/page.tsx",
-    "src/app/(main)/settings/profile/page.tsx",
-    "src/app/(main)/settings/account/page.tsx",
-    "src/app/(main)/settings/account/confirm-delete/page.tsx",
-    "src/app/(main)/event/create-event/page.tsx",
-    "src/app/(main)/event/add-ticket/page.tsx",
-    "src/app/(main)/event/[[]id]/assign-ticket/page.tsx",
-  ]),
+  // Pages and layouts stay Server Components; keep this allowlist empty.
+  noClientPagesOrLayouts([]),
 ];
