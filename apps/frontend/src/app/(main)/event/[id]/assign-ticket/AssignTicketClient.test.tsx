@@ -1,9 +1,8 @@
-import { Suspense } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { axe } from "jest-axe";
 import { ApiError } from "@lemonade/api-client";
-import AssignTicketPage from "./page";
+import AssignTicketClient from "./AssignTicketClient";
 
 const buyMutate = vi.fn();
 const dispatch = vi.fn();
@@ -39,11 +38,7 @@ vi.mock("next/navigation", () => ({
 
 const renderPage = async () => {
   await act(async () => {
-    render(
-      <Suspense fallback={null}>
-        <AssignTicketPage params={Promise.resolve({ id: 5 })} />
-      </Suspense>,
-    );
+    render(<AssignTicketClient id={5} />);
   });
 };
 
@@ -56,7 +51,7 @@ const fillBuyer = () => {
   });
 };
 
-describe("AssignTicketPage checkout", () => {
+describe("AssignTicketClient checkout", () => {
   beforeEach(() => {
     buyMutate.mockReset();
     dispatch.mockReset();
