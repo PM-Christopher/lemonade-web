@@ -24,9 +24,8 @@ interface MailpitMessage {
 }
 
 // The signup response comes back before the mail is visible in Mailpit —
-// poll for it rather than assuming it's instant. The shared layout
-// (resources/views/emails/layout.blade.php) prints the code on its own
-// line after "If you have a code".
+// poll for it rather than assuming it's instant. The email prints the
+// code after "Here's your code".
 async function readSignupOtp(toEmail: string): Promise<string> {
   const deadline = Date.now() + 15_000;
 
@@ -39,7 +38,7 @@ async function readSignupOtp(toEmail: string): Promise<string> {
       const full = await fetch(`${MAILPIT_URL}/api/v1/message/${match.ID}`);
       const message = (await full.json()) as MailpitMessage;
       const source = message.Text ?? message.HTML ?? "";
-      const code = /If you have a code\s+(\d{4})/.exec(source);
+      const code = /Here.s your code\s+(\d{4})/.exec(source);
       if (code) return code[1];
     }
 
