@@ -1,10 +1,11 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import PricingCard, { type PricingPlan } from "@/components/settings/PricingCard";
 import { useSelector } from "react-redux";
-import { useSubscriptionPlansQuery } from "@/features/authentication/queries";
+import { useSubscriptionPlansQuery, useSubscriptionQuery } from "@/features/authentication/queries";
+import { toSubscriptionState } from "@/features/authentication/api";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -36,7 +37,7 @@ const VerifiedSubscriptionModal = dynamic(
 );
 
 const PlanClient = () => {
-  const { subscription } = useSelector((state: RootState) => state.auth);
+  const { subscription, isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { back } = useNavigation();
   const dispatch = useAppDispatch();
   const subscriptionPlanMutation = useSubscriptionPlanMutation();
@@ -44,6 +45,11 @@ const PlanClient = () => {
   const searchParams = useSearchParams();
   const trxref = searchParams.get("trxref");
   const { data, isLoading: loading } = useSubscriptionPlansQuery();
+  // Redux only has the plan from login time, so load the current one here.
+  const { data: currentPlan } = useSubscriptionQuery({ enabled: isLoggedIn });
+  useEffect(() => {
+    if (currentPlan) dispatch(changeSubscription(toSubscriptionState(currentPlan)));
+  }, [currentPlan, dispatch]);
   const [isOpen, setIsOpen] = useState(false);
   const [subId, setSubId] = useState<number | null>(null);
   const [subMode, setSubMode] = useState<string>("");

@@ -174,10 +174,10 @@ export interface SubscriptionBenefits {
   verification_badge: boolean;
   tribe_creation: boolean;
   lemon_id: boolean;
-  event_creation: boolean;
+  event_creation: number;
   ticket_sales_commission: number;
   service_commission: number;
-  connection_range: number;
+  connection_range: string | number;
   offline_benefits: boolean;
 }
 
@@ -190,6 +190,25 @@ export interface SubscriptionSummary {
 
 export interface SubscriptionResponse {
   subscription: SubscriptionSummary & { benefits: SubscriptionBenefits };
+}
+
+// The shape the plan pages read from Redux (state.auth.subscription).
+export function toSubscriptionState(response: SubscriptionResponse) {
+  const { benefits, ...summary } = response.subscription;
+  return {
+    ...summary,
+    id: 0,
+    benefits: {
+      ver_badge: benefits.verification_badge,
+      forum_creation: benefits.tribe_creation,
+      lemon_id: benefits.lemon_id,
+      event_creation: benefits.event_creation,
+      sales_commission: benefits.ticket_sales_commission,
+      service_commission: benefits.service_commission,
+      connection_range: benefits.connection_range,
+      offline_benefits: benefits.offline_benefits,
+    },
+  };
 }
 
 export interface BillingHistoryItem {
