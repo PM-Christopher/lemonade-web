@@ -172,7 +172,7 @@ function WalletSettingsClient() {
                         : "bg-mid-green cursor-not-allowed opacity-70"
                     } `}
                     onClick={handlePayoutRequest}
-                    disabled={profileLoading}
+                    disabled={profileLoading || !user}
                   >
                     {profileLoading ? (
                       <>

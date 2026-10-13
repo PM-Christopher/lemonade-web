@@ -13,8 +13,13 @@ vi.mock("@/components/layouts/MainLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+let authState: { user: { has_bank_account: boolean } | null; isLoggedIn: boolean } = {
+  user: { has_bank_account: true },
+  isLoggedIn: true,
+};
+
 vi.mock("react-redux", () => ({
-  useSelector: () => ({ user: { has_bank_account: true }, isLoggedIn: true }),
+  useSelector: () => authState,
 }));
 
 const dispatchMock = vi.fn();
@@ -205,5 +210,14 @@ describe("WalletSettingsClient — payout eligibility", () => {
     render(<WalletSettingsClient />);
 
     expect(screen.queryByRole("button", { name: /request pay ?out/i })).not.toBeInTheDocument();
+  });
+
+  it("keeps the payout button disabled until the user has loaded", () => {
+    authState = { user: null, isLoggedIn: true };
+    walletQueryMock.mockReturnValue({ data: walletData, isLoading: false });
+    render(<WalletSettingsClient />);
+
+    expect(screen.getByRole("button", { name: /request pay ?out/i })).toBeDisabled();
+    authState = { user: { has_bank_account: true }, isLoggedIn: true };
   });
 });
