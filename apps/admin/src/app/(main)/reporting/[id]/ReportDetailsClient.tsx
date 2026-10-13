@@ -112,7 +112,7 @@ function ReportDetailsClient({ id }: { id: string }) {
               <div className={"w-[115px]"}>
                 <p className={"text-text-grey text-[12px] font-medium"}>Report ID:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>RE112332</p>
+              <p className={"text-[14px] font-medium"}>{report?.unique_id}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
               <div className={"w-[115px]"}>
