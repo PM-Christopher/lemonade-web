@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { watchRenderLoops } from "../support/render-loop";
 
 // Same rationale as tests/frontend/smoke.spec.ts — see that file's header.
 const ROUTES = [
@@ -20,6 +21,7 @@ for (const route of ROUTES) {
   test(`${route} renders without a client-side error`, async ({ page }) => {
     const pageErrors: Error[] = [];
     page.on("pageerror", (error) => pageErrors.push(error));
+    const repeatedMessages = watchRenderLoops(page);
 
     const response = await page.goto(route);
     expect(response?.ok(), `${route} returned ${response?.status()}`).toBeTruthy();
@@ -27,5 +29,9 @@ for (const route of ROUTES) {
     await expect(page.getByText("Unhandled Runtime Error")).toHaveCount(0);
 
     expect(pageErrors, pageErrors.map((e) => e.message).join("\n")).toHaveLength(0);
+
+    // Catches render loops, which repeat a warning instead of throwing.
+    const loops = await repeatedMessages();
+    expect(loops, loops.join("\n")).toHaveLength(0);
   });
 }
