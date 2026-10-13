@@ -29,8 +29,10 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
       { redirect_url },
       {
         onSuccess: (result) => {
+          // A paid tribe goes to checkout first. The page confirms the join once payment clears.
           if (result.authorization_url) {
             window.location.href = result.authorization_url;
+            return;
           }
           dispatch(
             updateToastifyReducer({

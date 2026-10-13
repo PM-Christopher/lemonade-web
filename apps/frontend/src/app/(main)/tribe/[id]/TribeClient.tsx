@@ -66,9 +66,13 @@ const TribeClient = ({ id }: { id: string }) => {
 
   const { data: tribeData, isLoading: tribeLoading } = useTribeQuery(id);
   const tribe = tribeData?.tribe ?? null;
-  const { data: threadsData, isLoading: dataLoading } = useThreadsQuery(id);
+  // A paid tribe's threads are for members, so a non-member only gets the summary.
+  const canViewContent = tribe !== null && (!tribe.monetized || tribe.has_joined);
+  const { data: threadsData, isLoading: dataLoading } = useThreadsQuery(id, {
+    enabled: canViewContent,
+  });
   const threads = useMemo(() => threadsData?.threads ?? [], [threadsData?.threads]);
-  const { data: pinnedThreadsData } = usePinnedThreadsQuery(id);
+  const { data: pinnedThreadsData } = usePinnedThreadsQuery(id, { enabled: canViewContent });
   const pinnedThreads = pinnedThreadsData?.threads ?? [];
 
   const viewProfileMutation = useViewProfileMutation();
