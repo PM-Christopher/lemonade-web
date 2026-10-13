@@ -8,9 +8,8 @@ CI environment that's been given both — see "Wiring into CI" below.
 
 ## What's actually covered today
 
-Not the full ten journeys — journeys 3, 5, 6 and 9 have no spec yet, and journey 10 still needs a
-second seeded test account (two parties messaging each other). What's genuinely covered, against the real
-backend:
+All ten journeys have a spec now, but 4, 5, 8 and 9 are partial (see each entry and "Known gaps the
+journeys found" below). What's genuinely covered, against the real backend:
 
 - **Signup + email verification + profile setup** (`tests/frontend/signup.spec.ts`) — journey 1, in
   full: sign up → verify email with a real OTP read from a local Mailpit inbox → complete all four
@@ -49,6 +48,27 @@ backend:
   and the API shows `pending` then `completed`. "Resolution reflected to the reporter" is not asserted
   because the backend doesn't do it: `MarkReportResolved` only flips the status, with no notification.
   Leaves a tribe membership and a thread behind on the seed account.
+- **Event create, publish, approve** (`tests/frontend/event-publish.spec.ts`) — journey 3: the user fills
+  the create-event form and the ticket form through the UI (the image upload is stubbed, no Cloudinary
+  credentials here), publishes, and the event is `pending` with its ticket. An admin approves it in the
+  admin app and it moves to the user's upcoming events. The admin deletes it at the end.
+- **Paid tribe join** (`tests/frontend/paid-tribe-join.spec.ts`) — journey 5, partial: the join request
+  for a paid tribe returns a live Paystack checkout URL, the user is not a member, and the tribe owner
+  ledger is unchanged. The creator credit needs a completed payment (Cloudflare blocks the hosted
+  checkout), so it is covered by the backend's own tests, not here. Sent as an API call, not through the
+  tribe page, see "Known gaps".
+- **Payout and approval** (`tests/frontend/withdrawal-approval.spec.ts`) — journey 6: an admin credits
+  the demo user above the ₦100,000 minimum, the user requests a payout from the wallet page, the admin
+  approves it in the admin app, and the status leaves `pending`. Approving sends a real transfer to
+  Paystack's test mode, so it ends at `processing` or `failed`. Leaves a bank account on the demo user.
+- **Subscription grant and downgrade** (`tests/frontend/subscription-lifecycle.spec.ts`) — journey 9,
+  partial: an admin grants the paid plan (the only no-charge route), the user's reported benefits switch
+  to that plan's, the user downgrades, and they switch back. The backend only reports plan benefits, it
+  doesn't enforce them when creating events or tribes. The downgrade is an API call, see "Known gaps".
+- **Live Connect messaging** (`tests/frontend/connect-messaging.spec.ts`) — journey 10: two users, the
+  second signed in through its own browser context. One sends a chat message and the other sees it with
+  no reload, over Reverb. Needs `E2E_USER_TWO_*` (any existing active user with a known password) and a
+  running `php artisan reverb:start`. Fails without Reverb, which is how it was checked.
 - **Render-loop guard** (`tests/support/render-loop.ts`, used by both `smoke.spec.ts` files) — fails a
   page that logs the same console error or warning 5 or more times. A render loop never throws, so the
   `pageerror` check alone could not see it.
@@ -62,6 +82,24 @@ backend:
   the seed data has real rows.
 - **Admin's `/tribes`** — confirmed elsewhere in this repo (`docs/ARCHITECTURE.md` Phase 6) to be static
   mock content with no real data-driven navigation. Nothing to click into.
+
+### Known gaps the journeys found
+
+Real bugs, not fixed in this suite. Each spec works around the one it hits and says so in a comment.
+
+- **Paid tribe page for a non-member** — the backend denies `view` of a paid tribe to non-members (403),
+  so the page never gets the tribe and its "Unlock Tribe content" button never renders. A user can't
+  reach the join button for a paid tribe from its page.
+- **Plan page after a reload** — it reads the current plan from login-time Redux state, which a reload
+  empties. Neither plan card is marked "Current plan" and Subscribe does nothing. `useSubscriptionQuery`
+  exists but nothing uses it.
+- **Plans aren't enforced** — `forum_creation` and `event_creation` are only reported by the backend.
+  Nothing checks them when a user creates a tribe or an event.
+- **Request payout before the profile loads** — the button opens the bank account modal, because
+  `user.has_bank_account` isn't loaded yet.
+- **Sending a chat message before the chat loads** — goes out with no receiver id and gets a 422.
+- **Success toast too early** — joining a paid tribe says "Joined tribe successfully" before payment.
+- **Report resolve** — doesn't notify the reporter (see journey 8).
 
 ### Why journey 4 stops at the redirect
 

@@ -3189,8 +3189,7 @@ into CI" section for the full detail.
 > `balance_after_minor` values through the BFF. `tests/support/render-loop.ts` closes the gap flagged in
 > the 24 September update: both `smoke.spec.ts` files now fail a page that repeats the same console
 > error or warning 5 or more times. Checked against a synthetic repeating warning, and the full smoke
-> run (21 tests) passes. Still not covered: journeys 3, 5, 6, 9 and 10. Sentry and enforced CSP stay
-> deferred for the reasons above.
+> run (21 tests) passes. Sentry and enforced CSP stay deferred for the reasons above.
 >
 > **Journey 8 added (partial).** `tests/frontend/report-moderation.spec.ts` reports a thread as the demo
 > user through the UI, then resolves the new report from the admin app and checks the status goes
@@ -3199,6 +3198,26 @@ into CI" section for the full detail.
 > product decision. Found along the way: the admin report page showed a hardcoded Report ID
 > (`RE112332`), now `report.unique_id`. Also noticed, not fixed: `ReportThreadModal` shows its success
 > toast without waiting for the request, and `GET /user/tribes?type=tln` returns a 500-style error.
+>
+> **Journeys 3, 5, 6, 9 and 10 added, so all ten journeys have a spec.** Journey 3
+> (`event-publish.spec.ts`) creates an event with a paid ticket through the UI, publishes it, has an admin
+> approve it, and checks it moves from `pending` to the user's upcoming events. Journey 6
+> (`withdrawal-approval.spec.ts`) funds the demo user, requests a payout from the wallet page and has an
+> admin approve it. Paystack's test-mode transfer then takes it to `processing`. Journey 10
+> (`connect-messaging.spec.ts`) signs in a second user (a random existing one with a known password) and
+> checks a chat message arrives live over Reverb, which needs `php artisan reverb:start`. It fails when
+> Reverb is stopped. Journeys 5 and 9 are partial. 5 stops at the Paystack checkout URL, as journey 4
+> does, so the creator credit isn't asserted here. 9 grants the paid plan through the admin comp route
+> and asserts the reported benefits switch and switch back.
+>
+> **Real bugs the journeys found.** Fixed in `lemonade-backend` (`451c3d5`): `GET
+> /user/profile/subscription` returned a 500 for every user, and the profile resource never showed the
+> plan, because three call sites still read `['user_subscription']` after the camelCase sweep renamed the
+> relation to `userSubscription`. Added a regression test. Found, not fixed, each worked around in its
+> spec and listed in `tooling/e2e/README.md`: a non-member gets a 403 on a paid tribe's detail, so the
+> "Unlock Tribe content" button never renders; the plan page loses the current plan on reload; plan limits
+> are reported but not enforced; the payout button and chat send misbehave if used before their data
+> loads; and the paid-join toast says "Joined" before payment.
 
 Did the rest, all verifiable without either:
 
