@@ -59,7 +59,8 @@ export default defineConfig({
       name: "frontend",
       testDir: "./tests/frontend",
       testIgnore: /auth\.setup\.ts/,
-      dependencies: ["frontend-setup"],
+      // admin-setup too: report-moderation.spec.ts also drives the admin app.
+      dependencies: ["frontend-setup", "admin-setup"],
       use: {
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3000",
