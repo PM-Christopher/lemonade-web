@@ -66,12 +66,9 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
   const sendMessage = () => {
     if (!text.trim() && mediaFiles.length < 1) return; // Don't send empty messages
+    if (!chat) return; // The receiver is unknown until the chat has loaded
 
-    const receiver_id: string | null = chat
-      ? user_id === chat.sender.id
-        ? chat.receiver.id
-        : chat.sender.id
-      : null;
+    const receiver_id = user_id === chat.sender.id ? chat.receiver.id : chat.sender.id;
     setText("");
     sendChatMutation.mutate(
       { receiverId: receiver_id, message: text.trim(), media: mediaFiles },
