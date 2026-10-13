@@ -10,8 +10,10 @@ name: e2e (manual)
 #      scoped to read-only contents access on that one repo is enough.
 #      Without it, the "Check out lemonade-backend" step below fails.
 #   2. Real Paystack TEST-mode keys, as the PAYSTACK_SECRET_KEY /
-#      PAYSTACK_PUBLIC_KEY repo secrets — ticket-purchase.spec.ts needs a
-#      real (test-mode) Paystack transaction to initialize.
+#      PAYSTACK_PUBLIC_KEY repo secrets — payments initialize a real
+#      (test-mode) Paystack transaction. They are completed through the
+#      proxy in tooling/e2e/support/paystack-proxy.mjs, and the secret signs
+#      the webhook a ticket purchase finishes with.
 #
 # Everything else this suite needs (demo user/admin/restricted-admin
 # credentials, the paid-ticket event id) is NOT a secret — it's
@@ -89,6 +91,14 @@ jobs:
           sed -i "s#^MAIL_PORT=.*#MAIL_PORT=1025#" .env
           echo "PAYSTACK_SECRET_KEY=${{ secrets.PAYSTACK_SECRET_KEY }}" >> .env
           echo "PAYSTACK_PUBLIC_KEY=${{ secrets.PAYSTACK_PUBLIC_KEY }}" >> .env
+          # Payments and uploads go through the proxy in tooling/e2e/support/paystack-proxy.mjs,
+          # which Playwright starts. It forwards to Paystack and stands in for Cloudinary.
+          echo "PAYSTACK_PAYMENT_URL=http://127.0.0.1:9801" >> .env
+          echo "CLOUDINARY_CLOUD_NAME=e2e" >> .env
+          echo "CLOUDINARY_API_KEY=e2e" >> .env
+          echo "CLOUDINARY_API_SECRET=e2e" >> .env
+          echo "CLOUDINARY_UPLOAD_PREFIX=http://127.0.0.1:9801" >> .env
+          echo "ENCRYPTION_KEY=$(openssl rand -hex 16)" >> .env
 
       - name: Migrate and seed deterministic e2e fixtures
         working-directory: lemonade-backend
@@ -99,10 +109,17 @@ jobs:
           # Bulk users, tribes, events and businesses so pagination and detail specs have real rows.
           php artisan db:seed --class="Database\Seeders\StagingStressDataSeeder" --force
 
+      - name: Give a second user a known password (connect-messaging.spec.ts)
+        working-directory: lemonade-backend
+        run: |
+          php artisan tinker --execute='$u = App\Models\User::query()->where("email", "!=", "user@lemonade.com")->whereNotNull("username")->whereNotNull("email_verified_at")->whereHas("wallet")->first(); $u->password = Illuminate\Support\Facades\Hash::make("Admin12345#"); $u->save(); file_put_contents(getenv("GITHUB_ENV"), "E2E_USER_TWO_EMAIL=".$u->email."\n", FILE_APPEND);'
+
       - name: Start backend
         working-directory: lemonade-backend
         run: |
           php artisan serve --host=127.0.0.1 --port=9800 &
+          # The websocket server connect-messaging.spec.ts and payment events broadcast to.
+          php artisan reverb:start --host=127.0.0.1 --port=8080 &
           npx --yes wait-on http://127.0.0.1:9800/health --timeout 30000
 
       - uses: pnpm/action-setup@v6
@@ -141,6 +158,9 @@ jobs:
           E2E_RESTRICTED_ADMIN_PASSWORD: Admin12345#
           E2E_PAID_EVENT_ID: 00000000-0000-7000-8000-e2e000000001
           E2E_MAILPIT_URL: http://127.0.0.1:8025
+          E2E_USER_TWO_PASSWORD: Admin12345#
+          E2E_PAYSTACK_SECRET_KEY: ${{ secrets.PAYSTACK_SECRET_KEY }}
+          E2E_BACKEND_URL: http://127.0.0.1:9800
         run: pnpm test
 
       - name: Upload Playwright report

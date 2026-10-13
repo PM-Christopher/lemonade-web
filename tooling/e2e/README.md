@@ -8,16 +8,16 @@ CI environment that's been given both — see "Wiring into CI" below.
 
 ## What's actually covered today
 
-All ten journeys have a spec now, but 4, 5 and 9 are partial because they stop at Paystack's checkout. What's genuinely covered, against the real backend:
+All ten journeys have a spec now and run end to end. Payments are completed through a proxy, see "Payments in the suite" below. What's genuinely covered, against the real backend:
 
 - **Signup + email verification + profile setup** (`tests/frontend/signup.spec.ts`) — journey 1, in
   full: sign up → verify email with a real OTP read from a local Mailpit inbox → complete all four
   `/profile-setup` steps → land on `/` with a real session. Found and fixed two real bugs blocking every
   real signup, not just this test — see "Real bugs this suite has already found" below.
-- **Ticket purchase** (`tests/frontend/ticket-purchase.spec.ts`) — journey 4, partial: buy a paid ticket
-  → real order created → real Paystack test-mode transaction → browser redirected to a live
-  `checkout.paystack.com` session. Doesn't complete the payment itself — Paystack's hosted checkout is
-  behind a Cloudflare bot challenge; see "Why journey 4 stops at the redirect" below.
+- **Ticket purchase** (`tests/frontend/ticket-purchase.spec.ts`) — journey 4: buy a paid ticket → real
+  order → real Paystack test-mode transaction → browser sent to a live `checkout.paystack.com` session.
+  Nothing is issued yet. The payment is then completed through the proxy and the signed `charge.success`
+  webhook is sent to the backend, and the ticket appears in the user's tickets.
 - **Auth** (`tests/{frontend,admin}/auth.setup.ts`) — real login for both a regular user and an admin,
   saving `storageState` so the rest of the suite doesn't re-login per test. This is also journey 2's
   login half.
@@ -41,7 +41,7 @@ All ten journeys have a spec now, but 4, 5 and 9 are partial because they stop a
   then debits the demo user's wallet from the user detail page. Reads the ledger through the BFF and
   asserts a `credit` then a `debit` entry of the same amount, with `balance_after_minor` back at its
   starting value. The debit undoes the credit, so the seed wallet ends where it started.
-- **Report and moderate** (`tests/frontend/report-moderation.spec.ts`) — journey 8, partial: the demo
+- **Report and moderate** (`tests/frontend/report-moderation.spec.ts`) — journey 8: the demo
   user joins a free public tribe, posts a thread and reports it through the UI. An admin context
   (`.auth/admin.json`) then finds the new report in the queue, opens it and clicks "Mark as resolved",
   and the API shows `pending` then `completed`. The reporter's notification is checked too.
@@ -50,19 +50,19 @@ All ten journeys have a spec now, but 4, 5 and 9 are partial because they stop a
   the create-event form and the ticket form through the UI (the image upload is stubbed, no Cloudinary
   credentials here), publishes, and the event is `pending` with its ticket. An admin approves it in the
   admin app and it moves to the user's upcoming events. The admin deletes it at the end.
-- **Paid tribe join** (`tests/frontend/paid-tribe-join.spec.ts`) — journey 5, partial: from the paid
-  tribe's page, "Unlock Tribe content" then "Join Tribe now" goes to a live Paystack checkout, the user is
-  not a member and can't read the threads, and the tribe owner ledger is unchanged. The creator credit
-  needs a completed payment (Cloudflare blocks the hosted checkout), so it is covered by the backend's
-  own tests, not here.
+- **Paid tribe join** (`tests/frontend/paid-tribe-join.spec.ts`) — journey 5: from the paid tribe's
+  page, "Unlock Tribe content" then "Join Tribe now" goes to a live Paystack checkout, and the user can't
+  read the threads yet. The payment is completed through the proxy and the browser comes back with
+  `?trxref=`, so the app verifies it. The user is then a member and the tribe creator's wallet ledger
+  gets a credit. The spec leaves the tribe again afterward.
 - **Payout and approval** (`tests/frontend/withdrawal-approval.spec.ts`) — journey 6: an admin credits
   the demo user above the ₦100,000 minimum, the user requests a payout from the wallet page, the admin
   approves it in the admin app, and the status leaves `pending`. Approving sends a real transfer to
   Paystack's test mode, so it ends at `processing` or `failed`. Leaves a bank account on the demo user.
-- **Subscription grant and downgrade** (`tests/frontend/subscription-lifecycle.spec.ts`) — journey 9,
-  partial: an admin grants the paid plan (the only no-charge route), the user's benefits switch to that
-  plan's, the user downgrades from the plan page, and they switch back. Buying a plan goes through the
-  Paystack checkout, so that half isn't covered.
+- **Subscription purchase and downgrade** (`tests/frontend/subscription-lifecycle.spec.ts`) — journey 9:
+  the user buys the paid plan from the plan page and is sent to checkout, still on the free plan. The
+  payment is completed through the proxy and the browser comes back with `?trxref=`, then the user's
+  benefits switch to the paid plan's. The user downgrades from the plan page and they switch back.
 - **Live Connect messaging** (`tests/frontend/connect-messaging.spec.ts`) — journey 10: two users, the
   second signed in through its own browser context. One sends a chat message and the other sees it with
   no reload, over Reverb. Needs `E2E_USER_TWO_*` (any existing active user with a known password) and a
@@ -96,22 +96,28 @@ Each was found by a journey and fixed in the same pass, with a test where it liv
 - **Report resolve** — the reporter now gets an in-app and push notification, once.
 - **Subscription endpoint** — `GET /user/profile/subscription` returned a 500 for everyone.
 
-### Why journey 4 stops at the redirect
+### Payments in the suite
 
-Verified live before writing the test: called the real `assign-tickets` endpoint directly against a real
-paid seed ticket, got back a real Paystack `authorization_url`, then opened it with Playwright to see
-what was actually there. It's a Cloudflare bot-challenge page ("Just a moment..."), not a checkout form —
-confirmed by inspecting the page title and content directly, not assumed from a timeout. That's active
-anti-automation protection on a third party's payment page, not a flakiness problem worth retrying past.
-Driving the checkout form itself would mean building tooling specifically to defeat that protection,
-which this suite won't do regardless of effort. So `ticket-purchase.spec.ts` asserts up through the real
-redirect (`checkout.paystack.com`, a real order created) and stops there — "confirmation → ticket
-appears" needs either a human completing a real test-card payment, or a legitimate server-to-server route
-(a test-mode webhook simulator, if Paystack ever offers one), neither of which exists in this pass.
+Paystack's hosted checkout is behind a Cloudflare bot challenge ("Just a moment..."), confirmed by
+opening a real checkout URL with Playwright. Getting through that would mean defeating anti-automation
+protection on a third party's site, which this suite won't do. A payment can't be charged by reference
+through Paystack's API either: an initialized reference is refused as a duplicate, and a charge by access
+code isn't supported.
 
-Each run leaves a real "pending" Order/Attendee/AssignedTicket row behind — same as any real user who
-starts checkout and abandons it before paying. Harmless: those never reach paid/non-pending status, so
-they never surface in "my tickets" or anywhere else in the UI.
+So the backend talks to Paystack through `support/paystack-proxy.mjs`, which Playwright starts on port
+9801. It forwards everything to the real Paystack test API, so initializing a payment still returns a live
+checkout URL. A test marks a reference as paid (`markPaid` in `tests/support/paystack.ts`), and the
+proxy then answers the backend's verify call with "success". The backend runs its real finalizing logic on
+that. Flows that finish on a webhook (tickets) also send a signed `charge.success`
+(`sendChargeSuccessWebhook`), and flows that finish on return (tribes, plans) go back to the app with
+`?trxref=`. The proxy also stands in for Cloudinary's upload API, which the backend uses for ticket QR
+codes.
+
+The backend needs these in its `.env`, which `.env.e2e.example` and `.github/workflows/e2e.yml` also
+list: `PAYSTACK_PAYMENT_URL=http://127.0.0.1:9801`, `CLOUDINARY_CLOUD_NAME=e2e`,
+`CLOUDINARY_API_KEY=e2e`, `CLOUDINARY_API_SECRET=e2e`, `CLOUDINARY_UPLOAD_PREFIX=http://127.0.0.1:9801`
+and an `ENCRYPTION_KEY`. It also needs Mailpit (ticket and signup emails) and `php artisan reverb:start`
+(payments broadcast events, and chat uses it). Without them the webhook returns a 500.
 
 ## Real bugs this suite has already found
 

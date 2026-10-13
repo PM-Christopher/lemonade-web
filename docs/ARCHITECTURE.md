@@ -3220,6 +3220,18 @@ into CI" section for the full detail.
 > itself instead of reading login-time Redux state, the payout button waits for the user, chat send waits
 > for the chat, and the paid-tribe join no longer toasts "Joined" before payment. Journeys 5, 8 and 9 now
 > drive these through the UI.
+>
+> **Payments now complete in the suite, so journeys 4, 5 and 9 are no longer partial.** Paystack can't
+> charge an initialized reference and its checkout can't be driven, so the backend now reads the Paystack
+> API base URL from `config('paystack.paymentUrl')` (`4df7cee`, default unchanged) and the suite points it
+> at `tooling/e2e/support/paystack-proxy.mjs`. The proxy forwards to the real test API and answers verify
+> as successful for references a test marks as paid, so the backend's real finalizing runs. It also stands
+> in for Cloudinary uploads. Journey 4 ends with the ticket in the user's tickets, journey 5 with the
+> member and the tribe creator's wallet credit in the ledger, and journey 9 with the plan bought through
+> the UI. Found on the way and fixed in `lemonade-backend` (`b3f881e` and the Cloudinary client): the
+> ticket QR code key was read with `env()`, which is null once config is cached, so issuing a ticket threw;
+> `DecryptObject` declared a `string` return and returned an object; and the Cloudinary clients read
+> `env()` too. See `tooling/e2e/README.md` "Payments in the suite".
 
 Did the rest, all verifiable without either:
 
