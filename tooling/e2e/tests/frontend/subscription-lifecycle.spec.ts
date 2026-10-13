@@ -1,9 +1,12 @@
 import { test, expect, type APIRequestContext } from "@playwright/test";
+import { markPaid } from "../support/paystack";
 
 // Journey 9 (docs/ARCHITECTURE.md §17): subscribe to a plan, the plan's
-// benefits show up, downgrade, the benefits go back. Paying for a plan goes
-// through Paystack's hosted checkout (see journey 4), so the paid plan is
-// granted by an admin instead, the one no-charge route the backend has.
+// benefits show up, downgrade, the benefits go back. The paid plan is bought
+// through the plan page and sent to Paystack's checkout, which can't be driven
+// from a test (see journey 4). The payment is completed through the proxy in
+// support/paystack-proxy.mjs and the browser comes back with ?trxref=, so the
+// app verifies it for real.
 const ADMIN_URL = "http://localhost:3001";
 
 interface Plan {
@@ -56,23 +59,49 @@ test("a plan's benefits appear when subscribed and go back on downgrade", async 
     const userId = users.users.find((user) => user.email === email)?.id;
     expect(userId, "demo user not found").toBeTruthy();
 
-    // Start on the free plan, then an admin grants the paid one.
-    const grant = async (plan: Plan) =>
-      admin.patch(`/api/v1/admin/users/${userId}/change-plan`, {
-        data: {
-          subscription_id: plan.id,
-          type: plan.monthly_charge_minor > 0 ? "monthly" : "free",
-        },
-      });
-    expect((await grant(free)).ok()).toBeTruthy();
+    // Start on the free plan. An admin resets it, since a run leaves the user on it anyway.
+    const reset = await admin.patch(`/api/v1/admin/users/${userId}/change-plan`, {
+      data: { subscription_id: free.id, type: "free" },
+    });
+    expect(reset.ok(), await reset.text()).toBeTruthy();
     expect((await currentSubscription(page.request)).benefits.event_creation).toBe(
       free.benefits.event_creation,
     );
 
-    const granted = await grant(paid);
-    expect(granted.ok(), await granted.text()).toBeTruthy();
+    // The user picks the paid plan on the plan page and is sent to checkout.
+    await page.goto("/settings/plan");
+    await expect(page.getByText("Current plan")).toBeVisible({ timeout: 30_000 });
+    const paidCard = page
+      .locator("div.items-center")
+      .filter({ has: page.getByText(paid.title, { exact: true }) })
+      .filter({ hasText: "Subscribe" })
+      .last();
+    await paidCard.getByText("Subscribe", { exact: true }).click();
+
+    const dialog = page.getByRole("dialog");
+    await dialog.locator("button[aria-pressed]").first().click();
+    // The page navigates away as soon as this answers, so read the body in the route.
+    let reference = "";
+    await page.route("**/subscription/change-plan", async (route) => {
+      const response = await route.fetch();
+      const body = (await response.json()) as { data?: { reference?: string } };
+      reference = body.data?.reference ?? "";
+      await route.fulfill({ response });
+    });
+    await dialog.getByRole("button", { name: "Pay now" }).click();
+    await page.waitForURL(/checkout\.paystack\.com/, { timeout: 45_000, waitUntil: "commit" });
+    expect(reference).toMatch(/^LMN_/);
+
+    // Still on the free plan until the payment clears.
+    expect((await currentSubscription(page.request)).title).toBe(free.title);
+
+    // The payment goes through and Paystack sends the browser back to the plan page.
+    await markPaid(page.request, reference);
+    await page.goto(`/settings/plan?trxref=${reference}&reference=${reference}`);
+    await expect
+      .poll(async () => (await currentSubscription(page.request)).title, { timeout: 45_000 })
+      .toBe(paid.title);
     const subscribed = await currentSubscription(page.request);
-    expect(subscribed.title).toBe(paid.title);
     expect(subscribed.benefits.event_creation).toBe(paid.benefits.event_creation);
 
     // The user downgrades from the plan page, which loads the current plan itself.

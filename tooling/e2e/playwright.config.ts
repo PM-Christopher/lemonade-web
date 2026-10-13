@@ -91,6 +91,15 @@ export default defineConfig({
   ],
   webServer: [
     {
+      // Sits between the backend and Paystack so a test can complete a payment,
+      // see support/paystack-proxy.mjs. The backend needs
+      // PAYSTACK_PAYMENT_URL=http://127.0.0.1:9801.
+      command: "node support/paystack-proxy.mjs",
+      url: "http://127.0.0.1:9801/__e2e/health",
+      reuseExistingServer: !process.env.CI,
+      timeout: 15_000,
+    },
+    {
       command: "pnpm --filter lemonade-app exec next dev -p 3000",
       // "/login" specifically, not "/" — "/" 307-redirects when unauthenticated
       // (middleware.ts), and Playwright's readiness probe wants a real 2xx.
