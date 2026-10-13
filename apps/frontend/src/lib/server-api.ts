@@ -9,9 +9,19 @@ import "server-only";
 // this file and apps/admin/src/lib/server-api.ts are deliberately kept in
 // the same shape.
 import { cookies } from "next/headers";
-import { createApiClient, getSetCookieValue, type ApiClient } from "@lemonade/api-client";
+import {
+  createApiClient,
+  getSetCookieValue,
+  type ApiClient,
+  type RequestConfig,
+} from "@lemonade/api-client";
 import { userAuthRoutes } from "@lemonade/api-types/generated";
-import { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
+import {
+  USER_TOKEN_COOKIE,
+  USER_REFRESH_COOKIE,
+  SIGNED_IN_COOKIE,
+  ONBOARDING_TOKEN_COOKIE,
+} from "@/lib/cookie-names";
 import { serverEnv } from "@/lib/env.server";
 
 export { USER_TOKEN_COOKIE, USER_REFRESH_COOKIE };
@@ -162,4 +172,12 @@ export async function persistUserSession(
 ): Promise<void> {
   await persistAccessToken(accessToken, expiresIn ?? DEFAULT_ACCESS_TOKEN_MAX_AGE_SECONDS);
   if (refreshToken) await persistRefreshToken(refreshToken);
+}
+
+// Before signup finishes there's no session, only the onboarding cookie. Use it then, never over a session.
+export async function onboardingAuth(): Promise<RequestConfig> {
+  const store = await cookies();
+  if (store.get(USER_TOKEN_COOKIE)?.value) return {};
+  const token = store.get(ONBOARDING_TOKEN_COOKIE)?.value;
+  return token ? { bearerTokenOverride: token } : {};
 }

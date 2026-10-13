@@ -1,31 +1,8 @@
-// BFF proxy — the one place apps/frontend's browser-side code is allowed to
-// reach through to lemonade-backend. Forwards /api/v1/<...path> to
-// `${LARAVEL_API_URL}/v1/<...path>` with the Bearer token read server-side
-// from the httpOnly cookie (see ../../../lib/server-api.ts). The browser
-// never sees or sends the real session token itself.
-//
-// Multipart (file upload) bodies are forwarded byte-for-byte with the
-// original Content-Type (boundary included) rather than parsed — this
-// proxy doesn't need to know what's inside an upload, only pass it through.
-// Browser uploads go through this proxy too (see features/shared/api.ts).
-//
-// Pre-login onboarding fallback: signup/email-verification/reset-password
-// calls (features/authentication/{api,mutations}.ts's verifyAccountOtp/
-// verifyPasswordResetOtp/resendOtp/resetPassword, features/settings/api.ts's
-// getUserProfile, used by profile-setup/page.tsx before a real session
-// exists) don't have a main session yet — they carry their own short-lived,
-// ability-scoped token in ONBOARDING_TOKEN_COOKIE (see lib/cookie-names.ts).
-// Read it server-side, same trust level as the main session cookie, and use
-// it only when there's no main session — never forward the browser's own
-// Authorization header (backendApi's transport strips that unconditionally
-// regardless).
-//
-// Both apps are on Next 15 now (Phase 3) — route handler `params` are async
-// in both. See the admin equivalent of this file.
+// BFF proxy. Forwards /api/v1/* to the backend with the token from the httpOnly cookie,
+// or mid-signup the onboarding cookie (onboardingAuth). Uploads pass through byte for byte.
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "@lemonade/api-client";
-import { backendApi, USER_TOKEN_COOKIE, syncSignedInCookieFromHeaders } from "@/lib/server-api";
-import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
+import { backendApi, onboardingAuth, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
 const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
 
@@ -63,8 +40,7 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
     }
   }
 
-  const hasSession = Boolean(req.cookies.get(USER_TOKEN_COOKIE)?.value);
-  const onboardingToken = hasSession ? undefined : req.cookies.get(ONBOARDING_TOKEN_COOKIE)?.value;
+  const auth = await onboardingAuth();
 
   try {
     const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders({
@@ -77,7 +53,7 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
         ...(forwardedFor ? { "X-Forwarded-For": forwardedFor } : {}),
         ...(userAgent ? { "User-Agent": userAgent } : {}),
       },
-      ...(onboardingToken ? { bearerTokenOverride: onboardingToken } : {}),
+      ...auth,
     });
     // Relays the backend's own signed-in indicator cookie onto the browser's
     // response — see syncSignedInCookieFromHeaders's docblock. Every ordinary
