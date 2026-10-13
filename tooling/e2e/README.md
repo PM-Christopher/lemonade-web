@@ -8,7 +8,7 @@ CI environment that's been given both — see "Wiring into CI" below.
 
 ## What's actually covered today
 
-Not the full ten journeys — journeys 3, 5, 6, 8 and 9 have no spec yet, and journey 10 still needs a
+Not the full ten journeys — journeys 3, 5, 6 and 9 have no spec yet, and journey 10 still needs a
 second seeded test account (two parties messaging each other). What's genuinely covered, against the real
 backend:
 
@@ -43,6 +43,12 @@ backend:
   then debits the demo user's wallet from the user detail page. Reads the ledger through the BFF and
   asserts a `credit` then a `debit` entry of the same amount, with `balance_after_minor` back at its
   starting value. The debit undoes the credit, so the seed wallet ends where it started.
+- **Report and moderate** (`tests/frontend/report-moderation.spec.ts`) — journey 8, partial: the demo
+  user joins a free public tribe, posts a thread and reports it through the UI. An admin context
+  (`.auth/admin.json`) then finds the new report in the queue, opens it and clicks "Mark as resolved",
+  and the API shows `pending` then `completed`. "Resolution reflected to the reporter" is not asserted
+  because the backend doesn't do it: `MarkReportResolved` only flips the status, with no notification.
+  Leaves a tribe membership and a thread behind on the seed account.
 - **Render-loop guard** (`tests/support/render-loop.ts`, used by both `smoke.spec.ts` files) — fails a
   page that logs the same console error or warning 5 or more times. A render loop never throws, so the
   `pageerror` check alone could not see it.

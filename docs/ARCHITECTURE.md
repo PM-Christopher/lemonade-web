@@ -3189,8 +3189,16 @@ into CI" section for the full detail.
 > `balance_after_minor` values through the BFF. `tests/support/render-loop.ts` closes the gap flagged in
 > the 24 September update: both `smoke.spec.ts` files now fail a page that repeats the same console
 > error or warning 5 or more times. Checked against a synthetic repeating warning, and the full smoke
-> run (21 tests) passes. Still not covered: journeys 3, 5, 6, 8, 9 and 10. Sentry and enforced CSP stay
+> run (21 tests) passes. Still not covered: journeys 3, 5, 6, 9 and 10. Sentry and enforced CSP stay
 > deferred for the reasons above.
+>
+> **Journey 8 added (partial).** `tests/frontend/report-moderation.spec.ts` reports a thread as the demo
+> user through the UI, then resolves the new report from the admin app and checks the status goes
+> `pending` to `completed`. The "reflected to the reporter" half of the journey can't be tested: the
+> backend's `MarkReportResolved` only sets `status`, it never notifies the reporter. That needs a
+> product decision. Found along the way: the admin report page showed a hardcoded Report ID
+> (`RE112332`), now `report.unique_id`. Also noticed, not fixed: `ReportThreadModal` shows its success
+> toast without waiting for the request, and `GET /user/tribes?type=tln` returns a 500-style error.
 
 Did the rest, all verifiable without either:
 
