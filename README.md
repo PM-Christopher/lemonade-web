@@ -15,7 +15,7 @@ Phases 0–5 of the modernization plan (working software, quality gates, monorep
 alignment, transport/auth, server-state migration) are done. Phases 6–8 (Server Components & performance,
 design system, observability & hardening) are mostly done, with specific remaining items tracked in
 `docs/ARCHITECTURE.md`'s own per-phase status — some blocked on backend work (server-side pagination) or
-external resources (a Sentry account, a live backend for end-to-end tests) rather than anything left to
+external resources (a live backend for end-to-end tests) rather than anything left to
 decide here.
 
 ## Structure

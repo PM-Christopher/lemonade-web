@@ -3001,24 +3001,24 @@ budget step. While in there, the any-type budget script surfaced its own real im
 in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
 `no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
 
-### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP, docs finalization, and a started (not full-ten-journey) Playwright suite all done; Sentry deliberately deferred, see below]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP report-only, docs, and all ten Playwright journeys done; CSP enforcement left]**
 
-Closes the loop with the backend, which already reports to Sentry.
+Closes the loop with the backend. Errors go to the backend's file log (`storage/logs/laravel.log`) today,
+with Slack as the alert channel once its webhook is set. Sentry is not used, by decision.
 
-- Sentry in both apps, sharing the backend's correlation id so a frontend error joins its backend request
+- Frontend errors logged as structured JSON with the backend's correlation id, so a frontend error joins
+  its backend request in the logs
 - Web Vitals reporting; structured logging with redaction; remove the last `console` calls
 - CSP with nonces via middleware — report-only first, then enforced
 - Playwright e2e for the ten journeys in the merge queue
 - `docs/` finalized: ARCHITECTURE, ADRs, CONTRACT, per-app READMEs, root `CLAUDE.md`
 
-**Status.** Sentry is deliberately deferred, not blocked — the user's own direction (ADR-006 in
-`lemonade-backend`'s architecture guide): file logging is the default error-reporting channel for now,
-with Sentry and Slack built as ready-to-enable options, not a requirement to chase a DSN for
-immediately. `lemonade-backend`'s `ErrorReportingService` already ships a `SentryNotifier` that no-ops
-cleanly until a real DSN is configured — the same shape this phase's frontend bullet would need, so
-there's a real pattern to follow whenever this gets prioritized. Adding `@sentry/nextjs` here against a
-placeholder DSN would silently do nothing, worse than not adding it, since it'd look wired up in a diff
-without being wired up in practice — so it stays undone until that's a real priority, not "blocked."
+**Status.** Error reporting is the file logger, by the product owner's decision: no Sentry, in either app or
+the backend, and Slack is the alert channel to add later. `lemonade-backend`'s `ErrorReportingService`
+fans each error out to a `LogNotifier` and a `SlackNotifier`, which does nothing until its webhook is set.
+Sentry was removed from the backend on 13 October 2026 (package, notifier and config). Both apps log
+structured JSON through `lib/logger.ts`, and the error boundaries use it, but that output stays in the
+browser console. Sending client errors to the server log with the correlation id is not built yet.
 The Playwright e2e bullet was blocked for a different reason
 (`LARAVEL_API_URL=http://127.0.0.1:9900` wasn't reachable — confirmed via a direct request, not assumed)
 until the user started a real backend at `127.0.0.1:9800` and gave real seed credentials for both a user
@@ -3189,7 +3189,7 @@ into CI" section for the full detail.
 > `balance_after_minor` values through the BFF. `tests/support/render-loop.ts` closes the gap flagged in
 > the 24 September update: both `smoke.spec.ts` files now fail a page that repeats the same console
 > error or warning 5 or more times. Checked against a synthetic repeating warning, and the full smoke
-> run (21 tests) passes. Sentry and enforced CSP stay deferred for the reasons above.
+> run (21 tests) passes. Enforcing CSP stays open for the reason above.
 >
 > **Journey 8 added (partial).** `tests/frontend/report-moderation.spec.ts` reports a thread as the demo
 > user through the UI, then resolves the new report from the admin app and checks the status goes
@@ -3618,7 +3618,7 @@ built, only that the plumbing that would carry it is no longer broken.
 | **P9** | No Formik or Yup imports remain. `@lemonade/validation` exports Zod schemas only. Every form uses React Hook Form, and a 422 lands on the field that failed. `checkError.ts` is deleted.                                                                                                                                                               |
 | **P6** | Public user-app routes render meaningful HTML before hydration and carry correct metadata. Table state lives in `searchParams`. Bundle budgets enforced in CI and met. LCP under 2.5s on a throttled mobile profile for public pages.                                                                                                                  |
 | **P7** | One component system, one token set, one shadcn style. MUI, antd and Evergreen removed and import-banned. No serious or critical axe violations on forms, dialogs, tables and navigation.                                                                                                                                                              |
-| **P8** | Frontend errors reach Sentry with a correlation id that joins the backend's log for the same request. CSP enforced. Ten Playwright journeys green in the merge queue. `docs/` complete, including a root `CLAUDE.md` an agent can follow.                                                                                                              |
+| **P8** | Frontend errors are logged with a correlation id that joins the backend's log for the same request (file log now, Slack alerts later). CSP enforced. Ten Playwright journeys green in the merge queue. `docs/` complete, including a root `CLAUDE.md` an agent can follow.                                                                             |
 
 ### Standing rules — true at the end of every phase
 
