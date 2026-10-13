@@ -3210,14 +3210,16 @@ into CI" section for the full detail.
 > does, so the creator credit isn't asserted here. 9 grants the paid plan through the admin comp route
 > and asserts the reported benefits switch and switch back.
 >
-> **Real bugs the journeys found.** Fixed in `lemonade-backend` (`451c3d5`): `GET
-> /user/profile/subscription` returned a 500 for every user, and the profile resource never showed the
-> plan, because three call sites still read `['user_subscription']` after the camelCase sweep renamed the
-> relation to `userSubscription`. Added a regression test. Found, not fixed, each worked around in its
-> spec and listed in `tooling/e2e/README.md`: a non-member gets a 403 on a paid tribe's detail, so the
-> "Unlock Tribe content" button never renders; the plan page loses the current plan on reload; plan limits
-> are reported but not enforced; the payout button and chat send misbehave if used before their data
-> loads; and the paid-join toast says "Joined" before payment.
+> **Real bugs the journeys found, all fixed.** `lemonade-backend`: `GET /user/profile/subscription` was a
+> 500 for everyone because three call sites read `['user_subscription']` after the camelCase sweep renamed
+> the relation (`451c3d5`); a non-member got a 403 on a paid tribe's detail, so the join button never
+> rendered, so a `preview` ability now shows the summary and keeps threads and members for members
+> (`9bb50ce`); plan limits were reported but never enforced, so `PlanLimitService` now refuses a tribe on a
+> plan without tribe creation and caps events per month, with drafts not counting (`fb00683`); and resolving
+> a report now notifies the reporter once (`50a0073`). Frontend: the plan page loads the current plan
+> itself instead of reading login-time Redux state, the payout button waits for the user, chat send waits
+> for the chat, and the paid-tribe join no longer toasts "Joined" before payment. Journeys 5, 8 and 9 now
+> drive these through the UI.
 
 Did the rest, all verifiable without either:
 
