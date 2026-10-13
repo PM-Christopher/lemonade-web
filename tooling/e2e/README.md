@@ -8,8 +8,9 @@ CI environment that's been given both — see "Wiring into CI" below.
 
 ## What's actually covered today
 
-Not the full ten journeys — journey 10 still needs a second seeded test account (two parties messaging
-each other). What's genuinely covered, against the real backend:
+Not the full ten journeys — journeys 3, 5, 6, 8 and 9 have no spec yet, and journey 10 still needs a
+second seeded test account (two parties messaging each other). What's genuinely covered, against the real
+backend:
 
 - **Signup + email verification + profile setup** (`tests/frontend/signup.spec.ts`) — journey 1, in
   full: sign up → verify email with a real OTP read from a local Mailpit inbox → complete all four
@@ -38,6 +39,13 @@ each other). What's genuinely covered, against the real backend:
   and business lists. Exercises the list → detail flow these apps actually use day to day, not just a
   static route. Deliberately doesn't cover every list — see "What's not covered and why" below for the
   ones this seed data can't exercise yet.
+- **Admin balance adjustment** (`tests/admin/wallet-adjustment.spec.ts`) — journey 7: an admin credits
+  then debits the demo user's wallet from the user detail page. Reads the ledger through the BFF and
+  asserts a `credit` then a `debit` entry of the same amount, with `balance_after_minor` back at its
+  starting value. The debit undoes the credit, so the seed wallet ends where it started.
+- **Render-loop guard** (`tests/support/render-loop.ts`, used by both `smoke.spec.ts` files) — fails a
+  page that logs the same console error or warning 5 or more times. A render loop never throws, so the
+  `pageerror` check alone could not see it.
 
 ### What's not covered and why
 

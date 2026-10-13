@@ -3183,6 +3183,15 @@ into CI" section for the full detail.
 > `hello@lemonade.com` next (a real, long-established, unrelated company's domain) — same "domain is not
 > verified" failure from Resend, as expected for a domain the user doesn't control the DNS for either.
 
+> **Update, 13 October 2026: journey 7 added, smoke specs hardened against render loops.**
+> `tests/admin/wallet-adjustment.spec.ts` adds funds to the demo user's wallet from the admin UI, then
+> deducts the same amount, and asserts the matching `credit` and `debit` ledger entries and the
+> `balance_after_minor` values through the BFF. `tests/support/render-loop.ts` closes the gap flagged in
+> the 24 September update: both `smoke.spec.ts` files now fail a page that repeats the same console
+> error or warning 5 or more times. Checked against a synthetic repeating warning, and the full smoke
+> run (21 tests) passes. Still not covered: journeys 3, 5, 6, 8, 9 and 10. Sentry and enforced CSP stay
+> deferred for the reasons above.
+
 Did the rest, all verifiable without either:
 
 - **`console` calls** — already effectively zero live ones (`no-console` at `"error"` in
