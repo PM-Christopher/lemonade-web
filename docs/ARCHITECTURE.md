@@ -2400,7 +2400,7 @@ replaces server-side. Removed across ~100 files in both apps, done and committed
 exception preserved: the pre-login onboarding flow's distinct `newToken`-based calls (see Phase 4
 above) — those were initially miscategorized as dead weight, caught before landing, and left alone.
 
-### Phase 6 — Server Components & performance **[SHOULD]** **[MOSTLY DONE — 26 of ~45 frontend pages (rest verified non-candidates); admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI, and server-side pagination (backend + admin frontend, §22 Conflict 1) all done]**
+### Phase 6 — Server Components & performance **[SHOULD]** **[DONE — 27 of ~45 frontend pages converted (the rest verified non-candidates), including the onboarding `profile-setup` page; admin, dead-dep cleanup, lazy-loading, bundle budgets, Lighthouse CI and server-side pagination all done]**
 
 Now possible, because auth is server-readable and data fetching is query-shaped.
 
@@ -2545,6 +2545,14 @@ became a Server Component candidate too, so both happened together:
    does. Converting this page properly means extending shared server-side auth infrastructure, not
    reusing the established per-feature `api.server.ts` pattern — a bigger, riskier change than anything
    else done this phase, so it stays deferred rather than worked around.
+
+   > **Update, 13 October 2026: done.** `lib/server-api.ts` now has `onboardingAuth()`, which returns the
+   > onboarding cookie as a `bearerTokenOverride` only when there's no session cookie, the same rule the
+   > BFF proxy used. The proxy now calls it too, so the rule lives in one place.
+   > `settingsServerApi.getUserProfile` uses it, and `profile-setup/page.tsx` is a Server Component that
+   > prefetches the profile. Checked live: with only the onboarding cookie the server-rendered HTML carries
+   > the user's profile, and with no cookie it carries none. The signup journey, which goes through this
+   > page, passes.
 
 One more followed the same day: `business/[id]/jobs/page.tsx`'s own `/user/listing/:id/job-data` call
 was the last real per-business `useRequest` read in the business domain. Added
