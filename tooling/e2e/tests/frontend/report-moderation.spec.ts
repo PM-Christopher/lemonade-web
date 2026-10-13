@@ -1,8 +1,7 @@
 import { test, expect, type APIRequestContext } from "@playwright/test";
 
 // Journey 8 (docs/ARCHITECTURE.md §17): a user reports a thread, an admin
-// finds the report and resolves it. The backend does not notify the reporter
-// on resolve, so "reflected to the reporter" is not asserted. See README.md.
+// finds the report and resolves it, and the reporter is notified.
 interface Tribe {
   id: string;
   slug: string;
@@ -97,6 +96,11 @@ test("a reported thread reaches the admin queue and can be resolved", async ({ p
 
     const resolved = (await listReports(adminContext.request)).find((row) => row.id === reportId);
     expect(resolved?.status).toBe("completed");
+
+    // The reporter is told it was reviewed.
+    const notifications = await page.request.get("/api/v1/user/notification");
+    expect(notifications.ok()).toBeTruthy();
+    expect(await notifications.text()).toContain("Your report was reviewed");
   } finally {
     await adminContext.close();
   }

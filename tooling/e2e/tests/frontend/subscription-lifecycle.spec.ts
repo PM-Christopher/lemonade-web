@@ -4,8 +4,6 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
 // benefits show up, downgrade, the benefits go back. Paying for a plan goes
 // through Paystack's hosted checkout (see journey 4), so the paid plan is
 // granted by an admin instead, the one no-charge route the backend has.
-// Plan limits are only reported by the backend, not enforced when a user
-// creates an event or tribe, so this asserts the reported benefits.
 const ADMIN_URL = "http://localhost:3001";
 
 interface Plan {
@@ -77,20 +75,29 @@ test("a plan's benefits appear when subscribed and go back on downgrade", async 
     expect(subscribed.title).toBe(paid.title);
     expect(subscribed.benefits.event_creation).toBe(paid.benefits.event_creation);
 
-    // The user downgrades. This sends the body the plan page's "Continue to
-    // downgrade" button sends. The page itself can't be driven after a reload:
-    // it reads the current plan from login-time Redux state, which a reload
-    // empties, so its Subscribe buttons do nothing. See README.md.
-    const downgrade = await page.request.post("/api/v1/user/profile/subscription/change-plan", {
-      data: {
-        reason: "I don't need the benefits anymore",
-        subscription_id: free.id,
-        type: "monthly",
-        mode: "downgrade",
-        redirect_url: "http://localhost:3000/settings/plan",
-      },
-    });
-    expect(downgrade.ok(), await downgrade.text()).toBeTruthy();
+    // The user downgrades from the plan page, which loads the current plan itself.
+    await page.goto("/settings/plan");
+    // The page marks the current plan once it has loaded it.
+    await expect(page.getByText("Current plan")).toBeVisible({ timeout: 30_000 });
+    const freeCard = page
+      .locator("div.items-center")
+      .filter({ has: page.getByText(free.title, { exact: true }) })
+      .filter({ hasText: "Subscribe" })
+      .last();
+    await freeCard.getByText("Subscribe", { exact: true }).click();
+    await expect(page).toHaveURL(/cancel-subscription/, { timeout: 30_000 });
+
+    await page.getByText("I don't need the benefits anymore").click();
+    await page.getByRole("button", { name: "Continue", exact: true }).click();
+
+    const changed = page.waitForResponse(
+      (response) =>
+        response.url().includes("/subscription/change-plan") &&
+        response.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "Continue to downgrade" }).click();
+    const changeResponse = await changed;
+    expect(changeResponse.ok(), await changeResponse.text()).toBeTruthy();
 
     // The benefits are back to the free plan's.
     const downgraded = await currentSubscription(page.request);
