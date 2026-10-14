@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Providers from "@/redux/Provider";
@@ -14,11 +15,14 @@ export const metadata: Metadata = {
   description: "Lemonade Admin Dashboard",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Per-request render so middleware's CSP nonce can be stamped onto scripts.
+  await headers();
+
   return (
     <html lang="en">
       <body className={inter.className}>

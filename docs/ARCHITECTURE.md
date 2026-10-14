@@ -3267,10 +3267,12 @@ Did the rest, all verifiable without either:
   vital",...}` line in the server's own output.
 - **CSP with nonces via middleware, enforced** — both apps' `middleware.ts` generate a per-request nonce,
   set `Content-Security-Policy` on the request (so Next can nonce its scripts) and the response, and report
-  violations to `POST /api/csp-report`. Frontend covers Firebase, Google Identity Services, Reverb, and the
-  allow-listed image hosts; admin covers Firebase (FcmProvider), Reverb, and the same image hosts. Both still
-  need `style-src 'unsafe-inline'`. Enforced as of 14 October 2026 — watch `/api/csp-report` if a real
-  integration is blocked and widen the allow-list rather than flipping back to report-only.
+  violations to `POST /api/csp-report`. Root layouts call `headers()` so pages stay dynamic — static HTML
+  cannot carry a fresh nonce, and with `'strict-dynamic'` that left every `/_next` script blocked (Lighthouse
+  NO_FCP on `/login`). Frontend covers Firebase, Google Identity Services, Reverb, and the allow-listed image
+  hosts; admin covers Firebase (FcmProvider), Reverb, and the same image hosts. Both still need
+  `style-src 'unsafe-inline'`. Enforced as of 14 October 2026 — watch `/api/csp-report` if a real integration
+  is blocked and widen the allow-list rather than flipping back to report-only.
 - **Client errors → server log + Slack** — browser `logger.error` beacons to each app's `POST /api/client-errors`,
   which logs locally and forwards to lemonade-backend `POST /v1/shared/client-errors` with `X-Correlation-Id`.
   That action uses `ErrorReportingService` (file log always; Slack when `LOG_SLACK_WEBHOOK_URL` is set).
