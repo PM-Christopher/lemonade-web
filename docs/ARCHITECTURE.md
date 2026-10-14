@@ -2739,7 +2739,7 @@ opt-in `?page=` pagination to the seven largest unbounded admin lists, and admin
 > `tooling/e2e/tests/admin/tribes.spec.ts` mocks only that external call and runs everything else —
 > create, add thread, delete thread — against the real backend.
 
-### Phase 7 — Design system **[SHOULD]** **[DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, pixel-class lint ratchet added, modal→Dialog migration complete (59 files, both apps); all 3 contrast findings resolved, 25 September 2026]**
+### Phase 7 — Design system **[SHOULD]** **[DONE — primitives lifted, MUI/antd removed, Tailwind tokens shared, no pixel classes left, pixel-class lint rule is an error, modal→Dialog migration complete (59 files, both apps); all 3 contrast findings resolved, 25 September 2026]**
 
 Deferred deliberately: visible, but not structural. Safe to run in parallel with P5 if capacity allows.
 
@@ -3008,6 +3008,20 @@ generalized version of the existing `check-any-budget.mjs` (both now share
 budget step. While in there, the any-type budget script surfaced its own real improvement from earlier
 in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
 `no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
+
+> **Update, 14 October 2026: no pixel classes left, and the rule is an error.** A codemod mapped every
+> remaining `[Npx]` class (3,271 across both apps) to a token. Spacing, sizing, line-height and border
+> values became Tailwind 4 numeric steps (`w-[640px]` → `w-160`, `leading-[21px]` → `leading-5.25`). Radius
+> values became the preset's steps (`rounded-[8px]` → `rounded-lg`). Font sizes became the Figma roles in
+> `typography.css`: a size with its line height maps to the exact role (`text-[14px] leading-[16.8px]` →
+> `text-label`), a lone 14/16/18px maps to `text-body-s/l/xl`, and a lone size whose role has a different
+> line height gets `leading-normal` so it keeps the inherited 1.5. 124 values had no exact token: sub-pixel
+> values rounded to the nearest pixel, and off-scale sizes (10, 11, 13, 15, 22, 26 and 28px) and radii
+> (10, 13, 18, 20 and 37px) snapped to the nearest step. Checked with full-page screenshots of 23 pages
+> before and after. Elements didn't move, except where a logged rounding added up (the settings list, +6px) and
+> where the body roles' -0.5% tracking let a pill's text fit on one line (`/business`, -21px). The
+> visible difference is that tracking, which is the Figma spec. `local/no-hardcoded-pixel-class` is now an
+> error in both apps, so `pixel-class-budget.json`, `check-pixel-budget.mjs` and its CI step are gone.
 
 ### Phase 8 — Observability & hardening **[SHOULD]** **[DONE — logging/Web Vitals/CSP enforced, client errors → Laravel log/Slack, docs, and all ten Playwright journeys done]**
 
