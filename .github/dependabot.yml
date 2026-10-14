@@ -19,6 +19,9 @@ updates:
       - dependency-name: "@types/react"
       - dependency-name: "@types/react-dom"
       - dependency-name: "eslint-config-next"
+      # typescript-eslint does not support TypeScript 7 yet
+      - dependency-name: "typescript"
+        versions: [">=6.0.0"]
     open-pull-requests-limit: 10
 
   - package-ecosystem: "github-actions"

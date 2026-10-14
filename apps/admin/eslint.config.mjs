@@ -6,19 +6,34 @@
 // runtime.
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import boundaries from "eslint-plugin-boundaries";
 import baseConfig, { noClientPagesOrLayouts } from "@lemonade/config/eslint";
+
+// Drop plugins the shared base already registers — ESLint 10.12 rejects redefines.
+const baseOwnedPlugins = ["@typescript-eslint", "react-hooks", "boundaries", "local"];
+
+function withoutBasePlugins(config) {
+    if (!config.plugins) return config;
+    const plugins = Object.fromEntries(
+        Object.entries(config.plugins).filter(([name]) => !baseOwnedPlugins.includes(name)),
+    );
+    if (Object.keys(plugins).length === 0) {
+        const { plugins: _dropped, ...rest } = config;
+        return rest;
+    }
+    return { ...config, plugins };
+}
 
 // Scoped to src/** — root-level config files (next.config.mjs,
 // eslint.config.mjs itself, tailwind/postcss config) were never meant to be
 // subject to Next's page/document rules.
 const nextConfigs = [...nextVitals, ...nextTs]
     .filter((config) => !config.ignores)
-    .map((config) => ({
-        ...config,
-        files: ["src/**/*.{js,jsx,ts,tsx}"],
-    }));
+    .map((config) =>
+        withoutBasePlugins({
+            ...config,
+            files: ["src/**/*.{js,jsx,ts,tsx}"],
+        }),
+    );
 
 const nextPlugin = nextVitals.find((config) => config.plugins?.["@next/next"]).plugins["@next/next"];
 
@@ -64,7 +79,6 @@ export default [
         // consumed by other domain features and shouldn't trip the
         // family-isolation check below).
         files: ["**/*.{ts,tsx}"],
-        plugins: { boundaries },
         settings: {
             "boundaries/elements": [{ type: "feature", pattern: "src/features/*/**", capture: ["family"] }],
         },
@@ -89,7 +103,6 @@ export default [
         // apps/frontend/eslint.config.mjs's file header for the rationale
         // and the measured violation counts.
         files: ["**/*.{ts,tsx}"],
-        plugins: { "@typescript-eslint": tseslint },
         rules: {
             "@typescript-eslint/no-explicit-any": "warn",
             // 158 pre-existing unused-import/-variable violations, measured

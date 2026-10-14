@@ -26,9 +26,22 @@
 //         one shared "warn" is the honest level until axios is migrated too.
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import boundaries from "eslint-plugin-boundaries";
 import baseConfig, { noClientPagesOrLayouts } from "@lemonade/config/eslint";
+
+// Drop plugins the shared base already registers — ESLint 10.12 rejects redefines.
+const baseOwnedPlugins = ["@typescript-eslint", "react-hooks", "boundaries", "local"];
+
+function withoutBasePlugins(config) {
+  if (!config.plugins) return config;
+  const plugins = Object.fromEntries(
+    Object.entries(config.plugins).filter(([name]) => !baseOwnedPlugins.includes(name)),
+  );
+  if (Object.keys(plugins).length === 0) {
+    const { plugins: _dropped, ...rest } = config;
+    return rest;
+  }
+  return { ...config, plugins };
+}
 
 // Scoped to src/** — root-level config files (next.config.mjs,
 // eslint.config.mjs itself, tailwind/postcss config) were never meant to be
@@ -36,10 +49,12 @@ import baseConfig, { noClientPagesOrLayouts } from "@lemonade/config/eslint";
 // `.next/**` still gets dropped.
 const nextConfigs = [...nextVitals, ...nextTs]
   .filter((config) => !config.ignores)
-  .map((config) => ({
-    ...config,
-    files: ["src/**/*.{js,jsx,ts,tsx}"],
-  }));
+  .map((config) =>
+    withoutBasePlugins({
+      ...config,
+      files: ["src/**/*.{js,jsx,ts,tsx}"],
+    }),
+  );
 
 const nextPlugin = nextVitals.find((config) => config.plugins?.["@next/next"]).plugins["@next/next"];
 
@@ -94,7 +109,6 @@ export default [
     // file header), so it's exempt from the family-isolation check
     // below rather than another "domain".
     files: ["**/*.{ts,tsx}"],
-    plugins: { boundaries },
     settings: {
       "boundaries/elements": [
         { type: "shared-feature", pattern: "src/features/shared/**" },
@@ -121,7 +135,6 @@ export default [
   {
     // Pre-existing debt, not new-code license — see file header.
     files: ["**/*.{ts,tsx}"],
-    plugins: { "@typescript-eslint": tseslint },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       // Pre-existing unused-import/-variable debt, measured when this
