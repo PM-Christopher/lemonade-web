@@ -215,24 +215,20 @@ real signal, not noise).
 
 ## Wiring into CI
 
-Written, not enabled yet — `.github/workflows/e2e.yml`, triggered by `workflow_dispatch` only (run it
-manually from the Actions tab), deliberately not on `pull_request`/`push` like `ci.yml`'s other jobs.
+`.github/workflows/e2e.yml` runs on every pull request, and manually from the Actions tab.
 
-It's a complete job, not a stub: MySQL and Mailpit service containers, a real `lemonade-backend` checkout,
-`composer install` + `migrate` + seed (`ReferenceSeeder` then `LocalDemoSeeder`, the same deterministic
-fixtures — see `config/seeding.php` and `database/seeders/E2eFixturesSeeder.php` in that repo — a local
-`php artisan migrate:fresh --seed` in a `local`/`staging` environment produces), `php artisan serve`, then
-the usual `pnpm install` / `playwright install` / `pnpm test` against it. Every credential the suite needs
-(`E2E_USER_EMAIL` and the rest) is set as a **plain env var** in the workflow, not a secret — they're
-`lemonade-backend`'s own deterministic seed defaults, not anything sensitive; the same values are already
-committed in `.env.e2e.example`.
+It starts MySQL and Mailpit containers, checks out `lemonade-backend` on `ft_architecture_upgrade`, migrates
+and seeds it (`ReferenceSeeder`, `LocalDemoSeeder`, `StagingStressDataSeeder`), then starts `php artisan
+serve`, Reverb and a queue worker before running `pnpm test`. Demo credentials are plain env vars, since
+they're the backend's seed defaults. The same values are in `.env.e2e.example`.
 
-Two real secrets are what's actually missing before this can run automatically:
+It needs three repo secrets, all set:
 
-- **`LEMONADE_BACKEND_TOKEN`** — `lemonade-backend` (`github.com/PM-Christopher/lemonade-backend`) is
-  private. A fine-grained PAT scoped to read-only contents access on just that repo is enough.
-- **`PAYSTACK_SECRET_KEY`/`PAYSTACK_PUBLIC_KEY`** — real Paystack test-mode keys, for
-  `ticket-purchase.spec.ts`'s real transaction-initialize call.
+- **`LEMONADE_BACKEND_TOKEN`**, a read-only PAT for the private `lemonade-backend` repo.
+- **`PAYSTACK_SECRET_KEY`/`PAYSTACK_PUBLIC_KEY`**, Paystack test-mode keys. The secret also signs the
+  webhook the ticket purchase spec sends.
 
-Once both exist as repo secrets: run the workflow manually once to confirm it's green, then flip `on:` in
-`e2e.yml` to include `pull_request` (or fold the job into `ci.yml` directly) to make it a real merge gate.
+When the suite fails, the job uploads an `e2e-failure` artifact with Playwright's traces and screenshots
+plus the backend's `storage/logs/` (Laravel, serve, Reverb and queue output).
+
+Point the checkout's `ref` at `main` once `ft_architecture_upgrade` is merged in the backend.

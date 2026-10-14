@@ -1,9 +1,10 @@
-name: e2e (manual)
+name: e2e
 
 # Runs tooling/e2e's Playwright suite against a real lemonade-backend.
 # Needs the LEMONADE_BACKEND_TOKEN, PAYSTACK_SECRET_KEY and PAYSTACK_PUBLIC_KEY repo secrets.
 # Demo credentials and fixture ids come from the backend's seeders, so they're plain env vars.
 on:
+  pull_request:
   workflow_dispatch:
 
 jobs:
