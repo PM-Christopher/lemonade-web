@@ -20,9 +20,9 @@
     "lemonade:refresh": "mv node_modules /tmp/lemonade-node_modules-broken && pnpm install"
   },
   "devDependencies": {
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "turbo": "^2.11.6",
+    "turbo": "^2.11.7",
     "typescript": "^5.7.2"
   }
 }
