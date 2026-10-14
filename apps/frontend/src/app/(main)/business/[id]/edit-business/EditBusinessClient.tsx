@@ -3,7 +3,7 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateBusinessSchema, type UpdateBusinessInput } from "@/features/business/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -62,7 +62,6 @@ const EditBusinessClient = ({ id }: { id: number }) => {
     setValue,
     setError,
     reset,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<UpdateBusinessInput>({
     resolver: zodResolver(updateBusinessSchema),
@@ -83,8 +82,8 @@ const EditBusinessClient = ({ id }: { id: number }) => {
     mode: "onTouched",
   });
 
-  const services = watch("services");
-  const gallery = watch("gallery");
+  const services = useWatch({ control, name: "services" });
+  const gallery = useWatch({ control, name: "gallery" });
   const fieldAdapter = {
     setFieldValue: (field: string, value: unknown) =>
       setValue(field as keyof UpdateBusinessInput, value as never, { shouldValidate: true }),

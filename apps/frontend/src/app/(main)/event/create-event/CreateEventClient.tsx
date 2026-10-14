@@ -14,7 +14,7 @@ import InstagramIcon from "@/images/icons/instagram-color.svg";
 import FacebookIcon from "@/images/icons/facebook-color.svg";
 import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createEventDetailsSchema, type CreateEventDetailsInput } from "@/features/events/schema";
 import Switch from "react-switch";
@@ -69,7 +69,6 @@ const CreateEventClient = () => {
     handleSubmit,
     setValue,
     control,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<CreateEventDetailsInput>({
     resolver: zodResolver(createEventDetailsSchema),
@@ -94,7 +93,7 @@ const CreateEventClient = () => {
     mode: "onTouched",
   });
 
-  const values = watch();
+  const values = useWatch({ control });
   const fieldAdapter = {
     setFieldValue: (field: string, value: unknown) =>
       setValue(field as keyof CreateEventDetailsInput, value as never, { shouldValidate: true }),

@@ -10,7 +10,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Switch from "react-switch";
 import { useSelector } from "react-redux";
 import { TicketDetails } from "@/interfaces/EventInterface";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { assignEventTicketsSchema, type AssignEventTicketsInput } from "@/features/events/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -47,7 +47,6 @@ const AssignTicketClient = ({ id }: { id: number }) => {
     control,
     setValue,
     setError,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<AssignEventTicketsInput>({
     resolver: zodResolver(assignEventTicketsSchema),
@@ -65,7 +64,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
     mode: "onChange",
   });
 
-  const assignMultiple = watch("assign_multiple");
+  const assignMultiple = useWatch({ control, name: "assign_multiple" });
 
   const onSubmit = async (values: AssignEventTicketsInput) => {
     const allTickets: { id: string; quantity: number }[] = [];
@@ -109,7 +108,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
             type: "success",
           }),
         );
-        window.location.href = result.payment_url;
+        window.location.assign(result.payment_url);
       }
     } catch (error) {
       if (applyServerErrors(error, setError, ["fullname", "email", "assigned_tickets"])) return;

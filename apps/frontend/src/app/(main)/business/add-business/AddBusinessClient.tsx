@@ -10,7 +10,7 @@ import PhoneIcon from "@/images/icons/phoneIcon.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import CloseIcon from "@/images/icons/close.svg";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createBusinessSchema, type CreateBusinessInput } from "@/features/business/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -43,7 +43,6 @@ const AddBusinessClient = () => {
     control,
     setValue,
     setError,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<CreateBusinessInput>({
     resolver: zodResolver(createBusinessSchema),
@@ -64,7 +63,7 @@ const AddBusinessClient = () => {
     mode: "onTouched",
   });
 
-  const services = watch("services");
+  const services = useWatch({ control, name: "services" });
   const fieldAdapter = {
     setFieldValue: (field: string, value: unknown) =>
       setValue(field as keyof CreateBusinessInput, value as never, { shouldValidate: true }),

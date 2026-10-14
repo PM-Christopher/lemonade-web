@@ -3,7 +3,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { bankAccountSchema, type BankAccountInput } from "@/features/settings/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -34,12 +34,12 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
   const createBankAccountMutation = useCreateBankAccountMutation();
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
     setError,
     reset,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<BankAccountInput>({
     resolver: zodResolver(bankAccountSchema),
@@ -51,7 +51,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
     mode: "onTouched",
   });
 
-  const accountName = watch("account_name");
+  const accountName = useWatch({ control, name: "account_name" });
 
   const onSubmit = (values: BankAccountInput) => {
     // This modal adds the user's bank account; payouts need one first.

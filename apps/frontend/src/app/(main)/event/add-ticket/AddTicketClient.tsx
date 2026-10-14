@@ -6,7 +6,7 @@ import { Label, Input, Button } from "@lemonade/ui";
 import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { eventTicketsFormSchema, type EventTicketsFormInput } from "@/features/events/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -57,7 +57,6 @@ const AddTicketClient = () => {
     control,
     setValue,
     setError,
-    watch,
     formState: { errors, isValid, isSubmitting, touchedFields, submitCount },
   } = useForm<EventTicketsFormInput>({
     resolver: zodResolver(eventTicketsFormSchema),
@@ -66,7 +65,7 @@ const AddTicketClient = () => {
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "tickets" });
-  const tickets = watch("tickets");
+  const tickets = useWatch({ control, name: "tickets" });
 
   const ticketFieldError = (index: number, field: keyof typeof emptyTicket) => {
     const fieldError = errors.tickets?.[index]?.[field]?.message;

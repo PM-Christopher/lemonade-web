@@ -7,7 +7,7 @@ import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/
 import { useAppDispatch } from "@/redux/hook";
 
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { bankAccountSchema, type BankAccountInput } from "@/features/settings/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -42,11 +42,11 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
   const verifyAccountMutation = useVerifyAccountMutation();
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
     setError: setFormError,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<BankAccountInput>({
     resolver: zodResolver(bankAccountSchema),
@@ -58,7 +58,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
     mode: "onTouched",
   });
 
-  const values = watch();
+  const values = useWatch({ control });
 
   const onSubmit = (formValues: BankAccountInput) => {
     // Find the selected bank by matching the code

@@ -3,7 +3,7 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 
 import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateEventDetailsSchema, type UpdateEventDetailsInput } from "@/features/events/schema";
 import { applyServerErrors } from "@/lib/form-errors";
@@ -175,11 +175,11 @@ const EditEventClient = ({ id }: { id: string }) => {
   }, []);
 
   const {
+    control,
     handleSubmit,
     setValue,
     setError,
     reset,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<UpdateEventDetailsInput>({
     resolver: zodResolver(updateEventDetailsSchema),
@@ -187,7 +187,7 @@ const EditEventClient = ({ id }: { id: string }) => {
     mode: "onTouched",
   });
 
-  const values = watch();
+  const values = useWatch({ control });
   const fieldAdapter = {
     setFieldValue: (field: string, value: unknown) =>
       setValue(field as keyof UpdateEventDetailsInput, value as never, { shouldValidate: true }),
@@ -761,7 +761,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         type={type}
                         name={`socials.${key}`}
                         className="bg-light_grey text-body-s w-full rounded-xl border-0 px-1 focus:border-transparent focus:ring-0 focus:outline-none"
-                        value={values.socials[key as keyof SocialMediaHandles] ?? ""}
+                        value={values.socials?.[key as keyof SocialMediaHandles] ?? ""}
                         onChange={(e) =>
                           setValue(
                             `socials.${key as keyof SocialMediaHandles}` as const,

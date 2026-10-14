@@ -7,7 +7,7 @@ import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import Image from "next/image";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { boostBusinessSchema, type BoostBusinessInput } from "@/features/business/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -42,10 +42,10 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
   const { data, isLoading: loading } = useBoostPackagesQuery();
 
   const {
+    control,
     handleSubmit,
     setValue,
     setError,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<BoostBusinessInput>({
     resolver: zodResolver(boostBusinessSchema),
@@ -58,8 +58,8 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
     mode: "onTouched",
   });
 
-  const startDate = watch("start_date");
-  const startTime = watch("start_time");
+  const startDate = useWatch({ control, name: "start_date" });
+  const startTime = useWatch({ control, name: "start_time" });
 
   const onSubmit = async (values: BoostBusinessInput) => {
     try {
@@ -75,7 +75,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
           type: "success",
         }),
       );
-      window.location.href = result.payment;
+      window.location.assign(result.payment);
     } catch (err) {
       if (applyServerErrors(err, setError, ["package", "option", "start_date", "start_time"])) {
         return;

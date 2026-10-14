@@ -3,7 +3,7 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { requestServiceSchema, type RequestServiceInput } from "@/features/business/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -33,11 +33,11 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
   const requestServiceMutation = useRequestServiceMutation(id);
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
     setError,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<RequestServiceInput>({
     resolver: zodResolver(requestServiceSchema),
@@ -49,7 +49,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
     mode: "onTouched",
   });
 
-  const selectedServices = watch("services") ?? [];
+  const selectedServices = useWatch({ control, name: "services" }) ?? [];
 
   const handleServicesClick = (item: string) => {
     const updatedServices = selectedServices.includes(item)
