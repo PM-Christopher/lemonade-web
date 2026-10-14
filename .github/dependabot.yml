@@ -22,6 +22,8 @@ updates:
       # typescript-eslint does not support TypeScript 7 yet
       - dependency-name: "typescript"
         versions: [">=6.0.0"]
+      # Radix 1.2+/2.3.8+ currently adds 6–7 KB to business routes (bundle-budget)
+      - dependency-name: "@radix-ui/*"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "github-actions"
