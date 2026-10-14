@@ -970,8 +970,8 @@ the real verdict. Client schemas exist to make the UI responsive, not to decide 
   lands on the field that caused it rather than in a toast.
 - Where a rule cannot be mirrored — uniqueness, entitlements, balance sufficiency — do not guess.
   Submit and render the server's answer.
-- Password rules mirror `App\Support\PasswordRules`, replacing the `handleTest` regex helper currently
-  duplicated in both apps.
+- Password rules mirror `App\Support\PasswordRules` (`strongPasswordField` in `@lemonade/validation`).
+  The old `handleTest` regex helper is deleted.
 
 ### Shared vs app-local schemas
 
@@ -3307,7 +3307,7 @@ Left behind when Phase 5 migrated server state and kept the existing forms. Form
 - One schema per action (feature `schema.ts`), with a comment naming the backend `FormRequest` it mirrors. `z.infer` is the form's value type. Server 422 field errors map onto the field via `applyServerErrors` / `setError`.
 - Password rules mirror `App\Support\PasswordRules`. Do not invent a stricter client rule than the endpoint it calls.
 - `@lemonade/validation` is Zod (shared fields and auth/profile schemas). Formik and Yup deps removed from both apps.
-- `checkError` kept as a small RHF `FieldErrors` helper (no Formik types). Optional shared `FormField` primitive in `@lemonade/ui` is still open polish, not a blocker.
+- `checkError.ts` and its `handleTest` sibling are deleted (14 October 2026): no form used them after the move. An optional shared `FormField` primitive in `@lemonade/ui` is still open polish, not a blocker.
 
 **Status:** Done (2026-10-14). Admin and frontend forms, plus `@lemonade/validation`, are on React Hook Form + Zod.
 

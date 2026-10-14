@@ -20,4 +20,3 @@ export function formatMoney(minorUnits: number, currency: string): string {
 }
 
 export { formatCountry } from "./formatCountry";
-export { checkError, handleTest } from "./checkError";
