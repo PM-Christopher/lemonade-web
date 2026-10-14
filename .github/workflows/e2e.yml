@@ -101,9 +101,9 @@ jobs:
       - name: Start backend
         working-directory: lemonade-backend
         run: |
-          php artisan serve --host=127.0.0.1 --port=9800 &
-          php artisan reverb:start --host=127.0.0.1 --port=8080 &
-          php artisan queue:work --tries=1 &
+          php artisan serve --host=127.0.0.1 --port=9800 > storage/logs/serve.log 2>&1 &
+          php artisan reverb:start --host=127.0.0.1 --port=8080 > storage/logs/reverb.log 2>&1 &
+          php artisan queue:work --tries=1 > storage/logs/queue.log 2>&1 &
           npx --yes wait-on http://127.0.0.1:9800/health --timeout 30000
 
       - uses: pnpm/action-setup@v6
@@ -156,10 +156,12 @@ jobs:
           E2E_BACKEND_URL: http://127.0.0.1:9800
         run: pnpm test
 
-      - name: Upload Playwright report
-        if: always()
+      - name: Upload test results and backend logs
+        if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report
-          path: lemonade-web/tooling/e2e/playwright-report/
+          name: e2e-failure
+          path: |
+            lemonade-web/tooling/e2e/test-results/
+            lemonade-backend/storage/logs/
           retention-days: 14
