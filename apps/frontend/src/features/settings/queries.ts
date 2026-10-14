@@ -5,6 +5,7 @@ export const settingsKeys = {
   all: () => ["settings"] as const,
   profile: () => [...settingsKeys.all(), "profile"] as const,
   wallet: () => [...settingsKeys.all(), "wallet"] as const,
+  bankAccount: () => [...settingsKeys.all(), "bank-account"] as const,
   referral: () => [...settingsKeys.all(), "referral"] as const,
   referralActivity: () => [...settingsKeys.all(), "referral-activity"] as const,
   rewardsHistory: () => [...settingsKeys.all(), "rewards-history"] as const,
@@ -26,6 +27,16 @@ export function useWalletSettingsQuery(options?: { enabled?: boolean }) {
     queryKey: settingsKeys.wallet(),
     queryFn: settingsApi.getWallet,
     staleTime: 0,
+    enabled: options?.enabled,
+  });
+}
+
+// The saved payout bank account, or null when there isn't one.
+export function useBankAccountQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: settingsKeys.bankAccount(),
+    queryFn: settingsApi.getBankAccount,
+    staleTime: 60_000,
     enabled: options?.enabled,
   });
 }

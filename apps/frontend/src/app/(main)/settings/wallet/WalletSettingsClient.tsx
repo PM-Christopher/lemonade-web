@@ -13,7 +13,7 @@ import { TransactionHistorySkeleton, WalletDetailSkeleton } from "@/components/S
 import dynamic from "next/dynamic";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
-import { useWalletSettingsQuery } from "@/features/settings/queries";
+import { useBankAccountQuery, useWalletSettingsQuery } from "@/features/settings/queries";
 import { useRequestPayoutMutation, useRedeemPointsMutation } from "@/features/settings/mutations";
 import { errorMessage } from "@/lib/api-error";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -28,11 +28,13 @@ const RequestPayoutModal = dynamic(() => import("@/components/settings/Modal/Req
 function WalletSettingsClient() {
   const { push } = useNavigation();
   const dispatch = useAppDispatch();
-  const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   const { data, isLoading: loading } = useWalletSettingsQuery({
     enabled: isLoggedIn,
   });
+  const bankAccountQuery = useBankAccountQuery({ enabled: isLoggedIn });
+  const hasBankAccount = Boolean(bankAccountQuery.data?.bank_account);
   const requestPayoutMutation = useRequestPayoutMutation();
   const redeemPointsMutation = useRedeemPointsMutation();
   const profileLoading = requestPayoutMutation.isPending;
@@ -48,7 +50,7 @@ function WalletSettingsClient() {
   };
 
   const handlePayoutRequest = () => {
-    if (user?.has_bank_account) {
+    if (hasBankAccount) {
       // No amount means "pay out everything available", the backend's default.
       requestPayoutMutation.mutate(
         {},
@@ -172,7 +174,7 @@ function WalletSettingsClient() {
                         : "bg-mid-green cursor-not-allowed opacity-70"
                     } `}
                     onClick={handlePayoutRequest}
-                    disabled={profileLoading || !user}
+                    disabled={profileLoading || !bankAccountQuery.isSuccess}
                   >
                     {profileLoading ? (
                       <>

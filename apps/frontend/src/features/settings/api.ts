@@ -121,6 +121,10 @@ export interface CreateBankAccountResponse {
   bank_account: BankAccount;
 }
 
+export interface BankAccountSummary {
+  bank_account: Pick<BankAccount, "bank_name" | "account_name" | "account_number"> | null;
+}
+
 export interface ReferralSummary {
   referral_code: string;
   // Relative path only (e.g. "signup?referral=CODE") — build the full shareable URL with
@@ -143,6 +147,8 @@ export const settingsApi = {
 
   requestPayout: (data: RequestPayoutPayload) =>
     browserApi.post<RequestPayoutResponse>(userProfileRoutes.WALLET_REQUEST_PAYOUT, data),
+
+  getBankAccount: () => browserApi.get<BankAccountSummary>(userProfileRoutes.BANK_ACCOUNT_SHOW),
 
   createBankAccount: (data: CreateBankAccountPayload) =>
     browserApi.post<CreateBankAccountResponse>(userProfileRoutes.BANK_ACCOUNT_CREATE, data),

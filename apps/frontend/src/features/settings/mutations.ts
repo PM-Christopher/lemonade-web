@@ -27,6 +27,7 @@ export function useCreateBankAccountMutation() {
     mutationFn: (data: CreateBankAccountPayload) => settingsApi.createBankAccount(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: settingsKeys.wallet() });
+      queryClient.invalidateQueries({ queryKey: settingsKeys.bankAccount() });
     },
   });
 }

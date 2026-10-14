@@ -82,9 +82,9 @@ test("a user creates an event with a ticket and publishes it", async ({ page, br
   await page.getByText("Paid", { exact: true }).click();
   await page.locator("#ticket-name-0").fill("General admission");
   await page.locator("#ticket-price-0").fill("5000");
-  await page.locator('select[name="tickets[0].stock_type"]').selectOption("unlimited");
+  await page.locator('select[name="tickets.0.stock_type"]').selectOption("unlimited");
   await page.locator("#ticket-limit-0").fill("5");
-  await page.locator('textarea[name="tickets[0].description"]').fill("One entry.");
+  await page.locator('textarea[name="tickets.0.description"]').fill("One entry.");
 
   const created = page.waitForResponse(
     (response) =>

@@ -13,7 +13,6 @@ import type { Bank } from "@/features/shared/api";
 import { useVerifyAccountMutation } from "@/features/shared/mutations";
 import { useCreateBankAccountMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { updateHasBankAccount } from "@/features/authentication/authSlice";
 
 type RequestPayoutInterface = {
   isOpen: boolean;
@@ -65,7 +64,6 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
             type: "success",
           }),
         );
-        dispatch(updateHasBankAccount());
         toggle();
       },
       onError: (err: Error) => {

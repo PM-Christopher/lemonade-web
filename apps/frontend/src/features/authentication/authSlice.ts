@@ -103,9 +103,6 @@ const authSlice = createSlice({
     updateCreatedAccount: (state) => {
       if (state.user) state.user.createdAccount = true;
     },
-    updateHasBankAccount: (state) => {
-      if (state.user) state.user.has_bank_account = true;
-    },
     updateUser: (state, action: PayloadAction<Partial<SessionUser>>) => {
       if (state.user) Object.assign(state.user, action.payload);
     },
@@ -148,7 +145,6 @@ export const {
   changeSubscription,
   changeReason,
   clearReason,
-  updateHasBankAccount,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -13,10 +13,7 @@ vi.mock("@/components/layouts/MainLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-let authState: { user: { has_bank_account: boolean } | null; isLoggedIn: boolean } = {
-  user: { has_bank_account: true },
-  isLoggedIn: true,
-};
+const authState = { isLoggedIn: true };
 
 vi.mock("react-redux", () => ({
   useSelector: () => authState,
@@ -51,11 +48,17 @@ vi.mock("@/components/settings/Modal/RequestPayoutModal", () => ({
 }));
 
 const walletQueryMock = vi.fn();
+const savedBank = {
+  data: { bank_account: { bank_name: "Zenith Bank", account_name: "Demo", account_number: "0" } },
+  isSuccess: true,
+};
+let bankQueryResult: { data?: unknown; isSuccess: boolean } = savedBank;
 const redeemMutateMock = vi.fn();
 const payoutMutateMock = vi.fn();
 
 vi.mock("@/features/settings/queries", () => ({
   useWalletSettingsQuery: (...args: unknown[]) => walletQueryMock(...args),
+  useBankAccountQuery: () => bankQueryResult,
 }));
 
 vi.mock("@/features/settings/mutations", () => ({
@@ -212,12 +215,24 @@ describe("WalletSettingsClient — payout eligibility", () => {
     expect(screen.queryByRole("button", { name: /request pay ?out/i })).not.toBeInTheDocument();
   });
 
-  it("keeps the payout button disabled until the user has loaded", () => {
-    authState = { user: null, isLoggedIn: true };
+  it("keeps the payout button disabled until the bank account has loaded", () => {
+    bankQueryResult = { isSuccess: false };
     walletQueryMock.mockReturnValue({ data: walletData, isLoading: false });
     render(<WalletSettingsClient />);
 
     expect(screen.getByRole("button", { name: /request pay ?out/i })).toBeDisabled();
-    authState = { user: { has_bank_account: true }, isLoggedIn: true };
+    bankQueryResult = savedBank;
+  });
+
+  it("asks for a bank account instead of requesting a payout when none is saved", () => {
+    bankQueryResult = { data: { bank_account: null }, isSuccess: true };
+    payoutMutateMock.mockReset();
+    walletQueryMock.mockReturnValue({ data: walletData, isLoading: false });
+    render(<WalletSettingsClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: /request pay ?out/i }));
+
+    expect(payoutMutateMock).not.toHaveBeenCalled();
+    bankQueryResult = savedBank;
   });
 });
