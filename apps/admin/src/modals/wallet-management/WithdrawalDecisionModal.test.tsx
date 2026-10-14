@@ -10,7 +10,7 @@ const useDecision = vi.fn(() => ({ mutate: decideMutate, isPending: false }));
 
 vi.mock("react-redux", () => ({ useDispatch: () => dispatch }));
 vi.mock("@/features/wallet/mutations", () => ({
-  useWithdrawalRequestDecisionMutation: (id: string | number) => useDecision(id),
+  useWithdrawalRequestDecisionMutation: (_id: string | number) => useDecision(),
 }));
 
 const withdrawal = {
