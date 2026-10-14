@@ -94,7 +94,7 @@ const ConfirmDeleteClient = () => {
           <div className="mt-6 flex justify-between gap-4">
             <SubmitButton
               title="Delete account"
-              loading={isSubmitting}
+              loading={isSubmitting || deleteAccountMutation.isPending}
               isValid={isValid}
               bgColor="bg-red-1"
               errorColor="bg-red-2"
