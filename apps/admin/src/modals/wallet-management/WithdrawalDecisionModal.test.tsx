@@ -6,7 +6,7 @@ import WithdrawalDecisionModal from "./WithdrawalDecisionModal";
 
 const decideMutate = vi.fn();
 const dispatch = vi.fn();
-const useDecision = vi.fn((_id: string | number) => ({ mutate: decideMutate, isPending: false }));
+const useDecision = vi.fn(() => ({ mutate: decideMutate, isPending: false }));
 
 vi.mock("react-redux", () => ({ useDispatch: () => dispatch }));
 vi.mock("@/features/wallet/mutations", () => ({

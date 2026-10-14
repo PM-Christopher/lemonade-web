@@ -28,14 +28,10 @@ import { adminAccountRoutes } from "@lemonade/api-types/generated";
 // convenience on top of the real thing, and the real thing is still the
 // backend's `can:<section>.write` middleware regardless of what happens here.
 
-// Content-Security-Policy-Report-Only — report-only, so nothing here can
-// break a page; violations land at /api/csp-report (see that route and
-// docs/ARCHITECTURE.md Phase 8). Simpler than frontend's policy: this app
-// has no Firebase or Google OAuth, just Reverb (realtime), Google Fonts
-// (Work Sans and Russo One, in globals.css), and the two
-// image hosts already allow-listed in next.config.mjs. `style-src` still
-// needs 'unsafe-inline' for the same reason as frontend's — see that
-// app's src/middleware.ts. Nothing is enforced yet.
+// Content-Security-Policy (enforced). Violations still land at
+// /api/csp-report. Covers Reverb, Google Fonts, Firebase (admin also mounts
+// FcmProvider), and the image hosts allow-listed in next.config.mjs.
+// `style-src` still needs 'unsafe-inline' for the same reason as frontend.
 //
 // ADR-005: self-hosted Reverb, not Pusher Cloud — the browser opens the
 // websocket directly to Reverb's own host:port (not proxied through this
@@ -59,13 +55,20 @@ function buildCsp(nonce: string) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com",
     "font-src 'self' data: https://fonts.gstatic.com",
-    `connect-src 'self' ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
+    `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
+    "worker-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
     "report-uri /api/csp-report",
   ].join("; ");
+}
+
+function withCsp(requestHeaders: Headers, nonce: string): string {
+  const csp = buildCsp(nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
+  return csp;
 }
 
 const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password"];
@@ -129,10 +132,11 @@ export async function middleware(req: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-nonce", nonce);
+  const csp = withCsp(requestHeaders, nonce);
 
   function next() {
     const res = NextResponse.next({ request: { headers: requestHeaders } });
-    res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+    res.headers.set("Content-Security-Policy", csp);
     return res;
   }
 
@@ -153,7 +157,7 @@ export async function middleware(req: NextRequest) {
     loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
 
     const res = NextResponse.redirect(loginUrl);
-    res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+    res.headers.set("Content-Security-Policy", csp);
     return res;
   }
 
@@ -172,7 +176,7 @@ export async function middleware(req: NextRequest) {
       const notFoundUrl = req.nextUrl.clone();
       notFoundUrl.pathname = "/__section_not_permitted__";
       const res = NextResponse.rewrite(notFoundUrl, { status: 404 });
-      res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+      res.headers.set("Content-Security-Policy", csp);
       return res;
     }
     // Already fetched for the check above — forward it so

@@ -34,39 +34,38 @@ function LoginPage({}) {
   });
 
   const onSubmit = async (values: LoginInput) => {
-      try {
-        const result = await loginMutation.mutateAsync(values);
+    try {
+      const result = await loginMutation.mutateAsync(values);
 
-        if (result.needsOnboarding) {
-          // Incomplete admin profile — keep a short-lived onboarding token.
-          setCookie("newToken", result.token, {
-            path: "/",
-            maxAge: 3600 * 6,
-            sameSite: false,
-          });
-          push(routes.PROFILE_SETUP);
-          return;
-        }
-
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "successful",
-            type: "success",
-          }),
-        );
-        push(routes.HOME);
-      } catch (error) {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message:
-              (error instanceof Error && error.message) ||
-              "Something went wrong. Please try again.",
-            type: "error",
-          }),
-        );
+      if (result.needsOnboarding) {
+        // Incomplete admin profile — keep a short-lived onboarding token.
+        setCookie("newToken", result.token, {
+          path: "/",
+          maxAge: 3600 * 6,
+          sameSite: false,
+        });
+        push(routes.PROFILE_SETUP);
+        return;
       }
+
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "successful",
+          type: "success",
+        }),
+      );
+      push(routes.HOME);
+    } catch (error) {
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message:
+            (error instanceof Error && error.message) || "Something went wrong. Please try again.",
+          type: "error",
+        }),
+      );
+    }
   };
 
   return (

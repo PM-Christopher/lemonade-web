@@ -9,7 +9,8 @@ const endAfterStart = (data: {
 }) => {
   if (!data.start_date || !data.start_time || !data.end_date || !data.end_time) return true;
   return (
-    new Date(`${data.end_date}T${data.end_time}`) > new Date(`${data.start_date}T${data.start_time}`)
+    new Date(`${data.end_date}T${data.end_time}`) >
+    new Date(`${data.start_date}T${data.start_time}`)
   );
 };
 
@@ -188,8 +189,9 @@ export type EventTicketsFormInput = z.infer<typeof eventTicketsFormSchema>;
 const assignedTicketSchema = z.object({
   id: z.string().min(1),
   quantity: z.number(),
-  fullname: z.string().trim().min(1, { error: "Full name is required" }),
-  email: emailField,
+  // Empty until assign_multiple is on — refined below when that flag is true.
+  fullname: z.string(),
+  email: z.string(),
 });
 
 // Mirrors App\Http\Requests\Event\AssignEventTicketsRequest.
@@ -208,7 +210,25 @@ export const assignEventTicketsSchema = z
         message: "Assigned tickets are required",
         path: ["assigned_tickets"],
       });
+      return;
     }
+    data.assigned_tickets.forEach((ticket, index) => {
+      if (!ticket.fullname.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Full name is required",
+          path: ["assigned_tickets", index, "fullname"],
+        });
+      }
+      const email = emailField.safeParse(ticket.email);
+      if (!email.success) {
+        ctx.addIssue({
+          code: "custom",
+          message: email.error.issues[0]?.message ?? "Please enter a valid email",
+          path: ["assigned_tickets", index, "email"],
+        });
+      }
+    });
   });
 
 export type AssignEventTicketsInput = z.infer<typeof assignEventTicketsSchema>;

@@ -46,7 +46,11 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
       {
         onSuccess: () => {
           dispatch(
-            updateToastifyReducer({ show: true, message: `${currency} rate updated`, type: "success" }),
+            updateToastifyReducer({
+              show: true,
+              message: `${currency} rate updated`,
+              type: "success",
+            }),
           );
           toggle();
         },

@@ -6,10 +6,7 @@ import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  sendConnectInviteSchema,
-  type SendConnectInviteInput,
-} from "@/features/connect/schema";
+import { sendConnectInviteSchema, type SendConnectInviteInput } from "@/features/connect/schema";
 import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";

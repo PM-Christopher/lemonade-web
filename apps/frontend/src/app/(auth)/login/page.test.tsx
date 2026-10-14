@@ -120,6 +120,7 @@ describe("LoginPage", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(<LoginPage />);
+    await waitFor(() => expect(screen.getByRole("button", { name: "Login" })).toBeInTheDocument());
     expect(await axe(container)).toHaveNoViolations();
   });
 });

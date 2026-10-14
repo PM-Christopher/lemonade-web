@@ -10,19 +10,11 @@ import { USER_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 // set by anything; a session created before this cutover won't carry the
 // new cookie and will be redirected to log in again once.
 
-// Content-Security-Policy-Report-Only — report-only, so nothing here can
-// break a page; violations land at /api/csp-report (see that route and
-// docs/ARCHITECTURE.md Phase 8). Covers this app's real external
-// integrations: Firebase Cloud Messaging (push notifications + its service
-// worker), Google Identity Services (login/signup's "Sign in with
-// Google"), Google Fonts (Work Sans and Russo One, in globals.css),
-// Reverb (Connect's realtime channel), and the two image hosts
-// already allow-listed in next.config.mjs. `style-src` still needs
-// 'unsafe-inline' — much of this app's UI sets the `style` attribute
-// directly rather than a class, and auditing/migrating that is its own
-// pass, not something to silently break by tightening the policy here.
-// Nothing is enforced yet; tightening this from real report-only data is
-// the next step before ever flipping to `Content-Security-Policy`.
+// Content-Security-Policy (enforced). Violations still land at
+// /api/csp-report. Covers Firebase Cloud Messaging, Google Identity
+// Services, Google Fonts, Reverb, and the image hosts allow-listed in
+// next.config.mjs. `style-src` still needs 'unsafe-inline' — much of this
+// app's UI sets the `style` attribute directly rather than a class.
 //
 // ADR-005: self-hosted Reverb, not Pusher Cloud — the browser opens the
 // websocket directly to Reverb's own host:port (not proxied through this
@@ -50,7 +42,7 @@ function buildCsp(nonce: string) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com",
     "font-src 'self' data: https://fonts.gstatic.com",
-    `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
+    `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "frame-src https://accounts.google.com",
     "worker-src 'self'",
     "object-src 'none'",
@@ -59,6 +51,13 @@ function buildCsp(nonce: string) {
     "frame-ancestors 'none'",
     "report-uri /api/csp-report",
   ].join("; ");
+}
+
+function withCsp(requestHeaders: Headers, nonce: string): string {
+  const csp = buildCsp(nonce);
+  // Request header lets Next attach the nonce to its own scripts.
+  requestHeaders.set("Content-Security-Policy", csp);
+  return csp;
 }
 
 const PUBLIC_PATHS = [
@@ -86,10 +85,11 @@ export function middleware(req: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-nonce", nonce);
+  const csp = withCsp(requestHeaders, nonce);
 
   function next() {
     const res = NextResponse.next({ request: { headers: requestHeaders } });
-    res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+    res.headers.set("Content-Security-Policy", csp);
     return res;
   }
 
@@ -117,7 +117,7 @@ export function middleware(req: NextRequest) {
   }
 
   const res = NextResponse.redirect(loginUrl);
-  res.headers.set("Content-Security-Policy-Report-Only", buildCsp(nonce));
+  res.headers.set("Content-Security-Policy", csp);
   return res;
 }
 

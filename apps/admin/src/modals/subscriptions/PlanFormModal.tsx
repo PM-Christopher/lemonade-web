@@ -84,52 +84,52 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
   });
 
   const onSubmit = (values: PlanInput) => {
-      const payload = {
-        title: values.title,
-        access_type: values.access_type,
-        monthly_charge: Number(values.monthly_charge),
-        yearly_charge: Number(values.yearly_charge),
-        ver_badge: values.ver_badge,
-        forum_creation: values.forum_creation,
-        lemon_id: values.lemon_id,
-        event_creation: Number(values.event_creation),
-        sales_commission: Number(values.sales_commission),
-        service_commission: Number(values.service_commission),
-        connection_range: values.connection_range,
-        offline_benefits: values.offline_benefits,
-        recommended: values.recommended,
-        // SubscriptionPlanRequest::toDto() defaults `active` to true when
-        // the field is absent — on UPDATE that would silently reactivate a
-        // deactivated plan on every unrelated edit. Activate/deactivate own
-        // that state via their own mutations, so this form always sends the
-        // plan's current value back unchanged (true for a new plan).
-        active: plan ? plan.active : true,
-      };
+    const payload = {
+      title: values.title,
+      access_type: values.access_type,
+      monthly_charge: Number(values.monthly_charge),
+      yearly_charge: Number(values.yearly_charge),
+      ver_badge: values.ver_badge,
+      forum_creation: values.forum_creation,
+      lemon_id: values.lemon_id,
+      event_creation: Number(values.event_creation),
+      sales_commission: Number(values.sales_commission),
+      service_commission: Number(values.service_commission),
+      connection_range: values.connection_range,
+      offline_benefits: values.offline_benefits,
+      recommended: values.recommended,
+      // SubscriptionPlanRequest::toDto() defaults `active` to true when
+      // the field is absent — on UPDATE that would silently reactivate a
+      // deactivated plan on every unrelated edit. Activate/deactivate own
+      // that state via their own mutations, so this form always sends the
+      // plan's current value back unchanged (true for a new plan).
+      active: plan ? plan.active : true,
+    };
 
-      const mutation = plan ? updatePlanMutation : createPlanMutation;
-      mutation.mutate(payload, {
-        onSuccess: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: plan ? "Plan updated successfully" : "Plan created successfully",
-              type: "success",
-            }),
-          );
-          toggle();
-        },
-        onError: (error) => {
-          const fields = Object.keys(emptyValues) as (keyof PlanInput)[];
-          if (applyServerErrors(error, setError, fields)) return;
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: error?.message || "Something went wrong",
-              type: "error",
-            }),
-          );
-        },
-      });
+    const mutation = plan ? updatePlanMutation : createPlanMutation;
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: plan ? "Plan updated successfully" : "Plan created successfully",
+            type: "success",
+          }),
+        );
+        toggle();
+      },
+      onError: (error) => {
+        const fields = Object.keys(emptyValues) as (keyof PlanInput)[];
+        if (applyServerErrors(error, setError, fields)) return;
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || "Something went wrong",
+            type: "error",
+          }),
+        );
+      },
+    });
   };
 
   return (
@@ -298,11 +298,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     htmlFor={field.name}
                     className="text-light-black flex items-center gap-2 text-[14px] font-normal"
                   >
-                    <input
-                      id={field.name}
-                      type="checkbox"
-                      {...register(field.name)}
-                    />
+                    <input id={field.name} type="checkbox" {...register(field.name)} />
                     {field.label}
                   </label>
                 ))}

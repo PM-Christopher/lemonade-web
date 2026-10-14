@@ -12,10 +12,7 @@ import { useSelector } from "react-redux";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  assignEventTicketsSchema,
-  type AssignEventTicketsInput,
-} from "@/features/events/schema";
+import { assignEventTicketsSchema, type AssignEventTicketsInput } from "@/features/events/schema";
 import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
@@ -65,7 +62,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
         email: "",
       })),
     },
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   const assignMultiple = watch("assign_multiple");

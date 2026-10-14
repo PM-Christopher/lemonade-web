@@ -16,10 +16,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createEventDetailsSchema,
-  type CreateEventDetailsInput,
-} from "@/features/events/schema";
+import { createEventDetailsSchema, type CreateEventDetailsInput } from "@/features/events/schema";
 import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
 import { addEvent } from "@/features/events/event.slice";
@@ -126,9 +123,7 @@ const CreateEventClient = () => {
         end_date: `${formValues.end_date}T${formValues.end_time}`,
         affiliate_program: formValues.affiliate_program,
         // The form takes a whole percent; the backend expects a fraction (2.5% -> 0.025).
-        commission: formValues.affiliate_program
-          ? Number(formValues.commission) / 100
-          : null,
+        commission: formValues.affiliate_program ? Number(formValues.commission) / 100 : null,
         socials: filteredSocials,
       };
       dispatch(addEvent(data));
@@ -177,582 +172,583 @@ const CreateEventClient = () => {
         </div>
         <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
           <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-xl bg-white p-12">
-              <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
-                EVENT DETAILS
-              </p>
-              <SingleFileUploader
-                length="single"
-                type="event"
-                title="Upload event image"
-                setField={fieldAdapter}
-                image=""
-              />
-              {errors.event_image?.message ? (
-                <p className="text-left text-[12px] text-[#FF8D8D]">{errors.event_image?.message}</p>
-              ) : null}
-              <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="event-name"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
-                  Event name
-                </Label>
-                <Input
-                  id="event-name"
-                  type="text"
-                  placeholder=""
-                  className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  value={values.event_name}
-                  onChange={(e) => {
-                    setValue("event_name", e.target.value, { shouldValidate: true });
-                  }}
+            <div>
+              <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-xl bg-white p-12">
+                <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
+                  EVENT DETAILS
+                </p>
+                <SingleFileUploader
+                  length="single"
+                  type="event"
+                  title="Upload event image"
+                  setField={fieldAdapter}
+                  image=""
                 />
-                {errors.event_name?.message ? (
-                  <p className="text-left text-[12px] text-[#FF8D8D]">{errors.event_name?.message}</p>
-                ) : null}
-              </div>
-              <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
-                  Event description
-                </Label>
-                <textarea
-                  className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
-                  value={values.event_description}
-                  onChange={(e) => {
-                    setValue("event_description", e.target.value, { shouldValidate: true });
-                  }}
-                ></textarea>
-                {errors.event_description?.message ? (
+                {errors.event_image?.message ? (
                   <p className="text-left text-[12px] text-[#FF8D8D]">
-                    {errors.event_description?.message}
+                    {errors.event_image?.message}
                   </p>
                 ) : null}
-              </div>
-              <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
-                  Event category
-                </Label>
-                <select
-                  id="fullname"
-                  className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                  value={values.category}
-                  onChange={(e) => {
-                    setValue("category", e.target.value, { shouldValidate: true });
-                  }}
-                >
-                  <option value="">Select category</option>
-                  <option value="spirituality">Spirituality</option>
-                  <option value="summer">Summer</option>
-                </select>
-                {errors.category?.message ? (
-                  <p className="text-left text-[12px] text-[#FF8D8D]">{errors.category?.message}</p>
-                ) : null}
-              </div>
-              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
-                EVENT TYPE
-              </p>
-              <div className="mt-4 flex gap-2">
-                <div
-                  className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${
-                    eventType === "physical"
-                      ? "bg-gradient-green-2 shadow-event-custom"
-                      : "bg-light_grey text-text-grey"
-                  }`}
-                  onClick={() => {
-                    switchEvent("physical");
-                    setValue("event_type", "physical", { shouldValidate: true });
-                  }}
-                >
-                  <LocationIcon />
-                  <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                    Physical
-                  </p>
+                <div className="mt-6 grid gap-2">
+                  <Label
+                    htmlFor="event-name"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Event name
+                  </Label>
+                  <Input
+                    id="event-name"
+                    type="text"
+                    placeholder=""
+                    className="form-font bg-light_grey h-12 rounded-xl border-0"
+                    value={values.event_name}
+                    onChange={(e) => {
+                      setValue("event_name", e.target.value, { shouldValidate: true });
+                    }}
+                  />
+                  {errors.event_name?.message ? (
+                    <p className="text-left text-[12px] text-[#FF8D8D]">
+                      {errors.event_name?.message}
+                    </p>
+                  ) : null}
                 </div>
-                <div
-                  className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${
-                    eventType === "online"
-                      ? "bg-gradient-green-2 shadow-event-custom"
-                      : "bg-light_grey text-text-grey"
-                  }`}
-                  onClick={() => {
-                    switchEvent("online");
-                    setValue("event_type", "online", { shouldValidate: true });
-                  }}
-                >
-                  <WebIcon />
-                  <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                    Online
-                  </p>
-                </div>
-              </div>
-              {eventType === "physical" && (
                 <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="fullname"
                     className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                   >
-                    Event location
+                    Event description
                   </Label>
-                  <div className="bg-light_grey flex items-center gap-3 rounded-xl p-2 px-3">
-                    <div>
-                      <LocationIcon />
-                    </div>
-                    <div className="w-full">
-                      <input
-                        id="search"
-                        type="text"
-                        className="bg-light_grey w-full border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                        placeholder="Enter location..."
-                        value={values.location}
-                        onChange={(e) => {
-                          setValue("location", e.target.value, { shouldValidate: true });
-                        }}
-                      />
-                    </div>
-                  </div>
-                  {errors.location?.message ? (
-                    <p className="text-left text-[12px] text-[#FF8D8D]">{errors.location?.message}</p>
+                  <textarea
+                    className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
+                    value={values.event_description}
+                    onChange={(e) => {
+                      setValue("event_description", e.target.value, { shouldValidate: true });
+                    }}
+                  ></textarea>
+                  {errors.event_description?.message ? (
+                    <p className="text-left text-[12px] text-[#FF8D8D]">
+                      {errors.event_description?.message}
+                    </p>
                   ) : null}
                 </div>
-              )}
-              {eventType === "online" && (
-                <>
+                <div className="mt-6 grid gap-2">
+                  <Label
+                    htmlFor="fullname"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Event category
+                  </Label>
+                  <select
+                    id="fullname"
+                    className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                    value={values.category}
+                    onChange={(e) => {
+                      setValue("category", e.target.value, { shouldValidate: true });
+                    }}
+                  >
+                    <option value="">Select category</option>
+                    <option value="spirituality">Spirituality</option>
+                    <option value="summer">Summer</option>
+                  </select>
+                  {errors.category?.message ? (
+                    <p className="text-left text-[12px] text-[#FF8D8D]">
+                      {errors.category?.message}
+                    </p>
+                  ) : null}
+                </div>
+                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+                  EVENT TYPE
+                </p>
+                <div className="mt-4 flex gap-2">
+                  <div
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${
+                      eventType === "physical"
+                        ? "bg-gradient-green-2 shadow-event-custom"
+                        : "bg-light_grey text-text-grey"
+                    }`}
+                    onClick={() => {
+                      switchEvent("physical");
+                      setValue("event_type", "physical", { shouldValidate: true });
+                    }}
+                  >
+                    <LocationIcon />
+                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
+                      Physical
+                    </p>
+                  </div>
+                  <div
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${
+                      eventType === "online"
+                        ? "bg-gradient-green-2 shadow-event-custom"
+                        : "bg-light_grey text-text-grey"
+                    }`}
+                    onClick={() => {
+                      switchEvent("online");
+                      setValue("event_type", "online", { shouldValidate: true });
+                    }}
+                  >
+                    <WebIcon />
+                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
+                      Online
+                    </p>
+                  </div>
+                </div>
+                {eventType === "physical" && (
                   <div className="mt-6 grid gap-2">
                     <Label
-                      htmlFor="meeting-platform"
+                      htmlFor="fullname"
                       className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                     >
-                      Meeting Platform
+                      Event location
                     </Label>
-                    <select
-                      id="meeting-platform"
-                      className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                      value={values.hosting_platform}
-                      onChange={(e) => setValue("hosting_platform", e.target.value, { shouldValidate: true })}
-                    >
-                      <option value="">Select category</option>
-                      <option value="google-meet">Google meet</option>
-                    </select>
-                    {errors.hosting_platform?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.hosting_platform?.message}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-6 grid gap-2">
-                    <Label
-                      htmlFor="meeting-link"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                    >
-                      Meeting link
-                    </Label>
-                    <Input
-                      id="meeting-link"
-                      type="text"
-                      placeholder=""
-                      className="form-font bg-light_grey h-12 rounded-xl border-0"
-                      value={values.meeting_link}
-                      onChange={(e) => setValue("meeting_link", e.target.value, { shouldValidate: true })}
-                      
-                    />
-                    {errors.meeting_link?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.meeting_link?.message}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-6 grid gap-2">
-                    <Label
-                      htmlFor="meeting-passcode"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                    >
-                      Meeting passcode
-                    </Label>
-                    <Input
-                      id="meeting-passcode"
-                      type="text"
-                      placeholder=""
-                      className="form-font bg-light_grey h-12 rounded-xl border-0"
-                      value={values.meeting_passcode}
-                      onChange={(e) => setValue("meeting_passcode", e.target.value, { shouldValidate: true })}
-                      
-                    />
-                    {errors.meeting_passcode?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.meeting_passcode?.message}
-                      </p>
-                    ) : null}
-                  </div>
-                </>
-              )}
-              <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="event-time-zone"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
-                  Event time zone
-                </Label>
-                <select
-                  id="event-time-zone"
-                  className="form-font bg-light_grey h-12 w-full rounded-xl border-0 px-2"
-                  value={values.time_zone}
-                  onChange={(e) => {
-                    setValue("time_zone", e.target.value, { shouldValidate: true });
-                  }}
-                >
-                  <option value="">Select time zone</option>
-                  {timeZones.map((timezone, index) => (
-                    <option value={timezone.timeZone} key={index}>
-                      {timezone.timeZone} - {timezone.gmt}
-                    </option>
-                  ))}
-                </select>
-                {errors.time_zone?.message ? (
-                  <p className="text-left text-[12px] text-[#FF8D8D]">{errors.time_zone?.message}</p>
-                ) : null}
-              </div>
-              <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
-                  Start date
-                </Label>
-                <div className="flex justify-between gap-3">
-                  <div className={"flex w-full flex-col gap-1"}>
-                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
+                    <div className="bg-light_grey flex items-center gap-3 rounded-xl p-2 px-3">
                       <div>
-                        <CalendarIcon />
+                        <LocationIcon />
                       </div>
                       <div className="w-full">
+                        <input
+                          id="search"
+                          type="text"
+                          className="bg-light_grey w-full border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                          placeholder="Enter location..."
+                          value={values.location}
+                          onChange={(e) => {
+                            setValue("location", e.target.value, { shouldValidate: true });
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {errors.location?.message ? (
+                      <p className="text-left text-[12px] text-[#FF8D8D]">
+                        {errors.location?.message}
+                      </p>
+                    ) : null}
+                  </div>
+                )}
+                {eventType === "online" && (
+                  <>
+                    <div className="mt-6 grid gap-2">
+                      <Label
+                        htmlFor="meeting-platform"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      >
+                        Meeting Platform
+                      </Label>
+                      <select
+                        id="meeting-platform"
+                        className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                        value={values.hosting_platform}
+                        onChange={(e) =>
+                          setValue("hosting_platform", e.target.value, { shouldValidate: true })
+                        }
+                      >
+                        <option value="">Select category</option>
+                        <option value="google-meet">Google meet</option>
+                      </select>
+                      {errors.hosting_platform?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.hosting_platform?.message}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-6 grid gap-2">
+                      <Label
+                        htmlFor="meeting-link"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      >
+                        Meeting link
+                      </Label>
+                      <Input
+                        id="meeting-link"
+                        type="text"
+                        placeholder=""
+                        className="form-font bg-light_grey h-12 rounded-xl border-0"
+                        value={values.meeting_link}
+                        onChange={(e) =>
+                          setValue("meeting_link", e.target.value, { shouldValidate: true })
+                        }
+                      />
+                      {errors.meeting_link?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.meeting_link?.message}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-6 grid gap-2">
+                      <Label
+                        htmlFor="meeting-passcode"
+                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      >
+                        Meeting passcode
+                      </Label>
+                      <Input
+                        id="meeting-passcode"
+                        type="text"
+                        placeholder=""
+                        className="form-font bg-light_grey h-12 rounded-xl border-0"
+                        value={values.meeting_passcode}
+                        onChange={(e) =>
+                          setValue("meeting_passcode", e.target.value, { shouldValidate: true })
+                        }
+                      />
+                      {errors.meeting_passcode?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.meeting_passcode?.message}
+                        </p>
+                      ) : null}
+                    </div>
+                  </>
+                )}
+                <div className="mt-6 grid gap-2">
+                  <Label
+                    htmlFor="event-time-zone"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Event time zone
+                  </Label>
+                  <select
+                    id="event-time-zone"
+                    className="form-font bg-light_grey h-12 w-full rounded-xl border-0 px-2"
+                    value={values.time_zone}
+                    onChange={(e) => {
+                      setValue("time_zone", e.target.value, { shouldValidate: true });
+                    }}
+                  >
+                    <option value="">Select time zone</option>
+                    {timeZones.map((timezone, index) => (
+                      <option value={timezone.timeZone} key={index}>
+                        {timezone.timeZone} - {timezone.gmt}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.time_zone?.message ? (
+                    <p className="text-left text-[12px] text-[#FF8D8D]">
+                      {errors.time_zone?.message}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="mt-6 grid gap-2">
+                  <Label
+                    htmlFor="fullname"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Start date
+                  </Label>
+                  <div className="flex justify-between gap-3">
+                    <div className={"flex w-full flex-col gap-1"}>
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
+                        <div>
+                          <CalendarIcon />
+                        </div>
+                        <div className="w-full">
+                          <DatePicker
+                            selected={values.start_date ? new Date(values.start_date) : null}
+                            onChange={(date: Date | null) => {
+                              if (date) {
+                                // Update start date
+                                const localDate = new Date(
+                                  date.getTime() - date.getTimezoneOffset() * 60000,
+                                )
+                                  .toISOString()
+                                  .split("T")[0];
+                                setValue("start_date", localDate, { shouldValidate: true });
+                              } else {
+                                setValue("start_date", "", { shouldValidate: true });
+                              }
+                            }}
+                            minDate={now}
+                            showTimeSelect={false}
+                            dateFormat="yyyy-MM-dd"
+                            className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                            placeholderText="From"
+                          />
+                        </div>
+                      </div>
+                      {errors.start_date?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.start_date?.message}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className={"flex w-full flex-col gap-1"}>
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
+                        <div>
+                          <ClockIcon />
+                        </div>
+                        <div className="w-full">
+                          <DatePicker
+                            selected={
+                              values.start_time ? timeStringToDate(values.start_time) : null
+                            }
+                            onChange={(date: Date | null) => {
+                              if (date) {
+                                // Update start date
+                                const formated_time = date.toTimeString().split(" ")[0].slice(0, 5);
+                                setValue("start_time", formated_time, { shouldValidate: true });
+                              }
+                            }}
+                            showTimeSelect={true}
+                            showTimeSelectOnly={true}
+                            timeCaption={"Start Time"}
+                            timeIntervals={15}
+                            dateFormat="h:mm aa"
+                            className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                            placeholderText="Start Time"
+                            minTime={
+                              values.start_date &&
+                              new Date(values.start_date).toDateString() === now.toDateString()
+                                ? now
+                                : startOfDay
+                            }
+                            maxTime={endOfDay}
+                          />
+                        </div>
+                      </div>
+                      {errors.start_time?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.start_time?.message}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 grid gap-2">
+                  <Label
+                    htmlFor="fullname"
+                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  >
+                    End date
+                  </Label>
+                  <div className="flex justify-between gap-3">
+                    <div className={"flex w-full flex-col gap-1"}>
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
+                        <CalendarIcon />
                         <DatePicker
-                          selected={
-                            values.start_date ? new Date(values.start_date) : null
-                          }
+                          selected={values.end_date ? new Date(values.end_date) : null}
                           onChange={(date: Date | null) => {
                             if (date) {
-                              // Update start date
                               const localDate = new Date(
                                 date.getTime() - date.getTimezoneOffset() * 60000,
                               )
                                 .toISOString()
                                 .split("T")[0];
-                              setValue("start_date", localDate, { shouldValidate: true });
+                              setValue("end_date", localDate, { shouldValidate: true });
                             } else {
-                              setValue("start_date", "", { shouldValidate: true });
+                              setValue("end_date", "", { shouldValidate: true });
                             }
                           }}
-                          minDate={now}
-                          showTimeSelect={false}
+                          minDate={values.start_date ? new Date(values.start_date) : now}
                           dateFormat="yyyy-MM-dd"
+                          placeholderText="End Date"
                           className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
-                          placeholderText="From"
                         />
                       </div>
+                      {errors.end_date?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.end_date?.message}
+                        </p>
+                      ) : null}
                     </div>
-                    {errors.start_date?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.start_date?.message}
-                      </p>
-                    ) : null}
-                  </div>
 
-                  <div className={"flex w-full flex-col gap-1"}>
-                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
-                      <div>
+                    <div className={"flex w-full flex-col gap-1"}>
+                      <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <ClockIcon />
-                      </div>
-                      <div className="w-full">
                         <DatePicker
-                          selected={
-                            values.start_time
-                              ? timeStringToDate(values.start_time)
-                              : null
-                          }
+                          selected={values.end_time ? timeStringToDate(values.end_time) : null}
                           onChange={(date: Date | null) => {
                             if (date) {
-                              // Update start date
-                              const formated_time = date.toTimeString().split(" ")[0].slice(0, 5);
-                              setValue("start_time", formated_time, { shouldValidate: true });
+                              setValue("end_time", date.toTimeString().split(" ")[0].slice(0, 5), {
+                                shouldValidate: true,
+                              });
                             }
                           }}
-                          showTimeSelect={true}
-                          showTimeSelectOnly={true}
-                          timeCaption={"Start Time"}
+                          showTimeSelect
+                          showTimeSelectOnly
                           timeIntervals={15}
+                          timeCaption="End Time"
                           dateFormat="h:mm aa"
+                          placeholderText="End Time"
+                          minTime={(() => {
+                            if (values.start_time) {
+                              const [hours, minutes] = values.start_time.split(":").map(Number);
+                              const selectedDate = new Date();
+                              selectedDate.setHours(hours, minutes, 0, 0);
+                              return selectedDate;
+                            }
+                            return new Date(new Date().setHours(0, 0, 0, 0)); // <-- wrap in Date
+                          })()}
+                          maxTime={(() => {
+                            const max = new Date();
+                            max.setHours(23, 45, 0, 0);
+                            return max;
+                          })()}
                           className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
-                          placeholderText="Start Time"
-                          minTime={
-                            values.start_date &&
-                            new Date(values.start_date).toDateString() === now.toDateString()
-                              ? now
-                              : startOfDay
-                          }
-                          maxTime={endOfDay}
                         />
                       </div>
+                      {errors.end_time?.message ? (
+                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                          {errors.end_time?.message}
+                        </p>
+                      ) : null}
                     </div>
-                    {errors.start_time?.message ? (
+                  </div>
+                </div>
+                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+                  AFFILIATE PROGRAM
+                </p>
+                <div className="mt-7 flex justify-between">
+                  <div className="flex gap-2">
+                    <div className="mt-1">
+                      <AffiliateUsersIcon />
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="tracking-custom font-sans text-[16px] leading-[24px] font-normal">
+                        Enable Affiliate program
+                      </p>
+                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
+                        Affiliates will earn {values.commission || 0}% per ticket sale
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <Switch
+                      onChange={(change) => {
+                        handleChange();
+                        setValue("affiliate_program", change, { shouldValidate: true });
+                      }}
+                      checked={checked}
+                      checkedIcon={false}
+                      uncheckedIcon={false}
+                      onColor="#9BE303"
+                    />
+                  </div>
+                </div>
+                {checked && (
+                  <div className="mt-6 grid gap-2">
+                    <Label
+                      htmlFor="fullname"
+                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    >
+                      Set commission (%)
+                    </Label>
+                    <Input
+                      id="fullname"
+                      type="number"
+                      min={0}
+                      max={100}
+                      placeholder="e.g. 2.5"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
+                      value={values.commission ?? ""}
+                      onChange={(e) => {
+                        setValue("commission", e.target.value, { shouldValidate: true });
+                      }}
+                    />
+                    <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
+                      Commission will be based on the per ticket sold
+                    </span>
+                    {errors.commission?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.start_time?.message}
+                        {errors.commission?.message}
                       </p>
                     ) : null}
                   </div>
-                </div>
-              </div>
-              <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
-                  End date
-                </Label>
-                <div className="flex justify-between gap-3">
-                  <div className={"flex w-full flex-col gap-1"}>
-                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
-                      <CalendarIcon />
-                      <DatePicker
-                        selected={values.end_date ? new Date(values.end_date) : null}
-                        onChange={(date: Date | null) => {
-                          if (date) {
-                            const localDate = new Date(
-                              date.getTime() - date.getTimezoneOffset() * 60000,
-                            )
-                              .toISOString()
-                              .split("T")[0];
-                            setValue("end_date", localDate, { shouldValidate: true });
-                          } else {
-                            setValue("end_date", "", { shouldValidate: true });
-                          }
-                        }}
-                        minDate={
-                          values.start_date ? new Date(values.start_date) : now
-                        }
-                        dateFormat="yyyy-MM-dd"
-                        placeholderText="End Date"
-                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
-                      />
-                    </div>
-                    {errors.end_date?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.end_date?.message}
-                      </p>
-                    ) : null}
+                )}
+                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+                  SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
+                </p>
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
+                  <div>
+                    <AttachmentIcon />
                   </div>
-
-                  <div className={"flex w-full flex-col gap-1"}>
-                    <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
-                      <ClockIcon />
-                      <DatePicker
-                        selected={
-                          values.end_time ? timeStringToDate(values.end_time) : null
-                        }
-                        onChange={(date: Date | null) => {
-                          if (date) {
-                            setValue(
-                              "end_time",
-                              date.toTimeString().split(" ")[0].slice(0, 5),
-                              { shouldValidate: true },
-                            );
-                          }
-                        }}
-                        showTimeSelect
-                        showTimeSelectOnly
-                        timeIntervals={15}
-                        timeCaption="End Time"
-                        dateFormat="h:mm aa"
-                        placeholderText="End Time"
-                        minTime={(() => {
-                          if (values.start_time) {
-                            const [hours, minutes] = values.start_time
-                              .split(":")
-                              .map(Number);
-                            const selectedDate = new Date();
-                            selectedDate.setHours(hours, minutes, 0, 0);
-                            return selectedDate;
-                          }
-                          return new Date(new Date().setHours(0, 0, 0, 0)); // <-- wrap in Date
-                        })()}
-                        maxTime={(() => {
-                          const max = new Date();
-                          max.setHours(23, 45, 0, 0);
-                          return max;
-                        })()}
-                        className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
-                      />
-                    </div>
-                    {errors.end_time?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {errors.end_time?.message}
-                      </p>
-                    ) : null}
+                  <div className="w-full">
+                    <input
+                      id="search"
+                      type="url"
+                      className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      placeholder="https://example.com"
+                      value={socials.website}
+                      onChange={handleSocialsChange}
+                      name="website"
+                    />
                   </div>
                 </div>
-              </div>
-              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
-                AFFILIATE PROGRAM
-              </p>
-              <div className="mt-7 flex justify-between">
-                <div className="flex gap-2">
-                  <div className="mt-1">
-                    <AffiliateUsersIcon />
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
+                  <div>
+                    <FacebookIcon />
                   </div>
-                  <div className="flex flex-col">
-                    <p className="tracking-custom font-sans text-[16px] leading-[24px] font-normal">
-                      Enable Affiliate program
-                    </p>
-                    <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
-                      Affiliates will earn {values.commission || 0}% per ticket sale
-                    </p>
+                  <div className="w-full">
+                    <input
+                      id="search"
+                      type="text"
+                      className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      placeholder="Facebook username"
+                      value={socials.facebook}
+                      onChange={handleSocialsChange}
+                      name="facebook"
+                    />
                   </div>
                 </div>
-                <div>
-                  <Switch
-                    onChange={(change) => {
-                      handleChange();
-                      setValue("affiliate_program", change, { shouldValidate: true });
-                    }}
-                    checked={checked}
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    onColor="#9BE303"
-                  />
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
+                  <div>
+                    <LinkedInIcon />
+                  </div>
+                  <div className="w-full">
+                    <input
+                      id="search"
+                      type="text"
+                      className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      placeholder="LinkedIn username"
+                      value={socials.linkedin}
+                      onChange={handleSocialsChange}
+                      name="linkedin"
+                    />
+                  </div>
                 </div>
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
+                  <div>
+                    <TwitterIcon />
+                  </div>
+                  <div className="w-full">
+                    <input
+                      id="search"
+                      type="text"
+                      className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      placeholder="Twitter username"
+                      value={socials.twitter}
+                      onChange={handleSocialsChange}
+                      name="twitter"
+                    />
+                  </div>
+                </div>
+                <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
+                  <div>
+                    <InstagramIcon />
+                  </div>
+                  <div className="w-full">
+                    <input
+                      id="search"
+                      type="text"
+                      className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      placeholder="Instagram username"
+                      value={socials.instagram}
+                      onChange={handleSocialsChange}
+                      name="instagram"
+                    />
+                  </div>
+                </div>
+                <FlatButton
+                  loading={isSubmitting}
+                  error={isValid}
+                  onClick={() => handleSubmit(onSubmit)()}
+                  title="Continue"
+                  classes="mt-6 h-12 rounded-xl border border-step-color shadow-custom-bottom"
+                />
               </div>
-              {checked && (
-                <div className="mt-6 grid gap-2">
-                  <Label
-                    htmlFor="fullname"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                  >
-                    Set commission (%)
-                  </Label>
-                  <Input
-                    id="fullname"
-                    type="number"
-                    min={0}
-                    max={100}
-                    placeholder="e.g. 2.5"
-                    className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={values.commission ?? ""}
-                    onChange={(e) => {
-                      setValue("commission", e.target.value, { shouldValidate: true });
-                    }}
-                  />
-                  <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
-                    Commission will be based on the per ticket sold
-                  </span>
-                  {errors.commission?.message ? (
-                    <p className="text-left text-[12px] text-[#FF8D8D]">
-                      {errors.commission?.message}
-                    </p>
-                  ) : null}
-                </div>
-              )}
-              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
-                SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
-              </p>
-              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
-                <div>
-                  <AttachmentIcon />
-                </div>
-                <div className="w-full">
-                  <input
-                    id="search"
-                    type="url"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                    placeholder="https://example.com"
-                    value={socials.website}
-                    onChange={handleSocialsChange}
-                    name="website"
-                  />
-                </div>
-              </div>
-              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
-                <div>
-                  <FacebookIcon />
-                </div>
-                <div className="w-full">
-                  <input
-                    id="search"
-                    type="text"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                    placeholder="Facebook username"
-                    value={socials.facebook}
-                    onChange={handleSocialsChange}
-                    name="facebook"
-                  />
-                </div>
-              </div>
-              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
-                <div>
-                  <LinkedInIcon />
-                </div>
-                <div className="w-full">
-                  <input
-                    id="search"
-                    type="text"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                    placeholder="LinkedIn username"
-                    value={socials.linkedin}
-                    onChange={handleSocialsChange}
-                    name="linkedin"
-                  />
-                </div>
-              </div>
-              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
-                <div>
-                  <TwitterIcon />
-                </div>
-                <div className="w-full">
-                  <input
-                    id="search"
-                    type="text"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                    placeholder="Twitter username"
-                    value={socials.twitter}
-                    onChange={handleSocialsChange}
-                    name="twitter"
-                  />
-                </div>
-              </div>
-              <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
-                <div>
-                  <InstagramIcon />
-                </div>
-                <div className="w-full">
-                  <input
-                    id="search"
-                    type="text"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                    placeholder="Instagram username"
-                    value={socials.instagram}
-                    onChange={handleSocialsChange}
-                    name="instagram"
-                  />
-                </div>
-              </div>
-              <FlatButton
-                loading={isSubmitting}
-                error={isValid}
-                onClick={() => handleSubmit(onSubmit)()}
-                title="Continue"
-                classes="mt-6 h-12 rounded-xl border border-step-color shadow-custom-bottom"
-              />
             </div>
-          </div>
-
           </form>
         </section>
       </section>

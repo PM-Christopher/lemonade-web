@@ -201,7 +201,10 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                     const value = e.target.value;
                     if (/^\d*$/.test(value)) {
                       setAccountNumber(value);
-                      setValue("account_number", value, { shouldValidate: true, shouldTouch: true });
+                      setValue("account_number", value, {
+                        shouldValidate: true,
+                        shouldTouch: true,
+                      });
                     }
                   }}
                   maxLength={10}

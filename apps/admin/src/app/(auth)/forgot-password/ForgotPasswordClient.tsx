@@ -42,20 +42,20 @@ function ForgotPasswordPage({}) {
                   control={control}
                   name="code"
                   render={({ field }) => (
-                <OtpInput
-                  value={field.value}
-                  onChange={field.onChange}
-                  numInputs={4}
-                  renderSeparator={<span> </span>}
-                  renderInput={(props) => <input {...props} />}
-                  containerStyle="gap-2"
-                  inputStyle={{
-                    width: "48px",
-                    height: "48px",
-                    background: "#F9FAFA",
-                    borderRadius: "12px",
-                  }}
-                />
+                    <OtpInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      numInputs={4}
+                      renderSeparator={<span> </span>}
+                      renderInput={(props) => <input {...props} />}
+                      containerStyle="gap-2"
+                      inputStyle={{
+                        width: "48px",
+                        height: "48px",
+                        background: "#F9FAFA",
+                        borderRadius: "12px",
+                      }}
+                    />
                   )}
                 />
               </div>

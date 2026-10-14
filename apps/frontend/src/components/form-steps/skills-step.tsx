@@ -111,9 +111,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
               <div
                 key={idx}
                 className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
-                  selectedSkills.includes(item)
-                    ? "bg-gradient-green text-white"
-                    : "bg-light_grey"
+                  selectedSkills.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"
                 }`}
                 onClick={() => handleSkillsClick(item)}
               >

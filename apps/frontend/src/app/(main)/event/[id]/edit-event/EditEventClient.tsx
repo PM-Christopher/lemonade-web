@@ -5,12 +5,8 @@ import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  updateEventDetailsSchema,
-  type UpdateEventDetailsInput,
-} from "@/features/events/schema";
+import { updateEventDetailsSchema, type UpdateEventDetailsInput } from "@/features/events/schema";
 import { applyServerErrors } from "@/lib/form-errors";
-
 
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -138,7 +134,6 @@ const buildInitialValues = (event?: EventInterface): EventFormValues => {
     socials: socialsObj,
   };
 };
-
 
 const EditEventClient = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
@@ -275,8 +270,7 @@ const EditEventClient = ({ id }: { id: string }) => {
   const affiliateEnabled = Boolean(values.affiliate_program);
 
   const isStartToday =
-    values.start_date &&
-    new Date(values.start_date).toDateString() === now.toDateString();
+    values.start_date && new Date(values.start_date).toDateString() === now.toDateString();
 
   const startMinTime = isStartToday ? now : startOfDay;
 
@@ -286,11 +280,7 @@ const EditEventClient = ({ id }: { id: string }) => {
     const endIsToday = new Date(values.end_date).toDateString() === now.toDateString();
     const base = endIsToday ? now : startOfDay;
 
-    if (
-      values.start_date &&
-      values.end_date === values.start_date &&
-      values.start_time
-    ) {
+    if (values.start_date && values.end_date === values.start_date && values.start_time) {
       const st = timeStringToDate(values.start_time);
       return st > base ? st : base;
     }
@@ -345,7 +335,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                     type="text"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
                     value={values.event_name}
-                    onChange={(e) => setValue("event_name", e.target.value, { shouldValidate: true })}
+                    onChange={(e) =>
+                      setValue("event_name", e.target.value, { shouldValidate: true })
+                    }
                   />
                 </div>
 
@@ -361,7 +353,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                     id="event-description"
                     className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
                     value={values.event_description}
-                    onChange={(e) => setValue("event_description", e.target.value, { shouldValidate: true })}
+                    onChange={(e) =>
+                      setValue("event_description", e.target.value, { shouldValidate: true })
+                    }
                   />
                 </div>
 
@@ -440,7 +434,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                         className="bg-light_grey w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
                         value={values.location}
-                    onChange={(e) => setValue("location", e.target.value, { shouldValidate: true })}
+                        onChange={(e) =>
+                          setValue("location", e.target.value, { shouldValidate: true })
+                        }
                       />
                     </div>
                   </div>
@@ -461,7 +457,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                         name="hosting_platform"
                         className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                         value={values.hosting_platform}
-                    onChange={(e) => setValue("hosting_platform", e.target.value, { shouldValidate: true })}
+                        onChange={(e) =>
+                          setValue("hosting_platform", e.target.value, { shouldValidate: true })
+                        }
                       >
                         <option value="">Select platform</option>
                         <option value="google-meet">Google Meet</option>
@@ -480,7 +478,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                         type="text"
                         className="form-font bg-light_grey h-12 rounded-xl border-0"
                         value={values.meeting_link}
-                    onChange={(e) => setValue("meeting_link", e.target.value, { shouldValidate: true })}
+                        onChange={(e) =>
+                          setValue("meeting_link", e.target.value, { shouldValidate: true })
+                        }
                       />
                     </div>
 
@@ -496,7 +496,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                         type="text"
                         className="form-font bg-light_grey h-12 rounded-xl border-0"
                         value={values.meeting_passcode}
-                    onChange={(e) => setValue("meeting_passcode", e.target.value, { shouldValidate: true })}
+                        onChange={(e) =>
+                          setValue("meeting_passcode", e.target.value, { shouldValidate: true })
+                        }
                       />
                     </div>
                   </>
@@ -515,7 +517,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                     name="time_zone"
                     className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                     value={values.time_zone}
-                    onChange={(e) => setValue("time_zone", e.target.value, { shouldValidate: true })}
+                    onChange={(e) =>
+                      setValue("time_zone", e.target.value, { shouldValidate: true })
+                    }
                   >
                     <option value="">Select time zone</option>
                     {timeZones.map((tz, idx) => (
@@ -537,9 +541,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <CalendarIcon />
                         <DatePicker
-                          selected={
-                            values.start_date ? new Date(values.start_date) : null
-                          }
+                          selected={values.start_date ? new Date(values.start_date) : null}
                           onChange={(date: Date | null) => {
                             setValue("start_date", date ? toISODate(date) : "", {
                               shouldValidate: true,
@@ -562,11 +564,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <ClockIcon />
                         <DatePicker
-                          selected={
-                            values.start_time
-                              ? timeStringToDate(values.start_time)
-                              : null
-                          }
+                          selected={values.start_time ? timeStringToDate(values.start_time) : null}
                           onChange={(date: Date | null) => {
                             if (!date) return;
                             const t = date.toTimeString().slice(0, 5);
@@ -603,17 +601,13 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <CalendarIcon />
                         <DatePicker
-                          selected={
-                            values.end_date ? new Date(values.end_date) : null
-                          }
+                          selected={values.end_date ? new Date(values.end_date) : null}
                           onChange={(date: Date | null) => {
                             setValue("end_date", date ? toISODate(date) : "", {
                               shouldValidate: true,
                             });
                           }}
-                          minDate={
-                            values.start_date ? new Date(values.start_date) : now
-                          }
+                          minDate={values.start_date ? new Date(values.start_date) : now}
                           dateFormat="yyyy-MM-dd"
                           placeholderText="End Date"
                           className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
@@ -630,9 +624,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                         <ClockIcon />
                         <DatePicker
-                          selected={
-                            values.end_time ? timeStringToDate(values.end_time) : null
-                          }
+                          selected={values.end_time ? timeStringToDate(values.end_time) : null}
                           onChange={(date: Date | null) => {
                             if (!date) return;
                             const t = date.toTimeString().slice(0, 5);
@@ -778,7 +770,13 @@ const EditEventClient = ({ id }: { id: string }) => {
                         name={`socials.${key}`}
                         className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         value={values.socials[key as keyof SocialMediaHandles] ?? ""}
-                        onChange={(e) => setValue(`socials.${key as keyof SocialMediaHandles}` as const, e.target.value, { shouldValidate: true })}
+                        onChange={(e) =>
+                          setValue(
+                            `socials.${key as keyof SocialMediaHandles}` as const,
+                            e.target.value,
+                            { shouldValidate: true },
+                          )
+                        }
                         placeholder=""
                       />
                     </div>

@@ -21,7 +21,7 @@ import {
 import DollarBillIcon from "@/images/icons/dollar-bill.svg";
 import InfoIcon from "@/images/icons/infoIcon.svg";
 import PadlockIcon from "@/images/icons/padlock.svg";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTribeSchema, type CreateTribeInput } from "@/features/tribes/schema";
 import { FieldError } from "@/components/global/FieldError";
@@ -55,7 +55,6 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
     control,
     setValue,
     setError,
-    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<CreateTribeInput>({
     resolver: zodResolver(createTribeSchema),
@@ -72,7 +71,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
     mode: "onTouched",
   });
 
-  const monetized = watch("monetized");
+  const monetized = useWatch({ control, name: "monetized" });
 
   const onSubmit = async (values: CreateTribeInput) => {
     const fee = values.membership_fee?.replace(/,/g, "") ?? "";

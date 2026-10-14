@@ -50,8 +50,7 @@ export default function ResetPasswordPage() {
         },
         onError: (error) => {
           // Field problems show under the field; anything else as a toast.
-          if (applyServerErrors(error, setError, ["password", "confirm_password"]))
-            return;
+          if (applyServerErrors(error, setError, ["password", "confirm_password"])) return;
           dispatch(
             updateToastifyReducer({
               show: true,

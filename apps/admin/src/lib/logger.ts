@@ -1,23 +1,13 @@
 // Structured logging with redaction — see docs/ARCHITECTURE.md Phase 8.
-// Originally server-side only (Route Handlers, middleware); also called
-// from the route-segment error.tsx/global-error.tsx boundaries now — no
-// Node-only APIs here, so that's safe. Emits one JSON line per call so a
-// log aggregator can parse `level`/`message`/`context` without string
-// parsing.
-//
-// Routes through console.warn/console.error only, never console.log or
-// console.info — CLAUDE.md's no-console rule (`allow: ["warn", "error"]`)
-// applies here same as anywhere else; "info" still carries its own `level`
-// field in the JSON payload, a log aggregator reads that, not which
-// console method emitted the line.
+// Browser error() also beacons to /api/client-errors so the line lands in
+// the Next server log and Laravel's file/Slack path with a correlation id.
+
+import { getLastCorrelationId } from "@/lib/correlation";
 
 type LogLevel = "info" | "warn" | "error";
 
 type LogContext = Record<string, unknown>;
 
-// Keys redacted anywhere they appear in a context object, at any depth —
-// case-insensitive, matched by exact key name so it doesn't over-redact
-// unrelated fields that merely contain one of these as a substring.
 const SENSITIVE_KEYS = new Set([
   "password",
   "token",
@@ -57,8 +47,34 @@ function emit(level: LogLevel, message: string, context?: LogContext) {
   const line = JSON.stringify(entry);
   if (level === "error") {
     console.error(line);
+    reportClientError(message, context);
   } else {
     console.warn(line);
+  }
+}
+
+function reportClientError(message: string, context?: LogContext): void {
+  if (typeof window === "undefined") return;
+
+  const correlationId =
+    (typeof context?.correlationId === "string" && context.correlationId) ||
+    getLastCorrelationId() ||
+    crypto.randomUUID();
+
+  const body = JSON.stringify({
+    message,
+    app: "admin",
+    path: window.location.pathname,
+    digest: typeof context?.digest === "string" ? context.digest : undefined,
+    stack: typeof context?.stack === "string" ? context.stack : undefined,
+    correlation_id: correlationId,
+    context: context ? redact(context) : undefined,
+  });
+
+  if (typeof navigator.sendBeacon === "function") {
+    navigator.sendBeacon("/api/client-errors", body);
+  } else {
+    fetch("/api/client-errors", { method: "POST", body, keepalive: true }).catch(() => undefined);
   }
 }
 

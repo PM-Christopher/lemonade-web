@@ -59,7 +59,8 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
       next_step();
     } catch (err) {
       dispatch(authFailure());
-      if (applyServerErrors(err, setError, ["username", "bio", "industry", "profile_image"])) return;
+      if (applyServerErrors(err, setError, ["username", "bio", "industry", "profile_image"]))
+        return;
       dispatch(
         updateToastifyReducer({
           show: true,

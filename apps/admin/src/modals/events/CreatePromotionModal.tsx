@@ -119,7 +119,9 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                 <div className="cursor-pointer">
                   <SubmitButton
                     loading={
-                      isSubmitting || createPromotionMutation.isPending || updatePromotionMutation.isPending
+                      isSubmitting ||
+                      createPromotionMutation.isPending ||
+                      updatePromotionMutation.isPending
                     }
                     title={promotionTitle}
                     isValid={isValid}
@@ -144,9 +146,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                 <div className="flex gap-2">
                   <div
                     className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${priceOption === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
-                    onClick={() =>
-                      setValue("price_option", "one-time", { shouldValidate: true })
-                    }
+                    onClick={() => setValue("price_option", "one-time", { shouldValidate: true })}
                   >
                     <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       One time

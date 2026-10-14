@@ -31,7 +31,7 @@ src/lib/         app-local glue — logger, server-api (BFF transport), query-cl
 ```
 
 Route protection is `src/middleware.ts` (UX redirect only — see its own comments for the real
-authorization chain) plus a `Content-Security-Policy-Report-Only` header with a per-request nonce (see
+authorization chain) plus a `Content-Security-Policy` header with a per-request nonce (see
 `docs/ARCHITECTURE.md` Phase 8).
 
 ## Commands

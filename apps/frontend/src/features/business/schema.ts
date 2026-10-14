@@ -10,10 +10,13 @@ import {
 const optionalServiceRateField = z
   .string()
   .trim()
-  .refine((value) => {
-    const cleaned = value.replace(/,/g, "");
-    return cleaned === "" || /^\d+(\.\d{1,2})?$/.test(cleaned);
-  }, { error: "Service rate must be a number with at most 2 decimal places" });
+  .refine(
+    (value) => {
+      const cleaned = value.replace(/,/g, "");
+      return cleaned === "" || /^\d+(\.\d{1,2})?$/.test(cleaned);
+    },
+    { error: "Service rate must be a number with at most 2 decimal places" },
+  );
 
 // Mirrors App\Http\Requests\Business\CreateBusinessRequest.
 export const createBusinessSchema = z.object({

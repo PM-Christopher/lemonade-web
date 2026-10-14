@@ -8,11 +8,13 @@ describe("logger", () => {
   beforeEach(() => {
     warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubGlobal("navigator", { sendBeacon: vi.fn(() => true) });
   });
 
   afterEach(() => {
     warnSpy.mockRestore();
     errorSpy.mockRestore();
+    vi.unstubAllGlobals();
   });
 
   it("emits info and warn through console.warn as structured JSON", () => {
@@ -28,16 +30,20 @@ describe("logger", () => {
     expect(typeof entry.timestamp).toBe("string");
   });
 
-  it("emits error through console.error", () => {
-    logger.error("refresh failed", { status: 401 });
+  it("emits error through console.error and beacons to /api/client-errors", () => {
+    logger.error("refresh failed", { status: 401, correlationId: "corr-1" });
 
     expect(warnSpy).not.toHaveBeenCalled();
     const entry = JSON.parse(errorSpy.mock.calls[0][0] as string);
     expect(entry).toMatchObject({
       level: "error",
       message: "refresh failed",
-      context: { status: 401 },
+      context: { status: 401, correlationId: "corr-1" },
     });
+    expect(navigator.sendBeacon).toHaveBeenCalledWith(
+      "/api/client-errors",
+      expect.stringContaining("corr-1"),
+    );
   });
 
   it("redacts sensitive keys at the top level and nested", () => {

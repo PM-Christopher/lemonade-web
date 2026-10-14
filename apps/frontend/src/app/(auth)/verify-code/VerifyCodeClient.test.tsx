@@ -68,6 +68,10 @@ describe("VerifyCodeClient (forgot password)", () => {
 
   it("has no accessibility violations", async () => {
     const { container } = render(<VerifyCodeClient />);
+    // Mount effect syncs the countdown from localStorage via setTimeout(0).
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Send code again" })).toBeEnabled(),
+    );
     expect(await axe(container)).toHaveNoViolations();
   });
 });

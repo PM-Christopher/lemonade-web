@@ -88,6 +88,8 @@ export interface ApiClientConfig {
   getToken?: () => string | undefined | Promise<string | undefined>;
   /** Propagate an inbound X-Correlation-Id instead of minting a new one. */
   getCorrelationId?: () => string | undefined;
+  /** Remember the id used on the wire (request mint or response echo). */
+  onCorrelationId?: (correlationId: string) => void;
   /** Omit entirely where the backend exposes no refresh route (admin, today). */
   refresh?: RefreshConfig;
   /** Refresh failed, or none configured and a 401 came back anyway — clear the session. */
@@ -238,12 +240,17 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
 
     const correlationId = config.getCorrelationId?.() ?? crypto.randomUUID();
     requestConfig.headers["X-Correlation-Id"] = correlationId;
+    config.onCorrelationId?.(correlationId);
 
     return requestConfig;
   });
 
   instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      const echoed = response.headers?.["x-correlation-id"] as string | undefined;
+      if (echoed) config.onCorrelationId?.(echoed);
+      return response;
+    },
     async (error: AxiosError<ApiErrorBody>) => {
       const original = error.config as RetryableConfig | undefined;
       const status = error.response?.status;
@@ -303,6 +310,9 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
       if (status === 401) {
         await config.onUnauthorized?.();
       }
+
+      const echoed = error.response?.headers?.["x-correlation-id"] as string | undefined;
+      if (echoed) config.onCorrelationId?.(echoed);
 
       return Promise.reject(toApiError(error));
     },

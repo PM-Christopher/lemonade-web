@@ -3009,7 +3009,7 @@ budget step. While in there, the any-type budget script surfaced its own real im
 in this session (the dead `console.log`/`any`-typed Pusher listener cleanup under Phase 8) — lowered
 `no-any-budget.json` from 209/105 to 208/104 to lock it in, per the script's own instruction.
 
-### Phase 8 — Observability & hardening **[SHOULD]** **[MOSTLY DONE — logging/Web Vitals/CSP report-only, docs, and all ten Playwright journeys done; CSP enforcement left]**
+### Phase 8 — Observability & hardening **[SHOULD]** **[DONE — logging/Web Vitals/CSP enforced, client errors → Laravel log/Slack, docs, and all ten Playwright journeys done]**
 
 Closes the loop with the backend. Errors go to the backend's file log (`storage/logs/laravel.log`) today,
 with Slack as the alert channel once its webhook is set. Sentry is not used, by decision.
@@ -3026,7 +3026,9 @@ the backend, and Slack is the alert channel to add later. `lemonade-backend`'s `
 fans each error out to a `LogNotifier` and a `SlackNotifier`, which does nothing until its webhook is set.
 Sentry was removed from the backend on 13 October 2026 (package, notifier and config). Both apps log
 structured JSON through `lib/logger.ts`, and the error boundaries use it, but that output stays in the
-browser console. Sending client errors to the server log with the correlation id is not built yet.
+browser console until 14 October 2026: `logger.error` now beacons to `POST /api/client-errors`, which
+logs server-side and forwards to `POST /v1/shared/client-errors` so `laravel.log` (and Slack, when
+`LOG_SLACK_WEBHOOK_URL` is set) carry the same `X-Correlation-Id`.
 The Playwright e2e bullet was blocked for a different reason
 (`LARAVEL_API_URL=http://127.0.0.1:9900` wasn't reachable — confirmed via a direct request, not assumed)
 until the user started a real backend at `127.0.0.1:9800` and gave real seed credentials for both a user
@@ -3263,20 +3265,15 @@ Did the rest, all verifiable without either:
   new structured logger. Verified against real running dev servers in both apps: posted a real
   `{name, value, id, label}` payload, confirmed a 204 and the resulting `{"level":"info","message":"web
   vital",...}` line in the server's own output.
-- **CSP with nonces via middleware, report-only** — both apps' `middleware.ts` now generate a per-request
-  nonce (`crypto.randomUUID()`), thread it onto both the request headers (`x-nonce`, for a future Server
-  Component to read) and a `Content-Security-Policy-Report-Only` response header, and report violations to
-  a new `POST /api/csp-report` Route Handler that logs them via the structured logger. Report-only by
-  design — nothing here can break a page, which is exactly why this was safe to write without a browser to
-  verify rendering against: verified instead by curling both apps' real dev servers and confirming the
-  header, the nonce, and a real violation payload landing in the log. Each app's policy is scoped to its
-  actual integrations, not a generic template: frontend's covers Firebase Cloud Messaging (including its
-  service worker), Google Identity Services (`@react-oauth/google`), Pusher, and the two allow-listed image
-  hosts; admin's is the same minus Firebase and Google OAuth, which it doesn't use. Both still need
-  `style-src 'unsafe-inline'` — neither app's inline `style` attribute usage has been audited or migrated,
-  and tightening that blind would just break real pages. Nothing is enforced; the plan's own "report-only
-  first, then enforced" order means the _next_ step is watching real `/api/csp-report` data for a while
-  before ever switching the header name to `Content-Security-Policy`.
+- **CSP with nonces via middleware, enforced** — both apps' `middleware.ts` generate a per-request nonce,
+  set `Content-Security-Policy` on the request (so Next can nonce its scripts) and the response, and report
+  violations to `POST /api/csp-report`. Frontend covers Firebase, Google Identity Services, Reverb, and the
+  allow-listed image hosts; admin covers Firebase (FcmProvider), Reverb, and the same image hosts. Both still
+  need `style-src 'unsafe-inline'`. Enforced as of 14 October 2026 — watch `/api/csp-report` if a real
+  integration is blocked and widen the allow-list rather than flipping back to report-only.
+- **Client errors → server log + Slack** — browser `logger.error` beacons to each app's `POST /api/client-errors`,
+  which logs locally and forwards to lemonade-backend `POST /v1/shared/client-errors` with `X-Correlation-Id`.
+  That action uses `ErrorReportingService` (file log always; Slack when `LOG_SLACK_WEBHOOK_URL` is set).
 
 **`docs/` finalization — done except the one piece that's off-limits.** `CLAUDE.md` itself is mid-edit by
 the user outside this session (see git status at session start), so left untouched rather than racing an

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent, waitFor } from "@testing-library/react";
 import SignupPage from "./SignupClient";
 
 const signupMock = vi.fn();
@@ -15,6 +15,10 @@ vi.mock("@/features/authentication/mutations", () => ({
 vi.mock("@/components/layouts/AuthLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
+
+// Avoid next/dynamic LoadableComponent resolving outside act() after mount.
+vi.mock("@/components/TermsOfUseModal", () => ({ default: () => null }));
+vi.mock("@/components/PrivacyPolicyModal", () => ({ default: () => null }));
 
 vi.mock("@/redux/hook", () => ({
   useAppDispatch: () => vi.fn(),
@@ -67,22 +71,27 @@ describe("SignupPage referral capture", () => {
 
   it("includes the referral code in the submitted signup payload", async () => {
     searchParamsValue = new URLSearchParams({ referral: "FRIEND123" });
+    signupMock.mockResolvedValue({ token: "t", user: { id: 1 } });
 
     render(<SignupPage />);
 
-    fireEvent.change(screen.getByPlaceholderText(/jane doe/i), {
-      target: { value: "Test User" },
-    });
-    fireEvent.change(screen.getByPlaceholderText(/janedoe@example.com/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/^password$/i), {
-      target: { value: "Password123!" },
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText(/jane doe/i), {
+        target: { value: "Test User" },
+      });
+      fireEvent.change(screen.getByPlaceholderText(/janedoe@example.com/i), {
+        target: { value: "test@example.com" },
+      });
+      fireEvent.change(screen.getByLabelText(/^password$/i), {
+        target: { value: "Password123!" },
+      });
     });
 
-    fireEvent.submit(screen.getByRole("button", { name: /create account/i }).closest("form")!);
+    await act(async () => {
+      fireEvent.submit(screen.getByRole("button", { name: /create account/i }).closest("form")!);
+    });
 
-    await vi.waitFor(() => expect(signupMock).toHaveBeenCalled());
+    await waitFor(() => expect(signupMock).toHaveBeenCalled());
 
     const [submittedValues] = signupMock.mock.calls[0];
     expect(submittedValues.referral_code).toBe("FRIEND123");

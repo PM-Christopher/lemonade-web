@@ -26,7 +26,7 @@ vi.mock("react-redux", () => ({
     }),
 }));
 vi.mock("@/features/events/mutations", () => ({
-  useBuyTicketMutation: () => ({ mutate: buyMutate, isPending: false }),
+  useBuyTicketMutation: () => ({ mutateAsync: buyMutate, isPending: false }),
 }));
 vi.mock("@/hooks/useNavigation", () => ({
   useNavigation: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
@@ -43,12 +43,10 @@ const renderPage = async () => {
 };
 
 const fillBuyer = () => {
-  fireEvent.change(screen.getByLabelText("Full name"), {
-    target: { name: "fullname", value: "Ada Lovelace" },
-  });
-  fireEvent.change(screen.getByLabelText("Email address"), {
-    target: { name: "email", value: "ada@example.com" },
-  });
+  const name = screen.getByLabelText("Full name");
+  const email = screen.getByLabelText("Email address");
+  fireEvent.change(name, { target: { value: "Ada Lovelace" } });
+  fireEvent.change(email, { target: { value: "ada@example.com" } });
 };
 
 describe("AssignTicketClient checkout", () => {
@@ -58,6 +56,7 @@ describe("AssignTicketClient checkout", () => {
   });
 
   it("sends only ticket ids and quantities, never prices or totals", async () => {
+    buyMutate.mockResolvedValue({ completed: true });
     await renderPage();
     fillBuyer();
     const pay = screen.getByRole("button", { name: "Pay now" });
@@ -75,15 +74,13 @@ describe("AssignTicketClient checkout", () => {
   });
 
   it("shows the server's reason when the purchase fails", async () => {
-    buyMutate.mockImplementation((_vars, opts) =>
-      opts.onError(
-        new ApiError({
-          status: 422,
-          errorCode: "validation-failed",
-          message: "Regular is sold out",
-          kind: "validation",
-        }),
-      ),
+    buyMutate.mockRejectedValue(
+      new ApiError({
+        status: 422,
+        errorCode: "validation-failed",
+        message: "Regular is sold out",
+        kind: "validation",
+      }),
     );
     await renderPage();
     fillBuyer();

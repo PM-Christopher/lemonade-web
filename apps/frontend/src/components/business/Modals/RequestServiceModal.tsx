@@ -106,11 +106,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                   </p>
                 </div>
                 <div className="laptop:block hidden">
-                  <SubmitButton
-                    title="Send quote"
-                    isValid={isValid}
-                    loading={isSubmitting}
-                  />
+                  <SubmitButton title="Send quote" isValid={isValid} loading={isSubmitting} />
                 </div>
               </div>
               <div className="flex flex-col gap-y-[250px]">

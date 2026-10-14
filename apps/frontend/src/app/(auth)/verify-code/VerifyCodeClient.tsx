@@ -159,7 +159,6 @@ export default function VerifyCodePage() {
     }
   };
 
-
   return (
     <AuthLayout>
       <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">

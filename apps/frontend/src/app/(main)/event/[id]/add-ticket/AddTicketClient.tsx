@@ -9,10 +9,7 @@ import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  eventTicketsFormSchema,
-  type EventTicketsFormInput,
-} from "@/features/events/schema";
+import { eventTicketsFormSchema, type EventTicketsFormInput } from "@/features/events/schema";
 import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { resetEventState } from "@/features/events/event.slice";
@@ -60,7 +57,6 @@ const AddTicketClient = ({ id }: { id: number }) => {
     setToggleModal(!toggleModal);
   };
   const { data: eventTicketsData } = useEventTicketsQuery(id);
-  const event_tickets = eventTicketsData?.tickets ?? [];
   const editEventTicketsMutation = useEditEventTicketsMutation(id);
 
   const {
@@ -82,10 +78,11 @@ const AddTicketClient = ({ id }: { id: number }) => {
   const tickets = watch("tickets");
 
   useEffect(() => {
-    if (!Array.isArray(event_tickets) || event_tickets.length === 0) return;
+    const eventTickets = eventTicketsData?.tickets;
+    if (!Array.isArray(eventTickets) || eventTickets.length === 0) return;
     // API returns price in minor units; keep existing prefill (no /100) for edit continuity.
     reset({
-      tickets: (event_tickets as RawTicket[]).map((t) => ({
+      tickets: (eventTickets as RawTicket[]).map((t) => ({
         ticket_id: t.ticket_id ?? "",
         ticket_type: t.ticket_type ?? "",
         name: t.name ?? "",
@@ -101,7 +98,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
         description: t.description ?? "",
       })),
     });
-  }, [event_tickets, reset]);
+  }, [eventTicketsData?.tickets, reset]);
 
   const ticketFieldError = (index: number, field: keyof typeof emptyTicket) => {
     const fieldError = errors.tickets?.[index]?.[field]?.message;

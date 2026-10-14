@@ -36,7 +36,11 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
     updateCommissionChargeMutation.mutate(Number(values.percentage), {
       onSuccess: () => {
         dispatch(
-          updateToastifyReducer({ show: true, message: "Commission charge updated!", type: "success" }),
+          updateToastifyReducer({
+            show: true,
+            message: "Commission charge updated!",
+            type: "success",
+          }),
         );
         toggle();
       },

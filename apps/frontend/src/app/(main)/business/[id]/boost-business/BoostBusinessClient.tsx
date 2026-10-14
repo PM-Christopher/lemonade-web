@@ -77,9 +77,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
       );
       window.location.href = result.payment;
     } catch (err) {
-      if (
-        applyServerErrors(err, setError, ["package", "option", "start_date", "start_time"])
-      ) {
+      if (applyServerErrors(err, setError, ["package", "option", "start_date", "start_time"])) {
         return;
       }
       dispatch(

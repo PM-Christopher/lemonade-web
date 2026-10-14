@@ -130,9 +130,13 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
                 type="dispute"
                 setField={{
                   setFieldValue: (field, value) =>
-                    setValue(field as keyof DisputeJobInput, value as DisputeJobInput["attachments"], {
-                      shouldValidate: true,
-                    }),
+                    setValue(
+                      field as keyof DisputeJobInput,
+                      value as DisputeJobInput["attachments"],
+                      {
+                        shouldValidate: true,
+                      },
+                    ),
                 }}
                 images={[]}
                 title="Upload multiple images"

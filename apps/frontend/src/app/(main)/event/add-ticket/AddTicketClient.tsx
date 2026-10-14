@@ -8,10 +8,7 @@ import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  eventTicketsFormSchema,
-  type EventTicketsFormInput,
-} from "@/features/events/schema";
+import { eventTicketsFormSchema, type EventTicketsFormInput } from "@/features/events/schema";
 import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { createTickets, resetEventState } from "@/features/events/event.slice";
@@ -71,7 +68,7 @@ const AddTicketClient = () => {
   const { fields, append, remove } = useFieldArray({ control, name: "tickets" });
   const tickets = watch("tickets");
 
-  const ticketFieldError = (index: number, field: keyof (typeof emptyTicket)) => {
+  const ticketFieldError = (index: number, field: keyof typeof emptyTicket) => {
     const fieldError = errors.tickets?.[index]?.[field]?.message;
     const touched = touchedFields.tickets?.[index]?.[field as never];
     if ((touched || submitCount > 0) && fieldError) {
@@ -85,7 +82,9 @@ const AddTicketClient = () => {
       ...ticket,
       price: ticket.ticket_type === "paid" ? Number(ticket.price || 0) : 0,
       ticket_stock:
-        ticket.stock_type === "unlimited" ? 0 : Number(String(ticket.ticket_stock).replace(/,/g, "") || 0),
+        ticket.stock_type === "unlimited"
+          ? 0
+          : Number(String(ticket.ticket_stock).replace(/,/g, "") || 0),
       purchase_limit: Number(String(ticket.purchase_limit).replace(/,/g, "") || 0),
     }));
 
@@ -159,9 +158,7 @@ const AddTicketClient = () => {
     });
   };
 
-  function hasPaidTicket(
-    list: Array<{ ticket_type: string }>,
-  ): boolean {
+  function hasPaidTicket(list: Array<{ ticket_type: string }>): boolean {
     return list.some((ticket) => ticket.ticket_type === "paid");
   }
 
