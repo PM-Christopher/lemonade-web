@@ -6,11 +6,8 @@
 // this needs nothing but the source text, so it can't drift from the repo's
 // actual tailwind.config.ts.
 //
-// "warn", not "error" — see packages/config/pixel-class-budget.json and
-// scripts/check-pixel-budget.mjs for the same declining-budget ratchet
-// already used for `@typescript-eslint/no-explicit-any` (see
-// no-any-budget.json): pre-existing debt shouldn't grow, but a single PR
-// can't clear thousands of occurrences either.
+// An error in both apps: every `[Npx]` class was mapped to a token on
+// 2026-10-14, so a new one fails lint.
 
 const PIXEL_CLASS = /-\[\d+(?:\.\d+)?px\]/;
 

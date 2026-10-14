@@ -56,7 +56,9 @@ const nextConfigs = [...nextVitals, ...nextTs]
     }),
   );
 
-const nextPlugin = nextVitals.find((config) => config.plugins?.["@next/next"]).plugins["@next/next"];
+const nextPlugin = nextVitals.find((config) => config.plugins?.["@next/next"]).plugins[
+  "@next/next"
+];
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
@@ -123,7 +125,14 @@ export default [
           policies: [
             {
               from: { element: { type: "feature" } },
-              disallow: { to: { element: { type: "feature", captured: { family: "!{{ from.element.captured.family }}" } } } },
+              disallow: {
+                to: {
+                  element: {
+                    type: "feature",
+                    captured: { family: "!{{ from.element.captured.family }}" },
+                  },
+                },
+              },
               message:
                 "features/x/** may not import features/y/** internals — go through y's index.",
             },
@@ -141,11 +150,6 @@ export default [
       // app's eslint.config.mjs was first wired up — real dead code,
       // worth burning down, but not this PR's problem.
       "@typescript-eslint/no-unused-vars": "warn",
-      // Pre-existing hardcoded `[Npx]` classes — see
-      // packages/config/pixel-class-budget.json and
-      // scripts/check-pixel-budget.mjs for the declining-budget ratchet
-      // that's the actual enforcement (same shape as no-any-budget.json).
-      "local/no-hardcoded-pixel-class": "warn",
       // eslint-config-next's own react-hooks/recommended (bundled via
       // next/core-web-vitals, spread earlier in this file) sets this
       // to "warn" — CLAUDE.md lists it under lint rules that must not

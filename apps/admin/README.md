@@ -41,7 +41,6 @@ pnpm --filter lemonade-admin dev          # localhost:3000 (or :3001 if frontend
 pnpm --filter lemonade-admin build
 pnpm --filter lemonade-admin lint
 pnpm --filter lemonade-admin lint:any-budget      # fails if `any` usage grew — see packages/config/no-any-budget.json
-pnpm --filter lemonade-admin lint:pixel-budget    # fails if hardcoded [Npx] classes grew
 pnpm --filter lemonade-admin typecheck
 pnpm --filter lemonade-admin test
 ```

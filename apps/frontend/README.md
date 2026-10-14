@@ -41,7 +41,6 @@ pnpm --filter lemonade-app dev          # localhost:3000
 pnpm --filter lemonade-app build
 pnpm --filter lemonade-app lint
 pnpm --filter lemonade-app lint:any-budget      # fails if `any` usage grew — see packages/config/no-any-budget.json
-pnpm --filter lemonade-app lint:pixel-budget    # fails if hardcoded [Npx] classes grew
 pnpm --filter lemonade-app typecheck
 pnpm --filter lemonade-app test
 ```

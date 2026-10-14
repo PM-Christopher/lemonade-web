@@ -1,5 +1,5 @@
 // Shared core for the declining-budget scripts (check-any-budget.mjs,
-// check-pixel-budget.mjs, and any future one) — same enforcement shape,
+// and any future one) — same enforcement shape,
 // different rule/budget file/label. See docs/ARCHITECTURE.md §18.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
