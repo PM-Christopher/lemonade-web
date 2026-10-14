@@ -74,13 +74,13 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">User Info</DialogTitle>
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
-                <CloseIcon className="w-[11.25px]" />
+                <CloseIcon className="w-2.75" />
               </div>
-              <p className="text-[16px] font-semibold">User Info</p>
+              <p className="text-body-l font-semibold">User Info</p>
             </div>
           </div>
           <div className="mt-6">
@@ -95,20 +95,20 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
                 />
               ) : (
                 <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
-                  <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
+                  <p className="font-ruso text-body-xl">{getInitials(user?.fullname)}</p>
                 </div>
               )}
 
-              <p className="mt-4 text-[18px] font-semibold">{user?.username}</p>
-              <p className="text-text-grey text-[12px] font-normal">
+              <p className="text-body-xl mt-4 font-semibold">{user?.username}</p>
+              <p className="text-text-grey text-meta leading-normal font-normal">
                 {formatString(user?.industry)}
               </p>
-              <p className="text-light-black mt-4 max-w-[416px] text-center text-[14px] font-normal">
+              <p className="text-light-black text-body-s mt-4 max-w-104 text-center font-normal">
                 {user?.bio}
               </p>
               {user?.socials && user.socials.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-center text-[14px] font-semibold">Social links</p>
+                  <p className="text-body-s text-center font-semibold">Social links</p>
                   <div className="mt-3 flex gap-4">
                     {user.socials.map((link) => (
                       <a
@@ -131,19 +131,19 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
                 (user?.has_connected ? (
                   <Link href={routes.CONNECT}>
                     <div className="mt-4">
-                      <div className="border-light-grey-50 flex h-12 w-[343px] cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12">
+                      <div className="border-light-grey-50 flex h-12 w-85.75 cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12">
                         <ChatIcon />
-                        <p className="font-semi-normal text-black-light text-[16px]">Open chat</p>
+                        <p className="font-semi-normal text-black-light text-body-l">Open chat</p>
                       </div>
                     </div>
                   </Link>
                 ) : (
                   <div className="mt-4">
                     <div
-                      className="border-light-grey-50 flex h-12 w-[343px] cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12"
+                      className="border-light-grey-50 flex h-12 w-85.75 cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12"
                       onClick={sendConnect}
                     >
-                      <p className="font-semi-normal text-black-light text-[16px]">Send request</p>
+                      <p className="font-semi-normal text-black-light text-body-l">Send request</p>
                     </div>
                   </div>
                 ))}

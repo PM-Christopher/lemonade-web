@@ -63,7 +63,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
                 >
                   <span
                     className={[
-                      "font-sans text-sm leading-[21px] transition-colors duration-200",
+                      "font-sans text-sm leading-5.25 transition-colors duration-200",
                       isActive ? "text-black-light font-semibold" : "text-text-grey font-normal",
                     ].join(" ")}
                   >
@@ -93,10 +93,10 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
       </section>
       {isMobile && (
         <div
-          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-[250px] flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full p-4 text-white"
+          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-62.5 flex h-15 w-15 cursor-pointer items-center justify-center rounded-full p-4 text-white"
           onClick={() => push(routes.EVENT_CREATE)}
         >
-          <PlusIcon className="h-[19px] w-[19px]" />
+          <PlusIcon className="h-4.75 w-4.75" />
         </div>
       )}
     </>

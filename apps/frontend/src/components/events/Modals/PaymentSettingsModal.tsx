@@ -57,13 +57,13 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Payment settings"}</DialogTitle>
-        <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
+              <p className="tracking-custom font-sans leading-6.75 font-semibold text-[18p]">
                 Payment settings
               </p>
             </div>
@@ -72,7 +72,7 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
                 className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 onClick={handleUpdate}
               >
-                <p className="font-semi-normal font-sans text-[12px]">Save Changes</p>
+                <p className="font-semi-normal text-meta font-sans leading-normal">Save Changes</p>
               </Button>
             </div>
           </div>
@@ -82,16 +82,16 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
                 <RadioGroupItem
                   value="weekly"
                   id="weekly"
-                  className="border-light-grey-60 checked:border-step-color checked:bg-gradient-green focus:border-step-color border-[2.5px] text-green-500"
+                  className="border-light-grey-60 checked:border-step-color checked:bg-gradient-green focus:border-step-color border-3 text-green-500"
                 />
                 <div className="flex flex-col">
                   <Label
                     htmlFor="weekly"
-                    className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]"
+                    className="font-semi-normal tracking-custom text-black-light text-body-l font-sans"
                   >
                     Weekly payment
                   </Label>
-                  <span className="text-text-grey font-sans text-[12px] leading-[16.8px] font-normal">
+                  <span className="text-text-grey text-meta font-sans leading-4.25 font-normal">
                     Ticket earnings will be transferred in batch to the account details every Friday
                   </span>
                 </div>
@@ -100,16 +100,16 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
                 <RadioGroupItem
                   value="monthly"
                   id="monthly"
-                  className="border-light-grey-60 checked:border-step-color checked:bg-gradient-green focus:border-step-color border-[2.5px] text-green-500"
+                  className="border-light-grey-60 checked:border-step-color checked:bg-gradient-green focus:border-step-color border-3 text-green-500"
                 />
                 <div className="flex flex-col">
                   <Label
                     htmlFor="monthly"
-                    className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]"
+                    className="font-semi-normal tracking-custom text-black-light text-body-l font-sans"
                   >
                     Monthly payment
                   </Label>
-                  <span className="text-text-grey font-sans text-[12px] leading-[16.8px] font-normal">
+                  <span className="text-text-grey text-meta font-sans leading-4.25 font-normal">
                     Ticket earnings will be transferred in batch to the account details on the last
                     Friday of the <br /> month
                   </span>

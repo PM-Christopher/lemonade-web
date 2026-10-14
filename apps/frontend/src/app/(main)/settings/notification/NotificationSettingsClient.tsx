@@ -99,20 +99,22 @@ const NotificationSettingsClient = () => {
             onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">
+            <p className="tracking-custom text-body-l font-sans font-semibold">
               Notification settings
             </p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center px-2.5">
-          <div className="laptop:w-[640px] flex w-full flex-col gap-6 rounded-xl">
+          <div className="laptop:w-160 flex w-full flex-col gap-6 rounded-xl">
             <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-[12px]">TRIBE</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+              <p className="font-semi-normal text-light-black text-meta leading-normal">TRIBE</p>
+              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">New thread in Tribe</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">New thread in Tribe</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -121,8 +123,10 @@ const NotificationSettingsClient = () => {
                 </div>
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Thread engagements</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Thread engagements</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -133,12 +137,14 @@ const NotificationSettingsClient = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-[12px]">EVENT</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+              <p className="font-semi-normal text-light-black text-meta leading-normal">EVENT</p>
+              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Ticket sales</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Ticket sales</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -147,8 +153,10 @@ const NotificationSettingsClient = () => {
                 </div>
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Ticket payout</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Ticket payout</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -159,12 +167,14 @@ const NotificationSettingsClient = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-[12px]">BUSINESS</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+              <p className="font-semi-normal text-light-black text-meta leading-normal">BUSINESS</p>
+              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Service offer</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Service offer</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -173,8 +183,10 @@ const NotificationSettingsClient = () => {
                 </div>
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Service status</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Service status</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -183,8 +195,10 @@ const NotificationSettingsClient = () => {
                 </div>
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Service payout</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Service payout</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -195,12 +209,14 @@ const NotificationSettingsClient = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-[12px]">CONNECT</p>
-              <div className="laptop:w-[640px] flex w-full flex-col rounded-xl bg-white">
+              <p className="font-semi-normal text-light-black text-meta leading-normal">CONNECT</p>
+              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">Connect request</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">Connect request</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"
@@ -209,8 +225,10 @@ const NotificationSettingsClient = () => {
                 </div>
                 <div className="flex items-center justify-between p-3 px-4">
                   <div className="flex flex-col">
-                    <p className="font-semi-normal text-[14px]">New message</p>
-                    <p className="text-text-grey text-[12px] font-normal">In-app, Email</p>
+                    <p className="font-semi-normal text-body-s">New message</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      In-app, Email
+                    </p>
                   </div>
                   <ChevronRight
                     className="cursor-pointer"

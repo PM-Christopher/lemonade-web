@@ -126,19 +126,19 @@ const BuyTicketClient = ({ id }: { id: number }) => {
         <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft className="cursor-pointer" />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Buy ticket</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Buy ticket</p>
           </div>
         </div>
         <section className="laptop:bg-none mt-4 bg-white">
           <div className="laptop:flex-row laptop:justify-around flex flex-col">
-            <div className="laptop:w-[688px] laptop:bg-white laptop:p-6 flex w-full flex-col justify-between gap-y-[460px] rounded-xl bg-none p-0 py-2.5">
+            <div className="laptop:w-172 laptop:bg-white laptop:p-6 flex w-full flex-col justify-between gap-y-115 rounded-xl bg-none p-0 py-2.5">
               {loading ? (
                 <EventTicketDetailSkeleton />
               ) : (
                 <div className="">
                   <div className="bg-green-tint laptop:flex-row laptop:p-6 flex flex-col gap-4 rounded-xl p-4 transition-shadow duration-300 hover:shadow-lg">
                     {/* Event Poster */}
-                    <div className="laptop:h-[120px] laptop:w-[120px] h-[120px] w-full flex-shrink-0">
+                    <div className="laptop:h-30 laptop:w-30 h-30 w-full flex-shrink-0">
                       <Image
                         src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
                         alt={event?.event_name || "event poster"}
@@ -150,12 +150,12 @@ const BuyTicketClient = ({ id }: { id: number }) => {
 
                     {/* Event Info */}
                     <div className="flex flex-1 flex-col gap-2">
-                      <p className="text-black-light laptop:text-[18px] font-sans text-[16px] leading-[28px] font-semibold">
+                      <p className="text-black-light laptop:text-body-xl text-body-l font-sans leading-7 font-semibold">
                         {event?.event_name}
                       </p>
 
                       {/* Date */}
-                      <div className="text-text-grey laptop:text-[16px] flex items-center gap-2 text-[14px]">
+                      <div className="text-text-grey laptop:text-body-l text-body-s flex items-center gap-2">
                         <CalendarIcon className="text-gray-500" />
                         <span>{formatLongDate(event?.start_date, "mid")}</span>
                         <span>-</span>
@@ -163,7 +163,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                       </div>
 
                       {/* Time */}
-                      <div className="text-text-grey laptop:text-[16px] flex items-center gap-2 text-[14px]">
+                      <div className="text-text-grey laptop:text-body-l text-body-s flex items-center gap-2">
                         <ClockIcon className="text-gray-500" />
                         <span>{formatTime(event?.start_date ?? null)}</span>
                         <span>-</span>
@@ -176,13 +176,13 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     <div className="laptop:none px-4" key={index}>
                       <div className="mt-6 flex items-center justify-between">
                         <div className="flex flex-col">
-                          <p className="font-semi-normal text-black-light font-sans text-[14px] leading-[21px]">
+                          <p className="font-semi-normal text-black-light text-body-s font-sans">
                             {ticket.name}
                           </p>
-                          <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                          <p className="tracking-custom text-body-xl font-sans font-semibold">
                             {ticket.price === 0 ? "Free" : ticket.price_display}
                           </p>
-                          <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
+                          <p className="text-text-grey text-meta font-sans font-normal">
                             {ticket.description}
                           </p>
                         </div>
@@ -190,15 +190,15 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                           <button
                             type="button"
                             aria-label={`Remove one ${ticket.name}`}
-                            className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-[8px] p-3"
+                            className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg p-3"
                             onClick={() => handleDecrement(index)}
                           >
                             -
                           </button>
-                          <div className="bg-light-white flex h-7 w-[27.75px] items-center justify-center rounded-[8px] p-4">
+                          <div className="bg-light-white flex h-7 w-7 items-center justify-center rounded-lg p-4">
                             <p
                               data-testid={`quantity-${ticket.id}`}
-                              className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]"
+                              className="font-semi-normal tracking-custom text-body-l font-sans"
                             >
                               {quantities[index]?.quantity}
                             </p>
@@ -206,7 +206,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                           <button
                             type="button"
                             aria-label={`Add one ${ticket.name}`}
-                            className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-[8px] p-3"
+                            className="bg-light-white flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg p-3"
                             onClick={() => handleIncrement(index)}
                           >
                             +
@@ -219,40 +219,40 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                 </div>
               )}
               <div className="laptop:hidden flex items-center justify-center gap-4">
-                <div className="flex w-[147px] items-center gap-4">
-                  <p className="text-mid-green text-[20px] font-bold">{totalLabel}</p>
+                <div className="flex w-36.75 items-center gap-4">
+                  <p className="text-mid-green text-title-r leading-normal font-bold">
+                    {totalLabel}
+                  </p>
                   <button type="button" aria-label="Show summary" onClick={toggleSummaryModal}>
                     <ChevronUp className="text-mid-green cursor-pointer" />
                   </button>
                 </div>
                 <Button
-                  className="bg-gradient-green h-12 w-[180px] rounded-xl border-b-2 px-12 py-3.5 shadow-none"
+                  className="bg-gradient-green h-12 w-45 rounded-xl border-b-2 px-12 py-3.5 shadow-none"
                   onClick={proceed}
                 >
-                  <p className="font-semi-normal text-[16px]">Assign ticket</p>
+                  <p className="font-semi-normal text-body-l">Assign ticket</p>
                 </Button>
               </div>
             </div>
             <div className="laptop:block hidden">
-              <div className="w-[480px] rounded-xl bg-white px-2.5 py-3">
-                <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
+              <div className="w-120 rounded-xl bg-white px-2.5 py-3">
+                <p className="text-title-r font-sans font-semibold">Summary</p>
                 <TicketQuoteBreakdown {...quoteState} />
                 <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <p className="tracking-custom text-text-grey pl-10 font-sans text-[18px] leading-[27px] font-normal">
+                    <p className="tracking-custom text-text-grey text-body-xl pl-10 font-sans font-normal">
                       -
                     </p>
                   </div>
                   <div>
                     <Button
                       className={
-                        "bg-gradient-green shadow-custom-bottom h-12 w-[216px] gap-2 rounded-xl border-b-2 border-transparent px-12 py-3.5"
+                        "bg-gradient-green shadow-custom-bottom h-12 w-54 gap-2 rounded-xl border-b-2 border-transparent px-12 py-3.5"
                       }
                       onClick={proceed}
                     >
-                      <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
-                        Assign ticket
-                      </p>
+                      <p className="font-semi-normal text-field font-sans">Assign ticket</p>
                     </Button>
                   </div>
                 </div>

@@ -55,7 +55,7 @@ function FindEventSubMenu() {
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSearch();
             }}
-            className="w-full bg-transparent text-[14px] outline-none placeholder:text-gray-400"
+            className="text-body-s w-full bg-transparent outline-none placeholder:text-gray-400"
             placeholder="Search events..."
           />
 
@@ -63,7 +63,7 @@ function FindEventSubMenu() {
             type="button"
             onClick={handleSearch}
             disabled={loading || isEmpty}
-            className="shrink-0 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-gray-700 ring-1 ring-black/5 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="text-meta shrink-0 rounded-xl bg-white px-3 py-2 leading-normal font-medium text-gray-700 ring-1 ring-black/5 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Search
           </button>
@@ -74,15 +74,17 @@ function FindEventSubMenu() {
       <div>
         {/* Empty state BEFORE searching */}
         {!loading && !hasSearched && (
-          <div className="border-mid-grey/70 flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-6 text-center">
+          <div className="border-mid-grey/70 flex min-h-55 w-full flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-6 text-center">
             <div className="bg-light_grey mb-3 rounded-2xl p-3 text-gray-600">
               <SearchIcon />
             </div>
-            <p className="font-sans text-[14px] text-gray-700 sm:text-[15px]">
+            <p className="text-body-s sm:text-body-s font-sans text-gray-700">
               Press <span className="bg-light_grey rounded-md px-2 py-0.5 font-medium">Enter</span>{" "}
               to start searching
             </p>
-            <p className="mt-1 text-[13px] text-gray-500">Type an event name or keyword.</p>
+            <p className="text-meta mt-1 leading-normal text-gray-500">
+              Type an event name or keyword.
+            </p>
           </div>
         )}
 
@@ -98,12 +100,14 @@ function FindEventSubMenu() {
           hasSearched &&
           !isEmpty &&
           (!affiliateEvents || affiliateEvents.length === 0) && (
-            <div className="border-mid-grey/70 flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-6 text-center">
+            <div className="border-mid-grey/70 flex min-h-55 w-full flex-col items-center justify-center rounded-2xl border border-dashed bg-white p-6 text-center">
               <div className="bg-light_grey mb-3 rounded-2xl p-3 text-gray-600">
                 <SearchIcon />
               </div>
-              <p className="font-sans text-[15px] font-medium text-gray-800">No events found</p>
-              <p className="mt-1 text-[13px] text-gray-500">Try a different keyword.</p>
+              <p className="text-body-s font-sans font-medium text-gray-800">No events found</p>
+              <p className="text-meta mt-1 leading-normal text-gray-500">
+                Try a different keyword.
+              </p>
             </div>
           )}
 

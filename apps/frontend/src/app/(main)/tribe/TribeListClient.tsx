@@ -85,7 +85,7 @@ export default function TribeListClient() {
               >
                 <span
                   className={[
-                    "font-sans text-sm leading-[21px] transition-colors duration-200",
+                    "font-sans text-sm leading-5.25 transition-colors duration-200",
                     isActive ? "text-black-light font-semibold" : "text-text-grey font-normal",
                   ].join(" ")}
                 >
@@ -110,7 +110,7 @@ export default function TribeListClient() {
         <div className="flex items-center gap-3">
           {/* Mobile Search */}
           <div className="tablet:hidden block">
-            <div className="bg-light_grey flex h-11 w-[260px] items-center gap-3 rounded-xl p-2">
+            <div className="bg-light_grey flex h-11 w-65 items-center gap-3 rounded-xl p-2">
               <SearchIcon className="text-gray-500" />
               <input
                 type="text"
@@ -133,7 +133,7 @@ export default function TribeListClient() {
       {/* Content Section */}
       <div className="tablet:flex-row tablet:px-10 mt-4 flex flex-col justify-center gap-6 px-4">
         {/* Tribe List Section */}
-        <section className="shadow-div-shadow-2 tablet:w-[700px] min-h-[200px] w-full rounded-xl bg-white p-6">
+        <section className="shadow-div-shadow-2 tablet:w-175 min-h-50 w-full rounded-xl bg-white p-6">
           {loading ? (
             <TribeListSkeleton count={4} />
           ) : tribes?.length > 0 ? (
@@ -152,7 +152,7 @@ export default function TribeListClient() {
         </section>
 
         {/* Search Sidebar (Desktop) */}
-        <section className="tablet:block hidden h-fit w-[420px] rounded-xl bg-white p-6">
+        <section className="tablet:block hidden h-fit w-105 rounded-xl bg-white p-6">
           <div className="flex flex-col gap-4">
             {/* Search Input */}
             <div className="relative w-full">

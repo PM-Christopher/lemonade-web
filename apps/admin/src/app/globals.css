@@ -115,7 +115,7 @@
     @apply font-sans font-medium text-field text-text-grey shadow-none
   }
   .app-icon-border {
-    @apply w-[56px] h-[56px] border-[1px] rounded-[12px]
+    @apply w-14 h-14 border rounded-xl
   }
   .auth-button {
     @apply w-full h-12 bg-gradient-green rounded-xl py-4

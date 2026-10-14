@@ -92,14 +92,14 @@ const MultipleFileUploader = ({
         {({ getRootProps, getInputProps }) => (
           <section
             {...getRootProps()}
-            className="bg-light_grey flex h-[170px] w-[170px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 p-4 transition hover:bg-gray-100"
+            className="bg-light_grey flex h-42.5 w-42.5 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 p-4 transition hover:bg-gray-100"
           >
             <input {...getInputProps()} />
             <Image src={imageAssets.UPLOAD_IMAGE} alt="upload" width={48} height={48} />
-            <p className="mt-3 text-center font-sans text-[14px] leading-[21px] font-semibold text-black">
+            <p className="text-body-s mt-3 text-center font-sans font-semibold text-black">
               {title}
             </p>
-            <p className="mt-1 text-center text-[12px] font-normal text-gray-400">
+            <p className="text-meta mt-1 text-center leading-normal font-normal text-gray-400">
               PNG, JPG, JPEG, less than 2MB
             </p>
           </section>
@@ -114,7 +114,7 @@ const MultipleFileUploader = ({
         portfolioImages.map((image) => (
           <div
             key={image}
-            className="relative h-[170px] w-[170px] transform overflow-hidden rounded-2xl shadow-sm transition duration-300 hover:scale-105 hover:shadow-md"
+            className="relative h-42.5 w-42.5 transform overflow-hidden rounded-2xl shadow-sm transition duration-300 hover:scale-105 hover:shadow-md"
           >
             <Image
               src={image}

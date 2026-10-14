@@ -42,7 +42,10 @@ function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
           <thead>
             <tr className="bg-mid-grey">
               {walletHeaders.map((header, idx) => (
-                <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
+                <th
+                  className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
+                  key={idx}
+                >
                   {header}
                 </th>
               ))}
@@ -53,7 +56,7 @@ function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
               paginatedData.map((row, index) => (
                 <tr
                   key={index}
-                  className="border-grey-20 h-[72px] cursor-pointer border-b"
+                  className="border-grey-20 h-18 cursor-pointer border-b"
                   onClick={() => push(routes.TRANSACTION_WALLET(row.id!))}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.txn_id}</td>

@@ -54,9 +54,9 @@ function BusinessesClient() {
     <MainLayout>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>{businesses.length} Businesses</p>
+          <p className={"font-semiBold text-body-l"}>{businesses.length} Businesses</p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
                 <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
@@ -64,7 +64,7 @@ function BusinessesClient() {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search business, city, owner..."
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -73,7 +73,7 @@ function BusinessesClient() {
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger
                 aria-label="Filter by status"
-                className="font-semiBold text-text-grey focus:!border-light-green-50 h-10 w-[193px] rounded-xl text-[12px]"
+                className="font-semiBold text-text-grey focus:!border-light-green-50 text-meta h-10 w-48.25 rounded-xl leading-normal"
               >
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -95,7 +95,7 @@ function BusinessesClient() {
                   <tr className="bg-mid-grey">
                     {TABLE_HEADERS.map((header) => (
                       <th
-                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
+                        className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
                         key={header}
                       >
                         {header}
@@ -108,7 +108,7 @@ function BusinessesClient() {
                     businesses.map((business) => (
                       <tr
                         key={business.id}
-                        className="border-grey-20 h-[72px] cursor-pointer border-b"
+                        className="border-grey-20 h-18 cursor-pointer border-b"
                         onClick={() => push(routes.BUSINESS_DETAIL(business.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{business.name}</td>

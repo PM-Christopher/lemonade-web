@@ -181,15 +181,13 @@ const EditBusinessClient = ({ id }: { id: number }) => {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Edit business</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Edit business</p>
           </div>
         </div>
         <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="laptop:mt-10 laptop:w-[640px] mt-0 flex w-full flex-col rounded-xl bg-white p-12">
-              <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
-                BUSINESS DETAILS
-              </p>
+            <div className="laptop:mt-10 laptop:w-160 mt-0 flex w-full flex-col rounded-xl bg-white p-12">
+              <p className="text-light-black text-meta font-sans font-bold">BUSINESS DETAILS</p>
               <SingleFileUploader
                 length="single"
                 type="business"
@@ -201,7 +199,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="business_name"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Business name
                 </Label>
@@ -217,7 +215,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="categories"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Business category
                 </Label>
@@ -239,24 +237,21 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="description"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Business description
                 </Label>
                 <textarea
-                  className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
+                  className="form-font bg-light_grey h-32.75 resize-none rounded-xl border-0 p-4"
                   {...register("description")}
                 ></textarea>
                 <FieldError message={errors.description?.message} />
               </div>
-              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black text-meta mt-12 font-sans font-bold">
                 BUSINESS ADDRESS
               </p>
               <div className="mt-6 grid gap-2">
-                <Label
-                  htmlFor="city"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-                >
+                <Label htmlFor="city" className="text-text-grey text-label font-sans font-normal">
                   City
                 </Label>
                 <Input
@@ -271,7 +266,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="country"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Country
                 </Label>
@@ -289,13 +284,13 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 </select>
                 <FieldError message={errors.country?.message} />
               </div>
-              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black text-meta mt-12 font-sans font-bold">
                 SERVICE DETAILS
               </p>
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="services"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Services
                 </Label>
@@ -309,16 +304,16 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   onKeyDown={addService}
                 />
                 <FieldError message={errors.services?.message} />
-                <p className="text-text-grey my-[5px] text-[12px]">
+                <p className="text-text-grey text-meta my-1.25 leading-normal">
                   Click <i>enter</i> to add service
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1">
                   {services.map((service, index) => (
                     <div
-                      className="bg-grey-20 flex items-center gap-2 rounded-[8px] p-2 px-3"
+                      className="bg-grey-20 flex items-center gap-2 rounded-lg p-2 px-3"
                       key={index}
                     >
-                      <p className="font-semi-normal text-text-grey text-[14px]">{service}</p>
+                      <p className="font-semi-normal text-text-grey text-body-s">{service}</p>
                       <CloseIcon
                         className="h-2 w-2 cursor-pointer"
                         onClick={() => removeService(service)}
@@ -330,7 +325,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="service_rate"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Service Rate (Optional)
                 </Label>
@@ -344,7 +339,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 />
                 <FieldError message={errors.service_rate?.message} />
               </div>
-              <p className="text-text-grey mt-6 text-[14px] font-normal">
+              <p className="text-text-grey text-body-s mt-6 font-normal">
                 Portfolio gallery <span>(Optional)</span>
               </p>
               <MultipleFileUploader
@@ -354,7 +349,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 images={gallery}
                 title="Upload multiple images"
               />
-              <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+              <p className="text-light-black text-meta mt-12 font-sans font-bold">
                 CONTACT DETAILS
               </p>
               <div className="grid grid-cols-1">
@@ -366,7 +361,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="email"
                       type="text"
-                      className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      className="bg-light_grey text-body-s w-full rounded-xl border-0 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Email address"
                       {...register("email")}
                     />
@@ -383,7 +378,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="phone_number"
                       type="text"
-                      className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      className="bg-light_grey text-body-s w-full rounded-xl border-0 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Phone number"
                       {...register("phone_number")}
                     />
@@ -400,7 +395,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <input
                       id="website_url"
                       type="text"
-                      className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                      className="bg-light_grey text-body-s w-full rounded-xl border-0 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Website URL"
                       {...register("website_url")}
                     />

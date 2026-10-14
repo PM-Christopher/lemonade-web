@@ -141,11 +141,11 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{title}</DialogTitle>
-        <div className="w-[480px] rounded-xl bg-white pt-4 pb-1">
+        <div className="w-120 rounded-xl bg-white pt-4 pb-1">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
-                <p className="font-sans text-[18px] leading-[27px] font-semibold">{title}</p>
+                <p className="text-body-xl font-sans font-semibold">{title}</p>
                 <div className="cursor-pointer" onClick={toggle}>
                   <XIcon />
                 </div>
@@ -153,7 +153,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
             </div>
             <div className={"flex max-h-[60vh] flex-col gap-4 overflow-y-auto px-4 py-4"}>
               <div className="grid gap-2">
-                <Label htmlFor="title" className="text-text-grey font-sans text-[14px] font-normal">
+                <Label htmlFor="title" className="text-text-grey text-body-s font-sans font-normal">
                   Title
                 </Label>
                 <Input
@@ -168,7 +168,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
               <div className="grid gap-2">
                 <Label
                   htmlFor="access_type"
-                  className="text-text-grey font-sans text-[14px] font-normal"
+                  className="text-text-grey text-body-s font-sans font-normal"
                 >
                   Access type
                 </Label>
@@ -186,7 +186,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="monthly_charge"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Monthly charge
                   </Label>
@@ -203,7 +203,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="yearly_charge"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Yearly charge
                   </Label>
@@ -223,7 +223,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="event_creation"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Event creation limit
                   </Label>
@@ -239,7 +239,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="connection_range"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Connection range
                   </Label>
@@ -258,7 +258,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="sales_commission"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Sales commission (%)
                   </Label>
@@ -275,7 +275,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 <div className="grid gap-2">
                   <Label
                     htmlFor="service_commission"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Service commission (%)
                   </Label>
@@ -296,7 +296,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   <label
                     key={field.name}
                     htmlFor={field.name}
-                    className="text-light-black flex items-center gap-2 text-[14px] font-normal"
+                    className="text-light-black text-body-s flex items-center gap-2 font-normal"
                   >
                     <input id={field.name} type="checkbox" {...register(field.name)} />
                     {field.label}
@@ -308,15 +308,15 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
               <button
                 type="button"
                 onClick={toggle}
-                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
+                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-2.75"}
               >
-                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                <p className={"text-body-l font-medium text-black"}>Cancel</p>
               </button>
               <SubmitButton
                 loading={createPlanMutation.isPending || updatePlanMutation.isPending}
                 title="Confirm"
                 isValid={isValid}
-                classes="w-full rounded-xl border border-step-color px-12 py-[11px]"
+                classes="w-full rounded-xl border border-step-color px-12 py-2.75"
               />
             </div>
           </form>

@@ -45,13 +45,13 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Report thread</DialogTitle>
-        <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] leading-[27px] font-semibold">Report thread</p>
+              <p className="text-body-xl font-sans font-semibold">Report thread</p>
             </div>
             <div>
               <Button
@@ -59,12 +59,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                 type="button"
                 onClick={submitThread}
               >
-                <p className="font-semi-normal font-sans text-[12px]">Submit</p>
+                <p className="font-semi-normal text-meta font-sans leading-normal">Submit</p>
               </Button>
             </div>
           </div>
           <div className="mt-6 flex flex-col gap-4 p-6">
-            <p className="font-semiBold text-black-light text-[20px]">
+            <p className="font-semiBold text-black-light text-title-r leading-normal">
               What is wrong with this thread?
             </p>
             <div className="flex flex-col">
@@ -77,12 +77,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                     <RadioGroupItem value="Inappropriate_content" id="option-one" />
                     <div className="flex flex-col">
                       <Label
-                        className="text-black-light font-sans text-[16px] font-normal"
+                        className="text-black-light text-body-l font-sans font-normal"
                         htmlFor="option-one"
                       >
                         Inappropriate content
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         Posts containing nudity, pornography, or other sexually suggestive content
                       </p>
                     </div>
@@ -91,12 +91,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                     <RadioGroupItem value="Abuse & Harassment" id="option-two" />
                     <div className="flex flex-col">
                       <Label
-                        className="text-black-light font-sans text-[16px] font-normal"
+                        className="text-black-light text-body-l font-sans font-normal"
                         htmlFor="option-one"
                       >
                         Abuse & Harassment
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         Attacks, insults, threats, or other malicious behavior directed towards
                         another user.
                       </p>
@@ -106,12 +106,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                     <RadioGroupItem value="Hate speech" id="option-three" />
                     <div className="flex flex-col">
                       <Label
-                        className="text-black-light font-sans text-[16px] font-normal"
+                        className="text-black-light text-body-l font-sans font-normal"
                         htmlFor="option-one"
                       >
                         Hate speech
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         Content that attacks a person or group on the basis of attributes like race,
                         religion, ethnic origin, national origin, sex, disability, sexual
                         orientation, or gender identity.
@@ -122,12 +122,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                     <RadioGroupItem value="Spam or irrelevant content" id="option-four" />
                     <div className="flex flex-col">
                       <Label
-                        className="text-black-light font-sans text-[16px] font-normal"
+                        className="text-black-light text-body-l font-sans font-normal"
                         htmlFor="option-one"
                       >
                         Spam or irrelevant content
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         Posts promoting unrelated products or services, excessive self-promotion, or
                         repetitive messages.
                       </p>
@@ -137,12 +137,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                     <RadioGroupItem value="Illegal activity" id="option-five" />
                     <div className="flex flex-col">
                       <Label
-                        className="text-black-light font-sans text-[16px] font-normal"
+                        className="text-black-light text-body-l font-sans font-normal"
                         htmlFor="option-one"
                       >
                         Illegal activity
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         Posts promoting or encouraging illegal activity. Threats of violence: Any
                         content that threatens violence against oneself or others.
                       </p>
@@ -152,12 +152,12 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                     <RadioGroupItem value="Misinformation or disinformation" id="option-six" />
                     <div className="flex flex-col">
                       <Label
-                        className="text-black-light font-sans text-[16px] font-normal"
+                        className="text-black-light text-body-l font-sans font-normal"
                         htmlFor="option-one"
                       >
                         Misinformation or disinformation
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         The sharing of false or misleading information intended to deceive or
                         manipulate others.
                       </p>

@@ -8,7 +8,7 @@ const TermsAndConditionsPage = () => {
       <section className="bg-light_grey pb-10">
         <BackHeader title="Terms & Conditions" />
         <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl p-4">
+          <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl p-4">
             <div className="scrollbar-hide max-h-[90vh] space-y-6 overflow-y-auto py-4">
               <p>Welcome LEMONS!</p>
 

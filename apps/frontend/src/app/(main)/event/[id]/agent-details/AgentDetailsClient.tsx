@@ -87,7 +87,7 @@ function GenerateLinkCTA({
           className,
         ].join(" ")}
       >
-        <p className="font-semi-normal text-[16px] leading-[19.2px] text-white">Link generated</p>
+        <p className="font-semi-normal text-field text-white">Link generated</p>
       </div>
     );
   }
@@ -103,7 +103,7 @@ function GenerateLinkCTA({
       onClick={onClick}
       disabled={loading}
     >
-      <p className="font-semi-normal text-[16px] leading-[19.2px] text-white">
+      <p className="font-semi-normal text-field text-white">
         {loading ? "Generating link..." : "Generate affiliate link"}
       </p>
     </Button>
@@ -155,19 +155,19 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
       <section className="laptop:bg-light_grey bg-white pb-10">
         {/* Header */}
         <div className="border-y border-gray-100 bg-white">
-          <div className="tablet:px-6 laptop:px-10 mx-auto flex w-full max-w-[1312px] items-center justify-between px-4 py-4">
+          <div className="tablet:px-6 laptop:px-10 mx-auto flex w-full max-w-328 items-center justify-between px-4 py-4">
             <Link
               href={routes.EVENT}
               className="inline-flex items-center gap-2 rounded-xl px-2 py-2 transition hover:bg-gray-50"
             >
               <ChevronLeft />
-              <p className="tracking-custom text-[16px] font-semibold">Event details</p>
+              <p className="tracking-custom text-body-l font-semibold">Event details</p>
             </Link>
           </div>
         </div>
 
         {/* Content */}
-        <div className="tablet:px-6 laptop:px-10 laptop:pt-4 mx-auto w-full max-w-[1312px] px-4">
+        <div className="tablet:px-6 laptop:px-10 laptop:pt-4 mx-auto w-full max-w-328 px-4">
           {loading ? (
             <div className="mt-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
               <div className="animate-pulse space-y-4">
@@ -184,7 +184,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                 <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md">
                   <div className="laptop:flex-row flex flex-col">
                     {/* Image */}
-                    <div className="laptop:w-[480px] w-full">
+                    <div className="laptop:w-120 w-full">
                       <div className="laptop:aspect-[496/532] relative aspect-[16/11] w-full bg-gray-100">
                         <Image
                           src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
@@ -198,7 +198,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                     {/* Details */}
                     <div className="tablet:p-7 laptop:p-10 flex-1 p-5">
-                      <h1 className="tablet:text-[26px] laptop:text-[32px] text-[20px] leading-snug font-semibold text-gray-900">
+                      <h1 className="tablet:text-title-l tablet:leading-normal laptop:text-title-xl laptop:leading-normal text-title-r leading-snug font-semibold text-gray-900">
                         {event?.event_name}
                       </h1>
 
@@ -206,7 +206,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                       <div className="text-text-grey mt-5 space-y-3">
                         <div className="flex items-start gap-3">
                           <CalendarIcon className="mt-0.5" />
-                          <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
+                          <p className="tablet:text-body-l laptop:text-body-xl text-body-s leading-6.75">
                             {startDate ? formatLongDate(startDate, "mid") : "--"}{" "}
                             <span className="mx-1">–</span>
                             {endDate ? formatLongDate(endDate, "mid") : "--"}
@@ -215,7 +215,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                         <div className="flex items-start gap-3">
                           <ClockIcon className="mt-0.5" />
-                          <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
+                          <p className="tablet:text-body-l laptop:text-body-xl text-body-s leading-6.75">
                             {startDate ? formatLongTime(startDate) : "--"}{" "}
                             <span className="mx-1">–</span>
                             {endDate ? formatLongTime(endDate) : "--"}
@@ -224,7 +224,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                         <div className="flex items-start gap-3">
                           <LocationIcon className="mt-0.5" />
-                          <p className="tablet:text-[16px] laptop:text-[18px] text-[14px] leading-[27px]">
+                          <p className="tablet:text-body-l laptop:text-body-xl text-body-s leading-6.75">
                             {event?.location ?? "--"}
                           </p>
                         </div>
@@ -232,7 +232,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                       {/* Contact + CTA (Laptop) */}
                       <div className="laptop:block mt-10 hidden">
-                        <p className="tracking-custom text-[18px] leading-[27px] font-semibold text-gray-900">
+                        <p className="tracking-custom text-body-xl font-semibold text-gray-900">
                           Contact Us
                         </p>
                         <div className="mt-4">
@@ -256,19 +256,19 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
               <section className="laptop:flex-row mt-8 flex flex-col gap-6">
                 {/* About */}
                 <div className="tablet:p-7 flex-1 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                  <h2 className="tablet:text-[22px] text-[20px] leading-[33.6px] font-semibold text-gray-900">
+                  <h2 className="tablet:text-title-r tablet:leading-normal text-title-r leading-8.5 font-semibold text-gray-900">
                     About Event
                   </h2>
 
                   <div className="mt-4 text-gray-700">
-                    <p className="tablet:text-[16px] text-[14px] leading-7">
+                    <p className="tablet:text-body-l text-body-s leading-7">
                       {event?.event_description ?? "No description available."}
                     </p>
                   </div>
 
                   {/* Contact (Mobile/Tablet) */}
                   <div className="laptop:hidden mt-8">
-                    <p className="tracking-custom text-[18px] leading-[27px] font-semibold text-gray-900">
+                    <p className="tracking-custom text-body-xl font-semibold text-gray-900">
                       Contact Us
                     </p>
                     <div className="mt-4">
@@ -278,9 +278,9 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                 </div>
 
                 {/* Tickets */}
-                <aside className="tablet:p-7 laptop:w-[420px] w-full rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                <aside className="tablet:p-7 laptop:w-105 w-full rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <p className="text-[18px] font-semibold text-gray-900">Tickets</p>
+                    <p className="text-body-xl font-semibold text-gray-900">Tickets</p>
                     {!!event?.isAffiliate && (
                       <span className="rounded-full border border-green-100 bg-green-50 px-3 py-1 text-xs text-green-700">
                         Affiliate
@@ -300,12 +300,14 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                           className="flex items-center justify-between rounded-xl border border-gray-100 p-3 transition hover:bg-gray-50"
                         >
                           <div className="flex flex-col">
-                            <p className="font-semi-normal text-[14px] text-gray-900">
+                            <p className="font-semi-normal text-body-s text-gray-900">
                               {item?.name}
                             </p>
-                            <p className="text-text-grey text-[12px] font-normal">{item?.count}</p>
+                            <p className="text-text-grey text-meta leading-normal font-normal">
+                              {item?.count}
+                            </p>
                           </div>
-                          <p className="font-semi-normal text-[14px] text-gray-900">
+                          <p className="font-semi-normal text-body-s text-gray-900">
                             ₦{formatNumberWithCommas(item?.price)}
                           </p>
                         </div>

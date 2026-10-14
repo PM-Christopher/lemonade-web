@@ -35,7 +35,10 @@ const CreatedTribeViews = () => {
         <thead>
           <tr className="bg-mid-grey">
             {tribeHeaders.map((header) => (
-              <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={header}>
+              <th
+                className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
+                key={header}
+              >
                 {header}
               </th>
             ))}
@@ -46,7 +49,7 @@ const CreatedTribeViews = () => {
             paginatedTribes.map((tribe) => (
               <tr
                 key={tribe.id}
-                className="border-grey-20 h-[72px] cursor-pointer border-b"
+                className="border-grey-20 h-18 cursor-pointer border-b"
                 onClick={() => push(routes.TRIBE_DETAIL(tribe.id))}
               >
                 <td className="p-4 font-sans text-sm font-medium">{tribe.uuid}</td>

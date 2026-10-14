@@ -42,9 +42,7 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle }) => 
             }}
           >
             <div>
-              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
-                Payout history
-              </p>
+              <p className="tracking-custom text-body-l font-sans font-semibold">Payout history</p>
             </div>
             <div>
               <XIcon className="cursor-pointer" onClick={toggle} />
@@ -54,11 +52,13 @@ const PayoutHistory: React.FC<PayoutHistoryInterface> = ({ isOpen, toggle }) => 
             {payoutHistoryData.map((item, index: number) => (
               <div key={index} className={"flex justify-between px-4 pt-4 pb-6"}>
                 <div className={"flex flex-col"}>
-                  <p className={"text-[14px] font-medium"}>{item.amount}</p>
-                  <p className={"text-text-grey text-[12px] font-normal"}>{item.date}</p>
+                  <p className={"text-body-s font-medium"}>{item.amount}</p>
+                  <p className={"text-text-grey text-meta leading-normal font-normal"}>
+                    {item.date}
+                  </p>
                 </div>
                 <p
-                  className={`h-fit rounded-[8px] px-2 py-1 text-[12px] font-medium ${renderStyle(item.status)}`}
+                  className={`text-meta h-fit rounded-lg px-2 py-1 leading-normal font-medium ${renderStyle(item.status)}`}
                 >
                   {item.status}
                 </p>

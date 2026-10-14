@@ -186,7 +186,7 @@ export default function VerifyPage() {
   return (
     <AuthLayout>
       <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
-        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+        <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Verify email address</p>
           <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
             Enter the 4-digit code sent{" "}
@@ -201,7 +201,7 @@ export default function VerifyPage() {
             className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex w-full max-w-[440px] shrink-0 flex-col">
+        <div className="flex w-full max-w-110 shrink-0 flex-col">
           <div className="tablet:hidden mb-4 text-center">
             <p className="font-ruso text-title-xl font-bold">Verify email address</p>
             <p className="text-body-l text-text-grey mt-2 font-sans font-normal">
@@ -248,7 +248,7 @@ export default function VerifyPage() {
                     <p className="text-meta mt-3 flex items-center gap-1 text-[#E24B4B]">
                       <span
                         aria-hidden
-                        className="inline-block h-3.5 w-3.5 rounded-full border border-[#E24B4B] text-center text-[10px] leading-[12px]"
+                        className="text-meta inline-block h-3.5 w-3.5 rounded-full border border-[#E24B4B] text-center leading-3"
                       >
                         !
                       </span>

@@ -174,7 +174,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft className="cursor-pointer" onClick={() => back()} />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Business details</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Business details</p>
           </div>
         </div>
         <section className="mt-4 flex min-h-screen flex-col items-center gap-4">
@@ -183,7 +183,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
           ) : (
             <>
               <div
-                className="laptop:w-[640px] relative w-full rounded-xl bg-white bg-cover bg-center bg-no-repeat p-4"
+                className="laptop:w-160 relative w-full rounded-xl bg-white bg-cover bg-center bg-no-repeat p-4"
                 style={{ backgroundImage: `url(${images.BUSINESS_BG})` }}
               >
                 <div className="flex flex-col">
@@ -197,12 +197,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     />
                   </div>
                   <div className="mt-2 flex flex-col justify-center">
-                    <p className="text-center text-[16px] font-semibold">{business?.name}</p>
-                    <p className="font-semi-normal text-text-grey text-center text-[14px]">
+                    <p className="text-body-l text-center font-semibold">{business?.name}</p>
+                    <p className="font-semi-normal text-text-grey text-body-s text-center">
                       {business?.city}, {business?.country}
                     </p>
                     {business?.service_rate ? (
-                      <p className="mt-1 text-center text-[16px] font-semibold">
+                      <p className="text-body-l mt-1 text-center font-semibold">
                         N {formatNumberWithCommas(business?.service_rate)}/hr
                       </p>
                     ) : (
@@ -215,7 +215,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         <Image src={images.MEDAL} alt="medal" width={16} height={16} />
                       </div>
                       <div>
-                        <p className="font-semi-normal text-primary-black font-sans text-[14px] leading-[21px]">
+                        <p className="font-semi-normal text-primary-black text-body-s font-sans">
                           {formatDecimal(business?.rating ?? 0, 1)}
                         </p>
                       </div>
@@ -245,7 +245,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   <div className="bg-light-green-10 absolute top-0 right-0 rounded-tr-xl rounded-bl-xl">
                     <div className="flex items-center gap-1 p-1 px-2">
                       <RocketIconGreen />
-                      <p className="font-semi-normal text-mid-green text-[14px]">Boosted</p>
+                      <p className="font-semi-normal text-mid-green text-body-s">Boosted</p>
                     </div>
                   </div>
                 )}
@@ -258,9 +258,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       <div className="border-grey-20 rounded-2xl border bg-white p-4">
                         <CaseIcon />
                       </div>
-                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
-                        Jobs
-                      </p>
+                      <p className="font-semi-normal text-text-grey text-meta font-sans">Jobs</p>
                     </div>
                   </Link>
                   {business.hasBoost ? (
@@ -271,9 +269,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       <div className="border-grey-20 rounded-2xl border bg-white p-4">
                         <RocketIconGrey />
                       </div>
-                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
-                        Boost
-                      </p>
+                      <p className="font-semi-normal text-text-grey text-meta font-sans">Boost</p>
                     </div>
                   ) : (
                     <Link href={routes.BUSINESS_BOOST(id)}>
@@ -281,9 +277,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         <div className="border-grey-20 rounded-2xl border bg-white p-4">
                           <RocketIcon />
                         </div>
-                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
-                          Boost
-                        </p>
+                        <p className="font-semi-normal text-text-grey text-meta font-sans">Boost</p>
                       </div>
                     </Link>
                   )}
@@ -293,9 +287,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         <PencilIcon />
                       </div>
                       <div>
-                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
-                          Edit
-                        </p>
+                        <p className="font-semi-normal text-text-grey text-meta font-sans">Edit</p>
                       </div>
                     </div>
                   </Link>
@@ -304,9 +296,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       <TrashIcon />
                     </div>
                     <div>
-                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
-                        Delete
-                      </p>
+                      <p className="font-semi-normal text-text-grey text-meta font-sans">Delete</p>
                     </div>
                   </div>
                 </div>
@@ -321,9 +311,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     <div className="border-grey-20 rounded-2xl border bg-white p-4">
                       <PhoneIcon />
                     </div>
-                    <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
-                      Call
-                    </p>
+                    <p className="font-semi-normal text-text-grey text-meta font-sans">Call</p>
                   </div>
                   <div
                     className="flex cursor-pointer flex-col items-center gap-2"
@@ -332,7 +320,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     <div className="border-grey-20 rounded-2xl border bg-white p-4">
                       <MessageIcon />
                     </div>
-                    <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                    <p className="font-semi-normal text-text-grey text-meta font-sans">
                       Send email
                     </p>
                   </div>
@@ -346,7 +334,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       <WebIcon />
                     </div>
                     <div>
-                      <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                      <p className="font-semi-normal text-text-grey text-meta font-sans">
                         Visit Website
                       </p>
                     </div>
@@ -354,22 +342,22 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                 </div>
               )}
 
-              <div className="bg-purple-tint-1 laptop:w-[640px] w-full rounded-tl-3xl rounded-tr-3xl">
+              <div className="bg-purple-tint-1 laptop:w-160 w-full rounded-tl-3xl rounded-tr-3xl">
                 <div className="pt-4 pr-4 pb-2 pl-4">
-                  <p className="font-semi-normal text-[14px]">
+                  <p className="font-semi-normal text-body-s">
                     Lemonade protects in-app transactions only. Use caution outside the app
                   </p>
                 </div>
                 <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
                   <div className="pt-4 pr-4 pb-6 pl-4">
-                    <p className="text-[16px] font-semibold">About business</p>
-                    <p className="text-light-black mt-3 text-[14px] font-normal">
+                    <p className="text-body-l font-semibold">About business</p>
+                    <p className="text-light-black text-body-s mt-3 font-normal">
                       {business?.description}
                     </p>
-                    <p className="font-semi-normal text-light-green text-[14px]">More</p>
+                    <p className="font-semi-normal text-light-green text-body-s">More</p>
                     <div className="border-t-mid-grey my-6 border-t"></div>
-                    <p className="text-[16px] font-semibold">Business categories</p>
-                    <p className="text-light-black mt-3 text-[14px] font-normal">
+                    <p className="text-body-l font-semibold">Business categories</p>
+                    <p className="text-light-black text-body-s mt-3 font-normal">
                       {business?.categories?.map((category: string, index: number) => (
                         <span key={index}>
                           {formatStringUCFirst(category)}
@@ -378,8 +366,8 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       ))}
                     </p>
                     <div className="border-t-mid-grey my-6 border-t"></div>
-                    <p className="text-[16px] font-semibold">Services</p>
-                    <p className="text-light-black mt-3 text-[14px] font-normal">
+                    <p className="text-body-l font-semibold">Services</p>
+                    <p className="text-light-black text-body-s mt-3 font-normal">
                       {business?.services?.map((service: string, index: number) => (
                         <span key={index}>
                           {formatStringUCFirst(service)}
@@ -388,7 +376,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       ))}
                     </p>
                     <div className="border-t-mid-grey my-6 border-t"></div>
-                    <p className="text-[16px] font-semibold">Portfolio Gallery</p>
+                    <p className="text-body-l font-semibold">Portfolio Gallery</p>
                     <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                       {business?.gallery?.map((item: string, index: number) => (
                         <div
@@ -400,7 +388,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                             alt={`gallery_image_${index}`}
                             width={170}
                             height={170}
-                            className="h-[170px] w-full transform rounded-xl object-cover transition-transform duration-300 group-hover:scale-105"
+                            className="h-42.5 w-full transform rounded-xl object-cover transition-transform duration-300 group-hover:scale-105"
                           />
                           {/* Optional hover overlay */}
                           <div className="absolute inset-0 rounded-xl bg-black/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
@@ -409,20 +397,20 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     </div>
 
                     <div className="border-t-mid-grey my-6 border-t"></div>
-                    <p className="text-[16px] font-semibold">Reviews</p>
+                    <p className="text-body-l font-semibold">Reviews</p>
                     <div className="flex justify-between">
                       <div className="bg-light_grey flex flex-col rounded-xl p-3 px-5">
                         <div className="flex justify-center">
                           <Image src={images.MEDAL} alt="medal" width={20.57} height={20.57} />
                         </div>
                         <div>
-                          <p className="text-center text-[20px] font-bold">
+                          <p className="text-title-r text-center leading-normal font-bold">
                             {formatDecimal(business?.rating ?? 0, 1)}/
                             <span className="font-semi-normal">5</span>
                           </p>
                         </div>
                         <div>
-                          <p className="text-text-grey text-[12px] font-normal">
+                          <p className="text-text-grey text-meta leading-normal font-normal">
                             {reviewData?.reviews?.length} ratings
                           </p>
                         </div>
@@ -443,15 +431,15 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     ) : (
                       <div className="flex flex-col items-center justify-center">
                         <Image src={images.NO_REVIEWS} alt="no-reviews" width={114} height={98} />
-                        <p className="font-semi-normal text-text-grey text-[14px]">
+                        <p className="font-semi-normal text-text-grey text-body-s">
                           No reviews yet
                         </p>
                       </div>
                     )}
                     {hasMoreReviews && (
-                      <div className="mt-[38px]">
+                      <div className="mt-9.5">
                         <p
-                          className="font-semi-normal text-light-green cursor-pointer text-center text-[16px]"
+                          className="font-semi-normal text-light-green text-body-l cursor-pointer text-center"
                           onClick={loadMore}
                         >
                           Load more reviews

@@ -14,7 +14,7 @@ type EventIF = {
 const EventCard: React.FC<EventIF> = ({ event }) => {
   return (
     <div className="flex w-full flex-col overflow-hidden rounded-2xl shadow-sm">
-      <div className="flex h-[200px] flex-shrink-0 items-center justify-center bg-white">
+      <div className="flex h-50 flex-shrink-0 items-center justify-center bg-white">
         <Image
           src={getSafeImageSrc(event?.event_image, images.EVENT_1)}
           alt="event_1"
@@ -32,7 +32,7 @@ const EventCard: React.FC<EventIF> = ({ event }) => {
           <p className="font-semi-normal text-text-grey text-body-s shrink-0 font-sans whitespace-nowrap">
             {formatDate(event?.start_date)}
           </p>
-          <DotIcon className="text-text-grey h-[3px] w-[3px]" />
+          <DotIcon className="text-text-grey h-0.75 w-0.75" />
           <p className="font-semi-normal text-text-grey text-body-s font-sans">
             {formatTime(event?.start_date)}
           </p>

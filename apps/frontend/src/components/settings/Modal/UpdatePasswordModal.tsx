@@ -83,30 +83,30 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Update password</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="laptop:h-full laptop:w-[480px] laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
+          <div className="laptop:h-full laptop:w-120 laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="cursor-pointer" onClick={toggle}>
-                  <CloseIcon className="w-[11.25px]" />
+                  <CloseIcon className="w-2.75" />
                 </div>
-                <p className="text-[16px] font-semibold">Update password</p>
+                <p className="text-body-l font-semibold">Update password</p>
               </div>
               <div className="laptop:block hidden">
                 <SubmitButton
                   title="Save password"
                   isValid={isValid}
                   loading={isSubmitting}
-                  classes="max-w-[135px] p-2 max-h-[39px] rounded-xl border shadow-custom-bottom"
+                  classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border shadow-custom-bottom"
                 />
               </div>
             </div>
             <div className="mt-6">
-              <div className="flex flex-col gap-y-[500px]">
+              <div className="flex flex-col gap-y-125">
                 <div className="flex flex-col">
                   <div className="mt-6 grid gap-1">
                     <Label
                       htmlFor="current-password"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Current password
                     </Label>
@@ -115,7 +115,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                         <input
                           id="current-password"
                           type={showCurrentPassword ? "text" : "password"}
-                          className="bg-light_grey h-12 w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                          className="bg-light_grey text-body-s h-12 w-full rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                           placeholder=""
                           {...register("password")}
                         />
@@ -127,7 +127,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                   <div className="mt-6 grid gap-1">
                     <Label
                       htmlFor="new-password"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       New Password
                     </Label>
@@ -136,14 +136,14 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                         <input
                           id="new-password"
                           type={showNewPassword ? "text" : "password"}
-                          className="bg-light_grey h-12 w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                          className="bg-light_grey text-body-s h-12 w-full rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                           placeholder=""
                           {...register("new_password")}
                         />
                       </div>
                       <EyeIcon onClick={() => setShowNewPassword((v) => !v)} />
                     </div>
-                    <p className="text-grey-40 text-[12px] font-normal">
+                    <p className="text-grey-40 text-meta leading-normal font-normal">
                       Password must be at least 8 character long
                     </p>
                     <FieldError message={errors.new_password?.message} />
@@ -151,7 +151,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                   <div className="mt-6 grid gap-1">
                     <Label
                       htmlFor="confirm-password"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Confirm password
                     </Label>
@@ -160,7 +160,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                         <input
                           id="confirm-password"
                           type={showConfirmPassword ? "text" : "password"}
-                          className="bg-light_grey h-12 w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                          className="bg-light_grey text-body-s h-12 w-full rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                           placeholder=""
                           {...register("new_password_confirmation")}
                         />
@@ -175,7 +175,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                     title="Save password"
                     isValid={isValid}
                     loading={isSubmitting}
-                    classes="w-full laptop:max-w-[135px] p-2 h-12 laptop:max-h-[39px] rounded-xl border shadow-custom-bottom"
+                    classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border shadow-custom-bottom"
                   />
                 </div>
               </div>

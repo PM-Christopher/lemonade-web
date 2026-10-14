@@ -85,7 +85,7 @@ export default function ProfileStepsPage() {
   return (
     <AuthLayout>
       <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
-        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+        <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="text-title-l font-sans font-semibold">Welcome,</p>
           <p className="font-ruso text-mid-green text-display-xs font-bold">{data?.fullname}</p>
           <p className="text-body-xl text-text-grey mt-3 max-w-[26rem] font-sans font-normal">
@@ -100,7 +100,7 @@ export default function ProfileStepsPage() {
             className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex min-h-0 w-full max-w-[480px] shrink-0 flex-col overflow-y-auto">
+        <div className="flex min-h-0 w-full max-w-120 shrink-0 flex-col overflow-y-auto">
           <div className="tablet:hidden mb-2">
             <p className="text-title-l font-sans font-semibold">Welcome,</p>
             <p className="font-ruso text-mid-green text-title-xl font-bold">{data?.fullname}</p>

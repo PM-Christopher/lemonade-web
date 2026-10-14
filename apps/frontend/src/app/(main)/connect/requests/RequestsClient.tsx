@@ -97,13 +97,13 @@ const RequestsClient = () => {
             onClick={() => push(routes.CONNECT)}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">
+            <p className="tracking-custom text-body-l font-sans font-semibold">
               Connection requests
             </p>
           </div>
           <div className="group laptop:w-fit relative flex w-full items-center gap-2">
             {/* Search Container */}
-            <div className="bg-light_grey laptop:w-[235px] flex h-10 w-full items-center gap-3 rounded-xl p-2 px-3">
+            <div className="bg-light_grey laptop:w-58.75 flex h-10 w-full items-center gap-3 rounded-xl p-2 px-3">
               <div>
                 <SearchIcon />
               </div>
@@ -111,13 +111,13 @@ const RequestsClient = () => {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light_grey w-full rounded-xl border-0 px-2.5 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light_grey text-body-s w-full rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search username..."
                   onKeyDown={(e) => handleSearch(e)}
                 />
 
                 {/* Tooltip */}
-                <div className="pointer-events-none absolute left-0 mt-1 w-max translate-y-1 rounded-md bg-gray-800 px-2 py-1 text-[12px] text-white opacity-0 transition-all duration-300 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                <div className="text-meta pointer-events-none absolute left-0 mt-1 w-max translate-y-1 rounded-md bg-gray-800 px-2 py-1 leading-normal text-white opacity-0 transition-all duration-300 group-focus-within:translate-y-0 group-focus-within:opacity-100">
                   Press <span className="font-semibold">Enter</span> to search
                 </div>
               </div>
@@ -125,7 +125,7 @@ const RequestsClient = () => {
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:w-[800px] laptop:border laptop:border-grey-20 max-h-[659px] w-screen rounded-xl border-none bg-white p-6">
+          <div className="laptop:w-200 laptop:border laptop:border-grey-20 max-h-164.75 w-screen rounded-xl border-none bg-white p-6">
             <div className="hide-scrollbar max-h-screen overflow-y-auto">
               {loading ? (
                 <InviteSkeleton count={4} />

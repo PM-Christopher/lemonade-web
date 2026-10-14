@@ -44,7 +44,10 @@ function EventViews({ trx_data, page, onPageChange }: EventIF) {
           <thead>
             <tr className="bg-mid-grey">
               {eventsHeaders.map((header, idx) => (
-                <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
+                <th
+                  className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
+                  key={idx}
+                >
                   {header}
                 </th>
               ))}
@@ -55,7 +58,7 @@ function EventViews({ trx_data, page, onPageChange }: EventIF) {
               paginatedData.map((row, index) => (
                 <tr
                   key={index}
-                  className="border-grey-20 h-[72px] cursor-pointer border-b"
+                  className="border-grey-20 h-18 cursor-pointer border-b"
                   onClick={() => push(routes.TRANSACTION_EVENT(row.id!))}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>

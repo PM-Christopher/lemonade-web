@@ -156,12 +156,12 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create Tribe</DialogTitle>
-        <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[640px] laptop:rounded-lg flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl">
+        <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-160 laptop:rounded-lg flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl">
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CloseIcon onClick={activateModal} className="cursor-pointer" />
-                <p className="font-semiBold text-[18px]">Create Tribe</p>
+                <p className="font-semiBold text-body-xl">Create Tribe</p>
               </div>
               <div className="tablet:block hidden">
                 <SubmitButton
@@ -179,7 +179,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                   alt="upload"
                   width={89}
                   height={83}
-                  className="h-[89px] w-[89px] cursor-pointer rounded-3xl border"
+                  className="h-22.25 w-22.25 cursor-pointer rounded-3xl border"
                   onClick={handleImageClick}
                 />
               ) : (
@@ -205,7 +205,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
               <div className="grid gap-2">
                 <Label
                   htmlFor="tribe-name"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Tribe name
                 </Label>
@@ -220,7 +220,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
               <div className="mt-4 grid gap-2">
                 <Label
                   htmlFor="tribe-category"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Category
                 </Label>
@@ -251,15 +251,17 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="description"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Description
                   </Label>
-                  <p className="text-text-grey text-[12px] font-normal">100 characters</p>
+                  <p className="text-text-grey text-meta leading-normal font-normal">
+                    100 characters
+                  </p>
                 </div>
                 <Textarea
                   id="description"
-                  className="form-font bg-light_grey h-[91px] resize-none rounded-xl border-0"
+                  className="form-font bg-light_grey h-22.75 resize-none rounded-xl border-0"
                   placeholder="Description about this tribe"
                   {...register("description")}
                 />
@@ -273,10 +275,10 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                       <DollarBillIcon />
                     </div>
                     <div>
-                      <p className="font-semi-normal text-black-light font-sans text-[16px] leading-[24px]">
+                      <p className="font-semi-normal text-black-light text-body-l font-sans">
                         Monetize tribe
                       </p>
-                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
+                      <p className="text-text-grey text-meta font-sans font-normal">
                         User will pay to be part of your tribe
                       </p>
                     </div>
@@ -301,7 +303,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                   <div className="grid gap-2">
                     <Label
                       htmlFor="membership-fee"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Acceptance fee (₦)
                     </Label>
@@ -313,9 +315,9 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                       {...register("membership_fee")}
                     />
                     <FieldError message={errors.membership_fee?.message} />
-                    <div className="mt-[5px] mb-6 flex items-center gap-2">
+                    <div className="mt-1.25 mb-6 flex items-center gap-2">
                       <InfoIcon />
-                      <p className="text-text-grey text-[12px] font-normal">
+                      <p className="text-text-grey text-meta leading-normal font-normal">
                         {" "}
                         10% of membership fees go to the Lemonade Network
                       </p>
@@ -329,10 +331,10 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                       <PadlockIcon />
                     </div>
                     <div>
-                      <p className="font-semi-normal text-black-light font-sans text-[16px] leading-[24px]">
+                      <p className="font-semi-normal text-black-light text-body-l font-sans">
                         Private tribe
                       </p>
-                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
+                      <p className="text-text-grey text-meta font-sans font-normal">
                         Tribe will only be available to invited members
                       </p>
                     </div>
@@ -362,7 +364,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                     title="Create tribe"
                     isValid={isValid}
                     loading={isSubmitting}
-                    classes="w-[343px] px-3.5 p-2.5 rounded-xl border-step-color h-12"
+                    classes="w-85.75 px-3.5 p-2.5 rounded-xl border-step-color h-12"
                   />
                 </div>
               </div>

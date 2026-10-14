@@ -111,7 +111,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
               <p className="mt-2 text-sm font-semibold text-stone-100">
                 {payload?.notification?.title}
               </p>
-              <p className="mt-[0.5px] text-sm text-stone-100">{payload?.notification?.body}</p>
+              <p className="mt-0.25 text-sm text-stone-100">{payload?.notification?.body}</p>
             </div>
             <button
               onClick={() => toast.dismiss(t.id)}

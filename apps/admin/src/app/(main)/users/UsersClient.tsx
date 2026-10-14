@@ -122,11 +122,11 @@ function UsersClient() {
     <MainLayout>
       <section className="mt-5 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>
+          <p className={"font-semiBold text-body-l"}>
             {(userData && "users" in userData ? userData.users.length : 0) || 0} users
           </p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
                 <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
@@ -134,7 +134,7 @@ function UsersClient() {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search user, email, ID, location..."
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -144,7 +144,7 @@ function UsersClient() {
               <Select onValueChange={(value) => setStatus(value)}>
                 <SelectTrigger
                   aria-label="Filter by status"
-                  className="font-semiBold text-text-grey focus:!border-light-green-50 h-10 w-[193px] rounded-xl text-[12px]"
+                  className="font-semiBold text-text-grey focus:!border-light-green-50 text-meta h-10 w-48.25 rounded-xl leading-normal"
                 >
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -159,12 +159,12 @@ function UsersClient() {
             )}
             <div
               className={
-                "border-grey-20 flex h-10 w-[193px] items-center justify-between rounded-xl border bg-none px-4 py-2.5"
+                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
               }
             >
               <div className={"flex items-center gap-2"}>
-                <CalendarIcon className={"text-text-grey h-[15px] w-[15px]"} />
-                <p className={"font-semiBold text-text-grey text-[12px]"}>ALL TIME</p>
+                <CalendarIcon className={"text-text-grey h-3.75 w-3.75"} />
+                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL TIME</p>
               </div>
               <ChevronDown className={"text-text-grey w-5"} />
             </div>
@@ -173,8 +173,8 @@ function UsersClient() {
                 onClick={exportUser}
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
               >
-                <UploadIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"}>
+                <UploadIcon className={"h-3.75 w-3.75 text-white"} />
+                <p className={"text-body-l font-medium text-white"}>
                   {isLoading ? "Exporting..." : "Export"}
                 </p>
               </Button>
@@ -188,16 +188,16 @@ function UsersClient() {
                 {usersPageViews.map((item, index) => (
                   <div
                     className={`cursor-pointer p-1 px-2 ${
-                      menuOption === item.key && "rounded-[10px] bg-white"
+                      menuOption === item.key && "rounded-lg bg-white"
                     }`}
                     onClick={() => switchOption(item.key)}
                     key={index}
                   >
                     <p
-                      className={`font-sans leading-[24px] ${
+                      className={`font-sans leading-6 ${
                         menuOption === item.key
-                          ? "text-[16px] font-semibold"
-                          : "font-semi-normal text-text-grey text-[16px]"
+                          ? "text-body-l font-semibold"
+                          : "font-semi-normal text-text-grey text-body-l"
                       }`}
                     >
                       {item.title}

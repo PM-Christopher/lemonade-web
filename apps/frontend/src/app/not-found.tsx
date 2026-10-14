@@ -19,14 +19,14 @@ export default function RootNotFound() {
   return (
     <section className="bg-light_grey flex min-h-screen flex-col items-center justify-center gap-2 p-6 text-center">
       <Image src={images.LOGO} alt="logo" width={127} height={56} />
-      <p className="font-semiBold text-light-black mt-4 text-[18px]">
+      <p className="font-semiBold text-light-black text-body-xl mt-4">
         This page could not be found
       </p>
       <Link
         href={routes.HOME}
-        className="border-step-color bg-gradient-green mt-2 rounded-xl border px-6 py-[11px]"
+        className="border-step-color bg-gradient-green mt-2 rounded-xl border px-6 py-2.75"
       >
-        <p className="text-[16px] font-medium text-white">Go home</p>
+        <p className="text-body-l font-medium text-white">Go home</p>
       </Link>
     </section>
   );

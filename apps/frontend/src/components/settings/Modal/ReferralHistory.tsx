@@ -23,32 +23,32 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle, a
         isOpen ? "flex" : "hidden"
       }`}
     >
-      <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+      <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggle}>
-              <CloseIcon className="w-[11.25px]" />
+              <CloseIcon className="w-2.75" />
             </div>
-            <p className="text-[16px] font-semibold">Referral activity</p>
+            <p className="text-body-l font-semibold">Referral activity</p>
           </div>
         </div>
         <div className="mt-6">
           <div className="border-mid-grey flex flex-col rounded-xl border-2 p-4">
             <div className="border-b-mid-grey flex flex-col border-b p-4">
-              <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
-              <p className="tracking-custom text-[18px] font-semibold">
+              <p className="text-text-grey text-body-s font-normal">Total Amount Earned</p>
+              <p className="tracking-custom text-body-xl font-semibold">
                 ₦{formatNumberWithCommas(Number(activity?.total_amount_earned) || 0)}
               </p>
             </div>
             <div className="border-b-mid-grey flex flex-col border-b p-4">
-              <p className="text-text-grey text-[14px] font-normal">Total referrals</p>
-              <p className="tracking-custom text-[18px] font-semibold">
+              <p className="text-text-grey text-body-s font-normal">Total referrals</p>
+              <p className="tracking-custom text-body-xl font-semibold">
                 {activity?.total_referrals ?? 0}
               </p>
             </div>
             <div className="border-b-mid-grey flex flex-col border-b p-4">
-              <p className="text-text-grey text-[14px] font-normal">Total subscribed referrals</p>
-              <p className="tracking-custom text-[18px] font-semibold">
+              <p className="text-text-grey text-body-s font-normal">Total subscribed referrals</p>
+              <p className="tracking-custom text-body-xl font-semibold">
                 {activity?.total_subscribed_referrals ?? 0}
               </p>
             </div>
@@ -56,7 +56,7 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle, a
               className="flex cursor-pointer items-center gap-2 p-3 px-4"
               onClick={() => push(routes.SETTINGS_WALLET)}
             >
-              <p className="font-semi-normal text-light-green text-[16px]">Go to wallet</p>
+              <p className="font-semi-normal text-light-green text-body-l">Go to wallet</p>
               <ChevronRight />
             </div>
           </div>

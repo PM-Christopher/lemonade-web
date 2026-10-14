@@ -94,19 +94,19 @@ function DashboardClient() {
       <div className="mt-5 flex flex-col gap-5 px-10">
         {/* <div
           className={
-            "flex border border-grey-20 bg-none w-fit px-4 py-2.5 rounded-xl gap-[30px]"
+            "flex border border-grey-20 bg-none w-fit px-4 py-2.5 rounded-xl gap-7.5"
           }
         >
           <div className={"flex gap-2 items-center"}>
             <CalendarIcon className={"text-text-grey"} />
-            <p className={"text-[12px] font-semiBold"}>ALL TIME</p>
+            <p className={"text-meta leading-normal font-semiBold"}>ALL TIME</p>
           </div>
           <ChevronDown className={"text-text-grey"} />
         </div> */}
         <div className={"grid grid-cols-4 gap-5"}>
           {data.map((item, index) => (
             <DataCard
-              styles={"w-[276px] h-[132px]"}
+              styles={"w-69 h-33"}
               isPrice={item.isPrice}
               key={index}
               title={item.title}

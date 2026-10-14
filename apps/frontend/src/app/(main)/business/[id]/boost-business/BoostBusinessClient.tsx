@@ -128,15 +128,15 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Boost business</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Boost business</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="laptop:flex-row laptop:justify-between flex flex-col gap-10 gap-y-[154px]">
+            <div className="laptop:flex-row laptop:justify-between flex flex-col gap-10 gap-y-38.5">
               <div className="flex flex-col">
-                <div className="laptop:w-[640px] laptop:bg-white w-screen rounded-xl bg-none p-6 px-12">
-                  <p className="text-text-grey mb-2.5 text-[14px] font-normal">Select Package</p>
+                <div className="laptop:w-160 laptop:bg-white w-screen rounded-xl bg-none p-6 px-12">
+                  <p className="text-text-grey text-body-s mb-2.5 font-normal">Select Package</p>
                   <div className="flex flex-wrap items-center gap-2">
                     {loading ? (
                       <BoostPackagesSkeleton count={4} />
@@ -148,9 +148,11 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                           onClick={() => handleSelectPackage(index)}
                         >
                           <Image src={images.FEATURED} alt="featured" width={74} height={74} />
-                          <p className="font-semi-normal text-mid-green text-[12px]">Featured</p>
-                          <p className="text-[16px] font-bold">₦{pkg.title}</p>
-                          <p className="text-text-grey mt-1 w-[121.72px] text-center text-[12px] font-normal">
+                          <p className="font-semi-normal text-mid-green text-meta leading-normal">
+                            Featured
+                          </p>
+                          <p className="text-body-l font-bold">₦{pkg.title}</p>
+                          <p className="text-text-grey text-meta mt-1 w-30.5 text-center leading-normal font-normal">
                             {pkg.description}
                           </p>
                         </div>
@@ -163,7 +165,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                       <div className="mt-8 grid gap-2">
                         <Label
                           htmlFor="duration"
-                          className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                          className="text-text-grey text-label font-sans font-normal"
                         >
                           Duration
                         </Label>
@@ -196,7 +198,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                         <div className="flex flex-col">
                           <Label
                             htmlFor="start_date"
-                            className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                            className="text-text-grey text-label font-sans font-normal"
                           >
                             Start date
                           </Label>
@@ -224,7 +226,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                     minDate={now}
                                     showTimeSelect={false}
                                     dateFormat="yyyy-MM-dd"
-                                    className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                                    className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer border-none px-2.5 font-sans leading-normal shadow-none focus:border-none focus:ring-0 focus:outline-none"
                                     placeholderText="Click to select date"
                                   />
                                 </div>
@@ -255,7 +257,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                     timeCaption={"Start Time"}
                                     timeIntervals={15}
                                     dateFormat="h:mm aa"
-                                    className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
+                                    className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer border-none px-2.5 font-sans leading-normal shadow-none focus:border-none focus:ring-0 focus:outline-none"
                                     placeholderText="Click to select time"
                                     minTime={
                                       startDate &&
@@ -279,39 +281,37 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                 </div>
               </div>
               <div className="laptop:flex hidden flex-col">
-                <div className="w-[480px] rounded-xl bg-white p-6 px-12">
-                  <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
+                <div className="w-120 rounded-xl bg-white p-6 px-12">
+                  <p className="text-title-r font-sans font-semibold">Summary</p>
                   <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                    <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                       Featured
                     </p>
-                    <p className="font-sans text-[14px] leading-[21px] font-semibold">
-                      ₦ {packageTitle}
-                    </p>
+                    <p className="text-body-s font-sans font-semibold">₦ {packageTitle}</p>
                   </div>
                   <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                    <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                       {selectedPackage.duration} days
                     </p>
-                    <p className="font-sans text-[14px] leading-[21px] font-semibold">
+                    <p className="text-body-s font-sans font-semibold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>
                   <div className="border-t-mid-grey my-4 border-t"></div>
                   <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                    <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                       Subtotal
                     </p>
-                    <p className="font-sans text-[14px] leading-[21px] font-semibold">
+                    <p className="text-body-s font-sans font-semibold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>
                   <div className="border-t-mid-grey my-4 border-t"></div>
                   <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[21px] font-normal">
+                    <p className="tracking-custom text-text-grey text-body-xl font-sans leading-5.25 font-normal">
                       Total
                     </p>
-                    <p className="font-sans text-[18px] leading-[21px] font-semibold">
+                    <p className="text-body-xl font-sans leading-5.25 font-semibold">
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>

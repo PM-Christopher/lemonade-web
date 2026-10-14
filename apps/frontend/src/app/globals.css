@@ -124,7 +124,7 @@
     @apply font-sans font-medium text-field text-text-grey shadow-none
   }
   .app-icon-border {
-    @apply w-[56px] h-[56px] border-[1px] rounded-[12px]
+    @apply w-14 h-14 border rounded-xl
   }
   .auth-button {
     @apply w-full h-12 bg-gradient-green border border-step-color rounded-xl py-4
@@ -158,7 +158,7 @@
   }
 
   .message-textarea {
-    @apply rounded-xl w-full text-[14px] bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent text-black-light resize-none overflow-hidden min-h-[20px] max-h-[120px];
+    @apply rounded-xl w-full text-body-s bg-light_grey border-0 focus:outline-none focus:ring-0 focus:border-transparent text-black-light resize-none overflow-hidden min-h-[20px] max-h-[120px];
   }
 }
 

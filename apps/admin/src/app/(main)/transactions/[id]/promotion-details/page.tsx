@@ -9,76 +9,79 @@ function EventDetailsPage({}) {
   return (
     <MainLayout>
       <section className={"flex justify-between p-5"}>
-        <div className={"flex h-fit w-[600px] flex-col gap-5 rounded-xl bg-white p-6"}>
+        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Event name:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Event name:</p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>Unlocking business potentials</p>
-              {/*<p className={"cursor-pointer font-medium text-[14px] text-light-green"}>View business</p>*/}
+              <p className={"text-body-s font-medium"}>Unlocking business potentials</p>
+              {/*<p className={"cursor-pointer font-medium text-body-s text-light-green"}>View business</p>*/}
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Event owner:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Event owner:</p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>Adebayo Akintoye</p>
-              {/* <p className={"cursor-pointer font-medium text-[14px] text-light-green"}>View profile</p> */}
+              <p className={"text-body-s font-medium"}>Adebayo Akintoye</p>
+              {/* <p className={"cursor-pointer font-medium text-body-s text-light-green"}>View profile</p> */}
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Transaction Id:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>PR112332</p>
+            <p className={"text-body-s font-medium"}>PR112332</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Promotion name:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Promotion name:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>Instagram Feed Post</p>
+            <p className={"text-body-s font-medium"}>Instagram Feed Post</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>N30,000</p>
+            <p className={"text-body-s font-medium"}>N30,000</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Date paid:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date paid:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>23 Apr, 2024 09:45 PM</p>
+            <p className={"text-body-s font-medium"}>23 Apr, 2024 09:45 PM</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Promotion Date:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Promotion Date:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>N/A</p>
+            <p className={"text-body-s font-medium"}>N/A</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
             </div>
-            <p className={"text-light-green-70 text-[14px] font-medium"}>Successful</p>
+            <p className={"text-light-green-70 text-body-s font-medium"}>Successful</p>
           </div>
         </div>
         <div className={"flex flex-col"}>
-          <div
-            className={"h-[700px] rounded-tl-xl rounded-tr-xl bg-white"}
-            style={{ width: "908px" }}
-          >
+          <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"} style={{ width: "908px" }}>
             <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
-              <p className={"font-semiBold text-[16px]"}>Boosting history</p>
+              <p className={"font-semiBold text-body-l"}>Boosting history</p>
               <div
                 className={
                   "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
                 }
               >
                 <PrinterIcon className={"w-5"} />
-                <p className={"text-black-light text-[16px] font-medium"}>Print</p>
+                <p className={"text-black-light text-body-l font-medium"}>Print</p>
               </div>
             </div>
 
@@ -86,22 +89,24 @@ function EventDetailsPage({}) {
               <div className="px-4 pt-4 pb-6">
                 <div className="flex justify-between">
                   <div className="flex flex-col">
-                    <p className={"text-[14px] font-medium"}>
+                    <p className={"text-body-s font-medium"}>
                       PR12343 - IG Feed <span className={"font-semiBold"}>₦2,000</span>
                     </p>
-                    <p className={"text-text-grey text-[12px] font-normal"}>
+                    <p className={"text-text-grey text-meta leading-normal font-normal"}>
                       23, Mar 2023. 05:00PM
                     </p>
                   </div>
-                  <div className={"bg-light-green-60 h-fit gap-1 rounded-[8px] px-2 py-1"}>
-                    <p className={"text-light-green-70 text-[12px] font-medium"}>Successful</p>
+                  <div className={"bg-light-green-60 h-fit gap-1 rounded-lg px-2 py-1"}>
+                    <p className={"text-light-green-70 text-meta leading-normal font-medium"}>
+                      Successful
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div
-            className={"bg-mid-grey h-[62px] rounded-br-xl rounded-bl-xl"}
+            className={"bg-mid-grey h-15.5 rounded-br-xl rounded-bl-xl"}
             style={{ width: "908px" }}
           >
             <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">

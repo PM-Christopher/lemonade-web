@@ -121,7 +121,7 @@ export default function SignupPage() {
   return (
     <AuthLayout>
       <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
-        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+        <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Create account</p>
           <p className="text-body-xl text-text-grey mt-2 font-sans font-normal">
             Join the network of diverse pool of talents.
@@ -135,7 +135,7 @@ export default function SignupPage() {
             className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <div className="flex w-full max-w-[440px] shrink-0 flex-col">
+        <div className="flex w-full max-w-110 shrink-0 flex-col">
           <div className="tablet:hidden mb-4 shrink-0 text-center">
             <p className="font-ruso text-title-xl text-primary-black font-bold">Create account</p>
             <p className="text-body-l text-text-grey mt-1 font-sans font-normal">
@@ -149,7 +149,7 @@ export default function SignupPage() {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="fullname"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Full name
                   </Label>
@@ -165,7 +165,7 @@ export default function SignupPage() {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Email address
                   </Label>
@@ -181,7 +181,7 @@ export default function SignupPage() {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="password"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Password
                   </Label>
@@ -203,7 +203,7 @@ export default function SignupPage() {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="referral_code"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Referral code (optional)
                   </Label>

@@ -19,7 +19,7 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
         <Image
           src={getSafeImageSrc(business?.image, images.BUSINESS_1)}
           alt="Main Image"
-          className="h-[105px] w-full rounded-lg object-cover"
+          className="h-26.25 w-full rounded-lg object-cover"
           width={320}
           height={105}
         />

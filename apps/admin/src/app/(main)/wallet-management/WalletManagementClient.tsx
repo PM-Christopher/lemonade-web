@@ -126,11 +126,11 @@ function WalletManagementClient() {
     <MainLayout>
       <section className="mt-5 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>
+          <p className={"font-semiBold text-body-l"}>
             {withdrawalRequests?.meta?.total ?? withdrawalRequests?.history?.length ?? 0} Wallets
           </p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
                 <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
@@ -140,18 +140,18 @@ function WalletManagementClient() {
                   type="text"
                   value={searchTerm}
                   onChange={handleSearch}
-                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search guest name, email address"
                 />
               </div>
             </div>
             {/* <div
               className={
-                "flex border border-grey-20 bg-none w-[193px] h-10 px-4 py-2.5 rounded-xl justify-between items-center"
+                "flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"
               }
             >
               <div className={"flex justify-between items-center"}>
-                <p className={"text-[12px] font-semiBold text-text-grey"}>
+                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>
                   STATUS
                 </p>
               </div>
@@ -159,12 +159,12 @@ function WalletManagementClient() {
             </div> */}
             {/* <div
               className={
-                "flex border border-grey-20 bg-none w-[193px] h-10 px-4 py-2.5 rounded-xl justify-between items-center"
+                "flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"
               }
             >
               <div className={"flex gap-2 items-center"}>
-                <CalendarIcon className={"text-text-grey w-[15px] h-[15px]"} />
-                <p className={"text-[12px] font-semiBold text-text-grey"}>
+                <CalendarIcon className={"text-text-grey w-3.75 h-3.75"} />
+                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>
                   ALL TIME
                 </p>
               </div>
@@ -172,8 +172,8 @@ function WalletManagementClient() {
             </div> */}
             <div>
               <Button className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}>
-                <UploadIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"}>Export</p>
+                <UploadIcon className={"h-3.75 w-3.75 text-white"} />
+                <p className={"text-body-l font-medium text-white"}>Export</p>
               </Button>
             </div>
           </div>
@@ -211,7 +211,7 @@ function WalletManagementClient() {
                   <tr className="bg-mid-grey">
                     {walletHeaders.map((header, idx) => (
                       <th
-                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
+                        className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
                         key={idx}
                       >
                         {header}
@@ -224,7 +224,7 @@ function WalletManagementClient() {
                     currentItems.map((row: WithdrawalRequestRow, index: number) => (
                       <tr
                         key={index}
-                        className="border-grey-20 h-[72px] cursor-pointer border-b"
+                        className="border-grey-20 h-18 cursor-pointer border-b"
                         onClick={() => push(routes.WALLET_DETAIL(row.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>

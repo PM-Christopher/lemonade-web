@@ -70,12 +70,10 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
       <div
         className={`bg-opacity-50 fixed top-0 right-0 z-50 h-full transform bg-gray-800 transition-transform ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white p-12 px-5">
+        <div className="laptop:w-146.25 h-full w-screen bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
-                Guest details
-              </p>
+              <p className="tracking-custom text-body-l font-sans font-semibold">Guest details</p>
             </div>
             <div>
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
@@ -86,11 +84,13 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
           ) : (
             <div className="relative mt-4 flex flex-col gap-6 overflow-hidden px-16 py-6">
               {guestDetails?.checked_in && (
-                <div className="absolute top-20 right-0 flex h-8 w-[120px] origin-top-right translate-x-[30px] -translate-y-5 rotate-45 items-center justify-center bg-red-600 text-[12px] font-semibold text-white shadow-md">
+                <div className="text-meta absolute top-20 right-0 flex h-8 w-30 origin-top-right translate-x-7.5 -translate-y-5 rotate-45 items-center justify-center bg-red-600 leading-normal font-semibold text-white shadow-md">
                   VOID
                 </div>
               )}
-              <p className={"font-semiBold text-[20px]"}>{guestDetails?.event?.name}</p>
+              <p className={"font-semiBold text-title-r leading-normal"}>
+                {guestDetails?.event?.name}
+              </p>
               <div className={"flex items-center gap-1"}>
                 <CalendarIcon className={"h-4 w-4"} />
                 <p className={"text-text-grey font-normal"}>{guestDetails?.event?.start_date}</p>
@@ -101,14 +101,14 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
               </div>
               <div className={"flex justify-between"}>
                 <div className={"flex flex-col text-left"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Guest name</p>
-                  <p className={"text-light-black text-[14px] font-medium"}>
+                  <p className={"text-text-grey text-body-s font-normal"}>Guest name</p>
+                  <p className={"text-light-black text-body-s font-medium"}>
                     {guestDetails?.user?.name}
                   </p>
                 </div>
                 <div className={"flex flex-col text-right"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Ticket ID</p>
-                  <p className={"text-light-black text-[14px] font-medium"}>
+                  <p className={"text-text-grey text-body-s font-normal"}>Ticket ID</p>
+                  <p className={"text-light-black text-body-s font-medium"}>
                     {guestDetails?.ticket?.ticket_id?.toUpperCase()}
                   </p>
                 </div>
@@ -116,14 +116,14 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
 
               <div className={"flex justify-between"}>
                 <div className={"flex flex-col text-left"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Email address</p>
-                  <p className={"text-light-black text-[14px] font-medium"}>
+                  <p className={"text-text-grey text-body-s font-normal"}>Email address</p>
+                  <p className={"text-light-black text-body-s font-medium"}>
                     {guestDetails?.user?.email}
                   </p>
                 </div>
                 <div className={"flex flex-col text-right"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Ticket type</p>
-                  <p className={"text-light-black text-[14px] font-medium"}>
+                  <p className={"text-text-grey text-body-s font-normal"}>Ticket type</p>
+                  <p className={"text-light-black text-body-s font-medium"}>
                     {formatStringUCFirst(guestDetails?.ticket?.ticket_name)}
                   </p>
                 </div>
@@ -131,15 +131,15 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
 
               <div className={"flex justify-between"}>
                 <div className={"flex flex-col text-left"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Check in status</p>
+                  <p className={"text-text-grey text-body-s font-normal"}>Check in status</p>
                   {guestDetails?.checked_in ? (
                     <div
                       className={
                         "bg-light-green-60 flex items-center justify-center gap-1 rounded-xl px-2 py-0.5"
                       }
                     >
-                      <CheckIcon className="text-light-green-70 h-[9px] w-2.5 stroke-current" />
-                      <p className={"text-light-green-70 text-[14px] font-medium"}>Checked In</p>
+                      <CheckIcon className="text-light-green-70 h-2.25 w-2.5 stroke-current" />
+                      <p className={"text-light-green-70 text-body-s font-medium"}>Checked In</p>
                     </div>
                   ) : (
                     <div
@@ -148,13 +148,13 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
                       }
                     >
                       <ClockIcon />
-                      <p className={"text-warning-bold text-[14px] font-medium"}>Not Checked In</p>
+                      <p className={"text-warning-bold text-body-s font-medium"}>Not Checked In</p>
                     </div>
                   )}
                 </div>
                 <div className={"flex flex-col text-right"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Checked in</p>
-                  <p className={"text-light-black text-[14px] font-medium"}>0/1 tickets</p>
+                  <p className={"text-text-grey text-body-s font-normal"}>Checked in</p>
+                  <p className={"text-light-black text-body-s font-medium"}>0/1 tickets</p>
                 </div>
               </div>
 
@@ -178,7 +178,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
                       />
                     </Suspense>
                   ) : (
-                    <p className={"text-[16px] font-medium"}>Check in</p>
+                    <p className={"text-body-l font-medium"}>Check in</p>
                   )}
                 </button>
               )}

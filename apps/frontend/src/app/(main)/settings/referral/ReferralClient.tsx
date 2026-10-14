@@ -78,22 +78,22 @@ function ReferralClient() {
             onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Referrals</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Referrals</p>
           </div>
         </div>
 
         <section className="mt-4 flex flex-col items-center">
           <div className="laptop:gap-4 flex flex-col items-center gap-0">
             <div className="bg-light-green-10 rounded-xl">
-              <div className="laptop:w-[560px] flex w-full items-center justify-center p-6">
+              <div className="laptop:w-140 flex w-full items-center justify-center p-6">
                 <Image src={images.GIFT} alt="gift_image" width={160} height={171} />
               </div>
 
-              <div className="laptop:w-[560px] flex w-screen flex-col gap-2 p-6">
+              <div className="laptop:w-140 flex w-screen flex-col gap-2 p-6">
                 {/* Username Row */}
                 <div className="flex items-center justify-between gap-0.5">
-                  <div className="bg-light-tint-4 w-full rounded-tl-xl rounded-bl-xl p-[10.5px] px-3">
-                    <p className="text-mid-green text-[18px] font-bold">
+                  <div className="bg-light-tint-4 w-full rounded-tl-xl rounded-bl-xl p-2.75 px-3">
+                    <p className="text-mid-green text-body-xl font-bold">
                       {user?.username?.toUpperCase()}
                     </p>
                   </div>
@@ -108,7 +108,7 @@ function ReferralClient() {
                 {/* Referral Link Row */}
                 <div className="relative flex items-center justify-between gap-0.5">
                   <div className="bg-light-tint-4 flex h-12 w-full items-center rounded-tl-xl rounded-bl-xl px-3">
-                    <p className="font-semi-normal text-mid-green truncate text-[14px]">
+                    <p className="font-semi-normal text-mid-green text-body-s truncate">
                       {referralLink}
                     </p>
                   </div>
@@ -147,26 +147,30 @@ function ReferralClient() {
             </div>
 
             {/* Reward Breakdown */}
-            <div className="laptop:mt-6 laptop:w-[560px] mt-0 flex w-screen flex-col gap-2 rounded-xl bg-white p-6">
-              <p className="text-[16px] font-semibold">Refer friends and earn</p>
+            <div className="laptop:mt-6 laptop:w-140 mt-0 flex w-screen flex-col gap-2 rounded-xl bg-white p-6">
+              <p className="text-body-l font-semibold">Refer friends and earn</p>
 
               {referralActivity && (
                 <div className="mt-4 grid grid-cols-3 gap-2 text-center">
                   <div>
-                    <p className="text-[18px] font-bold">
+                    <p className="text-body-xl font-bold">
                       N{formatNumberWithCommas(Number(referralActivity.total_amount_earned) || 0)}
                     </p>
-                    <p className="text-text-grey text-[12px] font-normal">Total earned</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      Total earned
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[18px] font-bold">{referralActivity.total_referrals}</p>
-                    <p className="text-text-grey text-[12px] font-normal">Referrals</p>
+                    <p className="text-body-xl font-bold">{referralActivity.total_referrals}</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">Referrals</p>
                   </div>
                   <div>
-                    <p className="text-[18px] font-bold">
+                    <p className="text-body-xl font-bold">
                       {referralActivity.total_subscribed_referrals}
                     </p>
-                    <p className="text-text-grey text-[12px] font-normal">Subscribed</p>
+                    <p className="text-text-grey text-meta leading-normal font-normal">
+                      Subscribed
+                    </p>
                   </div>
                 </div>
               )}
@@ -177,16 +181,16 @@ function ReferralClient() {
                     <ReferralIcon className="h-6 w-6" />
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-[16px] font-semibold">
+                    <p className="text-body-l font-semibold">
                       {commissionPercent}% of the subscription fee
                     </p>
-                    <p className="text-text-grey text-[14px] font-normal">
+                    <p className="text-text-grey text-body-s font-normal">
                       When they subscribe to Membership
                     </p>
                   </div>
                 </div>
 
-                <div className="relative left-[21px]">
+                <div className="relative left-5.25">
                   <LongLine className="h-12 w-1" />
                 </div>
 
@@ -195,10 +199,10 @@ function ReferralClient() {
                     <ReferralIcon className="h-6 w-6" />
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-[16px] font-semibold">
+                    <p className="text-body-l font-semibold">
                       {commissionPercent}% of the renewal fee
                     </p>
-                    <p className="text-text-grey text-[14px] font-normal">
+                    <p className="text-text-grey text-body-s font-normal">
                       When they renew their Subscription
                     </p>
                   </div>
@@ -209,7 +213,7 @@ function ReferralClient() {
                 className="mt-6 flex cursor-pointer items-center justify-between"
                 onClick={toggleModal}
               >
-                <p className="font-semi-normal text-[16px]">Referral activity</p>
+                <p className="font-semi-normal text-body-l">Referral activity</p>
                 <ChevronRight />
               </div>
             </div>

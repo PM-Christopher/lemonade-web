@@ -59,9 +59,9 @@ const ConfirmPaymentModal = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Request payment"}</DialogTitle>
-        <div className="w-[360px] rounded-lg bg-white px-6 pt-4 shadow-lg">
+        <div className="w-90 rounded-lg bg-white px-6 pt-4 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="tracking-custom font-sans text-[16px] leading-[27px] font-semibold">
+            <p className="tracking-custom text-body-l font-sans leading-6.75 font-semibold">
               Request payment
             </p>
             <div className="cursor-pointer" onClick={toggleMenu}>
@@ -69,7 +69,7 @@ const ConfirmPaymentModal = ({
             </div>
           </div>
           <div className="mt-10 flex flex-col items-center pb-2.5">
-            <p className="w-[328px] text-[14px] font-normal">
+            <p className="text-body-s w-82 font-normal">
               To ensure a smooth process, please mark the job as completed only after it&apos;s
               finished. Your payment will be released only when the client confirms completion. You
               may dispute delayed payments.
@@ -102,10 +102,10 @@ const ConfirmPaymentModal = ({
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       />
                     </svg>
-                    <p className="font-semi-normal text-light-white text-[16px]">Loading...</p>
+                    <p className="font-semi-normal text-light-white text-body-l">Loading...</p>
                   </div>
                 ) : (
-                  <p className="font-semi-normal text-[16px]">Request payment</p>
+                  <p className="font-semi-normal text-body-l">Request payment</p>
                 )}
               </Button>
             </div>

@@ -69,32 +69,29 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Add member</DialogTitle>
-        <div className="w-[640px] rounded-lg bg-white p-4 shadow-lg">
+        <div className="w-160 rounded-lg bg-white p-4 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] leading-[27px] font-semibold">Add member</p>
+              <p className="text-body-xl font-sans font-semibold">Add member</p>
             </div>
             <div>
               <Button
                 className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 onClick={handleAddTribeMember}
               >
-                <p className="font-semi-normal font-sans text-[12px]">Add member</p>
+                <p className="font-semi-normal text-meta font-sans leading-normal">Add member</p>
               </Button>
             </div>
           </div>
           <div className="mt-10 flex flex-col px-6">
             <div className="mt-6 grid gap-1">
-              <Label
-                htmlFor="username"
-                className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-              >
+              <Label htmlFor="username" className="text-text-grey text-label font-normal">
                 Username
               </Label>
-              <div className="border-step-color bg-light_grey flex h-12 items-center rounded-xl border-[1.5px] px-2">
+              <div className="border-step-color bg-light_grey flex h-12 items-center rounded-xl border-2 px-2">
                 <input
                   id="username"
                   type="text"
@@ -111,9 +108,9 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
               {usernames.map((username, index) => (
                 <div
                   key={index}
-                  className="bg-grey-20 flex items-center gap-2 rounded-[8px] px-3 py-2"
+                  className="bg-grey-20 flex items-center gap-2 rounded-lg px-3 py-2"
                 >
-                  <p className="text-text-grey text-[14px] font-medium">{username}</p>
+                  <p className="text-text-grey text-body-s font-medium">{username}</p>
                   {/* Clicking the XIcon removes the username */}
                   <XIcon
                     onClick={() => handleRemoveUsername(index)}

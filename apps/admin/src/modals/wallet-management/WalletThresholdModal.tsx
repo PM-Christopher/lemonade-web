@@ -62,7 +62,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
         <DialogTitle className="sr-only">Withdrawal Threshold</DialogTitle>
         <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
           <div className="flex items-center justify-between">
-            <p className={"font-semiBold text-[18px]"}>Withdrawal Threshold</p>
+            <p className={"font-semiBold text-body-xl"}>Withdrawal Threshold</p>
             <div className="cursor-pointer" onClick={toggle}>
               <XIcon />
             </div>
@@ -70,11 +70,11 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
           <div style={{ marginTop: "20px" }}>
             <div className={"flex flex-col gap-4"}>
               <div style={{ maxWidth: "328px" }}>
-                <p className={"text-text-grey text-[14px] font-normal"}>
+                <p className={"text-text-grey text-body-s font-normal"}>
                   Set the minimum amount that can be withdrawn from wallet balance.
                 </p>
               </div>
-              <p className={"text-text-grey text-[14px] font-normal"}>Amount</p>
+              <p className={"text-text-grey text-body-s font-normal"}>Amount</p>
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Amount"}
@@ -88,7 +88,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
                     "border-light-grey-50 h-12 w-full rounded-xl border bg-white px-12 py-3.5"
                   }
                 >
-                  <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                  <p className={"text-body-l font-medium text-black"}>Cancel</p>
                 </button>
                 <button
                   onClick={handleSubmit(onSubmit)}
@@ -96,7 +96,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
                     "border-step-color bg-gradient-green h-12 w-full rounded-xl border px-12 py-3.5"
                   }
                 >
-                  <p className={"text-[16px] font-medium text-white"}>
+                  <p className={"text-body-l font-medium text-white"}>
                     {updateThreshold.isPending ? "Loading..." : "Submit"}
                   </p>
                 </button>

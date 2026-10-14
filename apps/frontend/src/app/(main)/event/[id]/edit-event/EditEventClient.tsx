@@ -300,7 +300,7 @@ const EditEventClient = ({ id }: { id: string }) => {
             onClick={() => push(routes.EVENT)}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Edit event</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Edit event</p>
           </button>
         </div>
 
@@ -309,10 +309,8 @@ const EditEventClient = ({ id }: { id: string }) => {
             <EventFormSkeleton />
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mt-10 flex w-[640px] flex-col rounded-xl bg-white p-12">
-                <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
-                  EVENT DETAILS
-                </p>
+              <div className="mt-10 flex w-160 flex-col rounded-xl bg-white p-12">
+                <p className="text-light-black text-meta font-sans font-bold">EVENT DETAILS</p>
 
                 <SingleFileUploader
                   length="single"
@@ -326,7 +324,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="event-name"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Event name
                   </Label>
@@ -345,13 +343,13 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="event-description"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Event description
                   </Label>
                   <textarea
                     id="event-description"
-                    className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
+                    className="form-font bg-light_grey h-32.75 resize-none rounded-xl border-0 p-4"
                     value={values.event_description}
                     onChange={(e) =>
                       setValue("event_description", e.target.value, { shouldValidate: true })
@@ -363,7 +361,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="event-category"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Event category
                   </Label>
@@ -381,9 +379,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Event type */}
-                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
-                  EVENT TYPE
-                </p>
+                <p className="text-light-black text-meta mt-12 font-sans font-bold">EVENT TYPE</p>
 
                 <div className="mt-4 flex gap-2">
                   <button
@@ -396,9 +392,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     onClick={() => setValue("event_type", "physical", { shouldValidate: true })}
                   >
                     <LocationIcon />
-                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                      Physical
-                    </p>
+                    <p className="tracking-custom text-body-s font-sans font-normal">Physical</p>
                   </button>
 
                   <button
@@ -411,9 +405,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     onClick={() => setValue("event_type", "online", { shouldValidate: true })}
                   >
                     <WebIcon />
-                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                      Online
-                    </p>
+                    <p className="tracking-custom text-body-s font-sans font-normal">Online</p>
                   </button>
                 </div>
 
@@ -422,7 +414,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="event-location"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Event location
                     </Label>
@@ -431,7 +423,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <input
                         id="event-location"
                         type="text"
-                        className="bg-light_grey w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                        className="bg-light_grey text-body-s w-full rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
                         value={values.location}
                         onChange={(e) =>
@@ -448,7 +440,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <div className="mt-6 grid gap-2">
                       <Label
                         htmlFor="hosting_platform"
-                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                        className="text-text-grey text-label font-sans font-normal"
                       >
                         Meeting Platform
                       </Label>
@@ -469,7 +461,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <div className="mt-6 grid gap-2">
                       <Label
                         htmlFor="meeting_link"
-                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                        className="text-text-grey text-label font-sans font-normal"
                       >
                         Meeting link
                       </Label>
@@ -487,7 +479,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <div className="mt-6 grid gap-2">
                       <Label
                         htmlFor="meeting_passcode"
-                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                        className="text-text-grey text-label font-sans font-normal"
                       >
                         Meeting passcode
                       </Label>
@@ -508,7 +500,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="time_zone"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Event time zone
                   </Label>
@@ -532,7 +524,7 @@ const EditEventClient = ({ id }: { id: string }) => {
 
                 {/* Start */}
                 <div className="mt-6 grid gap-2">
-                  <Label className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
+                  <Label className="text-text-grey text-label font-sans font-normal">
                     Start date
                   </Label>
 
@@ -549,12 +541,12 @@ const EditEventClient = ({ id }: { id: string }) => {
                           }}
                           minDate={now}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer border-none px-2.5 font-sans leading-normal shadow-none focus:ring-0 focus:outline-none"
                           placeholderText="From"
                         />
                       </div>
                       {errors.start_date?.message && (
-                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                        <p className="text-meta text-left leading-normal text-[#FF8D8D]">
                           {errors.start_date?.message}
                         </p>
                       )}
@@ -575,14 +567,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                           timeCaption="Start Time"
                           timeIntervals={15}
                           dateFormat="h:mm aa"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer border-none px-2.5 font-sans leading-normal shadow-none focus:ring-0 focus:outline-none"
                           placeholderText="Start Time"
                           minTime={startMinTime}
                           maxTime={endOfDay}
                         />
                       </div>
                       {errors.start_time?.message && (
-                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                        <p className="text-meta text-left leading-normal text-[#FF8D8D]">
                           {errors.start_time?.message}
                         </p>
                       )}
@@ -592,7 +584,7 @@ const EditEventClient = ({ id }: { id: string }) => {
 
                 {/* End */}
                 <div className="mt-6 grid gap-2">
-                  <Label className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
+                  <Label className="text-text-grey text-label font-sans font-normal">
                     End date
                   </Label>
 
@@ -610,11 +602,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                           minDate={values.start_date ? new Date(values.start_date) : now}
                           dateFormat="yyyy-MM-dd"
                           placeholderText="End Date"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer border-none px-2.5 font-sans leading-normal shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
                       {errors.end_date?.message && (
-                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                        <p className="text-meta text-left leading-normal text-[#FF8D8D]">
                           {errors.end_date?.message}
                         </p>
                       )}
@@ -638,11 +630,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                           placeholderText="End Time"
                           minTime={endMinTime}
                           maxTime={endOfDay}
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
+                          className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer border-none px-2.5 font-sans leading-normal shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
                       {errors.end_time?.message && (
-                        <p className="text-left text-[12px] text-[#FF8D8D]">
+                        <p className="text-meta text-left leading-normal text-[#FF8D8D]">
                           {errors.end_time?.message}
                         </p>
                       )}
@@ -651,7 +643,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 </div>
 
                 {/* Affiliate */}
-                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+                <p className="text-light-black text-meta mt-12 font-sans font-bold">
                   AFFILIATE PROGRAM
                 </p>
 
@@ -661,10 +653,10 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <AffiliateUsersIcon />
                     </div>
                     <div className="flex flex-col">
-                      <p className="tracking-custom font-sans text-[16px] leading-[24px] font-normal">
+                      <p className="tracking-custom text-body-l font-sans font-normal">
                         Enable Affiliate program
                       </p>
-                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
+                      <p className="text-text-grey text-meta font-sans font-normal">
                         Affiliates will earn {values.commission || 0}% per ticket sale
                       </p>
                     </div>
@@ -683,7 +675,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="commission"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Set commission (%)
                     </Label>
@@ -716,11 +708,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                       placeholder="e.g. 2.5"
                     />
 
-                    <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
+                    <span className="text-grey-40 text-meta font-sans font-normal">
                       Commission will be based on the per ticket sold
                     </span>
                     {errors.commission?.message ? (
-                      <p className="text-left text-[12px] text-[#FF8D8D]">
+                      <p className="text-meta text-left leading-normal text-[#FF8D8D]">
                         {errors.commission?.message}
                       </p>
                     ) : null}
@@ -728,7 +720,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 )}
 
                 {/* Socials */}
-                <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
+                <p className="text-light-black text-meta mt-12 font-sans font-bold">
                   SOCIAL DETAILS <span className="font-semi-normal text-text-grey">(Optional)</span>
                 </p>
 
@@ -768,7 +760,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <input
                         type={type}
                         name={`socials.${key}`}
-                        className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                        className="bg-light_grey text-body-s w-full rounded-xl border-0 px-1 focus:border-transparent focus:ring-0 focus:outline-none"
                         value={values.socials[key as keyof SocialMediaHandles] ?? ""}
                         onChange={(e) =>
                           setValue(

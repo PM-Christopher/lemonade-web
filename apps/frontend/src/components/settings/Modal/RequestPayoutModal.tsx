@@ -118,7 +118,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Bank Account</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+          <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <button
@@ -129,7 +129,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                 >
                   <CloseIcon />
                 </button>
-                <p className="tracking-custom font-sans text-lg leading-[27px] font-semibold">
+                <p className="tracking-custom font-sans text-lg leading-6.75 font-semibold">
                   Bank Account
                 </p>
               </div>
@@ -141,7 +141,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="bank_name"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Bank Name
                 </Label>
@@ -173,7 +173,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="account_number"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Account number
                 </Label>
@@ -193,7 +193,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="account_name"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Account name
                 </Label>
@@ -206,7 +206,9 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                   value={accountName}
                 />
                 <FieldError message={errors.account_name?.message} />
-                {verifyError && <p className={"text-red-2 text-[13px]"}>{verifyError}</p>}
+                {verifyError && (
+                  <p className={"text-red-2 text-meta leading-normal"}>{verifyError}</p>
+                )}
               </div>
             </div>
           </div>

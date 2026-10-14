@@ -88,7 +88,7 @@ const WithdrawalDecisionModal: React.FC<WithdrawalDecisionModalProps> = ({
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <DialogTitle className="font-semiBold text-lg">{copy.title}</DialogTitle>
             <button type="button" aria-label="Close" className="cursor-pointer" onClick={toggle}>

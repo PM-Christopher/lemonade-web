@@ -72,12 +72,12 @@ const GuestListClient = ({ id }: { id: number }) => {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Guest list</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Guest list</p>
           </div>
         </div>
 
         <div className={"mt-4 flex flex-col items-center gap-2"}>
-          <div className="mx-auto w-full max-w-[880px]">
+          <div className="mx-auto w-full max-w-220">
             <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 shadow-sm sm:p-4">
               {/* Search */}
               <div className="flex w-full items-center gap-3 rounded-xl bg-gray-50 px-4 py-3 ring-1 ring-transparent transition focus-within:ring-2 focus-within:ring-gray-900/10">
@@ -104,7 +104,7 @@ const GuestListClient = ({ id }: { id: number }) => {
             </div>
           </div>
 
-          <div className="flex h-auto w-full max-w-[880px] flex-col gap-4 rounded-xl bg-white p-6">
+          <div className="flex h-auto w-full max-w-220 flex-col gap-4 rounded-xl bg-white p-6">
             {isLoading ? (
               <GuestListSkeleton count={4} />
             ) : hasItems ? (
@@ -129,7 +129,7 @@ const GuestListClient = ({ id }: { id: number }) => {
                   {isSearching ? "No guests found" : "No guests yet"}
                 </p>
 
-                <p className="mt-1 max-w-[420px] text-sm text-gray-500">
+                <p className="mt-1 max-w-105 text-sm text-gray-500">
                   {isSearching
                     ? "Try searching with a different name, username, or email."
                     : "Guests will appear here once people register or you upload a guest list."}

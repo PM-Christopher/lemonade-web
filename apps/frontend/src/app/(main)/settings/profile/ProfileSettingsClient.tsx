@@ -96,7 +96,7 @@ const ProfileSettingsClient = () => {
 
   return (
     <>
-      <section className="mt-[61.5px] flex flex-col items-center">
+      <section className="mt-15.5 flex flex-col items-center">
         <div className="flex flex-col items-center">
           <div className="relative">
             <Image
@@ -104,7 +104,7 @@ const ProfileSettingsClient = () => {
               alt="avatar"
               width={84}
               height={84}
-              className="border-grey-90 h-[84px] w-[84px] rounded-3xl border"
+              className="border-grey-90 h-21 w-21 rounded-3xl border"
             />
 
             <input
@@ -118,26 +118,26 @@ const ProfileSettingsClient = () => {
               <UploadCamIcon className="absolute -right-3.5 bottom-0 h-8 w-8" />
             </div>
           </div>
-          <div className="laptop:w-[640px] mt-[45.5px] flex w-[343px] flex-col gap-2 rounded-xl bg-white p-4">
+          <div className="laptop:w-160 mt-11.5 flex w-85.75 flex-col gap-2 rounded-xl bg-white p-4">
             <div className="flex justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Full name</p>
-              <p className="font-semi-normal text-black-light text-[14px]">{user?.fullname}</p>
+              <p className="text-text-grey text-body-s font-normal">Full name</p>
+              <p className="font-semi-normal text-black-light text-body-s">{user?.fullname}</p>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Email address</p>
-              <p className="font-semi-normal text-black-light text-[14px]">{user?.email}</p>
+              <p className="text-text-grey text-body-s font-normal">Email address</p>
+              <p className="font-semi-normal text-black-light text-body-s">{user?.email}</p>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Lemonade tag</p>
-              <p className="font-semi-normal text-black-light text-[14px]">
+              <p className="text-text-grey text-body-s font-normal">Lemonade tag</p>
+              <p className="font-semi-normal text-black-light text-body-s">
                 Lemon {splitLemonId(user?.lemon_id ?? "")} (L
                 {splitLemonId(user?.lemon_id ?? "")})
               </p>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Username</p>
+              <p className="text-text-grey text-body-s font-normal">Username</p>
               <div className="flex items-center gap-2">
-                <p className="font-semi-normal text-black-light text-[14px]">{user?.username}</p>
+                <p className="font-semi-normal text-black-light text-body-s">{user?.username}</p>
                 <PencilIcon
                   className="h-4 w-4 cursor-pointer"
                   onClick={() => {
@@ -148,9 +148,9 @@ const ProfileSettingsClient = () => {
               </div>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Bio</p>
+              <p className="text-text-grey text-body-s font-normal">Bio</p>
               <div className="flex items-center gap-2">
-                <p className="font-semi-normal text-black-light max-w-[163px] truncate text-[14px]">
+                <p className="font-semi-normal text-black-light text-body-s max-w-40.75 truncate">
                   {user?.bio}
                 </p>
                 <PencilIcon
@@ -163,9 +163,9 @@ const ProfileSettingsClient = () => {
               </div>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Profession</p>
+              <p className="text-text-grey text-body-s font-normal">Profession</p>
               <div className="flex items-center gap-2">
-                <p className="font-semi-normal text-black-light text-[14px]">
+                <p className="font-semi-normal text-black-light text-body-s">
                   {formatString(user?.industry ?? undefined)}
                 </p>
                 <PencilIcon
@@ -178,9 +178,9 @@ const ProfileSettingsClient = () => {
               </div>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Address</p>
+              <p className="text-text-grey text-body-s font-normal">Address</p>
               <div className="flex items-center gap-2">
-                <p className="font-semi-normal text-black-light max-w-[130px] truncate text-[14px]">
+                <p className="font-semi-normal text-black-light text-body-s max-w-32.5 truncate">
                   {user?.address?.address}, {user?.address?.city}, {user?.address?.state}
                 </p>
                 <PencilIcon
@@ -193,9 +193,9 @@ const ProfileSettingsClient = () => {
               </div>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Skills & interests</p>
+              <p className="text-text-grey text-body-s font-normal">Skills & interests</p>
               <div className="flex items-center gap-2">
-                <p className="font-semi-normal text-black-light text-[14px]">
+                <p className="font-semi-normal text-black-light text-body-s">
                   {(user?.skills?.length ?? 0) + (user?.interests?.length ?? 0)}
                 </p>
                 <PencilIcon
@@ -208,9 +208,9 @@ const ProfileSettingsClient = () => {
               </div>
             </div>
             <div className="my-2 flex items-center justify-between">
-              <p className="text-text-grey text-[14px] font-normal">Socials</p>
+              <p className="text-text-grey text-body-s font-normal">Socials</p>
               <div className="flex items-center gap-2">
-                <div className="bg-light_grey flex items-center gap-2 rounded-[18px] p-1">
+                <div className="bg-light_grey flex items-center gap-2 rounded-2xl p-1">
                   {user?.socials?.map((link: { name?: string; value?: string }) => (
                     <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
                       {link.name === "facebook" && <FacebookIcon className="h-5 w-5" />}

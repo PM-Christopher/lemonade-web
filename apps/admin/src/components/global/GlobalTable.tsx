@@ -52,7 +52,10 @@ const GlobalTable: React.FC<TableProps> = ({
         <thead>
           <tr className="bg-mid-grey">
             {headers.map((header, idx) => (
-              <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
+              <th
+                className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
+                key={idx}
+              >
                 {header}
               </th>
             ))}
@@ -61,7 +64,7 @@ const GlobalTable: React.FC<TableProps> = ({
         <tbody>
           {content?.length > 0 ? (
             content.map((row, index) => (
-              <tr key={index} className="border-grey-20 h-[72px] border-b">
+              <tr key={index} className="border-grey-20 h-18 border-b">
                 {Object.keys(row).map((key, cellIdx) => (
                   <td
                     className={`p-4 font-sans text-sm font-medium ${

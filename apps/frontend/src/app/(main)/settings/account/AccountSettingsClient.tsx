@@ -77,7 +77,7 @@ const AccountSettingsClient = () => {
   return (
     <>
       <section className="mt-4 flex flex-col items-center px-5">
-        <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl bg-white p-4">
+        <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl bg-white p-4">
           {settingsItems.map((item) => (
             <div
               key={item.id}
@@ -86,7 +86,7 @@ const AccountSettingsClient = () => {
             >
               <div className="flex items-center gap-2">
                 {item.icon}
-                <p className={`text-[16px] font-normal ${item.textColor}`}>{item.label}</p>
+                <p className={`text-body-l font-normal ${item.textColor}`}>{item.label}</p>
               </div>
               <ChevronRight className="text-gray-400" />
             </div>

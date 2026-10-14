@@ -255,39 +255,36 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="laptop:h-full laptop:w-[480px] laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
+      <div className="laptop:h-full laptop:w-120 laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggle}>
-              <CloseIcon className="w-[11.25px]" />
+              <CloseIcon className="w-2.75" />
             </div>
-            <p className="text-[16px] font-semibold">Change {profileTypeHeader(type)}</p>
+            <p className="text-body-l font-semibold">Change {profileTypeHeader(type)}</p>
           </div>
           <div className="laptop:block hidden">
             <SubmitButton
               title="Save changes"
               isValid={isValid}
               loading={isSubmitting}
-              classes="max-w-[135px] p-2 max-h-[39px] rounded-xl border shadow-custom-bottom"
+              classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border shadow-custom-bottom"
             />
           </div>
         </div>
         <div className="mt-6">
-          <div className="flex flex-col gap-y-[300px]">
+          <div className="flex flex-col gap-y-75">
             <div className="flex flex-col">
               {type === "username" && (
                 <div className="mt-6 grid gap-1">
-                  <Label
-                    htmlFor="username"
-                    className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-                  >
+                  <Label htmlFor="username" className="text-text-grey text-label font-normal">
                     Username
                   </Label>
                   <Input
                     id="username"
                     type="text"
                     placeholder=""
-                    className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
+                    className="border-step-color bg-light_grey h-12 rounded-xl border-2"
                     {...register("username")}
                   />
                   <FieldError message={errors.username?.message} />
@@ -296,17 +293,14 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
 
               {type === "bio" && (
                 <div className="mt-6 grid gap-1">
-                  <Label
-                    htmlFor="bio"
-                    className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-                  >
+                  <Label htmlFor="bio" className="text-text-grey text-label font-normal">
                     Bio
                   </Label>
                   <Input
                     id="bio"
                     type="text"
                     placeholder=""
-                    className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
+                    className="border-step-color bg-light_grey h-12 rounded-xl border-2"
                     {...register("bio")}
                   />
                   <FieldError message={errors.bio?.message} />
@@ -315,17 +309,14 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
 
               {type === "industry" && (
                 <div className="mt-6 grid gap-1">
-                  <Label
-                    htmlFor="industry"
-                    className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-                  >
+                  <Label htmlFor="industry" className="text-text-grey text-label font-normal">
                     Profession
                   </Label>
                   <Input
                     id="industry"
                     type="text"
                     placeholder=""
-                    className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
+                    className="border-step-color bg-light_grey h-12 rounded-xl border-2"
                     {...register("industry")}
                   />
                   <FieldError message={errors.industry?.message} />
@@ -395,13 +386,13 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
               {type === "skills-interest" && (
                 <div className="mt-6 grid gap-1">
                   <div>
-                    <p className="font-sans text-[18px] font-semibold">Skills</p>
+                    <p className="text-body-xl font-sans font-semibold">Skills</p>
                   </div>
                   <div className="grid grid-cols-[repeat(3,auto)] gap-3">
                     {SKILLS.map((item, idx) => (
                       <div
                         key={idx}
-                        className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
+                        className={`text-text-grey text-body-s inline-block cursor-pointer rounded-lg p-2 py-3 text-center font-normal whitespace-nowrap ${
                           selectedSkills.includes(item)
                             ? "bg-gradient-green text-white"
                             : "bg-light_grey"
@@ -414,12 +405,12 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
                   </div>
                   <FieldError message={errors.skills?.message} />
                   <div className="mt-2">
-                    <p className="font-sans text-[18px] font-semibold">Interests</p>
+                    <p className="text-body-xl font-sans font-semibold">Interests</p>
                   </div>
                   <div className="grid grid-cols-[repeat(4,auto)] gap-3">
                     {INTERESTS.map((item, idx) => (
                       <div
-                        className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
+                        className={`text-text-grey text-body-s inline-block cursor-pointer rounded-lg p-2 py-3 text-center font-normal whitespace-nowrap ${
                           selectedInterests.includes(item)
                             ? "bg-gradient-green text-white"
                             : "bg-light_grey"
@@ -474,7 +465,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
                 title="Save changes"
                 isValid={isValid}
                 loading={isSubmitting}
-                classes="w-full laptop:max-w-[135px] p-2 h-12 laptop:max-h-[39px] rounded-xl border shadow-custom-bottom"
+                classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border shadow-custom-bottom"
               />
             </div>
           </div>

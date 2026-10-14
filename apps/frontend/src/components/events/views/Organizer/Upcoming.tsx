@@ -20,7 +20,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
   return (
     <>
       {events?.length > 0 && (
-        <div className="laptop:w-[780px] laptop:flex-row laptop:pr-20 flex w-full flex-col gap-6 rounded-2xl bg-white pr-0">
+        <div className="laptop:w-195 laptop:flex-row laptop:pr-20 flex w-full flex-col gap-6 rounded-2xl bg-white pr-0">
           <Image
             src={getSafeImageSrc(events[0]?.event_image, images.DEFAULT_EVENT)}
             alt="poster"
@@ -29,38 +29,36 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
             className="w-80"
           />
           <div className="laptop:mt-6 mt-3 flex flex-col px-2.5 pb-2.5">
-            <p className="font-sans text-[24px] leading-[33.6px] font-semibold">
-              {events[0]?.event_name}
-            </p>
+            <p className="text-title-l font-sans font-semibold">{events[0]?.event_name}</p>
             <div className="mt-4 flex items-center gap-2">
               <CalendarIcon />
-              <p className="font-semi-normal tracking-custom text-text-grey font-sans text-[16px] leading-[24px]">
+              <p className="font-semi-normal tracking-custom text-text-grey text-body-l font-sans">
                 {formatLongDate(events[0]?.start_date, "mid")}
               </p>
               <p>-</p>
-              <p className="font-semi-normal tracking-custom text-text-grey font-sans text-[16px] leading-[24px]">
+              <p className="font-semi-normal tracking-custom text-text-grey text-body-l font-sans">
                 {formatLongDate(events[0]?.end_date, "mid")}
               </p>
             </div>
             <div className="mt-4 flex items-center gap-2">
               <ClockIcon />
-              <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
+              <p className="font-semi-normal text-text-grey text-body-l font-sans">
                 {formatLongTime(events[0]?.start_date)}
               </p>
               <p>-</p>
-              <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
+              <p className="font-semi-normal text-text-grey text-body-l font-sans">
                 {formatLongTime(events[0]?.end_date)}
               </p>
             </div>
             <div className="mt-4 flex items-center gap-2">
               <LocationIcon />
-              <p className="font-semi-normal text-text-grey font-sans text-[16px] leading-[24px]">
+              <p className="font-semi-normal text-text-grey text-body-l font-sans">
                 {events[0]?.location}
               </p>
             </div>
             <Link href={routes.EVENT_DETAILS(events[0]?.id)} className="w-fit">
               <div className="mt-10 flex w-fit items-center gap-2">
-                <p className="font-semi-normal text-light-green font-sans text-[16px] leading-[24px]">
+                <p className="font-semi-normal text-light-green text-body-l font-sans">
                   View Details
                 </p>
                 <ChevronRight className="text-light-green" />
@@ -69,7 +67,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
           </div>
         </div>
       )}
-      <div className="laptop:w-[780px] laptop:grid-cols-3 mt-2.5 grid w-full grid-cols-2 gap-4 rounded-xl bg-white p-4">
+      <div className="laptop:w-195 laptop:grid-cols-3 mt-2.5 grid w-full grid-cols-2 gap-4 rounded-xl bg-white p-4">
         {loading ? (
           <EventsSkeleton count={3} />
         ) : events?.length > 0 ? (

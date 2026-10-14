@@ -111,25 +111,25 @@ const Carousel: React.FC<ImageSlider> = ({
 
         {/* Bottom info panel */}
         <div className="absolute right-0 bottom-0 left-0 p-3 sm:p-4 lg:p-6">
-          <div className="mx-auto w-full max-w-[980px] rounded-2xl border border-white/10 bg-[#1A2600]/20 shadow-lg backdrop-blur-xl">
+          <div className="mx-auto w-full max-w-245 rounded-2xl border border-white/10 bg-[#1A2600]/20 shadow-lg backdrop-blur-xl">
             <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 lg:px-6">
               {/* Text */}
               <div className="min-w-0">
-                <p className="truncate font-sans text-[18px] leading-tight font-semibold text-white sm:text-[22px] lg:text-[28px]">
+                <p className="text-body-xl sm:text-title-r lg:text-title-l truncate font-sans leading-tight font-semibold text-white sm:leading-normal lg:leading-normal">
                   {events?.[currentIndex]?.event_name}
                 </p>
 
                 <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-white/90">
                   <div className="flex items-center gap-1.5">
                     <CalendarIcon className="h-4 w-4 text-white" />
-                    <p className="font-sans text-[13px] leading-[16.8px] font-normal sm:text-[14px]">
+                    <p className="text-meta sm:text-body-s font-sans leading-4.25 font-normal">
                       {formatLongDate(events?.[currentIndex]?.start_date, "mid")}
                     </p>
                   </div>
 
                   <DotIcon className="h-1 w-1" />
 
-                  <p className="font-sans text-[13px] leading-[16.8px] font-normal sm:text-[14px]">
+                  <p className="text-meta sm:text-body-s font-sans leading-4.25 font-normal">
                     {formatTime(events?.[currentIndex]?.start_date)} -{" "}
                     {formatTime(events?.[currentIndex]?.end_date)}
                   </p>
@@ -140,7 +140,7 @@ const Carousel: React.FC<ImageSlider> = ({
               <div className="flex sm:justify-end">
                 <button
                   type="button"
-                  className="font-semi-normal inline-flex w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 font-sans text-[14px] leading-[19.2px] text-white transition hover:bg-white/20 sm:w-auto sm:text-[16px]"
+                  className="font-semi-normal text-body-s sm:text-body-l inline-flex w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 font-sans leading-4.75 text-white transition hover:bg-white/20 sm:w-auto"
                 >
                   Get ticket
                 </button>

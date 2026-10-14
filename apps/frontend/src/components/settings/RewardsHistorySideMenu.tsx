@@ -22,12 +22,10 @@ const RewardsHistorySideMenu: React.FC<RewardsHistorySideMenuInterface> = ({
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white pt-6">
+        <div className="laptop:w-146.25 h-full w-screen bg-white pt-6">
           <div className="flex items-center justify-between px-6">
             <div>
-              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
-                Rewards History
-              </p>
+              <p className="tracking-custom text-body-l font-sans font-semibold">Rewards History</p>
             </div>
             <div>
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
@@ -36,14 +34,16 @@ const RewardsHistorySideMenu: React.FC<RewardsHistorySideMenuInterface> = ({
 
           <div className="mt-4 flex flex-col px-6">
             {history.length === 0 ? (
-              <p className="text-text-grey pt-4 text-[14px] font-normal">No rewards earned yet.</p>
+              <p className="text-text-grey text-body-s pt-4 font-normal">No rewards earned yet.</p>
             ) : (
               history.map((entry, index) => (
                 <div className="flex flex-col border-b pt-4 pb-6" key={index}>
-                  <p className="font-semi-normal text-[14px]">
+                  <p className="font-semi-normal text-body-s">
                     N{formatNumberWithCommas(Number(entry.amount) || 0)}
                   </p>
-                  <p className="text-text-grey text-[12px] font-normal">{entry.created_at}</p>
+                  <p className="text-text-grey text-meta leading-normal font-normal">
+                    {entry.created_at}
+                  </p>
                 </div>
               ))
             )}

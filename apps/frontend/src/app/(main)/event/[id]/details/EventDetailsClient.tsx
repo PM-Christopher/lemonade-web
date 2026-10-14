@@ -106,7 +106,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Event details</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Event details</p>
           </div>
         </div>
         {loading ? (
@@ -115,7 +115,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
           <div className="mt-4 flex flex-col items-center">
             <div className="flex justify-between gap-6">
               <div>
-                <div className="flex w-[640px] flex-col rounded-xl bg-white p-6">
+                <div className="flex w-160 flex-col rounded-xl bg-white p-6">
                   <div className="bg-green-tint/60 flex items-center gap-6 rounded-xl p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     <div className="relative overflow-hidden rounded-lg shadow-md">
                       <Image
@@ -123,30 +123,30 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         alt={event?.event_name || "Event"}
                         width={120}
                         height={120}
-                        className="h-[120px] w-[120px] rounded-lg object-cover"
+                        className="h-30 w-30 rounded-lg object-cover"
                       />
                     </div>
 
                     <div className="flex flex-col gap-2">
                       {/* Event name */}
-                      <p className="font-sans text-[20px] leading-tight font-semibold text-gray-900">
+                      <p className="text-title-r font-sans leading-tight font-semibold text-gray-900">
                         {event?.event_name}
                       </p>
 
                       {/* Date & time */}
                       <div className="text-text-grey flex flex-wrap items-center gap-2">
                         <CalendarIcon className="h-4 w-4 text-green-700" />
-                        <p className="text-[15px]">{formatLongDate(event?.start_date, "mid")}</p>
+                        <p className="text-body-s">{formatLongDate(event?.start_date, "mid")}</p>
                         <DotIcon className="w-1 text-green-600" />
-                        <p className="text-[15px]">{formatTime(event?.start_date ?? null)}</p>
-                        <span className="text-[15px]">–</span>
-                        <p className="text-[15px]">{formatTime(event?.end_date ?? null)}</p>
+                        <p className="text-body-s">{formatTime(event?.start_date ?? null)}</p>
+                        <span className="text-body-s">–</span>
+                        <p className="text-body-s">{formatTime(event?.end_date ?? null)}</p>
                       </div>
 
                       {/* Location */}
                       <div className="text-text-grey flex items-center gap-2">
                         <LocationIcon className="h-4 w-4 text-green-700" />
-                        <p className="text-[15px] leading-[24px]">{event?.location}</p>
+                        <p className="text-body-s leading-6">{event?.location}</p>
                       </div>
                     </div>
                   </div>
@@ -162,7 +162,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <MicIcon />
                         </div>
-                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                        <p className="font-semi-normal text-text-grey text-meta font-sans">
                           Promoted
                         </p>
                       </div>
@@ -172,7 +172,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                           <div className="border-grey-20 rounded-2xl border p-4">
                             <MicIcon />
                           </div>
-                          <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                          <p className="font-semi-normal text-text-grey text-meta font-sans">
                             Promote
                           </p>
                         </div>
@@ -183,7 +183,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <QrIcon />
                         </div>
-                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                        <p className="font-semi-normal text-text-grey text-meta font-sans">
                           Check in
                         </p>
                       </div>
@@ -194,7 +194,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                           <EditIcon />
                         </div>
                         <div>
-                          <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                          <p className="font-semi-normal text-text-grey text-meta font-sans">
                             Edit event
                           </p>
                         </div>
@@ -205,7 +205,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <TicketIcon />
                         </div>
-                        <p className="font-semi-normal text-text-grey font-sans text-[12px] leading-[14.4px]">
+                        <p className="font-semi-normal text-text-grey text-meta font-sans">
                           Add ticket
                         </p>
                       </div>
@@ -215,7 +215,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                     <div className="border-mid-grey mt-6 flex items-center justify-between rounded-xl border-2 p-3 px-4">
                       <div className="flex items-center gap-2">
                         <AffiliateUsersIcon />
-                        <p className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]">
+                        <p className="font-semi-normal tracking-custom text-body-l font-sans">
                           Guest list
                         </p>
                       </div>
@@ -224,29 +224,27 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                   </Link>
                   <div className="border-mid-grey mt-6 flex flex-col rounded-xl border-2 p-4">
                     <div className="flex flex-col">
-                      <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
+                      <p className="text-text-grey text-label font-sans font-normal">
                         Sales Revenue
                       </p>
-                      <p className="tracking-custom text-black-light font-sans text-[18px] leading-[27px] font-semibold">
+                      <p className="tracking-custom text-black-light text-body-xl font-sans font-semibold">
                         ₦{event?.breakdown?.sales_revenue}
                       </p>
                     </div>
                     <div className="border-t-grey-20 my-4 border-t"></div>
                     <div className="flex flex-col">
-                      <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
+                      <p className="text-text-grey text-label font-sans font-normal">
                         Tickets sold
                       </p>
-                      <p className="tracking-custom text-black-light font-sans text-[18px] leading-[27px] font-semibold">
+                      <p className="tracking-custom text-black-light text-body-xl font-sans font-semibold">
                         {event?.breakdown?.tickets_sold?.sold}/
                         {event?.breakdown?.tickets_sold?.count}
                       </p>
                     </div>
                     <div className="border-t-grey-20 my-4 border-t"></div>
                     <div className="flex flex-col">
-                      <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
-                        Check ins
-                      </p>
-                      <p className="tracking-custom text-black-light font-sans text-[18px] leading-[27px] font-semibold">
+                      <p className="text-text-grey text-label font-sans font-normal">Check ins</p>
+                      <p className="tracking-custom text-black-light text-body-xl font-sans font-semibold">
                         {event?.breakdown?.checkins?.percentage}%{" "}
                         <span className="font-normal">
                           ({event?.breakdown?.checkins?.count}/{event?.breakdown?.checkins?.total})
@@ -257,8 +255,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
-                  <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
+                <div className="flex w-120 flex-col rounded-lg bg-white p-4">
+                  <p className="tracking-custom text-body-l font-sans font-semibold">
                     Sales revenue by ticket type
                   </p>
                   {(event?.sales_revenue?.sales_revenue_breakdown?.length ?? 0) > 0 &&
@@ -277,14 +275,12 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
                       return (
                         <div key={idx}>
-                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                            {ticket?.name}
-                          </p>
+                          <p className="text-label mt-4 font-sans font-normal">{ticket?.name}</p>
                           <div className="mt-0.5 flex justify-between">
-                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                            <p className="tracking-custom text-body-xl font-sans font-semibold">
                               ₦{formatNumberWithCommas(ticket?.price)}
                             </p>
-                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                            <p className="font-semi-normal tracking-custom text-body-s font-sans">
                               {ticket?.bought}/
                               {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                             </p>
@@ -299,8 +295,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       );
                     })}
                 </div>
-                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
-                  <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
+                <div className="flex w-120 flex-col rounded-lg bg-white p-4">
+                  <p className="tracking-custom text-body-l font-sans font-semibold">
                     Ticket sold by ticket type
                   </p>
 
@@ -328,14 +324,12 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                             : "0%";
                       return (
                         <div key={idx}>
-                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                            {ticket?.name}
-                          </p>
+                          <p className="text-label mt-4 font-sans font-normal">{ticket?.name}</p>
                           <div className="mt-0.5 flex justify-between">
-                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                            <p className="tracking-custom text-body-xl font-sans font-semibold">
                               {percentageText}
                             </p>
-                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                            <p className="font-semi-normal tracking-custom text-body-s font-sans">
                               {ticket?.bought}/
                               {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                             </p>
@@ -350,8 +344,8 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       );
                     })}
                 </div>
-                <div className="flex w-[480px] flex-col rounded-[8px] bg-white p-4">
-                  <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
+                <div className="flex w-120 flex-col rounded-lg bg-white p-4">
+                  <p className="tracking-custom text-body-l font-sans font-semibold">
                     Check ins by ticket type
                   </p>
                   {(event?.sales_revenue?.tickets_checkins_breakdown?.length ?? 0) > 0 &&
@@ -379,14 +373,12 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
                       return (
                         <div key={idx}>
-                          <p className="mt-4 font-sans text-[14px] leading-[16.8px] font-normal">
-                            {ticket?.name}
-                          </p>
+                          <p className="text-label mt-4 font-sans font-normal">{ticket?.name}</p>
                           <div className="mt-0.5 flex justify-between">
-                            <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                            <p className="tracking-custom text-body-xl font-sans font-semibold">
                               {percentageText}
                             </p>
-                            <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+                            <p className="font-semi-normal tracking-custom text-body-s font-sans">
                               {ticket?.checkin_count}/
                               {ticket?.stock_type === "unlimited" ? "∞" : ticket?.stock}
                             </p>

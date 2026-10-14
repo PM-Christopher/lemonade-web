@@ -36,14 +36,14 @@ function AddPromotionsClient() {
     <MainLayout>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>
+          <p className={"font-semiBold text-body-l"}>
             {promotionData?.promotions?.length || 0} Promotions
           </p>
           <div className={"flex justify-between gap-3"}>
             <div>
               <Button className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}>
-                <PlusIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"} onClick={togglePromotionModal}>
+                <PlusIcon className={"h-3.75 w-3.75 text-white"} />
+                <p className={"text-body-l font-medium text-white"} onClick={togglePromotionModal}>
                   Add promotion
                 </p>
               </Button>

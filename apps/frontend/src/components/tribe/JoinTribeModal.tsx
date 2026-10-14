@@ -56,15 +56,13 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Unlock Exclusive content!</DialogTitle>
-        <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="font-sans text-[18px] leading-[27px] font-semibold">
-                Unlock Exclusive content!
-              </p>
+              <p className="text-body-xl font-sans font-semibold">Unlock Exclusive content!</p>
             </div>
             <div>
               <Button
@@ -85,28 +83,24 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
                     />
                   </Suspense>
                 ) : (
-                  <p className="font-semi-normal font-sans text-[16px] leading-[19.2px]">
-                    Join Tribe now
-                  </p>
+                  <p className="font-semi-normal text-field font-sans">Join Tribe now</p>
                 )}
               </Button>
             </div>
           </div>
           <div className="mt-10 flex flex-col items-center">
             <div className="flex justify-center">
-              <div className="border-step-color bg-light-green-10 flex w-[544px] flex-col items-center rounded-xl border-2 p-4">
-                <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
-                  Membership fee
-                </p>
-                <p className="mt-2 font-sans text-[24px] leading-[33.6px] font-semibold">
+              <div className="border-step-color bg-light-green-10 flex w-136 flex-col items-center rounded-xl border-2 p-4">
+                <p className="font-semi-normal text-body-s font-sans">Membership fee</p>
+                <p className="text-title-l mt-2 font-sans font-semibold">
                   N {formatNumberWithCommas(tribe?.membership_fee)}
                 </p>
               </div>
             </div>
 
             <div className="my-6 flex justify-center">
-              <div className="flex w-[544px] justify-center">
-                <p className="text-center font-sans text-[14px] leading-[21px] font-semibold">
+              <div className="flex w-136 justify-center">
+                <p className="text-body-s text-center font-sans font-semibold">
                   {tribe?.tribe_name}{" "}
                   <span className="font-semi-normal">
                     offers exclusive content and discussions for a membership fee set by the Tribe
@@ -117,22 +111,20 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
             </div>
 
             <div className="bg-light_grey flex justify-center rounded-xl">
-              <div className="flex w-[544px] flex-col gap-4 p-4 py-6">
+              <div className="flex w-136 flex-col gap-4 p-4 py-6">
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
-                  <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
+                  <p className="font-semi-normal text-body-s font-sans">
                     Access to in-depth content
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
-                  <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
-                    Gain valuable knowledge
-                  </p>
+                  <p className="font-semi-normal text-body-s font-sans">Gain valuable knowledge</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
-                  <p className="font-semi-normal font-sans text-[14px] leading-[21px]">
+                  <p className="font-semi-normal text-body-s font-sans">
                     Connect with your community
                   </p>
                 </div>

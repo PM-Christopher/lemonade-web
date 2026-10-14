@@ -15,7 +15,7 @@ export function BackHeader({ title }: { title: string }) {
         onClick={() => back()}
       >
         <ChevronLeft aria-hidden="true" />
-        <span className="tracking-custom font-sans text-[16px] font-semibold">{title}</span>
+        <span className="tracking-custom text-body-l font-sans font-semibold">{title}</span>
       </button>
     </div>
   );

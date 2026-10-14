@@ -29,13 +29,13 @@ const MultipleTicketCard = ({
 
   return (
     <div className="bg-grey-20 mt-6 gap-4 rounded-xl p-4">
-      <p className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]">
+      <p className="font-semi-normal tracking-custom text-black-light text-body-l font-sans">
         {ticket?.ticket_name ?? "N/A"}
       </p>
       <div className="mt-6 grid gap-2">
         <Label
           htmlFor={`fullname-${index}`}
-          className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+          className="text-text-grey text-label font-sans font-normal"
         >
           Full name
         </Label>
@@ -50,7 +50,7 @@ const MultipleTicketCard = ({
       <div className="mt-4 grid gap-2">
         <Label
           htmlFor={`email-${index}`}
-          className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+          className="text-text-grey text-label font-sans font-normal"
         >
           Email address
         </Label>
@@ -64,20 +64,18 @@ const MultipleTicketCard = ({
       </div>
       <div className="bg-light_grey mt-4 flex items-center justify-between rounded-xl px-3 py-2.5">
         <div>
-          <p className="font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-            Ticket quantity
-          </p>
+          <p className="font-semi-normal tracking-custom text-body-s font-sans">Ticket quantity</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="bg-light-white flex h-6 w-6 items-center justify-center rounded-[8px] p-3">
+          <div className="bg-light-white flex h-6 w-6 items-center justify-center rounded-lg p-3">
             <p className="">-</p>
           </div>
-          <div className="bg-mid-grey flex h-7 w-[27.75px] items-center justify-center rounded-[8px] p-4">
-            <p className="font-semi-normal tracking-custom font-sans text-[16px] leading-[24px]">
+          <div className="bg-mid-grey flex h-7 w-7 items-center justify-center rounded-lg p-4">
+            <p className="font-semi-normal tracking-custom text-body-l font-sans">
               {ticket?.quantity}
             </p>
           </div>
-          <div className="bg-light-white flex h-6 w-6 items-center justify-center rounded-[8px] p-3">
+          <div className="bg-light-white flex h-6 w-6 items-center justify-center rounded-lg p-3">
             <p className="">+</p>
           </div>
         </div>

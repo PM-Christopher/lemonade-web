@@ -57,7 +57,7 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"New Invite"}</DialogTitle>
-        <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:rounded-lg flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl">
+        <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-120 laptop:rounded-lg flex h-screen w-full flex-col justify-between overflow-y-auto rounded-none bg-white p-6 shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-200 pb-3">
             <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
               >
                 <CloseIcon className="w-3" />
               </button>
-              <p className="text-[16px] font-semibold text-gray-900">New Invite</p>
+              <p className="text-body-l font-semibold text-gray-900">New Invite</p>
             </div>
           </div>
 
@@ -77,28 +77,28 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
             {/* Avatar */}
             <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gray-100">
               <Image src={images.LEMON} alt="lemon" fill className="object-contain" />
-              <p className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-black">
+              <p className="text-meta absolute inset-0 flex items-center justify-center leading-normal font-semibold text-black">
                 {invite?.invitee?.lemon_id_short}
               </p>
             </div>
 
             {/* User Info */}
-            <p className="text-[18px] font-semibold text-gray-900">
+            <p className="text-body-xl font-semibold text-gray-900">
               {invite?.invitee?.lemon_id_full}
             </p>
-            <p className="text-[14px] text-gray-700">{invite?.invitee?.username}</p>
+            <p className="text-body-s text-gray-700">{invite?.invitee?.username}</p>
             {invite?.invitee?.bio && (
-              <p className="text-[14px] text-gray-700">{invite?.invitee?.bio}</p>
+              <p className="text-body-s text-gray-700">{invite?.invitee?.bio}</p>
             )}
             {invite?.invitee?.industry && (
-              <p className="text-[12px] text-gray-500">
+              <p className="text-meta leading-normal text-gray-500">
                 {formatStringUCFirst(invite?.invitee?.industry)}
               </p>
             )}
 
             {/* Distance */}
             {distance && (
-              <div className="text-mid-green mt-2 flex items-center gap-2 text-[12px]">
+              <div className="text-mid-green text-meta mt-2 flex items-center gap-2 leading-normal">
                 <LocationIcon />
                 <p>{distance}</p>
               </div>
@@ -107,8 +107,8 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
             {/* Message */}
             {invite?.message && (
               <div className="bg-light_grey mt-4 flex w-full max-w-96 flex-col rounded-lg p-4">
-                <p className="text-[12px] font-medium text-gray-500">Message</p>
-                <p className="mt-1 text-[14px] text-gray-800">{invite?.message}</p>
+                <p className="text-meta leading-normal font-medium text-gray-500">Message</p>
+                <p className="text-body-s mt-1 text-gray-800">{invite?.message}</p>
               </div>
             )}
           </div>
@@ -119,13 +119,13 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
               className="h-12 flex-1 rounded-lg border border-gray-300 bg-white transition-all hover:bg-gray-50"
               onClick={() => requestAction("rejected")}
             >
-              <p className="text-[16px] font-medium text-gray-900">Reject Invite</p>
+              <p className="text-body-l font-medium text-gray-900">Reject Invite</p>
             </Button>
             <Button
               className="bg-gradient-green h-12 flex-1 rounded-lg shadow-lg transition-all hover:brightness-105"
               onClick={() => requestAction("accepted")}
             >
-              <p className="text-[16px] font-medium">Accept Invite</p>
+              <p className="text-body-l font-medium">Accept Invite</p>
             </Button>
           </div>
         </div>

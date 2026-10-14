@@ -19,15 +19,15 @@ const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({ toggle }) => {
         onClick={toggle}
       >
         <GearIcon />
-        <p className="font-semi-normal text-black-light font-sans text-[16px]">Payment setting</p>
+        <p className="font-semi-normal text-black-light text-body-l font-sans">Payment setting</p>
       </div>
       <Button
-        className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-10 w-[156px] rounded-xl border"
+        className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-10 w-39 rounded-xl border"
         onClick={() => push(routes.EVENT_CREATE)}
       >
         <div className="flex items-center gap-2">
           <PlusIcon />
-          <p className="font-semi-normal font-sans text-[16px] text-white">Add Event</p>
+          <p className="font-semi-normal text-body-l font-sans text-white">Add Event</p>
         </div>
       </Button>
     </div>

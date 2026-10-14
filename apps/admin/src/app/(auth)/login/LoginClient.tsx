@@ -78,18 +78,18 @@ function LoginPage({}) {
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-sm">
+            <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-sm">
               <CardContent className="tablet:gap-10 grid gap-6">
                 <div>
-                  <p className="font-ruso text-[24px] font-normal">Login</p>
-                  <p className="text-text-grey text-[14px] font-normal">
+                  <p className="font-ruso text-title-l leading-normal font-normal">Login</p>
+                  <p className="text-text-grey text-body-s font-normal">
                     Login with your email address and password.
                   </p>
                 </div>
                 <div className="grid gap-2">
                   <Label
                     htmlFor="email"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Email address
                   </Label>
@@ -105,7 +105,7 @@ function LoginPage({}) {
                 <div className="grid gap-2">
                   <Label
                     htmlFor="password"
-                    className="text-text-grey font-sans text-[14px] font-normal"
+                    className="text-text-grey text-body-s font-sans font-normal"
                   >
                     Password
                   </Label>
@@ -117,7 +117,7 @@ function LoginPage({}) {
                   />
                   <FieldError message={errors.password?.message} />
                 </div>
-                <p className="text-light-green text-[16px] font-medium underline">
+                <p className="text-light-green text-body-l font-medium underline">
                   Forgot password
                 </p>
                 <SubmitButton

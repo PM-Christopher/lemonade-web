@@ -28,7 +28,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Payment successful!"}</DialogTitle>
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
@@ -43,10 +43,10 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-light-green text-center font-sans text-[20px] leading-[28px] font-semibold">
+              <p className="text-light-green text-title-r text-center font-sans font-semibold">
                 Payment successful!
               </p>
-              <p className="tracking-custom text-light-black text-center font-sans text-[14px] leading-[24px] font-normal">
+              <p className="tracking-custom text-light-black text-body-s text-center font-sans leading-6 font-normal">
                 Your payment has been processed. You will get an update on when your event is
                 scheduled for promotion.
               </p>
@@ -54,37 +54,27 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="font-sans text-[20px] leading-[20px] font-semibold">
-                {promotion?.name}
-              </p>
+              <p className="text-title-r font-sans leading-5 font-semibold">{promotion?.name}</p>
             </div>
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
-                Date
-              </p>
-              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+              <p className="text-text-grey text-body-s font-sans leading-5 font-normal">Date</p>
+              <p className="font-semi-normal tracking-custom text-body-s font-sans">
                 {formatLongDate(promotion?.promotion_date, "mid")?.toUpperCase()}
               </p>
             </div>
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
-                Unit
-              </p>
-              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
-                1
-              </p>
+              <p className="text-text-grey text-body-s font-sans leading-5 font-normal">Unit</p>
+              <p className="font-semi-normal tracking-custom text-body-s font-sans">1</p>
             </div>
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
-                Amount
-              </p>
-              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+              <p className="text-text-grey text-body-s font-sans leading-5 font-normal">Amount</p>
+              <p className="font-semi-normal tracking-custom text-body-s font-sans">
                 ₦{formatNumberWithCommas(promotion?.price)}
               </p>
             </div>
@@ -94,7 +84,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
               className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
-              <p className="font-semi-normal font-sans text-[16px] text-white">Go to event</p>
+              <p className="font-semi-normal text-body-l font-sans text-white">Go to event</p>
             </button>
           </div>
         </div>

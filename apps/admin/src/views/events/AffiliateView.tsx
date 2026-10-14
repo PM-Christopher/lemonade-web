@@ -57,7 +57,10 @@ const AffiliateView = ({ pageData }: AffiliateViewProps) => {
             <thead>
               <tr className="bg-mid-grey">
                 {affiliateMainHeaders.map((header, idx) => (
-                  <th className="font-semiBold text-text-grey p-4 text-left text-[12px]" key={idx}>
+                  <th
+                    className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
+                    key={idx}
+                  >
                     {header}
                   </th>
                 ))}
@@ -68,7 +71,7 @@ const AffiliateView = ({ pageData }: AffiliateViewProps) => {
                 paginatedData.map((row, index) => (
                   <tr
                     key={index}
-                    className="border-grey-20 h-[72px] cursor-pointer border-b"
+                    className="border-grey-20 h-18 cursor-pointer border-b"
                     onClick={() => push(routes.EVENT_AFFILIATES(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>

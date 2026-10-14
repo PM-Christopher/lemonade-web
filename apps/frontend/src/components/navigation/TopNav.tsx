@@ -56,13 +56,13 @@ const TopNav = () => {
               <div
                 className={`flex flex-col items-center gap-2 ${
                   isActiveLink(pathname, link.path, true)
-                    ? "bg-light-green-10 text-light-green rounded-[8px] p-2"
+                    ? "bg-light-green-10 text-light-green rounded-lg p-2"
                     : "text-text-grey"
                 } `}
               >
                 <Image src={link.icon} alt="home" width={12.8} height={12.8} />
                 <p
-                  className={`text-[12px] leading-[14.4px] ${
+                  className={`text-meta ${
                     isActiveLink(pathname, link.path, true) ? "font-semibold" : "font-normal"
                   }`}
                 >
@@ -85,7 +85,7 @@ const TopNav = () => {
             />
           </div>
           <div className="tablet:block hidden">
-            <p className="font-sans text-[18px] leading-[27px] font-normal">
+            <p className="text-body-xl font-sans font-normal">
               Hello,{" "}
               <span className="font-semibold">
                 {user?.fullname ? formatName(user.fullname)?.[0] : ""}
@@ -104,7 +104,7 @@ const TopNav = () => {
                 />
               ) : (
                 <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
-                  <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
+                  <p className="font-ruso text-body-xl">{getInitials(user?.fullname)}</p>
                 </div>
               )}
             </Link>

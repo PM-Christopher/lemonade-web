@@ -106,15 +106,13 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{promotionTitle}</DialogTitle>
-        <div className="w-[640px] rounded-xl bg-white pt-4 pb-1">
+        <div className="w-160 rounded-xl bg-white pt-4 pb-1">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
                 <div className={"flex items-center gap-2"}>
                   <XIcon onClick={toggle} className={"cursor-pointer"} />
-                  <p className="font-sans text-[18px] leading-[27px] font-semibold">
-                    {promotionTitle}
-                  </p>
+                  <p className="text-body-xl font-sans font-semibold">{promotionTitle}</p>
                 </div>
                 <div className="cursor-pointer">
                   <SubmitButton
@@ -125,60 +123,56 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                     }
                     title={promotionTitle}
                     isValid={isValid}
-                    classes="border px-3.5 py-[11px] rounded-xl w-full"
+                    classes="border px-3.5 py-2.75 rounded-xl w-full"
                   />
                 </div>
               </div>
             </div>
             <div className={"flex flex-col gap-6 px-4 py-4"}>
               <div className={"flex flex-col gap-0.5"}>
-                <p className={"text-text-grey text-[14px] font-normal"}>Promotion name</p>
+                <p className={"text-text-grey text-body-s font-normal"}>Promotion name</p>
                 <input
                   id="name"
-                  className={"bg-light-grey h-12 gap-3 rounded-xl p-3 text-[14px]"}
+                  className={"bg-light-grey text-body-s h-12 gap-3 rounded-xl p-3"}
                   placeholder={""}
                   {...register("name")}
                 />
                 <FieldError message={errors.name?.message} />
               </div>
               <div className={"flex flex-col gap-1"}>
-                <p className={"text-text-grey text-[14px] font-normal"}>Price option</p>
+                <p className={"text-text-grey text-body-s font-normal"}>Price option</p>
                 <div className="flex gap-2">
                   <div
                     className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${priceOption === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
                     onClick={() => setValue("price_option", "one-time", { shouldValidate: true })}
                   >
-                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                      One time
-                    </p>
+                    <p className="tracking-custom text-body-s font-sans font-normal">One time</p>
                   </div>
                   <div
                     className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${priceOption === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
                     onClick={() => setValue("price_option", "unit", { shouldValidate: true })}
                   >
-                    <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                      Unit
-                    </p>
+                    <p className="tracking-custom text-body-s font-sans font-normal">Unit</p>
                   </div>
                 </div>
               </div>
               <div className={"flex flex-col gap-0.5"}>
-                <p className={"text-text-grey text-[14px] font-normal"}>Promotion Price</p>
+                <p className={"text-text-grey text-body-s font-normal"}>Promotion Price</p>
                 <input
                   id="price"
-                  className={"bg-light-grey h-12 gap-3 rounded-xl p-3 text-[14px]"}
+                  className={"bg-light-grey text-body-s h-12 gap-3 rounded-xl p-3"}
                   placeholder={"N0.00"}
                   {...register("price")}
                 />
                 <FieldError message={errors.price?.message} />
               </div>
               <div className="flex flex-col gap-0.5">
-                <p className="text-text-grey text-[14px] font-normal">Breakdown</p>
+                <p className="text-text-grey text-body-s font-normal">Breakdown</p>
                 {breakdowns.map((breakdown, index) => (
                   <div key={index} className="flex flex-col gap-0.5">
                     <div className="relative">
                       <input
-                        className="bg-light-grey h-12 w-full gap-3 rounded-xl p-3 pr-10 text-[14px]"
+                        className="bg-light-grey text-body-s h-12 w-full gap-3 rounded-xl p-3 pr-10"
                         placeholder="Enter breakdown of promotion"
                         value={breakdown}
                         onChange={(e) => handleInputChange(index, e.target.value)}
@@ -206,13 +200,13 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
             <div className={"flex justify-between gap-4 px-4 pb-2.5"}>
               <button
                 className={
-                  "bg-light-green-10 flex w-full items-center justify-center rounded-xl border px-12 py-[11px]"
+                  "bg-light-green-10 flex w-full items-center justify-center rounded-xl border px-12 py-2.75"
                 }
                 onClick={handleAddField}
                 type={"button"}
               >
                 <PlusIcon className={"text-light-green"} />
-                <p className={"text-light-green text-[16px] font-medium"}>Add breakdown</p>
+                <p className={"text-light-green text-body-l font-medium"}>Add breakdown</p>
               </button>
             </div>
           </form>

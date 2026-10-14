@@ -46,32 +46,32 @@ function TribeStatusModal({ isOpen, toggle, id }: TribeStatusModalProps) {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Reactivate tribe</DialogTitle>
-        <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+        <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] leading-[27px] font-semibold">Reactivate tribe</p>
+              <p className="text-body-xl font-sans font-semibold">Reactivate tribe</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
             </div>
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
-            <p className={"text-light-black text-[14px] font-normal"}>
+            <p className={"text-light-black text-body-s font-normal"}>
               Are you sure you want to reactivate this tribe? It will be visible and joinable again.
             </p>
             <div className={"flex justify-between gap-2.5"}>
               <button
-                className={"border-light-grey-50 h-12 w-[156px] rounded-xl border bg-white"}
+                className={"border-light-grey-50 h-12 w-39 rounded-xl border bg-white"}
                 onClick={toggle}
               >
-                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                <p className={"text-body-l font-medium text-black"}>Cancel</p>
               </button>
               <button
-                className={"bg-gradient-green h-12 w-[156px] rounded-xl border text-center"}
+                className={"bg-gradient-green h-12 w-39 rounded-xl border text-center"}
                 onClick={submitAction}
                 disabled={reactivateTribeMutation.isPending}
               >
-                <p className={"text-[16px] font-medium text-white"}>
+                <p className={"text-body-l font-medium text-white"}>
                   {reactivateTribeMutation.isPending ? "Reactivating..." : "Reactivate"}
                 </p>
               </button>

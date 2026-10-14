@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
         onSubmit={handleSubmit(onSubmit)}
         className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
       >
-        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+        <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Reset password</p>
           <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
             Stronger password, stronger protection! Combine uppercase, lowercase, numbers, and
@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
             className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <Card className="tablet:p-6 w-full max-w-[440px] shrink-0 rounded-2xl border-none p-5 shadow-none">
+        <Card className="tablet:p-6 w-full max-w-110 shrink-0 rounded-2xl border-none p-5 shadow-none">
           <CardContent className="grid gap-4 p-0">
             <div className="grid gap-2">
               <Label htmlFor="password" className="font-label">
@@ -95,7 +95,7 @@ export default function ResetPasswordPage() {
                 className="form-font bg-light_grey h-12 rounded-xl border-0"
                 {...register("password")}
               />
-              <span className="text-grey-40 font-sans text-[12px]">
+              <span className="text-grey-40 text-meta font-sans leading-normal">
                 Password must be at least 8 character long
               </span>
               <FieldError message={errors.password?.message} />

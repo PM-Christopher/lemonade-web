@@ -71,14 +71,14 @@ function SubscriptionsClient() {
     <MainLayout>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>{plans.length} Plans</p>
+          <p className={"font-semiBold text-body-l"}>{plans.length} Plans</p>
           <div>
             <Button
               className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
               onClick={openCreateModal}
             >
-              <PlusIcon className={"h-[15px] w-[15px] text-white"} />
-              <p className={"text-[16px] font-medium text-white"}>Create plan</p>
+              <PlusIcon className={"h-3.75 w-3.75 text-white"} />
+              <p className={"text-body-l font-medium text-white"}>Create plan</p>
             </Button>
           </div>
         </div>
@@ -90,7 +90,7 @@ function SubscriptionsClient() {
                   <tr className="bg-mid-grey">
                     {headers.map((header) => (
                       <th
-                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
+                        className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
                         key={header}
                       >
                         {header}
@@ -101,12 +101,12 @@ function SubscriptionsClient() {
                 <tbody>
                   {plans.length > 0 ? (
                     plans.map((plan) => (
-                      <tr key={plan.id} className="border-grey-20 h-[72px] border-b">
+                      <tr key={plan.id} className="border-grey-20 h-18 border-b">
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           <div className="flex items-center gap-2">
                             {plan.title}
                             {plan.recommended && (
-                              <span className="bg-light-green-10 font-semiBold text-light-green rounded-full px-2 py-0.5 text-[11px]">
+                              <span className="bg-light-green-10 font-semiBold text-light-green text-meta rounded-full px-2 py-0.5 leading-normal">
                                 Recommended
                               </span>
                             )}
@@ -142,7 +142,7 @@ function SubscriptionsClient() {
                             {plan.active ? (
                               <button
                                 type="button"
-                                className="text-red-1 text-[13px] font-medium"
+                                className="text-red-1 text-meta leading-normal font-medium"
                                 onClick={() => openConfirmModal(plan, "deactivate")}
                               >
                                 Deactivate
@@ -150,7 +150,7 @@ function SubscriptionsClient() {
                             ) : (
                               <button
                                 type="button"
-                                className="text-light-green-70 text-[13px] font-medium"
+                                className="text-light-green-70 text-meta leading-normal font-medium"
                                 onClick={() => openConfirmModal(plan, "activate")}
                               >
                                 Activate
@@ -158,7 +158,7 @@ function SubscriptionsClient() {
                             )}
                             <button
                               type="button"
-                              className="text-red-1 text-[13px] font-medium"
+                              className="text-red-1 text-meta leading-normal font-medium"
                               onClick={() => openConfirmModal(plan, "delete")}
                             >
                               Delete

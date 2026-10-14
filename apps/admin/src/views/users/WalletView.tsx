@@ -52,12 +52,14 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             onClick={handleToggleDropdown}
             className="border-light-grey-50 flex h-11 w-fit items-center justify-between gap-2 rounded-xl border bg-transparent px-3.5 py-3"
           >
-            <p className="font-semiBold text-black-light text-[12px]">Update balance</p>
+            <p className="font-semiBold text-black-light text-meta leading-normal">
+              Update balance
+            </p>
             <ChevronDown className="text-black-light w-5" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full left-0 z-50 mt-1 w-[207px] rounded-xl bg-white shadow">
+            <div className="absolute top-full left-0 z-50 mt-1 w-51.75 rounded-xl bg-white shadow">
               <ul>
                 <li
                   className="cursor-pointer px-4 py-2 hover:bg-gray-100"
@@ -66,7 +68,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
                     toggleUpdateBalance();
                   }}
                 >
-                  <p className={"text-[16px] font-normal"}>Add to balance</p>
+                  <p className={"text-body-l font-normal"}>Add to balance</p>
                 </li>
                 <li
                   className="cursor-pointer px-4 py-2 hover:bg-gray-100"
@@ -75,7 +77,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
                     toggleUpdateBalance();
                   }}
                 >
-                  <p className={"text-[16px] font-normal"}>Deduct from balance</p>
+                  <p className={"text-body-l font-normal"}>Deduct from balance</p>
                 </li>
               </ul>
             </div>
@@ -87,8 +89,8 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
         <div className={"border-mid-grey flex flex-col rounded-xl border p-4"}>
           <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
             <div className={"flex flex-col gap-2"}>
-              <p className={"text-text-grey text-[14px] font-normal"}>Total Amount Earned</p>
-              <p className={"font-semiBold text-black-light text-[18px]"}>
+              <p className={"text-text-grey text-body-s font-normal"}>Total Amount Earned</p>
+              <p className={"font-semiBold text-black-light text-body-xl"}>
                 ₦ {formatNumberWithCommas(userDetail?.total_amount || 0)}{" "}
               </p>
             </div>
@@ -96,8 +98,8 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
           </div>
           <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
             <div className={"flex flex-col gap-2"}>
-              <p className={"text-text-grey text-[14px] font-normal"}>Referral Earning</p>
-              <p className={"font-semiBold text-black-light text-[18px]"}>
+              <p className={"text-text-grey text-body-s font-normal"}>Referral Earning</p>
+              <p className={"font-semiBold text-black-light text-body-xl"}>
                 ₦{formatNumberWithCommas(userDetail?.referral_earning || 0)}
               </p>
             </div>
@@ -105,8 +107,8 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
           </div>
           <div className={"flex cursor-pointer justify-between p-4"}>
             <div className={"flex flex-col gap-2"}>
-              <p className={"text-text-grey text-[14px] font-normal"}>Affiliate Earning</p>
-              <p className={"font-semiBold text-black-light text-[18px]"}>
+              <p className={"text-text-grey text-body-s font-normal"}>Affiliate Earning</p>
+              <p className={"font-semiBold text-black-light text-body-xl"}>
                 ₦{formatNumberWithCommas(userDetail?.affiliate_earning || 0)}
               </p>
             </div>

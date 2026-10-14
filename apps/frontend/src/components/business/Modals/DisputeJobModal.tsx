@@ -22,20 +22,20 @@ const DisputeJobModal: React.FC<DisputeJobModalProps> = ({ isOpen, toggle, toggl
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Important"}</DialogTitle>
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="font-sans text-[24px] font-bold">Important</p>
+            <p className="text-title-l font-sans leading-normal font-bold">Important</p>
           </div>
           <div className="mt-2 flex flex-col items-center">
             <div className={"flex flex-col gap-4"}>
-              <p className="text-[14px] font-normal">
+              <p className="text-body-s font-normal">
                 It&apos;s best to avoid disputing services unless the business owner has breached
                 the terms of your agreement.
               </p>
 
-              <p className={"text-[14px] font-normal"}>To ensure your dispute is valid</p>
+              <p className={"text-body-s font-normal"}>To ensure your dispute is valid</p>
 
-              <ol className="list-decimal space-y-4 pl-5 font-sans text-[14px] font-normal">
+              <ol className="text-body-s list-decimal space-y-4 pl-5 font-sans font-normal">
                 <li>Briefly explain the issue and how the agreement was breached.</li>
                 <li>Upload clear photos as evidence.</li>
                 <li>We&apos;ll analyze your claim to determine a fair resolution.</li>

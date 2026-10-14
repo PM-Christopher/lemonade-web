@@ -25,14 +25,14 @@ const BillingHistoryClient = () => {
             onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Account settings</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Account settings</p>
           </div>
         </div>
         <section className="mt-6 flex flex-col items-center">
           {loading ? (
             <BillingHistorySkeleton count={4} />
           ) : (
-            <div className="laptop:w-[640px] flex w-full flex-col gap-10">
+            <div className="laptop:w-160 flex w-full flex-col gap-10">
               {/* Current Plan */}
               <div className="border-b-step-color bg-green-tint flex flex-col items-start justify-between gap-6 rounded-2xl border-b-4 p-6 sm:flex-row sm:items-center">
                 <div className="flex flex-col gap-2">
@@ -60,7 +60,7 @@ const BillingHistoryClient = () => {
               {/*    <div*/}
               {/*        className="flex items-center gap-3 bg-light-green-10 w-fit px-2 py-1 rounded-lg">*/}
               {/*        <div className="flex items-center gap-2 bg-light-green-50 px-3 py-2 rounded-xl">*/}
-              {/*            <MasterCardIcon className="w-[33px] h-6"/>*/}
+              {/*            <MasterCardIcon className="w-8.25 h-6"/>*/}
               {/*            <p className="font-semibold text-sm">***7829</p>*/}
               {/*        </div>*/}
               {/*        <button*/}

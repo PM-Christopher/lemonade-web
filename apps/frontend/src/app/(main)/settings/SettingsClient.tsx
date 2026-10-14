@@ -94,7 +94,7 @@ function SettingsClient() {
   return (
     <section className="mt-4 flex flex-col items-center">
       <div className="flex flex-col items-center">
-        <div className="bg-step-color laptop:w-[640px] flex w-full items-center justify-between rounded-xl p-4">
+        <div className="bg-step-color laptop:w-160 flex w-full items-center justify-between rounded-xl p-4">
           <div className="flex items-center gap-2">
             {user?.profile_image ? (
               <Image
@@ -106,31 +106,33 @@ function SettingsClient() {
               />
             ) : (
               <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
-                <p className="font-ruso text-[18px]">{getInitials(user?.fullname)}</p>
+                <p className="font-ruso text-body-xl">{getInitials(user?.fullname)}</p>
               </div>
             )}
             <div className="flex flex-col">
-              <p className="text-black-light text-[18px] font-semibold">{user?.fullname}</p>
-              <p className="font-semi-normal text-light-black text-[14px]">{user?.username}</p>
+              <p className="text-black-light text-body-xl font-semibold">{user?.fullname}</p>
+              <p className="font-semi-normal text-light-black text-body-s">{user?.username}</p>
             </div>
           </div>
           <div className="relative flex items-center justify-center">
             <Image src={images.LEMON} alt="lemon" width={33} height={41} />
-            <p className="absolute bottom-3.5 w-full text-center text-[12px] font-semibold text-black">
+            <p className="text-meta absolute bottom-3.5 w-full text-center leading-normal font-semibold text-black">
               L{splitLemonId(user?.lemon_id ?? "")}
             </p>
           </div>
         </div>
-        <div className="laptop:w-[632px] w-full rounded-br-2xl rounded-bl-2xl bg-white p-4">
-          <p className="font-semi-normal text-text-grey text-[12px]">Industry</p>
-          <p className="text-black-light text-[14px] font-normal">
+        <div className="laptop:w-158 w-full rounded-br-2xl rounded-bl-2xl bg-white p-4">
+          <p className="font-semi-normal text-text-grey text-meta leading-normal">Industry</p>
+          <p className="text-black-light text-body-s font-normal">
             {formatString(user?.industry ?? undefined)}
           </p>
-          <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Bio</p>
-          <p className="text-black-light max-w-[600px] text-[14px] font-normal">{user?.bio}</p>
+          <p className="font-semi-normal text-text-grey text-meta mt-[8x] leading-normal">Bio</p>
+          <p className="text-black-light text-body-s max-w-150 font-normal">{user?.bio}</p>
           {user?.socials && user.socials.length > 0 && (
             <>
-              <p className="font-semi-normal text-text-grey mt-[8x] text-[12px]">Socials</p>
+              <p className="font-semi-normal text-text-grey text-meta mt-[8x] leading-normal">
+                Socials
+              </p>
               <div className="bg-mid-grey flex w-fit gap-2 rounded-2xl p-1">
                 {user.socials.map((link: { name?: string; value?: string }) => (
                   <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
@@ -146,18 +148,18 @@ function SettingsClient() {
           )}
         </div>
 
-        <div className="laptop:w-[640px] mt-6 w-full rounded-xl bg-white p-4">
-          <p className="text-black-light text-[12px] font-bold">ACCOUNT</p>
+        <div className="laptop:w-160 mt-6 w-full rounded-xl bg-white p-4">
+          <p className="text-black-light text-meta leading-normal font-bold">ACCOUNT</p>
           <div>
             {accountSettings.map((item) => (
               <div
                 key={item.title}
-                className="my-[20.5px] flex cursor-pointer items-center justify-between"
+                className="my-5.25 flex cursor-pointer items-center justify-between"
                 onClick={() => openItem(item)}
               >
                 <div className="flex items-center gap-2">
                   <item.icon />
-                  <p className="text-[16px] font-normal">{item.title}</p>
+                  <p className="text-body-l font-normal">{item.title}</p>
                 </div>
                 <ChevronRight />
               </div>
@@ -165,18 +167,18 @@ function SettingsClient() {
           </div>
         </div>
 
-        <div className="laptop:w-[640px] mt-6 w-full rounded-xl bg-white p-4">
-          <p className="text-black-light text-[12px] font-bold">EARN</p>
+        <div className="laptop:w-160 mt-6 w-full rounded-xl bg-white p-4">
+          <p className="text-black-light text-meta leading-normal font-bold">EARN</p>
           <div>
             {earnSettings.map((item) => (
               <div
                 key={item.title}
-                className="my-[20.5px] flex cursor-pointer items-center justify-between"
+                className="my-5.25 flex cursor-pointer items-center justify-between"
                 onClick={() => openItem(item)}
               >
                 <div className="flex items-center gap-2">
                   <item.icon />
-                  <p className="text-[16px] font-normal">{item.title}</p>
+                  <p className="text-body-l font-normal">{item.title}</p>
                 </div>
                 <ChevronRight />
               </div>
@@ -184,18 +186,18 @@ function SettingsClient() {
           </div>
         </div>
 
-        <div className="laptop:w-[640px] mt-6 w-full rounded-xl bg-white p-4">
-          <p className="text-black-light text-[12px] font-bold">MORE</p>
+        <div className="laptop:w-160 mt-6 w-full rounded-xl bg-white p-4">
+          <p className="text-black-light text-meta leading-normal font-bold">MORE</p>
           <div>
             {moreSettings.map((item) => (
               <div
                 key={item.title}
-                className="my-[20.5px] flex cursor-pointer items-center justify-between"
+                className="my-5.25 flex cursor-pointer items-center justify-between"
                 onClick={() => openItem(item)}
               >
                 <div className="flex items-center gap-2">
                   <item.icon />
-                  <p className={`text-[16px] font-normal ${item.textColor ?? ""}`}>{item.title}</p>
+                  <p className={`text-body-l font-normal ${item.textColor ?? ""}`}>{item.title}</p>
                 </div>
                 <ChevronRight />
               </div>

@@ -84,33 +84,33 @@ const EventDetailsClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-[800px] flex-col rounded-xl bg-white"}>
+        <div className={"flex h-fit w-200 flex-col rounded-xl bg-white"}>
           <div className={"flex items-center justify-between border-b p-6"}>
-            <p className={"font-semiBold text-[16px]"}>Event summary</p>
+            <p className={"font-semiBold text-body-l"}>Event summary</p>
             {isPending || isRejected ? (
               <div className={"flex gap-3"}>
                 {isPending && (
                   <button
-                    className={"border-red-2 bg-red-1 h-11 w-[124px] rounded-xl border text-center"}
+                    className={"border-red-2 bg-red-1 h-11 w-31 rounded-xl border text-center"}
                     onClick={toggleRejectModalOpen}
                   >
-                    <p className={"text-[16px] font-medium text-white"}>Reject</p>
+                    <p className={"text-body-l font-medium text-white"}>Reject</p>
                   </button>
                 )}
                 <button
-                  className={"bg-gradient-green h-11 w-[124px] rounded-xl border text-center"}
+                  className={"bg-gradient-green h-11 w-31 rounded-xl border text-center"}
                   onClick={approveEvent}
                   disabled={approveEventMutation.isPending}
                 >
-                  <p className={"text-[16px] font-medium text-white"}>Approve</p>
+                  <p className={"text-body-l font-medium text-white"}>Approve</p>
                 </button>
               </div>
             ) : event?.event?.status !== "ACTIVE" ? (
               <button
-                className={"bg-gradient-green h-11 w-[156px] rounded-xl border text-center"}
+                className={"bg-gradient-green h-11 w-39 rounded-xl border text-center"}
                 onClick={unsuspendEvent}
               >
-                <p className={"text-[16px] font-medium text-white"}>Reactivate event</p>
+                <p className={"text-body-l font-medium text-white"}>Reactivate event</p>
               </button>
             ) : (
               <div className="relative inline-block">
@@ -120,23 +120,23 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                   }
                   onClick={handleToggleDropdown}
                 >
-                  <p className={"text-[14px] font-medium"}>Flag event</p>
+                  <p className={"text-body-s font-medium"}>Flag event</p>
                   <ChevronDown />
                 </div>
                 {dropdownOpen && (
-                  <div className="absolute top-full right-0 z-50 w-[207px] rounded-xl bg-white shadow">
+                  <div className="absolute top-full right-0 z-50 w-51.75 rounded-xl bg-white shadow">
                     <ul>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                         onClick={toggleSuspendModalOpen}
                       >
-                        <p className={"text-[16px] font-normal"}>Suspend event</p>
+                        <p className={"text-body-l font-normal"}>Suspend event</p>
                       </li>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                         onClick={toggleDeleteModalOpen}
                       >
-                        <p className={"text-red-1 text-[16px] font-normal"}>Delete event</p>
+                        <p className={"text-red-1 text-body-l font-normal"}>Delete event</p>
                       </li>
                     </ul>
                   </div>
@@ -146,125 +146,155 @@ const EventDetailsClient = ({ id }: { id: string }) => {
           </div>
           <div className={"flex flex-col gap-5 p-6"}>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Event Owner:
+                </p>
               </div>
               <div className={"flex gap-1"}>
-                <p className={"text-[14px] font-medium"}>{event?.event?.owner?.fullname}</p>
-                {/* <p className={"text-[14px] font-medium text-light-green"}>
+                <p className={"text-body-s font-medium"}>{event?.event?.owner?.fullname}</p>
+                {/* <p className={"text-body-s font-medium text-light-green"}>
                   View profile
                 </p> */}
               </div>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Event ID:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Event ID:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>EV112332</p>
+              <p className={"text-body-s font-medium"}>EV112332</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Event Status:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Event Status:
+                </p>
               </div>
-              <p className={"text-light-green-70 text-[14px] font-medium"}>
+              <p className={"text-light-green-70 text-body-s font-medium"}>
                 {capitalizeWords(event?.event?.status)}
               </p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Date Created:
+                </p>
               </div>
               <div className={"flex gap-1"}>
-                <p className={"text-[14px] font-medium"}>{event?.event?.created_at}</p>
+                <p className={"text-body-s font-medium"}>{event?.event?.created_at}</p>
               </div>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Event Category:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Event Category:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>{event?.event?.category}</p>
+              <p className={"text-body-s font-medium"}>{event?.event?.category}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Payment Settings:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Payment Settings:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>Monthly</p>
+              <p className={"text-body-s font-medium"}>Monthly</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Account Number:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Account Number:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>{event?.event?.account?.account_number}</p>
+              <p className={"text-body-s font-medium"}>{event?.event?.account?.account_number}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Account Holder:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Account Holder:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>{event?.event?.account?.name}</p>
+              <p className={"text-body-s font-medium"}>{event?.event?.account?.name}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Bank Name:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Bank Name:</p>
               </div>
-              <p className={"text-[14px] font-medium"}>{event?.event?.account?.bank}</p>
+              <p className={"text-body-s font-medium"}>{event?.event?.account?.bank}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Ticket Revenue:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Ticket Revenue:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>N300,000</p>
+              <p className={"text-body-s font-medium"}>N300,000</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Ticket Class:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Ticket Class:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>{event?.tickets.length}</p>
+              <p className={"text-body-s font-medium"}>{event?.tickets.length}</p>
             </div>
             {event?.tickets.map((ticket: EventTicket, index: number) => (
               <div className={"bg-light-grey flex flex-col gap-2 rounded-xl p-3"} key={index}>
-                <p className={"font-semiBold text-[16px]"}>
+                <p className={"font-semiBold text-body-l"}>
                   {capitalizeWords(ticket?.ticket_type)}
                 </p>
-                <p className={"text-light-black text-[12px] font-normal"}>{ticket?.description}</p>
+                <p className={"text-light-black text-meta leading-normal font-normal"}>
+                  {ticket?.description}
+                </p>
                 <div className={"items-center-center flex gap-6"}>
-                  <div className={"w-[115px]"}>
-                    <p className={"text-text-grey text-[12px] font-medium"}>Price:</p>
+                  <div className={"w-28.75"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>Price:</p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>
+                  <p className={"text-body-s font-medium"}>
                     {ticket?.price === 0 ? "-" : ticket?.price}
                   </p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>
-                  <div className={"w-[115px]"}>
-                    <p className={"text-text-grey text-[12px] font-medium"}>Ticket Stock:</p>
+                  <div className={"w-28.75"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                      Ticket Stock:
+                    </p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>{capitalizeWords(ticket?.stock_type)}</p>
+                  <p className={"text-body-s font-medium"}>{capitalizeWords(ticket?.stock_type)}</p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>
-                  <div className={"w-[115px]"}>
-                    <p className={"text-text-grey text-[12px] font-medium"}>Purchase Limit:</p>
+                  <div className={"w-28.75"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                      Purchase Limit:
+                    </p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>{ticket?.purchase_limit}</p>
+                  <p className={"text-body-s font-medium"}>{ticket?.purchase_limit}</p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>
-                  <div className={"w-[115px]"}>
-                    <p className={"text-text-grey text-[12px] font-medium"}>Tickets Sold:</p>
+                  <div className={"w-28.75"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                      Tickets Sold:
+                    </p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>{ticket?.tickets_sold}</p>
+                  <p className={"text-body-s font-medium"}>{ticket?.tickets_sold}</p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>
-                  <div className={"w-[115px]"}>
-                    <p className={"text-text-grey text-[12px] font-medium"}>Sales Revenue:</p>
+                  <div className={"w-28.75"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                      Sales Revenue:
+                    </p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>
+                  <p className={"text-body-s font-medium"}>
                     {ticket?.sales_revenue === 0 ? "-" : ticket?.sales_revenue}
                   </p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>
-                  <div className={"w-[115px]"}>
-                    <p className={"text-text-grey text-[12px] font-medium"}>Check-Ins:</p>
+                  <div className={"w-28.75"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                      Check-Ins:
+                    </p>
                   </div>
-                  <p className={"text-[14px] font-medium"}>{ticket?.check_ins}</p>
+                  <p className={"text-body-s font-medium"}>{ticket?.check_ins}</p>
                 </div>
               </div>
             ))}
@@ -272,13 +302,13 @@ const EventDetailsClient = ({ id }: { id: string }) => {
         </div>
         {/* <div
           className={
-            "w-[780px] h-fit bg-white rounded-tr-xl rounded-tl-xl flex flex-col p-6 gap-4"
+            "w-195 h-fit bg-white rounded-tr-xl rounded-tl-xl flex flex-col p-6 gap-4"
           }
         > */}
 
         <div
           className={
-            "flex h-[762px] w-full flex-col gap-4 rounded-tl-xl rounded-tr-xl bg-white p-6 lg:w-2/3"
+            "flex h-190.5 w-full flex-col gap-4 rounded-tl-xl rounded-tr-xl bg-white p-6 lg:w-2/3"
           }
         >
           <Image
@@ -286,34 +316,34 @@ const EventDetailsClient = ({ id }: { id: string }) => {
             alt={event?.event?.event_name ?? ""}
             width={320}
             height={343}
-            className={"h-[343px] w-80 rounded-2xl"}
+            className={"h-85.75 w-80 rounded-2xl"}
           />
-          <p className={"font-semiBold text-[20px]"}>{event?.event?.event_name}</p>
+          <p className={"font-semiBold text-title-r leading-normal"}>{event?.event?.event_name}</p>
           <div className={"flex flex-col gap-2"}>
             <div className={"flex items-center gap-2"}>
               <CalendarIcon className={"text-text-grey"} />
-              <p className={"text-text-grey text-[14px] font-medium"}>{event?.event?.event_date}</p>
+              <p className={"text-text-grey text-body-s font-medium"}>{event?.event?.event_date}</p>
             </div>
             <div className={"flex items-center gap-2"}>
               <ClockIcon className={"text-text-grey"} />
-              <p className={"text-text-grey text-[14px] font-medium"}>{event?.event?.event_time}</p>
+              <p className={"text-text-grey text-body-s font-medium"}>{event?.event?.event_time}</p>
             </div>
             <div className={"flex items-center gap-2"}>
               <MapPinIcon className={"text-text-grey"} />
-              <p className={"text-text-grey text-[14px] font-medium"}>{event?.event?.location}</p>
+              <p className={"text-text-grey text-body-s font-medium"}>{event?.event?.location}</p>
             </div>
           </div>
-          <p className={"font-semiBold text-[16px]"}>Contact Us</p>
-          <p className={"font-semiBold text-[16px]"}>About Event</p>
-          <p className={"text-text-grey text-[14px] font-normal"}>{event?.event?.description}</p>
-          <p className={"font-semiBold text-[16px]"}>Promotions</p>
+          <p className={"font-semiBold text-body-l"}>Contact Us</p>
+          <p className={"font-semiBold text-body-l"}>About Event</p>
+          <p className={"text-text-grey text-body-s font-normal"}>{event?.event?.description}</p>
+          <p className={"font-semiBold text-body-l"}>Promotions</p>
           <div className={"flex flex-wrap gap-3"}>
             <div
               className={
                 "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
               }
             >
-              <p className={"text-[14px] font-medium"}>IG Feed</p>
+              <p className={"text-body-s font-medium"}>IG Feed</p>
               <ChevronRight className={"text-grey-40 w-5"} />
             </div>
             <div
@@ -321,7 +351,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                 "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
               }
             >
-              <p className={"text-[14px] font-medium"}>IG Story</p>
+              <p className={"text-body-s font-medium"}>IG Story</p>
               <ChevronRight className={"text-grey-40 w-5"} />
             </div>
           </div>

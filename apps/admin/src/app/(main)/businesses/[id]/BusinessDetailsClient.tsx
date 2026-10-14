@@ -22,10 +22,10 @@ function Field({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
     <div className={"items-center-center flex gap-6"}>
-      <div className={"w-[140px]"}>
-        <p className={"text-text-grey text-[12px] font-medium"}>{label}:</p>
+      <div className={"w-35"}>
+        <p className={"text-text-grey text-meta leading-normal font-medium"}>{label}:</p>
       </div>
-      <p className={"text-[14px] font-medium"}>{value}</p>
+      <p className={"text-body-s font-medium"}>{value}</p>
     </div>
   );
 }
@@ -46,9 +46,9 @@ function BusinessDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:p-5">
-        <div className={"flex h-fit w-full max-w-[720px] flex-col rounded-xl bg-white"}>
+        <div className={"flex h-fit w-full max-w-180 flex-col rounded-xl bg-white"}>
           <div className={"flex flex-wrap items-center justify-between gap-3 border-b p-6"}>
-            <p className={"font-semiBold text-[16px]"}>Business summary</p>
+            <p className={"font-semiBold text-body-l"}>Business summary</p>
             <div className={"flex gap-2"}>
               {status === "PENDING" && (
                 <>
@@ -58,13 +58,13 @@ function BusinessDetailsClient({ id }: { id: string }) {
                     }
                     onClick={() => setApproveModalOpen(true)}
                   >
-                    <p className={"text-[16px] font-medium text-white"}>Approve</p>
+                    <p className={"text-body-l font-medium text-white"}>Approve</p>
                   </button>
                   <button
                     className={"border-red-2 bg-red-1 h-11 rounded-xl border px-5 text-center"}
                     onClick={() => setRejectModalOpen(true)}
                   >
-                    <p className={"text-[16px] font-medium text-white"}>Reject</p>
+                    <p className={"text-body-l font-medium text-white"}>Reject</p>
                   </button>
                 </>
               )}
@@ -73,7 +73,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
                   className={"border-red-2 bg-red-1 h-11 rounded-xl border px-5 text-center"}
                   onClick={() => setSuspendModalOpen(true)}
                 >
-                  <p className={"text-[16px] font-medium text-white"}>Suspend</p>
+                  <p className={"text-body-l font-medium text-white"}>Suspend</p>
                 </button>
               )}
               {(status === "SUSPENDED" || status === "REJECTED" || status === "INACTIVE") && (
@@ -83,7 +83,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
                   }
                   onClick={() => setReactivateModalOpen(true)}
                 >
-                  <p className={"text-[16px] font-medium text-white"}>Reactivate</p>
+                  <p className={"text-body-l font-medium text-white"}>Reactivate</p>
                 </button>
               )}
             </div>
@@ -120,13 +120,13 @@ function BusinessDetailsClient({ id }: { id: string }) {
             <Field label="Rejection reason" value={business?.rejection_reason} />
             {business?.description && (
               <div className={"flex flex-col gap-2"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Description</p>
-                <p className={"text-light-black text-[14px] font-normal"}>{business.description}</p>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Description</p>
+                <p className={"text-light-black text-body-s font-normal"}>{business.description}</p>
               </div>
             )}
             {business?.gallery && business.gallery.length > 0 && (
               <div className={"flex flex-col gap-2"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Gallery</p>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Gallery</p>
                 <div className={"flex flex-wrap gap-3"}>
                   {business.gallery.map((src) => (
                     <Image
@@ -135,7 +135,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
                       alt={business.name}
                       width={120}
                       height={120}
-                      className={"h-[120px] w-[120px] rounded-xl object-cover"}
+                      className={"h-30 w-30 rounded-xl object-cover"}
                     />
                   ))}
                 </div>
@@ -147,7 +147,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
           >
             <button
               className={
-                "border-light-grey-50 text-red-1 w-full rounded-xl border px-12 py-[11px] font-sans text-[14px] font-medium"
+                "border-light-grey-50 text-red-1 text-body-s w-full rounded-xl border px-12 py-2.75 font-sans font-medium"
               }
               type={"button"}
               onClick={() => setDeleteModalOpen(true)}

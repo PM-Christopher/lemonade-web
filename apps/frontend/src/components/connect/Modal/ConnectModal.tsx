@@ -96,7 +96,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
         <DialogTitle className="sr-only">{"Connect"}</DialogTitle>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:scale-95 laptop:rounded-2xl h-screen w-screen scale-100 transform overflow-y-auto rounded-none bg-white p-6 shadow-2xl transition-all duration-300 hover:scale-100"
+          className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-120 laptop:scale-95 laptop:rounded-2xl h-screen w-screen scale-100 transform overflow-y-auto rounded-none bg-white p-6 shadow-2xl transition-all duration-300 hover:scale-100"
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-100 pb-3">
@@ -108,7 +108,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
               >
                 <CloseIcon className="w-3" />
               </button>
-              <p className="text-[16px] font-semibold text-gray-800">Connect</p>
+              <p className="text-body-l font-semibold text-gray-800">Connect</p>
             </div>
           </div>
 
@@ -117,19 +117,19 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
             {/* Profile Avatar */}
             <div className="relative h-10 w-10">
               <Image src={images.LEMON} alt="lemon" width={40} height={40} />
-              <p className="absolute bottom-2 left-2 text-[12px] font-semibold text-black">
+              <p className="text-meta absolute bottom-2 left-2 leading-normal font-semibold text-black">
                 L{user?.short_lemon_id}
               </p>
             </div>
 
             {/* User Info */}
-            <p className="text-[18px] font-semibold text-gray-900">{user?.long_lemon_id}</p>
-            <p className="text-[14px] text-gray-700">{user?.username}</p>
-            <p className="text-[12px] text-gray-500">{user?.industry}</p>
+            <p className="text-body-xl font-semibold text-gray-900">{user?.long_lemon_id}</p>
+            <p className="text-body-s text-gray-700">{user?.username}</p>
+            <p className="text-meta leading-normal text-gray-500">{user?.industry}</p>
 
             {/* Distance */}
             {distance && (
-              <div className="text-mid-green mt-3 flex items-center gap-2 text-[12px]">
+              <div className="text-mid-green text-meta mt-3 flex items-center gap-2 leading-normal">
                 <LocationIcon />
                 <p>{distance}</p>
               </div>
@@ -137,19 +137,21 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
 
             {/* Already Connected */}
             {user?.hasConnected ? (
-              <p className="text-text-grey mt-6 text-[12px]">You are already connected!</p>
+              <p className="text-text-grey text-meta mt-6 leading-normal">
+                You are already connected!
+              </p>
             ) : (
               <>
                 {/* Invite Message */}
                 <div className="mt-6 grid w-full gap-2">
-                  <div className="flex justify-between text-[13px] text-gray-500">
+                  <div className="text-meta flex justify-between leading-normal text-gray-500">
                     <Label htmlFor="message">Invite message</Label>
                     <span>100 characters</span>
                   </div>
                   <textarea
                     id="message"
                     placeholder="Write a short friendly invite..."
-                    className="bg-light_grey h-[120px] w-full resize-none rounded-xl border-0 p-3 px-4 text-sm text-gray-700 transition-all outline-none focus:ring-2 focus:ring-green-400"
+                    className="bg-light_grey h-30 w-full resize-none rounded-xl border-0 p-3 px-4 text-sm text-gray-700 transition-all outline-none focus:ring-2 focus:ring-green-400"
                     {...register("message")}
                   />
                   <FieldError message={errors.message?.message} />

@@ -14,11 +14,11 @@ const BottomNav = () => {
         {navLinks.map((link, idx) => (
           <Link href={link.path} key={idx}>
             <div
-              className={`flex flex-col items-center gap-2 ${isActiveLink(pathname, link.path, true) ? "bg-light-green-10 text-light-green rounded-[8px] p-2" : "text-text-grey"} `}
+              className={`flex flex-col items-center gap-2 ${isActiveLink(pathname, link.path, true) ? "bg-light-green-10 text-light-green rounded-lg p-2" : "text-text-grey"} `}
             >
               <Image src={link.icon} alt="home" width={12.8} />
               <p
-                className={`text-[12px] leading-[14.4px] ${isActiveLink(pathname, link.path, true) ? "font-semibold" : "font-normal"}`}
+                className={`text-meta ${isActiveLink(pathname, link.path, true) ? "font-semibold" : "font-normal"}`}
               >
                 {link.name}
               </p>

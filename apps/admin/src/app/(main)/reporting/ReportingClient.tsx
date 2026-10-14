@@ -42,11 +42,11 @@ function ReportingClient() {
     <MainLayout>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>
+          <p className={"font-semiBold text-body-l"}>
             {reportData?.meta?.total ?? paginatedData?.length ?? 0} Reports
           </p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
                 <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
@@ -54,29 +54,29 @@ function ReportingClient() {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search event, ID..."
                 />
               </div>
             </div>
             <div
               className={
-                "border-grey-20 flex h-10 w-[193px] items-center justify-between rounded-xl border bg-none px-4 py-2.5"
+                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
               }
             >
               <div className={"flex items-center justify-between"}>
-                <p className={"font-semiBold text-text-grey text-[12px]"}>STATUS</p>
+                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>STATUS</p>
               </div>
               <ChevronDown className={"text-text-grey w-5"} />
             </div>
             <div
               className={
-                "border-grey-20 flex h-10 w-[193px] items-center justify-between rounded-xl border bg-none px-4 py-2.5"
+                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
               }
             >
               <div className={"flex items-center gap-2"}>
-                <CalendarIcon className={"text-text-grey h-[15px] w-[15px]"} />
-                <p className={"font-semiBold text-text-grey text-[12px]"}>ALL TIME</p>
+                <CalendarIcon className={"text-text-grey h-3.75 w-3.75"} />
+                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL TIME</p>
               </div>
               <ChevronDown className={"text-text-grey w-5"} />
             </div>
@@ -91,7 +91,7 @@ function ReportingClient() {
                   <tr className="bg-mid-grey">
                     {reportHeaders.map((header, idx) => (
                       <th
-                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
+                        className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
                         key={idx}
                       >
                         {header}
@@ -104,7 +104,7 @@ function ReportingClient() {
                     paginatedData.map((row: ReportRow, index: number) => (
                       <tr
                         key={index}
-                        className="border-grey-20 h-[72px] cursor-pointer border-b"
+                        className="border-grey-20 h-18 cursor-pointer border-b"
                         onClick={() => push(routes.REPORTING_DETAIL(row.id))}
                       >
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>

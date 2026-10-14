@@ -96,7 +96,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Welcome to Membership</DialogTitle>
-        <div className="hide-scrollbar animate-scaleIn flex max-h-[90vh] w-[640px] max-w-[92%] flex-col overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
+        <div className="hide-scrollbar animate-scaleIn flex max-h-[90vh] w-160 max-w-[92%] flex-col overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white pb-3">
             <button
@@ -110,7 +110,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
             <button
               type="button"
               onClick={toggle}
-              className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-sans text-[16px] font-medium text-white transition-all duration-300"
+              className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong text-body-l flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-sans font-medium text-white transition-all duration-300"
             >
               <span>Done</span>
             </button>
@@ -120,15 +120,15 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
           <div className="mt-8 flex flex-col gap-6">
             <div className="flex flex-col gap-2 sm:text-left">
               <div className="flex items-center gap-2">
-                <p className="text-[18px] font-semibold">{user?.fullname}</p>
+                <p className="text-body-xl font-semibold">{user?.fullname}</p>
                 <VerIcon className="h-5 w-5" />
               </div>
-              <p className="font-ruso text-black-light text-[32px] leading-tight sm:text-[40px]">
+              <p className="font-ruso text-black-light text-title-xl sm:text-display-s leading-tight sm:leading-normal">
                 Welcome to Membership
               </p>
             </div>
 
-            <p className="text-light-black text-[16px] font-medium sm:text-left">
+            <p className="text-light-black text-body-l font-medium sm:text-left">
               You&apos;ve unlocked all membership access
             </p>
 
@@ -137,7 +137,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Icon className="h-3.5 w-3.5" />
-                    <p className="text-[14px] font-medium text-gray-800">{label}</p>
+                    <p className="text-body-s font-medium text-gray-800">{label}</p>
                   </div>
 
                   {typeof value === "boolean" ? (
@@ -147,7 +147,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
                       <PadlockIcon />
                     )
                   ) : (
-                    <p className="text-text-grey text-[14px] font-normal">{value}</p>
+                    <p className="text-text-grey text-body-s font-normal">{value}</p>
                   )}
                 </div>
               ))}

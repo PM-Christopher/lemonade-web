@@ -20,9 +20,9 @@ export default function ImageCarousel({ images }: { images: string[] }) {
   return (
     <>
       {/* ======= CAROUSEL ======= */}
-      <div className="group relative mx-auto mt-4 w-full max-w-[736px] overflow-hidden rounded-xl">
+      <div className="group relative mx-auto mt-4 w-full max-w-184 overflow-hidden rounded-xl">
         <div
-          className="relative h-[300px] cursor-pointer sm:h-[400px] md:h-[450px] lg:h-[500px]"
+          className="relative h-75 cursor-pointer sm:h-100 md:h-112.5 lg:h-125"
           onClick={() => setLightboxOpen(true)}
         >
           <Image

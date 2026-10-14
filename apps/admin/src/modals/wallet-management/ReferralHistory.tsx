@@ -30,7 +30,7 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
             }}
           >
             <div>
-              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
+              <p className="tracking-custom text-body-l font-sans font-semibold">
                 Referral history
               </p>
             </div>
@@ -42,10 +42,12 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
             {referralHistoryData.map((item, index: number) => (
               <div className={"flex justify-between px-4 pt-4 pb-6"} key={index}>
                 <div className={"flex flex-col"}>
-                  <p className={"text-[14px] font-medium"}>
+                  <p className={"text-body-s font-medium"}>
                     {item.amount} - {item.type}
                   </p>
-                  <p className={"text-text-grey text-[12px] font-normal"}>{item.date}</p>
+                  <p className={"text-text-grey text-meta leading-normal font-normal"}>
+                    {item.date}
+                  </p>
                 </div>
               </div>
             ))}

@@ -60,27 +60,27 @@ const TribeDetailClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <section className="flex justify-between bg-white">
-        <div className="flex h-[780px] w-[888px] flex-col gap-4 overflow-y-auto border-r p-6">
-          <p className="text-[16px] font-semibold">Tribe threads</p>
+        <div className="flex h-195 w-222 flex-col gap-4 overflow-y-auto border-r p-6">
+          <p className="text-body-l font-semibold">Tribe threads</p>
           <AddThreadForm tribeId={id} />
           {threads.length > 0 ? (
             threads.map((thread) => (
               <MainTribeCard key={thread.id} thread={thread} onDelete={setDeleteThreadId} />
             ))
           ) : (
-            <p className="text-text-grey text-[14px] font-normal">No threads yet</p>
+            <p className="text-text-grey text-body-s font-normal">No threads yet</p>
           )}
         </div>
 
-        <div className="flex h-[780px] w-[788px] flex-col gap-6 overflow-y-auto p-6">
+        <div className="flex h-195 w-197 flex-col gap-6 overflow-y-auto p-6">
           <div className="flex items-center justify-between">
-            <p className="text-[16px] font-semibold">Tribe details</p>
+            <p className="text-body-l font-semibold">Tribe details</p>
             {isRestricted ? (
               <button
-                className="bg-gradient-green h-11 w-[156px] rounded-xl border text-center"
+                className="bg-gradient-green h-11 w-39 rounded-xl border text-center"
                 onClick={() => setReactivateModalOpen(true)}
               >
-                <p className="text-[16px] font-medium text-white">Reactivate tribe</p>
+                <p className="text-body-l font-medium text-white">Reactivate tribe</p>
               </button>
             ) : (
               <div className="relative inline-block" ref={containerRef}>
@@ -88,11 +88,11 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                   className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2.5"
                   onClick={() => setDropdownOpen((prev) => !prev)}
                 >
-                  <p className="text-[14px] font-medium">Flag tribe</p>
+                  <p className="text-body-s font-medium">Flag tribe</p>
                   <ChevronDown />
                 </div>
                 {dropdownOpen && (
-                  <div className="absolute top-full right-0 z-50 w-[207px] rounded-xl bg-white shadow">
+                  <div className="absolute top-full right-0 z-50 w-51.75 rounded-xl bg-white shadow">
                     <ul>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
@@ -101,7 +101,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                           setRestrictModalOpen(true);
                         }}
                       >
-                        <p className="text-[16px] font-normal">Restrict tribe</p>
+                        <p className="text-body-l font-normal">Restrict tribe</p>
                       </li>
                       <li
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
@@ -110,7 +110,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                           setDeleteModalOpen(true);
                         }}
                       >
-                        <p className="text-red-1 text-[16px] font-normal">Delete tribe</p>
+                        <p className="text-red-1 text-body-l font-normal">Delete tribe</p>
                       </li>
                     </ul>
                   </div>
@@ -125,7 +125,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
               onRemoveMember={(userId, name) => setRemoveMemberTarget({ userId, name })}
             />
           ) : (
-            <p className="text-text-grey text-[14px] font-normal">Loading tribe...</p>
+            <p className="text-text-grey text-body-s font-normal">Loading tribe...</p>
           )}
         </div>
       </section>

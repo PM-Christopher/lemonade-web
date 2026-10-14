@@ -41,9 +41,9 @@ const TribesClient = () => {
     <MainLayout>
       <section className="flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>{tribeListData?.tribes.length ?? 0} Tribes</p>
+          <p className={"font-semiBold text-body-l"}>{tribeListData?.tribes.length ?? 0} Tribes</p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
                 <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
@@ -51,7 +51,7 @@ const TribesClient = () => {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search Tribe, ID..."
                 />
               </div>
@@ -59,12 +59,12 @@ const TribesClient = () => {
 
             <div
               className={
-                "border-grey-20 flex h-10 w-[193px] items-center justify-between rounded-xl border bg-none px-4 py-2.5"
+                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
               }
             >
               <div className={"flex items-center gap-2"}>
-                <CalendarIcon className={"text-text-grey h-[15px] w-[15px]"} />
-                <p className={"font-semiBold text-text-grey text-[12px]"}>ALL TIME</p>
+                <CalendarIcon className={"text-text-grey h-3.75 w-3.75"} />
+                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL TIME</p>
               </div>
               <ChevronDown className={"text-text-grey w-5"} />
             </div>
@@ -73,8 +73,8 @@ const TribesClient = () => {
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
                 onClick={toggleCreateTribeModal}
               >
-                <PlusIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"}>Create Tribe</p>
+                <PlusIcon className={"h-3.75 w-3.75 text-white"} />
+                <p className={"text-body-l font-medium text-white"}>Create Tribe</p>
               </Button>
             </div>
           </div>
@@ -85,12 +85,12 @@ const TribesClient = () => {
               <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
                 {tribeViews.map((item, index) => (
                   <div
-                    className={`cursor-pointer p-1 px-2 ${menuOption === item.key && "rounded-[10px] bg-white"}`}
+                    className={`cursor-pointer p-1 px-2 ${menuOption === item.key && "rounded-lg bg-white"}`}
                     onClick={() => switchOption(item.key)}
                     key={index}
                   >
                     <p
-                      className={`font-sans leading-[24px] ${menuOption === item.key ? "text-[16px] font-semibold" : "font-semi-normal text-text-grey text-[16px]"}`}
+                      className={`font-sans leading-6 ${menuOption === item.key ? "text-body-l font-semibold" : "font-semi-normal text-text-grey text-body-l"}`}
                     >
                       {item.title}
                     </p>

@@ -106,50 +106,50 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
       case "PENDING":
         return (
           <div>
-            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <p className="text-text-grey text-body-s font-normal">Service status</p>
             <div className="bg-warning mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <ClockIconOrange />
-              <p className="font-semi-normal text-warning-bold text-[14px]">Awaiting</p>
+              <p className="font-semi-normal text-warning-bold text-body-s">Awaiting</p>
             </div>
           </div>
         );
       case "ACCEPTED":
         return (
           <div>
-            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <p className="text-text-grey text-body-s font-normal">Service status</p>
             <div className="bg-purple-1 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <CheckPIcon />
-              <p className="font-semi-normal text-blue-accent-1 text-[14px]">Accepted</p>
+              <p className="font-semi-normal text-blue-accent-1 text-body-s">Accepted</p>
             </div>
           </div>
         );
       case "REJECTED":
         return (
           <div>
-            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <p className="text-text-grey text-body-s font-normal">Service status</p>
             <div className="bg-red-accent-1 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <CloseRedIcon />
-              <p className="font-semi-normal text-red-1 text-[14px]">Rejected</p>
+              <p className="font-semi-normal text-red-1 text-body-s">Rejected</p>
             </div>
           </div>
         );
       case "IN_PROGRESS":
         return (
           <div>
-            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <p className="text-text-grey text-body-s font-normal">Service status</p>
             <div className="bg-warning mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <ClockIconOrange />
-              <p className="font-semi-normal text-warning-bold text-[14px]">In progress</p>
+              <p className="font-semi-normal text-warning-bold text-body-s">In progress</p>
             </div>
           </div>
         );
       case "COMPLETED":
         return (
           <div>
-            <p className="text-text-grey text-[14px] font-normal">Service status</p>
+            <p className="text-text-grey text-body-s font-normal">Service status</p>
             <div className="bg-light-green-60 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
               <CheckGIcon />
-              <p className="font-semi-normal text-light-green-70 text-[14px]">Completed</p>
+              <p className="font-semi-normal text-light-green-70 text-body-s">Completed</p>
             </div>
           </div>
         );
@@ -171,7 +171,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Service Details"}</DialogTitle>
-        <div className="laptop:w-[640px] w-full px-4 py-[5vh]">
+        <div className="laptop:w-160 w-full px-4 py-[5vh]">
           <div className="hide-scrollbar relative max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white shadow-lg">
             {/* Header */}
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
@@ -179,7 +179,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                 <div className="cursor-pointer" onClick={toggleMenu}>
                   <CloseIcon className="text-gray-600 transition-colors duration-200 hover:text-black" />
                 </div>
-                <p className="text-[18px] font-semibold tracking-wide text-black">
+                <p className="text-body-xl font-semibold tracking-wide text-black">
                   Service Details
                 </p>
               </div>
@@ -203,11 +203,11 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                         className="rounded-xl border border-gray-300 object-cover"
                       />
                     ) : (
-                      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-xl bg-gradient-to-r from-green-400 to-green-600 text-[24px] font-bold text-white">
+                      <div className="text-title-l flex h-18 w-18 items-center justify-center rounded-xl bg-gradient-to-r from-green-400 to-green-600 leading-normal font-bold text-white">
                         {getInitials(job?.user?.fullname)}
                       </div>
                     )}
-                    <p className="mt-3 text-center text-[16px] font-semibold text-black">
+                    <p className="text-body-l mt-3 text-center font-semibold text-black">
                       {job?.user?.username}
                     </p>
                   </>
@@ -220,14 +220,14 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                       height={72}
                       className="border-step-color h-16 rounded-xl border object-cover"
                     />
-                    <p className="mt-3 text-center text-[16px] font-semibold text-black">
+                    <p className="text-body-l mt-3 text-center font-semibold text-black">
                       {job?.name}
                     </p>
-                    <p className="mt-1 text-center text-[14px] text-gray-500">
+                    <p className="text-body-s mt-1 text-center text-gray-500">
                       {job?.city}, {formatCountry(job?.country ?? "")}
                     </p>
                     {(job?.service_rate ?? 0) > 0 && (
-                      <p className="mt-1 text-center text-[16px] font-semibold">
+                      <p className="text-body-l mt-1 text-center font-semibold">
                         N{formatNumberWithCommas(job?.service_rate ?? 0)}/hr
                       </p>
                     )}
@@ -247,8 +247,8 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
 
               {/* Amount */}
               <div>
-                <p className="text-[14px] text-gray-500">Amount</p>
-                <p className="text-[18px] font-semibold">
+                <p className="text-body-s text-gray-500">Amount</p>
+                <p className="text-body-xl font-semibold">
                   N{formatNumberWithCommas(job?.amount ?? 0)}
                 </p>
               </div>
@@ -256,8 +256,8 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               {/* Required Services */}
               {Array.isArray(job?.services) && job.services.length > 0 && (
                 <div>
-                  <p className="text-[14px] text-gray-500">Required Services</p>
-                  <p className="mt-1 text-[16px] text-black">
+                  <p className="text-body-s text-gray-500">Required Services</p>
+                  <p className="text-body-l mt-1 text-black">
                     {job.services.map((service: string, index: number) => (
                       <span key={index}>
                         {formatStringUCFirst(service)}
@@ -271,16 +271,16 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               {/* Additional Info */}
               {job?.additional_information && (
                 <div>
-                  <p className="text-[14px] text-gray-500">Additional Information</p>
-                  <p className="mt-1 text-[16px] text-black">{job?.additional_information}</p>
+                  <p className="text-body-s text-gray-500">Additional Information</p>
+                  <p className="text-body-l mt-1 text-black">{job?.additional_information}</p>
                 </div>
               )}
 
               {/* Remark */}
               {job?.remark && job?.status === "ACCEPTED" && (
                 <div className="rounded-2xl bg-gray-100 p-4">
-                  <p className="text-[14px] font-semibold text-gray-500">Remark</p>
-                  <p className="mt-1 text-[16px] text-black">{job?.remark}</p>
+                  <p className="text-body-s font-semibold text-gray-500">Remark</p>
+                  <p className="text-body-l mt-1 text-black">{job?.remark}</p>
                 </div>
               )}
 
@@ -293,7 +293,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                       className={`bg-gradient-green h-12 w-full rounded-2xl shadow-md`}
                       onClick={markCompleted}
                     >
-                      <p className="text-light-white text-[16px] font-medium">Mark as Completed</p>
+                      <p className="text-light-white text-body-l font-medium">Mark as Completed</p>
                     </Button>
                     <Button
                       className="h-12 w-full rounded-2xl border border-gray-300 bg-white font-medium text-black"
@@ -316,18 +316,18 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                 {job?.isOwner &&
                   job?.status === "ACCEPTED" &&
                   (job?.payment_made ? (
-                    <div className="laptop:w-[544px] mt-10 mb-2.5 flex w-full justify-center gap-3">
+                    <div className="laptop:w-136 mt-10 mb-2.5 flex w-full justify-center gap-3">
                       <Button className="border-light-grey-50 h-12 w-full rounded-xl border bg-white p-3.5 px-12 shadow-none">
-                        <p className="font-semi-normal text-black-light text-[16px]">Dispute Job</p>
+                        <p className="font-semi-normal text-black-light text-body-l">Dispute Job</p>
                       </Button>
                     </div>
                   ) : (
-                    <div className="laptop:w-[544px] mt-10 mb-2.5 flex w-full justify-center gap-3">
+                    <div className="laptop:w-136 mt-10 mb-2.5 flex w-full justify-center gap-3">
                       <Button
                         className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl p-3.5 px-12"
                         onClick={toggleConfirmPayment}
                       >
-                        <p className="font-semi-normal text-[16px]">Request payment</p>
+                        <p className="font-semi-normal text-body-l">Request payment</p>
                       </Button>
                     </div>
                   ))}
@@ -335,11 +335,11 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                 {job?.isOwner && job?.status === "PENDING" && (
                   <div className={"flex w-full flex-col"}>
                     <div className="flex w-full flex-col gap-2 rounded-2xl border border-gray-200 p-4">
-                      <p className="text-[14px] font-semibold">
+                      <p className="text-body-s font-semibold">
                         Include a message with your offer response
                       </p>
                       <textarea
-                        className="h-20 w-full resize-none rounded-xl bg-gray-50 p-3 text-[14px]"
+                        className="text-body-s h-20 w-full resize-none rounded-xl bg-gray-50 p-3"
                         placeholder="Write your remark..."
                         value={remark}
                         onChange={(e) => setRemark(e.target.value)}
@@ -371,7 +371,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                           />
                         </svg>
-                        <p className="font-semi-normal text-light-white text-[16px]">Loading...</p>
+                        <p className="font-semi-normal text-light-white text-body-l">Loading...</p>
                       </div>
                     ) : (
                       <div className="mt-4 flex gap-3">

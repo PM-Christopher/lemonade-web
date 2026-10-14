@@ -102,7 +102,7 @@ const PlanClient = () => {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Plan</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Plan</p>
           </div>
         </div>
 

@@ -85,15 +85,15 @@ export const SingleFileUploader = ({
       {elementImage === "" ? (
         <Dropzone onDrop={(acceptedFiles) => handleFileChange(acceptedFiles)}>
           {({ getRootProps, getInputProps }) => (
-            <section className="bg-light_grey mt-4 w-[200px] cursor-pointer rounded-xl border-2 border-dashed px-4 py-[39.5px]">
+            <section className="bg-light_grey mt-4 w-50 cursor-pointer rounded-xl border-2 border-dashed px-4 py-10">
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
-                <div className="flex w-[175.05px] flex-col items-center">
+                <div className="flex w-43.75 flex-col items-center">
                   <Image src={images.UPLOAD_IMAGE} alt="upload" width={56} height={56} />
-                  <p className="font-semi-normal tracking-custom mt-3 w-[155px] text-center font-sans text-[14px] leading-[21px]">
+                  <p className="font-semi-normal tracking-custom text-body-s mt-3 w-38.75 text-center font-sans">
                     {title}
                   </p>
-                  <p className="text-grey-40 mt-1 w-[175px] items-center text-center font-sans text-[12px] leading-[14.4px] font-normal">
+                  <p className="text-grey-40 text-meta mt-1 w-43.75 items-center text-center font-sans font-normal">
                     Files must be PNG, JPG, or JPEG format, under 2MB.
                   </p>
                 </div>
@@ -102,7 +102,7 @@ export const SingleFileUploader = ({
           )}
         </Dropzone>
       ) : (
-        <div className="relative inline-block h-[200px] w-[200px]">
+        <div className="relative inline-block h-50 w-50">
           <Image
             src={elementImage}
             alt="event_image"

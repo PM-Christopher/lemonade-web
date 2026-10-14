@@ -215,13 +215,11 @@ const TribeClient = ({ id }: { id: string }) => {
               <ChevronLeft />
             </div>
             <div>
-              <p className="font-sans text-[16px] leading-[24px] font-semibold">
-                {tribe?.tribe_name}
-              </p>
+              <p className="text-body-l font-sans font-semibold">{tribe?.tribe_name}</p>
             </div>
           </div>
           <div className="flex items-center justify-between gap-2.5">
-            <div className="bg-light_grey tablet:w-[300px] flex h-10 w-[247px] items-center gap-3 rounded-xl px-4">
+            <div className="bg-light_grey tablet:w-75 flex h-10 w-61.75 items-center gap-3 rounded-xl px-4">
               <div>
                 <SearchIcon />
               </div>
@@ -229,7 +227,7 @@ const TribeClient = ({ id }: { id: string }) => {
                 <input
                   id="search"
                   type="text"
-                  className="bg-light_grey w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light_grey text-body-s w-full rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search thread"
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -238,11 +236,11 @@ const TribeClient = ({ id }: { id: string }) => {
             <Select onValueChange={sortThreads}>
               <SelectTrigger
                 aria-label="Sort threads"
-                className="bg-mid-grey h-10 w-[180px] rounded-xl border-0 px-4"
+                className="bg-mid-grey h-10 w-45 rounded-xl border-0 px-4"
               >
                 <SelectValue
                   placeholder={
-                    <span className="text-text-grey font-sans text-[12px] leading-[14.4px] font-semibold">
+                    <span className="text-text-grey text-meta font-sans font-semibold">
                       Select Option
                     </span>
                   }
@@ -258,7 +256,7 @@ const TribeClient = ({ id }: { id: string }) => {
         </div>
         <div className="mt-4 flex justify-around">
           {/* Left Content Section */}
-          <div className="laptop:px-10 flex w-full max-w-[1000px] flex-col px-4">
+          <div className="laptop:px-10 flex w-full max-w-250 flex-col px-4">
             {/* Pinned Threads */}
             {pinnedThreads?.length > 0 && (
               <div className="bg-grey-20 flex flex-wrap items-center justify-start gap-3 rounded-lg p-3">
@@ -268,7 +266,7 @@ const TribeClient = ({ id }: { id: string }) => {
                     onClick={() => handleScroll(pinned.id)}
                     className="hover:bg-grey-10 flex items-center gap-2 rounded-md bg-white px-3 py-2 transition"
                   >
-                    <p className="max-w-[150px] truncate text-sm font-semibold text-gray-800">
+                    <p className="max-w-37.5 truncate text-sm font-semibold text-gray-800">
                       {pinned.topic}
                     </p>
                     <PinnedIcon className="w-3 text-gray-600" />
@@ -308,7 +306,7 @@ const TribeClient = ({ id }: { id: string }) => {
 
             {/* Monetized Tribe Overlay */}
             {tribe && !tribe.has_joined && tribe.monetized && (
-              <div className="fixed bottom-0 left-0 z-50 flex h-[130px] w-full flex-col items-center justify-center gap-3 bg-white/60 backdrop-blur-md">
+              <div className="fixed bottom-0 left-0 z-50 flex h-32.5 w-full flex-col items-center justify-center gap-3 bg-white/60 backdrop-blur-md">
                 <div className="flex items-center gap-2 text-gray-700">
                   <PadlockIcon />
                   <p>Paid Tribe</p>
@@ -385,10 +383,10 @@ const TribeClient = ({ id }: { id: string }) => {
       </div>
       {isMobile && (
         <div
-          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-[150px] flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full p-4 text-white"
+          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-37.5 flex h-15 w-15 cursor-pointer items-center justify-center rounded-full p-4 text-white"
           onClick={activateCreateThreadModal}
         >
-          <EditIcon className="h-[19px] w-[19px]" />
+          <EditIcon className="h-4.75 w-4.75" />
         </div>
       )}
     </MainLayout>

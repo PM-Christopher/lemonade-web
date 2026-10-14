@@ -72,16 +72,26 @@ function ForumClient() {
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex gap-4 px-5"}>
           <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
-            <p className={"font-semiBold text-text-grey text-[12px]"}>PENDING EVENTS</p>
-            <p className={"font-semiBold text-[20px]"}>{queue?.pending_events.count ?? 0}</p>
+            <p className={"font-semiBold text-text-grey text-meta leading-normal"}>
+              PENDING EVENTS
+            </p>
+            <p className={"font-semiBold text-title-r leading-normal"}>
+              {queue?.pending_events.count ?? 0}
+            </p>
           </div>
           <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
-            <p className={"font-semiBold text-text-grey text-[12px]"}>PENDING BUSINESSES</p>
-            <p className={"font-semiBold text-[20px]"}>{queue?.pending_businesses.count ?? 0}</p>
+            <p className={"font-semiBold text-text-grey text-meta leading-normal"}>
+              PENDING BUSINESSES
+            </p>
+            <p className={"font-semiBold text-title-r leading-normal"}>
+              {queue?.pending_businesses.count ?? 0}
+            </p>
           </div>
           <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
-            <p className={"font-semiBold text-text-grey text-[12px]"}>OPEN REPORTS</p>
-            <p className={"font-semiBold text-[20px]"}>{queue?.open_reports.count ?? 0}</p>
+            <p className={"font-semiBold text-text-grey text-meta leading-normal"}>OPEN REPORTS</p>
+            <p className={"font-semiBold text-title-r leading-normal"}>
+              {queue?.open_reports.count ?? 0}
+            </p>
           </div>
         </div>
 
@@ -91,7 +101,7 @@ function ForumClient() {
               <button
                 key={tab.type}
                 onClick={() => switchType(tab.type)}
-                className={`h-10 rounded-xl border px-4 text-[14px] font-medium ${
+                className={`text-body-s h-10 rounded-xl border px-4 font-medium ${
                   activeType === tab.type
                     ? "border-light-green-tint bg-light-tint"
                     : "border-grey-20 bg-white"
@@ -102,12 +112,12 @@ function ForumClient() {
             ))}
           </div>
           <div className={"flex gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-[285px] items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
               <SearchIcon className={"text-grey-40 h-3 w-3"} />
               <input
                 id="search"
                 type="text"
-                className="bg-light-grey w-full rounded-xl py-4 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                 placeholder="Search content..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
@@ -117,7 +127,7 @@ function ForumClient() {
               onClick={() =>
                 setSearchParams({ deleted: showRemoved ? undefined : "1", page: undefined })
               }
-              className={`h-10 rounded-xl border px-4 text-[14px] font-medium ${
+              className={`text-body-s h-10 rounded-xl border px-4 font-medium ${
                 showRemoved ? "border-light-green-tint bg-light-tint" : "border-grey-20 bg-white"
               }`}
             >
@@ -134,7 +144,7 @@ function ForumClient() {
                   <tr className="bg-mid-grey">
                     {moderationContentHeaders.map((header, idx) => (
                       <th
-                        className="font-semiBold text-text-grey p-4 text-left text-[12px]"
+                        className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
                         key={idx}
                       >
                         {header}
@@ -148,7 +158,7 @@ function ForumClient() {
                       const isDeleted = row.deleted_at !== null;
 
                       return (
-                        <tr key={row.id} className="border-grey-20 h-[72px] border-b">
+                        <tr key={row.id} className="border-grey-20 h-18 border-b">
                           <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>
                           <td className={"max-w-80 truncate p-4 font-sans text-sm font-medium"}>
                             {row.title ?? row.body ?? "—"}

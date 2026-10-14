@@ -31,7 +31,7 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Payment successful!"}</DialogTitle>
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
@@ -46,51 +46,47 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-light-green text-center font-sans text-[20px] leading-[28px] font-semibold">
+              <p className="text-light-green text-title-r text-center font-sans font-semibold">
                 Payment successful!
               </p>
-              <p className="tracking-custom text-light-black text-center font-sans text-[14px] leading-[24px] font-normal">
+              <p className="tracking-custom text-light-black text-body-s text-center font-sans leading-6 font-normal">
                 Tickets have been sent to the email addresses of all the attending guests.
               </p>
             </div>
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="font-sans text-[20px] leading-[20px] font-semibold">
+              <p className="text-title-r font-sans leading-5 font-semibold">
                 {event?.data?.event?.event_name}
               </p>
             </div>
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
-                Date
-              </p>
-              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+              <p className="text-text-grey text-body-s font-sans leading-5 font-normal">Date</p>
+              <p className="font-semi-normal tracking-custom text-body-s font-sans">
                 {moment(event?.data?.event?.start_date).format("ddd, MMM DD").toUpperCase()}
               </p>
             </div>
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-text-grey font-sans text-[14px] leading-[20px] font-normal">
-                Time
-              </p>
-              <p className="text-light-black-[20px] font-semi-normal tracking-custom font-sans text-[14px] leading-[21px]">
+              <p className="text-text-grey text-body-s font-sans leading-5 font-normal">Time</p>
+              <p className="font-semi-normal tracking-custom text-body-s font-sans">
                 {moment(event?.data?.event?.start_date).format("h A").toUpperCase()}
               </p>
             </div>
           </div>
           {/*<div className="mt-6">*/}
           {/*    <div className="flex flex-col">*/}
-          {/*        <p className="font-sans font-normal text-[14px] text-text-grey leading-[20px]">Ticket Type</p>*/}
-          {/*        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">1</p>*/}
+          {/*        <p className="font-sans font-normal text-body-s text-text-grey leading-5">Ticket Type</p>*/}
+          {/*        <p className="font-sans font-semi-normal text-body-s tracking-custom">1</p>*/}
           {/*    </div>*/}
           {/*</div>*/}
           {/*<div className="mt-6">*/}
           {/*    <div className="flex flex-col">*/}
-          {/*        <p className="font-sans font-normal text-[14px] text-text-grey leading-[20px]">Ticket ID</p>*/}
-          {/*        <p className="font-sans font-semi-normal text-[14px] text-light-black-[20px] tracking-custom leading-[21px]">₦500,000</p>*/}
+          {/*        <p className="font-sans font-normal text-body-s text-text-grey leading-5">Ticket ID</p>*/}
+          {/*        <p className="font-sans font-semi-normal text-body-s tracking-custom">₦500,000</p>*/}
           {/*    </div>*/}
           {/*</div>*/}
           <div className="mt-10 flex gap-1">
@@ -98,13 +94,13 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
               onClick={toggle}
             >
-              <p className="font-semi-normal text-black-light font-sans text-[16px]">More events</p>
+              <p className="font-semi-normal text-black-light text-body-l font-sans">More events</p>
             </button>
             <button
               className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggleMore}
             >
-              <p className="font-semi-normal font-sans text-[16px] text-white">My tickets</p>
+              <p className="font-semi-normal text-body-l font-sans text-white">My tickets</p>
             </button>
           </div>
         </div>

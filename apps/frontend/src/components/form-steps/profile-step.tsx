@@ -110,17 +110,17 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
+      <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-border-grey h-0.5 w-[15px]" />
-            <div className="bg-border-grey h-0.5 w-[15px]" />
-            <div className="bg-border-grey h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-border-grey h-0.5 w-3.75" />
+            <div className="bg-border-grey h-0.5 w-3.75" />
+            <div className="bg-border-grey h-0.5 w-3.75" />
           </div>
           <div>
-            <p className="font-sans text-[24px] font-semibold">Profile set up</p>
-            <p className="text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+            <p className="text-title-l font-sans leading-normal font-semibold">Profile set up</p>
+            <p className="text-text-grey text-body-s font-sans font-normal">
               Share a brief introduction about yourself, and your <br /> professional background.
             </p>
           </div>
@@ -182,7 +182,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
             <Textarea
               id="bio"
               placeholder="A short bio about yourself..."
-              className="form-font bg-light_grey h-[99px] gap-2.5 rounded-xl border-0"
+              className="form-font bg-light_grey h-24.75 gap-2.5 rounded-xl border-0"
               {...register("bio")}
             />
             <FieldError message={errors.bio?.message} />

@@ -117,7 +117,7 @@ function WalletSettingsClient() {
             onClick={() => push(routes.SETTINGS)}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Wallet</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Wallet</p>
           </div>
         </div>
 
@@ -125,24 +125,24 @@ function WalletSettingsClient() {
           {loading ? (
             <WalletDetailSkeleton />
           ) : (
-            <div className="laptop:w-[580px] flex w-full flex-col">
+            <div className="laptop:w-145 flex w-full flex-col">
               <div className="flex flex-col rounded-xl bg-white p-4">
                 <div className="border-b-mid-grey flex flex-col border-b p-4">
-                  <p className="text-text-grey text-[14px] font-normal">Total Amount Earned</p>
-                  <p className="tracking-custom text-[18px] font-semibold">
+                  <p className="text-text-grey text-body-s font-normal">Total Amount Earned</p>
+                  <p className="tracking-custom text-body-xl font-semibold">
                     N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                   </p>
                 </div>
                 <div className="border-b-mid-grey flex items-center justify-between border-b p-4">
                   <div className="flex flex-col">
-                    <p className="text-text-grey text-[14px] font-normal">Points balance</p>
-                    <p className="tracking-custom text-[18px] font-semibold">
+                    <p className="text-text-grey text-body-s font-normal">Points balance</p>
+                    <p className="tracking-custom text-body-xl font-semibold">
                       {formatNumberWithCommas(data?.points_balance || 0)} pts
                     </p>
                   </div>
                   {(data?.points_balance ?? 0) > 0 && (
                     <Button
-                      className="bg-light-tint h-9 rounded-xl px-4 text-[13px] font-semibold"
+                      className="bg-light-tint text-meta h-9 rounded-xl px-4 leading-normal font-semibold"
                       onClick={handleRedeemPoints}
                       disabled={redeemPointsMutation.isPending}
                     >
@@ -152,8 +152,8 @@ function WalletSettingsClient() {
                 </div>
                 <div className="flex justify-between p-4">
                   <div className="flex flex-col">
-                    <p className="text-text-grey text-[14px] font-normal">Rewards earned</p>
-                    <p className="tracking-custom text-[18px] font-semibold">
+                    <p className="text-text-grey text-body-s font-normal">Rewards earned</p>
+                    <p className="tracking-custom text-body-xl font-semibold">
                       N{formatNumberWithCommas(Number(data?.rewards_earned) || 0)}
                     </p>
                   </div>
@@ -162,7 +162,7 @@ function WalletSettingsClient() {
               </div>
               {data?.payout_request && (
                 <div className="bg-light-tint mt-6 flex flex-col rounded-xl p-4">
-                  <p className="text-light-black text-[16px] font-normal">
+                  <p className="text-light-black text-body-l font-normal">
                     Commission payouts are available when you&apos;ve earned over ₦100,000
                   </p>
                   <Button
@@ -196,10 +196,10 @@ function WalletSettingsClient() {
                             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                           />
                         </svg>
-                        <p className={"font-semi-normal text-[16px]"}>Loading...</p>
+                        <p className={"font-semi-normal text-body-l"}>Loading...</p>
                       </>
                     ) : (
-                      <p className={"font-semi-normal text-[16px]"}>Request pay out</p>
+                      <p className={"font-semi-normal text-body-l"}>Request pay out</p>
                     )}
                   </Button>
                 </div>
@@ -207,9 +207,9 @@ function WalletSettingsClient() {
             </div>
           )}
           <div>
-            <div className="laptop:min-w-[684px] flex w-full flex-col rounded-xl bg-white">
+            <div className="laptop:min-w-171 flex w-full flex-col rounded-xl bg-white">
               <div className="border-b p-4">
-                <p className="text-[16px] font-semibold">Payout history</p>
+                <p className="text-body-l font-semibold">Payout history</p>
               </div>
               {loading ? (
                 <TransactionHistorySkeleton count={4} />
@@ -218,49 +218,55 @@ function WalletSettingsClient() {
                   {data?.payout_history?.map((history, index: number) => (
                     <div className="flex items-center justify-between pt-4 pb-6" key={index}>
                       <div className="flex flex-col">
-                        <p className="font-semi-normal text-[14px]">
+                        <p className="font-semi-normal text-body-s">
                           N{formatNumberWithCommas(Number(history?.amount) || 0)}
                         </p>
-                        <p className="text-text-grey text-[12px] font-normal">{history?.date}</p>
+                        <p className="text-text-grey text-meta leading-normal font-normal">
+                          {history?.date}
+                        </p>
                       </div>
                       {history?.status === "processing" && (
-                        <div className="bg-warning rounded-[8px] px-2 py-1">
-                          <p className="font-semi-normal text-warning-bold text-[12px]">
+                        <div className="bg-warning rounded-lg px-2 py-1">
+                          <p className="font-semi-normal text-warning-bold text-meta leading-normal">
                             Processing
                           </p>
                         </div>
                       )}
                       {history?.status === "completed" ||
                         (history?.status === "successful" && (
-                          <div className="bg-light-green-60 rounded-[8px] px-2 py-1">
-                            <p className="font-semi-normal text-light-green-70 text-[12px]">
+                          <div className="bg-light-green-60 rounded-lg px-2 py-1">
+                            <p className="font-semi-normal text-light-green-70 text-meta leading-normal">
                               Completed
                             </p>
                           </div>
                         ))}
                       {history?.status === "failed" && (
-                        <div className="bg-red-3 rounded-[8px] px-2 py-1">
-                          <p className="font-semi-normal text-red-1 text-[12px]">Failed</p>
+                        <div className="bg-red-3 rounded-lg px-2 py-1">
+                          <p className="font-semi-normal text-red-1 text-meta leading-normal">
+                            Failed
+                          </p>
                         </div>
                       )}
                       {history?.status === "pending" && (
-                        <div className="bg-warning rounded-[8px] px-2 py-1">
-                          <p className="font-semi-normal text-warning-bold text-[12px]">Pending</p>
+                        <div className="bg-warning rounded-lg px-2 py-1">
+                          <p className="font-semi-normal text-warning-bold text-meta leading-normal">
+                            Pending
+                          </p>
                         </div>
                       )}
                     </div>
                   ))}
                   {/*<div className="pt-4 pb-6 flex justify-between items-center">*/}
                   {/*    <div className="flex flex-col">*/}
-                  {/*        <p className="font-semi-normal text-[14px]">N2,000</p>*/}
-                  {/*        <p className="font-normal text-[12px] text-text-grey">23 Mar, 2023 05:00PM</p>*/}
+                  {/*        <p className="font-semi-normal text-body-s">N2,000</p>*/}
+                  {/*        <p className="font-normal text-meta leading-normal text-text-grey">23 Mar, 2023 05:00PM</p>*/}
                   {/*    </div>*/}
 
                   {/*</div>*/}
                   {/*<div className="pt-4 pb-6 flex justify-between items-center">*/}
                   {/*    <div className="flex flex-col">*/}
-                  {/*        <p className="font-semi-normal text-[14px]">N2,000</p>*/}
-                  {/*        <p className="font-normal text-[12px] text-text-grey">23 Mar, 2023 05:00PM</p>*/}
+                  {/*        <p className="font-semi-normal text-body-s">N2,000</p>*/}
+                  {/*        <p className="font-normal text-meta leading-normal text-text-grey">23 Mar, 2023 05:00PM</p>*/}
                   {/*    </div>*/}
 
                   {/*</div>*/}

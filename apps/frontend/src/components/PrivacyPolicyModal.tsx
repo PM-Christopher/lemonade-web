@@ -17,16 +17,14 @@ const PrivacyPolicyModal: React.FC<PrivacyPolicyInterface> = ({ toggle, option }
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Privacy policy"}</DialogTitle>
-        <div className="flex h-[90vh] w-full max-w-[800px] flex-col overflow-hidden rounded-lg bg-white shadow-lg">
+        <div className="flex h-[90vh] w-full max-w-200 flex-col overflow-hidden rounded-lg bg-white shadow-lg">
           {/* Header */}
           <div className="flex items-center justify-between border-b p-4">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
               </div>
-              <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
-                Privacy policy
-              </p>
+              <p className="tracking-custom text-body-xl font-sans font-semibold">Privacy policy</p>
             </div>
           </div>
 

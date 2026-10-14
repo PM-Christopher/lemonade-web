@@ -36,13 +36,13 @@ const JobsClient = ({ id }: { id: number }) => {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Jobs</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Jobs</p>
           </div>
         </div>
         <section className="mt-6 flex flex-col items-center">
-          <div className="laptop:flex-row flex w-full max-w-[1280px] flex-col gap-6">
+          <div className="laptop:flex-row flex w-full max-w-320 flex-col gap-6">
             {/* Stats Card */}
-            <div className="laptop:w-[580px] w-full">
+            <div className="laptop:w-145 w-full">
               <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
                 {[
                   {
@@ -54,9 +54,9 @@ const JobsClient = ({ id }: { id: number }) => {
                   { label: "Requests", value: data?.count?.sent_offers },
                 ].map((item, index, arr) => (
                   <div key={item.label} className="py-3">
-                    <p className="text-text-grey text-[14px] font-normal">{item.label}</p>
+                    <p className="text-text-grey text-body-s font-normal">{item.label}</p>
 
-                    <p className="tracking-custom mt-1 text-[22px] leading-[32px] font-semibold">
+                    <p className="tracking-custom text-title-r mt-1 leading-8 font-semibold">
                       {item.value}
                     </p>
 
@@ -70,13 +70,13 @@ const JobsClient = ({ id }: { id: number }) => {
             </div>
 
             {/* Jobs Section */}
-            <div className="laptop:w-[684px] flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div className="laptop:w-171 flex w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               {/* Tabs */}
               <div className="border-grey-20 relative flex-shrink-0 border-b px-6 pt-5">
                 <div className="relative flex justify-between">
                   {/* Animated Underline */}
                   <div
-                    className="bg-step-color absolute bottom-0 h-[3px] rounded-full transition-all duration-300"
+                    className="bg-step-color absolute bottom-0 h-0.75 rounded-full transition-all duration-300"
                     style={{
                       width: "33.33%",
                       transform: `translateX(${
@@ -99,7 +99,7 @@ const JobsClient = ({ id }: { id: number }) => {
                         className={`laptop:w-[33%] flex h-10 w-full cursor-pointer items-center justify-center bg-transparent transition-all duration-200`}
                       >
                         <p
-                          className={`tracking-custom font-sans text-[14px] leading-[21px] transition-all duration-200 ${isActive ? "font-semibold text-black" : "text-text-grey hover:text-black"}`}
+                          className={`tracking-custom text-body-s font-sans transition-all duration-200 ${isActive ? "font-semibold text-black" : "text-text-grey hover:text-black"}`}
                         >
                           {tab.label}
                         </p>

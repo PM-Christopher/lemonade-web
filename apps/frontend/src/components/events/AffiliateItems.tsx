@@ -17,7 +17,7 @@ const AffiliateItems = ({ event }: { event: EventInterface }) => {
         {/* Left: image + content */}
         <div className="flex min-w-0 gap-3">
           {/* Image */}
-          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-[84px] sm:w-[84px]">
+          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-21 sm:w-21">
             <Image
               src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
               alt={event?.event_name ?? "event"}
@@ -29,7 +29,7 @@ const AffiliateItems = ({ event }: { event: EventInterface }) => {
 
           {/* Content */}
           <div className="flex min-w-0 flex-col">
-            <p className="text-black-light truncate font-sans text-[14px] leading-[1.3] font-semibold sm:text-[15px]">
+            <p className="text-black-light text-body-s sm:text-body-s truncate font-sans leading-[1.3] font-semibold">
               {event?.event_name}
             </p>
 
@@ -37,14 +37,14 @@ const AffiliateItems = ({ event }: { event: EventInterface }) => {
             <div className="text-text-grey mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="inline-flex items-center gap-1">
                 <CalendarIcon className="h-4 w-4" />
-                <span className="font-sans text-[12px] leading-[1.2] font-normal sm:text-[13px]">
+                <span className="text-meta sm:text-meta font-sans leading-[1.2] font-normal sm:leading-normal">
                   {formatDate(event?.start_date)}
                 </span>
               </span>
 
               <span className="text-text-grey/60 hidden sm:inline">•</span>
 
-              <span className="font-sans text-[12px] leading-[1.2] font-normal sm:text-[13px]">
+              <span className="text-meta sm:text-meta font-sans leading-[1.2] font-normal sm:leading-normal">
                 {formatLongTime(event?.start_date)} – {formatLongTime(event?.end_date)}
               </span>
             </div>
@@ -52,7 +52,7 @@ const AffiliateItems = ({ event }: { event: EventInterface }) => {
             {/* Location */}
             <div className="text-text-grey mt-2 flex min-w-0 items-center gap-1">
               <LocationIcon className="h-4 w-4 shrink-0" />
-              <p className="truncate font-sans text-[12px] leading-[1.2] font-normal sm:text-[13px]">
+              <p className="text-meta sm:text-meta truncate font-sans leading-[1.2] font-normal sm:leading-normal">
                 {event?.location}
               </p>
             </div>

@@ -17,7 +17,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
     <div className="w-full overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md">
       <div className="relative w-full">
         {/* Use fill to take full card width */}
-        <div className="relative h-[130px] w-full bg-gray-100 sm:h-[140px]">
+        <div className="relative h-32.5 w-full bg-gray-100 sm:h-35">
           <Image
             src={getSafeImageSrc(business?.image, images.BUSINESS_1)}
             alt="Main Image"
@@ -45,17 +45,17 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div className="flex min-w-0 justify-between">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-light-black truncate font-sans text-[14px] leading-[21px] font-semibold">
+              <p className="text-light-black text-body-s truncate font-sans font-semibold">
                 {business.name}
               </p>
               <DotIcon className="w-1 shrink-0" />
-              <p className="text-light-black truncate font-sans text-[12px] font-normal">
+              <p className="text-light-black text-meta truncate font-sans leading-normal font-normal">
                 {business.city}, {formatCountry(business.country)}
               </p>
             </div>
             <div className="bg-mid-grey flex items-center gap-1 self-start rounded-xl p-2 sm:self-center">
               <Image src={medal} alt="medal" width={16} height={16} />
-              <p className="font-semi-normal text-primary-black font-sans text-[14px] leading-[21px]">
+              <p className="font-semi-normal text-primary-black text-body-s font-sans">
                 {formatNumber(business.rating, 1)}
               </p>
             </div>
@@ -66,7 +66,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
           <div className="flex flex-wrap items-center gap-2">
             {!!business.services?.[0] && (
               <div className="bg-grey-20 rounded-full p-2 px-3">
-                <p className="font-semi-normal text-text-grey font-sans text-[14px] leading-[21px]">
+                <p className="font-semi-normal text-text-grey text-body-s font-sans">
                   {business.services[0]}
                 </p>
               </div>
@@ -74,14 +74,14 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
 
             {business.services?.length > 1 && (
               <div className="bg-grey-20 rounded-full p-2 px-3">
-                <p className="font-semi-normal text-text-grey font-sans text-[14px] leading-[21px]">
+                <p className="font-semi-normal text-text-grey text-body-s font-sans">
                   +{business.services.length - 1}
                 </p>
               </div>
             )}
           </div>
 
-          <p className="font-sans text-[16px] font-semibold whitespace-nowrap">
+          <p className="text-body-l font-sans font-semibold whitespace-nowrap">
             ₦{formatNumberWithCommas(business.service_rate)}/hr
           </p>
         </div>

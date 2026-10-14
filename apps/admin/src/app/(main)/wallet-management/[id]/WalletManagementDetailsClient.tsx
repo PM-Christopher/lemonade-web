@@ -69,7 +69,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-[600px] flex-col gap-5 rounded-xl bg-white p-6"}>
+        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
           {/* <div
             className={"w-16 h-16 rounded-full bg-light-black"}
           ></div> */}
@@ -79,15 +79,15 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
               .filter(([key]) => key !== "amount") // Exclude 'amount'
               .map(([key, value]) => (
                 <div key={key} className="flex items-center gap-6">
-                  <div className="w-[115px]">
-                    <p className="text-text-grey text-[12px] font-medium">
+                  <div className="w-28.75">
+                    <p className="text-text-grey text-meta leading-normal font-medium">
                       {capitalizeWords(key.replace(/_/g, " "))}:
                     </p>
                   </div>
                   {walletLoading ? (
                     <SkeletonLoader />
                   ) : (
-                    <p className="text-[14px] font-medium">
+                    <p className="text-body-s font-medium">
                       {key === "date_paid"
                         ? dayjs(value as string).format("YYYY-MM-DD hh:mm:ssA")
                         : formatValue(value)}
@@ -98,8 +98,8 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
           ) : (
             <>
               {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="flex items-center gap-[50px]">
-                  <div className="w-[115px]">
+                <div key={index} className="flex items-center gap-12.5">
+                  <div className="w-28.75">
                     {/* Skeleton for the label */}
                     <SkeletonLoader />
                   </div>
@@ -114,27 +114,27 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
           {walletDetail && walletDetail?.info?.status?.toLowerCase() !== "approved" && (
             <div className={"flex justify-between gap-4"}>
               <button
-                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
+                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-2.75"}
                 onClick={toggleWithdrawalReject}
               >
-                <p className={"text-[16px] font-medium text-black"}>Reject withdrawal</p>
+                <p className={"text-body-l font-medium text-black"}>Reject withdrawal</p>
               </button>
               <button
                 className={
-                  "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
+                  "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-2.75"
                 }
                 onClick={toggleWithdrawalAction}
               >
-                <p className={"text-[16px] font-medium text-white"}>Approve Withdrawal</p>
+                <p className={"text-body-l font-medium text-white"}>Approve Withdrawal</p>
               </button>
             </div>
           )}
         </div>
 
         {/* details */}
-        <div className={"flex h-[762px] w-full flex-col rounded-xl bg-white lg:w-2/3"}>
+        <div className={"flex h-190.5 w-full flex-col rounded-xl bg-white lg:w-2/3"}>
           <div className={"border-b-grey-20 border-b p-6"}>
-            <p className={"font-semiBold text-[16px]"}>Wallet summary</p>
+            <p className={"font-semiBold text-body-l"}>Wallet summary</p>
           </div>
           <div className={"px-6 pt-6 pb-3"}>
             <div
@@ -144,7 +144,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
               onClick={toggleUpdateBalance}
             >
               <div className={"flex items-center justify-between"}>
-                <p className={"text-[14px] font-medium"}>Update Balance</p>
+                <p className={"text-body-s font-medium"}>Update Balance</p>
               </div>
               <ChevronDown className={"w-5"} />
             </div>
@@ -153,8 +153,8 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
             <div className={"border-mid-grey flex flex-col rounded-xl border-2 p-4"}>
               <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
                 <div className={"flex flex-col gap-2"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Total amount earned</p>
-                  <p className={"font-semiBold text-[18px]"}>
+                  <p className={"text-text-grey text-body-s font-normal"}>Total amount earned</p>
+                  <p className={"font-semiBold text-body-xl"}>
                     ₦ {formatNumberWithCommas(walletDetail?.history[0]?.wallet?.balance || 0)}
                   </p>
                 </div>
@@ -162,15 +162,15 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
               </div>
               <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
                 <div className={"flex flex-col gap-2"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Referral earning</p>
-                  <p className={"font-semiBold text-[18px]"}> ₦ {formatNumberWithCommas(0)}</p>
+                  <p className={"text-text-grey text-body-s font-normal"}>Referral earning</p>
+                  <p className={"font-semiBold text-body-xl"}> ₦ {formatNumberWithCommas(0)}</p>
                 </div>
                 <ChevronRight className={"cursor-pointer"} />
               </div>
               <div className={"flex cursor-pointer justify-between p-4"}>
                 <div className={"flex flex-col gap-2"}>
-                  <p className={"text-text-grey text-[14px] font-normal"}>Affiliate earning</p>
-                  <p className={"font-semiBold text-[18px]"}> ₦ {formatNumberWithCommas(0)}</p>
+                  <p className={"text-text-grey text-body-s font-normal"}>Affiliate earning</p>
+                  <p className={"font-semiBold text-body-xl"}> ₦ {formatNumberWithCommas(0)}</p>
                 </div>
                 <ChevronRight className={"cursor-pointer"} />
               </div>

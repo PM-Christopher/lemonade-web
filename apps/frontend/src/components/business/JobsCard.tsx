@@ -90,8 +90,8 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                       className="border-step-color h-10 w-10 rounded-xl border object-cover"
                     />
                     <div className="flex flex-col">
-                      <p className="text-[15px] font-semibold text-black">{job?.name}</p>
-                      <p className="text-text-grey mt-1 text-[13px]">
+                      <p className="text-body-s font-semibold text-black">{job?.name}</p>
+                      <p className="text-text-grey text-meta mt-1 leading-normal">
                         {job?.city}, {formatCountry(job?.country ?? "")}
                       </p>
                     </div>
@@ -108,14 +108,14 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                           <div className="flex flex-wrap gap-2">
                             {job.services[0] && (
                               <div className="bg-grey-20 max-w-max rounded-full px-3 py-1">
-                                <p className="text-text-grey text-[13px] font-medium">
+                                <p className="text-text-grey text-meta leading-normal font-medium">
                                   {formatStringUCFirst(job.services[0])}
                                 </p>
                               </div>
                             )}
                             {job.services.length > 1 && (
                               <div className="bg-grey-20 rounded-full px-3 py-1">
-                                <p className="text-text-grey text-[13px] font-medium">
+                                <p className="text-text-grey text-meta leading-normal font-medium">
                                   +{job.services.length - 1}
                                 </p>
                               </div>
@@ -125,7 +125,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                       </>
                     )}
                   </div>
-                  <p className="text-[15px] font-semibold text-black">
+                  <p className="text-body-s font-semibold text-black">
                     N{formatNumberWithCommas(job?.amount ?? 0)}
                   </p>
                 </div>
@@ -139,7 +139,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
           </div>
         </div>
       ) : (
-        <div className="mt-[150px] flex items-center justify-center">
+        <div className="mt-37.5 flex items-center justify-center">
           <div className="flex flex-col items-center">
             <Image src={images.JOB_EMPTY} alt="empty_jobs" width={160} height={141} />
             <p>No jobs yet</p>

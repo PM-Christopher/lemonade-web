@@ -52,7 +52,7 @@ function SideNav({}) {
               <li key={item.path}>
                 <a
                   href={item.path}
-                  className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-48 rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal ${
+                  className={`hover:bg-link-color hover:font-semiBold hover:text-black-light text-body-s block w-48 rounded-xl px-3 py-2.5 font-sans font-normal ${
                     isActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
                   }`}
                 >
@@ -66,7 +66,7 @@ function SideNav({}) {
       <div className="border-t-grey-20 mt-auto border-t pt-4 pb-4">
         <a
           href={routes.PROFILE}
-          className={`hover:bg-link-color hover:font-semiBold hover:text-black-light block w-48 rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal ${
+          className={`hover:bg-link-color hover:font-semiBold hover:text-black-light text-body-s block w-48 rounded-xl px-3 py-2.5 font-sans font-normal ${
             profileActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
           }`}
         >
@@ -76,7 +76,7 @@ function SideNav({}) {
           onClick={() => {
             handleLogout();
           }}
-          className="text-red-1 hover:bg-red-1 block rounded-xl px-3 py-2.5 font-sans text-[14px] font-normal hover:text-white"
+          className="text-red-1 hover:bg-red-1 text-body-s block rounded-xl px-3 py-2.5 font-sans font-normal hover:text-white"
         >
           Logout
         </div>

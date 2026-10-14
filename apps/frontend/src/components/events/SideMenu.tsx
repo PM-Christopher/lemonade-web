@@ -43,12 +43,10 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white p-12 px-5">
+        <div className="laptop:w-146.25 h-full w-screen bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
-                My tickets
-              </p>
+              <p className="tracking-custom text-body-l font-sans font-semibold">My tickets</p>
             </div>
             <div>
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
@@ -56,20 +54,20 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen }) => {
           </div>
           <div className="border-b-light-grey-50 mt-2.5 flex justify-between border-b">
             <div
-              className={`laptop:w-[276.5px] h-10 w-full px-4 py-2 ${option === "upcoming" && "border-b-step-color border-b-2"}`}
+              className={`laptop:w-69.25 h-10 w-full px-4 py-2 ${option === "upcoming" && "border-b-step-color border-b-2"}`}
             >
               <p
-                className="font-semi-normal tracking-custom cursor-pointer text-center font-sans text-[14px] leading-[21px]"
+                className="font-semi-normal tracking-custom text-body-s cursor-pointer text-center font-sans"
                 onClick={() => toggleOption("upcoming")}
               >
                 Upcoming events
               </p>
             </div>
             <div
-              className={`laptop:w-[276.5px] h-10 w-full px-4 py-2 ${option === "past" && "border-b-step-color border-b-2"}`}
+              className={`laptop:w-69.25 h-10 w-full px-4 py-2 ${option === "past" && "border-b-step-color border-b-2"}`}
             >
               <p
-                className="font-semi-normal tracking-custom cursor-pointer text-center font-sans text-[14px] leading-[21px]"
+                className="font-semi-normal tracking-custom text-body-s cursor-pointer text-center font-sans"
                 onClick={() => toggleOption("past")}
               >
                 Past events

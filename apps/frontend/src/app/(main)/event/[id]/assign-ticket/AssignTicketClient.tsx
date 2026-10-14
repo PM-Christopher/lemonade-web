@@ -201,15 +201,15 @@ const AssignTicketClient = ({ id }: { id: number }) => {
         <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft className="cursor-pointer" />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Assign ticket</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Assign ticket</p>
           </div>
         </div>
         <section className="mt-4">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-4 flex justify-center">
-              <section className="w-[640px] gap-6 rounded-xl bg-white p-12">
-                <div className="bg-light-green-10 rounded-[8px] px-4 py-2">
-                  <p className="font-sans text-[14px] leading-[21px] font-normal">
+              <section className="w-160 gap-6 rounded-xl bg-white p-12">
+                <div className="bg-light-green-10 rounded-lg px-4 py-2">
+                  <p className="text-body-s font-sans font-normal">
                     Your tickets has been reserved for{" "}
                     <span className="font-semiBold text-light-tint-2">{formatTime(timeLeft)}</span>{" "}
                     mins. Complete your purchase to secure your spot.
@@ -245,10 +245,10 @@ const AssignTicketClient = ({ id }: { id: number }) => {
                   <div className="flex gap-2">
                     <UserIcon />
                     <div>
-                      <p className="font-semi-normal tracking-custom text-black-light font-sans text-[16px] leading-[24px]">
+                      <p className="font-semi-normal tracking-custom text-black-light text-body-l font-sans">
                         Assign multiple people
                       </p>
-                      <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
+                      <p className="text-text-grey text-meta font-sans font-normal">
                         Tickets will be sent to their email address
                       </p>
                     </div>

@@ -250,7 +250,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create thread</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="laptop:h-full laptop:w-[800px] flex h-screen w-screen flex-col rounded-xl bg-white">
+          <div className="laptop:h-full laptop:w-200 flex h-screen w-screen flex-col rounded-xl bg-white">
             <div className={`p-6`}>
               <div className="flex items-center justify-between">
                 <div className="cursor-pointer" onClick={toggle}>
@@ -265,7 +265,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   <input
                     id="tribe-name"
                     type="text"
-                    className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="text-body-xl border-0 font-sans font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Topic"
                     {...register("topic")}
                   />
@@ -274,7 +274,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                 <div className="mt-4 grid gap-2">
                   <textarea
                     id="tribe-name"
-                    className="h-40 resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="text-body-l h-40 resize-none border-0 font-sans font-normal shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Share your thoughts..."
                     {...register("thoughts")}
                   />
@@ -285,7 +285,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                     {mediaFiles &&
                       mediaFiles.length > 0 &&
                       mediaFiles.map((media, index) => (
-                        <div key={index} className="relative inline-block h-[200px] w-[200px]">
+                        <div key={index} className="relative inline-block h-50 w-50">
                           <Image
                             src={media}
                             alt="event_image"
@@ -295,7 +295,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           />
 
                           <div
-                            className="absolute top-2 right-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
+                            className="absolute top-2 right-2 z-10 flex h-7.5 w-7.5 cursor-pointer items-center justify-center rounded-full bg-white shadow"
                             onClick={() => removeImage(media)}
                           >
                             <span className="font-semibold text-black">X</span>
@@ -306,7 +306,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   {videoFiles &&
                     videoFiles.length > 0 &&
                     videoFiles.map((media, index) => (
-                      <div className="relative inline-block h-[200px] w-[200px]" key={index}>
+                      <div className="relative inline-block h-50 w-50" key={index}>
                         <video
                           src={media}
                           controls
@@ -316,7 +316,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                         />
 
                         <div
-                          className="absolute top-2 right-2 z-10 flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-white shadow"
+                          className="absolute top-2 right-2 z-10 flex h-7.5 w-7.5 cursor-pointer items-center justify-center rounded-full bg-white shadow"
                           onClick={() => removeVideo(media)}
                         >
                           <span className="font-semibold text-black">X</span>
@@ -328,7 +328,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                       <input
                         id="tribe-name"
                         type="text"
-                        className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
+                        className="text-body-xl border-0 font-sans font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Poll title"
                         onChange={(e) => {
                           setPollTitle(e.target.value);
@@ -341,7 +341,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           <div key={index} className="flex items-center gap-2">
                             <input
                               type="text"
-                              className="w-[300px] rounded-md border border-gray-300 px-3 py-2 font-sans text-[16px] shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                              className="text-body-l w-75 rounded-md border border-gray-300 px-3 py-2 font-sans shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                               placeholder={`Option ${index + 1}`}
                               onChange={(e) => updatePollOption(index, e.target.value)}
                               value={option}
@@ -358,7 +358,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
 
                       <button
                         type="button"
-                        className="bg-gradient-green w-[100px] rounded-md py-2 font-sans font-semibold text-white shadow-sm hover:bg-indigo-600"
+                        className="bg-gradient-green w-25 rounded-md py-2 font-sans font-semibold text-white shadow-sm hover:bg-indigo-600"
                         onClick={addPollOption}
                       >
                         Add Option
@@ -381,7 +381,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           timeFormat="HH:mm"
                           timeIntervals={15}
                           dateFormat="yyyy-MM-dd HH:mm"
-                          className="font-semi-normal w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] shadow-none"
+                          className="font-semi-normal text-meta w-50 cursor-pointer rounded-lg font-sans leading-normal shadow-none"
                           placeholderText="Poll start date and time"
                         />
 
@@ -397,7 +397,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                           timeFormat="HH:mm"
                           timeIntervals={15}
                           dateFormat="yyyy-MM-dd HH:mm"
-                          className="font-semi-normal w-[200px] cursor-pointer rounded-[10px] font-sans text-[12px] shadow-none"
+                          className="font-semi-normal text-meta w-50 cursor-pointer rounded-lg font-sans leading-normal shadow-none"
                           placeholderText="Poll end date and time"
                         />
                       </div>

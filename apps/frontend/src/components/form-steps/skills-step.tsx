@@ -86,17 +86,19 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
+      <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-border-grey h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-border-grey h-0.5 w-3.75" />
           </div>
           <div>
-            <p className="font-sans text-[24px] font-semibold">Skills & Interests</p>
-            <p className="text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+            <p className="text-title-l font-sans leading-normal font-semibold">
+              Skills & Interests
+            </p>
+            <p className="text-text-grey text-body-s font-sans font-normal">
               Maximize your connections and experience by telling us <br />
               about your skills and interests.
             </p>
@@ -104,13 +106,13 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
         </CardHeader>
         <CardContent className="mt-6 grid gap-4 p-0">
           <div>
-            <p className="font-sans text-[18px] font-semibold">Skills</p>
+            <p className="text-body-xl font-sans font-semibold">Skills</p>
           </div>
           <div className="grid grid-cols-[repeat(3,auto)] gap-3">
             {skills.map((item, idx) => (
               <div
                 key={idx}
-                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
+                className={`text-text-grey text-body-s inline-block cursor-pointer rounded-lg p-2 py-3 text-center font-normal whitespace-nowrap ${
                   selectedSkills.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"
                 }`}
                 onClick={() => handleSkillsClick(item)}
@@ -121,12 +123,12 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
           </div>
           <FieldError message={errors.skills?.message} />
           <div className="mt-2">
-            <p className="font-sans text-[18px] font-semibold">Interests</p>
+            <p className="text-body-xl font-sans font-semibold">Interests</p>
           </div>
           <div className="grid grid-cols-[repeat(4,auto)] gap-3">
             {interests.map((item, idx) => (
               <div
-                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${selectedInterests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                className={`text-text-grey text-body-s inline-block cursor-pointer rounded-lg p-2 py-3 text-center font-normal whitespace-nowrap ${selectedInterests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
                 key={idx}
                 onClick={() => handleInterestClick(item)}
               >

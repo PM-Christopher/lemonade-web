@@ -103,14 +103,14 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
         <DialogTitle className="sr-only">{renderType()}</DialogTitle>
         <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
           <div className="flex items-center justify-between">
-            <p className={"font-semiBold text-[18px]"}>{renderType()}</p>
+            <p className={"font-semiBold text-body-xl"}>{renderType()}</p>
             <div className="cursor-pointer" onClick={toggle}>
               <XIcon />
             </div>
           </div>
           <div className={"flex flex-col"} style={{ marginTop: "20px", gap: "16px" }}>
             <div className={"flex flex-col"} style={{ gap: "4px" }}>
-              <p className={"text-text-grey text-[14px] font-normal"}>Amount</p>
+              <p className={"text-text-grey text-body-s font-normal"}>Amount</p>
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Amount"}
@@ -120,9 +120,9 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               <FieldError message={errors.amount?.message} />
             </div>
 
-            <p className={"text-[14px] font-normal"}>
+            <p className={"text-body-s font-normal"}>
               Wallet balance:{" "}
-              <span className={"text-[14px] font-bold"}>
+              <span className={"text-body-s font-bold"}>
                 {" "}
                 ₦ {formatNumberWithCommas(balance || 0)}
               </span>
@@ -130,18 +130,18 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
 
             <div className={"flex justify-between gap-4"}>
               <button
-                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
+                className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-2.75"}
                 onClick={toggle}
               >
-                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                <p className={"text-body-l font-medium text-black"}>Cancel</p>
               </button>
               <button
                 className={
-                  "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
+                  "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-2.75"
                 }
                 onClick={handleSubmit(onSubmit)}
               >
-                <p className={"text-[16px] font-medium text-white"}>Confirm</p>
+                <p className={"text-body-l font-medium text-white"}>Confirm</p>
               </button>
             </div>
           </div>

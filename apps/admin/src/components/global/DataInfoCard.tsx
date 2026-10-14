@@ -14,11 +14,11 @@ function DataInfoCard({
   return (
     <div className={`shadow-card-shadow flex justify-between rounded-xl bg-white p-4 ${styles}`}>
       <div className={"flex flex-col gap-4"}>
-        <div className={"bg-mid-grey w-fit rounded-[13px] p-2"}>
-          <FileIcon className={"h-[17px] w-3.5"} />
+        <div className={"bg-mid-grey w-fit rounded-xl p-2"}>
+          <FileIcon className={"h-4.25 w-3.5"} />
         </div>
-        <p className="text-[16px] font-medium">{title}</p>
-        {isEditable && <p className="text-light-green text-[14px] font-medium">Edit</p>}
+        <p className="text-body-l font-medium">{title}</p>
+        {isEditable && <p className="text-light-green text-body-s font-medium">Edit</p>}
       </div>
     </div>
   );

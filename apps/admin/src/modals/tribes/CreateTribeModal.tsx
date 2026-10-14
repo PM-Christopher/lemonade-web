@@ -121,14 +121,14 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create Tribe</DialogTitle>
         <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          <div className="tablet:max-h-[90vh] tablet:h-auto tablet:w-[640px] flex h-screen w-full flex-col overflow-y-auto rounded-lg bg-white p-6 px-12 pb-12 shadow-lg">
+          <div className="tablet:max-h-[90vh] tablet:h-auto tablet:w-160 flex h-screen w-full flex-col overflow-y-auto rounded-lg bg-white p-6 px-12 pb-12 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <XIcon onClick={closeAndReset} className="cursor-pointer" />
-                <p className="font-semiBold text-[18px]">Create Tribe</p>
+                <p className="font-semiBold text-body-xl">Create Tribe</p>
               </div>
               <Button type="submit" disabled={isSubmitting || isUploading}>
-                <p className="text-[16px] font-medium text-white">
+                <p className="text-body-l font-medium text-white">
                   {isSubmitting ? "Creating..." : "Create tribe"}
                 </p>
               </Button>
@@ -140,7 +140,7 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   alt="upload"
                   width={89}
                   height={83}
-                  className="h-[89px] w-[89px] cursor-pointer rounded-3xl border object-cover"
+                  className="h-22.25 w-22.25 cursor-pointer rounded-3xl border object-cover"
                   onClick={handleImageClick}
                 />
               ) : (
@@ -160,16 +160,18 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                 style={{ display: "none" }}
                 onChange={handleFileChange}
               />
-              {isUploading && <p className="text-text-grey mt-2 text-[12px]">Uploading...</p>}
+              {isUploading && (
+                <p className="text-text-grey text-meta mt-2 leading-normal">Uploading...</p>
+              )}
               {errors.image && (
-                <p className="text-red-1 mt-2 text-[12px]">{errors.image.message}</p>
+                <p className="text-red-1 text-meta mt-2 leading-normal">{errors.image.message}</p>
               )}
             </div>
             <div className="mt-4 flex flex-col">
               <div className="grid gap-2">
                 <Label
                   htmlFor="tribe-name"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Tribe name
                 </Label>
@@ -180,13 +182,13 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   {...register("tribe_name")}
                 />
                 {errors.tribe_name && (
-                  <p className="text-red-1 text-[12px]">{errors.tribe_name.message}</p>
+                  <p className="text-red-1 text-meta leading-normal">{errors.tribe_name.message}</p>
                 )}
               </div>
               <div className="mt-4 grid gap-2">
                 <Label
                   htmlFor="category"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Category
                 </Label>
@@ -213,26 +215,28 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   )}
                 />
                 {errors.category && (
-                  <p className="text-red-1 text-[12px]">{errors.category.message}</p>
+                  <p className="text-red-1 text-meta leading-normal">{errors.category.message}</p>
                 )}
               </div>
               <div className="mt-4 grid gap-2">
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="description"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Description
                   </Label>
                 </div>
                 <Textarea
                   id="description"
-                  className="bg-light_grey form-font h-[91px] resize-none rounded-xl border-0"
+                  className="bg-light_grey form-font h-22.75 resize-none rounded-xl border-0"
                   placeholder="A short bio for this tribe..."
                   {...register("description")}
                 />
                 {errors.description && (
-                  <p className="text-red-1 text-[12px]">{errors.description.message}</p>
+                  <p className="text-red-1 text-meta leading-normal">
+                    {errors.description.message}
+                  </p>
                 )}
               </div>
             </div>

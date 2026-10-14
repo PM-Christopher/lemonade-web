@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
         onSubmit={handleSubmit(onSubmit)}
         className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
       >
-        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+        <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Forgot Password</p>
           <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
             Enter your email address and a 4-digit code will be sent to reset your password.
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
             className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <Card className="tablet:p-6 w-full max-w-[440px] shrink-0 rounded-2xl border-none p-5 shadow-none">
+        <Card className="tablet:p-6 w-full max-w-110 shrink-0 rounded-2xl border-none p-5 shadow-none">
           <CardContent className="grid gap-4 p-0">
             <div className="grid gap-2">
               <Label htmlFor="email" className="font-label">

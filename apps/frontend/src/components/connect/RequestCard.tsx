@@ -29,26 +29,26 @@ const RequestCard: React.FC<RequestInterface> = ({ toggle, invite, toggleInviteI
           {/* Avatar with lemon image and ID */}
           <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-gray-100">
             <Image src={images.LEMON} alt="lemon" fill className="object-contain" />
-            <p className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-black">
+            <p className="text-meta absolute inset-0 flex items-center justify-center leading-normal font-semibold text-black">
               {invite?.invitee?.lemon_id_short}
             </p>
           </div>
 
           {/* Text Info */}
           <div className="flex flex-col">
-            <p className="text-[14px] font-semibold text-gray-900">
+            <p className="text-body-s font-semibold text-gray-900">
               {invite?.invitee?.lemon_id_full}{" "}
               <span className="font-normal text-gray-600">wants to connect with you</span>
             </p>
 
-            <div className="mt-1 flex items-center gap-2 text-[12px] text-gray-500">
+            <div className="text-meta mt-1 flex items-center gap-2 leading-normal text-gray-500">
               {distance && (
                 <>
                   <p className="whitespace-nowrap">{distance}</p>
                   <span className="text-gray-300">|</span>
                 </>
               )}
-              <p className="laptop:max-w-full max-w-[180px] truncate">{invite?.message}</p>
+              <p className="laptop:max-w-full max-w-45 truncate">{invite?.message}</p>
             </div>
           </div>
         </div>

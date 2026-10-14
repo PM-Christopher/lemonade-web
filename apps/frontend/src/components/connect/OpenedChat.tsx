@@ -165,7 +165,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   };
 
   return (
-    <div className="laptop:w-[560px] laptop:rounded-br-2xl laptop:rounded-tr-2xl laptop:border-b laptop:border-r laptop:border-t flex h-[648px] w-screen flex-col border-none bg-white">
+    <div className="laptop:w-140 laptop:rounded-br-2xl laptop:rounded-tr-2xl laptop:border-b laptop:border-r laptop:border-t flex h-162 w-screen flex-col border-none bg-white">
       {/* Header */}
       <div className="bg-grey-20 laptop:rounded-tr-2xl flex h-12 w-full items-center justify-between px-2 py-3 text-white">
         <div className="flex items-center gap-2 px-4">
@@ -176,16 +176,16 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               alt="avatar"
               width={24}
               height={24}
-              className="border-grey-90 h-6 w-6 rounded-[8px] border"
+              className="border-grey-90 h-6 w-6 rounded-lg border"
             />
           ) : (
             <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
-              <p className="font-ruso text-[18px]">{getInitials(userType?.username)}</p>
+              <p className="font-ruso text-body-xl">{getInitials(userType?.username)}</p>
             </div>
           )}
-          <p className="text-black-light text-[14px] font-semibold">{userType?.username}</p>
+          <p className="text-black-light text-body-s font-semibold">{userType?.username}</p>
           <DotIcon className="w-1" />
-          <p className="text-text-grey text-[14px] font-semibold">L{userType?.lemon_id}</p>
+          <p className="text-text-grey text-body-s font-semibold">L{userType?.lemon_id}</p>
         </div>
         <MoreIcon className="cursor-pointer" onClick={toggleModal} />
       </div>
@@ -195,12 +195,12 @@ const OpenedChat: React.FC<OpenChatProps> = ({
         <div className="hide-scrollbar flex w-full flex-col gap-3 overflow-y-auto">
           {messages.map((message: MessageInterface, index: number) => (
             <div
-              className={`ml-auto max-w-[303px] rounded-xl p-2 text-right ${
+              className={`ml-auto max-w-75.75 rounded-xl p-2 text-right ${
                 message?.sender ? "bg-light-green-10" : "bg-grey-20"
               }`}
               key={index}
             >
-              <p className="text-[14px] font-normal whitespace-pre-wrap">{message?.message}</p>
+              <p className="text-body-s font-normal whitespace-pre-wrap">{message?.message}</p>
               {message?.media && message?.media.length > 0 && (
                 <>
                   <Image
@@ -212,7 +212,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                   />
                 </>
               )}
-              <p className="text-text-grey text-right text-[12px]">
+              <p className="text-text-grey text-meta text-right leading-normal">
                 {formatSingleTime(message?.created_at)}
               </p>
             </div>
@@ -223,14 +223,14 @@ const OpenedChat: React.FC<OpenChatProps> = ({
 
       {/* Mobile Input */}
       {isMobile && (
-        <div className="bg-light_grey w-full p-4 px-[13px] text-white">
+        <div className="bg-light_grey w-full p-4 px-3.25 text-white">
           <div className="flex w-full items-center gap-2">
-            <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-[20px] border p-2 px-3">
+            <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-2xl border p-2 px-3">
               <div className={"flex items-center"}>
                 <div className="w-full">
                   <textarea
                     ref={textareaRef}
-                    className="bg-light_grey text-black-light mt-1 max-h-[120px] min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="bg-light_grey text-black-light text-body-s mt-1 max-h-30 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Reply..."
                     onChange={(e) => setText(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -243,10 +243,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                     {mediaLoading ? (
                       <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
                     ) : (
-                      <SendIcon
-                        className="h-[19.25px] w-[19.72px] cursor-pointer"
-                        onClick={sendMessage}
-                      />
+                      <SendIcon className="h-4.75 w-5 cursor-pointer" onClick={sendMessage} />
                     )}
                   </div>
                 )}
@@ -256,7 +253,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                   {mediaFiles?.slice(0, 2)?.map((mediaFile, index) => (
                     <div
                       key={index}
-                      className="group relative h-36 w-36 overflow-hidden rounded-[20px]"
+                      className="group relative h-36 w-36 overflow-hidden rounded-2xl"
                     >
                       <Image
                         alt="media_file"
@@ -276,7 +273,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                     </div>
                   ))}
                   {mediaFiles.length > 2 && (
-                    <div className="group relative h-36 w-36 overflow-hidden rounded-[20px]">
+                    <div className="group relative h-36 w-36 overflow-hidden rounded-2xl">
                       <Image
                         alt="media_file"
                         src={mediaFiles[2]}
@@ -285,7 +282,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                         className="h-full w-full object-cover blur-sm brightness-75 filter"
                       />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[20px] font-semibold text-white">
+                        <span className="text-title-r leading-normal font-semibold text-white">
                           +{mediaFiles.length - 2}
                         </span>
                       </div>
@@ -294,23 +291,20 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 </div>
               )}
             </div>
-            <ImageIcon
-              className="w-[19.5px] flex-shrink-0 cursor-pointer"
-              onClick={handleMediaInput}
-            />
+            <ImageIcon className="w-5 flex-shrink-0 cursor-pointer" onClick={handleMediaInput} />
           </div>
         </div>
       )}
 
       {/* Desktop Input */}
-      <div className="bg-light_grey laptop:flex hidden w-full p-4 px-[13px] text-white">
+      <div className="bg-light_grey laptop:flex hidden w-full p-4 px-3.25 text-white">
         <div className="flex w-full items-center gap-2">
-          <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-[20px] border p-2 px-3">
+          <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-2xl border p-2 px-3">
             <div className={"flex items-center"}>
               <div className="w-full">
                 <textarea
                   ref={textareaRef}
-                  className="bg-light_grey text-black-light mt-1 max-h-[120px] min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light_grey text-black-light text-body-s mt-1 max-h-30 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Reply..."
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -324,10 +318,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                     {mediaLoading ? (
                       <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
                     ) : (
-                      <SendIcon
-                        className="h-[19.25px] w-[19.72px] cursor-pointer"
-                        onClick={sendMessage}
-                      />
+                      <SendIcon className="h-4.75 w-5 cursor-pointer" onClick={sendMessage} />
                     )}
                   </div>
                 ))}
@@ -335,10 +326,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
             {mediaFiles?.length > 0 && (
               <div className={"flex flex-wrap gap-4"}>
                 {mediaFiles?.slice(0, 2)?.map((mediaFile, index) => (
-                  <div
-                    key={index}
-                    className="group relative h-36 w-36 overflow-hidden rounded-[20px]"
-                  >
+                  <div key={index} className="group relative h-36 w-36 overflow-hidden rounded-2xl">
                     <Image
                       alt="media_file"
                       src={mediaFile}
@@ -357,7 +345,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                   </div>
                 ))}
                 {mediaFiles.length > 2 && (
-                  <div className="group relative h-36 w-36 overflow-hidden rounded-[20px]">
+                  <div className="group relative h-36 w-36 overflow-hidden rounded-2xl">
                     <Image
                       alt="media_file"
                       src={mediaFiles[2]}
@@ -366,7 +354,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                       className="h-full w-full object-cover blur-sm brightness-75 filter"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[20px] font-semibold text-white">
+                      <span className="text-title-r leading-normal font-semibold text-white">
                         +{mediaFiles.length - 2}
                       </span>
                     </div>
@@ -375,10 +363,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               </div>
             )}
           </div>
-          <ImageIcon
-            className="w-[19.5px] flex-shrink-0 cursor-pointer"
-            onClick={handleMediaInput}
-          />
+          <ImageIcon className="w-5 flex-shrink-0 cursor-pointer" onClick={handleMediaInput} />
         </div>
       </div>
       <input

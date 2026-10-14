@@ -72,13 +72,13 @@ const ConnectClient = () => {
       <section className="laptop:bg-light_grey bg-white pb-10">
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div>
-            <p className="text-[14px] font-semibold">Connect</p>
+            <p className="text-body-s font-semibold">Connect</p>
           </div>
           <div className="flex items-center gap-2">
             <Link href={routes.CONNECT_REQUESTS}>
               <div className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-3.5">
                 <RequestIcon />
-                <p className="font-semi-normal text-black-light laptop:block hidden font-sans text-[16px]">
+                <p className="font-semi-normal text-black-light laptop:block text-body-l hidden font-sans">
                   Requests
                 </p>
               </div>
@@ -88,7 +88,7 @@ const ConnectClient = () => {
               onClick={toggleSettingsModal}
             >
               <SettingsIcon />
-              <p className="font-semi-normal text-black-light laptop:block hidden font-sans text-[16px]">
+              <p className="font-semi-normal text-black-light laptop:block text-body-l hidden font-sans">
                 Settings
               </p>
             </div>
@@ -97,9 +97,7 @@ const ConnectClient = () => {
         <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           {isMobile && (
             <div className="flex flex-col">
-              <div
-                className={`${chatOpened ? "hidden" : "flex"} h-[648px] w-screen flex-col bg-white`}
-              >
+              <div className={`${chatOpened ? "hidden" : "flex"} h-162 w-screen flex-col bg-white`}>
                 <div className="p-2 px-4">
                   <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
                     {/* Icon */}
@@ -111,14 +109,14 @@ const ConnectClient = () => {
                     <input
                       id="search"
                       type="text"
-                      className="w-full bg-transparent text-[14px] outline-none placeholder:text-gray-400"
+                      className="text-body-s w-full bg-transparent outline-none placeholder:text-gray-400"
                       placeholder="Search user, chat..."
                     />
 
                     {/* Optional quick action */}
                     <button
                       type="button"
-                      className="shrink-0 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-gray-700 ring-1 ring-black/5 transition hover:bg-gray-50 active:scale-[0.98]"
+                      className="text-meta shrink-0 rounded-xl bg-white px-3 py-2 leading-normal font-medium text-gray-700 ring-1 ring-black/5 transition hover:bg-gray-50 active:scale-[0.98]"
                     >
                       Search
                     </button>
@@ -170,9 +168,9 @@ const ConnectClient = () => {
             </div>
           )}
           <div className="laptop:flex hidden">
-            <div className="flex h-[648px] w-[375px] flex-col rounded-tl-2xl rounded-bl-2xl border bg-white">
+            <div className="flex h-162 w-93.75 flex-col rounded-tl-2xl rounded-bl-2xl border bg-white">
               <div className="p-4">
-                <p className="font-ruso text-black-light text-[18px] font-bold">Chats</p>
+                <p className="font-ruso text-black-light text-body-xl font-bold">Chats</p>
               </div>
               <div className="p-2 px-4">
                 <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
@@ -185,7 +183,7 @@ const ConnectClient = () => {
                   <input
                     id="search"
                     type="text"
-                    className="w-full bg-transparent text-[14px] outline-none placeholder:text-gray-400"
+                    className="text-body-s w-full bg-transparent outline-none placeholder:text-gray-400"
                     placeholder="Search user, chat..."
                     onKeyDown={(e) => {
                       if (e.key === "Enter") return;
@@ -195,7 +193,7 @@ const ConnectClient = () => {
                   {/* Optional quick action */}
                   <button
                     type="button"
-                    className="shrink-0 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-gray-700 ring-1 ring-black/5 transition hover:bg-gray-50 active:scale-[0.98]"
+                    className="text-meta shrink-0 rounded-xl bg-white px-3 py-2 leading-normal font-medium text-gray-700 ring-1 ring-black/5 transition hover:bg-gray-50 active:scale-[0.98]"
                   >
                     Search
                   </button>

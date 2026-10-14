@@ -33,7 +33,7 @@ const VerifyBoost = ({
     <div
       className={`bg-opacity-50 fixed inset-0 z-50 items-center justify-center bg-gray-800 ${isOpen ? "flex" : "hidden"}`}
     >
-      <div className="laptop:h-screen laptop:w-[480px] h-full w-screen rounded-lg bg-white p-6 shadow-lg">
+      <div className="laptop:h-screen laptop:w-120 h-full w-screen rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggleMenu}>
@@ -47,10 +47,10 @@ const VerifyBoost = ({
           </div>
           <div className="px-2.5">
             <div className="mt-6 flex flex-col items-center">
-              <p className="font-semiBold text-light-green text-center text-[20px]">
+              <p className="font-semiBold text-light-green text-title-r text-center leading-normal">
                 Payment successful
               </p>
-              <p className="w-[416px] text-center text-[14px] font-normal">
+              <p className="text-body-s w-104 text-center font-normal">
                 Your payment has been processed and your business will be boosted from{" "}
                 <span className="font-semi-normal">
                   {boost?.full_start_date} to {boost?.full_end_date}
@@ -58,21 +58,21 @@ const VerifyBoost = ({
               </p>
             </div>
             <div className="mt-6">
-              <p className="font-semiBold text-[20px]">Featured</p>
+              <p className="font-semiBold text-title-r leading-normal">Featured</p>
             </div>
             <div className="mt-6 flex flex-col">
-              <p className="text-text-grey text-[14px] font-normal">Start date</p>
-              <p className="font-semi-normal text-light-black text-[14px]">{boost?.start_date}</p>
+              <p className="text-text-grey text-body-s font-normal">Start date</p>
+              <p className="font-semi-normal text-light-black text-body-s">{boost?.start_date}</p>
             </div>
 
             <div className="mt-4 flex flex-col">
-              <p className="text-text-grey text-[14px] font-normal">Start time</p>
-              <p className="font-semi-normal text-light-black text-[14px]">{boost?.start_time}</p>
+              <p className="text-text-grey text-body-s font-normal">Start time</p>
+              <p className="font-semi-normal text-light-black text-body-s">{boost?.start_time}</p>
             </div>
 
             <div className="mt-4 flex flex-col">
-              <p className="text-text-grey text-[14px] font-normal">Duration</p>
-              <p className="font-semi-normal text-light-black text-[14px]">
+              <p className="text-text-grey text-body-s font-normal">Duration</p>
+              <p className="font-semi-normal text-light-black text-body-s">
                 {boost?.duration} days
               </p>
             </div>

@@ -86,17 +86,17 @@ function PromoteEventClient({ id }: { id: number }) {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Promote event</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Promote event</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <div className="flex justify-between gap-[100px]">
+          <div className="flex justify-between gap-25">
             <div className="flex flex-col">
-              <div className="w-[640px] rounded-xl bg-white p-6 px-12">
+              <div className="w-160 rounded-xl bg-white p-6 px-12">
                 <div className="mt-6 grid gap-2">
                   <Label
                     htmlFor="fullname"
-                    className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                    className="text-text-grey text-label font-sans font-normal"
                   >
                     Service
                   </Label>
@@ -122,7 +122,7 @@ function PromoteEventClient({ id }: { id: number }) {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="fullname"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Cost
                     </Label>
@@ -130,7 +130,7 @@ function PromoteEventClient({ id }: { id: number }) {
                       id="fullname"
                       type="text"
                       placeholder="N0.00"
-                      className="bg-light_grey text-text-grey h-12 w-[380px] rounded-xl border-0 px-2.5 font-sans text-[14px] font-medium focus:outline-none"
+                      className="bg-light_grey text-text-grey text-body-s h-12 w-95 rounded-xl border-0 px-2.5 font-sans font-medium focus:outline-none"
                       defaultValue={
                         selectedPromotion ? formattedCurrency(selectedPromotion.price) : ""
                       }
@@ -139,7 +139,7 @@ function PromoteEventClient({ id }: { id: number }) {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="fullname"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Unit
                     </Label>
@@ -147,22 +147,22 @@ function PromoteEventClient({ id }: { id: number }) {
                       id="fullname"
                       type="text"
                       placeholder="1"
-                      className="form-font bg-light_grey h-12 w-[148px] rounded-xl border-0 px-2.5 focus:outline-none"
+                      className="form-font bg-light_grey h-12 w-37 rounded-xl border-0 px-2.5 focus:outline-none"
                     />
                   </div>
                 </div>
               </div>
 
               {
-                <div className="border-light-green-tint bg-light-tint mt-6 w-[640px] rounded-xl border p-4 px-4">
-                  <p className="font-sans text-[12px] leading-[14.4px] font-semibold">BREAKDOWN</p>
+                <div className="border-light-green-tint bg-light-tint mt-6 w-160 rounded-xl border p-4 px-4">
+                  <p className="text-meta font-sans font-semibold">BREAKDOWN</p>
                   <div className="mt-3 flex flex-col gap-3">
                     {selectedPromotion &&
                       selectedPromotion?.breakdown?.length > 0 &&
                       selectedPromotion?.breakdown?.map((breakdown, index: number) => (
                         <div className="flex items-center gap-2" key={index}>
                           <ChevronRightFilled />
-                          <p className="tracking-custom text-black-light font-sans text-[14px] leading-[21px] font-normal">
+                          <p className="tracking-custom text-black-light text-body-s font-sans font-normal">
                             {breakdown}
                           </p>
                         </div>
@@ -172,39 +172,39 @@ function PromoteEventClient({ id }: { id: number }) {
               }
             </div>
             <div>
-              <div className="w-[480px] rounded-xl bg-white p-6 px-4">
-                <p className="font-sans text-[20px] leading-[28px] font-semibold">Summary</p>
+              <div className="w-120 rounded-xl bg-white p-6 px-4">
+                <p className="text-title-r font-sans font-semibold">Summary</p>
                 <div className="mt-4 flex justify-between">
-                  <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                  <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                     {selectedPromotion ? selectedPromotion?.name : "-"}
                   </p>
-                  <p className="font-sans text-[14px] leading-[21px] font-semibold">
+                  <p className="text-body-s font-sans font-semibold">
                     {formattedCurrency(selectedPromotion?.price)}
                   </p>
                 </div>
                 <div className="mt-4 flex justify-between">
-                  <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                  <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                     Unit
                   </p>
-                  <p className="font-sans text-[14px] leading-[21px] font-semibold">
+                  <p className="text-body-s font-sans font-semibold">
                     {selectedPromotion ? unit : "-"}
                   </p>
                 </div>
                 <div className="border-t-mid-grey my-4 border-t"></div>
                 <div className="mt-4 flex justify-between">
-                  <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                  <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                     Subtotal
                   </p>
-                  <p className="font-sans text-[14px] leading-[21px] font-semibold">
+                  <p className="text-body-s font-sans font-semibold">
                     {selectedPromotion ? formattedCurrency(subtotal) : "-"}
                   </p>
                 </div>
                 <div className="border-t-mid-grey my-4 border-t"></div>
                 <div className="mt-4 flex justify-between">
-                  <p className="tracking-custom text-text-grey font-sans text-[18px] leading-[21px] font-normal">
+                  <p className="tracking-custom text-text-grey text-body-xl font-sans leading-5.25 font-normal">
                     Total
                   </p>
-                  <p className="font-sans text-[18px] leading-[21px] font-semibold">
+                  <p className="text-body-xl font-sans leading-5.25 font-semibold">
                     {selectedPromotion ? formattedCurrency(subtotal) : "-"}
                   </p>
                 </div>
@@ -238,7 +238,7 @@ function PromoteEventClient({ id }: { id: number }) {
                           />
                         </Suspense>
                       ) : (
-                        <p className="font-semi-normal font-sans text-[16px] text-white">Pay now</p>
+                        <p className="font-semi-normal text-body-l font-sans text-white">Pay now</p>
                       )}
                     </button>
 

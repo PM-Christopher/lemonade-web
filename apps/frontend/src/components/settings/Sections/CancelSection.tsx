@@ -57,64 +57,64 @@ const CancelSection = ({}) => {
   };
 
   return (
-    <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl bg-white p-6">
+    <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl bg-white p-6">
       <div>
-        <p className="text-[20px] font-semibold">We are sorry to see you go</p>
-        <p className="text-light-black text-[14px] font-normal">
+        <p className="text-title-r leading-normal font-semibold">We are sorry to see you go</p>
+        <p className="text-light-black text-body-s font-normal">
           You will lose the following plan benefits if you downgrade
         </p>
       </div>
       <div className="bg-mid-grey flex flex-col gap-4 rounded-xl p-6">
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Verification badge</p>
+          <p className="font-semi-normal text-black-light text-body-s">Verification badge</p>
           {subscription?.benefits?.ver_badge ? <CheckIcon /> : <PadlockIcon />}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Tribe creation</p>
+          <p className="font-semi-normal text-black-light text-body-s">Tribe creation</p>
           {subscription?.benefits?.forum_creation ? <CheckIcon /> : <PadlockIcon />}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Lemon ID</p>
+          <p className="font-semi-normal text-black-light text-body-s">Lemon ID</p>
           {subscription?.benefits?.lemon_id ? <CheckIcon /> : <PadlockIcon />}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Event creation</p>
+          <p className="font-semi-normal text-black-light text-body-s">Event creation</p>
           {subscription?.benefits?.event_creation === 0 ? (
-            <p className="font-semi-normal text-text-grey text-[14px]">Unlimited</p>
+            <p className="font-semi-normal text-text-grey text-body-s">Unlimited</p>
           ) : (
-            <p className="font-semi-normal text-text-grey text-[14px]">
+            <p className="font-semi-normal text-text-grey text-body-s">
               {subscription?.benefits?.event_creation} monthly
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Ticket sales commission</p>
+          <p className="font-semi-normal text-black-light text-body-s">Ticket sales commission</p>
           {subscription?.benefits?.sales_commission === 0 ? (
-            <p className="font-semi-normal text-text-grey text-[14px]">None</p>
+            <p className="font-semi-normal text-text-grey text-body-s">None</p>
           ) : (
-            <p className="font-semi-normal text-text-grey text-[14px]">
+            <p className="font-semi-normal text-text-grey text-body-s">
               {subscription?.benefits?.sales_commission}%
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Service commission</p>
+          <p className="font-semi-normal text-black-light text-body-s">Service commission</p>
           {subscription?.benefits?.service_commission === 0 ? (
-            <p className="font-semi-normal text-text-grey text-[14px]">None</p>
+            <p className="font-semi-normal text-text-grey text-body-s">None</p>
           ) : (
-            <p className="font-semi-normal text-text-grey text-[14px]">
+            <p className="font-semi-normal text-text-grey text-body-s">
               {subscription?.benefits?.service_commission}%
             </p>
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Connection range</p>
-          <p className="font-semi-normal text-text-grey text-[14px]">
+          <p className="font-semi-normal text-black-light text-body-s">Connection range</p>
+          <p className="font-semi-normal text-text-grey text-body-s">
             {subscription?.benefits?.connection_range}
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-[14px]">Offline benefits</p>
+          <p className="font-semi-normal text-black-light text-body-s">Offline benefits</p>
           {subscription?.benefits?.offline_benefits ? <CheckIcon /> : <PadlockIcon />}
         </div>
       </div>
@@ -149,14 +149,14 @@ const CancelSection = ({}) => {
                   d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                 />
               </svg>
-              <p className="font-semi-normal text-[16px]">Loading...</p>
+              <p className="font-semi-normal text-body-l">Loading...</p>
             </>
           ) : (
-            <p className="font-semi-normal text-[16px]">Continue to downgrade</p>
+            <p className="font-semi-normal text-body-l">Continue to downgrade</p>
           )}
         </Button>
         <Button className="h-12 w-full rounded-xl border bg-white shadow-none hover:bg-white">
-          <p className="font-semi-normal text-black-light text-[16px]">Keep my current plan</p>
+          <p className="font-semi-normal text-black-light text-body-l">Keep my current plan</p>
         </Button>
       </div>
     </div>

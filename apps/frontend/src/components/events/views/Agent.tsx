@@ -43,9 +43,9 @@ function AgentSectionView({}) {
             {/* lg = laptop */}
             <div className="laptop:flex-row laptop:items-stretch flex flex-col gap-6">
               {/* Left card */}
-              <aside className="laptop:w-[420px] w-full xl:w-[550px]">
+              <aside className="laptop:w-105 w-full xl:w-137.5">
                 <div className="h-fit rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
-                  <p className="text-text-grey mb-4 font-sans text-[13px] sm:text-[14px]">
+                  <p className="text-text-grey text-meta sm:text-body-s mb-4 font-sans leading-normal">
                     All time commission
                   </p>
 
@@ -53,16 +53,16 @@ function AgentSectionView({}) {
                     <AffiliateDataSkeleton />
                   ) : (
                     <>
-                      <p className="tracking-custom font-sans text-[22px] leading-tight font-semibold sm:text-[26px]">
+                      <p className="tracking-custom text-title-r sm:text-title-l font-sans leading-tight font-semibold sm:leading-normal">
                         ₦{total_commission?.toLocaleString() ?? 0}
                       </p>
 
                       <div className="border-mid-grey/70 my-5 border-t" />
 
-                      <p className="text-text-grey font-sans text-[13px] sm:text-[14px]">
+                      <p className="text-text-grey text-meta sm:text-body-s font-sans leading-normal">
                         Total Tickets Sold
                       </p>
-                      <p className="tracking-custom mt-1 font-sans text-[18px] leading-tight font-semibold sm:text-[20px]">
+                      <p className="tracking-custom text-body-xl sm:text-title-r mt-1 font-sans leading-tight font-semibold sm:leading-normal">
                         {tickets_sold?.toLocaleString() ?? 0}
                       </p>
 
@@ -73,7 +73,7 @@ function AgentSectionView({}) {
                         className="group -ml-3 inline-flex items-center gap-2 rounded-xl px-3 py-2 transition hover:bg-gray-50"
                         onClick={() => push(routes.SETTINGS_WALLET)}
                       >
-                        <span className="font-semi-normal tracking-custom text-light-green font-sans text-[15px] sm:text-[16px]">
+                        <span className="font-semi-normal tracking-custom text-light-green text-body-s sm:text-body-l font-sans">
                           Go to Wallet
                         </span>
                         <span className="transition-transform group-hover:translate-x-0.5">
@@ -93,7 +93,7 @@ function AgentSectionView({}) {
                     <button
                       type="button"
                       onClick={() => setView("promotions")}
-                      className={`tracking-custom flex-1 rounded-lg px-4 py-2 text-center font-sans text-[13px] whitespace-nowrap transition sm:text-[14px] ${
+                      className={`tracking-custom text-meta sm:text-body-s flex-1 rounded-lg px-4 py-2 text-center font-sans leading-normal whitespace-nowrap transition ${
                         view === "promotions"
                           ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
                           : "text-gray-600 hover:text-gray-900"
@@ -105,7 +105,7 @@ function AgentSectionView({}) {
                     <button
                       type="button"
                       onClick={() => setView("find_event")}
-                      className={`tracking-custom flex-1 rounded-lg px-4 py-2 text-center font-sans text-[13px] whitespace-nowrap transition sm:text-[14px] ${
+                      className={`tracking-custom text-meta sm:text-body-s flex-1 rounded-lg px-4 py-2 text-center font-sans leading-normal whitespace-nowrap transition ${
                         view === "find_event"
                           ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
                           : "text-gray-600 hover:text-gray-900"

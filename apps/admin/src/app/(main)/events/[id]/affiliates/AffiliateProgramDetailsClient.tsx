@@ -25,83 +25,97 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <section className={"flex justify-between gap-0.5 p-5"}>
-        <div className={"flex h-fit w-[400px] flex-col gap-3 rounded-xl bg-white p-6"}>
+        <div className={"flex h-fit w-100 flex-col gap-3 rounded-xl bg-white p-6"}>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Affiliate Name:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Affiliate Name:
+              </p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>{affiliate?.name}</p>
+              <p className={"text-body-s font-medium"}>{affiliate?.name}</p>
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Affiliate ID:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Affiliate ID:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>{affiliate?.unique_id}</p>
+            <p className={"text-body-s font-medium"}>{affiliate?.unique_id}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Date Joined:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date Joined:</p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>
+              <p className={"text-body-s font-medium"}>
                 {affiliate?.date_joined ? formatLongDate(new Date(affiliate.date_joined)) : ""}
               </p>
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>No of Programs:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                No of Programs:
+              </p>
             </div>
-            <p className={"text-light-green-70 text-[14px] font-medium"}>{affiliate?.programs}</p>
+            <p className={"text-light-green-70 text-body-s font-medium"}>{affiliate?.programs}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Total Tickets Sold:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Total Tickets Sold:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>{affiliate?.tickets_sold}</p>
+            <p className={"text-body-s font-medium"}>{affiliate?.tickets_sold}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Total Revenue:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Total Revenue:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>
+            <p className={"text-body-s font-medium"}>
               N{formatNumberWithCommas(affiliate?.total_revenue ?? 0)}
             </p>
           </div>
           {affiliate?.account ? (
             <>
               <div className={"items-center-center flex gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Account Number:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Account Number:
+                  </p>
                 </div>
-                <p className={"text-[14px] font-medium"}>{affiliate.account.account_number}</p>
+                <p className={"text-body-s font-medium"}>{affiliate.account.account_number}</p>
               </div>
               <div className={"items-center-center flex gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Account Holder:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Account Holder:
+                  </p>
                 </div>
-                <p className={"text-[14px] font-medium"}>{affiliate.account.account_name}</p>
+                <p className={"text-body-s font-medium"}>{affiliate.account.account_name}</p>
               </div>
               <div className={"items-center-center flex gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Bank Name:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Bank Name:
+                  </p>
                 </div>
-                <p className={"text-[14px] font-medium"}>{affiliate.account.bank_name}</p>
+                <p className={"text-body-s font-medium"}>{affiliate.account.bank_name}</p>
               </div>
             </>
           ) : (
-            <p className={"text-text-grey text-[14px] font-normal"}>No bank account on file</p>
+            <p className={"text-text-grey text-body-s font-normal"}>No bank account on file</p>
           )}
         </div>
-        <div className={"flex h-fit w-[780px] flex-col gap-4 rounded-xl bg-white"}>
+        <div className={"flex h-fit w-195 flex-col gap-4 rounded-xl bg-white"}>
           <div className={"border-b p-6"}>
-            <p className={"font-semiBold text-[16px]"}>Programs</p>
+            <p className={"font-semiBold text-body-l"}>Programs</p>
           </div>
           <div className={"flex flex-col gap-4 p-6"}>
             {programs.length === 0 ? (
-              <p className={"text-text-grey text-[14px] font-normal"}>
+              <p className={"text-text-grey text-body-s font-normal"}>
                 This affiliate has no event programs yet.
               </p>
             ) : (
@@ -111,19 +125,19 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                   className={"bg-light-grey flex flex-col gap-2 rounded-xl p-2"}
                 >
                   <div className={"bg-green-tint flex items-center gap-3 p-2 px-4"}>
-                    <div className={"h-24 w-24 rounded-[8px] bg-gray-600"}></div>
+                    <div className={"h-24 w-24 rounded-lg bg-gray-600"}></div>
                     <div className={"flex flex-col gap-1"}>
-                      <p className={"font-semiBold text-[18px]"}>{program.event_name}</p>
+                      <p className={"font-semiBold text-body-xl"}>{program.event_name}</p>
                       <div className={"flex items-center gap-1"}>
                         <CalendarIcon className={"text-text-grey w-3.5"} />
-                        <p className={"text-text-grey text-[16px] font-normal"}>
+                        <p className={"text-text-grey text-body-l font-normal"}>
                           {formatLongDate(new Date(program.start_date), "mid")}
                         </p>
                       </div>
                       {program.location ? (
                         <div className={"flex items-center gap-1"}>
                           <MapPinIcon className={"text-text-grey w-3.5"} />
-                          <p className={"text-text-grey text-[16px] font-normal"}>
+                          <p className={"text-text-grey text-body-l font-normal"}>
                             {program.location}
                           </p>
                         </div>
@@ -133,7 +147,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                   <div
                     className={"bg-grey-20 flex items-center justify-between gap-2 rounded-xl p-2"}
                   >
-                    <p className={"text-text-grey text-[12px] font-medium"}>
+                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
                       Affiliate link:{" "}
                       <span className={"text-light-black font-medium"}>
                         {program.affiliate_link}
@@ -146,46 +160,54 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                         onClick={() => handleCopyLink(program.affiliate_link)}
                       />
                       {copiedLink === program.affiliate_link ? (
-                        <span className={"text-light-green-70 text-[12px]"}>Copied</span>
+                        <span className={"text-light-green-70 text-meta leading-normal"}>
+                          Copied
+                        </span>
                       ) : null}
                     </div>
                   </div>
                   <div className={"items-center-center flex gap-6"}>
-                    <div className={"w-[115px]"}>
-                      <p className={"text-text-grey text-[12px] font-medium"}>Total Commission:</p>
+                    <div className={"w-28.75"}>
+                      <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                        Total Commission:
+                      </p>
                     </div>
-                    <p className={"text-[14px] font-medium"}>
+                    <p className={"text-body-s font-medium"}>
                       N{formatNumberWithCommas(program.breakdown.total_commissions)}
                     </p>
                   </div>
                   <div className={"items-center-center flex gap-6"}>
-                    <div className={"w-[115px]"}>
-                      <p className={"text-text-grey text-[12px] font-medium"}>
+                    <div className={"w-28.75"}>
+                      <p className={"text-text-grey text-meta leading-normal font-medium"}>
                         Total Tickets Sold:
                       </p>
                     </div>
-                    <p className={"text-[14px] font-medium"}>{program.breakdown.ticket_sold}</p>
+                    <p className={"text-body-s font-medium"}>{program.breakdown.ticket_sold}</p>
                   </div>
                   <div className={"flex flex-wrap justify-between gap-1"}>
                     {program.ticket_sold.map((ticket, ticketIndex) => (
                       <div
                         key={`${ticket.name}-${ticketIndex}`}
                         className={
-                          "border-grey-20 flex h-[103px] w-full flex-col gap-2 rounded-[8px] border bg-white p-3"
+                          "border-grey-20 flex h-25.75 w-full flex-col gap-2 rounded-lg border bg-white p-3"
                         }
                       >
-                        <p className={"font-semiBold text-[14px]"}>{ticket.name}</p>
+                        <p className={"font-semiBold text-body-s"}>{ticket.name}</p>
                         <div className={"items-center-center flex gap-6"}>
-                          <div className={"w-[115px]"}>
-                            <p className={"text-text-grey text-[12px] font-medium"}>Sold:</p>
+                          <div className={"w-28.75"}>
+                            <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                              Sold:
+                            </p>
                           </div>
-                          <p className={"text-[14px] font-medium"}>{ticket.count}</p>
+                          <p className={"text-body-s font-medium"}>{ticket.count}</p>
                         </div>
                         <div className={"items-center-center flex gap-6"}>
-                          <div className={"w-[115px]"}>
-                            <p className={"text-text-grey text-[12px] font-medium"}>Price:</p>
+                          <div className={"w-28.75"}>
+                            <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                              Price:
+                            </p>
                           </div>
-                          <p className={"text-[14px] font-medium"}>
+                          <p className={"text-body-s font-medium"}>
                             N{formatNumberWithCommas(ticket.price)}
                           </p>
                         </div>

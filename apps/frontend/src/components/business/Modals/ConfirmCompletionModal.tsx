@@ -51,9 +51,9 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen,
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Confirm completion"}</DialogTitle>
-        <div className="w-[360px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-90 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="tracking-custom font-sans text-[16px] leading-[27px] font-semibold">
+            <p className="tracking-custom text-body-l font-sans leading-6.75 font-semibold">
               Confirm completion
             </p>
             <div className="flex items-center gap-2">
@@ -62,8 +62,8 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen,
               </div>
             </div>
           </div>
-          <div className="mt-2 flex w-[328px] flex-col items-center">
-            <p className="mt-4 text-[14px] font-normal">
+          <div className="mt-2 flex w-82 flex-col items-center">
+            <p className="text-body-s mt-4 font-normal">
               Are you sure this service has been completed? If so, the payment will be released to
               the vendor and the order will be marked as completed.
             </p>
@@ -100,11 +100,11 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen,
                           d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                         />
                       </svg>
-                      <p className="text-light-white text-[16px] font-medium">Loading...</p>
+                      <p className="text-light-white text-body-l font-medium">Loading...</p>
                     </div>
                   </>
                 ) : (
-                  <p className="text-light-white text-[16px] font-medium">Confirm</p>
+                  <p className="text-light-white text-body-l font-medium">Confirm</p>
                 )}
               </Button>
             </div>

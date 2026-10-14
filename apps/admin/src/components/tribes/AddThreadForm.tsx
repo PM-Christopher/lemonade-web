@@ -46,26 +46,30 @@ const AddThreadForm = ({ tribeId }: AddThreadFormProps) => {
       onSubmit={handleSubmit(onSubmit)}
       className="border-grey-20 flex flex-col gap-2 border-b pb-4"
     >
-      <p className="text-[14px] font-medium">Post as admin</p>
+      <p className="text-body-s font-medium">Post as admin</p>
       <Input
         placeholder="Topic"
         className="border-grey-20 h-10 rounded-xl border"
         {...register("topic")}
       />
-      {errors.topic && <p className="text-red-1 text-[12px]">{errors.topic.message}</p>}
+      {errors.topic && (
+        <p className="text-red-1 text-meta leading-normal">{errors.topic.message}</p>
+      )}
       <Textarea
         placeholder="Write something..."
         className="border-grey-20 min-h-20 resize-none rounded-xl border"
         {...register("thoughts")}
       />
-      {errors.thoughts && <p className="text-red-1 text-[12px]">{errors.thoughts.message}</p>}
+      {errors.thoughts && (
+        <p className="text-red-1 text-meta leading-normal">{errors.thoughts.message}</p>
+      )}
       <div className="flex justify-end">
         <Button
           type="submit"
           disabled={isSubmitting}
           className="border-step-color bg-gradient-green h-9 rounded-xl px-4"
         >
-          <p className="text-[14px] font-medium text-white">
+          <p className="text-body-s font-medium text-white">
             {isSubmitting ? "Posting..." : "Post thread"}
           </p>
         </Button>

@@ -133,13 +133,13 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Bank Account"}</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="laptop:h-full laptop:w-[640px] h-screen w-full rounded-lg bg-white p-6 shadow-lg">
+          <div className="laptop:h-full laptop:w-160 h-screen w-full rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="cursor-pointer" onClick={toggle}>
                   <CloseIcon />
                 </div>
-                <p className="tracking-custom font-sans leading-[27px] font-semibold text-[18p]">
+                <p className="tracking-custom font-sans leading-6.75 font-semibold text-[18p]">
                   Bank Account
                 </p>
               </div>
@@ -156,7 +156,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Bank Name
                 </Label>
@@ -187,7 +187,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Account number
                 </Label>
@@ -214,7 +214,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="fullname"
-                  className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                  className="text-text-grey text-label font-sans font-normal"
                 >
                   Account name
                 </Label>

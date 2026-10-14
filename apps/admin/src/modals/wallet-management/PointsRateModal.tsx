@@ -81,7 +81,7 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
         <DialogTitle className="sr-only">Points Rate</DialogTitle>
         <div className="rounded-lg bg-white p-6 shadow-lg" style={{ width: "480px" }}>
           <div className="flex items-center justify-between">
-            <p className={"font-semiBold text-[18px]"}>{currency} Rate</p>
+            <p className={"font-semiBold text-body-xl"}>{currency} Rate</p>
             <div className="cursor-pointer" onClick={toggle}>
               <XIcon />
             </div>
@@ -89,12 +89,12 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
           <div style={{ marginTop: "20px" }}>
             <div className={"flex flex-col gap-4"}>
               <div style={{ maxWidth: "328px" }}>
-                <p className={"text-text-grey text-[14px] font-normal"}>
+                <p className={"text-text-grey text-body-s font-normal"}>
                   How much of {currency} a user receives per point redeemed. For example, 1 means
                   100 points = {currency === "NGN" ? "₦100" : `100 ${currency}`}.
                 </p>
               </div>
-              <p className={"text-text-grey text-[14px] font-normal"}>Rate per point</p>
+              <p className={"text-text-grey text-body-s font-normal"}>Rate per point</p>
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"e.g. 1"}
@@ -108,7 +108,7 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
                     "border-light-grey-50 h-12 w-full rounded-xl border bg-white px-12 py-3.5"
                   }
                 >
-                  <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                  <p className={"text-body-l font-medium text-black"}>Cancel</p>
                 </button>
                 <button
                   onClick={handleSubmit(onSubmit)}
@@ -116,7 +116,7 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
                     "border-step-color bg-gradient-green h-12 w-full rounded-xl border px-12 py-3.5"
                   }
                 >
-                  <p className={"text-[16px] font-medium text-white"}>
+                  <p className={"text-body-l font-medium text-white"}>
                     {updateRate.isPending ? "Loading..." : "Submit"}
                   </p>
                 </button>

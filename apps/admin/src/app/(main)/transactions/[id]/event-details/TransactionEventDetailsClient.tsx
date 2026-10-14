@@ -72,24 +72,24 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-[600px] flex-col gap-5 rounded-xl bg-white p-6"}>
+        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Event name:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Event name:</p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>{event?.info?.event_name}</p>
-              {/*<p className={"cursor-pointer font-medium text-[14px] text-light-green"}>View business</p>*/}
+              <p className={"text-body-s font-medium"}>{event?.info?.event_name}</p>
+              {/*<p className={"cursor-pointer font-medium text-body-s text-light-green"}>View business</p>*/}
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Event owner:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Event owner:</p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>{event?.info?.organizer}</p>
+              <p className={"text-body-s font-medium"}>{event?.info?.organizer}</p>
               <p
-                className={"text-light-green cursor-pointer text-[14px] font-medium"}
+                className={"text-light-green text-body-s cursor-pointer font-medium"}
                 onClick={() => push(routes.USER_DETAIL(event!.info!.user_id!))}
               >
                 View profile
@@ -97,36 +97,38 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Transaction Id:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>{event?.info?.transaction_id}</p>
+            <p className={"text-body-s font-medium"}>{event?.info?.transaction_id}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>N0</p>
+            <p className={"text-body-s font-medium"}>N0</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Tickets sold:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Tickets sold:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>{event?.info?.tickets_sold}</p>
+            <p className={"text-body-s font-medium"}>{event?.info?.tickets_sold}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Date paid:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date paid:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
+            <p className={"text-body-s font-medium"}>
               {dayjs(event?.info?.created_at).format("DD MMM, YYYY hh:mmA")}
             </p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
             </div>
-            <p className={"text-light-green-70 text-[14px] font-medium"}>
+            <p className={"text-light-green-70 text-body-s font-medium"}>
               {capitalizeWords(event?.info?.status)}
             </p>
           </div>
@@ -134,9 +136,9 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
 
         {/* history  */}
         <div className="flex w-full flex-col lg:w-2/3">
-          <div className={"h-[700px] rounded-tl-xl rounded-tr-xl bg-white"}>
+          <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
             <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
-              <p className={"font-semiBold text-[16px]"}>Boosting history</p>
+              <p className={"font-semiBold text-body-l"}>Boosting history</p>
               <div
                 className={
                   "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
@@ -144,7 +146,7 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
                 onClick={printCSV}
               >
                 <PrinterIcon className={"w-5"} />
-                <p className={"text-black-light text-[16px] font-medium"}>Print</p>
+                <p className={"text-black-light text-body-l font-medium"}>Print</p>
               </div>
             </div>
 
@@ -153,13 +155,15 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
                 <div className="px-4 pt-4 pb-6" key={index}>
                   <div className="flex justify-between">
                     <div className="flex flex-col">
-                      <p className={"text-[14px] font-medium"}>
+                      <p className={"text-body-s font-medium"}>
                         {item?.unique_id} - ₦{item?.amount}
                       </p>
-                      <p className={"text-text-grey text-[12px] font-normal"}>{item?.created_at}</p>
+                      <p className={"text-text-grey text-meta leading-normal font-normal"}>
+                        {item?.created_at}
+                      </p>
                     </div>
-                    <div className={"bg-light-green-60 h-fit gap-1 rounded-[8px] px-2 py-1"}>
-                      <p className={"text-light-green-70 text-[12px] font-medium"}>
+                    <div className={"bg-light-green-60 h-fit gap-1 rounded-lg px-2 py-1"}>
+                      <p className={"text-light-green-70 text-meta leading-normal font-medium"}>
                         {capitalizeWords(item?.status)}
                       </p>
                     </div>

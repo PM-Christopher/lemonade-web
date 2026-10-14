@@ -19,7 +19,7 @@ const EventSubMenu: React.FC<EventSubMenuInterface> = ({
 }) => {
   return (
     <div className="flex items-center justify-between gap-2.5 px-4">
-      <div className="bg-light_grey laptop:w-[235px] flex h-10 w-[307px] items-center gap-3 rounded-xl p-2 px-3">
+      <div className="bg-light_grey laptop:w-58.75 flex h-10 w-76.75 items-center gap-3 rounded-xl p-2 px-3">
         <div>
           <SearchIcon />
         </div>
@@ -27,20 +27,20 @@ const EventSubMenu: React.FC<EventSubMenuInterface> = ({
           <input
             id="search"
             type="text"
-            className="bg-light_grey rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+            className="bg-light_grey text-body-s rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
             placeholder="Search events..."
             value={searchTerm}
             onChange={handleEventSearch}
           />
         </div>
       </div>
-      <FilterIcon className="h-[17.5px] w-[19.25px] cursor-pointer" onClick={filterEvent} />
+      <FilterIcon className="h-4.5 w-4.75 cursor-pointer" onClick={filterEvent} />
       <div
         className="border-light-grey-50 laptop:flex hidden cursor-pointer items-center gap-2 rounded-xl border p-2 px-3.5"
         onClick={toggleMenu}
       >
         <TicketIcon />
-        <p className="font-semi-normal text-black-light font-sans text-[16px]">Tickets</p>
+        <p className="font-semi-normal text-black-light text-body-l font-sans">Tickets</p>
       </div>
     </div>
   );

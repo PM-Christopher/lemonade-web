@@ -50,18 +50,18 @@ const CheckInsClient = ({ id }: { id: number }) => {
         <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Guest list</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Guest list</p>
           </div>
         </div>
 
         <div className={"mt-4 flex flex-col items-center gap-2"}>
-          <div className={"flex w-[800px] justify-between gap-2 rounded-xl bg-white p-6"}>
+          <div className={"flex w-200 justify-between gap-2 rounded-xl bg-white p-6"}>
             <div className="bg-light_grey flex h-12 w-full items-center gap-3 rounded-xl p-2 px-3">
               <SearchIcon className="shrink-0" />
               <input
                 id="search"
                 type="text"
-                className="bg-light_grey flex-1 border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                className="bg-light_grey text-body-s flex-1 border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                 placeholder="Search guest name, email address"
               />
             </div>
@@ -74,7 +74,7 @@ const CheckInsClient = ({ id }: { id: number }) => {
             </div>
           </div>
 
-          <div className={"flex h-[900px] w-[800px] flex-col gap-4 rounded-xl bg-white p-6"}>
+          <div className={"flex h-225 w-200 flex-col gap-4 rounded-xl bg-white p-6"}>
             {loading ? (
               <GuestListSkeleton count={4} />
             ) : (

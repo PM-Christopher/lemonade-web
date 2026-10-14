@@ -88,7 +88,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Event filter"}</DialogTitle>
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
@@ -99,10 +99,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
           </div>
           <div className="mt-6 flex flex-col">
             <div className="mt-6 grid gap-2">
-              <Label
-                htmlFor="fullname"
-                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-              >
+              <Label htmlFor="fullname" className="text-text-grey text-label font-sans font-normal">
                 CATEGORY
               </Label>
               <div className="mt-2">
@@ -120,7 +117,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                         key={index}
                         onClick={() => handleCategoryClick(category?.name ?? "")}
                       >
-                        <p className="text-text-grey text-[14px] font-normal">
+                        <p className="text-text-grey text-body-s font-normal">
                           {formatStringUCFirst(category?.name ?? "")}
                         </p>
                       </div>
@@ -130,10 +127,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
               </div>
             </div>
             <div className="mt-6 grid gap-2">
-              <Label
-                htmlFor="fullname"
-                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-              >
+              <Label htmlFor="fullname" className="text-text-grey text-label font-sans font-normal">
                 TIME & DATE
               </Label>
               <div className="mt-2">
@@ -149,7 +143,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                         key={index}
                         onClick={() => handleTimeType(option)}
                       >
-                        <p className="text-text-grey text-[14px] font-normal">{option}</p>
+                        <p className="text-text-grey text-body-s font-normal">{option}</p>
                       </div>
                     ))}
                   </div>
@@ -170,7 +164,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                           }}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-2.5 font-sans text-[12px] shadow-none"
+                          className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer px-2.5 font-sans leading-normal shadow-none"
                           placeholderText="From"
                         />
                       </div>
@@ -192,7 +186,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                           }}
                           showTimeSelect={false}
                           dateFormat="yyyy-MM-dd"
-                          className="bg-light_grey font-semi-normal w-full cursor-pointer px-2.5 font-sans text-[12px] shadow-none"
+                          className="bg-light_grey font-semi-normal text-meta w-full cursor-pointer px-2.5 font-sans leading-normal shadow-none"
                           placeholderText="To"
                         />
                       </div>
@@ -202,21 +196,18 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
               </div>
             </div>
             <div className="mt-6 grid gap-2">
-              <Label
-                htmlFor="fullname"
-                className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-              >
+              <Label htmlFor="fullname" className="text-text-grey text-label font-sans font-normal">
                 LOCATION
               </Label>
               <div className="mt-2">
                 <Select onValueChange={handleLocationChange}>
                   <SelectTrigger
                     aria-label="Location"
-                    className="bg-mid-grey h-10 w-[180px] rounded-xl border-0 px-4"
+                    className="bg-mid-grey h-10 w-45 rounded-xl border-0 px-4"
                   >
                     <SelectValue
                       placeholder={
-                        <span className="text-text-grey font-sans text-[12px] leading-[14.4px] font-semibold">
+                        <span className="text-text-grey text-meta font-sans font-semibold">
                           Location
                         </span>
                       }
@@ -235,7 +226,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
                 onClick={handleResetFilter}
               >
-                <p className="font-semi-normal text-black-light font-sans text-[16px]">
+                <p className="font-semi-normal text-black-light text-body-l font-sans">
                   Reset filter
                 </p>
               </button>
@@ -243,7 +234,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 onClick={handleFilterEvent}
               >
-                <p className="font-semi-normal font-sans text-[16px] text-white">Apply filter</p>
+                <p className="font-semi-normal text-body-l font-sans text-white">Apply filter</p>
               </button>
             </div>
           </div>

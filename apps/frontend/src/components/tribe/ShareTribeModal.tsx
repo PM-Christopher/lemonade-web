@@ -72,7 +72,7 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe 
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Share tribe</DialogTitle>
-        <div className="laptop:w-[480px] flex w-screen flex-col rounded-xl bg-white">
+        <div className="laptop:w-120 flex w-screen flex-col rounded-xl bg-white">
           <div className={`p-6`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -87,31 +87,31 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe 
             <p>Share this tribe via</p>
             <div className="flex justify-between">
               <div
-                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-[15px]"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-3.75"
                 onClick={() => shareToSocial("facebook")}
               >
                 <FacebookIcon className="" />
               </div>
               <div
-                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-[15px]"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-3.75"
                 onClick={() => shareToSocial("twitter")}
               >
                 <TwitterIcon className="" />
               </div>
               <div
-                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-[15px]"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-3.75"
                 onClick={() => shareToSocial("whatsapp")}
               >
                 <WhatsAppIcon className="" />
               </div>
               <div
-                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-[15px]"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-3.75"
                 onClick={() => shareToSocial("instagram")}
               >
                 <InstagramIcon className="" />
               </div>
               <div
-                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-[15px]"
+                className="hover:bg-grey-20 flex cursor-pointer items-center justify-center rounded-full border p-3.75"
                 onClick={() => shareToSocial("telegram")}
               >
                 <TelegramIcon className="" />
@@ -123,7 +123,7 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe 
                 <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`}</p>
               </div>
               <Button
-                className="bg-gradient-green h-[35px] w-20"
+                className="bg-gradient-green h-8.75 w-20"
                 onClick={() =>
                   handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`)
                 }

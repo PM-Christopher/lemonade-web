@@ -18,8 +18,8 @@ const EventView: React.FC<EventViewProps> = ({ userDetail }) => {
         >
           <div className={"flex items-center justify-between"}>
             <div className={"text-text-grey flex items-center gap-2"}>
-              <CalendarIcon className={"w-[15px]"} />
-              <p className={"font-semiBold text-text-grey text-[12px]"}>ALL EVENTS</p>
+              <CalendarIcon className={"w-3.75"} />
+              <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL EVENTS</p>
             </div>
           </div>
           <ChevronDown className={"text-text-grey w-5"} />
@@ -30,12 +30,16 @@ const EventView: React.FC<EventViewProps> = ({ userDetail }) => {
           {userDetail?.events?.map((item) => (
             <div key={item?.id} className={"flex w-fit flex-col gap-1 rounded-xl border p-1"}>
               <Image src={item?.image ?? ""} alt={""} width={155.5} height={155.5} />
-              <p className={"font-semiBold text-[14px]"}>{item?.name}</p>
+              <p className={"font-semiBold text-body-s"}>{item?.name}</p>
               <div className={"flex items-center gap-1"}>
                 <CalendarIcon className={"w-3"} />
-                <p className={"text-text-grey text-[12px] font-normal"}>{item?.date}</p>
+                <p className={"text-text-grey text-meta leading-normal font-normal"}>
+                  {item?.date}
+                </p>
                 <Dot className={"text-text-grey"} />
-                <p className={"text-text-grey text-[12px] font-normal"}>{item?.time}</p>
+                <p className={"text-text-grey text-meta leading-normal font-normal"}>
+                  {item?.time}
+                </p>
               </div>
             </div>
           ))}

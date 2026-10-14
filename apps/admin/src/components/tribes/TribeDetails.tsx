@@ -26,30 +26,30 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
             height={96}
             className="rounded"
           />
-          <p className="font-semiBold text-center text-[16px]">{tribe?.name}</p>
-          <p className={"text-text-grey text-[14px] font-medium"}>{tribe?.category}</p>
+          <p className="font-semiBold text-body-l text-center">{tribe?.name}</p>
+          <p className={"text-text-grey text-body-s font-medium"}>{tribe?.category}</p>
           <div className={"flex items-center"}>
-            <p className={"text-text-grey text-[12px] font-normal"}>
+            <p className={"text-text-grey text-meta leading-normal font-normal"}>
               {tribe?.members_count ?? 0} members
             </p>
             <DotIcon className={"text-text-grey"} />
-            <p className={"text-text-grey text-[12px] font-normal"}>
+            <p className={"text-text-grey text-meta leading-normal font-normal"}>
               {tribe?.threads_count ?? 0} threads
             </p>
           </div>
-          <div className={"w-[311px]"}>
-            <p className="text-light-black text-center text-[14px] font-normal">
+          <div className={"w-77.75"}>
+            <p className="text-light-black text-body-s text-center font-normal">
               {tribe?.description}
             </p>
           </div>
-          <p className="text-text-grey text-center text-[12px] font-normal">
+          <p className="text-text-grey text-meta text-center leading-normal font-normal">
             Created on {tribe?.created_at}
           </p>
         </div>
       </div>
 
       <div>
-        <p className="mb-4 text-[16px] font-medium">Members</p>
+        <p className="text-body-l mb-4 font-medium">Members</p>
         <div className={"bg-light-grey flex flex-col gap-2 rounded-xl px-6 py-4"}>
           {members.length > 0 ? (
             members.map((member) => (
@@ -65,7 +65,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
                     height={20}
                     className="rounded-full"
                   />
-                  <p className={"text-[14px] font-medium"}>
+                  <p className={"text-body-s font-medium"}>
                     {member.user?.fullname ?? "Unknown member"}
                   </p>
                 </div>
@@ -84,7 +84,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
               </div>
             ))
           ) : (
-            <p className="text-text-grey text-[14px] font-normal">No members yet</p>
+            <p className="text-text-grey text-body-s font-normal">No members yet</p>
           )}
         </div>
       </div>

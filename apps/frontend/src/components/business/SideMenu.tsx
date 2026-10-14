@@ -57,12 +57,10 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-[585px] h-full w-screen bg-white p-12 px-5">
+        <div className="laptop:w-146.25 h-full w-screen bg-white p-12 px-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="tracking-custom font-sans text-[16px] leading-[24px] font-semibold">
-                Jobs
-              </p>
+              <p className="tracking-custom text-body-l font-sans font-semibold">Jobs</p>
             </div>
             <div>
               <CloseIcon className="cursor-pointer" onClick={toggleMenu} />
@@ -72,7 +70,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
             <div className="relative flex justify-between">
               {/* Animated Underline */}
               <div
-                className="bg-step-color absolute bottom-0 h-[3px] rounded-full transition-all duration-300"
+                className="bg-step-color absolute bottom-0 h-0.75 rounded-full transition-all duration-300"
                 style={{
                   width: "33.33%",
                   transform: `translateX(${
@@ -95,7 +93,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
                     className={`laptop:w-[33%] flex h-10 w-full cursor-pointer items-center justify-center bg-transparent transition-all duration-200`}
                   >
                     <p
-                      className={`tracking-custom font-sans text-[14px] leading-[21px] transition-all duration-200 ${isActive ? "font-semibold text-black" : "text-text-grey hover:text-black"}`}
+                      className={`tracking-custom text-body-s font-sans transition-all duration-200 ${isActive ? "font-semibold text-black" : "text-text-grey hover:text-black"}`}
                     >
                       {tab.label}
                     </p>

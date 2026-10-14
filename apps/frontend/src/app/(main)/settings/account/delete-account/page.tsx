@@ -18,47 +18,47 @@ const DeleteAccountPage = () => {
       <section className="bg-light_grey pb-10">
         <BackHeader title="Delete account" />
         <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:w-[640px] laptop:bg-white flex w-full flex-col gap-4 rounded-xl bg-none p-6">
-            <p className="text-light-black max-w-[592px] text-[14px] font-normal">
+          <div className="laptop:w-160 laptop:bg-white flex w-full flex-col gap-4 rounded-xl bg-none p-6">
+            <p className="text-light-black text-body-s max-w-148 font-normal">
               Deleting your account permanently removes your data from our system. You will have a{" "}
               <span className="font-semibold">30-day</span> grace period to change your mind. If you
               log in to your account within 30 days of deletion, your account will be reactivated.
             </p>
             <div className="bg-light_grey mt-6 flex flex-col gap-4 p-4">
-              <p className="text-[14px] font-semibold">Before you go, make sure</p>
+              <p className="text-body-s font-semibold">Before you go, make sure</p>
               <div className="flex items-center gap-2">
                 <ChatIcon />
-                <p className="text-black-light text-[14px] font-normal">
+                <p className="text-black-light text-body-s font-normal">
                   You have deleted all Tribes you created
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <CalendarIcon />
-                <p className="text-black-light text-[14px] font-normal">
+                <p className="text-black-light text-body-s font-normal">
                   You have no active events you created
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <BagIcon />
-                <p className="text-black-light text-[14px] font-normal">
+                <p className="text-black-light text-body-s font-normal">
                   You have completed all pending jobs
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <BankIcon />
-                <p className="text-black-light text-[14px] font-normal">
+                <p className="text-black-light text-body-s font-normal">
                   You request wallet withdrawal from ticket sales, and completed jobs to your local
                   bank
                 </p>
               </div>
-              <p className="text-light-black text-[14px] font-normal">
+              <p className="text-light-black text-body-s font-normal">
                 Your account cannot be deleted if these criteria are not met
               </p>
             </div>
             <div className="mt-9 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <SuppprtIcon />
-                <p className="font-semi-normal text-[14px]">
+                <p className="font-semi-normal text-body-s">
                   Reach out to support for any pending issues
                 </p>
               </div>
@@ -70,12 +70,12 @@ const DeleteAccountPage = () => {
                 className="border-red-2 bg-red-1 h-12 w-full rounded-xl border shadow-none"
               >
                 <Link href={routes.SETTINGS_ACCOUNT_CONFIRM_DELETE}>
-                  <span className="font-semi-normal text-[16px]">Delete account</span>
+                  <span className="font-semi-normal text-body-l">Delete account</span>
                 </Link>
               </Button>
               <Button asChild className="h-12 w-full border-none bg-transparent shadow-none">
                 <Link href={routes.SETTINGS_ACCOUNT}>
-                  <span className="font-semi-normal text-light-green text-[16px]">Cancel</span>
+                  <span className="font-semi-normal text-light-green text-body-l">Cancel</span>
                 </Link>
               </Button>
             </div>

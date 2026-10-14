@@ -77,7 +77,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
         <DialogTitle className="sr-only">{"Dispute Job"}</DialogTitle>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="hide-scrollbar laptop:p-8 max-h-[90vh] w-full max-w-[640px] overflow-y-auto scroll-smooth rounded-2xl bg-white p-6 shadow-xl"
+          className="hide-scrollbar laptop:p-8 max-h-[90vh] w-full max-w-160 overflow-y-auto scroll-smooth rounded-2xl bg-white p-6 shadow-xl"
         >
           {/* Header */}
           <div className="sticky top-0 z-10 mb-6 flex items-center justify-between bg-white pt-2 pb-4">
@@ -88,14 +88,14 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
               >
                 <CloseIcon />
               </div>
-              <h2 className="laptop:text-[18px] font-sans text-[16px] font-semibold text-black">
+              <h2 className="laptop:text-body-xl text-body-l font-sans font-semibold text-black">
                 Dispute Job
               </h2>
             </div>
 
             <SubmitButton
               title="Submit"
-              classes="h-10 w-[90px] rounded-xl"
+              classes="h-10 w-22.5 rounded-xl"
               loading={isSubmitting}
               isValid={isValid}
             />
@@ -106,16 +106,18 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
             {/* Dispute Textarea */}
             <div className="flex w-full flex-col gap-2">
               <div className="flex justify-between">
-                <label htmlFor="dispute" className="text-text-grey text-[14px] font-normal">
+                <label htmlFor="dispute" className="text-text-grey text-body-s font-normal">
                   Dispute
                 </label>
-                <span className="text-text-grey text-[12px] font-normal">200 characters</span>
+                <span className="text-text-grey text-meta leading-normal font-normal">
+                  200 characters
+                </span>
               </div>
               <textarea
                 id="dispute"
-                className={`bg-light_grey h-[130px] w-full rounded-xl border p-4 ${
+                className={`bg-light_grey h-32.5 w-full rounded-xl border p-4 ${
                   errors.dispute ? "border-red-500" : "border-gray-200"
-                } placeholder:text-grey-40 focus:ring-step-color text-[14px] transition placeholder:text-[14px] placeholder:font-normal focus:border-transparent focus:ring-2 focus:outline-none`}
+                } placeholder:text-grey-40 focus:ring-step-color text-body-s placeholder:text-body-s transition placeholder:font-normal focus:border-transparent focus:ring-2 focus:outline-none`}
                 placeholder="Dispute details"
                 {...register("dispute")}
               />
@@ -124,7 +126,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
 
             {/* Attachments */}
             <div className="flex w-full flex-col gap-2">
-              <label className="text-text-grey text-[14px] font-normal">Attachments</label>
+              <label className="text-text-grey text-body-s font-normal">Attachments</label>
               <MultipleFileUploader
                 length="multiple"
                 type="dispute"

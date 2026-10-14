@@ -162,7 +162,7 @@ export default function VerifyCodePage() {
   return (
     <AuthLayout>
       <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
-        <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
+        <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Verification code</p>
           <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">
             Enter the 4-digit code sent to {cookie.email} to verify your account
@@ -175,7 +175,7 @@ export default function VerifyCodePage() {
             className="mt-4 h-auto w-full object-contain"
           />
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[440px] shrink-0">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-110 shrink-0">
           <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
             <CardContent className="grid gap-6 p-0">
               <div className="flex flex-col items-center justify-center">
@@ -229,13 +229,13 @@ export default function VerifyCodePage() {
                 {canResend ? (
                   <button
                     type="button"
-                    className="font-semi-normal text-light-green cursor-pointer font-sans text-[16px]"
+                    className="font-semi-normal text-light-green text-body-l cursor-pointer font-sans"
                     onClick={handleResend}
                   >
                     Send code again
                   </button>
                 ) : (
-                  <p className="font-semi-normal text-light-green font-sans text-[16px]">
+                  <p className="font-semi-normal text-light-green text-body-l font-sans">
                     Resend code in {seconds} secs
                   </p>
                 )}

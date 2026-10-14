@@ -74,7 +74,7 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
           <div
             className={`${
               isReply ? "h-8 w-8" : "h-10 w-10"
-            } border-grey-90 flex items-center justify-center overflow-hidden rounded-full border bg-gray-200 text-[12px] font-semibold text-gray-700`}
+            } border-grey-90 text-meta flex items-center justify-center overflow-hidden rounded-full border bg-gray-200 leading-normal font-semibold text-gray-700`}
           >
             {comment.user.avatar ? (
               <Image

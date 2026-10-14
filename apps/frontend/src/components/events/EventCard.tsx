@@ -13,31 +13,31 @@ type EventCardIF = {
 };
 const EventCard: React.FC<EventCardIF> = ({ event }) => {
   return (
-    <div className="laptop:w-[316px] mb-4 flex w-[165px] flex-col rounded-xl bg-white">
+    <div className="laptop:w-79 mb-4 flex w-41.25 flex-col rounded-xl bg-white">
       <Image
         src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
         alt="event_1"
         width={316}
         height={316}
-        className="laptop:h-[316px] laptop:w-[316px] h-[165px] w-[165px] rounded-t-xl"
+        className="laptop:h-79 laptop:w-79 h-41.25 w-41.25 rounded-t-xl"
       />
       <div className="p-2">
-        <p className="tracking-custom laptop:text-[18px] my-2 font-sans text-[14px] leading-[27px] font-semibold">
+        <p className="tracking-custom laptop:text-body-xl text-body-s my-2 font-sans leading-6.75 font-semibold">
           {event.event_name}
         </p>
         <div className="my-2 flex items-center gap-1">
           <CalendarIcon className="h-3 w-3" />
-          <p className="text-text-grey laptop:text-[14px] font-sans text-[10px] leading-[16.8px] font-normal">
+          <p className="text-text-grey laptop:text-body-s text-meta font-sans leading-4.25 font-normal">
             {formatDate(event?.start_date)}
           </p>
-          <DotIcon className="h-[3px] w-[3px]" />
-          <p className="text-text-grey laptop:text-[14px] font-sans text-[10px] leading-[16.8px] font-normal">
+          <DotIcon className="h-0.75 w-0.75" />
+          <p className="text-text-grey laptop:text-body-s text-meta font-sans leading-4.25 font-normal">
             {formatLongTime(event?.start_date)}
           </p>
         </div>
         <div className="my-2 flex items-center gap-1">
           <LocationIcon className="h-3 w-3" />
-          <p className="text-text-grey laptop:text-[14px] truncate font-sans text-[10px] leading-[16.8px] font-normal">
+          <p className="text-text-grey laptop:text-body-s text-meta truncate font-sans leading-4.25 font-normal">
             {event?.location}
           </p>
         </div>

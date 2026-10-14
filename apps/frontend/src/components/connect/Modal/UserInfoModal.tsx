@@ -37,13 +37,13 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"User Info"}</DialogTitle>
-        <div className="laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:rounded-lg h-screen w-screen overflow-y-auto rounded-none bg-white p-6 shadow-lg">
+        <div className="laptop:h-auto laptop:max-h-[90vh] laptop:w-120 laptop:rounded-lg h-screen w-screen overflow-y-auto rounded-none bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
-                <CloseIcon className="w-[11.25px]" />
+                <CloseIcon className="w-2.75" />
               </div>
-              <p className="text-[16px] font-semibold">User Info</p>
+              <p className="text-body-l font-semibold">User Info</p>
             </div>
           </div>
           <div className="mt-6">
@@ -55,27 +55,31 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
                 height={64}
                 className="border-grey-90 h-16 w-16 rounded-3xl border"
               />
-              <p className="mt-4 text-[18px] font-semibold">{userInfo?.receiver?.username}</p>
-              <p className="font-semi-normal text-light-black text-[14px]">
+              <p className="text-body-xl mt-4 font-semibold">{userInfo?.receiver?.username}</p>
+              <p className="font-semi-normal text-light-black text-body-s">
                 Lemon {userInfo?.receiver?.lemon_id} (L
                 {userInfo?.receiver?.lemon_id})
               </p>
-              <p className="text-text-grey text-[12px] font-normal">
+              <p className="text-text-grey text-meta leading-normal font-normal">
                 {formatString(userInfo?.receiver?.industry)}
               </p>
               <div className="mt-4 flex items-center gap-2">
                 <LocationIcon />
-                <p className="font-semi-normal text-mid-green text-[12px]">3kms away</p>
+                <p className="font-semi-normal text-mid-green text-meta leading-normal">
+                  3kms away
+                </p>
                 <p className="text-grey-80">|</p>
-                <div className="bg-light-green-10 rounded-[8px] p-1 px-2">
-                  <p className="font-semi-normal text-mid-green text-[12px]">connected</p>
+                <div className="bg-light-green-10 rounded-lg p-1 px-2">
+                  <p className="font-semi-normal text-mid-green text-meta leading-normal">
+                    connected
+                  </p>
                 </div>
               </div>
-              <p className="text-light-black mt-4 max-w-[416px] text-center text-[14px] font-normal">
+              <p className="text-light-black text-body-s mt-4 max-w-104 text-center font-normal">
                 {userInfo?.receiver?.bio}
               </p>
               <div className="mt-4">
-                <p className="text-center text-[14px] font-semibold">Social links</p>
+                <p className="text-body-s text-center font-semibold">Social links</p>
                 <div className="mt-3 flex justify-center gap-4">
                   {userInfo?.receiver?.socials?.map((link) => (
                     <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>

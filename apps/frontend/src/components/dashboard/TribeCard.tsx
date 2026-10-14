@@ -29,7 +29,7 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
           <p className="text-text-grey text-meta truncate font-sans font-semibold">
             {tribe?.tribe_name}
           </p>
-          <p className="text-body-s mt-1 max-w-[329.33px] truncate font-sans font-semibold text-ellipsis">
+          <p className="text-body-s mt-1 max-w-82.25 truncate font-sans font-semibold text-ellipsis">
             {tribe?.description}
           </p>
         </div>

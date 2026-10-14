@@ -152,26 +152,24 @@ const AddTicketClient = ({ id }: { id: number }) => {
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">Add ticket</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Add ticket</p>
           </div>
         </div>
         <section className="laptop:mt-4 mt-0 flex flex-col items-center">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-xl bg-white p-12">
+            <div className="laptop:w-160 mt-10 flex w-full flex-col rounded-xl bg-white p-12">
               {fields.map((field, index) => (
                 <div className="mb-6" key={field.id}>
                   {index > 0 && (
-                    <div className="bg-grey-20 mb-4 flex items-center justify-between rounded-[8px] p-2 px-4">
-                      <p className="text-[14px] font-normal">Ticket {index + 1}</p>
+                    <div className="bg-grey-20 mb-4 flex items-center justify-between rounded-lg p-2 px-4">
+                      <p className="text-body-s font-normal">Ticket {index + 1}</p>
                       <CloseIcon
                         className="h-2.5 w-2.5 cursor-pointer"
                         onClick={() => remove(index)}
                       />
                     </div>
                   )}
-                  <p className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal">
-                    Ticket type
-                  </p>
+                  <p className="text-text-grey text-label font-sans font-normal">Ticket type</p>
                   <div className="mt-4 flex gap-2">
                     <div
                       className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-6 ${
@@ -183,9 +181,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                         setValue(`tickets.${index}.ticket_type`, "free", { shouldValidate: true })
                       }
                     >
-                      <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                        Free
-                      </p>
+                      <p className="tracking-custom text-body-s font-sans font-normal">Free</p>
                     </div>
                     <div
                       className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-6 ${
@@ -197,9 +193,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                         setValue(`tickets.${index}.ticket_type`, "paid", { shouldValidate: true })
                       }
                     >
-                      <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
-                        Paid
-                      </p>
+                      <p className="tracking-custom text-body-s font-sans font-normal">Paid</p>
                     </div>
                   </div>
                   {ticketFieldError(index, "ticket_type")}
@@ -207,7 +201,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor={`ticket-name-${index}`}
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Ticket name
                     </Label>
@@ -226,7 +220,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                       <div className="mt-6 grid gap-2">
                         <Label
                           htmlFor={`ticket-price-${index}`}
-                          className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                          className="text-text-grey text-label font-sans font-normal"
                         >
                           Ticket price
                         </Label>
@@ -259,7 +253,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                           className="border-text-grey w-5 border"
                           {...register(`tickets.${index}.transfer_commission`)}
                         />
-                        <p className="tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+                        <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
                           Transfer commission to guest
                         </p>
                       </div>
@@ -270,7 +264,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                   <div className="mt-6 grid w-full gap-2">
                     <Label
                       htmlFor={`ticket-stock-${index}`}
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Ticket stock
                     </Label>
@@ -300,7 +294,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor={`ticket-limit-${index}`}
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Purchase limit
                     </Label>
@@ -318,13 +312,13 @@ const AddTicketClient = ({ id }: { id: number }) => {
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor={`ticket-description-${index}`}
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Ticket description
                     </Label>
                     <textarea
                       {...register(`tickets.${index}.description`)}
-                      className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
+                      className="form-font bg-light_grey h-32.75 resize-none rounded-xl border-0 p-4"
                     />
                     {ticketFieldError(index, "description")}
                   </div>
@@ -338,7 +332,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
               >
                 <div className="flex items-center gap-1">
                   <PlusIcon className="text-light-green" />
-                  <p className="font-semi-normal text-light-green font-sans text-[16px] leading-[19.2px]">
+                  <p className="font-semi-normal text-light-green text-field font-sans">
                     Add another ticket
                   </p>
                 </div>

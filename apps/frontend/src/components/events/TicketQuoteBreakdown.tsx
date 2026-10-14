@@ -9,9 +9,8 @@ export interface TicketQuoteState {
   error: unknown;
 }
 
-const rowLabel = "tracking-custom text-text-grey font-sans text-[14px] leading-[21px] font-normal";
-const rowValue =
-  "tracking-custom text-light-black font-sans text-[14px] leading-[21px] font-semibold";
+const rowLabel = "tracking-custom text-text-grey font-sans text-body-s font-normal";
+const rowValue = "tracking-custom text-light-black font-sans text-body-s font-semibold";
 
 // Shows the server's price for the selection. Nothing here is computed on the client.
 export const TicketQuoteBreakdown = ({
@@ -26,7 +25,7 @@ export const TicketQuoteBreakdown = ({
 
   if (error) {
     return (
-      <p role="alert" className="mt-4 font-sans text-[14px] leading-[21px] text-red-600">
+      <p role="alert" className="text-body-s mt-4 font-sans text-red-600">
         {error instanceof ApiError ? error.message : "We couldn't price your tickets. Try again."}
       </p>
     );
@@ -61,12 +60,12 @@ export const TicketQuoteBreakdown = ({
       )}
       <div className="border-grey-20 my-4 border-t"></div>
       <div className="mt-4 flex justify-between">
-        <span className="tracking-custom text-text-grey font-sans text-[18px] leading-[27px] font-normal">
+        <span className="tracking-custom text-text-grey text-body-xl font-sans font-normal">
           Total
         </span>
         <span
           data-testid="ticket-quote-total"
-          className="tracking-custom text-light-black font-sans text-[18px] leading-[27px] font-semibold"
+          className="tracking-custom text-light-black text-body-xl font-sans font-semibold"
         >
           {quote.total_display}
         </span>

@@ -42,7 +42,7 @@ export const AlertMessage = () => {
 
   return showToast.show ? (
     <div className="fixed top-10 left-0 w-full" style={{ zIndex: 99999 }}>
-      <div className="tablet:mx-auto tablet:w-[872px] z-100 w-full px-5">
+      <div className="tablet:mx-auto tablet:w-218 z-100 w-full px-5">
         <Toaster
           position="top-center"
           reverseOrder={false}

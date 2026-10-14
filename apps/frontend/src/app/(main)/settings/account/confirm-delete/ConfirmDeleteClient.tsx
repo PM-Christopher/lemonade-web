@@ -64,16 +64,13 @@ const ConfirmDeleteClient = () => {
   return (
     <section className="mt-4 flex flex-col items-center">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="laptop:w-[640px] flex w-full flex-col gap-4 rounded-xl bg-white p-6">
-          <p className="font-semi-normal text-black-light text-[16px]">
+        <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl bg-white p-6">
+          <p className="font-semi-normal text-black-light text-body-l">
             Enter your password to delete your account
           </p>
 
           <div className="mt-6 grid gap-1">
-            <Label
-              htmlFor="username"
-              className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
-            >
+            <Label htmlFor="username" className="text-text-grey text-label font-sans font-normal">
               Password
             </Label>
             <div className="bg-light_grey flex h-12 w-full items-center justify-between gap-3 rounded-xl p-2 px-3">
@@ -81,7 +78,7 @@ const ConfirmDeleteClient = () => {
                 <input
                   id="password"
                   type={showCurrentPassword ? "text" : "password"}
-                  className="bg-light_grey h-12 w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                  className="bg-light_grey text-body-s h-12 w-full rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder=""
                   {...register("password")}
                 />
@@ -104,7 +101,7 @@ const ConfirmDeleteClient = () => {
               className="h-12 w-full border-none bg-transparent shadow-none"
               onClick={() => push(routes.SETTINGS_ACCOUNT_DELETE)}
             >
-              <p className="font-semi-normal text-light-green text-[16px]">Cancel</p>
+              <p className="font-semi-normal text-light-green text-body-l">Cancel</p>
             </Button>
           </div>
         </div>

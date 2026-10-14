@@ -89,15 +89,15 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-[600px] flex-col gap-5 rounded-xl bg-white p-6"}>
+        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Full name:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Full name:</p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-[14px] font-medium"}>{wallet?.info?.fullname}</p>
+              <p className={"text-body-s font-medium"}>{wallet?.info?.fullname}</p>
               <p
-                className={"text-light-green cursor-pointer text-[14px] font-medium"}
+                className={"text-light-green text-body-s cursor-pointer font-medium"}
                 onClick={() => push(routes.USER_DETAIL(wallet!.history[0]!.user_id!))}
               >
                 View profile
@@ -105,36 +105,40 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Transaction Id:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Transaction Id:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>{wallet?.history[0]?.wallet_id}</p>
+            <p className={"text-body-s font-medium"}>{wallet?.history[0]?.wallet_id}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Date Paid:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date Paid:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>{wallet?.info?.date_paid}</p>
+            <p className={"text-body-s font-medium"}>{wallet?.info?.date_paid}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Amount:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
             </div>
-            <p className={"text-[14px] font-medium"}>
+            <p className={"text-body-s font-medium"}>
               N{formatNumberWithCommas(Number(wallet?.info?.amount) || 0)}
             </p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Subscription Type:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                Subscription Type:
+              </p>
             </div>
-            <p className={"text-[14px] font-medium"}>Yearly</p>
+            <p className={"text-body-s font-medium"}>Yearly</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
-            <div className={"w-[115px]"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
+            <div className={"w-28.75"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
             </div>
-            <p className={"text-light-green-70 text-[14px] font-medium"}>
+            <p className={"text-light-green-70 text-body-s font-medium"}>
               {capitalizeWords(wallet?.info?.status)}
             </p>
           </div>
@@ -142,9 +146,9 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
 
         {/* payout history */}
         <div className="flex w-full flex-col lg:w-2/3">
-          <div className={"h-[700px] rounded-tl-xl rounded-tr-xl bg-white"}>
+          <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
             <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
-              <p className={"font-semiBold text-[16px]"}>Payout history</p>
+              <p className={"font-semiBold text-body-l"}>Payout history</p>
               <div
                 className={
                   "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
@@ -152,7 +156,7 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
                 onClick={printCSV}
               >
                 <PrinterIcon className={"w-5"} />
-                <p className={"text-black-light text-[16px] font-medium"}>Print</p>
+                <p className={"text-black-light text-body-l font-medium"}>Print</p>
               </div>
             </div>
 
@@ -161,15 +165,15 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
                 <div className="px-4 pt-4 pb-6" key={index}>
                   <div className="flex justify-between">
                     <div className="flex flex-col">
-                      <p className={"text-[14px] font-medium"}>
+                      <p className={"text-body-s font-medium"}>
                         {item?.wallet?.wallet_id} - ₦{formatNumberWithCommas(item?.amount ?? 0)}
                       </p>
-                      <p className={"text-text-grey text-[12px] font-normal"}>
+                      <p className={"text-text-grey text-meta leading-normal font-normal"}>
                         23, Mar 2023. 05:00PM
                       </p>
                     </div>
-                    <div className={"bg-light-green-60 h-fit gap-1 rounded-[8px] px-2 py-1"}>
-                      <p className={"text-light-green-70 text-[12px] font-medium"}>
+                    <div className={"bg-light-green-60 h-fit gap-1 rounded-lg px-2 py-1"}>
+                      <p className={"text-light-green-70 text-meta leading-normal font-medium"}>
                         {capitalizeWords(item?.status)}
                       </p>
                     </div>

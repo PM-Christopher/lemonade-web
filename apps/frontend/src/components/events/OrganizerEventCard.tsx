@@ -71,13 +71,13 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
           <Image
             src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
             alt="event_1"
-            className="laptop:h-[230px] laptop:w-[230px] h-[150px] w-full rounded-[8px]"
+            className="laptop:h-57.5 laptop:w-57.5 h-37.5 w-full rounded-lg"
             width={230}
             height={230}
           />
           {draft && (
-            <div className="bg-warning absolute top-0 right-0 rounded-tl-[0px] rounded-tr-[8px] rounded-br-[8px] rounded-bl-[8px] p-1 px-2">
-              <p className="text-warning-bold text-center font-sans text-[14px] leading-[16.8px] font-semibold">
+            <div className="bg-warning absolute top-0 right-0 rounded-tl-none rounded-tr-lg rounded-br-lg rounded-bl-lg p-1 px-2">
+              <p className="text-warning-bold text-label text-center font-sans font-semibold">
                 Draft
               </p>
             </div>
@@ -85,16 +85,16 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
         </div>
         <div className="mt-2 flex justify-between px-2">
           <div className="">
-            <p className="tracking-custom laptop:text-[18px] max-w-[150px] truncate font-sans text-[14px] leading-[27px] font-semibold">
+            <p className="tracking-custom laptop:text-body-xl text-body-s max-w-37.5 truncate font-sans leading-6.75 font-semibold">
               {event?.event_name}
             </p>
             <div className="my-2 flex items-center gap-1">
               <CalendarIcon className="h-3 w-3" />
-              <p className="text-text-grey laptop:text-[14px] font-sans text-[12px] leading-[16.8px] font-normal">
+              <p className="text-text-grey laptop:text-body-s text-meta font-sans leading-4.25 font-normal">
                 {formatLongDate(event?.start_date, "mid")}
               </p>
-              <DotIcon className="w-[3px]" />
-              <p className="text-text-grey laptop:text-[14px] font-sans text-[12px] leading-[16.8px] font-normal">
+              <DotIcon className="w-0.75" />
+              <p className="text-text-grey laptop:text-body-s text-meta font-sans leading-4.25 font-normal">
                 {formatTime(event?.start_date)}
               </p>
             </div>

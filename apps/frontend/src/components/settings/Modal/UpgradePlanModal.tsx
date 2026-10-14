@@ -101,7 +101,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Membership</DialogTitle>
         <form>
-          <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
+          <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <button
@@ -112,7 +112,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
                 >
                   <CloseIcon />
                 </button>
-                <p className="tracking-custom font-sans text-lg leading-[27px] font-semibold">
+                <p className="tracking-custom font-sans text-lg leading-6.75 font-semibold">
                   Membership
                 </p>
               </div>
@@ -121,7 +121,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
                   type="button"
                   onClick={handleSubUpgrade}
                   disabled={!selected || upgradeLoading}
-                  className={`flex h-[39px] w-fit items-center justify-center gap-2 rounded-xl px-4 py-2 font-sans text-[16px] font-medium text-white transition-all duration-300 ${
+                  className={`text-body-l flex h-9.75 w-fit items-center justify-center gap-2 rounded-xl px-4 py-2 font-sans font-medium text-white transition-all duration-300 ${
                     selected && !upgradeLoading
                       ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
                       : "bg-mid-green cursor-not-allowed opacity-70"
@@ -168,14 +168,14 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
                     onClick={() => handleSelectedPlan(membership)}
                   >
                     <div className={"flex items-center justify-between"}>
-                      <p className={"font-semiBold text-black-light text-[16px]"}>
+                      <p className={"font-semiBold text-black-light text-body-l"}>
                         {membership.title}
                       </p>
-                      <p className={"font-semiBold text-black-light text-[16px]"}>
+                      <p className={"font-semiBold text-black-light text-body-l"}>
                         ₦{formatNumberWithCommas(Number(membership.amount))}/{membership.pay_by}
                       </p>
                     </div>
-                    <p className={"text-text-grey text-[14px] font-normal"}>
+                    <p className={"text-text-grey text-body-s font-normal"}>
                       Billed {membership.type}
                     </p>
                   </button>

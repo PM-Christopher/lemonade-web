@@ -28,8 +28,8 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
                 height={40}
               />
               <div className="flex flex-col">
-                <p className="font-semi-normal text-[14px]">{business.name}</p>
-                <p className="text-text-grey text-[12px] font-normal">
+                <p className="font-semi-normal text-body-s">{business.name}</p>
+                <p className="text-text-grey text-meta leading-normal font-normal">
                   {business.city}, {formatCountry(business.country)}
                 </p>
               </div>
@@ -39,7 +39,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
                 <Image src={medal} alt="medal" width={16} />
               </div>
               <div>
-                <p className="font-semi-normal text-primary-black font-sans text-[14px] leading-[21px]">
+                <p className="font-semi-normal text-primary-black text-body-s font-sans">
                   {business.rating}
                 </p>
               </div>

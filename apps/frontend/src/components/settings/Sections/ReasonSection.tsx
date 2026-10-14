@@ -27,11 +27,11 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
   };
 
   return (
-    <div className="laptop:w-[640px] flex w-full flex-col gap-6 rounded-xl bg-white p-6">
+    <div className="laptop:w-160 flex w-full flex-col gap-6 rounded-xl bg-white p-6">
       {/* Header */}
       <div>
-        <p className="text-[20px] font-semibold">Why are you leaving?</p>
-        <p className="text-light-black text-[14px] font-normal">
+        <p className="text-title-r leading-normal font-semibold">Why are you leaving?</p>
+        <p className="text-light-black text-body-s font-normal">
           Tell us why you canceled your plan and we&apos;ll do our best to improve
         </p>
       </div>
@@ -47,7 +47,7 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
               }`}
             >
               <RadioGroupItem value={value} id={value} />
-              <Label htmlFor={value} className="text-black-light text-[16px] font-normal">
+              <Label htmlFor={value} className="text-black-light text-body-l font-normal">
                 {label}
               </Label>
             </div>
@@ -61,7 +61,7 @@ const ReasonSection = ({ toggle }: ReasonSectionProps) => {
           className="h-12 rounded-xl border-1 bg-white px-6 shadow-none hover:bg-white"
           onClick={handleContinue}
         >
-          <p className="text-black-light text-[16px] font-medium">Continue</p>
+          <p className="text-black-light text-body-l font-medium">Continue</p>
         </Button>
       </div>
     </div>

@@ -26,27 +26,33 @@ const Reviews: React.FC<ReviewInterface> = ({ review }) => {
   return (
     <>
       <div className="">
-        <p className="text-[14px] font-semibold">{review?.title}</p>
-        <p className="text-light-black text-[14px] font-normal">{review?.description}</p>
+        <p className="text-body-s font-semibold">{review?.title}</p>
+        <p className="text-light-black text-body-s font-normal">{review?.description}</p>
         <div className="flex items-center justify-between">
           <div className="mt-3.5 flex items-center gap-2">
-            <div className="rounded-[6px] border">
+            <div className="rounded-md border">
               <Image
                 src={review.user.avatar}
                 alt="avatar"
                 width={16}
                 height={16}
-                className="border-grey-90 h-4 w-4 rounded-[6px] border"
+                className="border-grey-90 h-4 w-4 rounded-md border"
               />
             </div>
-            <p className="text-text-grey text-[12px] font-semibold">{review?.user?.username}</p>
+            <p className="text-text-grey text-meta leading-normal font-semibold">
+              {review?.user?.username}
+            </p>
             <DotIcon className="h-0.5 w-0.5" />
-            <p className="text-text-grey text-[12px] font-normal">{review?.created_at}</p>
+            <p className="text-text-grey text-meta leading-normal font-normal">
+              {review?.created_at}
+            </p>
           </div>
           <div>
             <div className="bg-mid-grey flex items-center gap-2 rounded-xl p-1 px-1.5">
               <RatingIcon />
-              <p className="text-[12px] font-semibold">{formatDecimal(review?.rating, 1)}</p>
+              <p className="text-meta leading-normal font-semibold">
+                {formatDecimal(review?.rating, 1)}
+              </p>
             </div>
           </div>
         </div>

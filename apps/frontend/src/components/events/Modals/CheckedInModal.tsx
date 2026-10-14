@@ -21,7 +21,7 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Check in Successful!"}</DialogTitle>
-        <div className="w-[480px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
@@ -36,10 +36,10 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
           </div>
           <div className="mt-6">
             <div className="flex flex-col">
-              <p className="text-black-light text-center font-sans text-[20px] leading-[28px] font-semibold">
+              <p className="text-black-light text-title-r text-center font-sans font-semibold">
                 Check in Successful!
               </p>
-              <p className="tracking-custom text-light-black text-center font-sans text-[16px] leading-[24px] font-normal">
+              <p className="tracking-custom text-light-black text-body-l text-center font-sans font-normal">
                 Guest with ticket ID {guestDetails?.ticket?.ticket_id?.toUpperCase()} has been
                 successfully checked in.
               </p>
@@ -50,7 +50,7 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
               className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
-              <p className="font-semi-normal font-sans text-[16px] text-white">Done</p>
+              <p className="font-semi-normal text-body-l font-sans text-white">Done</p>
             </button>
           </div>
         </div>

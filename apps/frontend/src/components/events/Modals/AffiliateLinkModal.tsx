@@ -23,10 +23,10 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Link generated!"}</DialogTitle>
         {/* Centering wrapper with top/bottom padding */}
-        <div className="relative flex w-[480px] items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
+        <div className="relative flex w-120 items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
           {/* Modal */}
           <div
-            className="animate-in fade-in zoom-in-95 relative max-h-[calc(100vh-48px)] w-full overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:max-h-[calc(100vh-80px)] sm:max-w-[520px] sm:p-6"
+            className="animate-in fade-in zoom-in-95 relative max-h-[calc(100vh-48px)] w-full overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:max-h-[calc(100vh-80px)] sm:max-w-130 sm:p-6"
             role="dialog"
             aria-modal="true"
           >
@@ -47,7 +47,7 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
             {/* Body */}
             <div className="mt-3 sm:mt-6">
               <div className="flex justify-center">
-                <div className="relative h-40 w-40 sm:h-[200px] sm:w-[200px]">
+                <div className="relative h-40 w-40 sm:h-50 sm:w-50">
                   <Image
                     src={images.AFFILIATE_LINK}
                     alt="affiliate-link"
@@ -59,15 +59,17 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
               </div>
 
               <div className="mt-6 text-center">
-                <p className="text-[18px] font-semibold sm:text-[20px]">Link generated!</p>
-                <p className="text-text-grey mt-2 text-[14px] sm:text-[16px]">
+                <p className="text-body-xl sm:text-title-r font-semibold sm:leading-normal">
+                  Link generated!
+                </p>
+                <p className="text-text-grey text-body-s sm:text-body-l mt-2">
                   You have successfully joined this affiliate program. Share your link and start
                   earning now.
                 </p>
               </div>
 
               <div className="bg-light-tint mt-6 mb-2 rounded-2xl p-4">
-                <p className="font-semi-normal text-text-grey text-[13px] sm:text-[14px]">
+                <p className="font-semi-normal text-text-grey text-meta sm:text-body-s leading-normal">
                   Affiliate link
                 </p>
 

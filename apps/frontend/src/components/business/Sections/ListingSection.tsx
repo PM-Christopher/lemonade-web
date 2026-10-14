@@ -22,7 +22,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
     <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
       {loading ? (
         // Loading State
-        <div className="mt-6 w-full max-w-[1312px] rounded-xl bg-white p-4 shadow-sm">
+        <div className="mt-6 w-full max-w-328 rounded-xl bg-white p-4 shadow-sm">
           <div className="mb-4 h-7 w-32 animate-pulse rounded bg-gray-200" />
           <div className="laptop:grid-cols-4 grid grid-cols-1 gap-2">
             <AllBusinessSkeleton count={8} />
@@ -53,7 +53,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
         </div>
       ) : (
         // Business List
-        <div className="mt-6 w-full max-w-[1312px] rounded-xl bg-white p-4 pb-5 shadow-sm">
+        <div className="mt-6 w-full max-w-328 rounded-xl bg-white p-4 pb-5 shadow-sm">
           <div className={"flex items-center justify-between"}>
             <h2 className="mb-4 font-sans text-lg font-semibold sm:text-xl">All Listings</h2>
             <Button

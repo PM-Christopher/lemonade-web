@@ -80,7 +80,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
     <div
       className={`bg-opacity-50 fixed inset-0 z-50 items-center justify-center bg-gray-800 ${isOpen ? "flex" : "hidden"}`}
     >
-      <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] w-[480px] overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
+      <div className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] w-120 overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="cursor-pointer" onClick={toggle}>
@@ -94,7 +94,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
+                className="text-black-light text-label font-sans font-normal uppercase"
               >
                 Location
               </Label>
@@ -104,7 +104,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   <input
                     id="search"
                     type="text"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="bg-light_grey text-body-s w-full rounded-xl border-0 px-1 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Enter location"
                     {...register("location")}
                   />
@@ -117,7 +117,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
+                className="text-black-light text-label font-sans font-normal uppercase"
               >
                 Business Category
               </Label>
@@ -129,7 +129,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   >
                     <SelectValue
                       placeholder={
-                        <span className="text-text-grey font-sans text-[12px] leading-[14.4px] font-semibold">
+                        <span className="text-text-grey text-meta font-sans font-semibold">
                           Category
                         </span>
                       }
@@ -152,7 +152,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-6 grid gap-2">
               <Label
                 htmlFor="fullname"
-                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
+                className="text-black-light text-label font-sans font-normal uppercase"
               >
                 Service Type
               </Label>
@@ -161,7 +161,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   <input
                     id="search"
                     type="text"
-                    className="bg-light_grey w-full rounded-xl border-0 px-1 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                    className="bg-light_grey text-body-s w-full rounded-xl border-0 px-1 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Service Type"
                     {...register("service_type")}
                   />
@@ -173,7 +173,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <div className="mt-6 grid">
               <Label
                 htmlFor="fullname"
-                className="text-black-light font-sans text-[14px] leading-[16.8px] font-normal uppercase"
+                className="text-black-light text-label font-sans font-normal uppercase"
               >
                 Budget Range
               </Label>
@@ -215,13 +215,13 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
               <FieldError message={errors.start_range?.message ?? errors.end_range?.message} />
             </div>
 
-            <div className="mt-[30px] flex gap-1">
+            <div className="mt-7.5 flex gap-1">
               <button
                 type="button"
                 className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
                 onClick={handleResetFilter}
               >
-                <p className="font-semi-normal text-black-light font-sans text-[16px]">
+                <p className="font-semi-normal text-black-light text-body-l font-sans">
                   Reset filter
                 </p>
               </button>

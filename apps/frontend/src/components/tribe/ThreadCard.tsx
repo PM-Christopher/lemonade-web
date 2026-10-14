@@ -202,7 +202,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
             />
           ) : (
             <div className="bg-gradient-green flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#3B4152] text-sm font-medium text-white transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:border-green-400 group-hover:bg-gradient-to-r group-hover:from-green-500 group-hover:to-emerald-600 group-hover:shadow-[0_0_10px_rgba(34,197,94,0.4)]">
-              <p className="font-ruso text-[18px]">
+              <p className="font-ruso text-body-xl">
                 {getInitials(thread?.created_by?.user?.fullname)}
               </p>
             </div>

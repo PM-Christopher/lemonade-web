@@ -20,52 +20,58 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
     return (
       <MainLayout>
         <section className={"flex justify-between p-5"}>
-          <div className={"flex h-fit w-[800px] flex-col rounded-xl bg-white"}>
+          <div className={"flex h-fit w-200 flex-col rounded-xl bg-white"}>
             <div className={"flex flex-col gap-5 p-6"}>
               <div className={"flex items-center gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Event Owner:
+                  </p>
                 </div>
                 <div className={"flex gap-1"}>
-                  <p className={"text-[14px] font-medium"}>Loading...</p>
+                  <p className={"text-body-s font-medium"}>Loading...</p>
                 </div>
               </div>
               <div className={"flex items-center gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Announcement ID:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Announcement ID:
+                  </p>
                 </div>
-                <p className={"text-[14px] font-medium"}>Loading...</p>
+                <p className={"text-body-s font-medium"}>Loading...</p>
               </div>
               <div className={"flex items-center gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Date Created:
+                  </p>
                 </div>
                 <div className={"flex gap-1"}>
-                  <p className={"text-[14px] font-medium"}>Loading...</p>
+                  <p className={"text-body-s font-medium"}>Loading...</p>
                 </div>
               </div>
               <div className={"flex items-center gap-6"}>
-                <div className={"w-[115px]"}>
-                  <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
                 </div>
-                <p className={"text-light-green-70 text-[14px] font-medium"}>Loading...</p>
+                <p className={"text-light-green-70 text-body-s font-medium"}>Loading...</p>
               </div>
             </div>
           </div>
-          <div className={"flex h-fit w-[780px] flex-col gap-4 rounded-xl bg-white"}>
+          <div className={"flex h-fit w-195 flex-col gap-4 rounded-xl bg-white"}>
             <div className={"flex items-center justify-between border-b p-6"}>
-              <p className={"font-semiBold text-[16px]"}>Announcement</p>
+              <p className={"font-semiBold text-body-l"}>Announcement</p>
               <div className={"border-light-grey-50 cursor-pointer rounded-xl border p-2.5 px-3.5"}>
-                <p className={"text-[14px] font-medium"}>Edit draft</p>
+                <p className={"text-body-s font-medium"}>Edit draft</p>
               </div>
             </div>
             <div className={"flex flex-col gap-4 p-6"}>
               <div className={"flex flex-col"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Title</p>
-                <p className={"font-semiBold text-[20px]"}>Loading...</p>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Title</p>
+                <p className={"font-semiBold text-title-r leading-normal"}>Loading...</p>
               </div>
               <div className={"flex flex-col"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Body</p>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Body</p>
                 <p>Loading...</p>
               </div>
             </div>
@@ -87,58 +93,64 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
   return (
     <MainLayout>
       <section className={"flex justify-between p-5"}>
-        <div className={"flex h-fit w-[800px] flex-col rounded-xl bg-white"}>
+        <div className={"flex h-fit w-200 flex-col rounded-xl bg-white"}>
           <div className={"flex flex-col gap-5 p-6"}>
             <div className={"flex items-center gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Event Owner:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Event Owner:
+                </p>
               </div>
               <div className={"flex gap-1"}>
-                <p className={"text-[14px] font-medium"}>
+                <p className={"text-body-s font-medium"}>
                   {announcement?.created_by?.name || "N/A"}
                 </p>
               </div>
             </div>
             <div className={"flex items-center gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Announcement ID:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Announcement ID:
+                </p>
               </div>
-              <p className={"text-[14px] font-medium"}>AN112332</p>
+              <p className={"text-body-s font-medium"}>AN112332</p>
             </div>
             <div className={"flex items-center gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Date Created:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Date Created:
+                </p>
               </div>
               <div className={"flex gap-1"}>
-                <p className={"text-[14px] font-medium"}>{announcement?.created_at || "N/A"}</p>
+                <p className={"text-body-s font-medium"}>{announcement?.created_at || "N/A"}</p>
               </div>
             </div>
             <div className={"flex items-center gap-6"}>
-              <div className={"w-[115px]"}>
-                <p className={"text-text-grey text-[12px] font-medium"}>Status:</p>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
               </div>
-              <p className={"text-light-green-70 text-[14px] font-medium"}>
+              <p className={"text-light-green-70 text-body-s font-medium"}>
                 {announcement?.status ? capitalizeWords(announcement.status) : "N/A"}
               </p>
             </div>
           </div>
         </div>
-        <div className={"flex h-fit w-[780px] flex-col gap-4 rounded-xl bg-white"}>
+        <div className={"flex h-fit w-195 flex-col gap-4 rounded-xl bg-white"}>
           <div className={"flex items-center justify-between border-b p-6"}>
-            <p className={"font-semiBold text-[16px]"}>Announcement</p>
+            <p className={"font-semiBold text-body-l"}>Announcement</p>
             <div className={"border-light-grey-50 cursor-pointer rounded-xl border p-2.5 px-3.5"}>
-              <p className={"text-[14px] font-medium"}>Edit draft</p>
+              <p className={"text-body-s font-medium"}>Edit draft</p>
             </div>
           </div>
           <div className={"flex flex-col gap-4 p-6"}>
             <div className={"flex flex-col"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Title</p>
-              <p className={"font-semiBold text-[20px]"}>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Title</p>
+              <p className={"font-semiBold text-title-r leading-normal"}>
                 {content?.title || "No title available"}
               </p>
             </div>
             <div className={"flex flex-col"}>
-              <p className={"text-text-grey text-[12px] font-medium"}>Body</p>
+              <p className={"text-text-grey text-meta leading-normal font-medium"}>Body</p>
               {content?.content ? (
                 <div
                   className="prose max-w-none"

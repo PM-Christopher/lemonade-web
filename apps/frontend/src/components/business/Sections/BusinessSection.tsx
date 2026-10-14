@@ -80,7 +80,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
   return (
     <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
       {/* Featured Section */}
-      <div className="bg-light-green-50 w-full max-w-[1312px] gap-3 rounded-none p-4 sm:rounded-xl">
+      <div className="bg-light-green-50 w-full max-w-328 gap-3 rounded-none p-4 sm:rounded-xl">
         <p className="mb-3 text-lg font-semibold sm:text-xl">Featured</p>
         {loading ? (
           <BusinessCarouselSkeleton count={4} />
@@ -115,7 +115,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
       </div>
 
       {/* All Business Sections */}
-      <div className="mt-6 w-full max-w-[1312px] rounded-xl bg-white p-4 shadow-sm">
+      <div className="mt-6 w-full max-w-328 rounded-xl bg-white p-4 shadow-sm">
         <p className="mb-4 text-lg font-semibold sm:text-xl">All businesses</p>
         <div
           className={`grid gap-2 ${

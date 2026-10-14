@@ -55,9 +55,9 @@ const PayNowModal = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Make Payment"}</DialogTitle>
-        <div className="w-[360px] rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-90 rounded-lg bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
-            <p className="tracking-custom font-sans text-[16px] leading-[27px] font-semibold">
+            <p className="tracking-custom text-body-l font-sans leading-6.75 font-semibold">
               Make Payment
             </p>
             <div className="flex items-center gap-2">
@@ -67,12 +67,12 @@ const PayNowModal = ({
             </div>
           </div>
           <div className="mt-2 flex flex-col items-center py-4">
-            <div className="border-mid-green bg-light-green-10 gap-2 rounded-[8px] border border-dashed p-[31px] px-[102px]">
-              <p className="font-semiBold text-mid-green text-[24px]">
+            <div className="border-mid-green bg-light-green-10 gap-2 rounded-lg border border-dashed p-7.75 px-25.5">
+              <p className="font-semiBold text-mid-green text-title-l leading-normal">
                 ₦{formatNumberWithCommas(job?.amount ?? 0)}
               </p>
             </div>
-            <p className="mt-4 text-[14px] font-normal">
+            <p className="text-body-s mt-4 font-normal">
               Your payment will be held securely in escrow until you mark the service as completed.
             </p>
             <div className="mt-4 flex w-full justify-center gap-3">
@@ -103,10 +103,10 @@ const PayNowModal = ({
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       />
                     </svg>
-                    <p className="font-semi-normal text-light-white text-[16px]">Loading...</p>
+                    <p className="font-semi-normal text-light-white text-body-l">Loading...</p>
                   </div>
                 ) : (
-                  <p className="font-semi-normal text-[16px]">Pay now</p>
+                  <p className="font-semi-normal text-body-l">Pay now</p>
                 )}
               </Button>
             </div>

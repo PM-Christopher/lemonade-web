@@ -70,17 +70,19 @@ const SocialStep: React.FC<SocialInterface> = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
+      <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-step-color h-0.5 w-[15px]" />
-            <div className="bg-step-color h-0.5 w-[15px]" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-step-color h-0.5 w-3.75" />
+            <div className="bg-step-color h-0.5 w-3.75" />
           </div>
           <div>
-            <p className="font-sans text-[24px] font-semibold">Link your social profiles</p>
-            <p className="text-text-grey font-sans text-[14px] leading-[21px] font-normal">
+            <p className="text-title-l font-sans leading-normal font-semibold">
+              Link your social profiles
+            </p>
+            <p className="text-text-grey text-body-s font-sans font-normal">
               Good job! Now add your social profile usernames to <br />
               stay connected with others.
             </p>
@@ -115,7 +117,7 @@ const SocialStep: React.FC<SocialInterface> = () => {
           <div className="mt-2 mb-6 flex justify-center">
             <button
               type="submit"
-              className="font-semi-normal text-light-green cursor-pointer border-none bg-transparent text-center font-sans text-[16px]"
+              className="font-semi-normal text-light-green text-body-l cursor-pointer border-none bg-transparent text-center font-sans"
             >
               Skip
             </button>

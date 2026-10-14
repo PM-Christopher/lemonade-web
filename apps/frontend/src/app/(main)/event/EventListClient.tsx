@@ -232,12 +232,12 @@ const EventListClient: React.FC = () => {
 
             {menuOption === "events" ? (
               <div className="laptop:hidden flex cursor-pointer" onClick={toggleMenu}>
-                <TicketIcon className="h-4 w-[23px]" />
+                <TicketIcon className="h-4 w-5.75" />
               </div>
             ) : (
               menuOption === "organizer" && (
                 <div className="laptop:hidden flex cursor-pointer" onClick={toggleMenu}>
-                  <SettingsIcon className="h-[21px] w-[23px]" />
+                  <SettingsIcon className="h-5.25 w-5.75" />
                 </div>
               )
             )}

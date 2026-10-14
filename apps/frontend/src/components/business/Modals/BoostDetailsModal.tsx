@@ -26,9 +26,9 @@ const BoostDetailsModal = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Boosting details"}</DialogTitle>
-        <div className="laptop:w-[480px] w-[343px] rounded-lg bg-white shadow-lg">
+        <div className="laptop:w-120 w-85.75 rounded-lg bg-white shadow-lg">
           <div className="mt-4 flex items-center justify-between p-1 px-4">
-            <p className="font-semiBold text-[16px]">Boosting details</p>
+            <p className="font-semiBold text-body-l">Boosting details</p>
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggleMenu}>
                 <CloseIcon />
@@ -38,20 +38,20 @@ const BoostDetailsModal = ({
           <div className="mt-4 flex flex-col">
             <div className="flex flex-col p-4">
               <div className="flex items-center justify-between">
-                <p className="text-text-grey text-[14px] font-normal">Package</p>
-                <p className="font-semi-normal text-[14px]">Featured</p>
+                <p className="text-text-grey text-body-s font-normal">Package</p>
+                <p className="font-semi-normal text-body-s">Featured</p>
               </div>
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-text-grey text-[14px] font-normal">Duration</p>
-                <p className="font-semi-normal text-[14px]">{boost?.duration} days</p>
+                <p className="text-text-grey text-body-s font-normal">Duration</p>
+                <p className="font-semi-normal text-body-s">{boost?.duration} days</p>
               </div>
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-text-grey text-[14px] font-normal">Start date</p>
-                <p className="font-semi-normal text-[14px]">{boost?.full_start_date}</p>
+                <p className="text-text-grey text-body-s font-normal">Start date</p>
+                <p className="font-semi-normal text-body-s">{boost?.full_start_date}</p>
               </div>
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-text-grey text-[14px] font-normal">End date</p>
-                <p className="font-semi-normal text-[14px]">{boost?.full_end_date}</p>
+                <p className="text-text-grey text-body-s font-normal">End date</p>
+                <p className="font-semi-normal text-body-s">{boost?.full_end_date}</p>
               </div>
             </div>
           </div>

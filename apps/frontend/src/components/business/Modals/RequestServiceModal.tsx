@@ -94,14 +94,14 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Request a service"}</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="laptop:w-[640px] w-full px-4 py-[5vh]">
+          <div className="laptop:w-160 w-full px-4 py-[5vh]">
             <div className="hide-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="cursor-pointer" onClick={toggleMenu}>
                     <CloseIcon />
                   </div>
-                  <p className="tracking-custom font-sans text-[18px] leading-[27px] font-semibold">
+                  <p className="tracking-custom text-body-xl font-sans font-semibold">
                     Request a service
                   </p>
                 </div>
@@ -109,24 +109,24 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                   <SubmitButton title="Send quote" isValid={isValid} loading={isSubmitting} />
                 </div>
               </div>
-              <div className="flex flex-col gap-y-[250px]">
+              <div className="flex flex-col gap-y-62.5">
                 <div className="mt-10">
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="amount"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       I want to book you for
                     </Label>
                     <div className="bg-light_grey flex h-12 w-full items-center gap-3 rounded-xl p-2 px-3">
                       <div>
-                        <p className="font-semi-normal text-[14px]">₦</p>
+                        <p className="font-semi-normal text-body-s">₦</p>
                       </div>
                       <div className="w-full">
                         <input
                           id="amount"
                           type="text"
-                          className="bg-light_grey w-full border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
+                          className="bg-light_grey text-body-s w-full border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                           {...register("amount", {
                             onChange: (e) => {
                               // Only digits, no leading 0
@@ -147,7 +147,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                   <div className="mt-6 grid gap-2">
                     <Label
                       htmlFor="fullname"
-                      className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                      className="text-text-grey text-label font-sans font-normal"
                     >
                       Required services
                     </Label>
@@ -163,7 +163,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                             key={index}
                             onClick={() => handleServicesClick(service)}
                           >
-                            <p className="text-text-grey text-[14px] font-normal">
+                            <p className="text-text-grey text-body-s font-normal">
                               {formatStringUCFirst(service)}
                             </p>
                           </div>
@@ -176,16 +176,18 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                     <div className="flex justify-between">
                       <Label
                         htmlFor="additional-information"
-                        className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
+                        className="text-text-grey text-label font-sans font-normal"
                       >
                         Additional information
                       </Label>
-                      <p className="text-text-grey text-[12px] font-normal">200 characters</p>
+                      <p className="text-text-grey text-meta leading-normal font-normal">
+                        200 characters
+                      </p>
                     </div>
                     <textarea
                       id="additional-information"
                       placeholder=""
-                      className="bg-light_grey h-32 resize-none rounded-xl border-0 p-4 text-[14px] font-normal"
+                      className="bg-light_grey text-body-s h-32 resize-none rounded-xl border-0 p-4 font-normal"
                       readOnly={false}
                       {...register("additional_information")}
                     />

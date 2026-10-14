@@ -22,9 +22,11 @@ const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
             className="h-8 w-8 rounded-full"
           />
           <div className="flex items-center gap-2">
-            <p className="text-[14px] font-normal">{thread.user?.fullname ?? "Unknown member"}</p>
+            <p className="text-body-s font-normal">{thread.user?.fullname ?? "Unknown member"}</p>
             <DotIcon className="text-light-grey-50 px-0" />
-            <p className="text-text-grey text-[12px] font-normal">{thread.created_at}</p>
+            <p className="text-text-grey text-meta leading-normal font-normal">
+              {thread.created_at}
+            </p>
           </div>
         </div>
         {onDelete && (
@@ -38,10 +40,8 @@ const MainTribeCard = ({ thread, onDelete }: MainTribeCardProps) => {
           </button>
         )}
       </div>
-      <p className="text-[14px] font-medium">{thread.topic}</p>
-      <p className="text-light-black font-sans text-[14px] leading-[21px] font-normal">
-        {thread.thoughts}
-      </p>
+      <p className="text-body-s font-medium">{thread.topic}</p>
+      <p className="text-light-black text-body-s font-sans font-normal">{thread.thoughts}</p>
     </div>
   );
 };

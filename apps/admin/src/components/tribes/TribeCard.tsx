@@ -27,10 +27,10 @@ const TribeCard = ({
             </div>
             <div className="flex flex-col">
               <div>
-                <p className="font-sans text-[14px] font-semibold">{title}</p>
+                <p className="text-body-s font-sans font-semibold">{title}</p>
               </div>
               <div>
-                <p className="text-text-grey font-sans text-[12px] font-normal">
+                <p className="text-text-grey text-meta font-sans leading-normal font-normal">
                   Created on {date}
                 </p>
               </div>
@@ -40,18 +40,16 @@ const TribeCard = ({
         </div>
         <div className="bg-mid-grey flex justify-between rounded-b-2xl p-4 py-6">
           <div>
-            <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
-              {category}
-            </p>
+            <p className="font-semi-normal text-black-light text-meta font-sans">{category}</p>
           </div>
           <div>
-            <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
+            <p className="font-semi-normal text-black-light text-meta font-sans">
               {members || 0} Members
             </p>
           </div>
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            <p className="font-semi-normal text-black-light font-sans text-[12px] leading-[14.4px]">
+            <p className="font-semi-normal text-black-light text-meta font-sans">
               {threads || 0}threads
             </p>
           </div>

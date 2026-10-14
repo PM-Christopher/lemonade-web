@@ -71,7 +71,7 @@ function TransactionsClient() {
     <MainLayout>
       <section className="mt-5 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-[16px]"}>
+          <p className={"font-semiBold text-body-l"}>
             {/* subscribers (real subscriber count) still wins for plan-subscriptions
                 — it's a different number from meta.total (total history rows),
                 not just a fallback for it. */}
@@ -80,7 +80,7 @@ function TransactionsClient() {
           </p>
           <div className={"flex justify-between gap-3"}>
             {/* <div
-                            className="flex items-center gap-3 bg-light_grey p-2 px-3 h-10 w-[285px] rounded-xl border border-grey-20">
+                            className="flex items-center gap-3 bg-light_grey p-2 px-3 h-10 w-71.25 rounded-xl border border-grey-20">
                             <div>
                                 <SearchIcon className={"w-3 h-3 text-grey-40"}/>
                             </div>
@@ -88,25 +88,25 @@ function TransactionsClient() {
                                 <input
                                     id="search"
                                     type="text"
-                                    className="rounded-xl text-[14px] bg-light-grey focus:outline-none focus:ring-0 focus:border-transparent w-full py-4"
+                                    className="rounded-xl text-body-s bg-light-grey focus:outline-none focus:ring-0 focus:border-transparent w-full py-4"
                                     placeholder="Search transactions, ID..."
                                 />
                             </div>
                         </div> */}
             {/* <div
-                            className={"flex border border-grey-20 bg-none w-[193px] h-10 px-4 py-2.5 rounded-xl justify-between items-center"}>
+                            className={"flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"}>
                             <div className={'flex justify-between items-center'}>
-                                <p className={"text-[12px] font-semiBold text-text-grey"}>
+                                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>
                                     STATUS
                                 </p>
                             </div>
                             <ChevronDown className={"text-text-grey w-5"}/>
                         </div> */}
             {/* <div
-                            className={"flex border border-grey-20 bg-none w-[193px] h-10 px-4 py-2.5 rounded-xl justify-between items-center"}>
+                            className={"flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"}>
                             <div className={'flex gap-2 items-center'}>
-                                <CalendarIcon className={"text-text-grey w-[15px] h-[15px]"}/>
-                                <p className={"text-[12px] font-semiBold text-text-grey"}>ALL TIME</p>
+                                <CalendarIcon className={"text-text-grey w-3.75 h-3.75"}/>
+                                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>ALL TIME</p>
                             </div>
                             <ChevronDown className={"text-text-grey w-5"}/>
                         </div> */}
@@ -115,8 +115,8 @@ function TransactionsClient() {
                 onClick={exportCSV}
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
               >
-                <UploadIcon className={"h-[15px] w-[15px] text-white"} />
-                <p className={"text-[16px] font-medium text-white"}>Export</p>
+                <UploadIcon className={"h-3.75 w-3.75 text-white"} />
+                <p className={"text-body-l font-medium text-white"}>Export</p>
               </Button>
             </div>
           </div>
@@ -128,16 +128,16 @@ function TransactionsClient() {
                 {transactionPageViews.map((item, index) => (
                   <div
                     className={`cursor-pointer p-1 px-2 ${
-                      menuOption === item.key && "rounded-[10px] bg-white"
+                      menuOption === item.key && "rounded-lg bg-white"
                     }`}
                     onClick={() => switchOption(item.key)}
                     key={index}
                   >
                     <p
-                      className={`font-sans leading-[24px] ${
+                      className={`font-sans leading-6 ${
                         menuOption === item.key
-                          ? "text-[16px] font-semibold"
-                          : "font-semi-normal text-text-grey text-[16px]"
+                          ? "text-body-l font-semibold"
+                          : "font-semi-normal text-text-grey text-body-l"
                       }`}
                     >
                       {item.title}

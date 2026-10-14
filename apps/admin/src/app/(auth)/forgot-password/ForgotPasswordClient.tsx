@@ -29,11 +29,13 @@ function ForgotPasswordPage({}) {
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
-          <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-sm">
+          <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-sm">
             <CardContent className="tablet:gap-10 grid gap-6">
               <div>
-                <p className="font-ruso text-[24px] font-normal">Verification Code</p>
-                <p className="text-text-grey text-[14px] font-normal">
+                <p className="font-ruso text-title-l leading-normal font-normal">
+                  Verification Code
+                </p>
+                <p className="text-text-grey text-body-s font-normal">
                   Enter the 4-digit code sent adminlogin@admin.com to reset your password.
                 </p>
               </div>
@@ -59,7 +61,7 @@ function ForgotPasswordPage({}) {
                   )}
                 />
               </div>
-              <p className="text-light-green text-center text-[16px] font-medium">
+              <p className="text-light-green text-body-l text-center font-medium">
                 Resend in 60 secs
               </p>
               <SubmitButton

@@ -61,7 +61,7 @@ const DashboardClient = () => {
               <TribesSkeleton count={4} />
             ) : tribes.length > 0 ? (
               tribes.map((tribe: TribeInterface, idx: number) => (
-                <div className="phone:w-[422px] w-[80vw] max-w-[422px] shrink-0" key={idx}>
+                <div className="phone:w-105.5 w-[80vw] max-w-105.5 shrink-0" key={idx}>
                   <TribeCard tribe={tribe} />
                 </div>
               ))
@@ -80,13 +80,13 @@ const DashboardClient = () => {
             <p className="text-title-r font-sans font-semibold">Trending events</p>
             <SeeMore href={routes.EVENT} />
           </div>
-          <div className="scrollbar-hide phone:max-w-[1280px] mt-3 flex gap-4 overflow-x-auto py-4">
+          <div className="scrollbar-hide phone:max-w-320 mt-3 flex gap-4 overflow-x-auto py-4">
             {eventLoading ? (
               <EventsSkeleton count={6} />
             ) : events?.length > 0 ? (
               events?.map((event: EventInterface, idx: number) => (
                 <div
-                  className="phone:w-[200px] w-[78vw] shrink-0 cursor-pointer"
+                  className="phone:w-50 w-[78vw] shrink-0 cursor-pointer"
                   key={idx}
                   onClick={() => push(routes.EVENT_DETAIL(event.id))}
                 >

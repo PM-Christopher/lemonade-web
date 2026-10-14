@@ -13,7 +13,7 @@ export default function SettingsPage() {
         <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft />
-            <p className="tracking-custom font-sans text-[16px] font-semibold">User Details</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">User Details</p>
           </div>
         </div>
         <SettingsClient />

@@ -69,10 +69,10 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Add Admin</DialogTitle>
-        <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+        <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] leading-[27px] font-semibold">Add Admin</p>
+              <p className="text-body-xl font-sans font-semibold">Add Admin</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
@@ -82,7 +82,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             <div className="grid gap-2">
               <Label
                 htmlFor="first_name"
-                className="text-text-grey font-sans text-[14px] font-normal"
+                className="text-text-grey text-body-s font-sans font-normal"
               >
                 First name
               </Label>
@@ -99,7 +99,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             <div className="grid gap-2">
               <Label
                 htmlFor="last_name"
-                className="text-text-grey font-sans text-[14px] font-normal"
+                className="text-text-grey text-body-s font-sans font-normal"
               >
                 Last name
               </Label>
@@ -114,7 +114,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="email" className="text-text-grey font-sans text-[14px] font-normal">
+              <Label htmlFor="email" className="text-text-grey text-body-s font-sans font-normal">
                 Email address
               </Label>
               <Input
@@ -130,7 +130,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             <div className="grid gap-2">
               <Label
                 htmlFor="password"
-                className="text-text-grey font-sans text-[14px] font-normal"
+                className="text-text-grey text-body-s font-sans font-normal"
               >
                 Password
               </Label>
@@ -144,7 +144,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="role" className="text-text-grey font-sans text-[14px] font-normal">
+              <Label htmlFor="role" className="text-text-grey text-body-s font-sans font-normal">
                 Role
               </Label>
               <Input
@@ -159,17 +159,17 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
           <div className={"flex justify-between gap-4 px-4 pb-2.5"}>
             <button
               onClick={toggle}
-              className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-[11px]"}
+              className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-2.75"}
             >
-              <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+              <p className={"text-body-l font-medium text-black"}>Cancel</p>
             </button>
             <button
               onClick={handleSubmit(onSubmit)}
               className={
-                "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
+                "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-2.75"
               }
             >
-              <p className={"text-[16px] font-medium text-white"}>Confirm</p>
+              <p className={"text-body-l font-medium text-white"}>Confirm</p>
             </button>
           </div>
         </div>

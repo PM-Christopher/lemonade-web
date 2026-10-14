@@ -55,20 +55,24 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <p className="text-black-light truncate text-[14px] font-semibold">
+            <p className="text-black-light text-body-s truncate font-semibold">
               {userType.username}
             </p>
-            <DotIcon className="h-[5px] w-2.5 text-gray-400" />
-            <p className="text-text-grey text-[13px] font-normal">L{userType.lemon_id}</p>
+            <DotIcon className="h-1.25 w-2.5 text-gray-400" />
+            <p className="text-text-grey text-meta leading-normal font-normal">
+              L{userType.lemon_id}
+            </p>
           </div>
 
           {/* Timestamp */}
           {chat?.latest?.created_at ? (
-            <p className="text-text-grey text-[12px] font-normal whitespace-nowrap">
+            <p className="text-text-grey text-meta leading-normal font-normal whitespace-nowrap">
               {formatTimeAgo(chat.latest.created_at)}
             </p>
           ) : (
-            <p className="text-[12px] font-normal whitespace-nowrap text-gray-400 italic">—</p>
+            <p className="text-meta leading-normal font-normal whitespace-nowrap text-gray-400 italic">
+              —
+            </p>
           )}
         </div>
 
@@ -76,16 +80,16 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
         <div className="mt-1 flex items-center justify-between">
           {chat?.latest && (chat.latest.message || chat.latest.type) ? (
             chat.latest.type === "text" ? (
-              <p className="text-light-black truncate text-[14px] font-normal">
+              <p className="text-light-black text-body-s truncate font-normal">
                 {chat.latest.message}
               </p>
             ) : (
-              <div className="text-light-black flex items-center gap-1 text-[13px]">
+              <div className="text-light-black text-meta flex items-center gap-1 leading-normal">
                 <p className="font-normal">📎 File</p>
               </div>
             )
           ) : (
-            <p className="text-[14px] font-normal text-gray-400 italic">No recent message</p>
+            <p className="text-body-s font-normal text-gray-400 italic">No recent message</p>
           )}
         </div>
       </div>

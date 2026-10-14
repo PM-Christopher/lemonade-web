@@ -39,21 +39,21 @@ function SuspendModal({ isOpen, toggle, id }: DeactivateModalProps) {
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Suspend event</DialogTitle>
-        <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
+        <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="font-sans text-[18px] leading-[27px] font-semibold">Suspend event</p>
+              <p className="text-body-xl font-sans font-semibold">Suspend event</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
             </div>
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
-            <p className={"text-light-black text-[14px] font-normal"}>
+            <p className={"text-light-black text-body-s font-normal"}>
               Are you sure you want to suspend this event? It will no longer be listed and all
               ticket sales will be lost.
             </p>
-            <p className={"text-text-grey text-[14px] font-normal"}>Reason</p>
+            <p className={"text-text-grey text-body-s font-normal"}>Reason</p>
             <select
               className="bg-light-grey rounded-xl p-3"
               value={selectedOption}
@@ -64,16 +64,16 @@ function SuspendModal({ isOpen, toggle, id }: DeactivateModalProps) {
             </select>
             <div className={"flex justify-between gap-2.5"}>
               <button
-                className={"border-light-grey-50 h-12 w-[156px] rounded-xl border bg-white"}
+                className={"border-light-grey-50 h-12 w-39 rounded-xl border bg-white"}
                 onClick={toggle}
               >
-                <p className={"text-[16px] font-medium text-black"}>Cancel</p>
+                <p className={"text-body-l font-medium text-black"}>Cancel</p>
               </button>
               <button
-                className={"border-red-2 bg-red-1 h-12 w-[156px] rounded-xl border text-center"}
+                className={"border-red-2 bg-red-1 h-12 w-39 rounded-xl border text-center"}
                 onClick={SubmitAction}
               >
-                <p className={"text-[16px] font-medium text-white"}>Restrict</p>
+                <p className={"text-body-l font-medium text-white"}>Restrict</p>
               </button>
             </div>
           </div>
