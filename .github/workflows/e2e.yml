@@ -123,14 +123,16 @@ jobs:
       - name: Set up .env.local for both apps (points at the backend above)
         working-directory: lemonade-web
         run: |
-          cat > apps/frontend/.env.local <<'ENV'
+          cat > apps/admin/.env.local <<'ENV'
           LARAVEL_API_URL=http://127.0.0.1:9800
+          NEXT_PUBLIC_BASE_URL=http://127.0.0.1:9800
           NEXT_PUBLIC_REVERB_KEY=e2e-key
           NEXT_PUBLIC_REVERB_HOST=127.0.0.1
           NEXT_PUBLIC_REVERB_PORT=8080
           NEXT_PUBLIC_REVERB_SCHEME=http
           ENV
-          echo "LARAVEL_API_URL=http://127.0.0.1:9800" > apps/admin/.env.local
+          cp apps/admin/.env.local apps/frontend/.env.local
+          echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> apps/frontend/.env.local
 
       - name: Install Playwright
         working-directory: lemonade-web/tooling/e2e
