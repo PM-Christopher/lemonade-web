@@ -8,7 +8,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
 import { errorMessage } from "@/lib/api-error";
 
-interface FormikSetField {
+interface FieldValueSetter {
   setFieldValue: (field: string, value: unknown) => unknown;
 }
 
@@ -18,7 +18,7 @@ export const SingleFileUploader = ({
   title,
   type,
 }: {
-  setField: FormikSetField;
+  setField: FieldValueSetter;
   image?: string;
   title: string;
   type: string;

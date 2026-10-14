@@ -1,7 +1,5 @@
-// Structural rather than importing Formik's own types — this package stays
-// framework-agnostic; any object shaped like { touched, errors } works
-// (which is exactly what useFormik()'s return value looks like).
-interface FormikErrorLike {
+// Structural form-state shape — framework-agnostic ({ touched, errors } works for RHF too).
+interface FieldErrorState {
   touched: Record<string, unknown>;
   errors: Record<string, unknown>;
 }
@@ -28,35 +26,35 @@ const CHECKED_FIELDS = [
 
 type CheckedField = (typeof CHECKED_FIELDS)[number];
 
-/** True (and the error message) when a known Formik field has been touched and has a validation error. */
-export function checkError(value: string, formik: FormikErrorLike): unknown {
+/** Returns the error message when a known field has been touched and is invalid. */
+export function checkError(value: string, form: FieldErrorState): unknown {
   if (!(CHECKED_FIELDS as readonly string[]).includes(value)) return null;
   const field = value as CheckedField;
-  return formik.touched[field] && formik.errors[field];
+  return form.touched[field] && form.errors[field];
 }
 
-interface PasswordFormikLike {
+interface PasswordValues {
   values: { password: string };
 }
 
-/** Password-strength predicates used by signup's live-requirements checklist. */
+/** Password-strength predicates for a live requirements checklist. */
 export function handleTest(
   type: "lower" | "upper" | "number" | "special" | "eight",
-  formik: PasswordFormikLike,
+  form: PasswordValues,
 ): boolean | undefined {
   if (type === "lower") {
-    return /[a-z]/.test(formik.values.password);
+    return /[a-z]/.test(form.values.password);
   }
   if (type === "upper") {
-    return /[A-Z]/.test(formik.values.password);
+    return /[A-Z]/.test(form.values.password);
   }
   if (type === "number") {
-    return /\d/.test(formik.values.password);
+    return /\d/.test(form.values.password);
   }
   if (type === "special") {
-    return /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(formik.values.password);
+    return /[`!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(form.values.password);
   }
   if (type === "eight") {
-    return /^.{8,}$/.test(formik.values.password);
+    return /^.{8,}$/.test(form.values.password);
   }
 }

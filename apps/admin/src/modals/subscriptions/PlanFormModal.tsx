@@ -1,14 +1,17 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import type { AdminSubscriptionPlan } from "@/features/subscriptions/api";
 import { useCreatePlanMutation, useUpdatePlanMutation } from "@/features/subscriptions/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
+import { FieldError } from "@/components/global/FieldError";
+import { planSchema, type PlanInput } from "@/features/subscriptions/schema";
+import { applyServerErrors } from "@/lib/form-errors";
 
 interface PlanFormModalProps {
   isOpen: boolean;
@@ -17,69 +20,7 @@ interface PlanFormModalProps {
   plan?: AdminSubscriptionPlan;
 }
 
-interface PlanFormValues {
-  title: string;
-  access_type: string;
-  monthly_charge: string;
-  yearly_charge: string;
-  ver_badge: boolean;
-  forum_creation: boolean;
-  lemon_id: boolean;
-  event_creation: string;
-  sales_commission: string;
-  service_commission: string;
-  connection_range: string;
-  offline_benefits: boolean;
-  recommended: boolean;
-}
-
-// Mirrors SubscriptionPlanRequest::rules() (lemonade-backend). access_type
-// and connection_range have no `in:` enum there — just `string|max:60` —
-// confirmed by grepping the backend for both fields: seeders/factories/tests
-// use inconsistent casing ("Full"/"Limited"/"Global"/"global"), so there's
-// no fixed option set to hardcode into a <select>. Free-text inputs instead.
-const planSchema = yup.object({
-  title: yup.string().required("Title is required").max(120),
-  access_type: yup.string().required("Access type is required").max(60),
-  monthly_charge: yup
-    .number()
-    .typeError("Monthly charge must be a number")
-    .min(0)
-    .required("Monthly charge is required"),
-  yearly_charge: yup
-    .number()
-    .typeError("Yearly charge must be a number")
-    .min(0)
-    .required("Yearly charge is required"),
-  ver_badge: yup.boolean().required(),
-  forum_creation: yup.boolean().required(),
-  lemon_id: yup.boolean().required(),
-  event_creation: yup
-    .number()
-    .typeError("Event creation must be a number")
-    .integer()
-    .min(0)
-    .required("Event creation is required"),
-  sales_commission: yup
-    .number()
-    .typeError("Sales commission must be a number")
-    .integer()
-    .min(0)
-    .max(100)
-    .required("Sales commission is required"),
-  service_commission: yup
-    .number()
-    .typeError("Service commission must be a number")
-    .integer()
-    .min(0)
-    .max(100)
-    .required("Service commission is required"),
-  connection_range: yup.string().required("Connection range is required").max(60),
-  offline_benefits: yup.boolean().required(),
-  recommended: yup.boolean().required(),
-});
-
-const emptyValues: PlanFormValues = {
+const emptyValues: PlanInput = {
   title: "",
   access_type: "",
   monthly_charge: "",
@@ -95,17 +36,13 @@ const emptyValues: PlanFormValues = {
   recommended: false,
 };
 
-// The response's monthly_charge_minor/yearly_charge_minor are minor units
-// (kobo) — the create/update request instead expects major units (naira),
-// per SubscriptionPlanRequest::toDto() -> Money::fromUnits(...)->minor.
-// Verified against app/Http/Requests/Admin/SubscriptionPlanRequest.php and
-// app/Support/Money.php directly, not assumed.
-function toFormValues(plan: AdminSubscriptionPlan): PlanFormValues {
+// The response's formatted major-unit amounts go straight into the inputs.
+function toFormValues(plan: AdminSubscriptionPlan): PlanInput {
   return {
     title: plan.title,
     access_type: plan.access_type,
-    monthly_charge: String(plan.monthly_charge_minor / 100),
-    yearly_charge: String(plan.yearly_charge_minor / 100),
+    monthly_charge: plan.monthly_charge,
+    yearly_charge: plan.yearly_charge,
     ver_badge: plan.benefits.verification_badge,
     forum_creation: plan.benefits.tribe_creation,
     lemon_id: plan.benefits.lemon_id,
@@ -118,7 +55,10 @@ function toFormValues(plan: AdminSubscriptionPlan): PlanFormValues {
   };
 }
 
-const checkboxFields: Array<{ name: keyof PlanFormValues; label: string }> = [
+const checkboxFields: Array<{
+  name: "ver_badge" | "forum_creation" | "lemon_id" | "offline_benefits" | "recommended";
+  label: string;
+}> = [
   { name: "ver_badge", label: "Verification badge" },
   { name: "forum_creation", label: "Tribe creation" },
   { name: "lemon_id", label: "Lemon ID" },
@@ -132,12 +72,18 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
   const createPlanMutation = useCreatePlanMutation();
   const updatePlanMutation = useUpdatePlanMutation(plan?.id);
 
-  const formik = useFormik<PlanFormValues>({
-    initialValues: plan ? toFormValues(plan) : emptyValues,
-    validationSchema: planSchema,
-    validateOnMount: true,
-    enableReinitialize: true,
-    onSubmit: (values) => {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid },
+  } = useForm<PlanInput>({
+    resolver: zodResolver(planSchema),
+    values: plan ? toFormValues(plan) : emptyValues,
+    mode: "onTouched",
+  });
+
+  const onSubmit = (values: PlanInput) => {
       const payload = {
         title: values.title,
         access_type: values.access_type,
@@ -173,6 +119,8 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
           toggle();
         },
         onError: (error) => {
+          const fields = Object.keys(emptyValues) as (keyof PlanInput)[];
+          if (applyServerErrors(error, setError, fields)) return;
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -182,8 +130,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
           );
         },
       });
-    },
-  });
+  };
 
   return (
     <Dialog
@@ -195,7 +142,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{title}</DialogTitle>
         <div className="w-[480px] rounded-xl bg-white pt-4 pb-1">
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
                 <p className="font-sans text-[18px] leading-[27px] font-semibold">{title}</p>
@@ -213,10 +160,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   id="title"
                   type="text"
                   className="form-font bg-light-grey h-12 rounded-xl border-0"
-                  value={formik.values.title}
-                  onChange={formik.handleChange("title")}
-                  onBlur={formik.handleBlur}
+                  {...register("title")}
                 />
+                <FieldError message={errors.title?.message} />
               </div>
 
               <div className="grid gap-2">
@@ -231,10 +177,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   type="text"
                   placeholder="e.g. Limited, Unlimited"
                   className="form-font bg-light-grey h-12 rounded-xl border-0"
-                  value={formik.values.access_type}
-                  onChange={formik.handleChange("access_type")}
-                  onBlur={formik.handleBlur}
+                  {...register("access_type")}
                 />
+                <FieldError message={errors.access_type?.message} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
@@ -251,10 +196,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     min={0}
                     step="0.01"
                     className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    value={formik.values.monthly_charge}
-                    onChange={formik.handleChange("monthly_charge")}
-                    onBlur={formik.handleBlur}
+                    {...register("monthly_charge")}
                   />
+                  <FieldError message={errors.monthly_charge?.message} />
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -269,10 +213,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     min={0}
                     step="0.01"
                     className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    value={formik.values.yearly_charge}
-                    onChange={formik.handleChange("yearly_charge")}
-                    onBlur={formik.handleBlur}
+                    {...register("yearly_charge")}
                   />
+                  <FieldError message={errors.yearly_charge?.message} />
                 </div>
               </div>
 
@@ -289,10 +232,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     type="number"
                     min={0}
                     className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    value={formik.values.event_creation}
-                    onChange={formik.handleChange("event_creation")}
-                    onBlur={formik.handleBlur}
+                    {...register("event_creation")}
                   />
+                  <FieldError message={errors.event_creation?.message} />
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -306,10 +248,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     type="text"
                     placeholder="e.g. Limited, Global"
                     className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    value={formik.values.connection_range}
-                    onChange={formik.handleChange("connection_range")}
-                    onBlur={formik.handleBlur}
+                    {...register("connection_range")}
                   />
+                  <FieldError message={errors.connection_range?.message} />
                 </div>
               </div>
 
@@ -327,10 +268,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     min={0}
                     max={100}
                     className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    value={formik.values.sales_commission}
-                    onChange={formik.handleChange("sales_commission")}
-                    onBlur={formik.handleBlur}
+                    {...register("sales_commission")}
                   />
+                  <FieldError message={errors.sales_commission?.message} />
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -345,10 +285,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     min={0}
                     max={100}
                     className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    value={formik.values.service_commission}
-                    onChange={formik.handleChange("service_commission")}
-                    onBlur={formik.handleBlur}
+                    {...register("service_commission")}
                   />
+                  <FieldError message={errors.service_commission?.message} />
                 </div>
               </div>
 
@@ -362,8 +301,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     <input
                       id={field.name}
                       type="checkbox"
-                      checked={Boolean(formik.values[field.name])}
-                      onChange={(e) => formik.setFieldValue(field.name, e.target.checked)}
+                      {...register(field.name)}
                     />
                     {field.label}
                   </label>
@@ -378,10 +316,10 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
               >
                 <p className={"text-[16px] font-medium text-black"}>Cancel</p>
               </button>
-              <FormikButton
+              <SubmitButton
                 loading={createPlanMutation.isPending || updatePlanMutation.isPending}
                 title="Confirm"
-                error={formik.isValid}
+                isValid={isValid}
                 classes="w-full rounded-xl border border-step-color px-12 py-[11px]"
               />
             </div>

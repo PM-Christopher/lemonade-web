@@ -7,17 +7,21 @@ import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import Image from "next/image";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { boostBusinessSchema, type BoostBusinessInput } from "@/features/business/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 import { useBoostListingMutation } from "@/features/business/mutations";
 import { useBoostPackagesQuery } from "@/features/business/queries";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import MainLayout from "@/components/layouts/MainLayout";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { BoostPackagesSkeleton } from "@/components/Skeletons";
+import { errorMessage } from "@/lib/api-error";
 
 interface BoostPackages {
   duration: number;
@@ -37,63 +41,70 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
 
   const { data, isLoading: loading } = useBoostPackagesQuery();
 
-  const editBusinessSchema = yup.object({
-    package: yup.string().required("Package is required"),
-    option: yup.string().required("Option is required"),
-    start_date: yup.string().required("Start date is required"),
-    start_time: yup.string().required("Start time is required"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  const {
+    handleSubmit,
+    setValue,
+    setError,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<BoostBusinessInput>({
+    resolver: zodResolver(boostBusinessSchema),
+    defaultValues: {
       package: "",
       option: "",
       start_time: "",
       start_date: "",
     },
-    validationSchema: editBusinessSchema,
-    validateOnMount: true,
-    onSubmit: (values) => {
-      const formData = {
-        ...values,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${id}`,
-      };
-      boostListingMutation.mutate(formData, {
-        onSuccess: (result) => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Redirecting to payment",
-              type: "success",
-            }),
-          );
-          window.location.href = result.payment;
-        },
-        onError: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error adding business",
-              type: "error",
-            }),
-          );
-        },
-      });
-    },
+    mode: "onTouched",
   });
+
+  const startDate = watch("start_date");
+  const startTime = watch("start_time");
+
+  const onSubmit = async (values: BoostBusinessInput) => {
+    try {
+      const result = await boostListingMutation.mutateAsync({
+        ...values,
+        option: values.option,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${id}`,
+      });
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Redirecting to payment",
+          type: "success",
+        }),
+      );
+      window.location.href = result.payment;
+    } catch (err) {
+      if (
+        applyServerErrors(err, setError, ["package", "option", "start_date", "start_time"])
+      ) {
+        return;
+      }
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: errorMessage(err, "Error adding business"),
+          type: "error",
+        }),
+      );
+    }
+  };
 
   const handleSelectPackage = (index: number) => {
     setPkgIndex(index);
     setPackageTitle(data?.packages[index].title ?? "");
     setSelectedPackages(data?.packages[index].packages ?? []);
-    formik.setFieldValue("package", data?.packages[index].id);
+    setValue("package", data?.packages[index].id ?? "", { shouldValidate: true });
+    setValue("option", "", { shouldValidate: true });
   };
 
   const handleSelectedPackage = (index: number) => {
     const price = selectedPackages[index].price;
     const duration = selectedPackages[index].duration;
     setSelectedPackage({ price, duration });
-    formik.setFieldValue("option", index);
+    setValue("option", String(index), { shouldValidate: true });
   };
 
   const now = new Date();
@@ -105,12 +116,12 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
 
   const timeStringToDate = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(":").map(Number);
-    const now = new Date();
-    now.setHours(hours);
-    now.setMinutes(minutes);
-    now.setSeconds(0);
-    now.setMilliseconds(0);
-    return now;
+    const d = new Date();
+    d.setHours(hours);
+    d.setMinutes(minutes);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    return d;
   };
 
   return (
@@ -123,7 +134,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="laptop:flex-row laptop:justify-between flex flex-col gap-10 gap-y-[154px]">
               <div className="flex flex-col">
                 <div className="laptop:w-[640px] laptop:bg-white w-screen rounded-xl bg-none p-6 px-12">
@@ -148,20 +159,22 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                       ))
                     )}
                   </div>
+                  <FieldError message={errors.package?.message} />
                   {pkgIndex !== null ? (
                     <>
                       <div className="mt-8 grid gap-2">
                         <Label
-                          htmlFor="fullname"
+                          htmlFor="duration"
                           className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                         >
                           Duration
                         </Label>
                         <select
-                          id="fullname"
+                          id="duration"
                           className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
                           onChange={(e) => {
-                            handleSelectedPackage(parseInt(e.target.value));
+                            if (e.target.value === "") return;
+                            handleSelectedPackage(parseInt(e.target.value, 10));
                           }}
                         >
                           <option value="">Select package</option>
@@ -179,11 +192,12 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                             ),
                           )}
                         </select>
+                        <FieldError message={errors.option?.message} />
                       </div>
                       <div className="mt-8 flex flex-col">
                         <div className="flex flex-col">
                           <Label
-                            htmlFor="fullname"
+                            htmlFor="start_date"
                             className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                           >
                             Start date
@@ -196,22 +210,17 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                 </div>
                                 <div className="w-full">
                                   <DatePicker
-                                    selected={
-                                      formik.values.start_date
-                                        ? new Date(formik.values.start_date)
-                                        : null
-                                    }
+                                    selected={startDate ? new Date(startDate) : null}
                                     onChange={(date: Date | null) => {
                                       if (date) {
-                                        // Update start date
                                         const localDate = new Date(
                                           date.getTime() - date.getTimezoneOffset() * 60000,
                                         )
                                           .toISOString()
                                           .split("T")[0];
-                                        formik.setFieldValue("start_date", localDate);
+                                        setValue("start_date", localDate, { shouldValidate: true });
                                       } else {
-                                        formik.setFieldValue("start_date", null);
+                                        setValue("start_date", "", { shouldValidate: true });
                                       }
                                     }}
                                     minDate={now}
@@ -222,11 +231,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                   />
                                 </div>
                               </div>
-                              {formik.touched.start_date && formik.errors.start_date ? (
-                                <p className="text-left text-[12px] text-[#FF8D8D]">
-                                  {formik.errors.start_date}
-                                </p>
-                              ) : null}
+                              <FieldError message={errors.start_date?.message} />
                             </div>
                             <div className={"flex w-full flex-col gap-1"}>
                               <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
@@ -235,19 +240,16 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                 </div>
                                 <div className="w-full">
                                   <DatePicker
-                                    selected={
-                                      formik.values.start_time
-                                        ? timeStringToDate(formik.values.start_time)
-                                        : null
-                                    }
+                                    selected={startTime ? timeStringToDate(startTime) : null}
                                     onChange={(date: Date | null) => {
                                       if (date) {
-                                        // Update start date
                                         const formated_time = date
                                           .toTimeString()
                                           .split(" ")[0]
                                           .slice(0, 5);
-                                        formik.setFieldValue("start_time", formated_time);
+                                        setValue("start_time", formated_time, {
+                                          shouldValidate: true,
+                                        });
                                       }
                                     }}
                                     showTimeSelect={true}
@@ -258,9 +260,8 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                     className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                                     placeholderText="Click to select time"
                                     minTime={
-                                      formik.values.start_date &&
-                                      new Date(formik.values.start_date).toDateString() ===
-                                        now.toDateString()
+                                      startDate &&
+                                      new Date(startDate).toDateString() === now.toDateString()
                                         ? now
                                         : startOfDay
                                     }
@@ -268,11 +269,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                                   />
                                 </div>
                               </div>
-                              {formik.touched.start_time && formik.errors.start_time ? (
-                                <p className="text-left text-[12px] text-[#FF8D8D]">
-                                  {formik.errors.start_time}
-                                </p>
-                              ) : null}
+                              <FieldError message={errors.start_time?.message} />
                             </div>
                           </div>
                         </div>
@@ -326,10 +323,10 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                         ₦ {formatNumberWithCommas(selectedPackage.price)}
                       </p>
                     </div>
-                    <FormikButton
+                    <SubmitButton
                       title="Pay now"
-                      error={formik.isValid}
-                      loading={formik.isSubmitting}
+                      isValid={isValid}
+                      loading={isSubmitting}
                       classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                     />
                   </div>
@@ -342,10 +339,10 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                       ₦ {formatNumberWithCommas(selectedPackage.price)}
                     </p>
                   </div>
-                  <FormikButton
+                  <SubmitButton
                     title="Pay now"
-                    error={formik.isValid}
-                    loading={formik.isSubmitting}
+                    isValid={isValid}
+                    loading={isSubmitting}
                     classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color shadow-custom-bottom"
                   />
                 </div>

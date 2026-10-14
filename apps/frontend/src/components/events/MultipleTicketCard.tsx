@@ -2,43 +2,28 @@
 import React, { useEffect } from "react";
 import { Label, Input } from "@lemonade/ui";
 import { TicketDetails } from "@/interfaces/EventInterface";
-
-interface AssignedTicket {
-  id?: number | string;
-  quantity?: number;
-  fullname?: string;
-  email?: string;
-}
-
-interface AssignTicketFormik {
-  values: { assigned_tickets: AssignedTicket[] };
-  touched: { assigned_tickets?: unknown };
-  errors: { assigned_tickets?: unknown };
-  setFieldValue: (field: string, value: unknown) => unknown;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-}
+import type { Control, FieldErrors, UseFormSetValue, UseFormRegister } from "react-hook-form";
+import type { AssignEventTicketsInput } from "@/features/events/schema";
+import { FieldError } from "@/components/global/FieldError";
 
 const MultipleTicketCard = ({
   ticket,
   index,
-  formik,
+  register,
+  setValue,
+  errors,
 }: {
   ticket: TicketDetails;
   index: number;
-  formik: AssignTicketFormik;
+  control: Control<AssignEventTicketsInput>;
+  register: UseFormRegister<AssignEventTicketsInput>;
+  setValue: UseFormSetValue<AssignEventTicketsInput>;
+  errors: FieldErrors<AssignEventTicketsInput>;
 }) => {
-  const namePrefix = `assigned_tickets[${index}]`;
-  const touchedTickets = formik.touched.assigned_tickets as
-    Array<{ fullname?: boolean; email?: boolean }> | undefined;
-  const errorTickets = formik.errors.assigned_tickets as
-    Array<{ fullname?: string; email?: string }> | undefined;
-
   useEffect(() => {
-    formik.setFieldValue(`assigned_tickets[${index}].id`, ticket.id);
-    formik.setFieldValue(`assigned_tickets[${index}].quantity`, ticket?.quantity);
-    // formik (a Formik instance passed down as a prop) is recreated on every
-    // keystroke — this must only seed the field once, on mount, for this card.
+    setValue(`assigned_tickets.${index}.id`, String(ticket.id));
+    setValue(`assigned_tickets.${index}.quantity`, ticket?.quantity ?? 0);
+    // Seed id/quantity once when the card mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -56,16 +41,11 @@ const MultipleTicketCard = ({
         </Label>
         <Input
           id={`fullname-${index}`}
-          name={`${namePrefix}.fullname`}
           type="text"
           placeholder="e.g. Jano doe"
-          value={formik.values.assigned_tickets[index]?.fullname || ""}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          {...register(`assigned_tickets.${index}.fullname`)}
         />
-        {touchedTickets?.[index]?.fullname && errorTickets?.[index]?.fullname && (
-          <div className="text-sm text-red-500">{errorTickets[index].fullname}</div>
-        )}
+        <FieldError message={errors.assigned_tickets?.[index]?.fullname?.message} />
       </div>
       <div className="mt-4 grid gap-2">
         <Label
@@ -76,16 +56,11 @@ const MultipleTicketCard = ({
         </Label>
         <Input
           id={`email-${index}`}
-          name={`${namePrefix}.email`}
           type="email"
           placeholder="e.g. Janodoe@email.com"
-          value={formik.values.assigned_tickets[index]?.email || ""}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
+          {...register(`assigned_tickets.${index}.email`)}
         />
-        {touchedTickets?.[index]?.email && errorTickets?.[index]?.email && (
-          <div className="text-sm text-red-500">{errorTickets[index].email}</div>
-        )}
+        <FieldError message={errors.assigned_tickets?.[index]?.email?.message} />
       </div>
       <div className="bg-light_grey mt-4 flex items-center justify-between rounded-xl px-3 py-2.5">
         <div>

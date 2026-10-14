@@ -1,12 +1,15 @@
 import React from "react";
 import { XIcon } from "lucide-react";
 import { Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useUpdatePointsRateMutation } from "@/features/wallet/mutations";
+import { pointsRateSchema, type PointsRateInput } from "@/features/wallet/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 
 type PointsRateModalInterface = {
   isOpen: boolean;
@@ -25,44 +28,41 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const updateRate = useUpdatePointsRateMutation();
-  const rateSchema = yup.object({
-    rate: yup.string().required("Rate is required"),
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<PointsRateInput>({
+    resolver: zodResolver(pointsRateSchema),
+    // `values` keeps the field in step with the current rate when it reloads.
+    values: { rate: currentRate },
+    mode: "onTouched",
   });
 
-  const formik = useFormik({
-    initialValues: {
-      rate: currentRate,
-    },
-    validationSchema: rateSchema,
-    validateOnMount: true,
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      updateRate.mutate(
-        { currency, rate: parseFloat(values.rate) },
-        {
-          onSuccess: () => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: `${currency} rate updated`,
-                type: "success",
-              }),
-            );
-            toggle();
-          },
-          onError: (error) => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: error?.message || "Something went wrong",
-                type: "error",
-              }),
-            );
-          },
+  const onSubmit = (values: PointsRateInput) => {
+    updateRate.mutate(
+      { currency, rate: Number(values.rate) },
+      {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({ show: true, message: `${currency} rate updated`, type: "success" }),
+          );
+          toggle();
         },
-      );
-    },
-  });
+        onError: (error) => {
+          if (applyServerErrors(error, setError, ["rate"])) return;
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: error?.message || "Something went wrong",
+              type: "error",
+            }),
+          );
+        },
+      },
+    );
+  };
 
   if (!isOpen) return null;
 
@@ -94,10 +94,9 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"e.g. 1"}
-                value={formik.values.rate}
-                onChange={formik.handleChange("rate")}
-                onBlur={formik.handleBlur}
+                {...register("rate")}
               />
+              <FieldError message={errors.rate?.message} />
               <div className={"flex justify-between gap-4"}>
                 <button
                   onClick={toggle}
@@ -108,7 +107,7 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
                   <p className={"text-[16px] font-medium text-black"}>Cancel</p>
                 </button>
                 <button
-                  onClick={() => formik.handleSubmit()}
+                  onClick={handleSubmit(onSubmit)}
                   className={
                     "border-step-color bg-gradient-green h-12 w-full rounded-xl border px-12 py-3.5"
                   }

@@ -1,58 +1,73 @@
-import * as yup from "yup";
+import { z } from "zod";
 import {
   confirmPasswordField,
   emailField,
   otpCodeField,
+  optionalTextField,
   passwordField,
   requiredTextField,
   strongPasswordField,
-  optionalTextField,
+  withMatchingPasswords,
 } from "../fields";
 
-export const loginSchema = yup.object({
+// Mirrors App\Http\Requests\User\LoginRequest (and the admin one).
+export const loginSchema = z.object({
   email: emailField,
   password: passwordField(),
 });
+export type LoginInput = z.infer<typeof loginSchema>;
 
-export const signupSchema = yup.object({
+// Mirrors App\Http\Requests\User\SignUpRequest.
+export const signupSchema = z.object({
   fullname: requiredTextField("fullname"),
   email: emailField,
   password: strongPasswordField(),
   referral_code: optionalTextField(),
 });
+export type SignupInput = z.infer<typeof signupSchema>;
 
-export const forgotPasswordSchema = yup.object({
+// Mirrors the forgot-password FormRequest (email only).
+export const forgotPasswordSchema = z.object({
   email: emailField,
 });
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 
-export const resetPasswordSchema = yup.object({
-  password: strongPasswordField(),
-  confirm_password: confirmPasswordField("password"),
-});
+// Mirrors the reset-password FormRequest (PasswordRules::required() + confirmed).
+export const resetPasswordSchema = withMatchingPasswords(
+  z.object({
+    password: strongPasswordField(),
+    confirm_password: confirmPasswordField(),
+  }),
+);
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
-export const otpSchema = yup.object({
+// Mirrors the OTP verify FormRequest (4-digit code).
+export const otpSchema = z.object({
   code: otpCodeField(4),
 });
+export type OtpCodeInput = z.infer<typeof otpSchema>;
 
-export const contactAddressSchema = yup.object({
+// Mirrors App\Http\Requests\User\AddressRequest.
+export const contactAddressSchema = z.object({
   address: requiredTextField("address"),
   city: requiredTextField("city"),
   country: requiredTextField("country"),
   state: requiredTextField("state"),
 });
+export type ContactAddressInput = z.infer<typeof contactAddressSchema>;
 
-export const profileSetupSchema = yup.object({
+// Mirrors App\Http\Requests\User\ProfileSetupRequest.
+export const profileSetupSchema = z.object({
   profile_image: optionalTextField(),
   bio: requiredTextField("bio"),
   username: requiredTextField("username"),
   industry: requiredTextField("industry"),
 });
+export type ProfileSetupInput = z.infer<typeof profileSetupSchema>;
 
-export const skillsInterestsSchema = yup.object({
-  skills: yup.array().of(yup.string()).min(3, "At least three skills are required").required(),
-  interests: yup
-    .array()
-    .of(yup.string())
-    .min(3, "At least three interests are required")
-    .required(),
+// Mirrors the skills/interests setup FormRequest (at least three of each).
+export const skillsInterestsSchema = z.object({
+  skills: z.array(z.string()).min(3, { error: "At least three skills are required" }),
+  interests: z.array(z.string()).min(3, { error: "At least three interests are required" }),
 });
+export type SkillsInterestsInput = z.infer<typeof skillsInterestsSchema>;

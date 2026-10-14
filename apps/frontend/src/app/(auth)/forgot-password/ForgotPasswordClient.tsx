@@ -8,12 +8,15 @@ import { useCookies } from "react-cookie";
 import { useAppDispatch } from "@/redux/hook";
 import { useForgotPasswordMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useFormik } from "formik";
-import { forgotPasswordSchema } from "@lemonade/validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { forgotPasswordSchema, type ForgotPasswordInput } from "@lemonade/validation";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
-import { applyFieldErrors, errorMessage } from "@/lib/api-error";
+import { errorMessage } from "@/lib/api-error";
+import { applyServerErrors } from "@/lib/form-errors";
+import { FieldError } from "@/components/global/FieldError";
 
 export default function ForgotPasswordPage() {
   const { push } = useNavigation();
@@ -22,18 +25,18 @@ export default function ForgotPasswordPage() {
   const forgotPasswordMutation = useForgotPasswordMutation();
   const loading = forgotPasswordMutation.isPending;
 
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-    },
-    validationSchema: forgotPasswordSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await onSignup(values);
-    },
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid },
+  } = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+    mode: "onTouched",
   });
 
-  const onSignup = async (values: { email: string }) => {
+  const onSubmit = (values: ForgotPasswordInput) => {
     forgotPasswordMutation.mutate(
       { email: values.email },
       {
@@ -59,7 +62,7 @@ export default function ForgotPasswordPage() {
         },
         onError: (error) => {
           // Field problems show under the field; anything else as a toast.
-          if (applyFieldErrors(error, ["email"], formik.setFieldError)) return;
+          if (applyServerErrors(error, setError, ["email"])) return;
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -75,7 +78,7 @@ export default function ForgotPasswordPage() {
   return (
     <AuthLayout>
       <form
-        onSubmit={formik.handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
       >
         <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
@@ -102,13 +105,9 @@ export default function ForgotPasswordPage() {
                 type="email"
                 placeholder="e.g. Janedoe@example.com"
                 className="form-font bg-light_grey h-12 rounded-xl border-0"
-                value={formik.values.email}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
+                {...register("email")}
               />
-              {formik.touched.email && formik.errors.email ? (
-                <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
-              ) : null}
+              <FieldError message={errors.email?.message} />
             </div>
             <Button
               type="submit"

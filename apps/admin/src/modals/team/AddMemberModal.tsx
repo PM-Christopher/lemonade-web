@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { XIcon } from "lucide-react";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useAddTeamMemberMutation } from "@/features/team/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { addTeamMemberSchema, type AddTeamMemberInput } from "@/features/team/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 
 interface BalanceModalProps {
   isOpen: boolean;
@@ -14,70 +17,49 @@ interface BalanceModalProps {
 }
 
 const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
-  const [, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const addTeamMember = useAddTeamMemberMutation();
-  const prodSchema = yup.object({
-    email: yup.string().email("Please enter a valid email").required("Email is required"),
-    first_name: yup
-      .string()
 
-      .required("first name is required"),
-    last_name: yup
-      .string()
-
-      .required("last name is required"),
-    password: yup.string().min(8).required("Password is required"),
-    role: yup
-      .string()
-
-      .required("role is required"),
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors },
+  } = useForm<AddTeamMemberInput>({
+    resolver: zodResolver(addTeamMemberSchema),
+    defaultValues: { first_name: "", last_name: "", email: "", password: "", role: "" },
+    mode: "onTouched",
   });
 
-  const formik = useFormik({
-    initialValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      role: "",
-    },
-    validationSchema: prodSchema,
-    validateOnMount: true,
-    onSubmit: (values) => {
-      setLoading(true);
-      addTeamMember.mutate(
-        {
-          email: values.email,
-          name: `${values.first_name} ${values.last_name}`,
-          password: values.password,
-          role: values.role,
+  const onSubmit = (values: AddTeamMemberInput) => {
+    addTeamMember.mutate(
+      {
+        email: values.email,
+        name: `${values.first_name} ${values.last_name}`,
+        password: values.password,
+        role: values.role,
+      },
+      {
+        onSuccess: () => {
+          dispatch(updateToastifyReducer({ show: true, message: "Success", type: "success" }));
+          reset();
+          toggle();
         },
-        {
-          onSuccess: () => {
-            setLoading(false);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: `Success `,
-                type: "success",
-              }),
-            );
-          },
-          onError: (error) => {
-            setLoading(false);
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: error?.message || `Something went wrong`,
-                type: "error",
-              }),
-            );
-          },
+        onError: (error) => {
+          if (applyServerErrors(error, setError, ["email", "password", "role"])) return;
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: error?.message || "Something went wrong",
+              type: "error",
+            }),
+          );
         },
-      );
-    },
-  });
+      },
+    );
+  };
+
   return (
     <Dialog
       open={isOpen}
@@ -109,10 +91,9 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 type="text"
                 placeholder=""
                 className="form-font bg-light-grey h-12 rounded-xl border-0"
-                value={formik.values.first_name}
-                onChange={formik.handleChange("first_name")}
-                onBlur={formik.handleBlur}
+                {...register("first_name")}
               />
+              <FieldError message={errors.first_name?.message} />
             </div>
 
             <div className="grid gap-2">
@@ -127,10 +108,9 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 type="text"
                 placeholder=""
                 className="form-font bg-light-grey h-12 rounded-xl border-0"
-                value={formik.values.last_name}
-                onChange={formik.handleChange("last_name")}
-                onBlur={formik.handleBlur}
+                {...register("last_name")}
               />
+              <FieldError message={errors.last_name?.message} />
             </div>
 
             <div className="grid gap-2">
@@ -142,10 +122,9 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 type="email"
                 placeholder="e.g. Janedoe@example.com"
                 className="form-font bg-light-grey h-12 rounded-xl border-0"
-                value={formik.values.email}
-                onChange={formik.handleChange("email")}
-                onBlur={formik.handleBlur}
+                {...register("email")}
               />
+              <FieldError message={errors.email?.message} />
             </div>
 
             <div className="grid gap-2">
@@ -159,10 +138,9 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 id="password"
                 type="password"
                 className="form-font bg-light-grey h-12 rounded-xl border-0"
-                value={formik.values.password}
-                onChange={formik.handleChange("password")}
-                onBlur={formik.handleBlur}
+                {...register("password")}
               />
+              <FieldError message={errors.password?.message} />
             </div>
 
             <div className="grid gap-2">
@@ -173,10 +151,9 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
                 id="role"
                 type="text"
                 className="form-font bg-light-grey h-12 rounded-xl border-0"
-                value={formik.values.role}
-                onChange={formik.handleChange("role")}
-                onBlur={formik.handleBlur}
+                {...register("role")}
               />
+              <FieldError message={errors.role?.message} />
             </div>
           </div>
           <div className={"flex justify-between gap-4 px-4 pb-2.5"}>
@@ -187,7 +164,7 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
               <p className={"text-[16px] font-medium text-black"}>Cancel</p>
             </button>
             <button
-              onClick={() => formik.handleSubmit()}
+              onClick={handleSubmit(onSubmit)}
               className={
                 "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
               }

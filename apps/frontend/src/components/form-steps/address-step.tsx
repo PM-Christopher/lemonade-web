@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, Label, Input } from "@lemonade/ui";
 import { authApi } from "@/features/authentication/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { checkError } from "@lemonade/domain";
-import { useFormik } from "formik";
-import { contactAddressSchema } from "@lemonade/validation";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { contactAddressSchema, type ContactAddressInput } from "@lemonade/validation";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import CountryList from "country-list-with-dial-code-and-flag";
 import { errorMessage } from "@/lib/api-error";
@@ -19,32 +21,21 @@ interface AddressInterface {
   prev_step: () => void;
 }
 
-interface AddressFormValues {
-  address: string;
-  city: string;
-  country: string;
-  state: string;
-}
-
 const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
   const dispatch = useAppDispatch();
 
-  //form validation
-  const formik = useFormik({
-    initialValues: {
-      address: "",
-      city: "",
-      country: "",
-      state: "",
-    },
-    validationSchema: contactAddressSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await addressStep(values);
-    },
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<ContactAddressInput>({
+    resolver: zodResolver(contactAddressSchema),
+    defaultValues: { address: "", city: "", country: "", state: "" },
+    mode: "onTouched",
   });
 
-  const addressStep = async (values: AddressFormValues) => {
+  const onSubmit = async (values: ContactAddressInput) => {
     dispatch(authStart());
 
     try {
@@ -52,6 +43,7 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
       next_step();
     } catch (err) {
       dispatch(authFailure());
+      if (applyServerErrors(err, setError, ["address", "city", "country", "state"])) return;
       dispatch(
         updateToastifyReducer({
           show: true,
@@ -65,7 +57,7 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
@@ -90,13 +82,9 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
               id="address"
               type="text"
               className="form-font bg-light_grey h-12 rounded-xl border-0"
-              value={formik.values.address}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("address")}
             />
-            {checkError("address", formik) ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.address}</p>
-            ) : null}
+            <FieldError message={errors.address?.message} />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="city" className="font-label">
@@ -106,13 +94,9 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
               id="city"
               type="text"
               className="form-font bg-light_grey h-12 rounded-xl border-0"
-              value={formik.values.city}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("city")}
             />
-            {checkError("city", formik) ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
-            ) : null}
+            <FieldError message={errors.city?.message} />
           </div>
 
           <div className="my-2 grid gap-2">
@@ -122,10 +106,7 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
             <select
               id="country"
               className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-              value={formik.values.country}
-              onChange={(e) => {
-                formik.setFieldValue("country", e.target.value);
-              }}
+              {...register("country")}
             >
               <option value="">Select country</option>
               {CountryList.getAll().map((country, index) => (
@@ -134,9 +115,7 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
                 </option>
               ))}
             </select>
-            {checkError("country", formik) ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
-            ) : null}
+            <FieldError message={errors.country?.message} />
           </div>
           <div className="my-2 grid gap-2">
             <Label htmlFor="state" className="font-label">
@@ -146,20 +125,16 @@ const AddressStep: React.FC<AddressInterface> = ({ next_step }) => {
               id="state"
               type="text"
               className="form-font bg-light_grey h-12 rounded-xl border-0"
-              value={formik.values.state}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("state")}
             />
-            {checkError("state", formik) ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.state}</p>
-            ) : null}
+            <FieldError message={errors.state?.message} />
           </div>
         </CardContent>
         <CardContent className="mt-4 flex flex-col space-y-2 p-0">
-          <FormikButton
-            loading={formik.isSubmitting}
+          <SubmitButton
+            loading={isSubmitting}
             title="Next"
-            error={formik.isValid}
+            isValid={isValid}
             classes="w-full h-12 rounded-xl"
           />
         </CardContent>

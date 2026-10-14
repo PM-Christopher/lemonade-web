@@ -19,9 +19,12 @@ import { authApi } from "@/features/authentication/api";
 import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useFormik } from "formik";
-import { profileSetupSchema } from "@lemonade/validation";
-import { FormikButton } from "@/components/global/FormikButton";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { profileSetupSchema, type ProfileSetupInput } from "@lemonade/validation";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { errorMessage } from "@/lib/api-error";
 
@@ -30,34 +33,25 @@ interface ProfileInterface {
   next_step: () => void;
 }
 
-interface ProfileFormValues {
-  profile_image: string;
-  bio: string;
-  username: string;
-  industry: string;
-}
-
 const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
-  //form validation
-  const formik = useFormik({
-    initialValues: {
-      profile_image: "",
-      bio: "",
-      username: "",
-      industry: "",
-    },
-    validationSchema: profileSetupSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await profileStep(values);
-    },
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    control,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<ProfileSetupInput>({
+    resolver: zodResolver(profileSetupSchema),
+    defaultValues: { profile_image: "", bio: "", username: "", industry: "" },
+    mode: "onTouched",
   });
 
-  const profileStep = async (values: ProfileFormValues) => {
+  const onSubmit = async (values: ProfileSetupInput) => {
     dispatch(authStart());
 
     try {
@@ -65,6 +59,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
       next_step();
     } catch (err) {
       dispatch(authFailure());
+      if (applyServerErrors(err, setError, ["username", "bio", "industry", "profile_image"])) return;
       dispatch(
         updateToastifyReducer({
           show: true,
@@ -92,7 +87,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
       try {
         const result = await sharedApi.uploadFile(formData);
         setAvatar(result.image);
-        await formik.setFieldValue("profile_image", result.image);
+        setValue("profile_image", result.image, { shouldValidate: true });
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -113,7 +108,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
@@ -159,9 +154,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
               onChange={handleFileChange}
             />
           </div>
-          {formik.touched.profile_image && formik.errors.profile_image ? (
-            <p className="text-center text-[12px] text-[#FF8D8D]">{formik.errors.profile_image}</p>
-          ) : null}
+          <FieldError message={errors.profile_image?.message} />
           <p className="text-meta text-text-grey text-center">Snap shot</p>
         </CardContent>
         <CardContent className="mt-4 grid gap-4 p-0">
@@ -174,13 +167,9 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
               type="text"
               placeholder="Username"
               className="form-font bg-light_grey h-12 rounded-xl border-0"
-              value={formik.values.username}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("username")}
             />
-            {formik.touched.username && formik.errors.username ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.username}</p>
-            ) : null}
+            <FieldError message={errors.username?.message} />
           </div>
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
@@ -193,42 +182,39 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
               id="bio"
               placeholder="A short bio about yourself..."
               className="form-font bg-light_grey h-[99px] gap-2.5 rounded-xl border-0"
-              value={formik.values.bio}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              {...register("bio")}
             />
-            {formik.touched.bio && formik.errors.bio ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.bio}</p>
-            ) : null}
+            <FieldError message={errors.bio?.message} />
           </div>
           <div className="my-2 grid gap-2">
             <Label htmlFor="industry" className="font-label">
               Industry
             </Label>
-            <Select
-              onValueChange={(value) => formik.setFieldValue("industry", value)} // Update value with Formik
-              value={formik.values.industry}
-            >
-              <SelectTrigger id="industry" aria-label="Industry">
-                <SelectValue placeholder="Select" />
-              </SelectTrigger>
-              <SelectContent className="form-font">
-                <SelectItem value="Software Development">Software Development</SelectItem>
-                <SelectItem value="Engineering">Engineering</SelectItem>
-                <SelectItem value="Health Care">Health Care</SelectItem>
-                <SelectItem value="Construction">Construction</SelectItem>
-              </SelectContent>
-            </Select>
-            {formik.touched.industry && formik.errors.industry ? (
-              <p className="text-[12px] text-[#FF8D8D]">{formik.errors.industry}</p>
-            ) : null}
+            <Controller
+              control={control}
+              name="industry"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger id="industry" aria-label="Industry" onBlur={field.onBlur}>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent className="form-font">
+                    <SelectItem value="Software Development">Software Development</SelectItem>
+                    <SelectItem value="Engineering">Engineering</SelectItem>
+                    <SelectItem value="Health Care">Health Care</SelectItem>
+                    <SelectItem value="Construction">Construction</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError message={errors.industry?.message} />
           </div>
         </CardContent>
         <CardContent className="mt-4 flex flex-col space-y-2 p-0">
-          <FormikButton
-            loading={formik.isSubmitting}
+          <SubmitButton
+            loading={isSubmitting}
             title="Next"
-            error={formik.isValid}
+            isValid={isValid}
             classes="w-full h-12 rounded-xl"
           />
         </CardContent>

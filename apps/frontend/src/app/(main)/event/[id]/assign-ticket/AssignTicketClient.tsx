@@ -10,9 +10,15 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Switch from "react-switch";
 import { useSelector } from "react-redux";
 import { TicketDetails } from "@/interfaces/EventInterface";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { FormikButton } from "@/components/global/FormikButton";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  assignEventTicketsSchema,
+  type AssignEventTicketsInput,
+} from "@/features/events/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { freeEventState } from "@/features/events/event.slice";
 import { useBuyTicketMutation } from "@/features/events/mutations";
@@ -23,48 +29,32 @@ import { errorMessage } from "@/lib/api-error";
 
 // Buyer and ticket-holder details form shown before checkout.
 const AssignTicketClient = ({ id }: { id: number }) => {
-  const [checked, setChecked] = useState(false);
   const COUNTDOWN_DURATION = 10 * 60;
-  const [timeLeft, setTimeLeft] = useState(COUNTDOWN_DURATION); // 10 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(COUNTDOWN_DURATION);
   const { push, replace, back } = useNavigation();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const handleChange = () => {
-    setChecked(!checked);
-  };
   const { tickets } = useSelector((state: RootState) => state.event);
   const buyTicketMutation = useBuyTicketMutation();
   const loading = buyTicketMutation.isPending;
-
-  const ticketSchema = yup.object({
-    fullname: yup.string().required("Fullname is required"),
-    email: yup.string().email("Please enter a valid email").required("Email is required"),
-    assign_multiple: yup.boolean().required(),
-    assigned_tickets: yup.array().when("assign_multiple", {
-      is: true,
-      then: (schema) =>
-        schema
-          .of(
-            yup.object().shape({
-              id: yup.string().required(),
-              quantity: yup.number().required(),
-              fullname: yup.string().required(),
-              email: yup.string().email("Please enter a valid email").required(),
-            }),
-          )
-          .min(1)
-          .required(),
-    }),
-  });
 
   const referralFromUrl = searchParams.get("referral");
   const assignTicketHref = referralFromUrl
     ? `${routes.EVENT_BUY_TICKET(id)}?referral=${encodeURIComponent(referralFromUrl)}`
     : routes.EVENT_BUY_TICKET(id);
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    setError,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<AssignEventTicketsInput>({
+    resolver: zodResolver(assignEventTicketsSchema),
+    defaultValues: {
       fullname: "",
       email: "",
       assign_multiple: false,
@@ -75,71 +65,66 @@ const AssignTicketClient = ({ id }: { id: number }) => {
         email: "",
       })),
     },
-    validationSchema: ticketSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      const allTickets: { id: string; quantity: number }[] = [];
-      tickets.map((ticket: TicketDetails) => {
-        allTickets.push({
-          id: `${ticket.id}`,
-          quantity: ticket.quantity,
-        });
-      });
-      const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}${routes.EVENT}`;
-      let formValues;
-      if (values.assign_multiple) {
-        formValues = {
-          assigned_tickets: values.assigned_tickets,
-          redirect_url,
-          assign_multiple: true,
-          fullname: values.fullname,
-          email: values.email,
-          referral: referralFromUrl ?? null,
-        };
-      } else {
-        formValues = {
-          tickets: allTickets,
-          redirect_url,
-          assign_multiple: false,
-          fullname: values.fullname,
-          email: values.email,
-          referral: referralFromUrl ?? null,
-        };
-      }
-      buyTicketMutation.mutate(
-        { eventId: id, data: formValues },
-        {
-          onSuccess: (result) => {
-            if (result.completed) {
-              const data = {
-                completed: true,
-              };
-              dispatch(freeEventState(data));
-              push(routes.EVENT);
-            } else if (result.payment_url) {
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: "Redirecting to payment page. Please wait...",
-                  type: "success",
-                }),
-              );
-              window.location.href = result.payment_url;
-            }
-          },
-          onError: (error) => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: errorMessage(error, "We couldn't complete your ticket purchase."),
-                type: "error",
-              }),
-            );
-          },
-        },
-      );
-    },
+    mode: "onTouched",
   });
+
+  const assignMultiple = watch("assign_multiple");
+
+  const onSubmit = async (values: AssignEventTicketsInput) => {
+    const allTickets: { id: string; quantity: number }[] = [];
+    tickets.map((ticket: TicketDetails) => {
+      allTickets.push({
+        id: `${ticket.id}`,
+        quantity: ticket.quantity,
+      });
+    });
+    const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}${routes.EVENT}`;
+    let formValues;
+    if (values.assign_multiple) {
+      formValues = {
+        assigned_tickets: values.assigned_tickets,
+        redirect_url,
+        assign_multiple: true,
+        fullname: values.fullname,
+        email: values.email,
+        referral: referralFromUrl ?? null,
+      };
+    } else {
+      formValues = {
+        tickets: allTickets,
+        redirect_url,
+        assign_multiple: false,
+        fullname: values.fullname,
+        email: values.email,
+        referral: referralFromUrl ?? null,
+      };
+    }
+    try {
+      const result = await buyTicketMutation.mutateAsync({ eventId: id, data: formValues });
+      if (result.completed) {
+        dispatch(freeEventState({ completed: true }));
+        push(routes.EVENT);
+      } else if (result.payment_url) {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Redirecting to payment page. Please wait...",
+            type: "success",
+          }),
+        );
+        window.location.href = result.payment_url;
+      }
+    } catch (error) {
+      if (applyServerErrors(error, setError, ["fullname", "email", "assigned_tickets"])) return;
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: errorMessage(error, "We couldn't complete your ticket purchase."),
+          type: "error",
+        }),
+      );
+    }
+  };
 
   const key = `ticketExpiryTime_${id}`;
 
@@ -190,7 +175,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
   const expandedTickets = tickets.flatMap((ticket: TicketDetails) =>
     Array.from({ length: ticket.quantity }, () => ({
       ...ticket,
-      quantity: 1, // one entry per ticket unit
+      quantity: 1,
     })),
   );
 
@@ -203,7 +188,6 @@ const AssignTicketClient = ({ id }: { id: number }) => {
   useEffect(() => {
     const referralInUrl = searchParams.get("referral");
 
-    // Copy a stored referral into the URL unless one is already there.
     if (referralInUrl) return;
 
     if (!referralFromState) return;
@@ -224,7 +208,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
           </div>
         </div>
         <section className="mt-4">
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-4 flex justify-center">
               <section className="w-[640px] gap-6 rounded-xl bg-white p-12">
                 <div className="bg-light-green-10 rounded-[8px] px-4 py-2">
@@ -243,9 +227,9 @@ const AssignTicketClient = ({ id }: { id: number }) => {
                     type="text"
                     placeholder="e.g. Jano doe"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={formik.values.fullname}
-                    onChange={formik.handleChange}
+                    {...register("fullname")}
                   />
+                  <FieldError message={errors.fullname?.message} />
                 </div>
                 <div className="mt-4 grid gap-2">
                   <Label htmlFor="email" className="font-label">
@@ -256,9 +240,9 @@ const AssignTicketClient = ({ id }: { id: number }) => {
                     type="email"
                     placeholder="e.g. Janodoe@email.com"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
+                    {...register("email")}
                   />
+                  <FieldError message={errors.email?.message} />
                 </div>
                 <div className="mt-9 flex justify-between">
                   <div className="flex gap-2">
@@ -273,33 +257,39 @@ const AssignTicketClient = ({ id }: { id: number }) => {
                     </div>
                   </div>
                   <div>
-                    <Switch
-                      onChange={(change) => {
-                        handleChange();
-                        formik.setFieldValue("assign_multiple", change);
-                      }}
-                      checked={checked}
-                      aria-label="Assign multiple people"
-                      checkedIcon={false}
-                      uncheckedIcon={false}
-                      onColor="#9BE303"
+                    <Controller
+                      name="assign_multiple"
+                      control={control}
+                      render={({ field }) => (
+                        <Switch
+                          onChange={field.onChange}
+                          checked={field.value}
+                          aria-label="Assign multiple people"
+                          checkedIcon={false}
+                          uncheckedIcon={false}
+                          onColor="#9BE303"
+                        />
+                      )}
                     />
                   </div>
                 </div>
-                {checked &&
+                {assignMultiple &&
                   expandedTickets.map((ticket: TicketDetails, index: number) => (
                     <MultipleTicketCard
-                      key={ticket.id}
+                      key={`${ticket.id}-${index}`}
                       index={index}
                       ticket={ticket}
-                      formik={formik}
+                      control={control}
+                      register={register}
+                      setValue={setValue}
+                      errors={errors}
                     />
                   ))}
                 <div className="mt-6 flex justify-between">
-                  <FormikButton
+                  <SubmitButton
                     title="Pay now"
-                    loading={formik.isSubmitting || loading}
-                    error={formik.isValid}
+                    loading={isSubmitting || loading}
+                    isValid={isValid}
                     classes="w-full h-12 gap-2 rounded-xl border-b-2 border-step-color"
                   />
                 </div>

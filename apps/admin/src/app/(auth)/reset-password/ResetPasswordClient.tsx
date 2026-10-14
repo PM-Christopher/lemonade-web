@@ -1,26 +1,24 @@
 "use client";
 import React from "react";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPasswordSchema, type ResetPasswordInput } from "@lemonade/validation";
+import { FieldError } from "@/components/global/FieldError";
 import Image from "next/image";
 import { Card, CardContent, Label, Input } from "@lemonade/ui";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { images } from "@/lib/images";
 
 function ResetPasswordPage({}) {
-  const resetPasswordSchema = yup.object({
-    password: yup.string().min(8).required("Password is required"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema: resetPasswordSchema,
-    validateOnMount: true,
-    onSubmit: async () => {},
+  // Not wired to the backend yet: there's no admin reset-password endpoint to submit to.
+  const {
+    register,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<ResetPasswordInput>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: { password: "", confirm_password: "" },
+    mode: "onTouched",
   });
   return (
     <AuthLayout>
@@ -51,34 +49,32 @@ function ResetPasswordPage({}) {
                   id="password"
                   type="password"
                   className="form-font bg-light-grey h-12 rounded-xl border-0"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...register("password")}
                 />
+                <FieldError message={errors.password?.message} />
                 <p className={"text-grey-40 text-[12px] font-normal"}>
                   Password must be at least 8 character long
                 </p>
               </div>
               <div className="grid gap-2">
                 <Label
-                  htmlFor="confirmPassword"
+                  htmlFor="confirm_password"
                   className="text-text-grey font-sans text-[14px] font-normal"
                 >
                   Confirm password
                 </Label>
                 <Input
-                  id="confirmPassword"
+                  id="confirm_password"
                   type="password"
                   className="form-font bg-light-grey h-12 rounded-xl border-0"
-                  value={formik.values.confirmPassword}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...register("confirm_password")}
                 />
+                <FieldError message={errors.confirm_password?.message} />
               </div>
-              <FormikButton
-                loading={formik.isSubmitting}
+              <SubmitButton
+                loading={isSubmitting}
                 title="Save password"
-                error={formik.isValid}
+                isValid={isValid}
                 classes="w-full h-12 rounded-xl"
               />
             </CardContent>

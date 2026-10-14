@@ -3,9 +3,12 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { requestServiceSchema, type RequestServiceInput } from "@/features/business/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useRequestServiceMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -20,12 +23,6 @@ type RequestServiceInterface = {
   id: number;
 };
 
-type FormValues = {
-  services: string[];
-  amount: number;
-  additional_information: string;
-};
-
 const RequestServiceModal: React.FC<RequestServiceInterface> = ({
   isOpen,
   toggleMenu,
@@ -35,61 +32,57 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
   const dispatch = useAppDispatch();
   const requestServiceMutation = useRequestServiceMutation(id);
 
-  const handleServicesClick = (item: string) => {
-    const currentServices = formik?.values?.services;
-    if (Array.isArray(currentServices)) {
-      const updatedServices = currentServices.includes(item)
-        ? currentServices.filter((i) => i !== item)
-        : [...currentServices, item];
-
-      formik.setFieldValue("services", updatedServices);
-    } else {
-      console.error("services is not an array:", currentServices);
-    }
-  };
-
-  const requestServiceSchema = yup.object({
-    services: yup
-      .array()
-      .of(yup.string()) // Ensure it's an array of strings
-      .min(1, "At least one service is required") // Add min length validation to prevent empty arrays
-      .required("Services are required"), // Required field
-    amount: yup.number().min(1).required("Amount is required"),
-    additional_information: yup.string().nullable(),
-  });
-
-  const formik = useFormik<FormValues>({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<RequestServiceInput>({
+    resolver: zodResolver(requestServiceSchema),
+    defaultValues: {
       services: [],
-      amount: 0,
+      amount: "",
       additional_information: "",
     },
-    validationSchema: requestServiceSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      requestServiceMutation.mutate(values, {
-        onSuccess: () => {
-          toggleMenu();
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Quote sent",
-              type: "success",
-            }),
-          );
-        },
-        onError: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Something went wrong",
-              type: "error",
-            }),
-          );
-        },
-      });
-    },
+    mode: "onTouched",
   });
+
+  const selectedServices = watch("services") ?? [];
+
+  const handleServicesClick = (item: string) => {
+    const updatedServices = selectedServices.includes(item)
+      ? selectedServices.filter((service: string) => service !== item)
+      : [...selectedServices, item];
+    setValue("services", updatedServices, { shouldValidate: true });
+  };
+
+  const onSubmit = (values: RequestServiceInput) => {
+    requestServiceMutation.mutate(values, {
+      onSuccess: () => {
+        toggleMenu();
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Quote sent",
+            type: "success",
+          }),
+        );
+      },
+      onError: (error: Error) => {
+        if (applyServerErrors(error, setError, ["services", "amount", "additional_information"]))
+          return;
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Something went wrong",
+            type: "error",
+          }),
+        );
+      },
+    });
+  };
 
   return (
     <Dialog
@@ -100,7 +93,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Request a service"}</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="laptop:w-[640px] w-full px-4 py-[5vh]">
             <div className="hide-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
               <div className="flex items-center justify-between">
@@ -113,10 +106,10 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                   </p>
                 </div>
                 <div className="laptop:block hidden">
-                  <FormikButton
+                  <SubmitButton
                     title="Send quote"
-                    error={formik.isValid}
-                    loading={formik.isSubmitting}
+                    isValid={isValid}
+                    loading={isSubmitting}
                   />
                 </div>
               </div>
@@ -138,22 +131,22 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                           id="amount"
                           type="text"
                           className="bg-light_grey w-full border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                          value={formik.values.amount}
-                          onChange={(e) => {
-                            // Only digits, no leading 0
-                            let value = e.target.value.replace(/\D/g, ""); // remove non-digits
-
-                            if (value.startsWith("0")) {
-                              value = value.replace(/^0+/, ""); // strip leading zeros
-                            }
-
-                            formik.setFieldValue("amount", value);
-                          }}
-                          inputMode="numeric" // brings up number pad on mobile
-                          pattern="[1-9][0-9]*" // regex: must start with 1–9
+                          {...register("amount", {
+                            onChange: (e) => {
+                              // Only digits, no leading 0
+                              let value = e.target.value.replace(/\D/g, "");
+                              if (value.startsWith("0")) {
+                                value = value.replace(/^0+/, "");
+                              }
+                              e.target.value = value;
+                            },
+                          })}
+                          inputMode="numeric"
+                          pattern="[1-9][0-9]*"
                         />
                       </div>
                     </div>
+                    <FieldError message={errors.amount?.message} />
                   </div>
                   <div className="mt-6 grid gap-2">
                     <Label
@@ -167,8 +160,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                         {services?.map((service, index) => (
                           <div
                             className={`w-fit cursor-pointer rounded-xl p-3 px-4 ${
-                              Array.isArray(formik.values.services) &&
-                              formik.values.services.includes(service)
+                              selectedServices.includes(service)
                                 ? "bg-gradient-green-2 shadow-event-custom"
                                 : "bg-light_grey"
                             }`}
@@ -182,6 +174,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                         ))}
                       </div>
                     </div>
+                    <FieldError message={errors.services?.message} />
                   </div>
                   <div className="mt-6 grid gap-2">
                     <div className="flex justify-between">
@@ -198,17 +191,16 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                       placeholder=""
                       className="bg-light_grey h-32 resize-none rounded-xl border-0 p-4 text-[14px] font-normal"
                       readOnly={false}
-                      value={formik.values.additional_information}
-                      onChange={formik.handleChange}
-                      name="additional_information"
+                      {...register("additional_information")}
                     />
+                    <FieldError message={errors.additional_information?.message} />
                   </div>
                 </div>
                 <div className="laptop:hidden">
-                  <FormikButton
+                  <SubmitButton
                     title="Send quote"
-                    error={formik.isValid}
-                    loading={formik.isSubmitting}
+                    isValid={isValid}
+                    loading={isSubmitting}
                     classes="w-full rounded-xl h-12 px-12 py-4"
                   />
                 </div>

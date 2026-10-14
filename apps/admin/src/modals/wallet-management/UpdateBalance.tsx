@@ -4,10 +4,14 @@ import { Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddToWalletMutation, useDeductFromWalletMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { walletAdjustmentSchema, type WalletAdjustmentInput } from "@/features/wallet/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 
 type UpdateBalanceInterface = {
   isOpen: boolean;
@@ -46,43 +50,45 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
     }
   };
 
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors },
+  } = useForm<WalletAdjustmentInput>({
+    resolver: zodResolver(walletAdjustmentSchema),
+    defaultValues: { amount: "" },
+    mode: "onTouched",
+  });
+
   const onMutationSettled = {
     onSuccess: () => {
-      dispatch(
-        updateToastifyReducer({
-          show: true,
-          message: `Success `,
-          type: "success",
-        }),
-      );
+      dispatch(updateToastifyReducer({ show: true, message: "Success", type: "success" }));
+      reset();
       toggle();
       reload?.();
     },
     onError: (error: Error) => {
+      if (applyServerErrors(error, setError, ["amount"])) return;
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: error?.message || `Something went wrong`,
+          message: error?.message || "Something went wrong",
           type: "error",
         }),
       );
     },
   };
 
-  const formik = useFormik({
-    initialValues: {
-      amount: "",
-    },
-    onSubmit: (values) => {
-      const amount = parseFloat(values.amount);
-      if (updateType === "add" || updateType === "") {
-        addToWallet.mutate(amount, onMutationSettled);
-      } else {
-        deductFromWallet.mutate(amount, onMutationSettled);
-      }
-    },
-    enableReinitialize: true,
-  });
+  const onSubmit = (values: WalletAdjustmentInput) => {
+    const amount = Number(values.amount);
+    if (updateType === "deduct") {
+      deductFromWallet.mutate(amount, onMutationSettled);
+    } else {
+      addToWallet.mutate(amount, onMutationSettled);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -108,11 +114,10 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Amount"}
-                value={formik.values.amount}
-                onChange={formik.handleChange("amount")}
-                onBlur={formik.handleBlur}
                 id="amount"
+                {...register("amount")}
               />
+              <FieldError message={errors.amount?.message} />
             </div>
 
             <p className={"text-[14px] font-normal"}>
@@ -134,9 +139,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
                 className={
                   "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-[11px]"
                 }
-                onClick={() => {
-                  formik.handleSubmit();
-                }}
+                onClick={handleSubmit(onSubmit)}
               >
                 <p className={"text-[16px] font-medium text-white"}>Confirm</p>
               </button>

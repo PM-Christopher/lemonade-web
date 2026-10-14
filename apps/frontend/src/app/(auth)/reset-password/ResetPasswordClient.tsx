@@ -7,12 +7,15 @@ import AuthLayout from "@/components/layouts/AuthLayout";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useResetPasswordMutation } from "@/features/authentication/mutations";
-import { useFormik } from "formik";
-import { resetPasswordSchema } from "@lemonade/validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPasswordSchema, type ResetPasswordInput } from "@lemonade/validation";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
-import { applyFieldErrors, errorMessage } from "@/lib/api-error";
+import { errorMessage } from "@/lib/api-error";
+import { applyServerErrors } from "@/lib/form-errors";
+import { FieldError } from "@/components/global/FieldError";
 
 export default function ResetPasswordPage() {
   const { push } = useNavigation();
@@ -20,19 +23,18 @@ export default function ResetPasswordPage() {
   const resetPasswordMutation = useResetPasswordMutation();
   const loading = resetPasswordMutation.isPending;
 
-  const formik = useFormik({
-    initialValues: {
-      password: "",
-      confirm_password: "",
-    },
-    validationSchema: resetPasswordSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await onSignup(values);
-    },
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid, isDirty },
+  } = useForm<ResetPasswordInput>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: { password: "", confirm_password: "" },
+    mode: "onTouched",
   });
 
-  const onSignup = async (values: { password: string; confirm_password: string }) => {
+  const onSubmit = (values: ResetPasswordInput) => {
     resetPasswordMutation.mutate(
       { password: values.password, confirm_password: values.confirm_password },
       {
@@ -48,7 +50,7 @@ export default function ResetPasswordPage() {
         },
         onError: (error) => {
           // Field problems show under the field; anything else as a toast.
-          if (applyFieldErrors(error, ["password", "confirm_password"], formik.setFieldError))
+          if (applyServerErrors(error, setError, ["password", "confirm_password"]))
             return;
           dispatch(
             updateToastifyReducer({
@@ -65,7 +67,7 @@ export default function ResetPasswordPage() {
   return (
     <AuthLayout>
       <form
-        onSubmit={formik.handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
       >
         <div className="tablet:flex hidden w-[400px] shrink-0 flex-col">
@@ -92,16 +94,12 @@ export default function ResetPasswordPage() {
                 id="password"
                 type="password"
                 className="form-font bg-light_grey h-12 rounded-xl border-0"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                {...register("password")}
               />
               <span className="text-grey-40 font-sans text-[12px]">
                 Password must be at least 8 character long
               </span>
-              {formik.touched.password && formik.errors.password ? (
-                <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.password}</p>
-              ) : null}
+              <FieldError message={errors.password?.message} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="confirm_password" className="font-label">
@@ -111,23 +109,17 @@ export default function ResetPasswordPage() {
                 id="confirm_password"
                 type="password"
                 className="form-font bg-light_grey h-12 rounded-xl border-0"
-                value={formik.values.confirm_password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                {...register("confirm_password")}
               />
-              {formik.touched.confirm_password && formik.errors.confirm_password ? (
-                <p className="text-left text-[12px] text-[#FF8D8D]">
-                  {formik.errors.confirm_password}
-                </p>
-              ) : null}
+              <FieldError message={errors.confirm_password?.message} />
             </div>
             <Button
               type="submit"
-              disabled={loading || !formik.isValid || !formik.dirty}
+              disabled={loading || !isValid || !isDirty}
               aria-busy={loading}
-              aria-disabled={loading || !formik.isValid}
+              aria-disabled={loading || !isValid}
               className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 ${
-                loading || !formik.isValid
+                loading || !isValid
                   ? "cursor-not-allowed bg-green-700 opacity-90"
                   : "bg-gradient-green hover:brightness-110 active:scale-[0.98]"
               } `}

@@ -1,14 +1,15 @@
 "use client";
 import React from "react";
 import { Card, CardContent, CardHeader } from "@lemonade/ui";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 
 import { authApi } from "@/features/authentication/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { checkError } from "@lemonade/domain";
-import { useFormik } from "formik";
-import { skillsInterestsSchema } from "@lemonade/validation";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { skillsInterestsSchema, type SkillsInterestsInput } from "@lemonade/validation";
+import { FieldError } from "@/components/global/FieldError";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { errorMessage } from "@/lib/api-error";
 
@@ -17,11 +18,6 @@ interface SkillsInterface {
   next_step: () => void;
   prev_step: () => void;
 }
-
-type FormValues = {
-  skills: string[];
-  interests: string[];
-};
 
 const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
   const dispatch = useAppDispatch();
@@ -44,48 +40,31 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
     "Marketing",
   ];
 
-  const handleSkillsClick = (item: string) => {
-    const currentSkills = formik?.values?.skills;
-    // Check if currentSkills is an array and then safely update it
-    if (Array.isArray(currentSkills)) {
-      const updatedSkills = currentSkills.includes(item)
-        ? currentSkills.filter((i) => i !== item) // Remove if already in the array
-        : [...currentSkills, item]; // Add if not in the array
-      formik.setFieldValue("skills", updatedSkills);
-    } else {
-      // If currentSkills is not an array (which shouldn't happen if initialValues is set correctly)
-      console.error("skills is not an array:", currentSkills);
-    }
-  };
-
-  const handleInterestClick = (item: string) => {
-    const currentInterests = formik?.values?.interests;
-    // Check if currentInterests is an array and then safely update it
-    if (Array.isArray(currentInterests)) {
-      const updatedInterests = currentInterests.includes(item)
-        ? currentInterests.filter((i) => i !== item) // Remove if already in the array
-        : [...currentInterests, item]; // Add if not in the array
-      formik.setFieldValue("interests", updatedInterests);
-    } else {
-      // If currentInterests is not an array (which shouldn't happen if initialValues is set correctly)
-      console.error("interests is not an array:", currentInterests);
-    }
-  };
-
-  //form validation
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      skills: [],
-      interests: [],
-    },
-    validationSchema: skillsInterestsSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await skillsStep(values);
-    },
+  const {
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<SkillsInterestsInput>({
+    resolver: zodResolver(skillsInterestsSchema),
+    defaultValues: { skills: [], interests: [] },
+    mode: "onChange",
   });
+  const values = useWatch({ control });
+  const selectedSkills = values.skills ?? [];
+  const selectedInterests = values.interests ?? [];
 
-  const skillsStep = async (values: FormValues) => {
+  // Clicking an item adds it, clicking again removes it.
+  const toggleItem = (list: string[], item: string) =>
+    list.includes(item) ? list.filter((i) => i !== item) : [...list, item];
+
+  const handleSkillsClick = (item: string) =>
+    setValue("skills", toggleItem(selectedSkills, item), { shouldValidate: true });
+
+  const handleInterestClick = (item: string) =>
+    setValue("interests", toggleItem(selectedInterests, item), { shouldValidate: true });
+
+  const onSubmit = async (values: SkillsInterestsInput) => {
     dispatch(authStart());
 
     try {
@@ -106,7 +85,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
@@ -132,7 +111,7 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
               <div
                 key={idx}
                 className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
-                  Array.isArray(formik.values.skills) && formik.values.skills.includes(item)
+                  selectedSkills.includes(item)
                     ? "bg-gradient-green text-white"
                     : "bg-light_grey"
                 }`}
@@ -142,16 +121,14 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
               </div>
             ))}
           </div>
-          {checkError("skills", formik) ? (
-            <p className="text-[12px] text-[#FF8D8D]">{formik.errors.skills}</p>
-          ) : null}
+          <FieldError message={errors.skills?.message} />
           <div className="mt-2">
             <p className="font-sans text-[18px] font-semibold">Interests</p>
           </div>
           <div className="grid grid-cols-[repeat(4,auto)] gap-3">
             {interests.map((item, idx) => (
               <div
-                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
+                className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${selectedInterests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
                 key={idx}
                 onClick={() => handleInterestClick(item)}
               >
@@ -159,15 +136,13 @@ const SkillStep: React.FC<SkillsInterface> = ({ next_step }) => {
               </div>
             ))}
           </div>
-          {checkError("interests", formik) ? (
-            <p className="text-[12px] text-[#FF8D8D]">{formik.errors.interests}</p>
-          ) : null}
+          <FieldError message={errors.interests?.message} />
         </CardContent>
         <CardContent className="mt-4 flex flex-col space-y-2 p-0">
-          <FormikButton
-            loading={formik.isSubmitting}
+          <SubmitButton
+            loading={isSubmitting}
             title="Next"
-            error={formik.isValid}
+            isValid={isValid}
             classes="w-full h-12 rounded-xl"
           />
         </CardContent>

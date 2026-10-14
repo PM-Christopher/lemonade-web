@@ -7,9 +7,12 @@ import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/
 import { useAppDispatch } from "@/redux/hook";
 
 import { useSelector } from "react-redux";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { bankAccountSchema, type BankAccountInput } from "@/features/settings/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { resetEventState } from "@/features/events/event.slice";
 import { useCreateEventMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -38,67 +41,73 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
   const createEventMutation = useCreateEventMutation();
   const verifyAccountMutation = useVerifyAccountMutation();
 
-  const createEventSchema = yup.object({
-    bank_name: yup.string().required(),
-    account_number: yup.string().required(),
-    account_name: yup.string().required(),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError: setFormError,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<BankAccountInput>({
+    resolver: zodResolver(bankAccountSchema),
+    defaultValues: {
       bank_name: "",
       account_number: "",
       account_name: "",
     },
-    validationSchema: createEventSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      // Find the selected bank by matching the code
-      const selectedBank = banks.find((bank) => bank.code === values.bank_name);
-      if (!selectedBank) {
-        setError("Select a bank");
-        return;
-      }
-      const data = {
-        event,
-        tickets: newTickets,
-        bank: {
-          bank_name: selectedBank.name,
-          account_name: values.account_name,
-          account_number: values.account_number,
-        },
-      };
-      createEventMutation.mutate(data, {
-        onSuccess: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Event created successfully",
-              type: "success",
-            }),
-          );
-          dispatch(resetEventState());
-          push(routes.EVENT);
-        },
-        onError: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error creating event",
-              type: "error",
-            }),
-          );
-        },
-      });
-    },
+    mode: "onTouched",
   });
+
+  const values = watch();
+
+  const onSubmit = (formValues: BankAccountInput) => {
+    // Find the selected bank by matching the code
+    const selectedBank = banks.find((bank) => bank.code === formValues.bank_name);
+    if (!selectedBank) {
+      setError("Select a bank");
+      return;
+    }
+    const data = {
+      event,
+      tickets: newTickets,
+      bank: {
+        bank_name: selectedBank.name,
+        account_name: formValues.account_name,
+        account_number: formValues.account_number,
+      },
+    };
+    createEventMutation.mutate(data, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Event created successfully",
+            type: "success",
+          }),
+        );
+        dispatch(resetEventState());
+        push(routes.EVENT);
+      },
+      onError: (error) => {
+        if (applyServerErrors(error, setFormError, ["bank_name", "account_number", "account_name"]))
+          return;
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Error creating event",
+            type: "error",
+          }),
+        );
+      },
+    });
+  };
 
   const getAccount = () => {
     verifyAccountMutation.mutate(
       { bankCode, accountNumber },
       {
         onSuccess: (result) => {
-          formik.setFieldValue("account_name", result.account_name);
+          setValue("account_name", result.account_name, { shouldValidate: true });
         },
         onError: () => {
           setError("Invalid account details");
@@ -123,7 +132,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Bank Account"}</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="laptop:h-full laptop:w-[640px] h-screen w-full rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -135,10 +144,10 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                 </p>
               </div>
               <div>
-                <FormikButton
+                <SubmitButton
                   title="Submit"
-                  error={formik.isValid}
-                  loading={formik.isSubmitting}
+                  isValid={isValid}
+                  loading={isSubmitting}
                   classes="w-full h-12 rounded-xl px-3.5 p-2.5 rounded-xl border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                 />
               </div>
@@ -152,12 +161,12 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   Bank Name
                 </Label>
                 <select
-                  value={formik.values.bank_name}
                   className="form-font bg-light_grey h-12 w-full rounded-xl border-0 p-2"
-                  onChange={(e) => {
-                    setBankCode(e.target.value);
-                    formik.setFieldValue("bank_name", e.target.value);
-                  }}
+                  {...register("bank_name", {
+                    onChange: (e) => {
+                      setBankCode(e.target.value);
+                    },
+                  })}
                 >
                   {loading ? (
                     <option>Loading...</option>
@@ -173,6 +182,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                     </>
                   )}
                 </select>
+                <FieldError message={errors.bank_name?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
@@ -186,16 +196,17 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   type="text"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  value={formik.values.account_number}
+                  value={values.account_number}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (/^\d*$/.test(value)) {
                       setAccountNumber(value);
-                      formik.setFieldValue("account_number", value);
+                      setValue("account_number", value, { shouldValidate: true, shouldTouch: true });
                     }
                   }}
                   maxLength={10}
                 />
+                <FieldError message={errors.account_number?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
@@ -210,8 +221,9 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
                   readOnly={true}
-                  value={formik.values.account_name}
+                  value={values.account_name}
                 />
+                <FieldError message={errors.account_name?.message} />
               </div>
             </div>
           </div>

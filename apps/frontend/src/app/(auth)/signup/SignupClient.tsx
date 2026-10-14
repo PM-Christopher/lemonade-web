@@ -2,13 +2,15 @@
 import React from "react";
 import { useCookies } from "react-cookie";
 import { useAppDispatch } from "@/redux/hook";
-import { checkError } from "@lemonade/domain";
-import { useFormik } from "formik";
-import { signupSchema } from "@lemonade/validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema, type SignupInput } from "@lemonade/validation";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 import { signup } from "@/features/authentication/authApi";
 import { Card, CardContent, CardFooter, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -59,20 +61,28 @@ export default function SignupPage() {
     setTermOpen(!termOpen);
   };
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
       email: "",
       fullname: "",
       password: "",
       // Prefill from ?referral=CODE; still editable.
       referral_code: getQueryParam("referral") ?? "",
     },
-    validationSchema: signupSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await signup({ ...values }, dispatch, { push }, setCookie);
-    },
+    mode: "onTouched",
   });
+
+  const onSubmit = async (values: SignupInput) => {
+    await signup({ ...values }, dispatch, { push }, setCookie, (error) =>
+      applyServerErrors(error, setError, ["fullname", "email", "password", "referral_code"]),
+    );
+  };
 
   // Google sign-up: resume onboarding, or go home when the account is already finished.
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
@@ -132,7 +142,7 @@ export default function SignupPage() {
               Join the network of diverse pool of talents.
             </p>
           </div>
-          <form onSubmit={formik.handleSubmit} className="w-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             {/* p-0 on content/footer — Card already owns padding; default Card* p-6 left empty space. */}
             <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
               <CardContent className="grid gap-4 p-0">
@@ -147,14 +157,10 @@ export default function SignupPage() {
                     id="fullname"
                     type="text"
                     placeholder="e.g. Jane Doe"
-                    value={formik.values.fullname}
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    {...register("fullname")}
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
-                  {checkError("fullname", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.fullname}</p>
-                  ) : null}
+                  <FieldError message={errors.fullname?.message} />
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -167,14 +173,10 @@ export default function SignupPage() {
                     id="email"
                     type="email"
                     placeholder="e.g. Janedoe@example.com"
-                    value={formik.values.email}
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    {...register("email")}
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
-                  {checkError("email", formik) ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
-                  ) : null}
+                  <FieldError message={errors.email?.message} />
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -186,14 +188,12 @@ export default function SignupPage() {
                   <Input
                     id="password"
                     type="password"
-                    value={formik.values.password}
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    {...register("password")}
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
 
-                  {checkError("password", formik) ? (
-                    <p className="text-meta text-[#FF8D8D]">{formik.errors.password}</p>
+                  {errors.password ? (
+                    <FieldError message={errors.password.message} />
                   ) : (
                     <p className="text-meta text-text-grey">
                       Password must be at least 8 character long
@@ -211,16 +211,14 @@ export default function SignupPage() {
                     id="referral_code"
                     type="text"
                     placeholder="e.g. ABC123XYZ"
-                    value={formik.values.referral_code}
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    {...register("referral_code")}
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
                   />
                 </div>
-                <FormikButton
-                  loading={formik.isSubmitting}
+                <SubmitButton
+                  loading={isSubmitting}
                   title="Create account"
-                  error={formik.isValid}
+                  isValid={isValid}
                   classes="w-full h-12 rounded-xl"
                 />
                 <div className="flex items-center gap-3">

@@ -4,8 +4,15 @@ import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  sendConnectInviteSchema,
+  type SendConnectInviteInput,
+} from "@/features/connect/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -24,22 +31,20 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
   const user = users[currentIndex];
   const distance = formatDistanceAway(user?.distance_km);
-  const connectSchema = yup.object({
-    message: yup.string(),
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<SendConnectInviteInput>({
+    resolver: zodResolver(sendConnectInviteSchema),
+    defaultValues: { message: "" },
+    mode: "onTouched",
   });
 
-  const formik = useFormik({
-    initialValues: {
-      message: "",
-    },
-    validationSchema: connectSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      sendConnect(values);
-    },
-  });
-
-  const sendConnect = (values: { message: string }) => {
+  const onSubmit = (values: SendConnectInviteInput) => {
     sendInviteMutation.mutate(
       { ...values, invitee_id: user.id },
       {
@@ -51,10 +56,11 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
               type: "success",
             }),
           );
-          formik.resetForm();
+          reset();
           toggle();
         },
-        onError: (err: { message?: string }) => {
+        onError: (err: Error) => {
+          if (applyServerErrors(err, setError, ["message"])) return;
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -62,7 +68,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
               type: "error",
             }),
           );
-          formik.resetForm();
+          reset();
         },
       },
     );
@@ -92,7 +98,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Connect"}</DialogTitle>
         <form
-          onSubmit={formik.handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="hide-scrollbar laptop:h-auto laptop:max-h-[90vh] laptop:w-[480px] laptop:scale-95 laptop:rounded-2xl h-screen w-screen scale-100 transform overflow-y-auto rounded-none bg-white p-6 shadow-2xl transition-all duration-300 hover:scale-100"
         >
           {/* Header */}
@@ -145,22 +151,21 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
                   </div>
                   <textarea
                     id="message"
-                    name="message"
-                    onChange={formik.handleChange}
-                    value={formik.values.message}
                     placeholder="Write a short friendly invite..."
                     className="bg-light_grey h-[120px] w-full resize-none rounded-xl border-0 p-3 px-4 text-sm text-gray-700 transition-all outline-none focus:ring-2 focus:ring-green-400"
+                    {...register("message")}
                   />
+                  <FieldError message={errors.message?.message} />
                 </div>
 
                 {/* Send Button */}
                 <div className="mt-6 w-full">
-                  <Button
-                    type="submit"
-                    className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl transition-all hover:brightness-110"
-                  >
-                    <p className="text-[16px] font-medium">Send Invite</p>
-                  </Button>
+                  <SubmitButton
+                    title="Send Invite"
+                    loading={isSubmitting}
+                    isValid={isValid}
+                    classes="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl transition-all hover:brightness-110"
+                  />
                 </div>
               </>
             )}

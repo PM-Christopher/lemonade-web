@@ -3,8 +3,11 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
 
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { updateBusinessSchema, type UpdateBusinessInput } from "@/features/business/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 import { useBusinessQuery } from "@/features/business/queries";
 import { useBusinessCategoriesQuery } from "@/features/shared/queries";
 import { useUpdateListingMutation } from "@/features/business/mutations";
@@ -20,27 +23,13 @@ import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import MessageIcon from "@/images/icons/messageIcon.svg";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import MainLayout from "@/components/layouts/MainLayout";
+import { errorMessage } from "@/lib/api-error";
 
 interface businessCategories {
   value: string;
   label: string;
-}
-
-interface FormValues {
-  services: string[];
-  image: string;
-  name: string;
-  categories: string[];
-  description: string;
-  city: string;
-  country: string;
-  service_rate: number;
-  gallery: string[];
-  email: string;
-  phone_number: string;
-  website_url: string;
 }
 
 const EditBusinessClient = ({ id }: { id: number }) => {
@@ -66,50 +55,18 @@ const EditBusinessClient = ({ id }: { id: number }) => {
     }));
   }, [categories]);
 
-  const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputValue.trim() !== "") {
-      if (!formik.values.services.includes(inputValue.trim())) {
-        // Update Formik field for services
-        formik.setFieldValue("services", [...formik.values.services, inputValue.trim()]);
-      }
-      setInputValue(""); // Clear input field
-    }
-  };
-
-  const removeService = (serviceToRemove: string) => {
-    // Remove service and update Formik field
-    const updatedServices = formik.values.services.filter((service) => service !== serviceToRemove);
-    formik.setFieldValue("services", updatedServices);
-  };
-
-  const editBusinessSchema = yup.object({
-    image: yup.string().required("Business image is required"),
-    name: yup.string().required("Business name is required"),
-    categories: yup
-      .array()
-      .of(yup.string())
-      .required("Categories is required")
-      .min(1, "At least one category is required"),
-    description: yup.string().required("Description is required"),
-    city: yup.string().required("City is required"),
-    country: yup.string().required("Country is required"),
-    services: yup
-      .array()
-      .of(yup.string())
-      .required("Services is required")
-      .min(1, "At least one service is required"),
-    service_rate: yup.number().nullable(),
-    gallery: yup.array().of(yup.string()).required("Portfolio gallery is required"),
-    email: yup.string().email().required("Email is required"),
-    phone_number: yup.string().required("Phone number is required"),
-    website_url: yup
-      .string()
-      .url("Website must be a valid URL")
-      .required("Website url is required"),
-  });
-
-  const formik = useFormik<FormValues>({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    setError,
+    reset,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<UpdateBusinessInput>({
+    resolver: zodResolver(updateBusinessSchema),
+    defaultValues: {
       image: "",
       name: "",
       categories: [],
@@ -117,56 +74,103 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       city: "",
       country: "",
       services: [],
-      service_rate: 0,
+      service_rate: "",
       gallery: [],
       email: "",
       phone_number: "",
       website_url: "",
     },
-    validationSchema: editBusinessSchema,
-    validateOnMount: true,
-    onSubmit: (values) => {
-      updateListingMutation.mutate(values, {
-        onSuccess: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "business updated",
-              type: "success",
-            }),
-          );
-          push(routes.BUSINESS);
-        },
-        onError: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Error adding business",
-              type: "error",
-            }),
-          );
-        },
-      });
-    },
+    mode: "onTouched",
   });
 
-  const { setFieldValue } = formik;
-  useEffect(() => {
-    if (data?.business) {
-      setFieldValue("image", data?.business?.image);
-      setFieldValue("name", data?.business?.name);
-      setFieldValue("categories", data?.business?.categories);
-      setFieldValue("description", data?.business?.description);
-      setFieldValue("city", data?.business?.city);
-      setFieldValue("country", data?.business?.country);
-      setFieldValue("services", data?.business?.services);
-      setFieldValue("service_rate", data?.business?.service_rate);
-      setFieldValue("gallery", data?.business?.gallery);
-      setFieldValue("email", data?.business?.email);
-      setFieldValue("phone_number", data?.business?.phone_number);
-      setFieldValue("website_url", data?.business?.website_url);
+  const services = watch("services");
+  const gallery = watch("gallery");
+  const fieldAdapter = {
+    setFieldValue: (field: string, value: unknown) =>
+      setValue(field as keyof UpdateBusinessInput, value as never, { shouldValidate: true }),
+  };
+
+  const addService = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue.trim() !== "") {
+      e.preventDefault();
+      if (!services.includes(inputValue.trim())) {
+        setValue("services", [...services, inputValue.trim()], { shouldValidate: true });
+      }
+      setInputValue("");
     }
-  }, [data?.business, setFieldValue]);
+  };
+
+  const removeService = (serviceToRemove: string) => {
+    setValue(
+      "services",
+      services.filter((service) => service !== serviceToRemove),
+      { shouldValidate: true },
+    );
+  };
+
+  useEffect(() => {
+    if (!data?.business) return;
+    // API returns service_rate in minor units; keep existing prefill (no /100) for edit continuity.
+    const rate = data.business.service_rate;
+    reset({
+      image: data.business.image ?? "",
+      name: data.business.name ?? "",
+      categories: data.business.categories ?? [],
+      description: data.business.description ?? "",
+      city: data.business.city ?? "",
+      country: data.business.country ?? "",
+      services: data.business.services ?? [],
+      service_rate: rate != null && rate !== undefined ? String(rate) : "",
+      gallery: data.business.gallery ?? [],
+      email: data.business.email ?? "",
+      phone_number: data.business.phone_number ?? "",
+      website_url: data.business.website_url ?? "",
+    });
+  }, [data?.business, reset]);
+
+  const onSubmit = async (values: UpdateBusinessInput) => {
+    const rate = values.service_rate?.replace(/,/g, "") ?? "";
+    try {
+      await updateListingMutation.mutateAsync({
+        ...values,
+        service_rate: rate === "" ? null : Number(rate),
+      });
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "business updated",
+          type: "success",
+        }),
+      );
+      push(routes.BUSINESS);
+    } catch (err) {
+      if (
+        applyServerErrors(err, setError, [
+          "image",
+          "name",
+          "categories",
+          "description",
+          "city",
+          "country",
+          "services",
+          "service_rate",
+          "gallery",
+          "email",
+          "phone_number",
+          "website_url",
+        ])
+      ) {
+        return;
+      }
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: errorMessage(err, "Error adding business"),
+          type: "error",
+        }),
+      );
+    }
+  };
 
   return (
     <MainLayout>
@@ -181,7 +185,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
           </div>
         </div>
         <section className="laptop:mt-4 mt-0 flex flex-col items-center">
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="laptop:mt-10 laptop:w-[640px] mt-0 flex w-full flex-col rounded-xl bg-white p-12">
               <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                 BUSINESS DETAILS
@@ -189,13 +193,11 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <SingleFileUploader
                 length="single"
                 type="business"
-                setField={formik}
+                setField={fieldAdapter}
                 image={data?.business?.image}
                 title="Upload business image"
               />
-              {formik.errors.image ? (
-                <p className="text-[12px] text-[#FF8D8D]">{formik.errors.image}</p>
-              ) : null}
+              <FieldError message={errors.image?.message} />
               <div className="mt-6 grid gap-2">
                 <Label
                   htmlFor="business_name"
@@ -208,53 +210,44 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   type="text"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  name="business_name"
-                  value={formik.values.name}
-                  onChange={(e) => {
-                    formik.setFieldValue("name", e.target.value);
-                  }}
+                  {...register("name")}
                 />
-                {formik.errors.name ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.name}</p>
-                ) : null}
+                <FieldError message={errors.name?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
-                  htmlFor="fullname"
+                  htmlFor="categories"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Business category
                 </Label>
-                <MultiSelect
-                  options={frameworksList}
-                  onValueChange={(values) => {
-                    formik.setFieldValue("categories", values);
-                  }}
-                  defaultValue={selectedFrameworks}
-                  placeholder="Select Category"
-                  className="form-font bg-light_grey h-12 rounded-xl border-0 shadow-none"
+                <Controller
+                  name="categories"
+                  control={control}
+                  render={({ field }) => (
+                    <MultiSelect
+                      options={frameworksList}
+                      onValueChange={field.onChange}
+                      defaultValue={selectedFrameworks}
+                      placeholder="Select Category"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0 shadow-none"
+                    />
+                  )}
                 />
-                {formik.errors.categories ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.categories}</p>
-                ) : null}
+                <FieldError message={errors.categories?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
-                  htmlFor="fullname"
+                  htmlFor="description"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Business description
                 </Label>
                 <textarea
                   className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
-                  value={formik.values.description}
-                  onChange={(e) => {
-                    formik.setFieldValue("description", e.target.value);
-                  }}
+                  {...register("description")}
                 ></textarea>
-                {formik.errors.description ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.description}</p>
-                ) : null}
+                <FieldError message={errors.description?.message} />
               </div>
               <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 BUSINESS ADDRESS
@@ -271,14 +264,9 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   type="text"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  value={formik.values.city}
-                  onChange={(e) => {
-                    formik.setFieldValue("city", e.target.value);
-                  }}
+                  {...register("city")}
                 />
-                {formik.errors.city ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
-                ) : null}
+                <FieldError message={errors.city?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
@@ -290,10 +278,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 <select
                   id="country"
                   className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                  value={formik.values.country}
-                  onChange={(e) => {
-                    formik.setFieldValue("country", e.target.value);
-                  }}
+                  {...register("country")}
                 >
                   <option value="">Select country</option>
                   {CountryList.getAll().map((country, index) => (
@@ -302,9 +287,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     </option>
                   ))}
                 </select>
-                {formik.errors.country ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
-                ) : null}
+                <FieldError message={errors.country?.message} />
               </div>
               <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
                 SERVICE DETAILS
@@ -325,14 +308,12 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={addService}
                 />
-                {formik.errors.services ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.services}</p>
-                ) : null}
+                <FieldError message={errors.services?.message} />
                 <p className="text-text-grey my-[5px] text-[12px]">
                   Click <i>enter</i> to add service
                 </p>
                 <div className="mt-2 flex flex-wrap gap-1">
-                  {formik.values.services.map((service, index) => (
+                  {services.map((service, index) => (
                     <div
                       className="bg-grey-20 flex items-center gap-2 rounded-[8px] p-2 px-3"
                       key={index}
@@ -348,21 +329,20 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
-                  htmlFor="city"
+                  htmlFor="service_rate"
                   className="text-text-grey font-sans text-[14px] leading-[16.8px] font-normal"
                 >
                   Service Rate (Optional)
                 </Label>
                 <Input
-                  id="city"
+                  id="service_rate"
                   type="text"
+                  inputMode="decimal"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  value={formik.values.service_rate}
-                  onChange={(e) => {
-                    formik.setFieldValue("service_rate", e.target.value);
-                  }}
+                  {...register("service_rate")}
                 />
+                <FieldError message={errors.service_rate?.message} />
               </div>
               <p className="text-text-grey mt-6 text-[14px] font-normal">
                 Portfolio gallery <span>(Optional)</span>
@@ -370,8 +350,8 @@ const EditBusinessClient = ({ id }: { id: number }) => {
               <MultipleFileUploader
                 length="multiple"
                 type="business"
-                setField={formik}
-                images={formik.values.gallery}
+                setField={fieldAdapter}
+                images={gallery}
                 title="Upload multiple images"
               />
               <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
@@ -384,20 +364,15 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </div>
                   <div className="w-full">
                     <input
-                      id="search"
+                      id="email"
                       type="text"
                       className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Email address"
-                      value={formik.values.email}
-                      onChange={(e) => {
-                        formik.setFieldValue("email", e.target.value);
-                      }}
+                      {...register("email")}
                     />
                   </div>
                 </div>
-                {formik.errors.email ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.email}</p>
-                ) : null}
+                <FieldError message={errors.email?.message} />
               </div>
               <div className="grid grid-cols-1">
                 <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
@@ -406,20 +381,15 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </div>
                   <div className="w-full">
                     <input
-                      id="search"
+                      id="phone_number"
                       type="text"
                       className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Phone number"
-                      value={formik.values.phone_number}
-                      onChange={(e) => {
-                        formik.setFieldValue("phone_number", e.target.value);
-                      }}
+                      {...register("phone_number")}
                     />
                   </div>
                 </div>
-                {formik.errors.phone_number ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.phone_number}</p>
-                ) : null}
+                <FieldError message={errors.phone_number?.message} />
               </div>
               <div className="grid grid-cols-1">
                 <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
@@ -428,25 +398,20 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                   </div>
                   <div className="w-full">
                     <input
-                      id="search"
+                      id="website_url"
                       type="text"
                       className="bg-light_grey w-full rounded-xl border-0 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                       placeholder="Website URL"
-                      value={formik.values.website_url}
-                      onChange={(e) => {
-                        formik.setFieldValue("website_url", e.target.value);
-                      }}
+                      {...register("website_url")}
                     />
                   </div>
                 </div>
-                {formik.errors.website_url ? (
-                  <p className="text-[12px] text-[#FF8D8D]">{formik.errors.website_url}</p>
-                ) : null}
+                <FieldError message={errors.website_url?.message} />
               </div>
-              <FormikButton
+              <SubmitButton
                 title="Save changes"
-                error={formik.isValid}
-                loading={formik.isSubmitting}
+                isValid={isValid}
+                loading={isSubmitting}
                 classes="mt-8 h-12 p-3.5 px-12 rounded-xl border border-step-color shadow-custom-bottom"
               />
             </div>

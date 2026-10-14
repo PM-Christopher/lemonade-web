@@ -3,9 +3,14 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 
 import React, { useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  updateEventDetailsSchema,
+  type UpdateEventDetailsInput,
+} from "@/features/events/schema";
+import { applyServerErrors } from "@/lib/form-errors";
 
-import { useFormik } from "formik";
-import * as yup from "yup";
 
 import MainLayout from "@/components/layouts/MainLayout";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -96,59 +101,6 @@ const timeStringToDate = (timeStr: string, base = new Date()) => {
   return d;
 };
 
-const schema = yup.object({
-  event_image: yup.string().required("Image is required"),
-  event_name: yup.string().required("Event name is required"),
-  event_description: yup.string().required("Description is required"),
-  category: yup.string().required("Category is required"),
-  event_type: yup.string().oneOf(["physical", "online"]).required("Event type is required"),
-
-  location: yup.string().when("event_type", {
-    is: "physical",
-    then: (s) => s.required("Location is required"),
-    otherwise: (s) => s.optional(),
-  }),
-
-  hosting_platform: yup.string().when("event_type", {
-    is: "online",
-    then: (s) => s.required("Hosting platform is required"),
-    otherwise: (s) => s.optional(),
-  }),
-
-  meeting_link: yup.string().when("event_type", {
-    is: "online",
-    then: (s) => s.required("Meeting link is required").url("Meeting link must be a valid url"),
-    otherwise: (s) => s.optional(),
-  }),
-
-  meeting_passcode: yup.string().when("event_type", {
-    is: "online",
-    then: (s) => s.required("Meeting passcode is required"),
-    otherwise: (s) => s.optional(),
-  }),
-
-  time_zone: yup.string().required("Time zone is required"),
-  start_date: yup.string().required("Start date is required"),
-  start_time: yup.string().required("Start time is required"),
-  end_date: yup.string().required("End date is required"),
-  end_time: yup.string().required("End time is required"),
-
-  affiliate_program: yup.boolean().required(),
-  commission: yup
-    .number()
-    .transform((val, raw) => (raw === "" ? undefined : val))
-    .when("affiliate_program", {
-      is: true,
-      then: (s) =>
-        s
-          .typeError("Commission must be a number")
-          .required("Commission rate is required")
-          .min(0, "Commission can't be negative")
-          .max(100, "Commission can't exceed 100%"),
-      otherwise: (s) => s.optional(),
-    }),
-});
-
 const buildInitialValues = (event?: EventInterface): EventFormValues => {
   const start = parseDateTime(event?.start_date as string | undefined);
   const end = parseDateTime(event?.end_date as string | undefined);
@@ -187,6 +139,7 @@ const buildInitialValues = (event?: EventInterface): EventFormValues => {
   };
 };
 
+
 const EditEventClient = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
@@ -199,11 +152,9 @@ const EditEventClient = ({ id }: { id: string }) => {
   useEffect(() => {
     if (!Number.isFinite(eventId)) return;
 
-    // ✅ when returning via browser back/forward cache
     const onPageShow = () => refetch();
     window.addEventListener("pageshow", onPageShow);
 
-    // ✅ when tab becomes visible again
     const onVisibility = () => {
       if (!document.hidden) refetch();
     };
@@ -228,81 +179,119 @@ const EditEventClient = ({ id }: { id: string }) => {
     return d;
   }, []);
 
-  const formik = useFormik<EventFormValues>({
-    enableReinitialize: true,
-    initialValues: buildInitialValues(event),
-    validationSchema: schema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      try {
-        const filteredSocials = (Object.keys(values.socials) as Array<keyof SocialMediaHandles>)
-          .filter((key) => Boolean(values.socials[key]))
-          .map((key) => ({ name: key, value: values.socials[key] }));
-
-        const payload = {
-          event: {
-            event_image: values.event_image,
-            event_name: values.event_name,
-            event_description: values.event_description,
-            category: values.category,
-            event_type: values.event_type,
-            location: values.location,
-            hosting_platform: values.hosting_platform,
-            meeting_link: values.meeting_link,
-            meeting_passcode: values.meeting_passcode,
-            time_zone: values.time_zone,
-            start_date: `${values.start_date}T${values.start_time}`,
-            end_date: `${values.end_date}T${values.end_time}`,
-            affiliate_program: values.affiliate_program,
-            commission: values.affiliate_program ? Number(values.commission) / 100 : null,
-            socials: filteredSocials,
-          },
-        };
-
-        await updateEventMutation.mutateAsync(payload);
-
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Event updated successfully",
-            type: "success",
-          }),
-        );
-        push(routes.EVENT);
-      } catch (e) {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: errorMessage(e, "Error updating event"),
-            type: "error",
-          }),
-        );
-      }
-    },
+  const {
+    handleSubmit,
+    setValue,
+    setError,
+    reset,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<UpdateEventDetailsInput>({
+    resolver: zodResolver(updateEventDetailsSchema),
+    defaultValues: buildInitialValues() as UpdateEventDetailsInput,
+    mode: "onTouched",
   });
 
-  const isOnline = formik.values.event_type === "online";
-  const isPhysical = formik.values.event_type === "physical";
-  const affiliateEnabled = Boolean(formik.values.affiliate_program);
+  const values = watch();
+  const fieldAdapter = {
+    setFieldValue: (field: string, value: unknown) =>
+      setValue(field as keyof UpdateEventDetailsInput, value as never, { shouldValidate: true }),
+  };
+
+  useEffect(() => {
+    if (event) {
+      reset(buildInitialValues(event) as UpdateEventDetailsInput);
+    }
+  }, [event, reset]);
+
+  const onSubmit = async (formValues: UpdateEventDetailsInput) => {
+    try {
+      const filteredSocials = (Object.keys(formValues.socials) as Array<keyof SocialMediaHandles>)
+        .filter((key) => Boolean(formValues.socials[key]))
+        .map((key) => ({ name: key, value: formValues.socials[key] }));
+
+      const payload = {
+        event: {
+          event_image: formValues.event_image,
+          event_name: formValues.event_name,
+          event_description: formValues.event_description,
+          category: formValues.category,
+          event_type: formValues.event_type,
+          location: formValues.location,
+          hosting_platform: formValues.hosting_platform,
+          meeting_link: formValues.meeting_link,
+          meeting_passcode: formValues.meeting_passcode,
+          time_zone: formValues.time_zone,
+          start_date: `${formValues.start_date}T${formValues.start_time}`,
+          end_date: `${formValues.end_date}T${formValues.end_time}`,
+          affiliate_program: formValues.affiliate_program,
+          commission: formValues.affiliate_program ? Number(formValues.commission) / 100 : null,
+          socials: filteredSocials,
+        },
+      };
+
+      await updateEventMutation.mutateAsync(payload);
+
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Event updated successfully",
+          type: "success",
+        }),
+      );
+      push(routes.EVENT);
+    } catch (e) {
+      if (
+        applyServerErrors(e, setError, [
+          "event_image",
+          "event_name",
+          "event_description",
+          "category",
+          "event_type",
+          "location",
+          "hosting_platform",
+          "meeting_link",
+          "meeting_passcode",
+          "time_zone",
+          "start_date",
+          "end_date",
+          "commission",
+        ])
+      ) {
+        return;
+      }
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: errorMessage(e, "Error updating event"),
+          type: "error",
+        }),
+      );
+    }
+  };
+
+  const isOnline = values.event_type === "online";
+  const isPhysical = values.event_type === "physical";
+  const affiliateEnabled = Boolean(values.affiliate_program);
 
   const isStartToday =
-    formik.values.start_date &&
-    new Date(formik.values.start_date).toDateString() === now.toDateString();
+    values.start_date &&
+    new Date(values.start_date).toDateString() === now.toDateString();
 
   const startMinTime = isStartToday ? now : startOfDay;
 
   const endMinTime = (() => {
-    if (!formik.values.end_date) return startOfDay;
+    if (!values.end_date) return startOfDay;
 
-    const endIsToday = new Date(formik.values.end_date).toDateString() === now.toDateString();
+    const endIsToday = new Date(values.end_date).toDateString() === now.toDateString();
     const base = endIsToday ? now : startOfDay;
 
     if (
-      formik.values.start_date &&
-      formik.values.end_date === formik.values.start_date &&
-      formik.values.start_time
+      values.start_date &&
+      values.end_date === values.start_date &&
+      values.start_time
     ) {
-      const st = timeStringToDate(formik.values.start_time);
+      const st = timeStringToDate(values.start_time);
       return st > base ? st : base;
     }
 
@@ -329,7 +318,7 @@ const EditEventClient = ({ id }: { id: string }) => {
           {!ready ? (
             <EventFormSkeleton />
           ) : (
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mt-10 flex w-[640px] flex-col rounded-xl bg-white p-12">
                 <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
                   EVENT DETAILS
@@ -338,7 +327,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                 <SingleFileUploader
                   length="single"
                   type="event"
-                  setField={formik}
+                  setField={fieldAdapter}
                   image={event?.event_image}
                   title="Upload event image"
                 />
@@ -353,12 +342,10 @@ const EditEventClient = ({ id }: { id: string }) => {
                   </Label>
                   <Input
                     id="event-name"
-                    name="event_name"
                     type="text"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={formik.values.event_name}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    value={values.event_name}
+                    onChange={(e) => setValue("event_name", e.target.value, { shouldValidate: true })}
                   />
                 </div>
 
@@ -373,9 +360,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <textarea
                     id="event-description"
                     className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
-                    value={formik.values.event_description}
-                    onChange={(e) => formik.setFieldValue("event_description", e.target.value)}
-                    onBlur={formik.handleBlur}
+                    value={values.event_description}
+                    onChange={(e) => setValue("event_description", e.target.value, { shouldValidate: true })}
                   />
                 </div>
 
@@ -391,9 +377,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                     id="event-category"
                     name="category"
                     className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                    value={formik.values.category}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    value={values.category}
+                    onChange={(e) => setValue("category", e.target.value, { shouldValidate: true })}
                   >
                     <option value="">Select category</option>
                     <option value="spirituality">Spirituality</option>
@@ -414,7 +399,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         ? "bg-gradient-green-2 shadow-event-custom"
                         : "bg-light_grey text-text-grey"
                     }`}
-                    onClick={() => formik.setFieldValue("event_type", "physical")}
+                    onClick={() => setValue("event_type", "physical", { shouldValidate: true })}
                   >
                     <LocationIcon />
                     <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
@@ -429,7 +414,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                         ? "bg-gradient-green-2 shadow-event-custom"
                         : "bg-light_grey text-text-grey"
                     }`}
-                    onClick={() => formik.setFieldValue("event_type", "online")}
+                    onClick={() => setValue("event_type", "online", { shouldValidate: true })}
                   >
                     <WebIcon />
                     <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
@@ -451,13 +436,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <LocationIcon />
                       <input
                         id="event-location"
-                        name="location"
                         type="text"
                         className="bg-light_grey w-full rounded-xl border-0 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
-                        value={formik.values.location}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                        value={values.location}
+                    onChange={(e) => setValue("location", e.target.value, { shouldValidate: true })}
                       />
                     </div>
                   </div>
@@ -477,9 +460,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                         id="hosting_platform"
                         name="hosting_platform"
                         className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                        value={formik.values.hosting_platform}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                        value={values.hosting_platform}
+                    onChange={(e) => setValue("hosting_platform", e.target.value, { shouldValidate: true })}
                       >
                         <option value="">Select platform</option>
                         <option value="google-meet">Google Meet</option>
@@ -495,12 +477,10 @@ const EditEventClient = ({ id }: { id: string }) => {
                       </Label>
                       <Input
                         id="meeting_link"
-                        name="meeting_link"
                         type="text"
                         className="form-font bg-light_grey h-12 rounded-xl border-0"
-                        value={formik.values.meeting_link}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                        value={values.meeting_link}
+                    onChange={(e) => setValue("meeting_link", e.target.value, { shouldValidate: true })}
                       />
                     </div>
 
@@ -513,12 +493,10 @@ const EditEventClient = ({ id }: { id: string }) => {
                       </Label>
                       <Input
                         id="meeting_passcode"
-                        name="meeting_passcode"
                         type="text"
                         className="form-font bg-light_grey h-12 rounded-xl border-0"
-                        value={formik.values.meeting_passcode}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                        value={values.meeting_passcode}
+                    onChange={(e) => setValue("meeting_passcode", e.target.value, { shouldValidate: true })}
                       />
                     </div>
                   </>
@@ -536,9 +514,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                     id="time_zone"
                     name="time_zone"
                     className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                    value={formik.values.time_zone}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    value={values.time_zone}
+                    onChange={(e) => setValue("time_zone", e.target.value, { shouldValidate: true })}
                   >
                     <option value="">Select time zone</option>
                     {timeZones.map((tz, idx) => (
@@ -561,10 +538,12 @@ const EditEventClient = ({ id }: { id: string }) => {
                         <CalendarIcon />
                         <DatePicker
                           selected={
-                            formik.values.start_date ? new Date(formik.values.start_date) : null
+                            values.start_date ? new Date(values.start_date) : null
                           }
                           onChange={(date: Date | null) => {
-                            formik.setFieldValue("start_date", date ? toISODate(date) : "");
+                            setValue("start_date", date ? toISODate(date) : "", {
+                              shouldValidate: true,
+                            });
                           }}
                           minDate={now}
                           dateFormat="yyyy-MM-dd"
@@ -572,9 +551,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                           placeholderText="From"
                         />
                       </div>
-                      {formik.touched.start_date && formik.errors.start_date && (
+                      {errors.start_date?.message && (
                         <p className="text-left text-[12px] text-[#FF8D8D]">
-                          {formik.errors.start_date}
+                          {errors.start_date?.message}
                         </p>
                       )}
                     </div>
@@ -584,14 +563,14 @@ const EditEventClient = ({ id }: { id: string }) => {
                         <ClockIcon />
                         <DatePicker
                           selected={
-                            formik.values.start_time
-                              ? timeStringToDate(formik.values.start_time)
+                            values.start_time
+                              ? timeStringToDate(values.start_time)
                               : null
                           }
                           onChange={(date: Date | null) => {
                             if (!date) return;
                             const t = date.toTimeString().slice(0, 5);
-                            formik.setFieldValue("start_time", t);
+                            setValue("start_time", t, { shouldValidate: true });
                           }}
                           showTimeSelect
                           showTimeSelectOnly
@@ -604,9 +583,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                           maxTime={endOfDay}
                         />
                       </div>
-                      {formik.touched.start_time && formik.errors.start_time && (
+                      {errors.start_time?.message && (
                         <p className="text-left text-[12px] text-[#FF8D8D]">
-                          {formik.errors.start_time}
+                          {errors.start_time?.message}
                         </p>
                       )}
                     </div>
@@ -625,22 +604,24 @@ const EditEventClient = ({ id }: { id: string }) => {
                         <CalendarIcon />
                         <DatePicker
                           selected={
-                            formik.values.end_date ? new Date(formik.values.end_date) : null
+                            values.end_date ? new Date(values.end_date) : null
                           }
                           onChange={(date: Date | null) => {
-                            formik.setFieldValue("end_date", date ? toISODate(date) : "");
+                            setValue("end_date", date ? toISODate(date) : "", {
+                              shouldValidate: true,
+                            });
                           }}
                           minDate={
-                            formik.values.start_date ? new Date(formik.values.start_date) : now
+                            values.start_date ? new Date(values.start_date) : now
                           }
                           dateFormat="yyyy-MM-dd"
                           placeholderText="End Date"
                           className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
-                      {formik.touched.end_date && formik.errors.end_date && (
+                      {errors.end_date?.message && (
                         <p className="text-left text-[12px] text-[#FF8D8D]">
-                          {formik.errors.end_date}
+                          {errors.end_date?.message}
                         </p>
                       )}
                     </div>
@@ -650,12 +631,12 @@ const EditEventClient = ({ id }: { id: string }) => {
                         <ClockIcon />
                         <DatePicker
                           selected={
-                            formik.values.end_time ? timeStringToDate(formik.values.end_time) : null
+                            values.end_time ? timeStringToDate(values.end_time) : null
                           }
                           onChange={(date: Date | null) => {
                             if (!date) return;
                             const t = date.toTimeString().slice(0, 5);
-                            formik.setFieldValue("end_time", t);
+                            setValue("end_time", t, { shouldValidate: true });
                           }}
                           showTimeSelect
                           showTimeSelectOnly
@@ -668,9 +649,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                           className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:ring-0 focus:outline-none"
                         />
                       </div>
-                      {formik.touched.end_time && formik.errors.end_time && (
+                      {errors.end_time?.message && (
                         <p className="text-left text-[12px] text-[#FF8D8D]">
-                          {formik.errors.end_time}
+                          {errors.end_time?.message}
                         </p>
                       )}
                     </div>
@@ -692,13 +673,13 @@ const EditEventClient = ({ id }: { id: string }) => {
                         Enable Affiliate program
                       </p>
                       <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
-                        Affiliates will earn {formik.values.commission || 0}% per ticket sale
+                        Affiliates will earn {values.commission || 0}% per ticket sale
                       </p>
                     </div>
                   </div>
 
                   <Switch
-                    onChange={(v) => formik.setFieldValue("affiliate_program", v)}
+                    onChange={(v) => setValue("affiliate_program", v, { shouldValidate: true })}
                     checked={affiliateEnabled}
                     checkedIcon={false}
                     uncheckedIcon={false}
@@ -716,12 +697,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                     </Label>
                     <Input
                       id="commission"
-                      name="commission"
                       type="text"
                       inputMode="decimal" // mobile shows numeric keypad
                       autoComplete="off"
                       className="form-font bg-light_grey h-12 rounded-xl border-0"
-                      value={formik.values.commission}
+                      value={values.commission}
                       onChange={(e) => {
                         // allow only digits and at most one dot
                         let v = e.target.value;
@@ -735,9 +715,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                           v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, "");
                         }
 
-                        formik.setFieldValue("commission", v);
+                        setValue("commission", v, { shouldValidate: true });
                       }}
-                      onBlur={formik.handleBlur}
                       onKeyDown={(e) => {
                         // hard-block scientific notation keys
                         if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
@@ -748,9 +727,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                     <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
                       Commission will be based on the per ticket sold
                     </span>
-                    {formik.touched.commission && formik.errors.commission ? (
+                    {errors.commission?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.commission}
+                        {errors.commission?.message}
                       </p>
                     ) : null}
                   </div>
@@ -798,8 +777,8 @@ const EditEventClient = ({ id }: { id: string }) => {
                         type={type}
                         name={`socials.${key}`}
                         className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
-                        value={formik.values.socials[key as keyof SocialMediaHandles] ?? ""}
-                        onChange={formik.handleChange}
+                        value={values.socials[key as keyof SocialMediaHandles] ?? ""}
+                        onChange={(e) => setValue(`socials.${key as keyof SocialMediaHandles}` as const, e.target.value, { shouldValidate: true })}
                         placeholder=""
                       />
                     </div>
@@ -807,9 +786,9 @@ const EditEventClient = ({ id }: { id: string }) => {
                 ))}
 
                 <FlatButton
-                  loading={formik.isSubmitting}
-                  error={formik.isValid}
-                  onClick={() => formik.handleSubmit()}
+                  loading={isSubmitting}
+                  error={isValid}
+                  onClick={() => handleSubmit(onSubmit)()}
                   title="Save changes"
                   classes="mt-6 h-12 rounded-xl border border-step-color shadow-green-inset hover:shadow-green-inset-strong"
                 />

@@ -1,29 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { Card, CardContent } from "@lemonade/ui";
 import OtpInput from "react-otp-input";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { otpSchema, type OtpCodeInput } from "@lemonade/validation";
 import { images } from "@/lib/images";
 
 function ForgotPasswordPage({}) {
-  const forgotPasswordSchema = yup.object({
-    email: yup.string().email("Please enter a valid email").required("Email is required"),
+  // Not wired to the backend yet: there's no admin reset-code endpoint to submit to.
+  const {
+    control,
+    formState: { isValid, isSubmitting },
+  } = useForm<OtpCodeInput>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { code: "" },
+    mode: "onChange",
   });
-
-  const formik = useFormik({
-    initialValues: {
-      code: "",
-    },
-    validationSchema: forgotPasswordSchema,
-    validateOnMount: true,
-    onSubmit: async () => {},
-  });
-
-  const [, setOtp] = useState(formik.values.code);
   return (
     <AuthLayout>
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
@@ -42,12 +38,13 @@ function ForgotPasswordPage({}) {
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center">
+                <Controller
+                  control={control}
+                  name="code"
+                  render={({ field }) => (
                 <OtpInput
-                  value={formik.values.code}
-                  onChange={(e) => {
-                    setOtp(e);
-                    formik.setFieldValue("code", e);
-                  }}
+                  value={field.value}
+                  onChange={field.onChange}
                   numInputs={4}
                   renderSeparator={<span> </span>}
                   renderInput={(props) => <input {...props} />}
@@ -59,14 +56,16 @@ function ForgotPasswordPage({}) {
                     borderRadius: "12px",
                   }}
                 />
+                  )}
+                />
               </div>
               <p className="text-light-green text-center text-[16px] font-medium">
                 Resend in 60 secs
               </p>
-              <FormikButton
-                loading={formik.isSubmitting}
+              <SubmitButton
+                loading={isSubmitting}
                 title="Verify"
-                error={formik.isValid}
+                isValid={isValid}
                 classes="w-full h-12 rounded-xl"
               />
             </CardContent>

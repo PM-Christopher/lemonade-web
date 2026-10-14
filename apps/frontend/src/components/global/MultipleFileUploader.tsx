@@ -9,7 +9,7 @@ import Image from "next/image";
 import { ImagesLoadingSkeleton } from "@/components/Skeletons";
 import { errorMessage } from "@/lib/api-error";
 
-interface FormikSetField {
+interface FieldValueSetter {
   setFieldValue: (field: string, value: unknown) => unknown;
 }
 
@@ -19,7 +19,7 @@ const MultipleFileUploader = ({
   title,
   type,
 }: {
-  setField: FormikSetField;
+  setField: FieldValueSetter;
   images: string[];
   title: string;
   type: string;

@@ -13,7 +13,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.9.1",
+    "@hookform/resolvers": "^5.9.1",
     "@lemonade/api-client": "workspace:*",
     "@lemonade/api-types": "workspace:*",
     "@lemonade/realtime": "workspace:*",
@@ -24,7 +24,6 @@
     "@tanstack/react-query": "^5.104.1",
     "dayjs": "^1.11.13",
     "firebase": "^12.2.1",
-    "formik": "^2.4.6",
     "lucide-react": "^0.469.0",
     "next": "15.5.27",
     "pusher-js": "^8.4.0-rc2",
@@ -41,7 +40,6 @@
     "redux-persist": "^6.0.0",
     "server-only": "^0.0.1",
     "sharp": "^0.35.4",
-    "yup": "^1.6.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {

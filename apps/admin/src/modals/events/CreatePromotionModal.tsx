@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import { PlusIcon, XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { usePromotionDetailQuery } from "@/features/events/queries";
@@ -10,7 +10,9 @@ import {
   useCreatePromotionMutation,
   useUpdatePromotionMutation,
 } from "@/features/events/mutations";
-import { FormikButton } from "@/components/global/FormikButton";
+import { promotionSchema, type PromotionInput } from "@/features/events/schema";
+import { SubmitButton } from "@/components/global/SubmitButton";
+import { FieldError } from "@/components/global/FieldError";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 interface CreatePromotionModalProps {
@@ -35,98 +37,65 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
   const editing =
     promotionId !== 0 && promotionId !== undefined ? promotionDetail?.promotion : undefined;
   const promotionTitle = editing ? "Edit Promotion" : "Create Promotion";
-  const recordKey = editing ? String(promotionId) : promotionId === 0 ? "create" : "idle";
 
-  const handleAddField = () => {
-    setBreakdowns([...breakdowns, ""]);
-  };
-
-  const handleInputChange = (index: number, value: string) => {
-    const newBreakdowns = [...breakdowns];
-    newBreakdowns[index] = value;
-    setBreakdowns(newBreakdowns);
-  };
-
-  const handleRemoveField = (index: number) => {
-    const newBreakdowns = breakdowns.filter((_, i) => i !== index);
-    setBreakdowns(newBreakdowns);
-  };
-
-  const createPromotionSchema = yup.object({
-    name: yup.string().required("Email is required"),
-    price_option: yup.string().required("Email is required"),
-    price: yup.string().required("Email is required"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  // The form follows the promotion being edited, or starts blank for a new one.
+  const formValues = useMemo<PromotionInput>(
+    () => ({
       name: editing?.name ?? "",
       price_option: editing?.price_option ?? "",
       price: editing ? String(editing.price ?? "") : "",
-    },
-    enableReinitialize: true,
-    validationSchema: createPromotionSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      if (isLoggedIn) {
-        // NOTE (found, not fixed — pre-existing bug, see the NOTE on
-        // promotionsApi in features/events/api.ts): the backend
-        // requires `image`, which this form never collects, so
-        // create/update always 422s. Preserving the promotion's
-        // existing image on edit is the closest equivalent of the
-        // old behavior (an empty string still fails `required`).
-        const data = {
-          ...values,
-          price: Number(values.price),
-          breakdown: breakdowns,
-          image: promotionDetail?.promotion?.image ?? "",
-        };
-        if (promotionId !== 0) {
-          updatePromotionMutation.mutate(data, {
-            onSuccess: () => {
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: "Updated promotion successfully",
-                  type: "success",
-                }),
-              );
-              toggle();
-            },
-          });
-        } else {
-          createPromotionMutation.mutate(data, {
-            onSuccess: () => {
-              dispatch(
-                updateToastifyReducer({
-                  show: true,
-                  message: "Added promotion successfully",
-                  type: "success",
-                }),
-              );
-              toggle();
-            },
-          });
-        }
-      }
-    },
+      breakdown: editing?.breakdown?.length ? editing.breakdown : [""],
+    }),
+    [editing],
+  );
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<PromotionInput>({
+    resolver: zodResolver(promotionSchema),
+    values: formValues,
+    mode: "onTouched",
   });
 
-  const [eventType, setEventType] = useState(editing?.price_option ?? "");
-  const [eventTypeKey, setEventTypeKey] = useState(recordKey);
-  if (recordKey !== eventTypeKey) {
-    setEventTypeKey(recordKey);
-    setEventType(editing?.price_option ?? "");
-  }
+  const priceOption = useWatch({ control, name: "price_option" });
+  const breakdowns = useWatch({ control, name: "breakdown" }) ?? [];
 
-  const [breakdowns, setBreakdowns] = useState<string[]>(
-    editing ? (editing.breakdown ?? []) : [""],
-  );
-  const [breakdownKey, setBreakdownKey] = useState(recordKey);
-  if (recordKey !== breakdownKey) {
-    setBreakdownKey(recordKey);
-    setBreakdowns(editing ? (editing.breakdown ?? []) : [""]);
-  }
+  const setBreakdowns = (next: string[]) =>
+    setValue("breakdown", next, { shouldValidate: true, shouldDirty: true });
+  const handleAddField = () => setBreakdowns([...breakdowns, ""]);
+  const handleInputChange = (index: number, value: string) =>
+    setBreakdowns(breakdowns.map((item, i) => (i === index ? value : item)));
+  const handleRemoveField = (index: number) =>
+    setBreakdowns(breakdowns.filter((_, i) => i !== index));
+
+  const onSubmit = (values: PromotionInput) => {
+    if (!isLoggedIn) return;
+    // NOTE (found, not fixed — pre-existing bug, see the NOTE on promotionsApi in
+    // features/events/api.ts): the backend requires `image`, which this form never
+    // collects, so create/update 422s. Editing keeps the promotion's existing image.
+    const data = {
+      ...values,
+      price: Number(values.price),
+      image: promotionDetail?.promotion?.image ?? "",
+    };
+    const onSuccess = (message: string) => () => {
+      dispatch(updateToastifyReducer({ show: true, message, type: "success" }));
+      toggle();
+    };
+    if (promotionId !== 0) {
+      updatePromotionMutation.mutate(data, {
+        onSuccess: onSuccess("Updated promotion successfully"),
+      });
+    } else {
+      createPromotionMutation.mutate(data, {
+        onSuccess: onSuccess("Added promotion successfully"),
+      });
+    }
+  };
 
   return (
     <Dialog
@@ -138,7 +107,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{promotionTitle}</DialogTitle>
         <div className="w-[640px] rounded-xl bg-white pt-4 pb-1">
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
                 <div className={"flex items-center gap-2"}>
@@ -148,10 +117,12 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                   </p>
                 </div>
                 <div className="cursor-pointer">
-                  <FormikButton
-                    loading={formik.isSubmitting}
+                  <SubmitButton
+                    loading={
+                      isSubmitting || createPromotionMutation.isPending || updatePromotionMutation.isPending
+                    }
                     title={promotionTitle}
-                    error={formik.isValid}
+                    isValid={isValid}
                     classes="border px-3.5 py-[11px] rounded-xl w-full"
                   />
                 </div>
@@ -164,31 +135,26 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                   id="name"
                   className={"bg-light-grey h-12 gap-3 rounded-xl p-3 text-[14px]"}
                   placeholder={""}
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...register("name")}
                 />
+                <FieldError message={errors.name?.message} />
               </div>
               <div className={"flex flex-col gap-1"}>
                 <p className={"text-text-grey text-[14px] font-normal"}>Price option</p>
                 <div className="flex gap-2">
                   <div
-                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${eventType === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
-                    onClick={() => {
-                      setEventType("one-time");
-                      formik.setFieldValue("price_option", "one-time");
-                    }}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${priceOption === "one-time" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
+                    onClick={() =>
+                      setValue("price_option", "one-time", { shouldValidate: true })
+                    }
                   >
                     <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       One time
                     </p>
                   </div>
                   <div
-                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${eventType === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
-                    onClick={() => {
-                      setEventType("unit");
-                      formik.setFieldValue("price_option", "unit");
-                    }}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl p-3 px-4 ${priceOption === "unit" ? "bg-gradient-green-2 shadow-event-custom" : "bg-light_grey text-text-grey"}`}
+                    onClick={() => setValue("price_option", "unit", { shouldValidate: true })}
                   >
                     <p className="tracking-custom font-sans text-[14px] leading-[21px] font-normal">
                       Unit
@@ -202,10 +168,9 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                   id="price"
                   className={"bg-light-grey h-12 gap-3 rounded-xl p-3 text-[14px]"}
                   placeholder={"N0.00"}
-                  value={formik.values.price}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  {...register("price")}
                 />
+                <FieldError message={errors.price?.message} />
               </div>
               <div className="flex flex-col gap-0.5">
                 <p className="text-text-grey text-[14px] font-normal">Breakdown</p>
@@ -220,6 +185,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                       />
                       {index > 0 && (
                         <button
+                          type="button"
                           onClick={() => handleRemoveField(index)}
                           className="absolute top-1/2 right-3 -translate-y-1/2 transform text-red-500"
                         >
@@ -229,6 +195,12 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
                     </div>
                   </div>
                 ))}
+                <FieldError
+                  message={
+                    errors.breakdown?.message ??
+                    errors.breakdown?.find?.((item) => item?.message)?.message
+                  }
+                />
               </div>
             </div>
             <div className={"flex justify-between gap-4 px-4 pb-2.5"}>

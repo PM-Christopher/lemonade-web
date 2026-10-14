@@ -2,16 +2,17 @@
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader } from "@lemonade/ui";
 import Image from "next/image";
 
 import { useCompleteOnboardingMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { socialHandlesSchema, type SocialHandlesInput } from "@/features/authentication/schema";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { errorMessage } from "@/lib/api-error";
 
@@ -21,54 +22,24 @@ interface SocialInterface {
   onComplete: () => void;
 }
 
-interface SocialMediaHandles {
-  instagram: string;
-  linkedin: string;
-  facebook: string;
-  twitter: string;
-}
-
 const SocialStep: React.FC<SocialInterface> = () => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
   const completeOnboarding = useCompleteOnboardingMutation();
-  const [socials, setSocials] = useState<SocialMediaHandles>({
-    instagram: "",
-    linkedin: "",
-    facebook: "",
-    twitter: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid, isSubmitting },
+  } = useForm<SocialHandlesInput>({
+    resolver: zodResolver(socialHandlesSchema),
+    defaultValues: { facebook: "", linkedin: "", twitter: "", instagram: "" },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSocials((prev) => ({ ...prev, [name]: value }));
-  };
-
-  //form validation
-  const socialStepSchema = yup.object({
-    socials: yup.array(),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      socials: [],
-    },
-    validationSchema: socialStepSchema,
-    validateOnMount: true,
-    onSubmit: async () => {
-      await socialsStep();
-    },
-  });
-
-  const socialsStep = async () => {
-    const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
-      .filter((key) => socials[key]) // Only keep keys with non-empty values
-      .map((key) => ({
-        name: key,
-        value: socials[key],
-      }));
+  const onSubmit = async (socials: SocialHandlesInput) => {
     const requestBody = {
-      socials: filteredSocials,
+      socials: (Object.keys(socials) as Array<keyof SocialHandlesInput>)
+        .filter((key) => socials[key])
+        .map((key) => ({ name: key, value: socials[key] })),
     };
 
     dispatch(authStart());
@@ -98,7 +69,7 @@ const SocialStep: React.FC<SocialInterface> = () => {
   };
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Card className="tablet:w-[480px] w-full rounded-2xl border-none p-6 shadow-none">
         <CardHeader className="grid gap-4 p-0">
           <div className="flex gap-2">
@@ -118,10 +89,10 @@ const SocialStep: React.FC<SocialInterface> = () => {
         <CardContent className="mt-6 grid gap-4 p-0">
           {(
             [
-              { name: "facebook", icon: images.FACEBOOK, value: socials.facebook },
-              { name: "linkedin", icon: images.LINKEDIN, value: socials.linkedin },
-              { name: "twitter", icon: images.TWITTER, value: socials.twitter },
-              { name: "instagram", icon: images.INSTAGRAM, value: socials.instagram },
+              { name: "facebook", icon: images.FACEBOOK },
+              { name: "linkedin", icon: images.LINKEDIN },
+              { name: "twitter", icon: images.TWITTER },
+              { name: "instagram", icon: images.INSTAGRAM },
             ] as const
           ).map((field) => (
             <label
@@ -131,13 +102,11 @@ const SocialStep: React.FC<SocialInterface> = () => {
             >
               <Image src={field.icon} alt="" width={20} height={20} className="h-5 w-5 shrink-0" />
               <input
-                name={field.name}
                 id={field.name}
                 type="text"
                 className="form-font placeholder:text-text-grey h-full w-full min-w-0 flex-1 border-0 bg-transparent p-0 shadow-none outline-none focus:border-0 focus:ring-0 focus:outline-none focus-visible:outline-none"
                 placeholder="Username"
-                value={field.value}
-                onChange={handleChange}
+                {...register(field.name)}
               />
             </label>
           ))}
@@ -151,10 +120,10 @@ const SocialStep: React.FC<SocialInterface> = () => {
               Skip
             </button>
           </div>
-          <FormikButton
-            loading={formik.isSubmitting}
+          <SubmitButton
+            loading={isSubmitting}
             title="Done"
-            error={formik.isValid}
+            isValid={isValid}
             classes="w-full h-12 rounded-xl"
           />
         </CardContent>

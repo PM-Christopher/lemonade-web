@@ -1,11 +1,14 @@
 import React from "react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import CloseIcon from "@/images/icons/close.svg";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { disputeJobSchema, type DisputeJobInput } from "@/features/business/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
@@ -21,25 +24,24 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
     selectedJob: { id?: number } | null;
   };
   const disputeJobMutation = useDisputeJobMutation(job?.id ?? 0);
-  const disputeJobSchema = yup.object({
-    dispute: yup.string().trim().required("Dispute is required"),
-    attachments: yup.array().of(yup.string()),
-  });
   const dispatch = useAppDispatch();
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<DisputeJobInput>({
+    resolver: zodResolver(disputeJobSchema),
+    defaultValues: {
       dispute: "",
       attachments: [],
     },
-    validationSchema: disputeJobSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      handleDispute(values);
-    },
+    mode: "onTouched",
   });
 
-  const handleDispute = (values: { dispute: string; attachments: string[] }) => {
+  const onSubmit = (values: DisputeJobInput) => {
     disputeJobMutation.mutate(values, {
       onSuccess: (result) => {
         toggle();
@@ -51,7 +53,8 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
           }),
         );
       },
-      onError: () => {
+      onError: (error: Error) => {
+        if (applyServerErrors(error, setError, ["dispute", "attachments"])) return;
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -73,7 +76,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Dispute Job"}</DialogTitle>
         <form
-          onSubmit={formik.handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="hide-scrollbar laptop:p-8 max-h-[90vh] w-full max-w-[640px] overflow-y-auto scroll-smooth rounded-2xl bg-white p-6 shadow-xl"
         >
           {/* Header */}
@@ -90,11 +93,11 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
               </h2>
             </div>
 
-            <FormikButton
+            <SubmitButton
               title="Submit"
               classes="h-10 w-[90px] rounded-xl"
-              loading={formik.isSubmitting}
-              error={formik.isValid}
+              loading={isSubmitting}
+              isValid={isValid}
             />
           </div>
 
@@ -110,20 +113,13 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
               </div>
               <textarea
                 id="dispute"
-                name="dispute"
                 className={`bg-light_grey h-[130px] w-full rounded-xl border p-4 ${
-                  formik.touched.dispute && formik.errors.dispute
-                    ? "border-red-500"
-                    : "border-gray-200"
+                  errors.dispute ? "border-red-500" : "border-gray-200"
                 } placeholder:text-grey-40 focus:ring-step-color text-[14px] transition placeholder:text-[14px] placeholder:font-normal focus:border-transparent focus:ring-2 focus:outline-none`}
                 placeholder="Dispute details"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.dispute}
+                {...register("dispute")}
               />
-              {formik.touched.dispute && formik.errors.dispute && (
-                <p className="mt-1 text-[12px] text-red-500">{formik.errors.dispute}</p>
-              )}
+              <FieldError message={errors.dispute?.message} />
             </div>
 
             {/* Attachments */}
@@ -132,10 +128,16 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
               <MultipleFileUploader
                 length="multiple"
                 type="dispute"
-                setField={formik}
+                setField={{
+                  setFieldValue: (field, value) =>
+                    setValue(field as keyof DisputeJobInput, value as DisputeJobInput["attachments"], {
+                      shouldValidate: true,
+                    }),
+                }}
                 images={[]}
                 title="Upload multiple images"
               />
+              <FieldError message={errors.attachments?.message} />
             </div>
           </div>
         </form>

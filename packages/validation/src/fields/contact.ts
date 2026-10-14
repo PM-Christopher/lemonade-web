@@ -1,8 +1,8 @@
-import * as yup from "yup";
+import { z } from "zod";
 import { getConfig } from "../config";
 
-export const phoneNumberField = yup
+export const phoneNumberField = z
   .string()
   .trim()
-  .matches(/^[+]?\d{10,15}$/, () => getConfig().messages.phoneNumber.invalid)
-  .required(() => `${getConfig().fieldNames.phoneNumber} is required`);
+  .min(1, { error: () => `${getConfig().fieldNames.phoneNumber} is required` })
+  .regex(/^[+]?\d{10,15}$/, { error: () => getConfig().messages.phoneNumber.invalid });

@@ -1,12 +1,15 @@
 import React from "react";
 import { XIcon } from "lucide-react";
 import { Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useUpdateWithdrawalThresholdMutation } from "@/features/wallet/mutations";
+import { withdrawalThresholdSchema, type WithdrawalThresholdInput } from "@/features/wallet/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 
 type WalletMgtInterface = {
   isOpen: boolean;
@@ -16,40 +19,35 @@ type WalletMgtInterface = {
 const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) => {
   const dispatch = useDispatch<AppDispatch>();
   const updateThreshold = useUpdateWithdrawalThresholdMutation();
-  const prodSchema = yup.object({
-    threshold: yup.string().required("threshold is required"),
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<WithdrawalThresholdInput>({
+    resolver: zodResolver(withdrawalThresholdSchema),
+    defaultValues: { threshold: "" },
+    mode: "onTouched",
   });
 
-  const formik = useFormik({
-    initialValues: {
-      threshold: "",
-    },
-    validationSchema: prodSchema,
-    validateOnMount: true,
-    onSubmit: (values) => {
-      updateThreshold.mutate(parseInt(values.threshold), {
-        onSuccess: () => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Success `,
-              type: "success",
-            }),
-          );
-          toggle();
-        },
-        onError: (error) => {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: error?.message || `Something went wrong`,
-              type: "error",
-            }),
-          );
-        },
-      });
-    },
-  });
+  const onSubmit = (values: WithdrawalThresholdInput) => {
+    updateThreshold.mutate(Number(values.threshold), {
+      onSuccess: () => {
+        dispatch(updateToastifyReducer({ show: true, message: "Success", type: "success" }));
+        toggle();
+      },
+      onError: (error) => {
+        if (applyServerErrors(error, setError, ["threshold"])) return;
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || "Something went wrong",
+            type: "error",
+          }),
+        );
+      },
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -80,10 +78,9 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Amount"}
-                value={formik.values.threshold}
-                onChange={formik.handleChange("threshold")}
-                onBlur={formik.handleBlur}
+                {...register("threshold")}
               />
+              <FieldError message={errors.threshold?.message} />
               <div className={"flex justify-between gap-4"}>
                 <button
                   onClick={toggle}
@@ -94,7 +91,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
                   <p className={"text-[16px] font-medium text-black"}>Cancel</p>
                 </button>
                 <button
-                  onClick={() => formik.handleSubmit()}
+                  onClick={handleSubmit(onSubmit)}
                   className={
                     "border-step-color bg-gradient-green h-12 w-full rounded-xl border px-12 py-3.5"
                   }

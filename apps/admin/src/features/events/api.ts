@@ -222,7 +222,7 @@ export interface PromotionPayload {
   // Money::fromUnits() (called from CreatePromotion/UpdatePromotion
   // actions) only accepts int|float and 500s on a string, even though the
   // FormRequest's `numeric` rule accepts either. The old thunk sent
-  // formik's raw string value, so this was silently broken before too.
+  // the form's raw string value, so this was silently broken before too.
   price: number;
   breakdown: string[];
   // Required by the backend (CreatePromotionRequest/UpdatePromotionRequest)

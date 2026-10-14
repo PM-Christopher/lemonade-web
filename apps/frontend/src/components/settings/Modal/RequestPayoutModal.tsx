@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { bankAccountSchema, type BankAccountInput } from "@/features/settings/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 import { useBanksQuery } from "@/features/shared/queries";
 import type { Bank } from "@/features/shared/api";
 import { useVerifyAccountMutation } from "@/features/shared/mutations";
@@ -20,7 +23,7 @@ type RequestPayoutInterface = {
 const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }) => {
   const [bankCode, setBankCode] = useState<string>("");
   const [accountNumber, setAccountNumber] = useState("");
-  const [error, setError] = useState("");
+  const [verifyError, setVerifyError] = useState("");
   const dispatch = useAppDispatch();
 
   const { data: banksData, isLoading: loading } = useBanksQuery({
@@ -30,61 +33,68 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
   const verifyAccountMutation = useVerifyAccountMutation();
   const createBankAccountMutation = useCreateBankAccountMutation();
 
-  const bankAccountSchema = yup.object({
-    bank_name: yup.string().required(),
-    account_number: yup.string().required(),
-    account_name: yup.string().required(),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    reset,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<BankAccountInput>({
+    resolver: zodResolver(bankAccountSchema),
+    defaultValues: {
       bank_name: "",
       account_number: "",
       account_name: "",
     },
-    validationSchema: bankAccountSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      // This modal adds the user's bank account; payouts need one first.
-      createBankAccountMutation.mutate(values, {
-        onSuccess: () => {
-          formik.resetForm();
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Bank account added — you can now request a payout",
-              type: "success",
-            }),
-          );
-          dispatch(updateHasBankAccount());
-          toggle();
-        },
-        onError: (err: Error) => {
-          formik.resetForm();
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: err?.message || "Error creating account",
-              type: "error",
-            }),
-          );
-        },
-      });
-    },
+    mode: "onTouched",
   });
 
+  const accountName = watch("account_name");
+
+  const onSubmit = (values: BankAccountInput) => {
+    // This modal adds the user's bank account; payouts need one first.
+    createBankAccountMutation.mutate(values, {
+      onSuccess: () => {
+        reset();
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Bank account added — you can now request a payout",
+            type: "success",
+          }),
+        );
+        dispatch(updateHasBankAccount());
+        toggle();
+      },
+      onError: (err: Error) => {
+        if (applyServerErrors(err, setError, ["bank_name", "account_number", "account_name"]))
+          return;
+        reset();
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: err?.message || "Error creating account",
+            type: "error",
+          }),
+        );
+      },
+    });
+  };
+
   const getAccount = () => {
-    formik.setFieldValue("account_name", "");
+    setValue("account_name", "", { shouldValidate: true });
     verifyAccountMutation.mutate(
       { bankCode, accountNumber },
       {
         onSuccess: (res) => {
-          setError("");
-          formik.setFieldValue("account_name", res.account_name);
+          setVerifyError("");
+          setValue("account_name", res.account_name, { shouldValidate: true });
         },
         onError: () => {
-          setError("Invalid account details");
-          formik.setFieldValue("account_name", "");
+          setVerifyError("Invalid account details");
+          setValue("account_name", "", { shouldValidate: true });
         },
       },
     );
@@ -107,7 +117,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Bank Account</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="w-[640px] rounded-lg bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -124,7 +134,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                 </p>
               </div>
               <div>
-                <FormikButton loading={formik.isSubmitting} title="Submit" error={formik.isValid} />
+                <SubmitButton loading={isSubmitting} title="Submit" isValid={isValid} />
               </div>
             </div>
             <div className="mt-10">
@@ -137,12 +147,12 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                 </Label>
                 <select
                   id="bank_name"
-                  value={formik.values.bank_name}
                   className="form-font bg-light_grey h-12 w-full rounded-xl border-0 p-2"
-                  onChange={(e) => {
-                    setBankCode(e.target.value);
-                    formik.setFieldValue("bank_name", e.target.value);
-                  }}
+                  {...register("bank_name", {
+                    onChange: (e) => {
+                      setBankCode(e.target.value);
+                    },
+                  })}
                 >
                   {loading ? (
                     <option>Loading...</option>
@@ -158,6 +168,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                     </>
                   )}
                 </select>
+                <FieldError message={errors.bank_name?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
@@ -171,11 +182,13 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                   type="number"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  onChange={(e) => {
-                    setAccountNumber(e.target.value);
-                    formik.setFieldValue("account_number", e.target.value);
-                  }}
+                  {...register("account_number", {
+                    onChange: (e) => {
+                      setAccountNumber(e.target.value);
+                    },
+                  })}
                 />
+                <FieldError message={errors.account_number?.message} />
               </div>
               <div className="mt-6 grid gap-2">
                 <Label
@@ -190,9 +203,10 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
                   readOnly={true}
-                  value={formik.values.account_name}
+                  value={accountName}
                 />
-                {error && <p className={"text-red-2 text-[13px]"}>{error}</p>}
+                <FieldError message={errors.account_name?.message} />
+                {verifyError && <p className={"text-red-2 text-[13px]"}>{verifyError}</p>}
               </div>
             </div>
           </div>

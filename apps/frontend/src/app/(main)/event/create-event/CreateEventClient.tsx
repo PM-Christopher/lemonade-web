@@ -14,8 +14,12 @@ import InstagramIcon from "@/images/icons/instagram-color.svg";
 import FacebookIcon from "@/images/icons/facebook-color.svg";
 import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createEventDetailsSchema,
+  type CreateEventDetailsInput,
+} from "@/features/events/schema";
 import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
 import { addEvent } from "@/features/events/event.slice";
@@ -27,6 +31,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getTimeZones } from "@/lib/helper";
 import { routes } from "@/lib/routes";
+import { errorMessage } from "@/lib/api-error";
 
 interface SocialMediaHandles {
   instagram: string;
@@ -63,90 +68,15 @@ const CreateEventClient = () => {
     setSocials((prev) => ({ ...prev, [name]: value }));
   };
 
-  const createEventSchema = yup.object({
-    event_image: yup.string().required("Event image is required"),
-    event_name: yup.string().required("Event name is required"),
-    event_description: yup.string().required("Description is required"),
-    category: yup.string().required("Category is required"),
-    event_type: yup.string().required("Event type is required"),
-    location: yup.string().when("event_type", {
-      is: "physical",
-      then: (schema) => schema.required("Location is required"),
-    }),
-    hosting_platform: yup.string().when("event_type", {
-      is: "online",
-      then: (schema) => schema.required("Hosting platform is required"),
-    }),
-    meeting_link: yup.string().when("event_type", {
-      is: "online",
-      then: (schema) =>
-        schema.required("Meeting link is required").url("Meeting link must be a valid url"),
-    }),
-    meeting_passcode: yup.string().when("event_type", {
-      is: "online",
-      then: (schema) => schema.required("Hosting platform is required"),
-    }),
-    time_zone: yup.string().required("Time zone is required"),
-    start_date: yup.string().required("Start date is required"),
-    start_time: yup.string().required("Start time is required"),
-    end_date: yup
-      .string()
-      .required("End date is required")
-      .test(
-        "end-date-validation",
-        "End date and time cannot be before start date and time",
-        function (value) {
-          const { start_date, start_time, end_time } = this.parent;
-
-          if (!value || !start_date || !start_time || !end_time) {
-            return true; // Let required validation handle missing values
-          }
-
-          // Create complete datetime strings
-          const startDateTime = new Date(`${start_date}T${start_time}`);
-          const endDateTime = new Date(`${value}T${end_time}`);
-
-          // Check if end datetime is after start datetime
-          return endDateTime > startDateTime;
-        },
-      ),
-    end_time: yup
-      .string()
-      .required("End time is required")
-      .test(
-        "end-time-validation",
-        "End date and time cannot be before start date and time",
-        function (value) {
-          const { start_date, start_time, end_date } = this.parent;
-
-          if (!value || !start_date || !start_time || !end_date) {
-            return true; // Let required validation handle missing values
-          }
-
-          // Create complete datetime strings
-          const startDateTime = new Date(`${start_date}T${start_time}`);
-          const endDateTime = new Date(`${end_date}T${value}`);
-
-          // Check if end datetime is after start datetime
-          return endDateTime > startDateTime;
-        },
-      ),
-    affiliate_program: yup.boolean().required("Affiliate program is required"),
-
-    commission: yup.number().when("affiliate_program", {
-      is: true,
-      then: (schema) =>
-        schema
-          .required("Commission rate is required")
-          .min(0, "Commission can't be negative")
-          .max(100, "Commission can't exceed 100%"),
-      otherwise: (schema) => schema.notRequired().nullable(),
-    }),
-    socials: yup.array(),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  const {
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<CreateEventDetailsInput>({
+    resolver: zodResolver(createEventDetailsSchema),
+    defaultValues: {
       event_image: "",
       event_name: "",
       event_description: "",
@@ -162,64 +92,57 @@ const CreateEventClient = () => {
       end_date: "",
       end_time: "",
       affiliate_program: false,
-      commission: null,
+      commission: "",
     },
-    validationSchema: createEventSchema,
-    validateOnMount: true,
-    onSubmit: async () => {
-      try {
-        await createEventSchema.validate(formik.values);
-        const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
-          .filter((key) => socials[key]) // Only keep keys with non-empty values
-          .map((key) => ({
-            name: key,
-            value: socials[key],
-          }));
-        const data = {
-          event_image: formik.values.event_image,
-          event_name: formik.values.event_name,
-          event_description: formik.values.event_description,
-          category: formik.values.category,
-          event_type: formik.values.event_type,
-          location: formik.values.location,
-          hosting_platform: formik.values.hosting_platform,
-          meeting_link: formik.values.meeting_link,
-          meeting_passcode: formik.values.meeting_passcode,
-          time_zone: formik.values.time_zone,
-          start_date: `${formik.values.start_date}T${formik.values.start_time}`,
-          end_date: `${formik.values.end_date}T${formik.values.end_time}`,
-          affiliate_program: formik.values.affiliate_program,
-          // The form takes a whole percent; the backend expects a fraction (2.5% -> 0.025).
-          commission: formik.values.affiliate_program
-            ? Number(formik.values.commission) / 100
-            : null,
-          socials: filteredSocials,
-        };
-        dispatch(addEvent(data));
-        push(routes.EVENT_ADD_TICKET);
-      } catch (error) {
-        if (error instanceof yup.ValidationError) {
-          const firstError = error.errors[0];
-
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: firstError,
-              type: "error",
-            }),
-          );
-        } else {
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "An error occurred while creating the event",
-              type: "error",
-            }),
-          );
-        }
-      }
-    },
+    mode: "onTouched",
   });
+
+  const values = watch();
+  const fieldAdapter = {
+    setFieldValue: (field: string, value: unknown) =>
+      setValue(field as keyof CreateEventDetailsInput, value as never, { shouldValidate: true }),
+  };
+
+  const onSubmit = (formValues: CreateEventDetailsInput) => {
+    try {
+      const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
+        .filter((key) => socials[key])
+        .map((key) => ({
+          name: key,
+          value: socials[key],
+        }));
+      const data = {
+        event_image: formValues.event_image,
+        event_name: formValues.event_name,
+        event_description: formValues.event_description,
+        category: formValues.category,
+        event_type: formValues.event_type,
+        location: formValues.location,
+        hosting_platform: formValues.hosting_platform,
+        meeting_link: formValues.meeting_link,
+        meeting_passcode: formValues.meeting_passcode,
+        time_zone: formValues.time_zone,
+        start_date: `${formValues.start_date}T${formValues.start_time}`,
+        end_date: `${formValues.end_date}T${formValues.end_time}`,
+        affiliate_program: formValues.affiliate_program,
+        // The form takes a whole percent; the backend expects a fraction (2.5% -> 0.025).
+        commission: formValues.affiliate_program
+          ? Number(formValues.commission) / 100
+          : null,
+        socials: filteredSocials,
+      };
+      dispatch(addEvent(data));
+      push(routes.EVENT_ADD_TICKET);
+    } catch (error) {
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: errorMessage(error, "An error occurred while creating the event"),
+          type: "error",
+        }),
+      );
+    }
+  };
 
   const now = new Date();
   const startOfDay = new Date();
@@ -230,12 +153,12 @@ const CreateEventClient = () => {
 
   const timeStringToDate = (timeStr: string) => {
     const [hours, minutes] = timeStr.split(":").map(Number);
-    const now = new Date();
-    now.setHours(hours);
-    now.setMinutes(minutes);
-    now.setSeconds(0);
-    now.setMilliseconds(0);
-    return now;
+    const d = new Date();
+    d.setHours(hours);
+    d.setMinutes(minutes);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    return d;
   };
 
   const timeZones = getTimeZones();
@@ -253,6 +176,7 @@ const CreateEventClient = () => {
           </div>
         </div>
         <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
+          <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div className="laptop:w-[640px] mt-10 flex w-full flex-col rounded-xl bg-white p-12">
               <p className="text-light-black font-sans text-[12px] leading-[14.4px] font-bold">
@@ -262,11 +186,11 @@ const CreateEventClient = () => {
                 length="single"
                 type="event"
                 title="Upload event image"
-                setField={formik}
+                setField={fieldAdapter}
                 image=""
               />
-              {formik.touched.event_image && formik.errors.event_image ? (
-                <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.event_image}</p>
+              {errors.event_image?.message ? (
+                <p className="text-left text-[12px] text-[#FF8D8D]">{errors.event_image?.message}</p>
               ) : null}
               <div className="mt-6 grid gap-2">
                 <Label
@@ -280,13 +204,13 @@ const CreateEventClient = () => {
                   type="text"
                   placeholder=""
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  value={formik.values.event_name}
+                  value={values.event_name}
                   onChange={(e) => {
-                    formik.setFieldValue("event_name", e.target.value);
+                    setValue("event_name", e.target.value, { shouldValidate: true });
                   }}
                 />
-                {formik.touched.event_name && formik.errors.event_name ? (
-                  <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.event_name}</p>
+                {errors.event_name?.message ? (
+                  <p className="text-left text-[12px] text-[#FF8D8D]">{errors.event_name?.message}</p>
                 ) : null}
               </div>
               <div className="mt-6 grid gap-2">
@@ -298,14 +222,14 @@ const CreateEventClient = () => {
                 </Label>
                 <textarea
                   className="form-font bg-light_grey h-[131px] resize-none rounded-xl border-0 p-4"
-                  value={formik.values.event_description}
+                  value={values.event_description}
                   onChange={(e) => {
-                    formik.setFieldValue("event_description", e.target.value);
+                    setValue("event_description", e.target.value, { shouldValidate: true });
                   }}
                 ></textarea>
-                {formik.touched.event_description && formik.errors.event_description ? (
+                {errors.event_description?.message ? (
                   <p className="text-left text-[12px] text-[#FF8D8D]">
-                    {formik.errors.event_description}
+                    {errors.event_description?.message}
                   </p>
                 ) : null}
               </div>
@@ -319,17 +243,17 @@ const CreateEventClient = () => {
                 <select
                   id="fullname"
                   className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                  value={formik.values.category}
+                  value={values.category}
                   onChange={(e) => {
-                    formik.setFieldValue("category", e.target.value);
+                    setValue("category", e.target.value, { shouldValidate: true });
                   }}
                 >
                   <option value="">Select category</option>
                   <option value="spirituality">Spirituality</option>
                   <option value="summer">Summer</option>
                 </select>
-                {formik.touched.category && formik.errors.category ? (
-                  <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.category}</p>
+                {errors.category?.message ? (
+                  <p className="text-left text-[12px] text-[#FF8D8D]">{errors.category?.message}</p>
                 ) : null}
               </div>
               <p className="text-light-black mt-12 font-sans text-[12px] leading-[14.4px] font-bold">
@@ -344,7 +268,7 @@ const CreateEventClient = () => {
                   }`}
                   onClick={() => {
                     switchEvent("physical");
-                    formik.setFieldValue("event_type", "physical");
+                    setValue("event_type", "physical", { shouldValidate: true });
                   }}
                 >
                   <LocationIcon />
@@ -360,7 +284,7 @@ const CreateEventClient = () => {
                   }`}
                   onClick={() => {
                     switchEvent("online");
-                    formik.setFieldValue("event_type", "online");
+                    setValue("event_type", "online", { shouldValidate: true });
                   }}
                 >
                   <WebIcon />
@@ -387,15 +311,15 @@ const CreateEventClient = () => {
                         type="text"
                         className="bg-light_grey w-full border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                         placeholder="Enter location..."
-                        value={formik.values.location}
+                        value={values.location}
                         onChange={(e) => {
-                          formik.setFieldValue("location", e.target.value);
+                          setValue("location", e.target.value, { shouldValidate: true });
                         }}
                       />
                     </div>
                   </div>
-                  {formik.touched.location && formik.errors.location ? (
-                    <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.location}</p>
+                  {errors.location?.message ? (
+                    <p className="text-left text-[12px] text-[#FF8D8D]">{errors.location?.message}</p>
                   ) : null}
                 </div>
               )}
@@ -411,15 +335,15 @@ const CreateEventClient = () => {
                     <select
                       id="meeting-platform"
                       className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                      value={formik.values.hosting_platform}
-                      onChange={formik.handleChange("hosting_platform")}
+                      value={values.hosting_platform}
+                      onChange={(e) => setValue("hosting_platform", e.target.value, { shouldValidate: true })}
                     >
                       <option value="">Select category</option>
                       <option value="google-meet">Google meet</option>
                     </select>
-                    {formik.touched.hosting_platform && formik.errors.hosting_platform ? (
+                    {errors.hosting_platform?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.hosting_platform}
+                        {errors.hosting_platform?.message}
                       </p>
                     ) : null}
                   </div>
@@ -436,13 +360,13 @@ const CreateEventClient = () => {
                       type="text"
                       placeholder=""
                       className="form-font bg-light_grey h-12 rounded-xl border-0"
-                      value={formik.values.meeting_link}
-                      onChange={formik.handleChange("meeting_link")}
-                      onBlur={formik.handleBlur}
+                      value={values.meeting_link}
+                      onChange={(e) => setValue("meeting_link", e.target.value, { shouldValidate: true })}
+                      
                     />
-                    {formik.touched.meeting_link && formik.errors.meeting_link ? (
+                    {errors.meeting_link?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.meeting_link}
+                        {errors.meeting_link?.message}
                       </p>
                     ) : null}
                   </div>
@@ -459,13 +383,13 @@ const CreateEventClient = () => {
                       type="text"
                       placeholder=""
                       className="form-font bg-light_grey h-12 rounded-xl border-0"
-                      value={formik.values.meeting_passcode}
-                      onChange={formik.handleChange("meeting_passcode")}
-                      onBlur={formik.handleBlur}
+                      value={values.meeting_passcode}
+                      onChange={(e) => setValue("meeting_passcode", e.target.value, { shouldValidate: true })}
+                      
                     />
-                    {formik.touched.meeting_passcode && formik.errors.meeting_passcode ? (
+                    {errors.meeting_passcode?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.meeting_passcode}
+                        {errors.meeting_passcode?.message}
                       </p>
                     ) : null}
                   </div>
@@ -481,9 +405,9 @@ const CreateEventClient = () => {
                 <select
                   id="event-time-zone"
                   className="form-font bg-light_grey h-12 w-full rounded-xl border-0 px-2"
-                  value={formik.values.time_zone}
+                  value={values.time_zone}
                   onChange={(e) => {
-                    formik.setFieldValue("time_zone", e.target.value);
+                    setValue("time_zone", e.target.value, { shouldValidate: true });
                   }}
                 >
                   <option value="">Select time zone</option>
@@ -493,8 +417,8 @@ const CreateEventClient = () => {
                     </option>
                   ))}
                 </select>
-                {formik.touched.time_zone && formik.errors.time_zone ? (
-                  <p className="text-left text-[12px] text-[#FF8D8D]">{formik.errors.time_zone}</p>
+                {errors.time_zone?.message ? (
+                  <p className="text-left text-[12px] text-[#FF8D8D]">{errors.time_zone?.message}</p>
                 ) : null}
               </div>
               <div className="mt-6 grid gap-2">
@@ -513,7 +437,7 @@ const CreateEventClient = () => {
                       <div className="w-full">
                         <DatePicker
                           selected={
-                            formik.values.start_date ? new Date(formik.values.start_date) : null
+                            values.start_date ? new Date(values.start_date) : null
                           }
                           onChange={(date: Date | null) => {
                             if (date) {
@@ -523,9 +447,9 @@ const CreateEventClient = () => {
                               )
                                 .toISOString()
                                 .split("T")[0];
-                              formik.setFieldValue("start_date", localDate);
+                              setValue("start_date", localDate, { shouldValidate: true });
                             } else {
-                              formik.setFieldValue("start_date", null);
+                              setValue("start_date", "", { shouldValidate: true });
                             }
                           }}
                           minDate={now}
@@ -536,9 +460,9 @@ const CreateEventClient = () => {
                         />
                       </div>
                     </div>
-                    {formik.touched.start_date && formik.errors.start_date ? (
+                    {errors.start_date?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.start_date}
+                        {errors.start_date?.message}
                       </p>
                     ) : null}
                   </div>
@@ -551,15 +475,15 @@ const CreateEventClient = () => {
                       <div className="w-full">
                         <DatePicker
                           selected={
-                            formik.values.start_time
-                              ? timeStringToDate(formik.values.start_time)
+                            values.start_time
+                              ? timeStringToDate(values.start_time)
                               : null
                           }
                           onChange={(date: Date | null) => {
                             if (date) {
                               // Update start date
                               const formated_time = date.toTimeString().split(" ")[0].slice(0, 5);
-                              formik.setFieldValue("start_time", formated_time);
+                              setValue("start_time", formated_time, { shouldValidate: true });
                             }
                           }}
                           showTimeSelect={true}
@@ -570,8 +494,8 @@ const CreateEventClient = () => {
                           className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                           placeholderText="Start Time"
                           minTime={
-                            formik.values.start_date &&
-                            new Date(formik.values.start_date).toDateString() === now.toDateString()
+                            values.start_date &&
+                            new Date(values.start_date).toDateString() === now.toDateString()
                               ? now
                               : startOfDay
                           }
@@ -579,9 +503,9 @@ const CreateEventClient = () => {
                         />
                       </div>
                     </div>
-                    {formik.touched.start_time && formik.errors.start_time ? (
+                    {errors.start_time?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.start_time}
+                        {errors.start_time?.message}
                       </p>
                     ) : null}
                   </div>
@@ -599,7 +523,7 @@ const CreateEventClient = () => {
                     <div className="bg-light_grey flex h-10 w-full items-center gap-3 rounded-xl px-4">
                       <CalendarIcon />
                       <DatePicker
-                        selected={formik.values.end_date ? new Date(formik.values.end_date) : null}
+                        selected={values.end_date ? new Date(values.end_date) : null}
                         onChange={(date: Date | null) => {
                           if (date) {
                             const localDate = new Date(
@@ -607,22 +531,22 @@ const CreateEventClient = () => {
                             )
                               .toISOString()
                               .split("T")[0];
-                            formik.setFieldValue("end_date", localDate);
+                            setValue("end_date", localDate, { shouldValidate: true });
                           } else {
-                            formik.setFieldValue("end_date", null);
+                            setValue("end_date", "", { shouldValidate: true });
                           }
                         }}
                         minDate={
-                          formik.values.start_date ? new Date(formik.values.start_date) : now
+                          values.start_date ? new Date(values.start_date) : now
                         }
                         dateFormat="yyyy-MM-dd"
                         placeholderText="End Date"
                         className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                       />
                     </div>
-                    {formik.touched.end_date && formik.errors.end_date ? (
+                    {errors.end_date?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.end_date}
+                        {errors.end_date?.message}
                       </p>
                     ) : null}
                   </div>
@@ -632,13 +556,14 @@ const CreateEventClient = () => {
                       <ClockIcon />
                       <DatePicker
                         selected={
-                          formik.values.end_time ? timeStringToDate(formik.values.end_time) : null
+                          values.end_time ? timeStringToDate(values.end_time) : null
                         }
                         onChange={(date: Date | null) => {
                           if (date) {
-                            formik.setFieldValue(
+                            setValue(
                               "end_time",
                               date.toTimeString().split(" ")[0].slice(0, 5),
+                              { shouldValidate: true },
                             );
                           }
                         }}
@@ -649,8 +574,8 @@ const CreateEventClient = () => {
                         dateFormat="h:mm aa"
                         placeholderText="End Time"
                         minTime={(() => {
-                          if (formik.values.start_time) {
-                            const [hours, minutes] = formik.values.start_time
+                          if (values.start_time) {
+                            const [hours, minutes] = values.start_time
                               .split(":")
                               .map(Number);
                             const selectedDate = new Date();
@@ -667,9 +592,9 @@ const CreateEventClient = () => {
                         className="bg-light_grey font-semi-normal w-full cursor-pointer border-none px-2.5 font-sans text-[12px] shadow-none focus:border-none focus:ring-0 focus:outline-none"
                       />
                     </div>
-                    {formik.touched.end_time && formik.errors.end_time ? (
+                    {errors.end_time?.message ? (
                       <p className="text-left text-[12px] text-[#FF8D8D]">
-                        {formik.errors.end_time}
+                        {errors.end_time?.message}
                       </p>
                     ) : null}
                   </div>
@@ -688,7 +613,7 @@ const CreateEventClient = () => {
                       Enable Affiliate program
                     </p>
                     <p className="text-text-grey font-sans text-[12px] leading-[14.4px] font-normal">
-                      Affiliates will earn {formik.values.commission || 0}% per ticket sale
+                      Affiliates will earn {values.commission || 0}% per ticket sale
                     </p>
                   </div>
                 </div>
@@ -696,7 +621,7 @@ const CreateEventClient = () => {
                   <Switch
                     onChange={(change) => {
                       handleChange();
-                      formik.setFieldValue("affiliate_program", change);
+                      setValue("affiliate_program", change, { shouldValidate: true });
                     }}
                     checked={checked}
                     checkedIcon={false}
@@ -720,17 +645,17 @@ const CreateEventClient = () => {
                     max={100}
                     placeholder="e.g. 2.5"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={formik.values.commission ?? ""}
+                    value={values.commission ?? ""}
                     onChange={(e) => {
-                      formik.setFieldValue("commission", e.target.value);
+                      setValue("commission", e.target.value, { shouldValidate: true });
                     }}
                   />
                   <span className="text-grey-40 font-sans text-[12px] leading-[14.4px] font-normal">
                     Commission will be based on the per ticket sold
                   </span>
-                  {formik.touched.commission && formik.errors.commission ? (
+                  {errors.commission?.message ? (
                     <p className="text-left text-[12px] text-[#FF8D8D]">
-                      {formik.errors.commission}
+                      {errors.commission?.message}
                     </p>
                   ) : null}
                 </div>
@@ -819,14 +744,16 @@ const CreateEventClient = () => {
                 </div>
               </div>
               <FlatButton
-                loading={formik.isSubmitting}
-                error={formik.isValid}
-                onClick={() => formik.handleSubmit()}
+                loading={isSubmitting}
+                error={isValid}
+                onClick={() => handleSubmit(onSubmit)()}
                 title="Continue"
                 classes="mt-6 h-12 rounded-xl border border-step-color shadow-custom-bottom"
               />
             </div>
           </div>
+
+          </form>
         </section>
       </section>
     </MainLayout>

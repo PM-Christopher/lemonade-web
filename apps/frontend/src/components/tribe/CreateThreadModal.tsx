@@ -5,9 +5,12 @@ import ImageIcon from "@/images/icons/image.svg";
 import VideoIcon from "@/images/icons/video-camera.svg";
 import CloseRedIcon from "@/images/icons/closeRedIcon.svg";
 import PollIcon from "@/images/icons/votes.svg";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createThreadSchema, type CreateThreadInput } from "@/features/tribes/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useCreateThreadMutation } from "@/features/tribes/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { useMediaQuery } from "react-responsive";
@@ -49,16 +52,16 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
   const [pollEnd, setPollEnd] = useState("");
   const [poll, setPoll] = useState(false);
 
-  const createThreadSchema = yup.object({
-    topic: yup.string().required("Topic is required"),
-    thoughts: yup.string().required("Thoughts is required"),
-    media: yup.array().nullable(),
-    videos: yup.array().nullable(),
-    tags: yup.array().nullable(),
-    polls: yup.boolean(),
-  });
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    reset,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<CreateThreadInput>({
+    resolver: zodResolver(createThreadSchema),
+    defaultValues: {
       topic: "",
       thoughts: "",
       media: [],
@@ -66,11 +69,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       tags: [],
       polls: false,
     },
-    validationSchema: createThreadSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      await handleCreateThread(values);
-    },
+    mode: "onTouched",
   });
 
   const handleImageInput = () => {
@@ -115,7 +114,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
         try {
           const result = await tribesApi.uploadMultiple(formData);
           setMediaFiles((prev) => [...prev, ...result.images]);
-          await formik.setFieldValue("media", result.images);
+          setValue("media", result.images);
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -154,7 +153,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       try {
         const result = await tribesApi.uploadMultiple(formData);
         setVideoFiles((prev) => [...prev, ...result.images]);
-        await formik.setFieldValue("videos", result.images);
+        setValue("videos", result.images);
         dispatch(
           updateToastifyReducer({
             show: true,
@@ -178,14 +177,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     setVideoFiles((prevVideos) => prevVideos.filter((video) => video !== videoToRemove));
   };
 
-  const handleCreateThread = async (values: {
-    topic: string;
-    thoughts: string;
-    media: string[];
-    videos: string[];
-    tags: string[];
-    polls: boolean;
-  }) => {
+  const onSubmit = (values: CreateThreadInput) => {
     const hasPolls = values.polls || false;
     let thread_polls = null;
     if (poll) {
@@ -208,10 +200,11 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
               type: "success",
             }),
           );
-          formik.resetForm();
+          reset();
           toggle();
         },
-        onError: () => {
+        onError: (error: Error) => {
+          if (applyServerErrors(error, setError, ["topic", "thoughts"])) return;
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -240,7 +233,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
 
   const handlePolls = () => {
     setPoll(!poll);
-    formik.setFieldValue("polls", !poll);
+    setValue("polls", !poll);
   };
 
   if (pollOptions.length === 0) {
@@ -256,7 +249,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Create thread</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="laptop:h-full laptop:w-[800px] flex h-screen w-screen flex-col rounded-xl bg-white">
             <div className={`p-6`}>
               <div className="flex items-center justify-between">
@@ -264,7 +257,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                   <CloseIcon />
                 </div>
                 <div>
-                  <FormikButton loading={formik.isSubmitting} title="Post" error={formik.isValid} />
+                  <SubmitButton loading={isSubmitting} title="Post" isValid={isValid} />
                 </div>
               </div>
               <div className="mt-2">
@@ -274,28 +267,18 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
                     type="text"
                     className="border-0 font-sans text-[18px] font-semibold shadow-none focus:border-0 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Topic"
-                    onChange={(e) => {
-                      formik.setFieldValue("topic", e.target.value);
-                    }}
-                    value={formik.values.topic}
+                    {...register("topic")}
                   />
-                  {formik.touched.topic && formik.errors.topic ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.topic}</p>
-                  ) : null}
+                  <FieldError message={errors.topic?.message} />
                 </div>
                 <div className="mt-4 grid gap-2">
                   <textarea
                     id="tribe-name"
                     className="h-40 resize-none border-0 font-sans text-[16px] font-normal shadow-none focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Share your thoughts..."
-                    value={formik.values.thoughts}
-                    onChange={(e) => {
-                      formik.setFieldValue("thoughts", e.target.value);
-                    }}
+                    {...register("thoughts")}
                   />
-                  {formik.touched.thoughts && formik.errors.thoughts ? (
-                    <p className="text-[12px] text-[#FF8D8D]">{formik.errors.thoughts}</p>
-                  ) : null}
+                  <FieldError message={errors.thoughts?.message} />
                 </div>
                 <div className="flex flex-col gap-10">
                   <div className={"flex gap-2"}>

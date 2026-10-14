@@ -3301,17 +3301,16 @@ edit already in flight. Everything else in that bullet was genuinely stale, not 
   of new-york's differences are objectively better independent of which app "started" with them), and
   what shipped as a side effect (admin's `Input` gained a password-visibility toggle it never had).
 
-### Phase 9 — One form library **[SHOULD]** **[NOT STARTED]**
+### Phase 9 — One form library **[SHOULD]** **[DONE]**
 
-Left behind when Phase 5 migrated server state and kept the existing forms. Most screens are still Formik + Yup. Zod is already used for boot-time env validation and for forms written after the §12 decision (admin tribe creation is the first). Both are allowed only until this phase finishes.
+Left behind when Phase 5 migrated server state and kept the existing forms. Formik + Yup are gone; every form uses React Hook Form + Zod. Boot-time env validation already used Zod.
 
-- Migrate a form to React Hook Form + Zod when that feature is next touched. Not a repo-wide sweep.
-- One schema per action, with a comment naming the backend `FormRequest` it mirrors. `z.infer` is the form's value type. Server 422 field errors map onto the field with `setError`.
+- One schema per action (feature `schema.ts`), with a comment naming the backend `FormRequest` it mirrors. `z.infer` is the form's value type. Server 422 field errors map onto the field via `applyServerErrors` / `setError`.
 - Password rules mirror `App\Support\PasswordRules`. Do not invent a stricter client rule than the endpoint it calls.
-- `@lemonade/validation` is the interim shared Yup layer (fields and schemas for auth and profile setup, used by both apps). Rewrite that package to Zod in this phase, or replace it. It must not stay as a second schema library once Formik is gone.
-- Delete `checkError.ts` when the last Formik form is gone.
+- `@lemonade/validation` is Zod (shared fields and auth/profile schemas). Formik and Yup deps removed from both apps.
+- `checkError` kept as a small RHF `FieldErrors` helper (no Formik types). Optional shared `FormField` primitive in `@lemonade/ui` is still open polish, not a blocker.
 
-**Status:** Not started (2026-10-01). Recorded so the Formik/Yup and React Hook Form/Zod split is an explicit phase, not an undocumented leftover.
+**Status:** Done (2026-10-14). Admin and frontend forms, plus `@lemonade/validation`, are on React Hook Form + Zod.
 
 ---
 

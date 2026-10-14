@@ -1,17 +1,26 @@
 "use client";
 import { images } from "@/lib/images";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { checkError } from "@lemonade/domain";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import CountryList from "country-list-with-dial-code-and-flag";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
 import { useUpdateProfileFieldMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import {
+  changeAddressSchema,
+  changeBioSchema,
+  changeProfessionSchema,
+  changeSkillsSchema,
+  changeSocialsSchema,
+  changeUsernameSchema,
+} from "@/features/settings/schema";
 
 interface UpdateModalUser {
   username?: string | null;
@@ -36,8 +45,6 @@ type UpdateInterface = {
 };
 
 type FormValues = {
-  skills?: string[];
-  interests?: string[];
   username?: string;
   bio?: string;
   industry?: string;
@@ -45,267 +52,439 @@ type FormValues = {
   city?: string;
   country?: string;
   state?: string;
+  skills?: string[];
+  interests?: string[];
+  facebook?: string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
 };
 
-interface SocialMediaHandles {
-  instagram: string;
-  linkedin: string;
-  facebook: string;
-  twitter: string;
-}
+const SKILLS = ["Creativity", "Leadership", "Problem-solving", "Critical thinking", "Work ethic"];
+const INTERESTS = [
+  "Arts",
+  "Entertainment",
+  "Science",
+  "Sports",
+  "Music",
+  "Education",
+  "Politics",
+  "Religion",
+  "Books",
+  "Software",
+  "Game",
+  "History",
+  "Health care",
+  "Marketing",
+];
 
-const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) => {
+const profileTypeHeader = (type: string) => {
+  switch (type) {
+    case "username":
+      return "username";
+    case "bio":
+      return "bio";
+    case "industry":
+      return "profession";
+    case "address":
+      return "address";
+    case "skills-interest":
+      return "skills & interest";
+    case "socials":
+      return "socials";
+    default:
+      return "username";
+  }
+};
+
+const socialUrl = (user: UpdateModalUser | null, platform: string) => {
+  const social = user?.socials?.find((s) => s.name === platform);
+  return social ? social.value : "";
+};
+
+// Picks the Zod schema, defaults, and API path for the field being edited.
+const profileTypeConfig = (type: string, user: UpdateModalUser | null) => {
+  switch (type) {
+    case "username":
+      return {
+        schema: changeUsernameSchema,
+        endpoint: "/user/profile/settings/change-username",
+        defaults: { username: user?.username ?? "" } satisfies FormValues,
+        fields: ["username"] as const,
+      };
+    case "bio":
+      return {
+        schema: changeBioSchema,
+        endpoint: "/user/profile/settings/change-bio",
+        defaults: { bio: user?.bio ?? "" } satisfies FormValues,
+        fields: ["bio"] as const,
+      };
+    case "industry":
+      return {
+        schema: changeProfessionSchema,
+        endpoint: "/user/profile/settings/change-profession",
+        defaults: { industry: user?.industry ?? "" } satisfies FormValues,
+        fields: ["industry"] as const,
+      };
+    case "addresses":
+      return {
+        schema: changeAddressSchema,
+        endpoint: "/user/profile/settings/change-address",
+        defaults: {
+          address: user?.address?.address ?? "",
+          city: user?.address?.city ?? "",
+          country: user?.address?.country ?? "",
+          state: user?.address?.state ?? "",
+        } satisfies FormValues,
+        fields: ["address", "city", "country", "state"] as const,
+      };
+    case "skills-interest":
+      return {
+        schema: changeSkillsSchema,
+        endpoint: "/user/profile/settings/change-skills",
+        defaults: {
+          skills: user?.skills ?? [],
+          interests: user?.interests ?? [],
+        } satisfies FormValues,
+        fields: ["skills", "interests"] as const,
+      };
+    case "socials":
+      return {
+        schema: changeSocialsSchema,
+        endpoint: "/user/profile/settings/change-socials",
+        defaults: {
+          facebook: socialUrl(user, "facebook"),
+          linkedin: socialUrl(user, "linkedin"),
+          twitter: socialUrl(user, "twitter"),
+          instagram: socialUrl(user, "instagram"),
+        } satisfies FormValues,
+        fields: ["facebook", "linkedin", "twitter", "instagram"] as const,
+      };
+    default:
+      return {
+        schema: changeUsernameSchema,
+        endpoint: "/user/profile/settings/change-username",
+        defaults: { username: user?.username ?? "" } satisfies FormValues,
+        fields: ["username"] as const,
+      };
+  }
+};
+
+type UpdateFormProps = {
+  toggle: () => void;
+  type: string;
+  user: UpdateModalUser | null;
+};
+
+const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
   const dispatch = useAppDispatch();
   const updateProfileFieldMutation = useUpdateProfileFieldMutation();
-  const [socials, setSocials] = useState<SocialMediaHandles>({
-    instagram: "",
-    linkedin: "",
-    facebook: "",
-    twitter: "",
+  const config = profileTypeConfig(type, user);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    control,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<FormValues>({
+    // Each type mounts its own schema via key={type}; cast keeps one FormValues shape.
+    resolver: zodResolver(config.schema) as Resolver<FormValues>,
+    defaultValues: config.defaults,
+    mode: "onTouched",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSocials((prev) => ({ ...prev, [name]: value }));
-  };
+  const watched = useWatch({ control });
+  const selectedSkills = watched.skills ?? [];
+  const selectedInterests = watched.interests ?? [];
 
-  const profileTypeHeader = () => {
-    switch (type) {
-      case "username":
-        return "username";
-      case "bio":
-        return "bio";
-      case "industry":
-        return "profession";
-      case "address":
-        return "address";
-      case "skills-interest":
-        return "skills & interest";
-      case "socials":
-        return "socials";
-      default:
-        return "username";
+  useEffect(() => {
+    const next = profileTypeConfig(type, user).defaults;
+    for (const [key, value] of Object.entries(next)) {
+      setValue(key as keyof FormValues, value as never, { shouldValidate: true });
     }
-  };
+  }, [user, type, setValue]);
 
-  const skills = ["Creativity", "Leadership", "Problem-solving", "Critical thinking", "Work ethic"];
-  const interests = [
-    "Arts",
-    "Entertainment",
-    "Science",
-    "Sports",
-    "Music",
-    "Education",
-    "Politics",
-    "Religion",
-    "Books",
-    "Software",
-    "Game",
-    "History",
-    "Health care",
-    "Marketing",
-  ];
+  const toggleItem = (list: string[], item: string) =>
+    list.includes(item) ? list.filter((i) => i !== item) : [...list, item];
 
-  const handleSkillsClick = (item: string) => {
-    const currentSkills = formik?.values?.skills;
-    // Check if currentSkills is an array and then safely update it
-    if (Array.isArray(currentSkills)) {
-      const updatedSkills = currentSkills.includes(item)
-        ? currentSkills.filter((i) => i !== item) // Remove if already in the array
-        : [...currentSkills, item]; // Add if not in the array
-      formik.setFieldValue("skills", updatedSkills);
-    } else {
-      // If currentSkills is not an array (which shouldn't happen if initialValues is set correctly)
-      console.error("skills is not an array:", currentSkills);
-    }
-  };
+  const handleSkillsClick = (item: string) =>
+    setValue("skills", toggleItem(selectedSkills, item), { shouldValidate: true });
 
-  const handleInterestClick = (item: string) => {
-    const currentInterests = formik?.values?.interests;
-    // Check if currentInterests is an array and then safely update it
-    if (Array.isArray(currentInterests)) {
-      const updatedInterests = currentInterests.includes(item)
-        ? currentInterests.filter((i) => i !== item) // Remove if already in the array
-        : [...currentInterests, item]; // Add if not in the array
-      formik.setFieldValue("interests", updatedInterests);
-    } else {
-      // If currentInterests is not an array (which shouldn't happen if initialValues is set correctly)
-      console.error("interests is not an array:", currentInterests);
-    }
-  };
+  const handleInterestClick = (item: string) =>
+    setValue("interests", toggleItem(selectedInterests, item), { shouldValidate: true });
 
-  const usernameSchema = yup.object({
-    username: yup.string().required("Username is required"),
-  });
+  const onSubmit = (values: FormValues) => {
+    const payload =
+      type === "socials"
+        ? {
+            socials: (["facebook", "linkedin", "twitter", "instagram"] as const)
+              .filter((key) => values[key])
+              .map((key) => ({ name: key, value: values[key] as string })),
+          }
+        : values;
 
-  const bioSchema = yup.object({
-    bio: yup.string().required("Bio is required"),
-  });
-
-  const industrySchema = yup.object({
-    industry: yup.string().required("Industry is required"),
-  });
-
-  const addressSchema = yup.object({
-    address: yup.string(),
-    city: yup.string(),
-    country: yup.string(),
-    state: yup.string(),
-  });
-
-  const skillsSchema = yup.object({
-    skills: yup
-      .array()
-      .of(yup.string()) // Ensure it's an array of strings
-      .min(3, "At least three skills are required") // Add min length validation to prevent empty arrays
-      .required("Skills is required"), // Required field
-    interests: yup
-      .array()
-      .of(yup.string()) // Ensure it's an array of strings
-      .min(3, "At least three interests are required") // Add min length validation to prevent empty arrays
-      .required("Interests is required"), // Required field
-  });
-
-  const socialsSchema = yup.object({
-    socials: yup.array(),
-  });
-
-  const profileTypeSchema = (type: string) => {
-    switch (type) {
-      case "username":
-        return {
-          schema: usernameSchema,
-          initialValues: { username: "" },
-          endpoint: "/user/profile/settings/change-username",
-        };
-      case "bio":
-        return {
-          schema: bioSchema,
-          initialValues: { bio: "" },
-          endpoint: "/user/profile/settings/change-bio",
-        };
-      case "industry":
-        return {
-          schema: industrySchema,
-          initialValues: { industry: "" },
-          endpoint: "/user/profile/settings/change-profession",
-        };
-      case "addresses":
-        return {
-          schema: addressSchema,
-          initialValues: { address: "", city: "", country: "", state: "" },
-          endpoint: "/user/profile/settings/change-address",
-        };
-      case "skills-interest":
-        return {
-          schema: skillsSchema,
-          initialValues: { skills: [], interests: [] },
-          endpoint: "/user/profile/settings/change-skills",
-        };
-      case "socials":
-        return {
-          schema: socialsSchema,
-          initialValues: { socials: [] },
-          endpoint: "/user/profile/settings/change-socials",
-        };
-      default:
-        return {
-          schema: usernameSchema,
-          initialValues: { username: "" },
-          endpoint: "/user/profile/settings/change-username",
-        };
-    }
-  };
-
-  const formik = useFormik<FormValues>({
-    initialValues: profileTypeSchema(type).initialValues,
-    validationSchema: profileTypeSchema(type).schema,
-    validateOnMount: true,
-    enableReinitialize: true,
-    onSubmit: async (values) => {
-      updateProfileFieldMutation.mutate(
-        { data: values, url: profileTypeSchema(type).endpoint },
-        {
-          onSuccess: () => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: `${type} updated successfully`,
-                type: "success",
-              }),
-            );
-            toggle();
-          },
-          onError: () => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: `Something went wrong`,
-                type: "error",
-              }),
-            );
-          },
+    updateProfileFieldMutation.mutate(
+      { data: payload, url: config.endpoint },
+      {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: `${type} updated successfully`,
+              type: "success",
+            }),
+          );
+          toggle();
         },
-      );
-    },
-  });
-
-  useEffect(() => {
-    // Get updated initialValues and validation schema based on `type`
-    const { initialValues, schema } = profileTypeSchema(type);
-
-    // Update Formik state with new schema and clear/reset values only for current type fields
-    formik.setFormikState((prev) => ({
-      ...prev,
-      validationSchema: schema,
-    }));
-
-    // Reset form values for the current `type` only
-    formik.resetForm({ values: initialValues });
-    // formik is recreated on every keystroke and profileTypeSchema is a
-    // plain function redeclared every render — adding either here would
-    // re-run this reset on every render, discarding the user's own
-    // edits. This effect must only fire when the field `type` changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
-
-  const { setFieldValue } = formik;
-  useEffect(() => {
-    if (user) {
-      switch (type) {
-        case "username":
-          setFieldValue("username", user.username);
-          break;
-        case "bio":
-          setFieldValue("bio", user.bio);
-          break;
-        case "industry":
-          setFieldValue("industry", user.industry);
-          break;
-        case "skills-interest":
-          setFieldValue("skills", user.skills);
-          setFieldValue("interests", user.interests);
-          break;
-        case "addresses":
-          setFieldValue("address", user.address?.address);
-          setFieldValue("city", user.address?.city);
-          setFieldValue("country", user.address?.country);
-          setFieldValue("state", user.address?.state);
-          break;
-        case "socials":
-          setFieldValue("socials", user.socials);
-          break;
-        default:
-          break;
-      }
-    }
-  }, [user, type, setFieldValue]);
-
-  const getSocialUrl = (platform: string) => {
-    const social = user?.socials?.find((s) => s.name === platform);
-    return social ? social.value : ""; // Return empty string if not found
+        onError: (error) => {
+          if (applyServerErrors(error, setError, config.fields as unknown as (keyof FormValues)[]))
+            return;
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: `Something went wrong`,
+              type: "error",
+            }),
+          );
+        },
+      },
+    );
   };
 
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="laptop:h-full laptop:w-[480px] laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="cursor-pointer" onClick={toggle}>
+              <CloseIcon className="w-[11.25px]" />
+            </div>
+            <p className="text-[16px] font-semibold">Change {profileTypeHeader(type)}</p>
+          </div>
+          <div className="laptop:block hidden">
+            <SubmitButton
+              title="Save changes"
+              isValid={isValid}
+              loading={isSubmitting}
+              classes="max-w-[135px] p-2 max-h-[39px] rounded-xl border shadow-custom-bottom"
+            />
+          </div>
+        </div>
+        <div className="mt-6">
+          <div className="flex flex-col gap-y-[300px]">
+            <div className="flex flex-col">
+              {type === "username" && (
+                <div className="mt-6 grid gap-1">
+                  <Label
+                    htmlFor="username"
+                    className="text-text-grey text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Username
+                  </Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder=""
+                    className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
+                    {...register("username")}
+                  />
+                  <FieldError message={errors.username?.message} />
+                </div>
+              )}
+
+              {type === "bio" && (
+                <div className="mt-6 grid gap-1">
+                  <Label
+                    htmlFor="bio"
+                    className="text-text-grey text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Bio
+                  </Label>
+                  <Input
+                    id="bio"
+                    type="text"
+                    placeholder=""
+                    className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
+                    {...register("bio")}
+                  />
+                  <FieldError message={errors.bio?.message} />
+                </div>
+              )}
+
+              {type === "industry" && (
+                <div className="mt-6 grid gap-1">
+                  <Label
+                    htmlFor="industry"
+                    className="text-text-grey text-[14px] leading-[16.8px] font-normal"
+                  >
+                    Profession
+                  </Label>
+                  <Input
+                    id="industry"
+                    type="text"
+                    placeholder=""
+                    className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
+                    {...register("industry")}
+                  />
+                  <FieldError message={errors.industry?.message} />
+                </div>
+              )}
+
+              {type === "addresses" && (
+                <>
+                  <div className="grid gap-4">
+                    <Label htmlFor="address" className="font-label">
+                      Address
+                    </Label>
+                    <Input
+                      id="address"
+                      type="text"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
+                      {...register("address")}
+                    />
+                    <FieldError message={errors.address?.message} />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="city" className="font-label">
+                      City
+                    </Label>
+                    <Input
+                      id="city"
+                      type="text"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
+                      {...register("city")}
+                    />
+                    <FieldError message={errors.city?.message} />
+                  </div>
+
+                  <div className="my-2 grid gap-2">
+                    <Label htmlFor="email" className="font-label">
+                      Country
+                    </Label>
+                    <select
+                      id="country"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                      {...register("country")}
+                    >
+                      <option value="">Select country</option>
+                      {CountryList.getAll().map((country, index) => (
+                        <option value={country.name} key={index}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                    <FieldError message={errors.country?.message} />
+                  </div>
+                  <div className="my-2 grid gap-2">
+                    <Label htmlFor="state" className="font-label">
+                      State/Region
+                    </Label>
+                    <Input
+                      id="state"
+                      type="text"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
+                      {...register("state")}
+                    />
+                    <FieldError message={errors.state?.message} />
+                  </div>
+                </>
+              )}
+
+              {type === "skills-interest" && (
+                <div className="mt-6 grid gap-1">
+                  <div>
+                    <p className="font-sans text-[18px] font-semibold">Skills</p>
+                  </div>
+                  <div className="grid grid-cols-[repeat(3,auto)] gap-3">
+                    {SKILLS.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
+                          selectedSkills.includes(item)
+                            ? "bg-gradient-green text-white"
+                            : "bg-light_grey"
+                        }`}
+                        onClick={() => handleSkillsClick(item)}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <FieldError message={errors.skills?.message} />
+                  <div className="mt-2">
+                    <p className="font-sans text-[18px] font-semibold">Interests</p>
+                  </div>
+                  <div className="grid grid-cols-[repeat(4,auto)] gap-3">
+                    {INTERESTS.map((item, idx) => (
+                      <div
+                        className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
+                          selectedInterests.includes(item)
+                            ? "bg-gradient-green text-white"
+                            : "bg-light_grey"
+                        }`}
+                        key={idx}
+                        onClick={() => handleInterestClick(item)}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <FieldError message={errors.interests?.message} />
+                </div>
+              )}
+
+              {type === "socials" && (
+                <div className="mt-6 grid gap-1">
+                  {(
+                    [
+                      { name: "facebook" as const, icon: images.FACEBOOK },
+                      { name: "linkedin" as const, icon: images.LINKEDIN },
+                      { name: "twitter" as const, icon: images.TWITTER },
+                      { name: "instagram" as const, icon: images.INSTAGRAM },
+                    ] as const
+                  ).map((field) => (
+                    <label
+                      key={field.name}
+                      htmlFor={field.name}
+                      className="bg-light_grey focus-within:border-step-color flex h-14 w-full items-center gap-3 rounded-xl border border-transparent px-5"
+                    >
+                      <Image
+                        src={field.icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="h-5 w-5 shrink-0"
+                      />
+                      <input
+                        id={field.name}
+                        type="text"
+                        className="form-font placeholder:text-text-grey h-full w-full min-w-0 flex-1 border-0 bg-transparent p-0 shadow-none outline-none focus:border-0 focus:ring-0 focus:outline-none focus-visible:outline-none"
+                        placeholder="Username"
+                        {...register(field.name)}
+                      />
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="laptop:hidden flex">
+              <SubmitButton
+                title="Save changes"
+                isValid={isValid}
+                loading={isSubmitting}
+                classes="w-full laptop:max-w-[135px] p-2 h-12 laptop:max-h-[39px] rounded-xl border shadow-custom-bottom"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) => {
   return (
     <Dialog
       open={isOpen}
@@ -314,270 +493,9 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Change {profileTypeHeader()}</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="laptop:h-full laptop:w-[480px] laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="cursor-pointer" onClick={toggle}>
-                  <CloseIcon className="w-[11.25px]" />
-                </div>
-                <p className="text-[16px] font-semibold">Change {profileTypeHeader()}</p>
-              </div>
-              <div className="laptop:block hidden">
-                <FormikButton
-                  title="Save changes"
-                  error={formik.isValid}
-                  loading={formik.isSubmitting}
-                  classes="max-w-[135px] p-2 max-h-[39px] rounded-xl border shadow-custom-bottom"
-                />
-              </div>
-            </div>
-            <div className="mt-6">
-              <div className="flex flex-col gap-y-[300px]">
-                <div className="flex flex-col">
-                  {type === "username" && (
-                    <div className="mt-6 grid gap-1">
-                      <Label
-                        htmlFor="username"
-                        className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-                      >
-                        Username
-                      </Label>
-                      <Input
-                        id="username"
-                        type="text"
-                        placeholder=""
-                        className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
-                        value={formik.values.username}
-                        onChange={formik.handleChange}
-                      />
-                    </div>
-                  )}
-
-                  {type === "bio" && (
-                    <div className="mt-6 grid gap-1">
-                      <Label
-                        htmlFor="bio"
-                        className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-                      >
-                        Bio
-                      </Label>
-                      <Input
-                        id="bio"
-                        type="text"
-                        placeholder=""
-                        className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
-                        value={formik.values.bio}
-                        onChange={formik.handleChange}
-                      />
-                    </div>
-                  )}
-
-                  {type === "industry" && (
-                    <div className="mt-6 grid gap-1">
-                      <Label
-                        htmlFor="industry"
-                        className="text-text-grey text-[14px] leading-[16.8px] font-normal"
-                      >
-                        Profession
-                      </Label>
-                      <Input
-                        id="industry"
-                        type="text"
-                        placeholder=""
-                        className="border-step-color bg-light_grey h-12 rounded-xl border-[1.5px]"
-                        value={formik.values.industry}
-                        onChange={formik.handleChange}
-                      />
-                    </div>
-                  )}
-
-                  {type === "addresses" && (
-                    <>
-                      <div className="grid gap-4">
-                        <Label htmlFor="address" className="font-label">
-                          Address
-                        </Label>
-                        <Input
-                          id="address"
-                          type="text"
-                          className="form-font bg-light_grey h-12 rounded-xl border-0"
-                          value={formik.values.address}
-                          onBlur={formik.handleBlur}
-                          onChange={formik.handleChange}
-                        />
-                        {checkError("address", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.address}</p>
-                        ) : null}
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="city" className="font-label">
-                          City
-                        </Label>
-                        <Input
-                          id="city"
-                          type="text"
-                          className="form-font bg-light_grey h-12 rounded-xl border-0"
-                          value={formik.values.city}
-                          onBlur={formik.handleBlur}
-                          onChange={formik.handleChange}
-                        />
-                        {checkError("city", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.city}</p>
-                        ) : null}
-                      </div>
-
-                      <div className="my-2 grid gap-2">
-                        <Label htmlFor="email" className="font-label">
-                          Country
-                        </Label>
-                        <select
-                          id="country"
-                          className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
-                          value={formik.values.country}
-                          onChange={(e) => {
-                            formik.setFieldValue("country", e.target.value);
-                          }}
-                        >
-                          <option value="">Select country</option>
-                          {CountryList.getAll().map((country, index) => (
-                            <option value={country.name} key={index}>
-                              {country.name}
-                            </option>
-                          ))}
-                        </select>
-                        {checkError("country", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.country}</p>
-                        ) : null}
-                      </div>
-                      <div className="my-2 grid gap-2">
-                        <Label htmlFor="state" className="font-label">
-                          State/Region
-                        </Label>
-                        <Input
-                          id="state"
-                          type="text"
-                          className="form-font bg-light_grey h-12 rounded-xl border-0"
-                          value={formik.values.state}
-                          onBlur={formik.handleBlur}
-                          onChange={formik.handleChange}
-                        />
-                        {checkError("state", formik) ? (
-                          <p className="text-[12px] text-[#FF8D8D]">{formik.errors.state}</p>
-                        ) : null}
-                      </div>
-                    </>
-                  )}
-
-                  {type === "skills-interest" && (
-                    <div className="mt-6 grid gap-1">
-                      <div>
-                        <p className="font-sans text-[18px] font-semibold">Skills</p>
-                      </div>
-                      <div className="grid grid-cols-[repeat(3,auto)] gap-3">
-                        {skills.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${
-                              Array.isArray(formik.values.skills) &&
-                              formik.values.skills.includes(item)
-                                ? "bg-gradient-green text-white"
-                                : "bg-light_grey"
-                            }`}
-                            onClick={() => handleSkillsClick(item)}
-                          >
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                      {checkError("skills", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.skills}</p>
-                      ) : null}
-                      <div className="mt-2">
-                        <p className="font-sans text-[18px] font-semibold">Interests</p>
-                      </div>
-                      <div className="grid grid-cols-[repeat(4,auto)] gap-3">
-                        {interests.map((item, idx) => (
-                          <div
-                            className={`text-text-grey inline-block cursor-pointer rounded-lg p-2 py-3 text-center text-[14px] font-normal whitespace-nowrap ${Array.isArray(formik.values.interests) && formik.values.interests.includes(item) ? "bg-gradient-green text-white" : "bg-light_grey"}`}
-                            key={idx}
-                            onClick={() => handleInterestClick(item)}
-                          >
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                      {checkError("interests", formik) ? (
-                        <p className="text-[12px] text-[#FF8D8D]">{formik.errors.interests}</p>
-                      ) : null}
-                    </div>
-                  )}
-
-                  {type === "socials" && (
-                    <div className="mt-6 grid gap-1">
-                      {(
-                        [
-                          {
-                            name: "facebook",
-                            icon: images.FACEBOOK,
-                            value: socials.facebook || getSocialUrl("facebook"),
-                          },
-                          {
-                            name: "linkedin",
-                            icon: images.LINKEDIN,
-                            value: socials.linkedin || getSocialUrl("linkedin"),
-                          },
-                          {
-                            name: "twitter",
-                            icon: images.TWITTER,
-                            value: socials.twitter || getSocialUrl("twitter"),
-                          },
-                          {
-                            name: "instagram",
-                            icon: images.INSTAGRAM,
-                            value: socials.instagram || getSocialUrl("instagram"),
-                          },
-                        ] as const
-                      ).map((field) => (
-                        <label
-                          key={field.name}
-                          htmlFor={field.name}
-                          className="bg-light_grey focus-within:border-step-color flex h-14 w-full items-center gap-3 rounded-xl border border-transparent px-5"
-                        >
-                          <Image
-                            src={field.icon}
-                            alt=""
-                            width={20}
-                            height={20}
-                            className="h-5 w-5 shrink-0"
-                          />
-                          <input
-                            name={field.name}
-                            id={field.name}
-                            type="text"
-                            className="form-font placeholder:text-text-grey h-full w-full min-w-0 flex-1 border-0 bg-transparent p-0 shadow-none outline-none focus:border-0 focus:ring-0 focus:outline-none focus-visible:outline-none"
-                            placeholder="Username"
-                            value={field.value}
-                            onChange={handleChange}
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="laptop:hidden flex">
-                  <FormikButton
-                    title="Save changes"
-                    error={formik.isValid}
-                    loading={formik.isSubmitting}
-                    classes="w-full laptop:max-w-[135px] p-2 h-12 laptop:max-h-[39px] rounded-xl border shadow-custom-bottom"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+        <DialogTitle className="sr-only">Change {profileTypeHeader(type)}</DialogTitle>
+        {/* Remount when the edited field changes so the schema and defaults reset. */}
+        <UpdateForm key={type} toggle={toggle} type={type} user={user} />
       </DialogContentBare>
     </Dialog>
   );

@@ -4,9 +4,12 @@ import LocationIcon from "@/images/icons/location.svg";
 import React from "react";
 import { useBusinessCategoriesQuery } from "@/features/shared/queries";
 import NairaIcon from "@/images/icons/nairaIcon.svg";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { businessFilterSchema, type BusinessFilterInput } from "@/features/business/schema";
+import { FieldError } from "@/components/global/FieldError";
+import { applyServerErrors } from "@/lib/form-errors";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useFilterBusinessMutation } from "@/features/business/mutations";
 
 type FilterBusinessInterface = {
@@ -18,36 +21,58 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
   const filterBusinessMutation = useFilterBusinessMutation();
   const { data } = useBusinessCategoriesQuery();
 
-  const handleCategoryChange = (value: string) => {
-    formik.setFieldValue("category", value);
-  };
-
-  const businessFilterSchema = yup.object({
-    category: yup.string(),
-    location: yup.string(),
-    service_type: yup.string(),
-    start_range: yup.string(),
-    end_range: yup.string(),
-  });
-
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    reset,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<BusinessFilterInput>({
+    resolver: zodResolver(businessFilterSchema),
+    defaultValues: {
       category: "",
       location: "",
       start_range: "",
       end_range: "",
       service_type: "",
     },
-    validationSchema: businessFilterSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      filterBusinessMutation.mutate(values);
-      toggle();
-    },
+    mode: "onTouched",
   });
 
+  const handleCategoryChange = (value: string) => {
+    setValue("category", value, { shouldValidate: true });
+  };
+
+  const onSubmit = (values: BusinessFilterInput) => {
+    filterBusinessMutation.mutate(
+      {
+        category: values.category ?? "",
+        location: values.location ?? "",
+        start_range: values.start_range ?? "",
+        end_range: values.end_range ?? "",
+        service_type: values.service_type ?? "",
+      },
+      {
+        onError: (error: Error) => {
+          if (
+            applyServerErrors(error, setError, [
+              "category",
+              "location",
+              "service_type",
+              "start_range",
+              "end_range",
+            ])
+          )
+            return;
+        },
+      },
+    );
+    toggle();
+  };
+
   const handleResetFilter = () => {
-    formik.resetForm();
+    reset();
     toggle();
   };
 
@@ -64,7 +89,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
             <p>Business filter</p>
           </div>
         </div>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-6 flex flex-col">
             <div className="mt-6 grid gap-2">
               <Label
@@ -79,15 +104,13 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   <input
                     id="search"
                     type="text"
-                    value={formik.values.location}
                     className="bg-light_grey w-full rounded-xl border-0 px-1 text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Enter location"
-                    onChange={(e) => {
-                      formik.setFieldValue("location", e.target.value);
-                    }}
+                    {...register("location")}
                   />
                 </div>
               </div>
+              <FieldError message={errors.location?.message} />
             </div>
 
             {/*business category*/}
@@ -122,6 +145,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   </SelectContent>
                 </Select>
               </div>
+              <FieldError message={errors.category?.message} />
             </div>
 
             {/*service type*/}
@@ -137,15 +161,13 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                   <input
                     id="search"
                     type="text"
-                    value={formik.values.service_type}
                     className="bg-light_grey w-full rounded-xl border-0 px-1 font-sans text-[14px] focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Service Type"
-                    onChange={(e) => {
-                      formik.setFieldValue("service_type", e.target.value);
-                    }}
+                    {...register("service_type")}
                   />
                 </div>
               </div>
+              <FieldError message={errors.service_type?.message} />
             </div>
             {/*range*/}
             <div className="mt-6 grid">
@@ -162,14 +184,14 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                     type="text"
                     className="w-full border-none bg-transparent text-sm outline-none focus:outline-none"
                     placeholder="1000"
-                    value={formik.values.start_range}
-                    onChange={(e) => {
-                      // Only digits 1–9 (no 0, no symbols)
-                      e.target.value = e.target.value.replace(/[^1-9]/g, ""); // update field with cleaned value
-                      formik.setFieldValue("start_range", e.target.value);
-                    }}
-                    inputMode="numeric" // brings up number pad on mobile
-                    pattern="[1-9][0-9]*" // regex: must start with 1–9
+                    {...register("start_range", {
+                      onChange: (e) => {
+                        // Only digits 1–9 (no 0, no symbols)
+                        e.target.value = e.target.value.replace(/[^1-9]/g, "");
+                      },
+                    })}
+                    inputMode="numeric"
+                    pattern="[1-9][0-9]*"
                   />
                 </div>
                 <span>-</span>
@@ -179,21 +201,23 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                     type="text"
                     className="w-full border-none bg-transparent text-sm outline-none focus:outline-none"
                     placeholder="10000"
-                    value={formik.values.end_range}
-                    onChange={(e) => {
-                      // Only digits 1–9 (no 0, no symbols)
-                      e.target.value = e.target.value.replace(/[^1-9]/g, ""); // update field with cleaned value
-                      formik.setFieldValue("end_range", e.target.value);
-                    }}
-                    inputMode="numeric" // brings up number pad on mobile
-                    pattern="[1-9][0-9]*" // regex: must start with 1–9
+                    {...register("end_range", {
+                      onChange: (e) => {
+                        // Only digits 1–9 (no 0, no symbols)
+                        e.target.value = e.target.value.replace(/[^1-9]/g, "");
+                      },
+                    })}
+                    inputMode="numeric"
+                    pattern="[1-9][0-9]*"
                   />
                 </div>
               </div>
+              <FieldError message={errors.start_range?.message ?? errors.end_range?.message} />
             </div>
 
             <div className="mt-[30px] flex gap-1">
               <button
+                type="button"
                 className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
                 onClick={handleResetFilter}
               >
@@ -202,10 +226,10 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 </p>
               </button>
 
-              <FormikButton
+              <SubmitButton
                 title="Apply filter"
-                error={formik.isValid}
-                loading={formik.isSubmitting}
+                isValid={isValid}
+                loading={isSubmitting}
                 classes="auth-button px-3.5 p-2.5 rounded-xl border-step-color shadow-custom-bottom"
               />
             </div>

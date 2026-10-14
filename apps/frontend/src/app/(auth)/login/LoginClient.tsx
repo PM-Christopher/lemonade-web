@@ -4,9 +4,11 @@ import React, { useMemo } from "react";
 import { Card, CardContent, Input, Label } from "@lemonade/ui";
 import Image from "next/image";
 
-import { useFormik } from "formik";
-import { loginSchema } from "@lemonade/validation";
-import { FormikButton } from "@/components/global/FormikButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginInput } from "@lemonade/validation";
+import { FieldError } from "@/components/global/FieldError";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { useGoogleAuthMutation, useLoginMutation } from "@/features/authentication/mutations";
@@ -81,18 +83,23 @@ export default function LoginPage() {
     );
   };
 
-  const formik = useFormik({
-    initialValues: localLoginDefaults(),
-    validationSchema: loginSchema,
-    validateOnMount: true,
-    onSubmit: async (values) => {
-      try {
-        handleAuthResult(await loginMutation.mutateAsync(values));
-      } catch (error) {
-        showLoginError(error);
-      }
-    },
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: localLoginDefaults(),
+    mode: "onTouched",
   });
+
+  const onSubmit = async (values: LoginInput) => {
+    try {
+      handleAuthResult(await loginMutation.mutateAsync(values));
+    } catch (error) {
+      showLoginError(error);
+    }
+  };
 
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
@@ -127,7 +134,7 @@ export default function LoginPage() {
               Let&apos;s get you back into your account
             </p>
           </div>
-          <form onSubmit={formik.handleSubmit} className="w-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
               <CardContent className="grid gap-4 p-0">
                 <div className="grid gap-2">
@@ -142,10 +149,9 @@ export default function LoginPage() {
                     type="email"
                     placeholder="e.g. Janedoe@example.com"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    {...register("email")}
                   />
+                  <FieldError message={errors.email?.message} />
                 </div>
                 <div className="grid gap-2">
                   <Label
@@ -158,20 +164,19 @@ export default function LoginPage() {
                     id="password"
                     type="password"
                     className="form-font bg-light_grey h-12 rounded-xl border-0"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    {...register("password")}
                   />
+                  <FieldError message={errors.password?.message} />
                 </div>
                 <Link href={routes.FORGOT_PASSWORD}>
                   <p className="text-bl text-light-green cursor-pointer font-sans underline">
                     Forgot password?
                   </p>
                 </Link>
-                <FormikButton
-                  loading={formik.isSubmitting}
+                <SubmitButton
+                  loading={isSubmitting}
                   title="Login"
-                  error={formik.isValid}
+                  isValid={isValid}
                   classes="w-full h-12 rounded-xl"
                 />
                 <div className="flex items-center gap-3">

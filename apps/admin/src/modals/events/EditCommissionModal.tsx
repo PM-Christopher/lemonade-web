@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle, Input } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import * as yup from "yup";
-import { useFormik } from "formik";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useUpdateCommissionChargeMutation } from "@/features/events/mutations";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
+import { FieldError } from "@/components/global/FieldError";
+import { commissionChargeSchema, type CommissionChargeInput } from "@/features/events/schema";
 
 interface EditCommissionModalProps {
   isOpen: boolean;
@@ -16,46 +18,30 @@ interface EditCommissionModalProps {
 }
 
 function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissionModalProps) {
-  const [, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const updateCommissionChargeMutation = useUpdateCommissionChargeMutation();
-  const commSchema = yup.object({
-    percentage: yup.string().required("Commission percentage is required"),
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<CommissionChargeInput>({
+    resolver: zodResolver(commissionChargeSchema),
+    // The backend stores a fraction; the form shows a percentage.
+    values: { percentage: commissionCharge > 0 ? String(commissionCharge * 100) : "" },
+    mode: "onTouched",
   });
 
-  const formik = useFormik({
-    initialValues: {
-      percentage: "",
-    },
-    validationSchema: commSchema,
-    validateOnMount: true,
-    onSubmit: (values) => {
-      setLoading(true);
-      updateCommissionChargeMutation.mutate(Number(values.percentage), {
-        onSuccess: () => {
-          setLoading(false);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: `Commission charge updated!`,
-              type: "success",
-            }),
-          );
-          toggle();
-        },
-        onError: () => {
-          setLoading(false);
-        },
-      });
-    },
-  });
-
-  const { setFieldValue } = formik;
-  useEffect(() => {
-    if (commissionCharge > 0) {
-      setFieldValue("percentage", commissionCharge * 100);
-    }
-  }, [commissionCharge, setFieldValue]);
+  const onSubmit = (values: CommissionChargeInput) => {
+    updateCommissionChargeMutation.mutate(Number(values.percentage), {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({ show: true, message: "Commission charge updated!", type: "success" }),
+        );
+        toggle();
+      },
+    });
+  };
 
   return (
     <Dialog
@@ -66,7 +52,7 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Commission percentage</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="w-[360px] rounded-xl bg-white pt-4 pb-1">
             <div className={"px-4 py-1"}>
               <div className="flex items-center justify-between">
@@ -86,22 +72,22 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
               <Input
                 className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
                 placeholder={"Commission percentage"}
-                value={formik.values.percentage}
-                onChange={formik.handleChange("percentage")}
-                onBlur={formik.handleBlur}
                 type={"number"}
+                {...register("percentage")}
               />
+              <FieldError message={errors.percentage?.message} />
               <div className={"flex justify-between gap-2.5"}>
                 <button
+                  type="button"
                   className={"border-light-grey-50 h-12 w-[156px] rounded-xl border bg-white"}
                   onClick={toggle}
                 >
                   <p className={"text-[16px] font-medium text-black"}>Cancel</p>
                 </button>
-                <FormikButton
-                  loading={formik.isSubmitting}
+                <SubmitButton
+                  loading={updateCommissionChargeMutation.isPending}
                   title={"Save"}
-                  error={formik.isValid}
+                  isValid={isValid}
                   classes="border px-3.5 py-[11px] rounded-xl w-[156px]"
                 />
                 {/*<button className={"h-12 border bg-gradient-green rounded-xl w-[156px] text-center"}>*/}

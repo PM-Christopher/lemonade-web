@@ -18,6 +18,8 @@ export const signup = async (
   dispatch: AppDispatch,
   navigate: Navigate,
   setCookie: SetCookie,
+  // Returns true when it handled the error, e.g. by putting it on a form field.
+  onError?: (error: unknown) => boolean,
 ) => {
   dispatch(authStart());
   try {
@@ -38,13 +40,15 @@ export const signup = async (
     }
     navigate.push(routes.VERIFY_EMAIL);
   } catch (error) {
-    dispatch(
-      updateToastifyReducer({
-        show: true,
-        message: errorMessage(error, "Something went wrong. Please try again."),
-        type: "error",
-      }),
-    );
+    if (!onError?.(error)) {
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: errorMessage(error, "Something went wrong. Please try again."),
+          type: "error",
+        }),
+      );
+    }
     dispatch(authFailure());
   } finally {
     dispatch(loadStop());

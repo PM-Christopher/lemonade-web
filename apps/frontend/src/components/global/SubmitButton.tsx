@@ -5,25 +5,26 @@ const ColorRing = lazy(() =>
   import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),
 );
 
-interface FormikButtonProps {
+interface SubmitButtonProps {
   loading?: boolean;
   title?: string;
-  error?: boolean;
+  /** Enables the button. Pass the form's isValid. */
+  isValid?: boolean;
   classes?: string | null;
   bgColor?: string | null;
   errorColor?: string | null;
 }
 
-export const FormikButton = ({
+export const SubmitButton = ({
   loading = false,
   title = "Continue",
-  error = true,
+  isValid = true,
   classes = null,
   bgColor = null,
   errorColor = null,
-}: FormikButtonProps) => {
-  const isDisabled = loading || !error;
-  const defaultBg = bgColor === null ? (!error ? "bg-disabled-green" : "bg-gradient-green") : "";
+}: SubmitButtonProps) => {
+  const isDisabled = loading || !isValid;
+  const defaultBg = bgColor === null ? (!isValid ? "bg-disabled-green" : "bg-gradient-green") : "";
 
   return (
     <button
@@ -32,9 +33,9 @@ export const FormikButton = ({
         classes === null
           ? "flex h-12 w-fit items-center justify-center rounded-xl px-3.5 py-2.5"
           : classes
-      } ${loading && "opacity-70"} ${bgColor && !error ? errorColor : bgColor} ${defaultBg} ${
+      } ${loading && "opacity-70"} ${bgColor && !isValid ? errorColor : bgColor} ${defaultBg} ${
         loading && "bg-light-green cursor-not-allowed opacity-70"
-      } ${!error && "cursor-not-allowed"} `}
+      } ${!isValid && "cursor-not-allowed"} `}
       disabled={isDisabled}
     >
       {loading ? (

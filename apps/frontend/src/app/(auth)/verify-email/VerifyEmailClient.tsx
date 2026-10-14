@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@lemonade/ui";
 import Image from "next/image";
 import OtpInput from "react-otp-input";
-import { useFormik } from "formik";
-import { otpSchema } from "@lemonade/validation";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { otpSchema, type OtpCodeInput } from "@lemonade/validation";
 import { useCookies } from "react-cookie";
-import { FormikButton } from "@/components/global/FormikButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import {
   useLogoutMutation,
   useResendOtpMutation,
@@ -105,8 +106,21 @@ export default function VerifyPage() {
     }
   }, [seconds, STORAGE_KEY]);
 
+  const {
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<OtpCodeInput>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { code: "" },
+  });
+  const code = useWatch({ control, name: "code" });
+
   const handleResend = () => {
-    formik.setFieldValue("code", null);
+    setValue("code", "");
     resendOtpMutation.mutate(undefined, {
       onSuccess: () => {
         dispatch(
@@ -138,45 +152,36 @@ export default function VerifyPage() {
     });
   };
 
-  const formik = useFormik({
-    initialValues: {
-      code: "",
-    },
-    validationSchema: otpSchema,
-    validateOnMount: true,
-    validateOnChange: false,
-    onSubmit: async (values) => {
-      try {
-        await verifyAccountOtpMutation.mutateAsync(values);
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Email verified",
-            type: "success",
-          }),
-        );
-        dispatch(setIsRouting(true));
-        push(routes.PROFILE_SETUP);
-      } catch (error) {
-        if (isVerificationSessionExpired(error)) {
-          endVerificationSession(error.message);
-          return;
-        }
-        setCanResend(true);
-        formik.setFieldError("code", "Invalid code");
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error instanceof ApiError ? error.message : "Invalid code",
-            type: "error",
-          }),
-        );
+  const onSubmit = async (values: OtpCodeInput) => {
+    try {
+      await verifyAccountOtpMutation.mutateAsync(values);
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Email verified",
+          type: "success",
+        }),
+      );
+      dispatch(setIsRouting(true));
+      push(routes.PROFILE_SETUP);
+    } catch (error) {
+      if (isVerificationSessionExpired(error)) {
+        endVerificationSession(error.message);
+        return;
       }
-    },
-  });
+      setCanResend(true);
+      setError("code", { message: "Invalid code" });
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: error instanceof ApiError ? error.message : "Invalid code",
+          type: "error",
+        }),
+      );
+    }
+  };
 
-  const [, setOtp] = useState(formik.values.code);
-  const invalidCode = Boolean(formik.errors.code);
+  const invalidCode = Boolean(errors.code);
 
   return (
     <AuthLayout>
@@ -205,16 +210,15 @@ export default function VerifyPage() {
               account
             </p>
           </div>
-          <form onSubmit={formik.handleSubmit} className="w-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             <Card className="tablet:p-6 w-full rounded-2xl border-none p-5 shadow-none">
               <CardContent className="grid gap-6 p-0">
                 <div className="flex flex-col items-center">
                   <OtpInput
-                    value={formik.values.code || ""}
+                    value={code}
                     onChange={(value) => {
-                      setOtp(value);
-                      formik.setFieldValue("code", value, false);
-                      if (formik.errors.code) formik.setFieldError("code", undefined);
+                      setValue("code", value);
+                      if (errors.code) clearErrors("code");
                     }}
                     numInputs={4}
                     renderSeparator={<span className="w-3" />}
@@ -267,10 +271,10 @@ export default function VerifyPage() {
                     </p>
                   )}
                 </div>
-                <FormikButton
-                  loading={formik.isSubmitting || isVerifying}
+                <SubmitButton
+                  loading={isSubmitting || isVerifying}
                   title="Verify"
-                  error={(formik.values.code?.length ?? 0) === 4 && !invalidCode && !isVerifying}
+                  isValid={code.length === 4 && !invalidCode && !isVerifying}
                   classes="w-full h-12 rounded-xl"
                 />
               </CardContent>
