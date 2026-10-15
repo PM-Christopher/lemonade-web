@@ -16,6 +16,12 @@ describe("FallbackImage", () => {
     expect(srcOf()).toContain("/images/avatar_1.png");
   });
 
+  it("uses the fallback for a remote host that next/image does not allow", () => {
+    renderImage("https://example.com/photo.png");
+
+    expect(srcOf()).toContain(FALLBACK);
+  });
+
   it("uses the fallback when there is no src", () => {
     renderImage(null);
 

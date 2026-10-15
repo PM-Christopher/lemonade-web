@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import MoreIcon from "@/images/icons/moreIcon.svg";
@@ -171,8 +173,9 @@ const OpenedChat: React.FC<OpenChatProps> = ({
         <div className="flex items-center gap-2 px-4">
           <ChevronLeft className="laptop:hidden flex cursor-pointer" onClick={toggleOpenedChat} />
           {userType?.avatar ? (
-            <Image
+            <FallbackImage
               src={userType?.avatar}
+              fallbackSrc={images.AVATAR_4}
               alt="avatar"
               width={24}
               height={24}

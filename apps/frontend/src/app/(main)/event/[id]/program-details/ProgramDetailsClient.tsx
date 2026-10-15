@@ -1,11 +1,11 @@
 "use client";
 import { appUrl } from "@/lib/app-url";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
 import DotIcon from "@/images/icons/dot.svg";
 import LocationIcon from "@/images/icons/location-large.svg";
@@ -18,7 +18,6 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAffiliateEventDetailQuery } from "@/features/events/queries";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { getSafeImageSrc } from "@/lib/helper";
 
 interface TicketBreakdown {
   id?: number;
@@ -67,8 +66,9 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
             <div className="laptop:w-160 laptop:bg-white w-full gap-6 rounded-xl bg-none">
               <div className="laptop:p-6 p-0">
                 <div className="bg-green-tint laptop:w-full flex w-screen items-center gap-3 rounded-lg p-2 px-4">
-                  <Image
-                    src={getSafeImageSrc(programDetails?.events?.event_image, images.DEFAULT_EVENT)}
+                  <FallbackImage
+                    src={programDetails?.events?.event_image}
+                    fallbackSrc={images.DEFAULT_EVENT}
                     alt="details"
                     width={120}
                     height={120}

@@ -1,5 +1,6 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import React from "react";
 import Image from "next/image";
 import FacebookIcon from "@/images/icons/facebook-color.svg";
@@ -115,8 +116,9 @@ function SettingsClient() {
         <div className="bg-step-color laptop:w-160 flex w-full items-center justify-between rounded-xl p-4">
           <div className="flex items-center gap-2">
             {user?.profile_image ? (
-              <Image
+              <FallbackImage
                 src={user?.profile_image}
+                fallbackSrc={images.AVATAR_4}
                 alt="avatar"
                 width={40}
                 height={40}

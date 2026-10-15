@@ -1,9 +1,9 @@
 "use client";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
 import LocationIcon from "@/images/icons/location-large.svg";
 import DotIcon from "@/images/icons/dot.svg";
@@ -25,7 +25,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEventQuery, eventKeys } from "@/features/events/queries";
 import { useEventPromotionMutation } from "@/features/events/mutations";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { getSafeImageSrc } from "@/lib/helper";
+
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { EventProgramDetailSkeleton } from "@/components/Skeletons";
 import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
@@ -90,8 +90,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                 <div className="flex w-160 flex-col rounded-xl bg-white p-6">
                   <div className="bg-green-tint/60 flex items-center gap-6 rounded-xl p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     <div className="relative overflow-hidden rounded-lg shadow-md">
-                      <Image
-                        src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
+                      <FallbackImage
+                        src={event?.event_image}
+                        fallbackSrc={images.DEFAULT_EVENT}
                         alt={event?.event_name || "Event"}
                         width={120}
                         height={120}

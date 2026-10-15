@@ -1,4 +1,5 @@
 import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
@@ -77,8 +78,9 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
             } border-grey-90 text-meta flex items-center justify-center overflow-hidden rounded-full border bg-gray-200 leading-normal font-semibold text-gray-700`}
           >
             {comment.user.avatar ? (
-              <Image
+              <FallbackImage
                 src={comment.user.avatar}
+                fallbackSrc={images.AVATAR_4}
                 alt={comment.user.username}
                 width={isReply ? 32 : 40}
                 height={isReply ? 32 : 40}

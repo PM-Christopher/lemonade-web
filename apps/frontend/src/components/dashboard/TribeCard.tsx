@@ -1,10 +1,10 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import Image from "next/image";
 import { TribeInterface } from "@/interfaces/TribeInterface";
-import { getSafeImageSrc } from "@/lib/helper";
 
 type TribeIF = {
   tribe: TribeInterface;
@@ -15,8 +15,9 @@ const TribeCard: React.FC<TribeIF> = ({ tribe }) => {
   return (
     <div className="bg-light-yellow flex w-full flex-col rounded-2xl p-4 shadow-none">
       <div className="flex-shrink-0">
-        <Image
-          src={getSafeImageSrc(tribe?.image, images.DEFAULT_TRIBE)}
+        <FallbackImage
+          src={tribe?.image}
+          fallbackSrc={images.DEFAULT_TRIBE}
           alt="forum_icon"
           width={48}
           height={48}

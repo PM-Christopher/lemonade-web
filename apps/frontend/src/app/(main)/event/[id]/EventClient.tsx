@@ -1,8 +1,8 @@
 "use client";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React, { useEffect } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
 import ClockIcon from "@/images/icons/clock.svg";
 import LocationIcon from "@/images/icons/location-large.svg";
@@ -20,7 +20,7 @@ import { setEventReferral } from "@/features/events/event.slice";
 import { useEventQuery } from "@/features/events/queries";
 import { EventDetailsSkeleton } from "@/components/Skeletons";
 import { useSearchParams } from "next/navigation";
-import { getSafeImageSrc } from "@/lib/helper";
+
 import { routes } from "@/lib/routes";
 
 const EventClient = ({ id }: { id: number }) => {
@@ -68,8 +68,9 @@ const EventClient = ({ id }: { id: number }) => {
               <section className="laptop:max-w-275 laptop:flex-row laptop:items-center flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
                 {/* Event Image */}
                 <div className="laptop:w-120 w-full">
-                  <Image
-                    src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
+                  <FallbackImage
+                    src={event?.event_image}
+                    fallbackSrc={images.DEFAULT_EVENT}
                     alt={event?.event_name || "Event image"}
                     width={496}
                     height={532}

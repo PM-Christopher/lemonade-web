@@ -1,6 +1,6 @@
 import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import React from "react";
-import Image from "next/image";
 import TicketIcon from "@/images/icons/ticketGreyIcon.svg";
 
 const AgentEventCard = ({
@@ -16,8 +16,9 @@ const AgentEventCard = ({
 }) => {
   return (
     <div className="mb-6 flex flex-col">
-      <Image
-        src={image || images.AGENT_EVENT}
+      <FallbackImage
+        src={image}
+        fallbackSrc={images.AGENT_EVENT}
         alt="agent-image"
         width={164}
         height={164}

@@ -1,13 +1,12 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import { DotFilledIcon } from "@radix-ui/react-icons";
 import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatDate, formatLongTime } from "@/lib/dateTimeFormatter";
-import { getSafeImageSrc } from "@/lib/helper";
 
 const SideMenuEventCard = ({
   event,
@@ -22,8 +21,9 @@ const SideMenuEventCard = ({
     <div className="flex cursor-pointer justify-between p-4" onClick={() => toggle(ticket_id)}>
       <div className="flex items-center gap-2">
         <div>
-          <Image
-            src={getSafeImageSrc(event.event_image, images.DEFAULT_EVENT)}
+          <FallbackImage
+            src={event.event_image}
+            fallbackSrc={images.DEFAULT_EVENT}
             alt="upcoming_event"
             width={94}
             height={94}

@@ -1,4 +1,5 @@
 "use client";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
@@ -6,7 +7,6 @@ import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatCountry } from "@lemonade/domain";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { getSafeImageSrc } from "@/lib/helper";
 
 type BusinessCardIF = {
   business: BusinessInterface;
@@ -20,8 +20,9 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
         <div className="">
           <div className="flex justify-between">
             <div className="laptop:flex-col laptop:items-start laptop:gap-2.5 flex flex-row items-center justify-center gap-2">
-              <Image
-                src={getSafeImageSrc(business.image, images.BUSINESS_EMPTY)}
+              <FallbackImage
+                src={business.image}
+                fallbackSrc={images.BUSINESS_EMPTY}
                 alt="Overlay Image"
                 className="border-step-color h-10 w-10 rounded-xl border object-cover"
                 width={40}

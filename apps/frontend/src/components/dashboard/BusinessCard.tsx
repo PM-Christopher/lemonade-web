@@ -1,3 +1,4 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
 import Image from "next/image";
@@ -6,7 +7,6 @@ import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatCountry } from "@lemonade/domain";
-import { getSafeImageSrc } from "@/lib/helper";
 
 type BusinessIF = {
   business: BusinessInterface;
@@ -16,16 +16,18 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
   return (
     <>
       <div className="relative">
-        <Image
-          src={getSafeImageSrc(business?.image, images.BUSINESS_1)}
+        <FallbackImage
+          src={business?.image}
+          fallbackSrc={images.BUSINESS_1}
           alt="Main Image"
           className="h-26.25 w-full rounded-lg object-cover"
           width={320}
           height={105}
         />
         <div className="absolute -bottom-7 left-4 h-14 w-14">
-          <Image
-            src={getSafeImageSrc(business?.image, images.BUSINESS_EMPTY)}
+          <FallbackImage
+            src={business?.image}
+            fallbackSrc={images.BUSINESS_EMPTY}
             alt="Overlay Image"
             className="border-step-color h-14 w-14 rounded-xl border object-cover"
             height={56}

@@ -1,5 +1,6 @@
 import React from "react";
-import Image from "next/image";
+import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import DotIcon from "@/images/icons/dot.svg";
 import RatingIcon from "@/images/icons/ratingIcon.svg";
 import { formatDecimal } from "@/lib/helper";
@@ -31,8 +32,9 @@ const Reviews: React.FC<ReviewInterface> = ({ review }) => {
         <div className="flex items-center justify-between">
           <div className="mt-3.5 flex items-center gap-2">
             <div className="rounded-md border">
-              <Image
+              <FallbackImage
                 src={review.user.avatar}
+                fallbackSrc={images.AVATAR_4}
                 alt="avatar"
                 width={16}
                 height={16}

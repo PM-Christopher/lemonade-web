@@ -17,9 +17,11 @@ export const formatName = (name: string) => {
 // example.com (clearly placeholder, not a real image host), which doesn't
 // need adding to the allowlist since it will never actually serve an
 // image — treat it the same as a missing image instead.
+// In development the local backend's own host is allowed too (set in next.config.mjs).
 const ALLOWED_IMAGE_HOSTS = [
   "dev-lemonade-bucket.lon1.digitaloceanspaces.com",
   "res.cloudinary.com",
+  ...(process.env.NEXT_PUBLIC_LOCAL_IMAGE_HOST ? [process.env.NEXT_PUBLIC_LOCAL_IMAGE_HOST] : []),
 ];
 
 export const getSafeImageSrc = (url: string | null | undefined, fallback: string) => {

@@ -1,11 +1,10 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { CalendarIcon } from "lucide-react";
 import DotIcon from "@/images/icons/dot.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
-import { getSafeImageSrc } from "@/lib/helper";
 
 interface ImageSlider {
   showArrows: boolean;
@@ -56,8 +55,9 @@ const Carousel: React.FC<ImageSlider> = ({
               index === currentIndex ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
-            <Image
-              src={getSafeImageSrc(item?.event_image, images.DEFAULT_EVENT)}
+            <FallbackImage
+              src={item?.event_image}
+              fallbackSrc={images.DEFAULT_EVENT}
               alt={item?.event_name ? `${item.event_name} banner` : `Slide ${index + 1}`}
               fill
               priority={index === 0}

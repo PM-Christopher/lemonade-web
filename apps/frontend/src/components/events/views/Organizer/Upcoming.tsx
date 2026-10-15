@@ -1,8 +1,8 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
 import ClockIcon from "@/images/icons/clock.svg";
 import LocationIcon from "@/images/icons/location-large.svg";
@@ -13,7 +13,6 @@ import { EventInterface } from "@/interfaces/EventInterface";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 
 import { EventsSkeleton } from "@/components/Skeletons";
-import { getSafeImageSrc } from "@/lib/helper";
 
 const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: boolean }) => {
   const { push } = useNavigation();
@@ -21,8 +20,9 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
     <>
       {events?.length > 0 && (
         <div className="laptop:w-195 laptop:flex-row laptop:pr-20 flex w-full flex-col gap-6 rounded-2xl bg-white pr-0">
-          <Image
-            src={getSafeImageSrc(events[0]?.event_image, images.DEFAULT_EVENT)}
+          <FallbackImage
+            src={events[0]?.event_image}
+            fallbackSrc={images.DEFAULT_EVENT}
             alt="poster"
             width={320}
             height={343}

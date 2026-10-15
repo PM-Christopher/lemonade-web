@@ -1,3 +1,4 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -6,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { navLinks } from "../../../pageLinks";
 import { isActiveLink } from "@/lib/activeLink";
 import { useSelector } from "react-redux";
-import { formatName, getInitials, getSafeImageSrc } from "@/lib/helper";
+import { formatName, getInitials } from "@/lib/helper";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemonade/ui";
 import { useNotificationsQuery, type AppNotification } from "@/features/notifications";
@@ -95,8 +96,9 @@ const TopNav = () => {
           <div className="group cursor-pointer transition-all duration-300">
             <Link href={routes.SETTINGS}>
               {user?.profile_image ? (
-                <Image
+                <FallbackImage
                   src={user?.profile_image}
+                  fallbackSrc={images.AVATAR_4}
                   alt="avatar"
                   width={40}
                   height={40}
@@ -183,8 +185,9 @@ const TopNav = () => {
               {selectedNotification?.type === "tribe" && (
                 <div className="space-y-2 rounded-md border p-3">
                   <p className="font-semibold">Tribe Details</p>
-                  <Image
-                    src={getSafeImageSrc(selectedNotification.meta?.image, images.PLACEHOLDER)}
+                  <FallbackImage
+                    src={selectedNotification.meta?.image}
+                    fallbackSrc={images.PLACEHOLDER}
                     alt="tribe image"
                     width={300}
                     height={200}
@@ -233,11 +236,9 @@ const TopNav = () => {
               {selectedNotification?.type === "event" && (
                 <div className="space-y-2 rounded-md border p-3">
                   <p className="font-semibold">Event Details</p>
-                  <Image
-                    src={getSafeImageSrc(
-                      selectedNotification.meta?.event_image,
-                      images.DEFAULT_EVENT,
-                    )}
+                  <FallbackImage
+                    src={selectedNotification.meta?.event_image}
+                    fallbackSrc={images.DEFAULT_EVENT}
                     alt="event image"
                     width={300}
                     height={200}

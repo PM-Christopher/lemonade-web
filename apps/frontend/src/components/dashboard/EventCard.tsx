@@ -1,11 +1,10 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendarIcon.svg";
 import DotIcon from "@/images/icons/dot.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
 import { formatDate, formatTime } from "@/lib/dateTimeFormatter";
-import { getSafeImageSrc } from "@/lib/helper";
 
 type EventIF = {
   event: EventInterface;
@@ -15,8 +14,9 @@ const EventCard: React.FC<EventIF> = ({ event }) => {
   return (
     <div className="flex w-full flex-col overflow-hidden rounded-2xl shadow-sm">
       <div className="flex h-50 flex-shrink-0 items-center justify-center bg-white">
-        <Image
-          src={getSafeImageSrc(event?.event_image, images.EVENT_1)}
+        <FallbackImage
+          src={event?.event_image}
+          fallbackSrc={images.EVENT_1}
           alt="event_1"
           width={200}
           height={200}

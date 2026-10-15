@@ -1,8 +1,8 @@
 "use client";
 
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React, { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import MainLayout from "@/components/layouts/MainLayout";
@@ -25,7 +25,7 @@ import { useGenerateAffiliateLinkMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { getSafeImageSrc } from "@/lib/helper";
+
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
 import { routes } from "@/lib/routes";
 
@@ -188,8 +188,9 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                     {/* Image */}
                     <div className="laptop:w-120 w-full">
                       <div className="laptop:aspect-[496/532] relative aspect-[16/11] w-full bg-gray-100">
-                        <Image
-                          src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
+                        <FallbackImage
+                          src={event?.event_image}
+                          fallbackSrc={images.DEFAULT_EVENT}
                           alt={event?.event_name || "event image"}
                           fill
                           priority={false}

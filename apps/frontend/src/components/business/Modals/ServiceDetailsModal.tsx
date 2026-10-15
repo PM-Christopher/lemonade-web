@@ -1,14 +1,14 @@
 "use client";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import Image from "next/image";
 import ClockIconOrange from "@/images/icons/clockIconOrange.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { formatStringUCFirst, getInitials, getSafeImageSrc } from "@/lib/helper";
+import { formatStringUCFirst, getInitials } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -177,8 +177,9 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                 {job?.status === "PENDING" || job?.status === "ACCEPTED" ? (
                   <>
                     {job.user?.profile_image ? (
-                      <Image
+                      <FallbackImage
                         src={job.user.profile_image}
+                        fallbackSrc={images.AVATAR_4}
                         alt="avatar"
                         width={72}
                         height={72}
@@ -195,8 +196,9 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                   </>
                 ) : (
                   <>
-                    <Image
-                      src={getSafeImageSrc(job.business?.image, images.PLACEHOLDER)}
+                    <FallbackImage
+                      src={job.business?.image}
+                      fallbackSrc={images.PLACEHOLDER}
                       alt="job logo"
                       width={72}
                       height={72}

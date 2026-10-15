@@ -1,5 +1,6 @@
 "use client";
 import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
@@ -198,8 +199,9 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           {thread?.created_by?.user?.avatar ? (
-            <Image
-              src={thread?.created_by?.user?.avatar || "/default-avatar.png"}
+            <FallbackImage
+              src={thread?.created_by?.user?.avatar}
+              fallbackSrc={images.AVATAR_4}
               alt="avatar"
               width={48}
               height={48}

@@ -1,7 +1,7 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import Image from "next/image";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
 import FacebookIcon from "@/images/icons/facebook-color.svg";
 import InstagramIcon from "@/images/icons/instagram-color.svg";
@@ -9,7 +9,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { formatString, getSafeImageSrc } from "@/lib/helper";
+import { formatString } from "@/lib/helper";
 
 interface ConnectUserInfo {
   receiver?: {
@@ -49,8 +49,9 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
           </div>
           <div className="mt-6">
             <div className="flex flex-col items-center justify-center">
-              <Image
-                src={getSafeImageSrc(userInfo?.receiver?.avatar, images.PLACEHOLDER)}
+              <FallbackImage
+                src={userInfo?.receiver?.avatar}
+                fallbackSrc={images.PLACEHOLDER}
                 alt="check in"
                 width={64}
                 height={64}

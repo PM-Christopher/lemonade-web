@@ -1,10 +1,10 @@
 "use client";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import ClockIcon from "@/images/icons/clock.svg";
 import { Button } from "@lemonade/ui";
@@ -21,7 +21,6 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronUp } from "lucide-react";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { EventTicketDetailSkeleton } from "@/components/Skeletons";
-import { getSafeImageSrc } from "@/lib/helper";
 
 const TicketSummary = dynamic(() => import("@/components/events/Modals/TicketSummary"), {
   ssr: false,
@@ -139,8 +138,9 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                   <div className="bg-green-tint laptop:flex-row laptop:p-6 flex flex-col gap-4 rounded-xl p-4 transition-shadow duration-300 hover:shadow-lg">
                     {/* Event Poster */}
                     <div className="laptop:h-30 laptop:w-30 h-30 w-full flex-shrink-0">
-                      <Image
-                        src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
+                      <FallbackImage
+                        src={event?.event_image}
+                        fallbackSrc={images.DEFAULT_EVENT}
                         alt={event?.event_name || "event poster"}
                         width={120}
                         height={120}

@@ -1,9 +1,9 @@
 "use client";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useRef, useState } from "react";
-import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import DotIcon from "@/images/icons/divider.svg";
 import More from "@/images/icons/moreIcon.svg";
@@ -17,7 +17,6 @@ import { useAppDispatch } from "@/redux/hook";
 import { usePublishEventMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
-import { getSafeImageSrc } from "@/lib/helper";
 
 type OrganizerEventInterface = {
   draft: boolean;
@@ -69,8 +68,9 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
     <div className="border-grey-20 mb-4 rounded-xl border bg-white p-1">
       <div className="flex flex-col">
         <div className="relative">
-          <Image
-            src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
+          <FallbackImage
+            src={event?.event_image}
+            fallbackSrc={images.DEFAULT_EVENT}
             alt="event_1"
             className="laptop:h-57.5 laptop:w-57.5 h-37.5 w-full rounded-lg"
             width={230}

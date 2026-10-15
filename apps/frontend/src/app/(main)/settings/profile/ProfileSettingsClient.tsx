@@ -1,7 +1,7 @@
 "use client";
 import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import React, { useRef, useState } from "react";
-import Image from "next/image";
 import UploadCamIcon from "@/images/icons/UploadCameraIcon.svg";
 import FacebookIcon from "@/images/icons/facebook-color.svg";
 import InstagramIcon from "@/images/icons/instagram-color.svg";
@@ -112,8 +112,9 @@ const ProfileSettingsClient = () => {
       <section className="mt-15.5 flex flex-col items-center">
         <div className="flex flex-col items-center">
           <div className="relative">
-            <Image
-              src={user?.profile_image ?? images.AVATAR_4}
+            <FallbackImage
+              src={user?.profile_image}
+              fallbackSrc={images.AVATAR_4}
               alt="avatar"
               width={84}
               height={84}

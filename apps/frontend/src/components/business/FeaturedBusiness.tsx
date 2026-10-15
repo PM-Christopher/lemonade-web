@@ -1,3 +1,4 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
@@ -6,7 +7,6 @@ import DotIcon from "@/images/icons/dot.svg";
 import { formatCountry } from "@lemonade/domain";
 import medal from "@/images/icons/medal.png";
 import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
-import { getSafeImageSrc } from "@/lib/helper";
 
 interface BusinessIF {
   business: BusinessInterface;
@@ -18,8 +18,9 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
       <div className="relative w-full">
         {/* Use fill to take full card width */}
         <div className="relative h-32.5 w-full bg-gray-100 sm:h-35">
-          <Image
-            src={getSafeImageSrc(business?.image, images.BUSINESS_1)}
+          <FallbackImage
+            src={business?.image}
+            fallbackSrc={images.BUSINESS_1}
             alt="Main Image"
             fill
             className="object-cover"
@@ -30,8 +31,9 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
         {/* Overlay avatar */}
         <div className="absolute -bottom-7 left-4">
           <div className="border-step-color h-14 w-14 overflow-hidden rounded-xl border bg-white shadow">
-            <Image
-              src={getSafeImageSrc(business?.image, images.BUSINESS_EMPTY)}
+            <FallbackImage
+              src={business?.image}
+              fallbackSrc={images.BUSINESS_EMPTY}
               alt="Overlay Image"
               width={56}
               height={56}

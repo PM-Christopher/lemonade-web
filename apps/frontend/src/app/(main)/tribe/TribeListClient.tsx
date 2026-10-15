@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
+import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import React, { useState } from "react";
 import { Button } from "@lemonade/ui";
-import Image from "next/image";
 import SearchIcon from "@/images/icons/search.svg";
 import TribeCardList from "@/components/tribe/TribeCardList";
 import { TribeInterface } from "@/interfaces/TribeInterface";
@@ -193,8 +194,9 @@ export default function TribeListClient() {
                       className="group flex items-center gap-3 px-3 py-3 transition-all duration-200 first:rounded-t-lg last:rounded-b-lg hover:bg-gradient-to-r hover:from-gray-50 hover:to-transparent"
                     >
                       <div className="relative flex-shrink-0">
-                        <Image
+                        <FallbackImage
                           src={tribe.image}
+                          fallbackSrc={images.DEFAULT_TRIBE}
                           alt={tribe.tribe_name}
                           width={48}
                           height={48}

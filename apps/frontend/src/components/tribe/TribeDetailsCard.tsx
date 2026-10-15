@@ -1,7 +1,6 @@
 import { images } from "@/lib/images";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import React from "react";
-import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import ShareIcon from "@/images/icons/share.svg";
 import AddUserIcon from "@/images/icons/addUserIcon.svg";
@@ -166,8 +165,9 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                           {/*<Image src={member?.user?.avatar} alt="avatar" width={20} height={20} className="w-5 h-5 rounded-md"/>*/}
                           <div className="text-meta flex h-5 w-5 items-center justify-center overflow-hidden rounded-md bg-gray-200 leading-normal font-semibold text-gray-700">
                             {member?.user?.avatar ? (
-                              <Image
+                              <FallbackImage
                                 src={member.user.avatar}
+                                fallbackSrc={images.AVATAR_4}
                                 alt="avatar"
                                 width={20}
                                 height={20}

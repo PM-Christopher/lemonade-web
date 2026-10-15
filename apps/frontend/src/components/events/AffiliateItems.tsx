@@ -1,3 +1,4 @@
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
 import { EventInterface } from "@/interfaces/EventInterface";
@@ -6,8 +7,7 @@ import CalendarIcon from "@/images/icons/calendar.svg";
 import { formatDate, formatLongTime } from "@/lib/dateTimeFormatter";
 import LocationIcon from "@/images/icons/location.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
-import Image from "next/image";
-import { getSafeImageSrc } from "@/lib/helper";
+
 import { routes } from "@/lib/routes";
 
 const AffiliateItems = ({ event }: { event: EventInterface }) => {
@@ -18,8 +18,9 @@ const AffiliateItems = ({ event }: { event: EventInterface }) => {
         <div className="flex min-w-0 gap-3">
           {/* Image */}
           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:h-21 sm:w-21">
-            <Image
-              src={getSafeImageSrc(event?.event_image, images.DEFAULT_EVENT)}
+            <FallbackImage
+              src={event?.event_image}
+              fallbackSrc={images.DEFAULT_EVENT}
               alt={event?.event_name ?? "event"}
               fill
               className="object-cover"
