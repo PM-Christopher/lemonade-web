@@ -1,8 +1,8 @@
 import { images } from "@/lib/images";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
-import Image from "next/image";
 import MoneyIcon from "@/images/icons/money.svg";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
@@ -19,8 +19,9 @@ const TribeCardList: React.FC<TribeCardIF> = ({ tribe }) => {
       <div className="flex items-center justify-between rounded-2xl bg-white p-4">
         <div className="flex items-center gap-2">
           <div>
-            <Image
-              src={tribe?.image || images.DEFAULT_TRIBE}
+            <FallbackImage
+              src={tribe?.image}
+              fallbackSrc={images.DEFAULT_TRIBE}
               alt="tribe image"
               width={40}
               height={40}
