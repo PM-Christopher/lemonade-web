@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import PointsRateModal from "./PointsRateModal";
 
 const mutateMock = vi.fn();
@@ -22,7 +22,7 @@ describe("PointsRateModal", () => {
     fireEvent.change(input, { target: { value: "1.5" } });
     fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(mutateMock).toHaveBeenCalledWith({ currency: "NGN", rate: 1.5 }, expect.any(Object));
     });
   });
