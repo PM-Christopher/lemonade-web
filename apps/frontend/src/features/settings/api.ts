@@ -127,8 +127,7 @@ export interface BankAccountSummary {
 
 export interface ReferralSummary {
   referral_code: string;
-  // Relative path only (e.g. "signup?referral=CODE") — build the full shareable URL with
-  // NEXT_PUBLIC_APP_URL, the same pattern used for event affiliate links.
+  // Relative path, e.g. "signup?referral=CODE". Build the full link with appUrl().
   referral_path: string;
   commission_percent: number;
 }

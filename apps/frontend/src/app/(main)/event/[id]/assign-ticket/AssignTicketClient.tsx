@@ -1,4 +1,5 @@
 "use client";
+import { appUrl } from "@/lib/app-url";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -73,7 +74,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
         quantity: ticket.quantity,
       });
     });
-    const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}${routes.EVENT}`;
+    const redirect_url = appUrl(routes.EVENT);
     let formValues;
     if (values.assign_multiple) {
       formValues = {

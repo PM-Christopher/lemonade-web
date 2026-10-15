@@ -1,4 +1,5 @@
 "use client";
+import { appUrl } from "@/lib/app-url";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
@@ -32,9 +33,7 @@ function ReferralClient() {
     setIsOpen(!isOpen);
   };
 
-  const referralLink = referralSummary
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/${referralSummary.referral_path}`
-    : "";
+  const referralLink = referralSummary ? appUrl(referralSummary.referral_path) : "";
   const commissionPercent = referralSummary?.commission_percent ?? 0;
 
   const handleCopy = () => {

@@ -1,3 +1,5 @@
+import { routes } from "@/lib/routes";
+import { appUrl } from "@/lib/app-url";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
@@ -21,7 +23,7 @@ const PayNowModal = ({
 
   const handlePayNow = () => {
     makeJobPaymentMutation.mutate(
-      { redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/business` },
+      { redirect_url: appUrl(routes.BUSINESS) },
       {
         onSuccess: (result) => {
           dispatch(

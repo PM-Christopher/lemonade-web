@@ -1,3 +1,4 @@
+import { appUrl } from "@/lib/app-url";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
@@ -30,7 +31,7 @@ const CancelSection = ({}) => {
       subscription_id: downgradeData?.sub_id,
       type: "monthly",
       mode: "downgrade",
-      redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/plan`,
+      redirect_url: appUrl(routes.SETTINGS_PLAN),
     };
     changePlanMutation.mutate(data, {
       onSuccess: () => {

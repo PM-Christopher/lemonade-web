@@ -1,3 +1,4 @@
+import { appUrl } from "@/lib/app-url";
 import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
@@ -13,7 +14,7 @@ type AffiliateLinkInterface = {
 };
 
 const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, item }) => {
-  const link = `${process.env.NEXT_PUBLIC_APP_URL}/${item}`;
+  const link = appUrl(item);
 
   return (
     <Dialog

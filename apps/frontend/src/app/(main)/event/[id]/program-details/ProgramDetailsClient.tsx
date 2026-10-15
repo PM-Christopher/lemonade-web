@@ -1,4 +1,5 @@
 "use client";
+import { appUrl } from "@/lib/app-url";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -34,6 +35,8 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
   const { push, back } = useNavigation();
   const { data: programDetails } = useAffiliateEventDetailQuery(id);
+  const affiliatePath = programDetails?.events?.affiliate_link;
+  const affiliateLink = affiliatePath ? appUrl(affiliatePath) : "";
 
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -105,18 +108,12 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
                       <p className="font-semi-normal text-text-grey text-body-s">Affiliate link</p>
                       <div className="bg-light-tint-3 mt-2 flex items-center gap-2 rounded-xl p-3">
                         <p className="font-semi-normal text-light-black laptop:w-125 w-62.75 truncate">
-                          {process.env.NEXT_PUBLIC_APP_URL +
-                            "/" +
-                            programDetails?.events?.affiliate_link || "No affiliate link"}
+                          {affiliateLink || "No affiliate link"}
                         </p>
                         <StrikeLine />
                         <CopyIcon
                           className="h-5 w-5 cursor-pointer"
-                          onClick={() =>
-                            handleCopy(
-                              `${process.env.NEXT_PUBLIC_APP_URL + "/" + programDetails?.events?.affiliate_link}`,
-                            )
-                          }
+                          onClick={() => handleCopy(affiliateLink)}
                         />
                       </div>
                     </>

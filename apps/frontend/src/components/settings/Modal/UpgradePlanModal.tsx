@@ -1,3 +1,4 @@
+import { appUrl } from "@/lib/app-url";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
@@ -53,7 +54,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
       subscription_id: sub_id,
       type: subType,
       mode: subMode,
-      redirect_url: `${process.env.NEXT_PUBLIC_APP_URL}${routes.SETTINGS_PLAN}`,
+      redirect_url: appUrl(routes.SETTINGS_PLAN),
     };
 
     changePlanMutation.mutate(data, {

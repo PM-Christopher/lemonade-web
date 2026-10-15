@@ -1,3 +1,5 @@
+import { routes } from "@/lib/routes";
+import { appUrl } from "@/lib/app-url";
 import React, { useState } from "react";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import CloseIcon from "@/images/icons/close.svg";
@@ -17,6 +19,7 @@ type ShareTribeInterface = {
 };
 
 const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe }) => {
+  const tribeUrl = appUrl(routes.TRIBE_DETAIL(tribe?.slug ?? ""));
   const [copied, setCopied] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -35,8 +38,7 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe 
   };
 
   const shareToSocial = (platform: string) => {
-    const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`;
-    const encodedUrl = encodeURIComponent(currentUrl);
+    const encodedUrl = encodeURIComponent(tribeUrl);
     const messageText = "Check this tribe out";
     let shareUrl = "";
 
@@ -120,13 +122,11 @@ const ShareTribeModal: React.FC<ShareTribeInterface> = ({ toggle, isOpen, tribe 
             <p>Or copy link</p>
             <div className="border-grey-90 flex w-full items-center justify-between rounded-xl border p-2">
               <div className="w-[full]">
-                <p>{`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`}</p>
+                <p>{tribeUrl}</p>
               </div>
               <Button
                 className="bg-gradient-green h-8.75 w-20"
-                onClick={() =>
-                  handleCopy(`${process.env.NEXT_PUBLIC_APP_URL}/tribe/${tribe?.slug}`)
-                }
+                onClick={() => handleCopy(tribeUrl)}
               >
                 <p>{copied ? "Copied!" : "Copy"}</p>
               </Button>

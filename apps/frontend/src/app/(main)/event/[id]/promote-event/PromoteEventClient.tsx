@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { appUrl } from "@/lib/app-url";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState, lazy, Suspense } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -41,7 +43,7 @@ function PromoteEventClient({ id }: { id: number }) {
 
   const handlePaymentForPromotion = async () => {
     const formatted = moment().format("YYYY-MM-DD");
-    const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/event/${id}/details`;
+    const redirect_url = appUrl(routes.EVENT_DETAILS(id));
     const payload = {
       promo: selectedPromotion?.id,
       unit,

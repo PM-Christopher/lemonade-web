@@ -1,4 +1,6 @@
 "use client";
+import { routes } from "@/lib/routes";
+import { appUrl } from "@/lib/app-url";
 import { images } from "@/lib/images";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -65,7 +67,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
       const result = await boostListingMutation.mutateAsync({
         ...values,
         option: values.option,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/business/${id}`,
+        callback_url: appUrl(routes.BUSINESS_DETAIL(id)),
       });
       dispatch(
         updateToastifyReducer({

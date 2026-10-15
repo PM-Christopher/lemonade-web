@@ -1,3 +1,5 @@
+import { routes } from "@/lib/routes";
+import { appUrl } from "@/lib/app-url";
 import React, { lazy, Suspense } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
@@ -24,7 +26,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
   const tribeLoading = joinTribeMutation.isPending;
 
   const handleJoinTribe = (id: string) => {
-    const redirect_url = `${process.env.NEXT_PUBLIC_APP_URL}/tribe/${id}`;
+    const redirect_url = appUrl(routes.TRIBE_DETAIL(id));
     joinTribeMutation.mutate(
       { redirect_url },
       {
