@@ -10,7 +10,7 @@ import DeleteIcon from "@/images/icons/delete.svg";
 import { TribeInterface, TribeMemberInterface } from "@/interfaces/TribeInterface";
 import type { Thread } from "@/interfaces/TribeInterface";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatNaira } from "@/lib/formatNumber";
 import { getInitials } from "@/lib/helper";
 import { TribeDetailsSkeleton } from "@/components/Skeletons";
 
@@ -47,7 +47,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
             <div className="h-24 w-24 overflow-hidden rounded-3xl border-2">
               <FallbackImage
                 src={tribe?.image}
-                fallbackSrc={images.PLACEHOLDER}
+                fallbackSrc={images.DEFAULT_TRIBE}
                 alt="tribe"
                 width={96}
                 height={96}
@@ -146,7 +146,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               </div>
               <div>
                 <p className="font-semi-normal text-light-black text-body-s font-sans">
-                  N {formatNumberWithCommas(tribe?.membership_fee)}
+                  {formatNaira(tribe?.membership_fee)}
                 </p>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { images } from "@/lib/images";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import Image from "next/image";
@@ -40,11 +41,11 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
                 Business rating
               </Label>
               <div className="flex gap-2">
-                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
-                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
-                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
-                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
-                <Image src={"/image/RatingGreyIcon.png"} alt="rating" width={29} height={29} />
+                <Image src={images.RATING_GREY} alt="rating" width={29} height={29} />
+                <Image src={images.RATING_GREY} alt="rating" width={29} height={29} />
+                <Image src={images.RATING_GREY} alt="rating" width={29} height={29} />
+                <Image src={images.RATING_GREY} alt="rating" width={29} height={29} />
+                <Image src={images.RATING_GREY} alt="rating" width={29} height={29} />
               </div>
             </div>
             <div className="mt-6 grid gap-2">
