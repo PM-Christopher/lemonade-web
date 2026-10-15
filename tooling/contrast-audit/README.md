@@ -2,7 +2,7 @@
 
 Checks WCAG AA contrast on the shared shadcn token pairs both apps' `globals.css` define — the same
 tokens `packages/ui/src/*` primitives render with via `hsl(var(--x))` in
-`packages/config/tailwind.preset.js`. Report-only, like `tooling/lighthouse-ci`, not a CI gate — see
+`packages/config/tailwind.preset.cjs`. Report-only, like `tooling/lighthouse-ci`, not a CI gate — see
 `docs/ARCHITECTURE.md` §7.
 
 ## Scope

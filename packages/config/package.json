@@ -2,11 +2,12 @@
   "name": "@lemonade/config",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "Shared ESLint, TypeScript, Tailwind, Prettier and Vitest configuration. Configuration only — zero runtime code.",
   "exports": {
     "./eslint": "./eslint.config.mjs",
     "./tsconfig.base.json": "./tsconfig.base.json",
-    "./tailwind-preset": "./tailwind.preset.js",
+    "./tailwind-preset": "./tailwind.preset.cjs",
     "./typography.css": "./typography.css",
     "./controls.css": "./controls.css",
     "./prettier": "./prettier.config.mjs",

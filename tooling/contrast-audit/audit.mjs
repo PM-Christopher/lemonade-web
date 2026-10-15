@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Checks the shared shadcn token pairs (packages/ui's primitives are built
-// against these, via hsl(var(--x)) in packages/config/tailwind.preset.js)
+// against these, via hsl(var(--x)) in packages/config/tailwind.preset.cjs)
 // against WCAG AA. Report-only for now, like the Lighthouse CI job — see
 // docs/ARCHITECTURE.md Phase 7. Both apps' globals.css define the identical
 // token set (confirmed via diff), so either is a valid source; frontend's is
