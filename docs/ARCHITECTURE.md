@@ -3596,26 +3596,22 @@ backend work.
 | Effects with wrong deps | 32 | **0** lint errors with `exhaustive-deps` as error. 7 explicit `eslint-disable` suppressions remain. | 0 | P1 | `pnpm lint` |
 | `console.log` in shipped code | 62 | **0** | 0 | P1 | `grep` |
 | Duplicated / diverged files | 41 | 19 byte-identical files in both apps (17 code, 2 icons). Not checked in CI. | 0 | P2 | Same-path diff of `apps/*/src` |
-| Unimported runtime deps | 50 | 4: `country-list` (frontend), `@lemonade/domain` and `@lemonade/api-types` (`@lemonade/ui`), `@lemonade/api-types` (`@lemonade/domain`). No `knip` in CI. | 0 | P0, P7 | Import scan of each `package.json` |
+| Unimported runtime deps | 50 | **0**. `knip --dependencies` runs in CI (`knip.json` lists the deps Next and config files load by name). | 0 | P0, P7 | `pnpm knip` in CI |
 | UI component systems | 4 | **1** (Radix + shadcn via `@lemonade/ui`) | 1 | P7 | `package.json` scan |
-| Test files | 0 | 58 (frontend 23, admin 7, packages 8, e2e 20). Coverage gate not enforced, see below. | ≥ 90% on `packages/*` | P1–P8 | `vitest --coverage` per package |
+| Test files | 0 | 65 (frontend 23, admin 7, packages 13, e2e 22). Every package is at or above 90%, enforced. | ≥ 90% on `packages/*` | P1–P8 | `vitest run --coverage` in each package's `test` |
 | Apps with CI | 0 | **2**. `ci.yml` plus `e2e.yml` on every PR. Required checks on `main` not confirmed. | 2 | P1 | Workflows; branch rules need repo admin to read |
-| Apps with lint config | 0 | **2**, 0 warnings today. Lint has no `--max-warnings=0`, so a new warning won't fail CI. | 2 | P1 | `pnpm lint` |
-| Apps with route protection | 1 (weak) | 2 (httpOnly cookie + `middleware.ts`). No e2e for a logged-out deep link yet. | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
+| Apps with lint config | 0 | **2**. Lint runs with `--max-warnings=0`, so any warning fails CI. | 2 | P1 | `pnpm lint` |
+| Apps with route protection | 1 (weak) | **2, validated**. `route-protection.spec.ts` in both apps: a logged-out deep link goes to login (and back, in the frontend). | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
 | Public routes server-rendered | 0 | All 45 frontend `page.tsx` files are Server Components. There's no `(public)` group, public pages live in `(main)`. | All in `(public)` | P6 | `grep "use client"` on pages |
 | Hardcoded pixel classes | 7,041 | **0**, rule is an error | Declining, no new | P7 | Lint |
 
-**Coverage on `packages/*` (15 Oct):** `validation`, `domain`, `realtime` and `api-types` are at 100%.
-`api-client` is at 86% statements and 70% branches. `ui` is at 65% statements once untested files count,
-and `dialog.tsx` has no tests at all. The 90% threshold sits in `vitest.config.base.ts`, but packages run
-`vitest run` without `--coverage`, so CI never checks it.
+**Coverage on `packages/*` (15 Oct):** every package's `test` script runs `vitest run --coverage`, and the
+shared config counts all of `src/` (generated contracts excluded), so an untested file pulls the number
+down. `api-client` is at 99% statements and 95% branches, `ui` at 100%, the rest at 100%. The unused
+`formatMoney` placeholder in `@lemonade/domain` was removed.
 
-**Open gaps from this measurement:**
+**Still open from this measurement:**
 
-- Turn on the coverage gate for `packages/*`, then raise `api-client` and `ui` to 90%.
-- Add `--max-warnings=0` to both apps' `lint` scripts.
-- Add an e2e spec: a logged-out visit to a protected page redirects to login, in both apps.
-- Drop the 4 unused dependencies, and add `knip` to CI so they stay gone.
 - Decide which of the 19 identical files should move to a package. Route stubs and icons stay per app.
 - Confirm `main` requires the CI and e2e checks (needs repo admin).
 
