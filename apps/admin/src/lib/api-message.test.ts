@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { apiMessage, messageOr, rememberApiMessage } from "./api-message";
 
 describe("messageOr", () => {
@@ -24,4 +24,14 @@ describe("apiMessage", () => {
 
     expect(apiMessage("Fallback")).toBe("Fallback");
   });
+
+  it("ignores a message that is more than a few seconds old", () => {
+    vi.useFakeTimers();
+    rememberApiMessage("Old message");
+    vi.advanceTimersByTime(6000);
+
+    expect(apiMessage("Fallback")).toBe("Fallback");
+  });
+
+  afterEach(() => vi.useRealTimers());
 });
