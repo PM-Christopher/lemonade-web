@@ -24,12 +24,26 @@ export interface ReportListResponse {
   meta?: PaginationMeta;
 }
 
+export interface ReportedEventPreview {
+  event_image?: string;
+  event_name?: string;
+  category?: string;
+  location?: string;
+  event_date?: string;
+  event_time?: string;
+  created_at?: string;
+  description?: string;
+  owner?: { image?: string; fullname?: string };
+}
+
+// The reported model itself (e.g. a thread, from backend ReportTribeThread), not a string.
+export interface ReportedContent {
+  id?: string | number;
+  events?: ReportedEventPreview | null;
+}
+
 export interface ReportDetail extends ReportRow {
-  // Not a string despite the name — the backend stores the reported model
-  // itself here (Report::create(['content' => $thread, ...]) in
-  // lemonade-backend's ReportTribeThread), so this is an arbitrary,
-  // report-category-dependent object, same as `meta`.
-  content: unknown;
+  content: ReportedContent | null;
   meta: unknown;
 }
 

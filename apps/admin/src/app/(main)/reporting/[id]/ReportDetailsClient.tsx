@@ -13,23 +13,6 @@ import {
 import { capitalizeWords } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
-// report.content isn't a JSON string despite old code here treating it like
-// one (see api.ts's own comment on ReportDetail.content) — the backend
-// returns the reported model already decoded, so JSON.parse(report.content)
-// always threw and silently fell into the catch block below, never actually
-// rendering a preview. Reading it directly instead.
-interface ReportedEventPreview {
-  event_image?: string;
-  event_name?: string;
-  category?: string;
-  location?: string;
-  event_date?: string;
-  event_time?: string;
-  created_at?: string;
-  description?: string;
-  owner?: { image?: string; fullname?: string };
-}
-
 function ReportDetailsClient({ id }: { id: string }) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -40,11 +23,7 @@ function ReportDetailsClient({ id }: { id: string }) {
   const resolveMutation = useResolveReportMutation(id);
   const deleteMutation = useDeleteReportContentMutation(id);
 
-  const content = report?.content;
-  const event: ReportedEventPreview | null =
-    content && typeof content === "object" && "events" in content
-      ? ((content as { events: ReportedEventPreview }).events ?? null)
-      : null;
+  const event = report?.content?.events ?? null;
 
   const resolve = () => {
     resolveMutation.mutate(undefined, {
@@ -71,7 +50,7 @@ function ReportDetailsClient({ id }: { id: string }) {
   const handleDelete = () => {
     const data = {
       category: report?.category,
-      category_id: (report?.content as { id?: string | number } | undefined)?.id,
+      category_id: report?.content?.id,
     };
     deleteMutation.mutate(data, {
       onSuccess: () => {

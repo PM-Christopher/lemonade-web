@@ -78,6 +78,12 @@ export const downloadCSV = (csvString: string, filename: string = "data.csv") =>
   URL.revokeObjectURL(url);
 };
 
+// The `name` of a nested user object, or "" when it's missing.
+function userName(user: unknown): string {
+  if (!user || typeof user !== "object" || !("name" in user)) return "";
+  return typeof user.name === "string" ? user.name : "";
+}
+
 export const manualTransactionsExport = (data: Array<Record<string, unknown>>, type: string) => {
   if (!data || !Array.isArray(data) || data.length === 0) {
     console.error("No data to export");
@@ -160,7 +166,7 @@ export const manualTransactionsExport = (data: Array<Record<string, unknown>>, t
     } else if (type === "boosting" || type === "services" || type === "promotions") {
       row = [
         item.reference || "",
-        (item.user as { name?: string } | undefined)?.name || "",
+        userName(item.user),
         item.amount || "",
         item.provider || "",
         item.paid_at || "",
