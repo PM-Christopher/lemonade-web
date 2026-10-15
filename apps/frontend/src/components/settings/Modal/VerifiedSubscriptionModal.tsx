@@ -30,9 +30,7 @@ export interface Subscription {
 interface VerifiedSuccessProps {
   isOpen: boolean;
   toggle: () => void;
-  data: {
-    subscription: Subscription;
-  };
+  data: { subscription?: Subscription } | undefined;
 }
 
 const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, toggle, data }) => {

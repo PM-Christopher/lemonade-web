@@ -139,7 +139,7 @@ const PlanClient = () => {
         <VerifiedSubscriptionModal
           isOpen={openMem}
           toggle={toggleVerMembership}
-          data={verData?.data as { subscription: Subscription }}
+          data={verData?.data}
         />
       )}
     </MainLayout>

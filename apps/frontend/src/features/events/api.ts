@@ -120,8 +120,17 @@ export interface GuestSearchResponse {
   meta: { current_page: number; per_page: number; total: number; last_page: number };
 }
 
+// One guest's check-in card (backend GetEventGuest / CheckInEventGuest).
+export interface GuestDetails {
+  id: number;
+  checked_in?: boolean;
+  event?: { name?: string; start_date?: string; start_time?: string; end_time?: string };
+  user?: { name?: string; email?: string };
+  ticket?: { ticket_id?: string; ticket_name?: string };
+}
+
 export interface GuestDetailsResponse {
-  guest_details: unknown;
+  guest_details: GuestDetails;
 }
 
 export interface PromotionsResponse {

@@ -27,12 +27,12 @@ export const usePusher = (channelName: string | null, eventName: string) => {
     const subscribeName = isUserChannel ? channelName : `private-${channelName}`;
     const channel = pusher.subscribe(subscribeName);
 
-    const eventHandler = (receivedData: unknown) => {
+    // Payloads vary by channel; only chat events carry a message.
+    const eventHandler = (receivedData: { message?: OutgoingChatMessage }) => {
       setData(receivedData);
 
-      if (channelName === `chat.${user?.id}` && user?.id) {
-        const { message } = receivedData as { message: OutgoingChatMessage };
-        appendIncomingChatMessage(queryClient, user.id, message);
+      if (channelName === `chat.${user?.id}` && user?.id && receivedData.message) {
+        appendIncomingChatMessage(queryClient, user.id, receivedData.message);
       } else if (channelName === `request.${user?.id}` && eventName === "request.service") {
         dispatch(
           updateToastifyReducer({

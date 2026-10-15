@@ -117,7 +117,7 @@ export function useCheckInGuestMutation(id: number | string | undefined) {
     mutationFn: (guestId: number | string) => eventsApi.checkInGuest(id as number, guestId),
     onSuccess: (result) => {
       if (!id) return;
-      const guest = result.guest_details as { id: number };
+      const guest = result.guest_details;
 
       queryClient.setQueryData(eventKeys.guestDetails(id, guest.id), result);
       queryClient.setQueryData<GuestListResponse>(eventKeys.guestList(id), (old) => {

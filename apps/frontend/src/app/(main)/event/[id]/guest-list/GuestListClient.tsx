@@ -14,7 +14,7 @@ import {
 } from "@/features/events/queries";
 import { GuestListSkeleton } from "@/components/Skeletons";
 import { GuestListCardProps } from "@/interfaces/EventInterface";
-import GuestSideMenu, { type GuestDetails } from "@/components/events/GuestSideMenu";
+import GuestSideMenu from "@/components/events/GuestSideMenu";
 import { Users } from "lucide-react";
 import useDebounce from "@/hooks/useDebounce";
 
@@ -62,7 +62,7 @@ const GuestListClient = ({ id }: { id: number }) => {
         <GuestSideMenu
           toggleMenu={toggleMenu}
           isOpen={isOpen}
-          guestDetails={guestDetails as GuestDetails}
+          guestDetails={guestDetails}
           loading={guestDetailLoading}
           id={id}
         />

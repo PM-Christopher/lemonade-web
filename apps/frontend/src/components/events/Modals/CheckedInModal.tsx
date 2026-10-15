@@ -3,12 +3,12 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import type { GuestDetails } from "@/components/events/GuestSideMenu";
+import type { GuestDetails } from "@/features/events/api";
 
 type CheckedInInterface = {
   toggle: () => void;
   isOpen: boolean;
-  guestDetails: GuestDetails;
+  guestDetails: GuestDetails | undefined;
 };
 
 const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDetails }) => {

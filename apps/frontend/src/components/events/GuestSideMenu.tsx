@@ -8,6 +8,7 @@ import { formatStringUCFirst } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import CheckedInModal from "@/components/events/Modals/CheckedInModal";
 import { useCheckInGuestMutation } from "@/features/events/mutations";
+import type { GuestDetails } from "@/features/events/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import CheckIcon from "@/images/icons/checkedFilledIcon.svg";
 
@@ -15,18 +16,10 @@ const ColorRing = lazy(() =>
   import("react-loader-spinner").then((mod) => ({ default: mod.ColorRing })),
 );
 
-export interface GuestDetails {
-  id?: number;
-  checked_in?: boolean;
-  event?: { name?: string; start_date?: string; start_time?: string; end_time?: string };
-  user?: { name?: string; email?: string };
-  ticket?: { ticket_id?: string; ticket_name?: string };
-}
-
 type SideMenuInterface = {
   toggleMenu: () => void;
   isOpen: boolean;
-  guestDetails: GuestDetails;
+  guestDetails: GuestDetails | undefined;
   loading: boolean;
   id: number;
 };
@@ -48,7 +41,8 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
   };
 
   const handleCheckInGuest = () => {
-    checkInGuestMutation.mutate(guestDetails?.id as number, {
+    if (!guestDetails) return;
+    checkInGuestMutation.mutate(guestDetails.id, {
       onSuccess: () => {
         // toggleMenu()
         toggleModal();
