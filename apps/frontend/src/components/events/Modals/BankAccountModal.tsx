@@ -1,7 +1,7 @@
 "use client";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useEffect, useEffectEvent, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
@@ -101,8 +101,11 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
     });
   };
 
-  const getAccount = useEffectEvent(() => {
-    verifyAccountMutation.mutate(
+  // Look the account up once there's a bank and a full 10-digit number.
+  const { mutate: verifyAccount } = verifyAccountMutation;
+  useEffect(() => {
+    if (!bankCode || accountNumber.length !== 10) return;
+    verifyAccount(
       { bankCode, accountNumber },
       {
         onSuccess: (result) => {
@@ -113,14 +116,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
         },
       },
     );
-  });
-
-  // Look the account up once there's a bank and a full 10-digit number.
-  useEffect(() => {
-    if (bankCode && accountNumber.length === 10) {
-      getAccount();
-    }
-  }, [bankCode, accountNumber]);
+  }, [bankCode, accountNumber, verifyAccount, setValue]);
 
   return (
     <Dialog

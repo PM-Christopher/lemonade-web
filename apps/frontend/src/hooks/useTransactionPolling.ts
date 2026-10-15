@@ -1,4 +1,5 @@
-import { useEffect, useEffectEvent, useState } from "react";
+import { useEffect, useState } from "react";
+import { useLatest } from "@/hooks/useLatest";
 import { transactionApi, type VerifyTransactionResponse } from "@/features/transaction/api";
 
 /** Polls the transaction verify endpoint until `isSuccess` passes, one request at a time. */
@@ -15,13 +16,7 @@ export const useTransactionPolling = <TData = unknown>(
   const transactionId = config?.transactionId;
   const pollingInterval = config?.pollingInterval ?? 4000;
 
-  // Returns true once the payment has gone through.
-  const handleResult = useEffectEvent((result: VerifyTransactionResponse<TData>) => {
-    setData(result);
-    if (!config?.isSuccess(result)) return false;
-    config.onSuccess(result);
-    return true;
-  });
+  const latestConfig = useLatest(config);
 
   useEffect(() => {
     if (!transactionId) return;
@@ -33,7 +28,13 @@ export const useTransactionPolling = <TData = unknown>(
       setLoading(true);
       try {
         const result = await transactionApi.verifyTransaction<TData>({ trx_ref: transactionId });
-        if (!stopped && handleResult(result)) stopped = true;
+        if (stopped) return;
+        setData(result);
+        const current = latestConfig.current;
+        if (current?.isSuccess(result)) {
+          stopped = true;
+          current.onSuccess(result);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -47,7 +48,7 @@ export const useTransactionPolling = <TData = unknown>(
       stopped = true;
       clearTimeout(timer);
     };
-  }, [transactionId, pollingInterval]);
+  }, [transactionId, pollingInterval, latestConfig]);
 
   return { data, loading };
 };

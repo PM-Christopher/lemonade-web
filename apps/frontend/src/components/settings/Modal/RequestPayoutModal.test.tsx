@@ -56,28 +56,32 @@ describe("RequestPayoutModal (add bank account)", () => {
     expect(await screen.findByDisplayValue("ADA LOVELACE")).toBeInTheDocument();
   });
 
-  it("waits for a bank before looking up the account", () => {
+  it("waits for a bank before looking up the account", async () => {
     renderModal();
 
     fireEvent.change(screen.getByLabelText("Account number"), { target: { value: "0123456789" } });
     expect(verifyMutate).not.toHaveBeenCalled();
 
     fireEvent.change(screen.getByLabelText("Bank Name"), { target: { value: "058" } });
-    expect(verifyMutate).toHaveBeenCalledWith(
-      { bankCode: "058", accountNumber: "0123456789" },
-      expect.any(Object),
+    await waitFor(() =>
+      expect(verifyMutate).toHaveBeenCalledWith(
+        { bankCode: "058", accountNumber: "0123456789" },
+        expect.any(Object),
+      ),
     );
   });
 
-  it("looks the account up again when the bank changes", () => {
+  it("looks the account up again when the bank changes", async () => {
     renderModal();
     fillAccount();
 
     fireEvent.change(screen.getByLabelText("Bank Name"), { target: { value: "044" } });
 
-    expect(verifyMutate).toHaveBeenLastCalledWith(
-      { bankCode: "044", accountNumber: "0123456789" },
-      expect.any(Object),
+    await waitFor(() =>
+      expect(verifyMutate).toHaveBeenLastCalledWith(
+        { bankCode: "044", accountNumber: "0123456789" },
+        expect.any(Object),
+      ),
     );
   });
 

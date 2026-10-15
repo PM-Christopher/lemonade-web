@@ -1,4 +1,4 @@
-import React, { useEffect, useEffectEvent, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
@@ -80,9 +80,12 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
     });
   };
 
-  const getAccount = useEffectEvent(() => {
+  // Look the account up once there's a bank and a full 10-digit number.
+  const { mutate: verifyAccount } = verifyAccountMutation;
+  useEffect(() => {
+    if (!bankCode || accountNumber.length !== 10) return;
     setValue("account_name", "", { shouldValidate: true });
-    verifyAccountMutation.mutate(
+    verifyAccount(
       { bankCode, accountNumber },
       {
         onSuccess: (res) => {
@@ -95,14 +98,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
         },
       },
     );
-  });
-
-  // Look the account up once there's a bank and a full 10-digit number.
-  useEffect(() => {
-    if (bankCode && accountNumber.length === 10) {
-      getAccount();
-    }
-  }, [bankCode, accountNumber]);
+  }, [bankCode, accountNumber, verifyAccount, setValue]);
 
   return (
     <Dialog

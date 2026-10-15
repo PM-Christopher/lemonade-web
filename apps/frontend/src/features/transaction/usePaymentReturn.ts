@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useEffectEvent } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useLatest } from "@/hooks/useLatest";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -14,12 +15,15 @@ export function usePaymentReturn<TData = unknown>(onPaid: (data: TData) => void)
   const dispatch = useAppDispatch();
   const { mutate } = useVerifyTransactionMutation<TData>();
   const trxref = searchParams.get("trxref");
+  const latest = useLatest({ onPaid, searchParams, replace, dispatch });
 
-  const verify = useEffectEvent((ref: string) => {
+  useEffect(() => {
+    if (!trxref) return;
     mutate(
-      { trx_ref: ref },
+      { trx_ref: trxref },
       {
         onSuccess: (result) => {
+          const { onPaid, searchParams, replace, dispatch } = latest.current;
           const params = new URLSearchParams(searchParams);
           params.delete("trxref");
           params.delete("reference");
@@ -42,9 +46,5 @@ export function usePaymentReturn<TData = unknown>(onPaid: (data: TData) => void)
         },
       },
     );
-  });
-
-  useEffect(() => {
-    if (trxref) verify(trxref);
-  }, [trxref]);
+  }, [trxref, mutate, latest]);
 }
