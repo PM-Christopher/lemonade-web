@@ -60,6 +60,21 @@ describe("Dialog", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("lets the caller restyle the backdrop", () => {
+    render(
+      <Dialog open>
+        <DialogContent overlayClassName="bg-transparent">
+          <DialogTitle>Notifications</DialogTitle>
+          <DialogDescription>None</DialogDescription>
+        </DialogContent>
+      </Dialog>,
+    );
+
+    const overlay = document.querySelector('[data-state="open"].fixed.inset-0');
+    expect(overlay).toHaveClass("bg-transparent");
+    expect(overlay).not.toHaveClass("bg-black/80");
+  });
+
   it("has no axe violations when open", async () => {
     render(<ExampleDialog />);
     fireEvent.click(screen.getByRole("button", { name: "Open" }));

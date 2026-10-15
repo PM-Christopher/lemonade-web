@@ -116,6 +116,7 @@ const TopNav = () => {
 
       <Dialog open={openNotifications} onOpenChange={setOpenNotifications}>
         <DialogContent
+          overlayClassName="bg-transparent"
           className={`scrollbar-hide max-h-[80vh] overflow-y-auto ${isMobile ? "" : "sm:top-8 sm:right-8 sm:translate-x-0 sm:translate-y-0"}`}
         >
           <DialogHeader>
@@ -172,7 +173,10 @@ const TopNav = () => {
       </Dialog>
 
       <Dialog open={openDetailModal} onOpenChange={setOpenDetailModal}>
-        <DialogContent className="scrollbar-hide max-h-[70vh] overflow-y-auto">
+        <DialogContent
+          overlayClassName="bg-transparent"
+          className="scrollbar-hide max-h-[70vh] overflow-y-auto"
+        >
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">
               {selectedNotification?.title ?? "Notification Detail"}
