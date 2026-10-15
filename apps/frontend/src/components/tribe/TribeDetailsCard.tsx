@@ -155,7 +155,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           )}
           <div className="bg-light_grey flex flex-col rounded-xl p-3">
             <p className="font-semi-normal text-text-grey text-body-s font-sans">Members</p>
-            <div className="mt-4">
+            <div className="mt-4 max-h-64 overflow-y-auto pr-1">
               {members?.length > 0 ? (
                 tribe?.member_list.map((member: TribeMemberInterface, index: number) => (
                   <React.Fragment key={index}>

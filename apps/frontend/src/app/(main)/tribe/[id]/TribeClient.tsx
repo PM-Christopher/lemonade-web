@@ -34,6 +34,7 @@ import AddMemberModal from "@/components/tribe/AddMemberModal";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
+import { errorMessage } from "@/lib/api-error";
 import useDebounce from "@/hooks/useDebounce";
 import useNxtSearchParams from "@/hooks/useSearchParams";
 import PadlockIcon from "@/images/icons/padlockIconFilled.svg";
@@ -127,10 +128,32 @@ const TribeClient = ({ id }: { id: string }) => {
 
   const setPinThread = (id: string) => {
     const current = threads.find((t) => t.id === id);
-    pinThreadMutation.mutate({
-      threadId: id,
-      wasPinned: current?.pinned ?? false,
-    });
+    pinThreadMutation.mutate(
+      {
+        threadId: id,
+        wasPinned: current?.pinned ?? false,
+      },
+      {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: apiMessage(current?.pinned ? "Thread unpinned" : "Thread pinned"),
+              type: "success",
+            }),
+          );
+        },
+        onError: (error) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: errorMessage(error, "Could not pin thread"),
+              type: "error",
+            }),
+          );
+        },
+      },
+    );
   };
 
   const activateJoinTribeModal = () => {

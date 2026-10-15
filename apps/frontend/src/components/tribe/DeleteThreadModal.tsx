@@ -82,7 +82,7 @@ const DeleteThreadModal: React.FC<DeleteThreadIF> = ({
                 <p className="font-semi-normal text-red-1 text-body-l">Yes, delete</p>
               </Button>
               <Button
-                className="bg-gradient-green h-11 w-full rounded-xl border-none bg-transparent shadow-none"
+                className="bg-gradient-green hover:bg-gradient-green h-11 w-full rounded-xl border-none shadow-none"
                 onClick={toggle}
               >
                 <p className="font-semi-normal text-body-l">No, don&apos;t delete</p>

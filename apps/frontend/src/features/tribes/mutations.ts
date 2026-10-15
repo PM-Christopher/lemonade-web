@@ -39,10 +39,10 @@ export function useCreateThreadMutation(tribeSlug: string) {
   return useMutation({
     mutationFn: ({ tribeId, data }: { tribeId: string | number; data: CreateThreadPayload }) =>
       tribesApi.createThread(tribeId, data),
-    onSuccess: (result) => {
-      queryClient.setQueryData<ThreadsResponse>(tribeKeys.threads(tribeSlug), (old) => ({
-        threads: [...(old?.threads ?? []), result.thread],
-      }));
+    // Refetch so the new thread shows in the server's order, with the tribe's counts.
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: tribeKeys.threads(tribeSlug) });
+      queryClient.invalidateQueries({ queryKey: tribeKeys.detail(tribeSlug) });
     },
   });
 }

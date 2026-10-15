@@ -31,7 +31,8 @@ export const AlertMessage = () => {
   }, [showToast, dispatch]);
 
   useEffect(() => {
-    if (showToast.message) {
+    // The reset after the timer clears `show`; it must not raise a toast of its own.
+    if (showToast.show && showToast.message) {
       if (showToast.type === "success") {
         toast.success(showToast.message);
       } else {
