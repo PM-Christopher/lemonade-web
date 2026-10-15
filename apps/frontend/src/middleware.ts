@@ -48,7 +48,7 @@ function buildCsp(nonce: string) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     `img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com${localImageOrigin}`,
     "font-src 'self' data: https://fonts.gstatic.com",
-    `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
+    `connect-src 'self' https://fcm.googleapis.com https://fcmregistrations.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "frame-src https://accounts.google.com",
     "worker-src 'self'",
     "object-src 'none'",
