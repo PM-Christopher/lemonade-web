@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useReactivateBusinessMutation } from "@/features/businesses/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 interface ReactivateModalProps {
   isOpen: boolean;
@@ -23,7 +24,11 @@ function ReactivateModal({ isOpen, toggle, id }: ReactivateModalProps) {
     reactivateBusinessMutation.mutate(undefined, {
       onSuccess: () => {
         dispatch(
-          updateToastifyReducer({ show: true, message: "Business reactivated", type: "success" }),
+          updateToastifyReducer({
+            show: true,
+            message: apiMessage("Business reactivated"),
+            type: "success",
+          }),
         );
         toggle();
       },

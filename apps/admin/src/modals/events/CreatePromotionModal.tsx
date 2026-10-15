@@ -13,6 +13,7 @@ import {
 import { promotionSchema, type PromotionInput } from "@/features/events/schema";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 interface CreatePromotionModalProps {
   isOpen: boolean;
@@ -82,7 +83,9 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
       image: promotionDetail?.promotion?.image ?? "",
     };
     const onSuccess = (message: string) => () => {
-      dispatch(updateToastifyReducer({ show: true, message, type: "success" }));
+      dispatch(
+        updateToastifyReducer({ show: true, message: apiMessage(message), type: "success" }),
+      );
       toggle();
     };
     if (promotionId !== 0) {

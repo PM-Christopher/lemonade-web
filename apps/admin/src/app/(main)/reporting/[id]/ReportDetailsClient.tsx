@@ -12,6 +12,7 @@ import {
 } from "@/features/reporting/mutations";
 import { capitalizeWords } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 function ReportDetailsClient({ id }: { id: string }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,7 +32,7 @@ function ReportDetailsClient({ id }: { id: string }) {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Report marked as resolved",
+            message: apiMessage("Report marked as resolved"),
             type: "success",
           }),
         );
@@ -57,7 +58,7 @@ function ReportDetailsClient({ id }: { id: string }) {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Report deleted successfully",
+            message: apiMessage("Report deleted successfully"),
             type: "success",
           }),
         );

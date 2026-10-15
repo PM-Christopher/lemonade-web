@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useUpdateWithdrawalThresholdMutation } from "@/features/wallet/mutations";
 import { withdrawalThresholdSchema, type WithdrawalThresholdInput } from "@/features/wallet/schema";
 import { applyServerErrors } from "@/lib/form-errors";
@@ -32,7 +33,9 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
   const onSubmit = (values: WithdrawalThresholdInput) => {
     updateThreshold.mutate(Number(values.threshold), {
       onSuccess: () => {
-        dispatch(updateToastifyReducer({ show: true, message: "Success", type: "success" }));
+        dispatch(
+          updateToastifyReducer({ show: true, message: apiMessage("Success"), type: "success" }),
+        );
         toggle();
       },
       onError: (error) => {

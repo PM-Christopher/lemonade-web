@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useAddTeamMemberMutation } from "@/features/team/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { addTeamMemberSchema, type AddTeamMemberInput } from "@/features/team/schema";
 import { applyServerErrors } from "@/lib/form-errors";
 
@@ -41,7 +42,9 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
       },
       {
         onSuccess: () => {
-          dispatch(updateToastifyReducer({ show: true, message: "Success", type: "success" }));
+          dispatch(
+            updateToastifyReducer({ show: true, message: apiMessage("Success"), type: "success" }),
+          );
           reset();
           toggle();
         },

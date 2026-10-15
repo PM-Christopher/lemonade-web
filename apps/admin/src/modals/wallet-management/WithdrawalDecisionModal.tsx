@@ -6,6 +6,7 @@ import { AppDispatch } from "@/redux/store";
 import { useWithdrawalRequestDecisionMutation } from "@/features/wallet/mutations";
 import type { WalletDetail } from "@/features/wallet/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { errorMessage } from "@/lib/api-error";
 
@@ -49,12 +50,15 @@ const WithdrawalDecisionModal: React.FC<WithdrawalDecisionModalProps> = ({
       onSuccess: (result) => {
         // Approval moves the money first; a failed bank transfer is reported, not hidden.
         const failed = result.payout_status === "failed";
+        const successMessage = apiMessage(
+          `Withdrawal ${decision === "approve" ? "approved" : "rejected"}`,
+        );
         dispatch(
           updateToastifyReducer({
             show: true,
             message: failed
               ? `Approved, but the payout failed: ${result.failure_reason || "unknown reason"}`
-              : `Withdrawal ${decision === "approve" ? "approved" : "rejected"}`,
+              : successMessage,
             type: failed ? "error" : "success",
           }),
         );

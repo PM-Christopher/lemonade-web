@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useRejectBusinessMutation } from "@/features/businesses/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 interface RejectModalProps {
   isOpen: boolean;
@@ -36,7 +37,11 @@ function RejectModal({ isOpen, toggle, id }: RejectModalProps) {
       {
         onSuccess: () => {
           dispatch(
-            updateToastifyReducer({ show: true, message: "Business rejected", type: "success" }),
+            updateToastifyReducer({
+              show: true,
+              message: apiMessage("Business rejected"),
+              type: "success",
+            }),
           );
           setReason("");
           toggle();

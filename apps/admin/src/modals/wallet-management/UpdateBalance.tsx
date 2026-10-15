@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddToWalletMutation, useDeductFromWalletMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { walletAdjustmentSchema, type WalletAdjustmentInput } from "@/features/wallet/schema";
 import { applyServerErrors } from "@/lib/form-errors";
@@ -63,7 +64,9 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
 
   const onMutationSettled = {
     onSuccess: () => {
-      dispatch(updateToastifyReducer({ show: true, message: "Success", type: "success" }));
+      dispatch(
+        updateToastifyReducer({ show: true, message: apiMessage("Success"), type: "success" }),
+      );
       reset();
       toggle();
       reload?.();

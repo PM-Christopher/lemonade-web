@@ -10,6 +10,7 @@ import {
   useDeletePlanMutation,
 } from "@/features/subscriptions/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 export type PlanAction = "activate" | "deactivate" | "delete";
 
@@ -69,7 +70,7 @@ function ConfirmPlanActionModal({ isOpen, toggle, plan, action }: ConfirmPlanAct
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: `${copy.confirmLabel}d plan successfully`,
+            message: apiMessage(`${copy.confirmLabel}d plan successfully`),
             type: "success",
           }),
         );

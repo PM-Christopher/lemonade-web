@@ -8,6 +8,7 @@ import { AppDispatch } from "@/redux/store";
 import type { AdminSubscriptionPlan } from "@/features/subscriptions/api";
 import { useCreatePlanMutation, useUpdatePlanMutation } from "@/features/subscriptions/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { planSchema, type PlanInput } from "@/features/subscriptions/schema";
 import { applyServerErrors } from "@/lib/form-errors";
@@ -111,7 +112,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: plan ? "Plan updated successfully" : "Plan created successfully",
+            message: apiMessage(plan ? "Plan updated successfully" : "Plan created successfully"),
             type: "success",
           }),
         );

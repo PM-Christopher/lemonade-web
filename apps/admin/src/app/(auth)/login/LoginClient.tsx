@@ -11,6 +11,7 @@ import { useLoginMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 import { localLoginDefaults } from "@/lib/env.client";
@@ -50,7 +51,7 @@ function LoginPage({}) {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "successful",
+          message: apiMessage("successful"),
           type: "success",
         }),
       );

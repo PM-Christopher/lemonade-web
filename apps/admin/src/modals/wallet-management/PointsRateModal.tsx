@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useUpdatePointsRateMutation } from "@/features/wallet/mutations";
 import { pointsRateSchema, type PointsRateInput } from "@/features/wallet/schema";
 import { applyServerErrors } from "@/lib/form-errors";
@@ -47,7 +48,7 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: `${currency} rate updated`,
+              message: apiMessage(`${currency} rate updated`),
               type: "success",
             }),
           );

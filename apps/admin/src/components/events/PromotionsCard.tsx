@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDeletePromotionMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import type { Promotion } from "@/features/events/api";
 
 function PromotionsCard({
@@ -28,7 +29,7 @@ function PromotionsCard({
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Promotion deleted successfully",
+              message: apiMessage("Promotion deleted successfully"),
               type: "success",
             }),
           );

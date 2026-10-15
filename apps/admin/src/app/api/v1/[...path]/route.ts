@@ -13,6 +13,7 @@
 // in both. See the frontend equivalent of this file.
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "@lemonade/api-client";
+import { messageOr } from "@/lib/api-message";
 import { backendApi, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
 const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
@@ -52,7 +53,11 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
   }
 
   try {
-    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders({
+    const {
+      data: result,
+      headers: responseHeaders,
+      message,
+    } = await backendApi.requestWithHeaders({
       url: targetUrl,
       method,
       data,
@@ -68,7 +73,7 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
     // authenticated call goes through here, so this is what actually gives
     // the cookie its sliding-window renewal.
     await syncSignedInCookieFromHeaders(responseHeaders);
-    return NextResponse.json({ success: true, message: "OK", data: result });
+    return NextResponse.json({ success: true, message: messageOr(message, "OK"), data: result });
   } catch (err) {
     if (err instanceof ApiError) {
       return NextResponse.json(

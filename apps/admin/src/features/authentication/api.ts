@@ -5,6 +5,7 @@
 // cookie server-side; getCurrentUser calls the real backend through
 // browserApi (the BFF proxy), same as every other authenticated read.
 import { browserApi } from "@/lib/browser-api";
+import { rememberApiMessage } from "@/lib/api-message";
 import { adminAccountRoutes } from "@lemonade/api-types/generated";
 
 export interface CurrentAdmin {
@@ -56,6 +57,7 @@ async function postJson<T>(path: string, body?: unknown): Promise<T> {
     });
   }
 
+  if (typeof envelope?.message === "string") rememberApiMessage(envelope.message);
   return envelope.data as T;
 }
 

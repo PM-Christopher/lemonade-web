@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useSuspendBusinessMutation } from "@/features/businesses/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 interface SuspendModalProps {
   isOpen: boolean;
@@ -35,7 +36,11 @@ function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
       {
         onSuccess: () => {
           dispatch(
-            updateToastifyReducer({ show: true, message: "Business suspended", type: "success" }),
+            updateToastifyReducer({
+              show: true,
+              message: apiMessage("Business suspended"),
+              type: "success",
+            }),
           );
           setReason("");
           toggle();

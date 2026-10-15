@@ -6,6 +6,7 @@ import { AppDispatch } from "@/redux/store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useUpdateCommissionChargeMutation } from "@/features/events/mutations";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { commissionChargeSchema, type CommissionChargeInput } from "@/features/events/schema";
@@ -37,7 +38,7 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Commission charge updated!",
+            message: apiMessage("Commission charge updated!"),
             type: "success",
           }),
         );

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useApproveBusinessMutation } from "@/features/businesses/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 interface ApproveModalProps {
   isOpen: boolean;
@@ -23,7 +24,11 @@ function ApproveModal({ isOpen, toggle, id }: ApproveModalProps) {
     approveBusinessMutation.mutate(undefined, {
       onSuccess: () => {
         dispatch(
-          updateToastifyReducer({ show: true, message: "Business approved", type: "success" }),
+          updateToastifyReducer({
+            show: true,
+            message: apiMessage("Business approved"),
+            type: "success",
+          }),
         );
         toggle();
       },

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDeleteBusinessMutation } from "@/features/businesses/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { routes } from "@/lib/routes";
 
 interface DeleteModalProps {
@@ -27,7 +28,11 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
     deleteBusinessMutation.mutate(undefined, {
       onSuccess: () => {
         dispatch(
-          updateToastifyReducer({ show: true, message: "Business deleted", type: "success" }),
+          updateToastifyReducer({
+            show: true,
+            message: apiMessage("Business deleted"),
+            type: "success",
+          }),
         );
         toggle();
         push(routes.BUSINESSES);
