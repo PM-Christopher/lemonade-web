@@ -29,7 +29,8 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
     register,
     handleSubmit,
     setError,
-    formState: { errors, isValid, isSubmitting },
+    reset,
+    formState: { errors, isValid },
   } = useForm<ChangePasswordInput>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -39,6 +40,11 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
     },
     mode: "onTouched",
   });
+
+  const closeModal = () => {
+    reset();
+    toggle();
+  };
 
   const onSubmit = (values: ChangePasswordInput) => {
     changePasswordMutation.mutate(values, {
@@ -50,6 +56,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
             type: "success",
           }),
         );
+        reset();
         toggle();
       },
       onError: (error: { message?: string }) => {
@@ -76,7 +83,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open) toggle();
+        if (!open) closeModal();
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
@@ -85,7 +92,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
           <div className="laptop:h-full laptop:w-120 laptop:rounded-lg h-screen w-screen rounded-none bg-white p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="cursor-pointer" onClick={toggle}>
+                <div className="cursor-pointer" onClick={closeModal}>
                   <CloseIcon className="w-2.75" />
                 </div>
                 <p className="text-body-l font-semibold">Update password</p>
@@ -94,7 +101,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                 <SubmitButton
                   title="Save password"
                   isValid={isValid}
-                  loading={isSubmitting}
+                  loading={changePasswordMutation.isPending}
                   classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border shadow-custom-bottom"
                 />
               </div>
@@ -173,7 +180,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                   <SubmitButton
                     title="Save password"
                     isValid={isValid}
-                    loading={isSubmitting}
+                    loading={changePasswordMutation.isPending}
                     classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border shadow-custom-bottom"
                   />
                 </div>
