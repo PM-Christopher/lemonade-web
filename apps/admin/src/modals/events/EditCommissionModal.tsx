@@ -1,6 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Dialog, DialogContentBare, DialogTitle, Input } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, Input, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useUpdateCommissionChargeMutation } from "@/features/events/mutations";
 import { SubmitButton } from "@/components/global/SubmitButton";
-import { FieldError } from "@/components/global/FieldError";
 import { commissionChargeSchema, type CommissionChargeInput } from "@/features/events/schema";
 
 interface EditCommissionModalProps {

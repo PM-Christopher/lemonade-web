@@ -1,10 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
-import { Label, Input } from "@lemonade/ui";
+import { Label, Input, FieldError } from "@lemonade/ui";
 import { TicketDetails } from "@/interfaces/EventInterface";
 import type { Control, FieldErrors, UseFormSetValue, UseFormRegister } from "react-hook-form";
 import type { AssignEventTicketsInput } from "@/features/events/schema";
-import { FieldError } from "@/components/global/FieldError";
 
 const MultipleTicketCard = ({
   ticket,

@@ -2,12 +2,11 @@
 import React from "react";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import Image from "next/image";
-import { Card, CardContent, Input, Label } from "@lemonade/ui";
+import { Card, CardContent, Input, Label, FieldError } from "@lemonade/ui";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@lemonade/validation";
-import { FieldError } from "@/components/global/FieldError";
 import { useLoginMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";

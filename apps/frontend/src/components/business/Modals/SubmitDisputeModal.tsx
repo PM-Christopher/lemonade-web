@@ -1,10 +1,9 @@
 import React from "react";
-import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import CloseIcon from "@/images/icons/close.svg";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { disputeJobSchema, type DisputeJobInput } from "@/features/business/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";

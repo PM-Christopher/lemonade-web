@@ -1,6 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
@@ -10,7 +10,6 @@ import { useAddToWalletMutation, useDeductFromWalletMutation } from "@/features/
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { walletAdjustmentSchema, type WalletAdjustmentInput } from "@/features/wallet/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 
 type UpdateBalanceInterface = {

@@ -8,7 +8,6 @@ import PollIcon from "@/images/icons/votes.svg";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createThreadSchema, type CreateThreadInput } from "@/features/tribes/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { useCreateThreadMutation } from "@/features/tribes/mutations";
@@ -19,7 +18,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
-import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { errorMessage } from "@/lib/api-error";
 
 type CreateThreadInterface = {

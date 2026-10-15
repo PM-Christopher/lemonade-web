@@ -2,13 +2,12 @@ import React from "react";
 import { XIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useAddTeamMemberMutation } from "@/features/team/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { addTeamMemberSchema, type AddTeamMemberInput } from "@/features/team/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 
 interface BalanceModalProps {

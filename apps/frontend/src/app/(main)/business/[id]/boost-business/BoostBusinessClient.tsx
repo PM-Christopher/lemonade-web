@@ -2,7 +2,7 @@
 import { images } from "@/lib/images";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label } from "@lemonade/ui";
+import { Label, FieldError } from "@lemonade/ui";
 import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import Image from "next/image";
@@ -10,7 +10,6 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { boostBusinessSchema, type BoostBusinessInput } from "@/features/business/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { useBoostListingMutation } from "@/features/business/mutations";
 import { useBoostPackagesQuery } from "@/features/business/queries";

@@ -1,6 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,6 @@ import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useUpdatePointsRateMutation } from "@/features/wallet/mutations";
 import { pointsRateSchema, type PointsRateInput } from "@/features/wallet/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 
 type PointsRateModalInterface = {

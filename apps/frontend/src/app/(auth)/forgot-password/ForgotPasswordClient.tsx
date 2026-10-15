@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Card, CardContent, Button, Input, Label } from "@lemonade/ui";
+import { Card, CardContent, Button, Input, Label, FieldError } from "@lemonade/ui";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
@@ -16,7 +16,6 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import { errorMessage } from "@/lib/api-error";
 import { applyServerErrors } from "@/lib/form-errors";
-import { FieldError } from "@/components/global/FieldError";
 
 export default function ForgotPasswordPage() {
   const { push } = useNavigation();

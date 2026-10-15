@@ -1,5 +1,13 @@
 import CloseIcon from "@/images/icons/close.svg";
-import { Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
+import {
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  FieldError,
+} from "@lemonade/ui";
 import LocationIcon from "@/images/icons/location.svg";
 import React from "react";
 import { useBusinessCategoriesQuery } from "@/features/shared/queries";
@@ -7,7 +15,6 @@ import NairaIcon from "@/images/icons/nairaIcon.svg";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { businessFilterSchema, type BusinessFilterInput } from "@/features/business/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { useFilterBusinessMutation } from "@/features/business/mutations";

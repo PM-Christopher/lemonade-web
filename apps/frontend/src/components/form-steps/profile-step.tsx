@@ -13,6 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  FieldError,
 } from "@lemonade/ui";
 import Image from "next/image";
 import { authApi } from "@/features/authentication/api";
@@ -22,7 +23,6 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSetupSchema, type ProfileSetupInput } from "@lemonade/validation";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";

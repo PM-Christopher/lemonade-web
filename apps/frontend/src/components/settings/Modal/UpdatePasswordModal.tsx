@@ -1,13 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Label, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import EyeIcon from "@/images/icons/eyeIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { changePasswordSchema, type ChangePasswordInput } from "@/features/settings/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { useChangePasswordMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";

@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Label, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { requestServiceSchema, type RequestServiceInput } from "@/features/business/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";

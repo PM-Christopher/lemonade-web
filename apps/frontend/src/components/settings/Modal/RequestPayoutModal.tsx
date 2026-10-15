@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { SubmitButton } from "@/components/global/SubmitButton";
-import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { bankAccountSchema, type BankAccountInput } from "@/features/settings/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { useBanksQuery } from "@/features/shared/queries";
 import type { Bank } from "@/features/shared/api";

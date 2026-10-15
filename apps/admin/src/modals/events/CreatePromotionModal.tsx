@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { PlusIcon, XIcon } from "lucide-react";
-import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,6 @@ import {
 } from "@/features/events/mutations";
 import { promotionSchema, type PromotionInput } from "@/features/events/schema";
 import { SubmitButton } from "@/components/global/SubmitButton";
-import { FieldError } from "@/components/global/FieldError";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 interface CreatePromotionModalProps {

@@ -1,13 +1,12 @@
 "use client";
 import Link from "next/link";
 import React, { useMemo } from "react";
-import { Card, CardContent, Input, Label } from "@lemonade/ui";
+import { Card, CardContent, Input, Label, FieldError } from "@lemonade/ui";
 import Image from "next/image";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@lemonade/validation";
-import { FieldError } from "@/components/global/FieldError";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";

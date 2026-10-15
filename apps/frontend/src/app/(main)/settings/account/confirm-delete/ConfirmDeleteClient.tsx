@@ -2,14 +2,13 @@
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-import { Button, Label } from "@lemonade/ui";
+import { Button, Label, FieldError } from "@lemonade/ui";
 import EyeIcon from "@/images/icons/eyeIcon.svg";
 
 import { useAppDispatch } from "@/redux/hook";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { deleteAccountSchema, type DeleteAccountInput } from "@/features/settings/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { useDeleteAccountMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";

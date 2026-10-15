@@ -2,14 +2,13 @@
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label, Input, Button } from "@lemonade/ui";
+import { Label, Input, Button, FieldError } from "@lemonade/ui";
 import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { eventTicketsFormSchema, type EventTicketsFormInput } from "@/features/events/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { createTickets, resetEventState } from "@/features/events/event.slice";
 import { useCreateEventMutation } from "@/features/events/mutations";

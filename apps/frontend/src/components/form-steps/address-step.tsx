@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Card, CardContent, CardHeader, Label, Input } from "@lemonade/ui";
+import { Card, CardContent, CardHeader, Label, Input, FieldError } from "@lemonade/ui";
 
 import { authApi } from "@/features/authentication/api";
 import { useAppDispatch } from "@/redux/hook";
@@ -8,7 +8,6 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactAddressSchema, type ContactAddressInput } from "@lemonade/validation";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";

@@ -17,6 +17,7 @@ import {
   Dialog,
   DialogContentBare,
   DialogTitle,
+  FieldError,
 } from "@lemonade/ui";
 import DollarBillIcon from "@/images/icons/dollar-bill.svg";
 import InfoIcon from "@/images/icons/infoIcon.svg";
@@ -24,7 +25,6 @@ import PadlockIcon from "@/images/icons/padlock.svg";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createTribeSchema, type CreateTribeInput } from "@/features/tribes/schema";
-import { FieldError } from "@/components/global/FieldError";
 import { applyServerErrors } from "@/lib/form-errors";
 import { tribesApi } from "@/features/tribes/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";

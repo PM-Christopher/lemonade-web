@@ -2,14 +2,13 @@ import React from "react";
 import { XIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Label, Input, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import type { AdminSubscriptionPlan } from "@/features/subscriptions/api";
 import { useCreatePlanMutation, useUpdatePlanMutation } from "@/features/subscriptions/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { SubmitButton } from "@/components/global/SubmitButton";
-import { FieldError } from "@/components/global/FieldError";
 import { planSchema, type PlanInput } from "@/features/subscriptions/schema";
 import { applyServerErrors } from "@/lib/form-errors";
 

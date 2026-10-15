@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "@lemonade/ui";
+import { Card, CardContent, FieldError } from "@lemonade/ui";
 import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import OtpInput from "react-otp-input";
@@ -9,7 +9,6 @@ import { useCookies } from "react-cookie";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema, type OtpCodeInput } from "@lemonade/validation";
-import { FieldError } from "@/components/global/FieldError";
 import {
   useForgotPasswordMutation,
   useVerifyPasswordResetOtpMutation,
