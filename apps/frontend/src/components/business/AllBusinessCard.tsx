@@ -94,7 +94,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
           {/* ...existing service_rate code... */}
           {business.service_rate && (
             <p className="flex-shrink-0 text-sm font-semibold whitespace-nowrap">
-              {"N " + formatNumberWithCommas(business.service_rate) + "/hr"}
+              {"₦" + formatNumberWithCommas(business.service_rate) + "/hr"}
             </p>
           )}
         </div>

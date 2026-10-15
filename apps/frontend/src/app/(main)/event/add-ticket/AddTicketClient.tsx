@@ -1,5 +1,6 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
+import { MoneyInput } from "@/components/global/MoneyInput";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { Label, Input, Button, FieldError } from "@lemonade/ui";
@@ -242,16 +243,13 @@ const AddTicketClient = () => {
                         >
                           Ticket price
                         </Label>
-                        <Input
+                        <MoneyInput
                           id={`ticket-price-${index}`}
-                          type="text"
-                          inputMode="numeric"
                           placeholder=""
                           className="form-font bg-light_grey h-12 rounded-xl border-0"
-                          value={tickets[index]?.price || ""}
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(/[^0-9.]/g, "");
-                            setValue(`tickets.${index}.price`, numericValue, {
+                          value={String(tickets[index]?.price || "")}
+                          onValueChange={(amount) => {
+                            setValue(`tickets.${index}.price`, amount, {
                               shouldValidate: true,
                             });
                           }}

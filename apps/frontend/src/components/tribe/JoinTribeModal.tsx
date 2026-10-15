@@ -8,7 +8,8 @@ import { useAppDispatch } from "@/redux/hook";
 import { useJoinTribeMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { errorMessage } from "@/lib/api-error";
+import { formatNaira } from "@/lib/formatNumber";
 import type { TribeInterface } from "@/interfaces/TribeInterface";
 
 const ColorRing = lazy(() =>
@@ -45,6 +46,15 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
             }),
           );
           toggle();
+        },
+        onError: (error) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: errorMessage(error, "Could not join tribe"),
+              type: "error",
+            }),
+          );
         },
       },
     );
@@ -96,7 +106,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
               <div className="border-step-color bg-light-green-10 flex w-136 flex-col items-center rounded-xl border-2 p-4">
                 <p className="font-semi-normal text-body-s font-sans">Membership fee</p>
                 <p className="text-title-l mt-2 font-sans font-semibold">
-                  N {formatNumberWithCommas(tribe?.membership_fee)}
+                  {formatNaira(tribe?.membership_fee)}
                 </p>
               </div>
             </div>

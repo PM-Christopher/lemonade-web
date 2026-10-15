@@ -1,3 +1,11 @@
+type NumberLike = number | string | null | undefined;
+
+// The API sends some amounts as strings such as "3004.00".
+const toNumber = (value: NumberLike): number | null => {
+  const parsed = typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
+  return typeof parsed === "number" && Number.isFinite(parsed) ? parsed : null;
+};
+
 export const formatNumber = (number: number, places: number) => {
   if (number) {
     return parseFloat(String(number)).toFixed(places);
@@ -5,7 +13,8 @@ export const formatNumber = (number: number, places: number) => {
   return 0;
 };
 
-export const formatNumberWithCommas = (number: number | undefined | null) => {
+export const formatNumberWithCommas = (value: NumberLike) => {
+  const number = toNumber(value);
   if (number) {
     if (number <= 1) {
       return number;
@@ -13,4 +22,27 @@ export const formatNumberWithCommas = (number: number | undefined | null) => {
     return number.toLocaleString("en-US");
   }
   return 0;
+};
+
+/** Display only: "₦3,004.00". The amount itself is never computed here. */
+export const formatNaira = (value: NumberLike): string =>
+  `₦${(toNumber(value) ?? 0).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+
+/** Keeps digits and one decimal point (max 2 decimals) from what the user typed. */
+export const sanitizeMoneyInput = (text: string): string => {
+  const cleaned = text.replace(/[^0-9.]/g, "");
+  const [whole = "", ...rest] = cleaned.split(".");
+  const trimmedWhole = whole.replace(/^0+(?=\d)/, "");
+  if (rest.length === 0) return trimmedWhole;
+  return `${trimmedWhole}.${rest.join("").slice(0, 2)}`;
+};
+
+/** Adds thousands separators to a sanitized amount: "1234.5" becomes "1,234.5". */
+export const formatMoneyInput = (raw: string): string => {
+  const [whole = "", decimals] = raw.split(".");
+  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return decimals === undefined ? grouped : `${grouped}.${decimals}`;
 };

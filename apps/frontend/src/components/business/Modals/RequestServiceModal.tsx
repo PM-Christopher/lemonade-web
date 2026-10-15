@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
+import { MoneyInput } from "@/components/global/MoneyInput";
 import CloseIcon from "@/images/icons/close.svg";
 import { Label, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { requestServiceSchema, type RequestServiceInput } from "@/features/business/schema";
 import { applyServerErrors } from "@/lib/form-errors";
@@ -123,22 +124,20 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                         <p className="font-semi-normal text-body-s">₦</p>
                       </div>
                       <div className="w-full">
-                        <input
-                          id="amount"
-                          type="text"
-                          className="bg-light_grey text-body-s w-full border-0 focus:border-transparent focus:ring-0 focus:outline-none"
-                          {...register("amount", {
-                            onChange: (e) => {
-                              // Only digits, no leading 0
-                              let value = e.target.value.replace(/\D/g, "");
-                              if (value.startsWith("0")) {
-                                value = value.replace(/^0+/, "");
-                              }
-                              e.target.value = value;
-                            },
-                          })}
-                          inputMode="numeric"
-                          pattern="[1-9][0-9]*"
+                        <Controller
+                          name="amount"
+                          control={control}
+                          render={({ field }) => (
+                            <MoneyInput
+                              id="amount"
+                              allowDecimals={false}
+                              className="bg-light_grey text-body-s h-auto w-full border-0 p-0 shadow-none focus:border-transparent focus:ring-0 focus:outline-none focus-visible:ring-0"
+                              value={field.value ?? ""}
+                              onValueChange={field.onChange}
+                              onBlur={field.onBlur}
+                              name={field.name}
+                            />
+                          )}
                         />
                       </div>
                     </div>

@@ -1,4 +1,5 @@
 import { images } from "@/lib/images";
+import { MoneyInput } from "@/components/global/MoneyInput";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useRef, useState } from "react";
@@ -321,12 +322,19 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
                     >
                       Acceptance fee (₦)
                     </Label>
-                    <Input
-                      id="membership-fee"
-                      type="text"
-                      inputMode="decimal"
-                      className="form-font bg-light_grey h-12 rounded-xl border-0"
-                      {...register("membership_fee")}
+                    <Controller
+                      name="membership_fee"
+                      control={control}
+                      render={({ field }) => (
+                        <MoneyInput
+                          id="membership-fee"
+                          className="form-font bg-light_grey h-12 rounded-xl border-0"
+                          value={field.value ?? ""}
+                          onValueChange={field.onChange}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                        />
+                      )}
                     />
                     <FieldError message={errors.membership_fee?.message} />
                     <div className="mt-1.25 mb-6 flex items-center gap-2">

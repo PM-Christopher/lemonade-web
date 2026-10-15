@@ -201,7 +201,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                         Sales Revenue
                       </p>
                       <p className="tracking-custom text-black-light text-body-xl font-sans font-semibold">
-                        ₦{event?.breakdown?.sales_revenue}
+                        ₦{formatNumberWithCommas(event?.breakdown?.sales_revenue)}
                       </p>
                     </div>
                     <div className="border-t-grey-20 my-4 border-t"></div>

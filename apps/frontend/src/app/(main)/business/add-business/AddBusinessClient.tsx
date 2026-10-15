@@ -1,5 +1,6 @@
 "use client";
 import { routes } from "@/lib/routes";
+import { MoneyInput } from "@/components/global/MoneyInput";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -294,13 +295,19 @@ const AddBusinessClient = () => {
                 >
                   Service Rate (Optional)
                 </Label>
-                <Input
-                  id="service_rate"
-                  type="text"
-                  inputMode="decimal"
-                  placeholder=""
-                  className="form-font bg-light_grey h-12 rounded-xl border-0"
-                  {...register("service_rate")}
+                <Controller
+                  name="service_rate"
+                  control={control}
+                  render={({ field }) => (
+                    <MoneyInput
+                      id="service_rate"
+                      className="form-font bg-light_grey h-12 rounded-xl border-0"
+                      value={field.value ?? ""}
+                      onValueChange={field.onChange}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                    />
+                  )}
                 />
                 <FieldError message={errors.service_rate?.message} />
               </div>

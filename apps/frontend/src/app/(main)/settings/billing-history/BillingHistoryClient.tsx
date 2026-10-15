@@ -1,5 +1,6 @@
 "use client";
 import { routes } from "@/lib/routes";
+import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -37,7 +38,9 @@ const BillingHistoryClient = () => {
               <div className="border-b-step-color bg-green-tint flex flex-col items-start justify-between gap-6 rounded-2xl border-b-4 p-6 sm:flex-row sm:items-center">
                 <div className="flex flex-col gap-2">
                   <p className="text-mid-green text-base font-semibold">{data?.plan.title}</p>
-                  <p className="text-black-light text-2xl font-bold">₦{data?.plan.plan_price}</p>
+                  <p className="text-black-light text-2xl font-bold">
+                    ₦{formatNumberWithCommas(data?.plan.plan_price)}
+                  </p>
                   <div className="bg-light-green-50 rounded-lg px-3 py-2">
                     <p className="text-light-black text-sm font-medium">
                       Renews {data?.plan?.next_billing_date}
@@ -90,7 +93,7 @@ const BillingHistoryClient = () => {
                           {history?.created_at}
                         </p>
                         <p className="text-light-black text-base font-semibold">
-                          ₦{history?.amount}
+                          ₦{formatNumberWithCommas(history?.amount)}
                         </p>
                       </div>
                     ))}

@@ -203,7 +203,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     </p>
                     {business?.service_rate ? (
                       <p className="text-body-l mt-1 text-center font-semibold">
-                        N {formatNumberWithCommas(business?.service_rate)}/hr
+                        ₦{formatNumberWithCommas(business?.service_rate)}/hr
                       </p>
                     ) : (
                       <></>
