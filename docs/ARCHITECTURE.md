@@ -3595,10 +3595,10 @@ backend work.
 | Client-side pagination sites | 7 | **0**, all on server pagination | 0 | P6 | Done in Phase 6 |
 | Effects with wrong deps | 32 | **0** lint errors with `exhaustive-deps` as error. 7 explicit `eslint-disable` suppressions remain. | 0 | P1 | `pnpm lint` |
 | `console.log` in shipped code | 62 | **0** | 0 | P1 | `grep` |
-| Duplicated / diverged files | 41 | 19 byte-identical files in both apps (17 code, 2 icons). Not checked in CI. | 0 | P2 | Same-path diff of `apps/*/src` |
+| Duplicated / diverged files | 41 | 17 byte-identical files, all reviewed and kept per app on purpose (see below). `FieldError` moved to `@lemonade/ui`. | 0 unreviewed | P2 | Same-path diff of `apps/*/src` |
 | Unimported runtime deps | 50 | **0**. `knip --dependencies` runs in CI (`knip.json` lists the deps Next and config files load by name). | 0 | P0, P7 | `pnpm knip` in CI |
 | UI component systems | 4 | **1** (Radix + shadcn via `@lemonade/ui`) | 1 | P7 | `package.json` scan |
-| Test files | 0 | 65 (frontend 23, admin 7, packages 13, e2e 22). Every package is at or above 90%, enforced. | ≥ 90% on `packages/*` | P1–P8 | `vitest run --coverage` in each package's `test` |
+| Test files | 0 | 67 (frontend 24, admin 7, packages 14, e2e 22). Every package is at or above 90%, enforced. | ≥ 90% on `packages/*` | P1–P8 | `vitest run --coverage` in each package's `test` |
 | Apps with CI | 0 | **2**. `ci.yml` plus `e2e.yml` on every PR. Required checks on `main` not confirmed. | 2 | P1 | Workflows; branch rules need repo admin to read |
 | Apps with lint config | 0 | **2**. Lint runs with `--max-warnings=0`, so any warning fails CI. | 2 | P1 | `pnpm lint` |
 | Apps with route protection | 1 (weak) | **2, validated**. `route-protection.spec.ts` in both apps: a logged-out deep link goes to login (and back, in the frontend). | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
@@ -3610,9 +3610,19 @@ shared config counts all of `src/` (generated contracts excluded), so an unteste
 down. `api-client` is at 99% statements and 95% branches, `ui` at 100%, the rest at 100%. The unused
 `formatMoney` placeholder in `@lemonade/domain` was removed.
 
+**Identical files, reviewed 15 Oct:** of the 19, `FieldError` moved to `@lemonade/ui` and admin's
+`useIsMobile` was deleted (no admin caller). The other 17 stay per app:
+
+- Route files can't live in a package: the 3 auth `page.tsx` stubs, the `csp-report` and `web-vitals`
+  handlers, and the 2 icons.
+- `lib/api-error.ts` and `lib/form-errors.ts` (plus its test) wrap `ApiError`. The only package that
+  could hold them is `@lemonade/api-client`, and `app/**` may not import it.
+- `redux/hook.ts` and `redux/toastifySlice.ts` are client state, which is never shared.
+- `WebVitalsReporter`, `lib/correlation.ts`, `useDebounce` and `vitest-axe.d.ts` are small app glue
+  with no package that fits. `logger.test.ts` is identical because the two loggers differ only by name.
+
 **Still open from this measurement:**
 
-- Decide which of the 19 identical files should move to a package. Route stubs and icons stay per app.
 - Confirm `main` requires the CI and e2e checks (needs repo admin).
 
 **Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
