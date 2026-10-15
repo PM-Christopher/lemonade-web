@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -8,7 +9,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { formatString } from "@/lib/helper";
+import { formatString, getSafeImageSrc } from "@/lib/helper";
 
 interface ConnectUserInfo {
   receiver?: {
@@ -49,7 +50,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
           <div className="mt-6">
             <div className="flex flex-col items-center justify-center">
               <Image
-                src={userInfo?.receiver?.avatar ?? ""}
+                src={getSafeImageSrc(userInfo?.receiver?.avatar, images.PLACEHOLDER)}
                 alt="check in"
                 width={64}
                 height={64}

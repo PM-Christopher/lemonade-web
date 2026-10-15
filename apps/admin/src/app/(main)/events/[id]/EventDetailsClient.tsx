@@ -311,13 +311,15 @@ const EventDetailsClient = ({ id }: { id: string }) => {
             "flex h-190.5 w-full flex-col gap-4 rounded-tl-xl rounded-tr-xl bg-white p-6 lg:w-2/3"
           }
         >
-          <Image
-            src={event?.event?.event_image ?? ""}
-            alt={event?.event?.event_name ?? ""}
-            width={320}
-            height={343}
-            className={"h-85.75 w-80 rounded-2xl"}
-          />
+          {event?.event?.event_image && (
+            <Image
+              src={event.event.event_image}
+              alt={event.event.event_name ?? ""}
+              width={320}
+              height={343}
+              className={"h-85.75 w-80 rounded-2xl"}
+            />
+          )}
           <p className={"font-semiBold text-title-r leading-normal"}>{event?.event?.event_name}</p>
           <div className={"flex flex-col gap-2"}>
             <div className={"flex items-center gap-2"}>

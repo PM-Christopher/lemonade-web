@@ -8,7 +8,7 @@ import Image from "next/image";
 import ClockIconOrange from "@/images/icons/clockIconOrange.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { formatStringUCFirst, getInitials } from "@/lib/helper";
+import { formatStringUCFirst, getInitials, getSafeImageSrc } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -196,7 +196,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                 ) : (
                   <>
                     <Image
-                      src={job.business?.image ?? ""}
+                      src={getSafeImageSrc(job.business?.image, images.PLACEHOLDER)}
                       alt="job logo"
                       width={72}
                       height={72}

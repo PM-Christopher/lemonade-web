@@ -29,7 +29,7 @@ const EventView: React.FC<EventViewProps> = ({ userDetail }) => {
         <div className={"flex flex-wrap gap-6"}>
           {userDetail?.events?.map((item) => (
             <div key={item?.id} className={"flex w-fit flex-col gap-1 rounded-xl border p-1"}>
-              <Image src={item?.image ?? ""} alt={""} width={155.5} height={155.5} />
+              {item?.image && <Image src={item.image} alt={""} width={155.5} height={155.5} />}
               <p className={"font-semiBold text-body-s"}>{item?.name}</p>
               <div className={"flex items-center gap-1"}>
                 <CalendarIcon className={"w-3"} />

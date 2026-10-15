@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import { formatCountry } from "@lemonade/domain";
-import { formatStringUCFirst } from "@/lib/helper";
+import { formatStringUCFirst, getSafeImageSrc } from "@/lib/helper";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { useSelector } from "react-redux";
@@ -72,7 +72,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <Image
-                      src={job.business?.image ?? ""}
+                      src={getSafeImageSrc(job.business?.image, images.PLACEHOLDER)}
                       alt="logo"
                       width={48}
                       height={48}

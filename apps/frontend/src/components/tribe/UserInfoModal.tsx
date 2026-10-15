@@ -1,3 +1,4 @@
+import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
@@ -7,7 +8,7 @@ import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import ChatIcon from "@/images/icons/chatIcon.svg";
-import { formatString, getInitials } from "@/lib/helper";
+import { formatString, getInitials, getSafeImageSrc } from "@/lib/helper";
 import { TribeInterface } from "@/interfaces/TribeInterface";
 import { useAppDispatch } from "@/redux/hook";
 import { useSendInviteMutation } from "@/features/connect/mutations";
@@ -87,7 +88,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
             <div className="flex flex-col items-center justify-center">
               {user?.profile_image ? (
                 <Image
-                  src={user?.profile_image ?? ""}
+                  src={getSafeImageSrc(user?.profile_image, images.PLACEHOLDER)}
                   alt="check in"
                   width={64}
                   height={64}
