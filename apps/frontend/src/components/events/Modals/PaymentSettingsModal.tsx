@@ -71,6 +71,7 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
               <Button
                 className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 onClick={handleUpdate}
+                loading={updatePaymentSettingMutation.isPending}
               >
                 <p className="font-semi-normal text-meta font-sans leading-normal">Save Changes</p>
               </Button>

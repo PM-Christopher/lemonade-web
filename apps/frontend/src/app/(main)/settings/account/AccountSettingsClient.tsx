@@ -2,6 +2,7 @@
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import PadlockIcon from "@/images/icons/padlockIcon.svg";
+import { Loader2 } from "lucide-react";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import TrashIcon from "@/images/icons/trashIcon.svg";
 import LogoutIcon from "@/images/icons/logoutIcon.svg";
@@ -78,19 +79,27 @@ const AccountSettingsClient = () => {
     <>
       <section className="mt-4 flex flex-col items-center px-5">
         <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl bg-white p-4">
-          {settingsItems.map((item) => (
-            <div
-              key={item.id}
-              className="-m-2 flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors duration-200 hover:bg-gray-50"
-              onClick={item.onClick}
-            >
-              <div className="flex items-center gap-2">
-                {item.icon}
-                <p className={`text-body-l font-normal ${item.textColor}`}>{item.label}</p>
+          {settingsItems.map((item) => {
+            const isBusy = item.id === "logout" && logoutMutation.isPending;
+            return (
+              <div
+                key={item.id}
+                className="-m-2 flex cursor-pointer items-center justify-between rounded-lg p-2 transition-colors duration-200 hover:bg-gray-50"
+                onClick={isBusy ? undefined : item.onClick}
+                aria-busy={isBusy || undefined}
+              >
+                <div className="flex items-center gap-2">
+                  {item.icon}
+                  <p className={`text-body-l font-normal ${item.textColor}`}>{item.label}</p>
+                </div>
+                {isBusy ? (
+                  <Loader2 className="animate-spin text-gray-400" aria-hidden="true" />
+                ) : (
+                  <ChevronRight className="text-gray-400" />
+                )}
               </div>
-              <ChevronRight className="text-gray-400" />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
       <UpdatePasswordModal user={user} toggle={toggleSettingsModal} isOpen={isPasswordModalOpen} />

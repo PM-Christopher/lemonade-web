@@ -118,12 +118,22 @@ const InviteModal: React.FC<InviteInterface> = ({ toggle, isOpen, invite }) => {
             <Button
               className="h-12 flex-1 rounded-lg border border-gray-300 bg-white transition-all hover:bg-gray-50"
               onClick={() => requestAction("rejected")}
+              loading={
+                inviteResponseMutation.isPending &&
+                inviteResponseMutation.variables?.option === "rejected"
+              }
+              disabled={inviteResponseMutation.isPending}
             >
               <p className="text-body-l font-medium text-gray-900">Reject Invite</p>
             </Button>
             <Button
               className="bg-gradient-green h-12 flex-1 rounded-lg shadow-lg transition-all hover:brightness-105"
               onClick={() => requestAction("accepted")}
+              loading={
+                inviteResponseMutation.isPending &&
+                inviteResponseMutation.variables?.option === "accepted"
+              }
+              disabled={inviteResponseMutation.isPending}
             >
               <p className="text-body-l font-medium">Accept Invite</p>
             </Button>

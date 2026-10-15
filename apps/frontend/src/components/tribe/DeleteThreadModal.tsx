@@ -24,18 +24,29 @@ const DeleteThreadModal: React.FC<DeleteThreadIF> = ({
   const deleteThreadMutation = useDeleteThreadMutation(tribeId);
 
   const handleDeleteThread = () => {
-    if (threadId !== null) {
-      deleteThreadMutation.mutate(threadId);
-    }
-    dispatch(
-      updateToastifyReducer({
-        show: true,
-        message: "Thread deleted.",
-        type: "success",
-      }),
-    );
-    setThreadId(null);
-    toggle();
+    if (threadId === null) return;
+    deleteThreadMutation.mutate(threadId, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Thread deleted.",
+            type: "success",
+          }),
+        );
+        setThreadId(null);
+        toggle();
+      },
+      onError: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: "Could not delete thread.",
+            type: "error",
+          }),
+        );
+      },
+    });
   };
 
   return (
@@ -65,6 +76,7 @@ const DeleteThreadModal: React.FC<DeleteThreadIF> = ({
               <Button
                 className="h-11 w-full rounded-xl border bg-white py-3.5 shadow-none hover:bg-white"
                 onClick={handleDeleteThread}
+                loading={deleteThreadMutation.isPending}
               >
                 <p className="font-semi-normal text-red-1 text-body-l">Yes, delete</p>
               </Button>

@@ -19,21 +19,32 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
   const [selectedReport, setSelectedReport] = useState("Inappropriate content");
 
   const submitThread = () => {
-    if (threadId !== null) {
-      reportThreadMutation.mutate({
-        id: threadId,
-        data: { report: selectedReport },
-      });
-    }
-    dispatch(
-      updateToastifyReducer({
-        show: true,
-        message: "Report submitted. Thanks for keeping the platform safe.",
-        type: "success",
-      }),
+    if (threadId === null) return;
+    reportThreadMutation.mutate(
+      { id: threadId, data: { report: selectedReport } },
+      {
+        onSuccess: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Report submitted. Thanks for keeping the platform safe.",
+              type: "success",
+            }),
+          );
+          setSelectedReport("Inappropriate content");
+          toggle();
+        },
+        onError: () => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: "Could not submit report.",
+              type: "error",
+            }),
+          );
+        },
+      },
     );
-    setSelectedReport("Inappropriate content");
-    toggle();
   };
 
   return (
@@ -58,6 +69,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                 className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
                 type="button"
                 onClick={submitThread}
+                loading={reportThreadMutation.isPending}
               >
                 <p className="font-semi-normal text-meta font-sans leading-normal">Submit</p>
               </Button>
