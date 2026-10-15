@@ -1,5 +1,4 @@
 "use client";
-import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import SideMenu from "@/components/events/SideMenu";
 import EventsSectionView from "@/components/events/views/Events";
@@ -16,9 +15,8 @@ import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { resetFreeEventState } from "@/features/events/event.slice";
 import { useSearchEventsMutation, useFilterEventsMutation } from "@/features/events/mutations";
-import { useSearchParams } from "next/navigation";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
+import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
 import VerifyPaymentModal, {
   type VerifiedEvent,
 } from "@/components/events/Modals/VerifyPaymentModal";
@@ -52,11 +50,7 @@ const EventListClient: React.FC = () => {
   const searchResults = searchEventsMutation.data?.events ?? [];
   const filterEventsMutation = useFilterEventsMutation();
 
-  const { replace } = useNavigation();
-  const searchParams = useSearchParams();
-  const trxref = searchParams.get("trxref");
-  const verifyTransactionMutation = useVerifyTransactionMutation();
-  const transaction_data = verifyTransactionMutation.data;
+  const [paidEvent, setPaidEvent] = useState<VerifiedEvent>();
 
   const bookingCompleted = Boolean(free_event?.completed);
   const [seenBookingCompleted, setSeenBookingCompleted] = useState(bookingCompleted);
@@ -77,35 +71,17 @@ const EventListClient: React.FC = () => {
     dispatch(resetFreeEventState());
   }, [free_event, dispatch]);
 
-  useEffect(() => {
-    if (trxref) {
-      verifyTransactionMutation.mutate(
-        { trx_ref: trxref },
-        {
-          onSuccess: () => {
-            // Remove trxref from URL
-            const params = new URLSearchParams(searchParams);
-            params.delete("trxref");
-            params.delete("reference");
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Event booked successfully",
-                type: "success",
-              }),
-            );
-            setToggleVPaymentModel(true);
-            // Update the URL without reloading
-            replace(`?${params.toString()}`);
-          },
-          onError: (err) => {
-            console.error("Payment verification failed:", err);
-          },
-        },
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trxref]);
+  usePaymentReturn<VerifiedEvent["data"]>((data) => {
+    setPaidEvent({ data });
+    dispatch(
+      updateToastifyReducer({
+        show: true,
+        message: "Event booked successfully",
+        type: "success",
+      }),
+    );
+    setToggleVPaymentModel(true);
+  });
 
   const handleEventSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -255,7 +231,7 @@ const EventListClient: React.FC = () => {
       <VerifyPaymentModal
         toggle={toggleVerifyPayment}
         isOpen={toggleVPaymentModel}
-        event={transaction_data as VerifiedEvent | undefined}
+        event={paidEvent}
         toggleMore={toggleMoreTickets}
       />
     </MainLayout>

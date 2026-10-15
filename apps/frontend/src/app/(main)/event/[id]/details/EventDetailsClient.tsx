@@ -1,7 +1,7 @@
 "use client";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import CalendarIcon from "@/images/icons/calendar-large.svg";
@@ -14,11 +14,13 @@ import TicketIcon from "@/images/icons/ticket.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import AffiliateUsersIcon from "@/images/icons/affiliate_users.svg";
 import CheckIcon from "@/images/icons/checkedFilledIcon.svg";
-import PaymentSuccessfulModal from "@/components/events/Modals/PaymentSuccessfulModal";
+import PaymentSuccessfulModal, {
+  type PaidPromotion,
+} from "@/components/events/Modals/PaymentSuccessfulModal";
+import type { PromotionPaymentMeta } from "@/features/events/api";
 import PromotionDetailsModal from "@/components/events/Modals/PromotionDetailsModal";
 import Link from "next/link";
 import MainLayout from "@/components/layouts/MainLayout";
-import { useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEventQuery, eventKeys } from "@/features/events/queries";
 import { useEventPromotionMutation } from "@/features/events/mutations";
@@ -26,7 +28,7 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { getSafeImageSrc } from "@/lib/helper";
 import { formatLongDate, formatTime } from "@/lib/dateTimeFormatter";
 import { EventProgramDetailSkeleton } from "@/components/Skeletons";
-import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
+import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
 import { PromotionInterface } from "@/interfaces/EventInterface";
 import { routes } from "@/lib/routes";
 
@@ -36,12 +38,9 @@ const EventDetailsClient = ({ id }: { id: number }) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { data: eventData, isLoading: loading } = useEventQuery(id);
   const event = eventData?.event;
-  const { replace, back } = useNavigation();
-  const searchParams = useSearchParams();
-  const trxref = searchParams.get("trxref");
-  const [promotionData, setPromotionData] = useState<PromotionInterface | null>(null);
+  const { back } = useNavigation();
+  const [promotionData, setPromotionData] = useState<PaidPromotion | null>(null);
   const [eventPromotion, setEventPromotion] = useState<PromotionInterface | null>(null);
-  const verifyTransactionMutation = useVerifyTransactionMutation();
   const eventPromotionMutation = useEventPromotionMutation();
 
   const activateModal = () => {
@@ -52,38 +51,11 @@ const EventDetailsClient = ({ id }: { id: number }) => {
     setIsDetailsOpen(!isDetailsOpen);
   };
 
-  useEffect(() => {
-    if (trxref) {
-      verifyTransactionMutation.mutate(
-        { trx_ref: trxref },
-        {
-          onSuccess: (res) => {
-            queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
-            // Remove trxref from URL
-            const params_ = new URLSearchParams(searchParams);
-            params_.delete("trxref");
-            params_.delete("reference");
-            // Update the URL without reloading
-            replace(`?${params_.toString()}`);
-            const resData = res.data as {
-              promo?: Record<string, unknown>;
-              promotion?: { promotion_date?: string };
-            };
-            const promotion_data = {
-              ...resData?.promo,
-              promotion_date: resData?.promotion?.promotion_date,
-            };
-            setPromotionData(promotion_data as unknown as PromotionInterface);
-            activateModal();
-          },
-          onError: (err) => {
-            console.error("Payment verification failed:", err);
-          },
-        },
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trxref]);
+  usePaymentReturn<PromotionPaymentMeta>((meta) => {
+    queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
+    setPromotionData({ ...meta?.promo, promotion_date: meta?.promotion?.promotion_date });
+    activateModal();
+  });
 
   const handleGetEventPromotion = () => {
     eventPromotionMutation.mutate(

@@ -14,6 +14,12 @@ import type {
   EventTicketInterface,
 } from "@/interfaces/EventInterface";
 
+// Transaction meta saved when paying to promote an event (backend PromoteEvent).
+export interface PromotionPaymentMeta {
+  promo?: { name?: string; price?: number };
+  promotion?: { promotion_date?: string };
+}
+
 export interface EventsListResponse {
   this_week: EventInterface[];
   upcoming: EventInterface[];

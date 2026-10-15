@@ -10,7 +10,6 @@ import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import { Thread } from "@/interfaces/TribeInterface";
-import { useSearchParams } from "next/navigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import EditIcon from "@/images/icons/edit.svg";
 import { useMediaQuery } from "react-responsive";
@@ -29,7 +28,7 @@ import {
   usePinThreadMutation,
   useViewProfileMutation,
 } from "@/features/tribes/mutations";
-import { useVerifyTransactionMutation } from "@/features/transaction/mutations";
+import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 import AddMemberModal from "@/components/tribe/AddMemberModal";
 import { useAppDispatch } from "@/redux/hook";
@@ -79,11 +78,9 @@ const TribeClient = ({ id }: { id: string }) => {
   const user = viewProfileMutation.data?.user;
   const filterThreadsMutation = useFilterThreadsMutation(id);
   const pinThreadMutation = usePinThreadMutation(id);
-  const verifyTransactionMutation = useVerifyTransactionMutation();
 
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
-  const { push, replace } = useNavigation();
-  const searchParams = useSearchParams();
+  const { push } = useNavigation();
   const { setSearchParams, nxtSearchParams } = useNxtSearchParams();
 
   const query = nxtSearchParams?.get("search");
@@ -102,38 +99,17 @@ const TribeClient = ({ id }: { id: string }) => {
     setSearchParams({ search: debouncedValue });
   }, [debouncedValue, setSearchParams]);
 
-  const trxref = searchParams.get("trxref");
-
-  useEffect(() => {
-    if (trxref) {
-      verifyTransactionMutation.mutate(
-        { trx_ref: trxref },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: tribeKeys.detail(id) });
-            // Remove trxref from URL
-            const params_ = new URLSearchParams(searchParams);
-            params_.delete("trxref");
-            params_.delete("reference");
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: "Joined tribe successfully",
-                type: "success",
-              }),
-            );
-            setJoinedTribeModal(true);
-            // Update the URL without reloading
-            replace(`?${params_.toString()}`);
-          },
-          onError: (err) => {
-            console.error("Payment verification failed:", err);
-          },
-        },
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trxref]);
+  usePaymentReturn(() => {
+    queryClient.invalidateQueries({ queryKey: tribeKeys.detail(id) });
+    dispatch(
+      updateToastifyReducer({
+        show: true,
+        message: "Joined tribe successfully",
+        type: "success",
+      }),
+    );
+    setJoinedTribeModal(true);
+  });
 
   const toggleAddMember = () => {
     setAddUserModal(!addUserModal);

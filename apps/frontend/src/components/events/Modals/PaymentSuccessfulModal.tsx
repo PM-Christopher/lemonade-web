@@ -6,7 +6,7 @@ import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 
-interface Promotion {
+export interface PaidPromotion {
   name?: string;
   promotion_date?: string;
   price?: number;
@@ -15,7 +15,7 @@ interface Promotion {
 type PSInterface = {
   toggle: () => void;
   isOpen: boolean;
-  promotion: Promotion | null;
+  promotion: PaidPromotion | null;
 };
 
 const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promotion }) => {
