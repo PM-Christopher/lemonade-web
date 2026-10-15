@@ -12,7 +12,7 @@ import { useGetJobMutation } from "@/features/business/mutations";
 import { setSelectedJob } from "@/redux/tempSlice";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
-import type { ServiceJob } from "@/components/business/Modals/ServiceDetailsModal";
+import type { ServiceRequestJob } from "@/features/business/api";
 
 // Off the initial bundle — only needed once a job row is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -21,19 +21,8 @@ const ServiceDetailsModal = dynamic(
   { ssr: false },
 );
 
-export interface Job {
-  id: number;
-  image?: string;
-  name?: string;
-  city?: string;
-  country?: string;
-  services?: string[];
-  amount?: number;
-  isOwner?: boolean;
-}
-
 type JobCardInterface = {
-  jobs: Job[];
+  jobs: ServiceRequestJob[];
   type: string;
   toggleMenu?: () => void;
 };
@@ -49,10 +38,10 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
     setIsOpen(!isOpen);
   };
 
-  const fetchJob = (id: number, job: Job) => {
-    const businessType = job?.isOwner ? "listing" : "business";
+  const fetchJob = (job: ServiceRequestJob) => {
+    const businessType = job.is_owner ? "listing" : "business";
     getJobMutation.mutate(
-      { id, type: businessType },
+      { id: job.id, type: businessType },
       {
         onSuccess: (payload) => {
           dispatch(setSelectedJob(payload.job));
@@ -73,26 +62,26 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
       {jobs?.length > 0 ? (
         <div className="hide-scrollbar flex flex-col overflow-y-auto pb-24">
           <div className="flex w-full flex-col gap-4">
-            {jobs?.map((job: Job, index: number) => (
+            {jobs?.map((job, index) => (
               <div
                 key={index}
                 className="cursor-pointer rounded-2xl bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md"
-                onClick={() => fetchJob(job?.id, job)}
+                onClick={() => fetchJob(job)}
               >
                 {/* Top Row: Logo + Name */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <Image
-                      src={job?.image ?? ""}
+                      src={job.business?.image ?? ""}
                       alt="logo"
                       width={48}
                       height={48}
                       className="border-step-color h-10 w-10 rounded-xl border object-cover"
                     />
                     <div className="flex flex-col">
-                      <p className="text-body-s font-semibold text-black">{job?.name}</p>
+                      <p className="text-body-s font-semibold text-black">{job.business?.name}</p>
                       <p className="text-text-grey text-meta mt-1 leading-normal">
-                        {job?.city}, {formatCountry(job?.country ?? "")}
+                        {job.business?.city}, {formatCountry(job.business?.country ?? "")}
                       </p>
                     </div>
                   </div>
@@ -148,7 +137,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
       )}
       {job && (
         <ServiceDetailsModal
-          job={job as ServiceJob}
+          job={job}
           isOpen={isOpen}
           toggleMenu={detailsToggle}
           loading={jobLoading}

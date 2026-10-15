@@ -20,30 +20,12 @@ import PayNowModal from "@/components/business/Modals/PayNowModal";
 import { useMarkJobRequestMutation } from "@/features/business/mutations";
 import { formatCountry } from "@lemonade/domain";
 import ConfirmCompletionModal from "@/components/business/Modals/ConfirmCompletionModal";
-
-export interface ServiceJob {
-  id?: number;
-  business_id?: number;
-  status?: string;
-  isOwner?: boolean;
-  image?: string;
-  name?: string;
-  city?: string;
-  country?: string;
-  service_rate?: number;
-  amount?: number;
-  services?: string[];
-  additional_information?: string;
-  remark?: string;
-  payment_requested?: boolean;
-  payment_made?: boolean;
-  user?: { avatar?: string; fullname?: string; username?: string };
-}
+import type { ServiceRequestJob } from "@/features/business/api";
 
 type ServiceDetailsInterface = {
   isOpen: boolean;
   toggleMenu: () => void;
-  job: ServiceJob;
+  job: ServiceRequestJob;
   loading: boolean;
 };
 
@@ -54,7 +36,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
   const { push } = useNavigation();
   const dispatch = useAppDispatch();
-  const markJobRequestMutation = useMarkJobRequestMutation(job?.id ?? 0);
+  const markJobRequestMutation = useMarkJobRequestMutation(job.id);
   const markLoading = markJobRequestMutation.isPending;
 
   const toggleConfirmPayment = () => {
@@ -82,7 +64,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
             }),
           );
           toggleMenu();
-          push(routes.BUSINESS_JOBS(job!.business_id!));
+          if (job.business) push(routes.BUSINESS_JOBS(job.business.id));
         },
         onError: () => {
           dispatch(
@@ -159,7 +141,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
   };
 
   const navigateDispute = () => {
-    push(`${routes.BUSINESS_DETAIL(job!.business_id!)}?modal=disputeOpen`);
+    if (job.business) push(`${routes.BUSINESS_DETAIL(job.business.id)}?modal=disputeOpen`);
   };
 
   return (
@@ -194,9 +176,9 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               >
                 {job?.status === "PENDING" || job?.status === "ACCEPTED" ? (
                   <>
-                    {job?.user?.avatar ? (
+                    {job.user?.profile_image ? (
                       <Image
-                        src={job?.user?.avatar}
+                        src={job.user.profile_image}
                         alt="avatar"
                         width={72}
                         height={72}
@@ -214,21 +196,21 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                 ) : (
                   <>
                     <Image
-                      src={job?.image ?? ""}
+                      src={job.business?.image ?? ""}
                       alt="job logo"
                       width={72}
                       height={72}
                       className="border-step-color h-16 rounded-xl border object-cover"
                     />
                     <p className="text-body-l mt-3 text-center font-semibold text-black">
-                      {job?.name}
+                      {job.business?.name}
                     </p>
                     <p className="text-body-s mt-1 text-center text-gray-500">
-                      {job?.city}, {formatCountry(job?.country ?? "")}
+                      {job.business?.city}, {formatCountry(job.business?.country ?? "")}
                     </p>
-                    {(job?.service_rate ?? 0) > 0 && (
+                    {(job.business?.service_rate ?? 0) > 0 && (
                       <p className="text-body-l mt-1 text-center font-semibold">
-                        N{formatNumberWithCommas(job?.service_rate ?? 0)}/hr
+                        N{formatNumberWithCommas(job.business?.service_rate ?? 0)}/hr
                       </p>
                     )}
                   </>
@@ -236,7 +218,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               </div>
 
               {/* Payment Requested */}
-              {job?.payment_requested && job?.isOwner && job?.status === "ACCEPTED" ? (
+              {job?.payment_requested && job.is_owner && job?.status === "ACCEPTED" ? (
                 <div className="w-full rounded-xl bg-purple-50 px-4 py-2 text-center font-medium text-purple-700">
                   Payment requested. Awaiting confirmation
                 </div>
@@ -269,10 +251,10 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               )}
 
               {/* Additional Info */}
-              {job?.additional_information && (
+              {job.additional_info && (
                 <div>
                   <p className="text-body-s text-gray-500">Additional Information</p>
-                  <p className="text-body-l mt-1 text-black">{job?.additional_information}</p>
+                  <p className="text-body-l mt-1 text-black">{job.additional_info}</p>
                 </div>
               )}
 
@@ -287,7 +269,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
               {/* Action Buttons */}
               <div className="laptop:flex-row mt-6 flex w-full flex-col gap-3">
                 {/* Owner vs User Actions */}
-                {!job?.isOwner && job?.status === "IN_PROGRESS" && (
+                {!job.is_owner && job?.status === "IN_PROGRESS" && (
                   <>
                     <Button
                       className={`bg-gradient-green h-12 w-full rounded-2xl shadow-md`}
@@ -304,7 +286,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                   </>
                 )}
 
-                {!job?.isOwner && job?.status === "ACCEPTED" && job?.payment_requested && (
+                {!job.is_owner && job?.status === "ACCEPTED" && job?.payment_requested && (
                   <Button
                     className="bg-gradient-green text-light-white h-12 w-full rounded-2xl font-semibold shadow-md"
                     onClick={togglePayNow}
@@ -313,7 +295,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                   </Button>
                 )}
 
-                {job?.isOwner &&
+                {job.is_owner &&
                   job?.status === "ACCEPTED" &&
                   (job?.payment_made ? (
                     <div className="laptop:w-136 mt-10 mb-2.5 flex w-full justify-center gap-3">
@@ -332,7 +314,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                     </div>
                   ))}
 
-                {job?.isOwner && job?.status === "PENDING" && (
+                {job.is_owner && job?.status === "PENDING" && (
                   <div className={"flex w-full flex-col"}>
                     <div className="flex w-full flex-col gap-2 rounded-2xl border border-gray-200 p-4">
                       <p className="text-body-s font-semibold">

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { ServiceRequestJob } from "@/features/business/api";
 
 const initialState = {
   phone_number: "",
@@ -8,12 +9,8 @@ const initialState = {
   isLoading: false,
   isRouting: false,
   showSideNav: false,
-  // The "currently relevant" business job — set from several independent
-  // places (a job lookup, a payment-verification redirect, a completion
-  // action), read from others (dispute submission). Genuinely global UI
-  // state, not server data — see features/business/mutations.ts's
-  // useGetJobMutation and docs/ARCHITECTURE.md's business domain note.
-  selectedJob: null as unknown,
+  // The job the user last opened, shared across the business screens.
+  selectedJob: null as ServiceRequestJob | null,
 };
 
 const tempSlice = createSlice({

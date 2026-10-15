@@ -55,11 +55,25 @@ export interface BusinessBoostSchedule {
 /** A service request job, as the backend's ServiceRequestJobResource returns it. */
 export interface ServiceRequestJob {
   id: string;
-  business: { id: string; name: string; image: string | null; user_id: string } | null;
+  business: {
+    id: string;
+    name: string;
+    image: string | null;
+    user_id: string;
+    city: string;
+    country: string;
+    service_rate: number | null;
+  } | null;
+  user: { id: string; fullname: string; username: string; profile_image: string | null } | null;
+  owner_id: string;
   amount: number;
-  services: unknown[];
+  services: string[];
+  additional_info: string | null;
+  remark: string | null;
   status: string;
+  payment_requested: boolean;
   payment_made: boolean;
+  is_owner: boolean;
   created_at: string;
 }
 
@@ -81,9 +95,9 @@ export interface JobsDataResponse {
     sent_offers: number;
     revenue: number;
   };
-  in_progress: unknown[];
-  completed: unknown[];
-  sent_offers: unknown[];
+  in_progress: ServiceRequestJob[];
+  completed: ServiceRequestJob[];
+  sent_offers: ServiceRequestJob[];
 }
 
 export interface RequestServiceResponse {
@@ -91,7 +105,7 @@ export interface RequestServiceResponse {
 }
 
 export interface GetJobResponse {
-  job: unknown;
+  job: ServiceRequestJob;
 }
 
 export interface FilterBusinessResponse {
@@ -104,7 +118,7 @@ export interface MarkJobRequestResponse {
 
 export interface RequestJobPaymentResponse {
   message: string;
-  job: unknown;
+  job: ServiceRequestJob;
 }
 
 export interface MakeJobPaymentResponse {
@@ -114,7 +128,7 @@ export interface MakeJobPaymentResponse {
 
 export interface MarkJobCompletedResponse {
   message: string;
-  job: unknown;
+  job: ServiceRequestJob;
 }
 
 export interface DisputeJobResponse {
@@ -198,7 +212,7 @@ export const businessApi = {
     ),
 
   // A job is viewed either as the requester ("business") or as the listing owner ("listing").
-  getJob: (type: string, id: number) =>
+  getJob: (type: string, id: string) =>
     browserApi.get<GetJobResponse>(
       buildPath(type === "listing" ? userListingRoutes.JOBS_SHOW : userBusinessRoutes.JOBS_SHOW, {
         id,
@@ -216,22 +230,22 @@ export const businessApi = {
       params: value,
     }),
 
-  markJobRequest: (id: number, data: unknown) =>
+  markJobRequest: (id: string, data: unknown) =>
     browserApi.post<MarkJobRequestResponse>(buildPath(userListingRoutes.JOBS_MARK, { id }), data),
 
-  requestJobPayment: (id: number) =>
+  requestJobPayment: (id: string) =>
     browserApi.patch<RequestJobPaymentResponse>(
       buildPath(userListingRoutes.JOBS_REQUEST_PAYMENT, { id }),
     ),
 
-  makeJobPayment: (id: number, data: unknown) =>
+  makeJobPayment: (id: string, data: unknown) =>
     browserApi.post<MakeJobPaymentResponse>(buildPath(userBusinessRoutes.JOBS_PAY, { id }), data),
 
-  markJobCompleted: (id: number) =>
+  markJobCompleted: (id: string) =>
     browserApi.post<MarkJobCompletedResponse>(
       buildPath(userBusinessRoutes.JOBS_MARK_COMPLETED, { id }),
     ),
 
-  disputeJob: (id: number, data: unknown) =>
+  disputeJob: (id: string, data: unknown) =>
     browserApi.post<DisputeJobResponse>(buildPath(userBusinessRoutes.JOBS_DISPUTE, { id }), data),
 };

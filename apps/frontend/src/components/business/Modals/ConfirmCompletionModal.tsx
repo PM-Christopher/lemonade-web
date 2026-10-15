@@ -6,15 +6,16 @@ import { useAppDispatch } from "@/redux/hook";
 import { useMarkJobCompletedMutation } from "@/features/business/mutations";
 import { setSelectedJob } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import type { ServiceRequestJob } from "@/features/business/api";
 
 interface ConfirmCompletionModalProps {
   isOpen: boolean;
   toggle: () => void;
-  job: { id?: number };
+  job: ServiceRequestJob;
 }
 const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen, toggle, job }) => {
   const dispatch = useAppDispatch();
-  const markJobCompletedMutation = useMarkJobCompletedMutation(job?.id ?? 0);
+  const markJobCompletedMutation = useMarkJobCompletedMutation(job.id);
   const completedLoading = markJobCompletedMutation.isPending;
 
   const markCompleted = () => {

@@ -19,10 +19,8 @@ interface SubmitDisputeModalProps {
 }
 
 const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle }) => {
-  const { selectedJob: job } = useSelector((state: RootState) => state.temp) as {
-    selectedJob: { id?: number } | null;
-  };
-  const disputeJobMutation = useDisputeJobMutation(job?.id ?? 0);
+  const { selectedJob: job } = useSelector((state: RootState) => state.temp);
+  const disputeJobMutation = useDisputeJobMutation(job?.id ?? "");
   const dispatch = useAppDispatch();
 
   const {

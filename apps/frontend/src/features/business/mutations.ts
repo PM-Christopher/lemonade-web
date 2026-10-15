@@ -47,7 +47,7 @@ export function useRequestServiceMutation(id: number) {
 // state — same pattern as admin's affiliate/event lookups this session.
 export function useGetJobMutation() {
   return useMutation({
-    mutationFn: ({ id, type }: { id: number; type: string }) => businessApi.getJob(type, id),
+    mutationFn: ({ id, type }: { id: string; type: string }) => businessApi.getJob(type, id),
   });
 }
 
@@ -75,7 +75,7 @@ export function useFilterBusinessMutation() {
   });
 }
 
-export function useMarkJobRequestMutation(id: number) {
+export function useMarkJobRequestMutation(id: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -86,7 +86,7 @@ export function useMarkJobRequestMutation(id: number) {
   });
 }
 
-export function useRequestJobPaymentMutation(id: number) {
+export function useRequestJobPaymentMutation(id: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -97,13 +97,13 @@ export function useRequestJobPaymentMutation(id: number) {
   });
 }
 
-export function useMakeJobPaymentMutation(id: number) {
+export function useMakeJobPaymentMutation(id: string) {
   return useMutation({
     mutationFn: (data: unknown) => businessApi.makeJobPayment(id, data),
   });
 }
 
-export function useMarkJobCompletedMutation(id: number) {
+export function useMarkJobCompletedMutation(id: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -118,7 +118,7 @@ export function useMarkJobCompletedMutation(id: number) {
   });
 }
 
-export function useDisputeJobMutation(id: number) {
+export function useDisputeJobMutation(id: string) {
   const queryClient = useQueryClient();
 
   return useMutation({

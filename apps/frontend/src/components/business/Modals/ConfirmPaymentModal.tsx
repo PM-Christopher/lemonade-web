@@ -8,6 +8,7 @@ import { useAppDispatch } from "@/redux/hook";
 
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useRequestJobPaymentMutation } from "@/features/business/mutations";
+import type { ServiceRequestJob } from "@/features/business/api";
 const ConfirmPaymentModal = ({
   isOpen,
   toggleMenu,
@@ -17,11 +18,11 @@ const ConfirmPaymentModal = ({
   isOpen: boolean;
   toggleMenu: () => void;
   sMenu: () => void;
-  job: { id?: number; business_id?: number };
+  job: ServiceRequestJob;
 }) => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
-  const requestJobPaymentMutation = useRequestJobPaymentMutation(job?.id ?? 0);
+  const requestJobPaymentMutation = useRequestJobPaymentMutation(job.id);
   const requestPLoading = requestJobPaymentMutation.isPending;
 
   const handleRequestPayment = () => {
@@ -36,7 +37,7 @@ const ConfirmPaymentModal = ({
         );
         toggleMenu();
         sMenu();
-        push(routes.BUSINESS_JOBS(job!.business_id!));
+        if (job.business) push(routes.BUSINESS_JOBS(job.business.id));
       },
       onError: () => {
         dispatch(

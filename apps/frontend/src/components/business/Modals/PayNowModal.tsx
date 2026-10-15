@@ -7,6 +7,7 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
 import { useMakeJobPaymentMutation } from "@/features/business/mutations";
+import type { ServiceRequestJob } from "@/features/business/api";
 
 const PayNowModal = ({
   isOpen,
@@ -15,10 +16,10 @@ const PayNowModal = ({
 }: {
   isOpen: boolean;
   toggleMenu: () => void;
-  job: { id?: number; amount?: number };
+  job: ServiceRequestJob;
 }) => {
   const dispatch = useAppDispatch();
-  const makeJobPaymentMutation = useMakeJobPaymentMutation(job?.id ?? 0);
+  const makeJobPaymentMutation = useMakeJobPaymentMutation(job.id);
   const payLoading = makeJobPaymentMutation.isPending;
 
   const handlePayNow = () => {
