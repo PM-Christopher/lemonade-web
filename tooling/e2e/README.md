@@ -113,11 +113,29 @@ that. Flows that finish on a webhook (tickets) also send a signed `charge.succes
 `?trxref=`. The proxy also stands in for Cloudinary's upload API, which the backend uses for ticket QR
 codes.
 
-The backend needs these in its `.env`, which `.env.e2e.example` and `.github/workflows/e2e.yml` also
-list: `PAYSTACK_PAYMENT_URL=http://127.0.0.1:9801`, `CLOUDINARY_CLOUD_NAME=e2e`,
-`CLOUDINARY_API_KEY=e2e`, `CLOUDINARY_API_SECRET=e2e`, `CLOUDINARY_UPLOAD_PREFIX=http://127.0.0.1:9801`
-and an `ENCRYPTION_KEY`. It also needs Mailpit (ticket and signup emails) and `php artisan reverb:start`
-(payments broadcast events, and chat uses it). Without them the webhook returns a 500.
+The e2e backend needs these values, which `.env.e2e.example` and `.github/workflows/e2e.yml` also list:
+`PAYSTACK_PAYMENT_URL=http://127.0.0.1:9801`, `CLOUDINARY_CLOUD_NAME=e2e`, `CLOUDINARY_API_KEY=e2e`,
+`CLOUDINARY_API_SECRET=e2e` and `CLOUDINARY_UPLOAD_PREFIX=http://127.0.0.1:9801`, plus an `ENCRYPTION_KEY`.
+It also needs Mailpit (ticket and signup emails) and `php artisan reverb:start` (payments broadcast
+events, and chat uses it). Without them the webhook returns a 500.
+
+**Never put these in the backend's everyday `.env`.** They point uploads and payments at the stub, so
+once the suite isn't running, every upload fails with a "Failed to connect to 127.0.0.1:9801" 500 and
+your real Cloudinary and Paystack settings are gone. Give the e2e backend its own env file instead.
+Laravel reads `.env.{APP_ENV}` in place of `.env` when `APP_ENV` is set:
+
+```bash
+cd lemonade-backend
+cp .env .env.e2e    # then set the stub values above in .env.e2e only
+APP_ENV=e2e php artisan serve --host=127.0.0.1 --port=9800
+APP_ENV=e2e php artisan queue:work --tries=1
+APP_ENV=e2e php artisan reverb:start --host=127.0.0.1 --port=8080
+```
+
+Start the backend without `APP_ENV=e2e` for normal development and `.env` is used as before. Add
+`.env.e2e` to the backend's `.gitignore`, since it holds secrets. A separate `DB_DATABASE` in
+`.env.e2e` keeps the seeded fixtures out of your dev data. CI is the exception: it writes the stub values
+into its own throwaway `.env`, which is fine because nothing else uses that checkout.
 
 ## Real bugs this suite has already found
 
@@ -182,12 +200,12 @@ Fixed in the same pass that added the test that caught them, not left as known-b
 ## Running it
 
 `signup.spec.ts` needs a local Mailpit instance (`brew install mailpit`, then just run `mailpit` — SMTP
-on `1025`, REST API on `8025`, no config needed) and `lemonade-backend`'s local `.env` pointed at it
+on `1025`, REST API on `8025`, no config needed) and `lemonade-backend`'s `.env.e2e` pointed at it
 (`MAIL_MAILER=smtp`, `MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`) — independent of whatever the production
 mailer is (ADR-007 in that repo), since there's no way to read a real inbox through a real provider from
 a test either way. `ticket-purchase.spec.ts` needs `E2E_PAID_EVENT_ID` (below) and a real
-`PAYSTACK_SECRET_KEY`/`PAYSTACK_PUBLIC_KEY` (test-mode) in `lemonade-backend`'s `.env` — already the case
-if you've followed that repo's own setup.
+`PAYSTACK_SECRET_KEY`/`PAYSTACK_PUBLIC_KEY` (test-mode) in `lemonade-backend`'s `.env.e2e` — copying
+your `.env` to `.env.e2e` (see "Payments in the suite") carries them over.
 
 ```bash
 cd tooling/e2e
