@@ -36,11 +36,17 @@ function buildCsp(nonce: string) {
     ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
   ];
 
+  // Local uploads are served by the dev backend, so its origin is allowed for images in dev only.
+  const localImageOrigin =
+    process.env.NODE_ENV === "development" && process.env.LARAVEL_API_URL
+      ? ` ${new URL(process.env.LARAVEL_API_URL).origin}`
+      : "";
+
   return [
     "default-src 'self'",
     `script-src ${scriptSrc.join(" ")}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com",
+    `img-src 'self' blob: data: https://dev-lemonade-bucket.lon1.digitaloceanspaces.com https://res.cloudinary.com https://lh3.googleusercontent.com${localImageOrigin}`,
     "font-src 'self' data: https://fonts.gstatic.com",
     `connect-src 'self' https://fcm.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com ${reverbWsScheme}://${reverbHost}:${reverbPort}`,
     "frame-src https://accounts.google.com",
