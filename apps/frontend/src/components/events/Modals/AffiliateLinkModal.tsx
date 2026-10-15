@@ -13,6 +13,8 @@ type AffiliateLinkInterface = {
 };
 
 const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, item }) => {
+  const link = `${process.env.NEXT_PUBLIC_APP_URL}/${item}`;
+
   return (
     <Dialog
       open={isOpen}
@@ -22,15 +24,12 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Link generated!"}</DialogTitle>
-        {/* Centering wrapper with top/bottom padding */}
         <div className="relative flex w-120 items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
-          {/* Modal */}
           <div
             className="animate-in fade-in zoom-in-95 relative max-h-[calc(100vh-48px)] w-full overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:max-h-[calc(100vh-80px)] sm:max-w-130 sm:p-6"
             role="dialog"
             aria-modal="true"
           >
-            {/* Header */}
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium text-gray-700" />
 
@@ -44,7 +43,6 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
               </button>
             </div>
 
-            {/* Body */}
             <div className="mt-3 sm:mt-6">
               <div className="flex justify-center">
                 <div className="relative h-40 w-40 sm:h-50 sm:w-50">
@@ -75,14 +73,14 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
 
                 <div className="bg-light-tint-3 mt-2 flex items-center gap-2 rounded-2xl p-3">
                   <p className="font-semi-normal text-light-black min-w-0 flex-1 truncate">
-                    {process.env.NEXT_PUBLIC_BASE_URL + "/" + item}
+                    {link}
                   </p>
 
                   <div className="flex shrink-0 items-center gap-2">
                     <StrikeLine />
                     <button
                       type="button"
-                      onClick={() => navigator.clipboard.writeText(item)}
+                      onClick={() => navigator.clipboard.writeText(link)}
                       className="rounded-xl p-2 transition hover:bg-black/5 active:bg-black/10"
                       aria-label="Copy affiliate link"
                     >
