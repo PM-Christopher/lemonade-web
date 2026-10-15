@@ -90,6 +90,8 @@ export interface ApiClientConfig {
   getCorrelationId?: () => string | undefined;
   /** Remember the id used on the wire (request mint or response echo). */
   onCorrelationId?: (correlationId: string) => void;
+  /** Receives the `message` of every successful write (not GET), for callers that show it. */
+  onSuccessMessage?: (message: string) => void;
   /** Omit entirely where the backend exposes no refresh route (admin, today). */
   refresh?: RefreshConfig;
   /** Refresh failed, or none configured and a 401 came back anyway — clear the session. */
@@ -112,6 +114,8 @@ export interface RequestConfig extends AxiosRequestConfig {
 /** Raw response alongside the unwrapped data — see `requestWithHeaders` below. */
 export interface RawApiResponse<T> {
   data: T;
+  /** The envelope's own `message`; blank when the backend sent none. */
+  message: string;
   headers: Record<string, string | string[] | undefined>;
 }
 
@@ -249,6 +253,10 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
     (response) => {
       const echoed = response.headers?.["x-correlation-id"] as string | undefined;
       if (echoed) config.onCorrelationId?.(echoed);
+      // Reads are skipped so a background refetch can't replace a write's message.
+      const message = response.data?.message;
+      const isRead = response.config?.method?.toLowerCase() === "get";
+      if (typeof message === "string" && !isRead) config.onSuccessMessage?.(message);
       return response;
     },
     async (error: AxiosError<ApiErrorBody>) => {
@@ -329,6 +337,7 @@ export function createApiClient(config: ApiClientConfig): ApiClient {
       const response = await instance.request<ApiSuccess<T>>(cfg);
       return {
         data: response.data.data as T,
+        message: response.data.message ?? "",
         headers: response.headers as Record<string, string | string[] | undefined>,
       };
     },

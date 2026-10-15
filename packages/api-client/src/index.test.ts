@@ -246,6 +246,43 @@ describe("createApiClient", () => {
     expect(result.data).toEqual({ balance: 500 });
     expect(result.headers["set-cookie"]).toEqual("lemonade-network-signed-in=1; Path=/; HttpOnly");
   });
+
+  it("reports the message of a successful write, but not of a read", async () => {
+    mock
+      .onGet("http://api.test/wallet")
+      .reply(200, { success: true, message: "Wallet loaded", data: {} });
+    mock
+      .onPost("http://api.test/wallet/fund")
+      .reply(200, { success: true, message: "Wallet funded", data: {} });
+    const onSuccessMessage = vi.fn();
+
+    const client = createApiClient({ baseURL: "http://api.test", onSuccessMessage });
+    await client.get("/wallet");
+    expect(onSuccessMessage).not.toHaveBeenCalled();
+
+    await client.post("/wallet/fund", {});
+    expect(onSuccessMessage).toHaveBeenCalledExactlyOnceWith("Wallet funded");
+  });
+
+  it("returns the envelope message from requestWithHeaders", async () => {
+    mock
+      .onGet("http://api.test/wallet")
+      .reply(200, { success: true, message: "Wallet loaded", data: {} });
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+    const raw = await client.requestWithHeaders({ url: "/wallet", method: "get" });
+
+    expect(raw.message).toBe("Wallet loaded");
+  });
+
+  it("returns a blank message from requestWithHeaders when the envelope has none", async () => {
+    mock.onGet("http://api.test/wallet").reply(200, { success: true, data: {} });
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+    const raw = await client.requestWithHeaders({ url: "/wallet", method: "get" });
+
+    expect(raw.message).toBe("");
+  });
 });
 
 describe("createApiClient — error normalization", () => {
