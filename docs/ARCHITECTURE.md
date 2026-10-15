@@ -3580,31 +3580,44 @@ backend work.
 > Every criterion below is measurable against a baseline captured on 10 September 2026. A phase is done
 > when its numbers move, not when its pull requests merge.
 >
-> **Current column added 14 September 2026** — re-measured with the same method as the baseline
-> where practical (`grep`, file counts). Rows without a fresh count are marked "not re-measured this
-> revision" rather than guessed; don't read a blank as zero.
+> **Current column re-measured 15 October 2026**, after phases 0 to 9. Counts exclude generated code and
+> test files. How each number was taken is in the last column.
 
 ### Measurable targets
 
-| Metric                            | Baseline |                                                                                                                                                                      Current |                Target | Phase  | How verified                                  |
-| --------------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------: | ------ | --------------------------------------------- |
-| Endpoints reachable against `/v1` |        0 |                                                                                                                              All except 3 (flagged, need a product decision) |                   All | P0     | Smoke pass over the ten journeys              |
-| `: any` annotations               |      574 |                                                                                                                                                                          499 |                  < 50 | P3–P5  | `grep`, tracked per PR                        |
-| `createAsyncThunk`                |      151 |                                                                                                                                       136 (4 domains' slices deleted so far) |                     0 | P5     | Burn-down; slices deleted, not just bypassed  |
-| Manual `Authorization` headers    |       87 |                                                                                                                  15 (was 17; 2 Pusher-config files fixed 14 Sept, see below) |                     0 | P4     | Lint rule, then `grep`                        |
-| Tokens reachable from JavaScript  | 3 stores | 1 remaining by design (the pre-login onboarding-flow `newToken` cookie, JS-readable, functionally necessary — see §21 Phase 4); the other 2 (Redux, localStorage) are closed |                     0 | P4     | DevTools inspection + lint rule               |
-| Client-side pagination sites      |        7 |                                                                        All 7 wired to real server pagination (users, reporting, all six transaction tabs, wallet-management) |                     0 | P6     | Requires Conflict 1 resolved — **done**       |
-| Effects with wrong deps           |       32 |                                                                                                                                                not re-measured this revision |                     0 | P1     | `exhaustive-deps` as error                    |
-| `console.log` in shipped code     |       62 |                                                                                                                                                                           57 |                     0 | P1     | `no-console` as error                         |
-| Duplicated / diverged files       |       41 |                                                                                                                                                not re-measured this revision |                     0 | P2     | Cross-app path diff in CI                     |
-| Unimported runtime deps           |       50 |                                                                                                                                                not re-measured this revision |                     0 | P0, P7 | `knip` in CI                                  |
-| UI component systems              |        4 |                                                                                                                                                not re-measured this revision |                     1 | P7     | Import ban lint rule                          |
-| Test files                        |        0 |                                                                                                                                          1 (`packages/api-client`, 15 tests) | ≥ 90% on `packages/*` | P1–P8  | Vitest coverage gate                          |
-| Apps with CI                      |        0 |                                                                                                                                                                            0 |                     2 | P1     | Required checks on `main`                     |
-| Apps with lint config             |        0 |                                                                                                                                                                            0 |                     2 | P1     | CI fails on warnings                          |
-| Apps with route protection        | 1 (weak) |                                                                           2, live-verified manually (httpOnly cookie + `middleware.ts` in both apps) — not yet e2e-automated |         2 (validated) | P4     | e2e: unauthenticated deep link redirects      |
-| Public routes server-rendered     |        0 |                                                                                                                                                                            0 |     All in `(public)` | P6     | View source shows content pre-hydration       |
-| Hardcoded pixel classes           |    7,041 |                                                 4,078 (2,591 frontend + 1,487 admin) — measured fresh via the new `local/no-hardcoded-pixel-class` rule, not the stale count |     Declining, no new | P7     | Lint warning; ratchet on the count — **done** |
+| Metric | Baseline | Current (15 Oct 2026) | Target | Phase | How verified |
+| --- | ---: | --- | ---: | --- | --- |
+| Endpoints reachable against `/v1` | 0 | All. The 3 flagged in Phase 0 now exist (`jobs/verify-payment`, `verify-boost-payment`, tribe joins use `shared/payment/verify`). | All | P0 | e2e suite green in CI, 14 Oct |
+| `: any` annotations | 574 | **0** | < 50 | P3–P5 | `grep` |
+| `createAsyncThunk` | 151 | **0** | 0 | P5 | `grep` |
+| Manual `Authorization` headers | 87 | **0** in browser code. Set server-side only, by the BFF routes, `middleware.ts` (admin) and `@lemonade/api-client`. | 0 | P4 | `grep` |
+| Tokens reachable from JavaScript | 3 stores | 1 by design: the `newToken` onboarding cookie (frontend signup/reset, admin incomplete-profile login) | 0 | P4 | `grep` |
+| Client-side pagination sites | 7 | **0**, all on server pagination | 0 | P6 | Done in Phase 6 |
+| Effects with wrong deps | 32 | **0** lint errors with `exhaustive-deps` as error. 7 explicit `eslint-disable` suppressions remain. | 0 | P1 | `pnpm lint` |
+| `console.log` in shipped code | 62 | **0** | 0 | P1 | `grep` |
+| Duplicated / diverged files | 41 | 19 byte-identical files in both apps (17 code, 2 icons). Not checked in CI. | 0 | P2 | Same-path diff of `apps/*/src` |
+| Unimported runtime deps | 50 | 4: `country-list` (frontend), `@lemonade/domain` and `@lemonade/api-types` (`@lemonade/ui`), `@lemonade/api-types` (`@lemonade/domain`). No `knip` in CI. | 0 | P0, P7 | Import scan of each `package.json` |
+| UI component systems | 4 | **1** (Radix + shadcn via `@lemonade/ui`) | 1 | P7 | `package.json` scan |
+| Test files | 0 | 58 (frontend 23, admin 7, packages 8, e2e 20). Coverage gate not enforced, see below. | ≥ 90% on `packages/*` | P1–P8 | `vitest --coverage` per package |
+| Apps with CI | 0 | **2**. `ci.yml` plus `e2e.yml` on every PR. Required checks on `main` not confirmed. | 2 | P1 | Workflows; branch rules need repo admin to read |
+| Apps with lint config | 0 | **2**, 0 warnings today. Lint has no `--max-warnings=0`, so a new warning won't fail CI. | 2 | P1 | `pnpm lint` |
+| Apps with route protection | 1 (weak) | 2 (httpOnly cookie + `middleware.ts`). No e2e for a logged-out deep link yet. | 2 (validated) | P4 | e2e: unauthenticated deep link redirects |
+| Public routes server-rendered | 0 | All 45 frontend `page.tsx` files are Server Components. There's no `(public)` group, public pages live in `(main)`. | All in `(public)` | P6 | `grep "use client"` on pages |
+| Hardcoded pixel classes | 7,041 | **0**, rule is an error | Declining, no new | P7 | Lint |
+
+**Coverage on `packages/*` (15 Oct):** `validation`, `domain`, `realtime` and `api-types` are at 100%.
+`api-client` is at 86% statements and 70% branches. `ui` is at 65% statements once untested files count,
+and `dialog.tsx` has no tests at all. The 90% threshold sits in `vitest.config.base.ts`, but packages run
+`vitest run` without `--coverage`, so CI never checks it.
+
+**Open gaps from this measurement:**
+
+- Turn on the coverage gate for `packages/*`, then raise `api-client` and `ui` to 90%.
+- Add `--max-warnings=0` to both apps' `lint` scripts.
+- Add an e2e spec: a logged-out visit to a protected page redirects to login, in both apps.
+- Drop the 4 unused dependencies, and add `knip` to CI so they stay gone.
+- Decide which of the 19 identical files should move to a package. Route stubs and icons stay per app.
+- Confirm `main` requires the CI and e2e checks (needs repo admin).
 
 **Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
 remaining `Authorization`-header files) was real on both sides. Frontend read a `token` cookie that
