@@ -1,11 +1,14 @@
 // Server Component — prefetches this affiliate event's detail on the
 // server. Same pattern as event/[id]/details/page.tsx — see that file
 // and docs/ARCHITECTURE.md Phase 6.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import ProgramDetailsClient from "./ProgramDetailsClient";
+
+export const metadata: Metadata = { title: "Program details" };
 
 export default async function ProgramDetailsPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

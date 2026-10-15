@@ -5,6 +5,7 @@
 // useBusinessCategoriesQuery (features/shared) in the same pass — see
 // docs/ARCHITECTURE.md Phase 6. See event/[id]/details/page.tsx for the
 // general SSR-prefetch pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { businessKeys } from "@/features/business/queries";
@@ -12,6 +13,8 @@ import { businessServerApi } from "@/features/business/api.server";
 import { sharedKeys } from "@/features/shared/queries";
 import { sharedServerApi } from "@/features/shared/api.server";
 import EditBusinessClient from "./EditBusinessClient";
+
+export const metadata: Metadata = { title: "Edit business" };
 
 export default async function EditBusinessPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

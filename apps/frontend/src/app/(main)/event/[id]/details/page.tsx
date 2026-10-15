@@ -9,11 +9,14 @@
 // This is the first page converted under docs/ARCHITECTURE.md Phase 6 —
 // see that phase's status for why this one and what the pattern is for
 // converting more (feature-by-feature, same as Phase 5's query migration).
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import EventDetailsClient from "./EventDetailsClient";
+
+export const metadata: Metadata = { title: "Event details" };
 
 export default async function EventDetailsPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

@@ -5,11 +5,14 @@
 // time, so there's nothing meaningful to prefetch for them. Same pattern
 // as event/[id]/details/page.tsx — see that file and
 // docs/ARCHITECTURE.md Phase 6.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import GuestListClient from "./GuestListClient";
+
+export const metadata: Metadata = { title: "Guest list" };
 
 export default async function GuestListPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

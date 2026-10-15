@@ -7,11 +7,14 @@
 // own useInvitesQuery stays enabled: Boolean(user?.id), so an unauthed
 // visitor still renders the empty/loading state client-side regardless of
 // what the server tried to prefetch.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { connectKeys } from "@/features/connect/queries";
 import { connectServerApi } from "@/features/connect/api.server";
 import RequestsClient from "./RequestsClient";
+
+export const metadata: Metadata = { title: "Connect requests" };
 
 export default async function RequestsPage() {
   const queryClient = getQueryClient();

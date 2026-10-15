@@ -2,11 +2,14 @@
 // New endpoint added to events/api.server.ts (getEventTicketData) since no
 // prior converted page needed it. See event/[id]/details/page.tsx and
 // docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import BuyTicketClient from "./BuyTicketClient";
+
+export const metadata: Metadata = { title: "Buy ticket" };
 
 export default async function BuyTicketPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

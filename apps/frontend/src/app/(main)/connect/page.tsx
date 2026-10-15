@@ -6,11 +6,14 @@
 // connect/requests, /connect isn't in middleware.ts's PROTECTED_PREFIXES —
 // see that page and docs/ARCHITECTURE.md Phase 6 for why an unauthenticated
 // hit here is still safe (prefetchQuery swallows the failed backend call).
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { connectKeys } from "@/features/connect/queries";
 import { connectServerApi } from "@/features/connect/api.server";
 import ConnectClient from "./ConnectClient";
+
+export const metadata: Metadata = { title: "Connect" };
 
 export default async function ConnectPage() {
   const queryClient = getQueryClient();

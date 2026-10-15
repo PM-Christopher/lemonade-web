@@ -5,11 +5,14 @@
 // become a Server Component candidate too — see
 // docs/ARCHITECTURE.md Phase 6 for that decision and event/[id]/details/page.tsx
 // for the general SSR-prefetch pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { businessKeys } from "@/features/business/queries";
 import { businessServerApi } from "@/features/business/api.server";
 import BoostBusinessClient from "./BoostBusinessClient";
+
+export const metadata: Metadata = { title: "Boost business" };
 
 export default async function BoostBusinessPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

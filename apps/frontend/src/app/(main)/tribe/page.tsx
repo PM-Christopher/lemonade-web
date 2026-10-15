@@ -7,11 +7,14 @@
 // occasionally not the tab that ends up rendered. See
 // event/[id]/details/page.tsx and docs/ARCHITECTURE.md Phase 6 for the
 // general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { tribeKeys } from "@/features/tribes/queries";
 import { tribesServerApi } from "@/features/tribes/api.server";
 import TribeListClient from "./TribeListClient";
+
+export const metadata: Metadata = { title: "Tribes" };
 
 export default async function TribePage() {
   const queryClient = getQueryClient();

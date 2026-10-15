@@ -2,11 +2,14 @@
 // per-event data; usePromotionsQuery() takes no id). New endpoint added to
 // events/api.server.ts (getPromotions). See event/[id]/details/page.tsx
 // and docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import PromoteEventClient from "./PromoteEventClient";
+
+export const metadata: Metadata = { title: "Promote event" };
 
 export default async function PromoteEventPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

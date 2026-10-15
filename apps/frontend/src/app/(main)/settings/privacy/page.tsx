@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import React from "react";
 import { BackHeader } from "@/components/global/BackHeader";
 import MainLayout from "@/components/layouts/MainLayout";
+
+export const metadata: Metadata = { title: "Privacy policy" };
 
 const PrivacyPage = () => {
   return (

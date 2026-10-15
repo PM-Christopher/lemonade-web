@@ -6,11 +6,14 @@
 // different tab persisted, this prefetch is simply unused and that tab's
 // query fetches normally. See event/[id]/details/page.tsx and
 // docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import EventListClient from "./EventListClient";
+
+export const metadata: Metadata = { title: "Events" };
 
 export default async function EventPage() {
   const queryClient = getQueryClient();

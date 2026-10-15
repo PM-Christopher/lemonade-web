@@ -4,11 +4,14 @@
 // features/shared) specifically so it could become a Server Component
 // candidate too — see docs/ARCHITECTURE.md Phase 6 and
 // event/[id]/details/page.tsx for the general pattern. No dynamic params.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { sharedKeys } from "@/features/shared/queries";
 import { sharedServerApi } from "@/features/shared/api.server";
 import AddBusinessClient from "./AddBusinessClient";
+
+export const metadata: Metadata = { title: "Add business" };
 
 export default async function AddBusinessPage() {
   const queryClient = getQueryClient();

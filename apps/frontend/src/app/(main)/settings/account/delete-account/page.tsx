@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { routes } from "@/lib/routes";
 import Link from "next/link";
 import React from "react";
@@ -11,6 +12,8 @@ import ChevronRight from "@/images/icons/chevronRight.svg";
 import { Button } from "@lemonade/ui";
 
 import MainLayout from "@/components/layouts/MainLayout";
+
+export const metadata: Metadata = { title: "Delete account" };
 
 const DeleteAccountPage = () => {
   return (

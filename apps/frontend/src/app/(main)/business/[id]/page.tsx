@@ -2,11 +2,14 @@
 // the cache to BusinessDetailsClient via <HydrationBoundary>. Same pattern
 // as event/[id]/details/page.tsx — see that file and
 // docs/ARCHITECTURE.md Phase 6 for the full explanation.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { businessKeys } from "@/features/business/queries";
 import { businessServerApi } from "@/features/business/api.server";
 import BusinessDetailsClient from "./BusinessDetailsClient";
+
+export const metadata: Metadata = { title: "Business details" };
 
 export default async function BusinessDetailsPage(props: { params: Promise<{ id: number }> }) {
   const params = await props.params;

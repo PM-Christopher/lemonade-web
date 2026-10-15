@@ -5,11 +5,14 @@
 // persisted client-side, this prefetch is simply unused and the client
 // query fetches normally. See event/[id]/details/page.tsx and
 // docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { businessKeys } from "@/features/business/queries";
 import { businessServerApi } from "@/features/business/api.server";
 import BusinessListClient from "./BusinessListClient";
+
+export const metadata: Metadata = { title: "Business" };
 
 export default async function BusinessPage() {
   const queryClient = getQueryClient();

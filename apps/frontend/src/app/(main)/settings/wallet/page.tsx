@@ -7,11 +7,14 @@
 // treated as optimistic — this is a real fetch of the same real endpoint,
 // just earlier. See event/[id]/details/page.tsx and
 // docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { settingsKeys } from "@/features/settings/queries";
 import { settingsServerApi } from "@/features/settings/api.server";
 import WalletSettingsClient from "./WalletSettingsClient";
+
+export const metadata: Metadata = { title: "Wallet" };
 
 export default async function WalletSettingsPage() {
   const queryClient = getQueryClient();

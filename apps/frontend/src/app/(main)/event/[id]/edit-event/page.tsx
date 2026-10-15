@@ -2,11 +2,14 @@
 // eventsServerApi.getEvent (same query key as event/[id]/details/page.tsx),
 // no api.server.ts changes needed. See that file and
 // docs/ARCHITECTURE.md Phase 6 for the general pattern.
+import type { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import EditEventClient from "./EditEventClient";
+
+export const metadata: Metadata = { title: "Edit event" };
 
 export default async function EditEventPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
