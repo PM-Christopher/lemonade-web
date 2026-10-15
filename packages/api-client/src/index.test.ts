@@ -248,6 +248,187 @@ describe("createApiClient", () => {
   });
 });
 
+describe("createApiClient — error normalization", () => {
+  let mock: MockAdapter;
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it.each([
+    [403, "permission"],
+    [404, "notFound"],
+    [409, "conflict"],
+    [429, "rateLimit"],
+    [500, "server"],
+    [418, "server"],
+  ] as const)("maps HTTP %i to kind %s", async (status, kind) => {
+    mock.onGet("http://api.test/thing").reply(status, {
+      success: false,
+      message: "Nope",
+      error_code: "not-found",
+    });
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+    const error = await client.get("/thing").catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect(error).toMatchObject({ status, kind, errorCode: "not-found", message: "Nope" });
+  });
+
+  it("falls back to a default code and message when the body has neither", async () => {
+    mock.onGet("http://api.test/thing").reply(500, {});
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+    const error = await client.get("/thing").catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ errorCode: "not-specified", message: "Something went wrong." });
+  });
+
+  it("normalizes a timeout distinctly from a network failure", async () => {
+    mock.onGet("http://api.test/slow").timeout();
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+    const error = await client.get("/slow").catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ status: 0, kind: "timeout", message: "Request timed out." });
+  });
+
+  it("keeps the backend's correlation id on the error", async () => {
+    mock
+      .onGet("http://api.test/thing")
+      .reply(500, { message: "Boom" }, { "x-correlation-id": "cid-9" });
+    const seen: string[] = [];
+
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      onCorrelationId: (id) => seen.push(id),
+    });
+    const error = await client.get("/thing").catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ correlationId: "cid-9" });
+    expect(seen.at(-1)).toBe("cid-9");
+  });
+});
+
+describe("createApiClient — methods and correlation ids", () => {
+  let mock: MockAdapter;
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it("unwraps patch, put, delete and request the same way as get", async () => {
+    const ok = (data: unknown) => [200, { success: true, message: "ok", data }] as const;
+    mock.onPatch("http://api.test/a").reply(...ok("patched"));
+    mock.onPut("http://api.test/a").reply(...ok("put"));
+    mock.onDelete("http://api.test/a").reply(...ok("deleted"));
+    mock.onGet("http://api.test/b").reply(...ok("requested"));
+
+    const client = createApiClient({ baseURL: "http://api.test" });
+
+    await expect(client.patch("/a", {})).resolves.toBe("patched");
+    await expect(client.put("/a", {})).resolves.toBe("put");
+    await expect(client.delete("/a")).resolves.toBe("deleted");
+    await expect(client.request({ method: "GET", url: "/b" })).resolves.toBe("requested");
+  });
+
+  it("forwards an inbound correlation id and reports the backend's echo", async () => {
+    let sent: string | undefined;
+    mock.onGet("http://api.test/c").reply((cfg) => {
+      sent = cfg.headers?.["X-Correlation-Id"] as string | undefined;
+      return [200, { success: true, message: "ok", data: null }, { "x-correlation-id": "echoed" }];
+    });
+    const seen: string[] = [];
+
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      getCorrelationId: () => "inbound",
+      onCorrelationId: (id) => seen.push(id),
+    });
+    await client.get("/c");
+
+    expect(sent).toBe("inbound");
+    expect(seen).toEqual(["inbound", "echoed"]);
+  });
+
+  it("mints a correlation id when none is passed in", async () => {
+    let sent: string | undefined;
+    mock.onGet("http://api.test/c").reply((cfg) => {
+      sent = cfg.headers?.["X-Correlation-Id"] as string | undefined;
+      return [200, { success: true, message: "ok", data: null }];
+    });
+
+    await createApiClient({ baseURL: "http://api.test" }).get("/c");
+
+    expect(sent).toMatch(/^[0-9a-f-]{36}$/);
+  });
+});
+
+describe("createApiClient — refresh edge cases", () => {
+  let mock: MockAdapter;
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
+
+  it("gives up without calling refresh when there is no refresh token", async () => {
+    mock.onGet("http://api.test/me").reply(401, { message: "Unauthenticated." });
+    const onUnauthorized = vi.fn();
+
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      refresh: {
+        refreshPath: "/auth/refresh",
+        getRefreshToken: () => undefined,
+        onRefreshed: vi.fn(),
+      },
+      onUnauthorized,
+    });
+    const error = await client.get("/me").catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ status: 401, kind: "auth" });
+    expect(onUnauthorized).toHaveBeenCalledOnce();
+    expect(mock.history.post).toHaveLength(0);
+  });
+
+  it("treats a refresh response without a token as a failed refresh", async () => {
+    mock.onGet("http://api.test/me").reply(401, { message: "Unauthenticated." });
+    mock
+      .onPost("http://api.test/auth/refresh")
+      .reply(200, { success: true, message: "ok", data: {} });
+    const onRefreshed = vi.fn();
+    const onUnauthorized = vi.fn();
+
+    const client = createApiClient({
+      baseURL: "http://api.test",
+      refresh: {
+        refreshPath: "/auth/refresh",
+        getRefreshToken: () => "refresh-1",
+        onRefreshed,
+      },
+      onUnauthorized,
+    });
+    const error = await client.get("/me").catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ status: 401, kind: "auth" });
+    expect(onRefreshed).not.toHaveBeenCalled();
+    expect(onUnauthorized).toHaveBeenCalledOnce();
+  });
+});
+
 describe("getSetCookieValue", () => {
   it("returns the cookie's value when present", () => {
     const headers = { "set-cookie": ["lemonade-network-signed-in=1; Path=/; HttpOnly"] };

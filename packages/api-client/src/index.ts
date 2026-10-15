@@ -175,7 +175,7 @@ function mapKind(status: number): ApiErrorKind {
     case 429:
       return "rateLimit";
     default:
-      return status >= 500 ? "server" : "server";
+      return "server";
   }
 }
 

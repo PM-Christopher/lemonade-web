@@ -10,10 +10,10 @@ export default defineConfig({
     testTimeout: 15_000,
     coverage: {
       provider: "v8",
-      reporter: ["text", "html"],
-      // 90% is the bar for packages/* — the highest in the repo, because a
-      // bug in a shared package hits both apps at once. App-level code is
-      // not held to a coverage gate; see docs/ARCHITECTURE.md §17.
+      reporter: ["text-summary"],
+      include: ["src/**"],
+      exclude: ["**/*.test.*", "**/*.d.ts", "src/generated/**"],
+      // 90% bar for packages/*, enforced by their `test` scripts. Apps don't run coverage.
       thresholds: {
         lines: 90,
         functions: 90,

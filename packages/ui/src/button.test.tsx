@@ -28,4 +28,15 @@ describe("Button", () => {
 
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  it("renders its child element instead of a button with asChild", () => {
+    render(
+      <Button asChild>
+        <a href="/wallet">Wallet</a>
+      </Button>,
+    );
+
+    expect(screen.getByRole("link", { name: "Wallet" })).toHaveAttribute("href", "/wallet");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
 });

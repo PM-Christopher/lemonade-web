@@ -1,0 +1,82 @@
+import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogContentBare,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./dialog";
+
+expect.extend(toHaveNoViolations);
+
+function ExampleDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger>Open</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete event</DialogTitle>
+          <DialogDescription>This can&apos;t be undone.</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose>Cancel</DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+describe("Dialog", () => {
+  it("opens from its trigger with an accessible name and description", () => {
+    render(<ExampleDialog />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+
+    const dialog = screen.getByRole("dialog", { name: "Delete event" });
+    expect(dialog).toHaveAccessibleDescription("This can't be undone.");
+  });
+
+  it("closes from its built-in close button", () => {
+    render(<ExampleDialog />);
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes on Escape", () => {
+    render(<ExampleDialog />);
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("has no axe violations when open", async () => {
+    render(<ExampleDialog />);
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+
+    expect(await axe(document.body)).toHaveNoViolations();
+  });
+
+  it("the bare variant renders no close button of its own", () => {
+    render(
+      <Dialog defaultOpen>
+        <DialogContentBare aria-describedby={undefined}>
+          <DialogTitle>Legacy panel</DialogTitle>
+        </DialogContentBare>
+      </Dialog>,
+    );
+
+    expect(screen.getByRole("dialog", { name: "Legacy panel" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+  });
+});

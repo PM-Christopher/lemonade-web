@@ -13,7 +13,7 @@
   "scripts": {
     "generate": "node ../../tooling/generate-api-types/generate.mjs --manifest ../../tooling/generate-api-types/manifest.snapshot.json",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --coverage"
   },
   "devDependencies": {
     "@lemonade/config": "workspace:*",
