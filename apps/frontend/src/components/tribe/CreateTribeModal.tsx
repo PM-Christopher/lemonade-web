@@ -28,6 +28,7 @@ import { createTribeSchema, type CreateTribeInput } from "@/features/tribes/sche
 import { applyServerErrors } from "@/lib/form-errors";
 import { tribesApi } from "@/features/tribes/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { isImageFile } from "@/lib/files";
 import { apiMessage } from "@/lib/api-message";
 import { useAppDispatch } from "@/redux/hook";
 
@@ -116,6 +117,17 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    if (file && !isImageFile(file)) {
+      event.target.value = "";
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Please choose an image file",
+          type: "error",
+        }),
+      );
+      return;
+    }
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
@@ -196,6 +208,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
 
               <input
                 type="file"
+                accept="image/*"
                 ref={fileInputRef}
                 style={{ display: "none" }}
                 onChange={handleFileChange}

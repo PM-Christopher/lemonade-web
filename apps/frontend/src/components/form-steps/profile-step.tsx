@@ -20,6 +20,7 @@ import { authApi } from "@/features/authentication/api";
 import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { isImageFile } from "@/lib/files";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSetupSchema, type ProfileSetupInput } from "@lemonade/validation";
@@ -82,6 +83,17 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
   // Handle file input change (when a file is selected)
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    if (file && !isImageFile(file)) {
+      event.target.value = "";
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Please choose an image file",
+          type: "error",
+        }),
+      );
+      return;
+    }
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
@@ -150,6 +162,7 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
             )}
             <input
               type="file"
+              accept="image/*"
               ref={fileInputRef}
               style={{ display: "none" }}
               onChange={handleFileChange}

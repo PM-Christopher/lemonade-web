@@ -15,6 +15,7 @@ import { formatString, splitLemonId } from "@/lib/helper";
 import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { isImageFile } from "@/lib/files";
 import { apiMessage } from "@/lib/api-message";
 import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
 import { setIsRouting } from "@/redux/tempSlice";
@@ -43,6 +44,17 @@ const ProfileSettingsClient = () => {
   // Uploads the picked file, then saves it as the profile image.
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    if (file && !isImageFile(file)) {
+      event.target.value = "";
+      dispatch(
+        updateToastifyReducer({
+          show: true,
+          message: "Please choose an image file",
+          type: "error",
+        }),
+      );
+      return;
+    }
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
@@ -110,6 +122,7 @@ const ProfileSettingsClient = () => {
 
             <input
               type="file"
+              accept="image/*"
               ref={fileInputRef}
               style={{ display: "none" }}
               onChange={handleFileChange}
