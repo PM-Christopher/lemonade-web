@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { userAuthRoutes } from "@lemonade/api-types/generated";
 import { backendApi, persistUserSession, syncSignedInCookieFromHeaders } from "@/lib/server-api";
+import { messageOr } from "@/lib/api-message";
 import { bffErrorResponse, needsOnboarding, type BackendAuthResult } from "@/lib/auth-bff";
 
 export async function POST(req: Request) {
@@ -19,18 +20,21 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { data: result, headers: responseHeaders } =
-      await backendApi.requestWithHeaders<BackendAuthResult>({
-        url: userAuthRoutes.LOGIN,
-        method: "post",
-        data: body,
-      });
+    const {
+      data: result,
+      headers: responseHeaders,
+      message,
+    } = await backendApi.requestWithHeaders<BackendAuthResult>({
+      url: userAuthRoutes.LOGIN,
+      method: "post",
+      data: body,
+    });
 
     // Unfinished onboarding keeps a short-lived token; no main session cookie.
     if (needsOnboarding(result)) {
       return NextResponse.json({
         success: true,
-        message: "Login successful",
+        message: messageOr(message, "Login successful"),
         data: { user: result.user, token: result.token, needsOnboarding: true },
       });
     }
@@ -40,7 +44,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Login successful",
+      message: messageOr(message, "Login successful"),
       data: { user: result.user },
     });
   } catch (err) {

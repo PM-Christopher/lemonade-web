@@ -14,6 +14,7 @@ import { useGoogleAuthMutation, useLoginMutation } from "@/features/authenticati
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import type { LoginResult } from "@/features/authentication/api";
@@ -68,7 +69,9 @@ export default function LoginPage() {
       return;
     }
 
-    dispatch(updateToastifyReducer({ show: true, message: "successful", type: "success" }));
+    dispatch(
+      updateToastifyReducer({ show: true, message: apiMessage("successful"), type: "success" }),
+    );
     push(next || routes.HOME);
   };
 

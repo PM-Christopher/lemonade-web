@@ -25,6 +25,7 @@ import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 
@@ -74,7 +75,7 @@ function SettingsClient() {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Logged out",
+            message: apiMessage("Logged out"),
             type: "success",
           }),
         );

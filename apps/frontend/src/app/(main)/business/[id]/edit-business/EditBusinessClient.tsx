@@ -11,6 +11,7 @@ import { useBusinessQuery } from "@/features/business/queries";
 import { useBusinessCategoriesQuery } from "@/features/shared/queries";
 import { useUpdateListingMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useAppDispatch } from "@/redux/hook";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
@@ -136,7 +137,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "business updated",
+          message: apiMessage("business updated"),
           type: "success",
         }),
       );

@@ -20,6 +20,7 @@ import {
   useSubmitVoteMutation,
 } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import type { Thread, TribeInterface } from "@/interfaces/TribeInterface";
 import { getInitials } from "@/lib/helper";
 
@@ -110,7 +111,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Posted comment successfully",
+          message: apiMessage("Posted comment successfully"),
           type: "success",
         }),
       );
@@ -161,7 +162,11 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       {
         onSuccess: () =>
           dispatch(
-            updateToastifyReducer({ show: true, message: "Vote submitted", type: "success" }),
+            updateToastifyReducer({
+              show: true,
+              message: apiMessage("Vote submitted"),
+              type: "success",
+            }),
           ),
         onError: () =>
           dispatch(

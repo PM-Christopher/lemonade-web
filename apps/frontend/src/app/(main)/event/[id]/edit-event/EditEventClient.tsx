@@ -30,6 +30,7 @@ import { Label, Input } from "@lemonade/ui";
 import { FlatButton } from "@/components/global/FlatButton";
 
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useAppDispatch } from "@/redux/hook";
 import { useEventQuery } from "@/features/events/queries";
 import { useUpdateEventMutation } from "@/features/events/mutations";
@@ -230,7 +231,7 @@ const EditEventClient = ({ id }: { id: string }) => {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Event updated successfully",
+          message: apiMessage("Event updated successfully"),
           type: "success",
         }),
       );

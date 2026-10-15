@@ -8,6 +8,7 @@ import { useCookies } from "react-cookie";
 import { useAppDispatch } from "@/redux/hook";
 import { useForgotPasswordMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "@lemonade/validation";
@@ -43,7 +44,7 @@ export default function ForgotPasswordPage() {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Please check your inbox and click on verification link.",
+              message: apiMessage("Please check your inbox and click on verification link."),
               type: "success",
             }),
           );

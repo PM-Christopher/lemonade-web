@@ -28,6 +28,7 @@ import { createTribeSchema, type CreateTribeInput } from "@/features/tribes/sche
 import { applyServerErrors } from "@/lib/form-errors";
 import { tribesApi } from "@/features/tribes/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useAppDispatch } from "@/redux/hook";
 
 import { useTribeCategoriesQuery } from "@/features/tribes/queries";
@@ -83,7 +84,7 @@ const CreateTribeModal = ({ modalFlag, activateModal }: CreateTribeModalProps) =
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Tribe created",
+          message: apiMessage("Tribe created"),
           type: "success",
         }),
       );

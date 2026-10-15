@@ -5,6 +5,7 @@ import Switch from "react-switch";
 import { useAppDispatch } from "@/redux/hook";
 import { useUpdateNotificationSettingsMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import type { NotificationSettingChannels } from "@/features/authentication/api";
@@ -57,7 +58,7 @@ const NotificationSettingsModal: React.FC<NotificationSettingsInterface> = ({
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "App settings Updated",
+            message: apiMessage("App settings Updated"),
             type: "success",
           }),
         );

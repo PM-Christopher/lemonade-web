@@ -16,6 +16,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useSelector } from "react-redux";
 
 import { RootState } from "@/redux/store";
@@ -97,7 +98,7 @@ const AddTicketClient = () => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Event created successfully",
+            message: apiMessage("Event created successfully"),
             type: "success",
           }),
         );
@@ -137,7 +138,7 @@ const AddTicketClient = () => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Event saved as draft",
+            message: apiMessage("Event saved as draft"),
             type: "success",
           }),
         );

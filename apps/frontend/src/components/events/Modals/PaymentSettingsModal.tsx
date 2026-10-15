@@ -6,6 +6,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { usePaymentSettingQuery } from "@/features/events/queries";
 import { useUpdatePaymentSettingMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 type PaymentSettingsInterface = {
   toggle: () => void;
@@ -39,7 +40,7 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Payment setting updated successfully",
+              message: apiMessage("Payment setting updated successfully"),
               type: "success",
             }),
           );

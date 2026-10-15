@@ -10,6 +10,7 @@ import { changePasswordSchema, type ChangePasswordInput } from "@/features/setti
 import { applyServerErrors } from "@/lib/form-errors";
 import { useChangePasswordMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { SubmitButton } from "@/components/global/SubmitButton";
 
 type UpdatePasswordInterface = {
@@ -52,7 +53,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: `Password updated successfully`,
+            message: apiMessage(`Password updated successfully`),
             type: "success",
           }),
         );

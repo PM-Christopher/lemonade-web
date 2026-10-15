@@ -13,6 +13,7 @@ import { TribeInterface } from "@/interfaces/TribeInterface";
 import { useAppDispatch } from "@/redux/hook";
 import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import Link from "next/link";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { routes } from "@/lib/routes";
@@ -47,7 +48,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Connect request sent",
+              message: apiMessage("Connect request sent"),
               type: "success",
             }),
           );

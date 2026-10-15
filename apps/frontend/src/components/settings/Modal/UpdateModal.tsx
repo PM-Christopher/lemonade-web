@@ -12,6 +12,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import { applyServerErrors } from "@/lib/form-errors";
 import { useUpdateProfileFieldMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import {
   changeAddressSchema,
   changeBioSchema,
@@ -231,7 +232,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: `${type} updated successfully`,
+              message: apiMessage(`${type} updated successfully`),
               type: "success",
             }),
           );

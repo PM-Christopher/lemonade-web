@@ -15,6 +15,7 @@ import { formatString, splitLemonId } from "@/lib/helper";
 import { sharedApi } from "@/features/shared/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
 import { setIsRouting } from "@/redux/tempSlice";
 import type { RootState } from "@/redux/store";
@@ -70,7 +71,7 @@ const ProfileSettingsClient = () => {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: `Profile image updated successfully`,
+              message: apiMessage(`Profile image updated successfully`),
               type: "success",
             }),
           );

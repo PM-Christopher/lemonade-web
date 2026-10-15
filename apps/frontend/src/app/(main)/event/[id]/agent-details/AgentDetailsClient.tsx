@@ -23,6 +23,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useAffiliateEventDetailQuery } from "@/features/events/queries";
 import { useGenerateAffiliateLinkMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { getSafeImageSrc } from "@/lib/helper";
 import { formatLongDate, formatLongTime } from "@/lib/dateTimeFormatter";
@@ -129,8 +130,9 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message:
+            message: apiMessage(
               "Affiliate link generated successfully. Copy the link below to share with your friends.",
+            ),
             type: "success",
           }),
         );

@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch } from "@/redux/hook";
 import { useReportThreadMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 type ReportThreadIF = {
   toggle: () => void;
@@ -27,7 +28,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Report submitted. Thanks for keeping the platform safe.",
+              message: apiMessage("Report submitted. Thanks for keeping the platform safe."),
               type: "success",
             }),
           );

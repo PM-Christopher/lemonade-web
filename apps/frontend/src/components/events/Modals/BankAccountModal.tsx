@@ -15,6 +15,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import { resetEventState } from "@/features/events/event.slice";
 import { useCreateEventMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { RootState } from "@/redux/store";
 import { useBanksQuery } from "@/features/shared/queries";
 import { useVerifyAccountMutation } from "@/features/shared/mutations";
@@ -80,7 +81,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Event created successfully",
+            message: apiMessage("Event created successfully"),
             type: "success",
           }),
         );

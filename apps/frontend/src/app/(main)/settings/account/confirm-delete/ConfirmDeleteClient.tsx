@@ -12,6 +12,7 @@ import { deleteAccountSchema, type DeleteAccountInput } from "@/features/setting
 import { applyServerErrors } from "@/lib/form-errors";
 import { useDeleteAccountMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { SubmitButton } from "@/components/global/SubmitButton";
 
 // Password confirmation form that deletes the account.
@@ -41,7 +42,7 @@ const ConfirmDeleteClient = () => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Account deleted successfully",
+            message: apiMessage("Account deleted successfully"),
             type: "success",
           }),
         );

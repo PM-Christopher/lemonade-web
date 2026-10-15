@@ -5,6 +5,7 @@ import { PlusIcon, XIcon } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { useAddTribeMemberMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 interface AddMemberIF {
   isOpen: boolean;
@@ -41,7 +42,7 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Member added successfully.",
+              message: apiMessage("Member added successfully."),
               type: "success",
             }),
           );

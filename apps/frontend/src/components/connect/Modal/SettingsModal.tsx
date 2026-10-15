@@ -8,6 +8,7 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useUpdateVisibilityMutation } from "@/features/connect/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import type { ConnectionInfo } from "@/features/connect/api";
 
 type SettingsInterface = {
@@ -27,7 +28,7 @@ const SettingsModal: React.FC<SettingsInterface> = ({ toggle, isOpen, user_conne
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Visibility updated",
+            message: apiMessage("Visibility updated"),
             type: "success",
           }),
         );

@@ -11,6 +11,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useRequestServiceMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 type RequestServiceInterface = {
   isOpen: boolean;
@@ -64,7 +65,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Quote sent",
+            message: apiMessage("Quote sent"),
             type: "success",
           }),
         );

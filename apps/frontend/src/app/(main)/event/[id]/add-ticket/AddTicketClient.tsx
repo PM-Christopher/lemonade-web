@@ -18,6 +18,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { errorMessage } from "@/lib/api-error";
 
 const BankAccountModal = dynamic(() => import("@/components/events/Modals/BankAccountModal"), {
@@ -123,7 +124,7 @@ const AddTicketClient = ({ id }: { id: number }) => {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Tickets updated successfully",
+          message: apiMessage("Tickets updated successfully"),
           type: "success",
         }),
       );

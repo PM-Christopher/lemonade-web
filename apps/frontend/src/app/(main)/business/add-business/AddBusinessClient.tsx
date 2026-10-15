@@ -22,6 +22,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import { useCreateListingMutation } from "@/features/business/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import MainLayout from "@/components/layouts/MainLayout";
 import { errorMessage } from "@/lib/api-error";
 
@@ -105,7 +106,7 @@ const AddBusinessClient = () => {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "business uploaded",
+          message: apiMessage("business uploaded"),
           type: "success",
         }),
       );

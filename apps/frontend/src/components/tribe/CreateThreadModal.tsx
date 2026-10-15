@@ -15,6 +15,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { useMediaQuery } from "react-responsive";
 import { tribesApi } from "@/features/tribes/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
@@ -195,7 +196,7 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Thread created",
+              message: apiMessage("Thread created"),
               type: "success",
             }),
           );

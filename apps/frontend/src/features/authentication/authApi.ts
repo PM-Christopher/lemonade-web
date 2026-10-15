@@ -4,6 +4,7 @@ import { authApi } from "./api";
 import { authFailure, authStart, authUser, loadStop } from "./authSlice";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import type { AppDispatch } from "@/redux/store";
 import { routes } from "@/lib/routes";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
@@ -25,7 +26,9 @@ export const signup = async (
   try {
     const result = await authApi.register(values);
     dispatch(setIsRouting(true));
-    dispatch(updateToastifyReducer({ show: true, message: "Successful", type: "success" }));
+    dispatch(
+      updateToastifyReducer({ show: true, message: apiMessage("Successful"), type: "success" }),
+    );
 
     setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
       path: "/",

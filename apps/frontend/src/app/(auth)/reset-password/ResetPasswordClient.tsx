@@ -6,6 +6,7 @@ import Image from "next/image";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useResetPasswordMutation } from "@/features/authentication/mutations";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +42,7 @@ export default function ResetPasswordPage() {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Password reset successfully",
+              message: apiMessage("Password reset successfully"),
               type: "success",
             }),
           );

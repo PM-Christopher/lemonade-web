@@ -3,6 +3,7 @@ import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useDeleteThreadMutation } from "@/features/tribes/mutations";
 
 interface DeleteThreadIF {
@@ -30,7 +31,7 @@ const DeleteThreadModal: React.FC<DeleteThreadIF> = ({
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Thread deleted.",
+            message: apiMessage("Thread deleted."),
             type: "success",
           }),
         );

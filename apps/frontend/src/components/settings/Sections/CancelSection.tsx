@@ -12,6 +12,7 @@ import { useChangePlanMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { cancelReason } from "../../../../pageData";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 const CancelSection = ({}) => {
   const dispatch = useAppDispatch();
@@ -38,7 +39,7 @@ const CancelSection = ({}) => {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Successful",
+            message: apiMessage("Successful"),
             type: "success",
           }),
         );

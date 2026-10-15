@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { userProfileRoutes } from "@lemonade/api-types/generated";
+import { messageOr } from "@/lib/api-message";
 import { backendApi, clearUserSession } from "@/lib/server-api";
 
 export async function POST() {
@@ -10,7 +11,9 @@ export async function POST() {
   // Lives under /user/profile/logout on the backend, not /user/auth/* —
   // the generated routes group by controller, so this one's under
   // userProfileRoutes, unlike LOGIN/REFRESH which stay under userAuthRoutes.
-  await backendApi.post(userProfileRoutes.LOGOUT).catch(() => undefined);
+  const result = await backendApi
+    .requestWithHeaders({ url: userProfileRoutes.LOGOUT, method: "post" })
+    .catch(() => undefined);
   await clearUserSession();
-  return NextResponse.json({ success: true, message: "Logged out" });
+  return NextResponse.json({ success: true, message: messageOr(result?.message, "Logged out") });
 }

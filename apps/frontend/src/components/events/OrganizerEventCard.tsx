@@ -16,6 +16,7 @@ import GoLive from "@/images/icons/goLive.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { usePublishEventMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { getSafeImageSrc } from "@/lib/helper";
 
 type OrganizerEventInterface = {
@@ -56,7 +57,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Your event has been published",
+            message: apiMessage("Your event has been published"),
             type: "success",
           }),
         );

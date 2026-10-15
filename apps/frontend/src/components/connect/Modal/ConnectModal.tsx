@@ -12,6 +12,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import { useAppDispatch } from "@/redux/hook";
 import { useSendInviteMutation } from "@/features/connect/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { formatDistanceAway } from "@/lib/helper";
 import type { FoundUser } from "@/features/connect/api";
 
@@ -48,7 +49,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Invite sent successfully",
+              message: apiMessage("Invite sent successfully"),
               type: "success",
             }),
           );

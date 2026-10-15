@@ -12,6 +12,7 @@ import { useInvitesQuery } from "@/features/connect/queries";
 import { useFindUserMutation } from "@/features/connect/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { InviteSkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
@@ -59,7 +60,7 @@ const RequestsClient = () => {
             dispatch(
               updateToastifyReducer({
                 show: true,
-                message: "User found",
+                message: apiMessage("User found"),
                 type: "success",
               }),
             );

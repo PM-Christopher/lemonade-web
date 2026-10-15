@@ -12,6 +12,7 @@ import type { Bank } from "@/features/shared/api";
 import { useVerifyAccountMutation } from "@/features/shared/mutations";
 import { useCreateBankAccountMutation } from "@/features/settings/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 
 type RequestPayoutInterface = {
   isOpen: boolean;
@@ -59,7 +60,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: "Bank account added — you can now request a payout",
+            message: apiMessage("Bank account added — you can now request a payout"),
             type: "success",
           }),
         );

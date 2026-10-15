@@ -7,6 +7,7 @@ import CheckedIcon from "@/images/icons/checkedIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { useJoinTribeMutation } from "@/features/tribes/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import type { TribeInterface } from "@/interfaces/TribeInterface";
 
@@ -39,7 +40,7 @@ const JoinTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe })
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Joined tribe successfully",
+              message: apiMessage("Joined tribe successfully"),
               type: "success",
             }),
           );

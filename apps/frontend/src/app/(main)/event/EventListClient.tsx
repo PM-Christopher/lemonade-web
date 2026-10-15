@@ -16,6 +16,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { resetFreeEventState } from "@/features/events/event.slice";
 import { useSearchEventsMutation, useFilterEventsMutation } from "@/features/events/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
 import VerifyPaymentModal, {
   type VerifiedEvent,
@@ -64,7 +65,7 @@ const EventListClient: React.FC = () => {
     dispatch(
       updateToastifyReducer({
         show: true,
-        message: "Event booked successfully",
+        message: apiMessage("Event booked successfully"),
         type: "success",
       }),
     );
@@ -76,7 +77,7 @@ const EventListClient: React.FC = () => {
     dispatch(
       updateToastifyReducer({
         show: true,
-        message: "Event booked successfully",
+        message: apiMessage("Event booked successfully"),
         type: "success",
       }),
     );

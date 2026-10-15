@@ -33,6 +33,7 @@ import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
 import AddMemberModal from "@/components/tribe/AddMemberModal";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import useDebounce from "@/hooks/useDebounce";
 import useNxtSearchParams from "@/hooks/useSearchParams";
 import PadlockIcon from "@/images/icons/padlockIconFilled.svg";
@@ -104,7 +105,7 @@ const TribeClient = ({ id }: { id: string }) => {
     dispatch(
       updateToastifyReducer({
         show: true,
-        message: "Joined tribe successfully",
+        message: apiMessage("Joined tribe successfully"),
         type: "success",
       }),
     );

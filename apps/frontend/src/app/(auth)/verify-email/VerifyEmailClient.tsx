@@ -16,6 +16,7 @@ import {
 import { resetAuth } from "@/features/authentication/authSlice";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -126,7 +127,7 @@ export default function VerifyPage() {
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: `A new code has been sent to ${user?.email}. Please try again`,
+            message: apiMessage(`A new code has been sent to ${user?.email}. Please try again`),
             type: "success",
           }),
         );
@@ -158,7 +159,7 @@ export default function VerifyPage() {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Email verified",
+          message: apiMessage("Email verified"),
           type: "success",
         }),
       );

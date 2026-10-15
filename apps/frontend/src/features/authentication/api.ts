@@ -1,6 +1,7 @@
 // Auth endpoints: login/logout hit local BFF routes; other reads use browserApi.
 import { createApiClient } from "@lemonade/api-client";
 import { browserApi } from "@/lib/browser-api";
+import { rememberApiMessage } from "@/lib/api-message";
 import {
   userAuthRoutes,
   userOtpRoutes,
@@ -69,7 +70,7 @@ export type LoginResult =
   | { user: CurrentUser; needsOnboarding: true; token: string; token_type?: string };
 
 // Same-origin /api/auth/* Route Handlers that own the httpOnly session cookies.
-const authBff = createApiClient({ baseURL: "/api/auth" });
+const authBff = createApiClient({ baseURL: "/api/auth", onSuccessMessage: rememberApiMessage });
 
 // Pre-login flows; the BFF sends the onboarding cookie as the bearer token.
 export interface VerifyOtpPayload {

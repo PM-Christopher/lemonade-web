@@ -5,6 +5,7 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useChangePlanMutation } from "@/features/authentication/mutations";
 import { routes } from "@/lib/routes";
 import { errorMessage } from "@/lib/api-error";
@@ -74,7 +75,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: "Plan updated successfully",
+              message: apiMessage("Plan updated successfully"),
               type: "success",
             }),
           );

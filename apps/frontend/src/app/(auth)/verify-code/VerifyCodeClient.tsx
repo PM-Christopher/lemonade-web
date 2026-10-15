@@ -17,6 +17,7 @@ import { errorMessage } from "@/lib/api-error";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { ApiError } from "@lemonade/api-client";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { setIsRouting } from "@/redux/tempSlice";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { routes } from "@/lib/routes";
@@ -104,7 +105,7 @@ export default function VerifyCodePage() {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: `A new code has been sent to ${result.email}. Please try again`,
+              message: apiMessage(`A new code has been sent to ${result.email}. Please try again`),
               type: "success",
             }),
           );
@@ -139,7 +140,7 @@ export default function VerifyCodePage() {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Email verified",
+          message: apiMessage("Email verified"),
           type: "success",
         }),
       );

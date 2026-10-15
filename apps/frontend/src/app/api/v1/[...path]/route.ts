@@ -2,6 +2,7 @@
 // or mid-signup the onboarding cookie (onboardingAuth). Uploads pass through byte for byte.
 import { NextResponse, type NextRequest } from "next/server";
 import { ApiError } from "@lemonade/api-client";
+import { messageOr } from "@/lib/api-message";
 import { backendApi, onboardingAuth, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
 const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
@@ -43,7 +44,11 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
   const auth = await onboardingAuth();
 
   try {
-    const { data: result, headers: responseHeaders } = await backendApi.requestWithHeaders({
+    const {
+      data: result,
+      headers: responseHeaders,
+      message,
+    } = await backendApi.requestWithHeaders({
       url: targetUrl,
       method,
       data,
@@ -60,7 +65,7 @@ async function handle(req: NextRequest, path: string[], method: string): Promise
     // authenticated call goes through here, so this is what actually gives
     // the cookie its sliding-window renewal.
     await syncSignedInCookieFromHeaders(responseHeaders);
-    return NextResponse.json({ success: true, message: "OK", data: result });
+    return NextResponse.json({ success: true, message: messageOr(message, "OK"), data: result });
   } catch (err) {
     if (err instanceof ApiError) {
       return NextResponse.json(

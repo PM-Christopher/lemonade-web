@@ -13,6 +13,7 @@ import { SubmitButton } from "@/components/global/SubmitButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { setIsRouting } from "@/redux/tempSlice";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { useGoogleAuthMutation } from "@/features/authentication/mutations";
@@ -88,7 +89,9 @@ export default function SignupPage() {
     try {
       const result = await googleAuthMutation.mutateAsync(tokenResponse.access_token);
       dispatch(setIsRouting(true));
-      dispatch(updateToastifyReducer({ show: true, message: "Successful", type: "success" }));
+      dispatch(
+        updateToastifyReducer({ show: true, message: apiMessage("Successful"), type: "success" }),
+      );
 
       if (result.needsOnboarding) {
         setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {

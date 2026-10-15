@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useCompleteOnboardingMutation } from "@/features/authentication/mutations";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { socialHandlesSchema, type SocialHandlesInput } from "@/features/authentication/schema";
@@ -49,7 +50,7 @@ const SocialStep: React.FC<SocialInterface> = () => {
       dispatch(
         updateToastifyReducer({
           show: true,
-          message: "Account created successfully",
+          message: apiMessage("Account created successfully"),
           type: "success",
         }),
       );

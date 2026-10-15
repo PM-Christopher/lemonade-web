@@ -2,6 +2,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { userProfileRoutes } from "@lemonade/api-types/generated";
 import { backendApi, persistUserSession, syncSignedInCookieFromHeaders } from "@/lib/server-api";
+import { messageOr } from "@/lib/api-message";
 import { bffErrorResponse, type BackendAuthResult } from "@/lib/auth-bff";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 
@@ -22,20 +23,23 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
 
   try {
-    const { data: result, headers: responseHeaders } =
-      await backendApi.requestWithHeaders<BackendAuthResult>({
-        url: userProfileRoutes.SOCIALS_SET_UP,
-        method: "post",
-        data: body,
-        bearerTokenOverride: onboardingToken,
-      });
+    const {
+      data: result,
+      headers: responseHeaders,
+      message,
+    } = await backendApi.requestWithHeaders<BackendAuthResult>({
+      url: userProfileRoutes.SOCIALS_SET_UP,
+      method: "post",
+      data: body,
+      bearerTokenOverride: onboardingToken,
+    });
 
     await persistUserSession(result.token, result.refresh_token, result.expires_in);
     await syncSignedInCookieFromHeaders(responseHeaders);
 
     const response = NextResponse.json({
       success: true,
-      message: "Account created successfully",
+      message: messageOr(message, "Account created successfully"),
       data: { user: result.user },
     });
     // Clear the onboarding cookie on the same path the client set it on.
