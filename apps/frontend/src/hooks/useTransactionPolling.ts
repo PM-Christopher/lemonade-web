@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { transactionApi, type VerifyTransactionResponse } from "@/features/transaction/api";
 
-/** Polls the transaction verify endpoint until `isSuccess` passes. */
+/** Polls the transaction verify endpoint until `isSuccess` passes, one request at a time. */
 export const useTransactionPolling = <TData = unknown>(
   config: null | {
     transactionId: string;
@@ -12,38 +12,42 @@ export const useTransactionPolling = <TData = unknown>(
 ) => {
   const [data, setData] = useState<VerifyTransactionResponse<TData> | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const transactionId = config?.transactionId;
+  const pollingInterval = config?.pollingInterval ?? 4000;
+
+  // Returns true once the payment has gone through.
+  const handleResult = useEffectEvent((result: VerifyTransactionResponse<TData>) => {
+    setData(result);
+    if (!config?.isSuccess(result)) return false;
+    config.onSuccess(result);
+    return true;
+  });
 
   useEffect(() => {
-    if (!config || !config.transactionId) return;
+    if (!transactionId) return;
 
-    const { transactionId, isSuccess, onSuccess, pollingInterval = 4000 } = config;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
-    const verifyTransaction = async () => {
+    const poll = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const result = await transactionApi.verifyTransaction<TData>({ trx_ref: transactionId });
-        setData(result);
-
-        if (isSuccess(result)) {
-          onSuccess(result);
-          if (intervalRef.current) clearInterval(intervalRef.current);
-        }
+        if (!stopped && handleResult(result)) stopped = true;
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
+      if (!stopped) timer = setTimeout(poll, pollingInterval);
     };
-    verifyTransaction();
-    intervalRef.current = setInterval(verifyTransaction, pollingInterval);
+    poll();
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      stopped = true;
+      clearTimeout(timer);
     };
-    // Keyed on transactionId only: callers pass fresh callbacks each render, which would restart polling.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config?.transactionId]);
+  }, [transactionId, pollingInterval]);
 
   return { data, loading };
 };
