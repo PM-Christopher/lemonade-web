@@ -3624,6 +3624,11 @@ down. `api-client` is at 99% statements and 95% branches, `ui` at 100%, the rest
 **Still open from this measurement:**
 
 - Confirm `main` requires the CI and e2e checks (needs repo admin).
+- TypeScript stays on 5.9. A 15 Oct trial of 7.0.2 failed lint (`typescript-eslint` does not support TS 7.0)
+  and broke typecheck in `@lemonade/ui` (Node types no longer resolve). Retry once `typescript-eslint` lists TS 7.
+- Next stays on 15.5. Next 16 is one major ahead and has not been attempted.
+- Dependabot PRs that branch from an old `main` can revert earlier bumps when merged (firebase 13 and the
+  frontend's lucide-react were reverted this way, restored in `e801eb6`). Rebase each PR before merging.
 
 **Update, checked and fixed 14 September 2026:** the Pusher channel-auth risk flagged above (2 of the 17
 remaining `Authorization`-header files) was real on both sides. Frontend read a `token` cookie that
