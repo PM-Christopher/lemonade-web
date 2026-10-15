@@ -29,6 +29,22 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  it("disables itself and shows a busy state while loading", () => {
+    const onClick = vi.fn();
+    render(
+      <Button loading onClick={onClick}>
+        Save
+      </Button>,
+    );
+
+    const button = screen.getByRole("button", { name: "Save" });
+    fireEvent.click(button);
+
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
   it("renders its child element instead of a button with asChild", () => {
     render(
       <Button asChild>
