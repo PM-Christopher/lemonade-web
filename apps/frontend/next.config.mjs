@@ -1,6 +1,8 @@
 // next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // `pnpm lint` runs ESLint 10 itself; Next 15's built-in lint step can't load it.
+    eslint: { ignoreDuringBuilds: true },
     webpack(config) {
         config.module.rules.push({
             test: /\.svg$/,
