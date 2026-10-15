@@ -3593,7 +3593,7 @@ backend work.
 | Manual `Authorization` headers | 87 | **0** in browser code. Set server-side only, by the BFF routes, `middleware.ts` (admin) and `@lemonade/api-client`. | 0 | P4 | `grep` |
 | Tokens reachable from JavaScript | 3 stores | 1 by design: the `newToken` onboarding cookie (frontend signup/reset, admin incomplete-profile login) | 0 | P4 | `grep` |
 | Client-side pagination sites | 7 | **0**, all on server pagination | 0 | P6 | Done in Phase 6 |
-| Effects with wrong deps | 32 | **0** lint errors with `exhaustive-deps` as error. 7 explicit `eslint-disable` suppressions remain. | 0 | P1 | `pnpm lint` |
+| Effects with wrong deps | 32 | **0** lint errors with `exhaustive-deps` as error, and 0 `eslint-disable` suppressions for it (`grep`, 15 Oct). | 0 | P1 | `pnpm lint` |
 | `console.log` in shipped code | 62 | **0** | 0 | P1 | `grep` |
 | Duplicated / diverged files | 41 | 17 byte-identical files, all reviewed and kept per app on purpose (see below). `FieldError` moved to `@lemonade/ui`. | 0 unreviewed | P2 | Same-path diff of `apps/*/src` |
 | Unimported runtime deps | 50 | **0**. `knip --dependencies` runs in CI (`knip.json` lists the deps Next and config files load by name). | 0 | P0, P7 | `pnpm knip` in CI |
