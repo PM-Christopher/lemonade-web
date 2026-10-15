@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useEffectEvent, useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
@@ -80,7 +80,7 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
     });
   };
 
-  const getAccount = () => {
+  const getAccount = useEffectEvent(() => {
     setValue("account_name", "", { shouldValidate: true });
     verifyAccountMutation.mutate(
       { bankCode, accountNumber },
@@ -95,15 +95,14 @@ const RequestPayoutModal: React.FC<RequestPayoutInterface> = ({ isOpen, toggle }
         },
       },
     );
-  };
+  });
 
+  // Look the account up once there's a bank and a full 10-digit number.
   useEffect(() => {
-    if (accountNumber.length === 10) {
+    if (bankCode && accountNumber.length === 10) {
       getAccount();
     }
-    // Verify only when the number changes; getAccount is recreated every render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountNumber]);
+  }, [bankCode, accountNumber]);
 
   return (
     <Dialog

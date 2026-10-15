@@ -11,7 +11,12 @@ vi.mock("@/images/icons/close.svg", () => ({ default: () => <svg aria-hidden="tr
 vi.mock("@/redux/hook", () => ({ useAppDispatch: () => dispatch }));
 vi.mock("@/features/shared/queries", () => ({
   useBanksQuery: () => ({
-    data: { banks: [{ id: 1, name: "Test Bank", slug: "test-bank", code: "058" }] },
+    data: {
+      banks: [
+        { id: 1, name: "Test Bank", slug: "test-bank", code: "058" },
+        { id: 2, name: "Other Bank", slug: "other-bank", code: "044" },
+      ],
+    },
     isLoading: false,
   }),
 }));
@@ -49,6 +54,31 @@ describe("RequestPayoutModal (add bank account)", () => {
       expect.any(Object),
     );
     expect(await screen.findByDisplayValue("ADA LOVELACE")).toBeInTheDocument();
+  });
+
+  it("waits for a bank before looking up the account", () => {
+    renderModal();
+
+    fireEvent.change(screen.getByLabelText("Account number"), { target: { value: "0123456789" } });
+    expect(verifyMutate).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByLabelText("Bank Name"), { target: { value: "058" } });
+    expect(verifyMutate).toHaveBeenCalledWith(
+      { bankCode: "058", accountNumber: "0123456789" },
+      expect.any(Object),
+    );
+  });
+
+  it("looks the account up again when the bank changes", () => {
+    renderModal();
+    fillAccount();
+
+    fireEvent.change(screen.getByLabelText("Bank Name"), { target: { value: "044" } });
+
+    expect(verifyMutate).toHaveBeenLastCalledWith(
+      { bankCode: "044", accountNumber: "0123456789" },
+      expect.any(Object),
+    );
   });
 
   it("submits the verified account and keeps the button disabled until it is valid", async () => {
