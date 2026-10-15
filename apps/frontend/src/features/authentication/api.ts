@@ -42,15 +42,11 @@ export interface SessionUser {
   status?: number;
   verified?: boolean;
   email_verified?: boolean;
-  has_bank_account?: boolean;
   skills?: string[];
   interests?: string[];
   socials?: UserSocial[];
   address?: UserAddress | null;
   referral_code?: string | null;
-  // Set locally by onboarding and payment screens, not by the backend.
-  hasPin?: boolean;
-  createdAccount?: boolean;
 }
 
 export type CurrentUser = SessionUser;

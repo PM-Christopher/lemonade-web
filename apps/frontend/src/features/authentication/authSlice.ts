@@ -93,15 +93,8 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.code = action.payload.code;
     },
-    // Local flags only apply once a user is loaded.
-    updateHasPin: (state) => {
-      if (state.user) state.user.hasPin = true;
-    },
     updateProfileImage: (state, action: PayloadAction<string>) => {
       if (state.user) state.user.profile_image = action.payload;
-    },
-    updateCreatedAccount: (state) => {
-      if (state.user) state.user.createdAccount = true;
     },
     updateUser: (state, action: PayloadAction<Partial<SessionUser>>) => {
       if (state.user) Object.assign(state.user, action.payload);
@@ -137,8 +130,6 @@ export const {
   loadStop,
   resetAuth,
   authUser,
-  updateHasPin,
-  updateCreatedAccount,
   updateProfileImage,
   updateUser,
   setSubscriptionId,
