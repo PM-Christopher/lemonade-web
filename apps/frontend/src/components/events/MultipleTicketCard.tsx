@@ -19,12 +19,11 @@ const MultipleTicketCard = ({
   setValue: UseFormSetValue<AssignEventTicketsInput>;
   errors: FieldErrors<AssignEventTicketsInput>;
 }) => {
+  // Seed this ticket's id and quantity into the form.
   useEffect(() => {
     setValue(`assigned_tickets.${index}.id`, String(ticket.id));
-    setValue(`assigned_tickets.${index}.quantity`, ticket?.quantity ?? 0);
-    // Seed id/quantity once when the card mounts.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setValue(`assigned_tickets.${index}.quantity`, ticket.quantity ?? 0);
+  }, [setValue, index, ticket.id, ticket.quantity]);
 
   return (
     <div className="bg-grey-20 mt-6 gap-4 rounded-xl p-4">
