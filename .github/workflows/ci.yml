@@ -1,8 +1,6 @@
 name: CI
 
-# Mirrors the shape of lemonade-backend's `composer test:ci` gate, and the
-# pipeline documented in docs/ARCHITECTURE.md §19. e2e is still a TODO — it
-# depends on a Playwright setup that doesn't exist yet.
+# Lint, typecheck, test and build for the workspaces a change touches. e2e runs in e2e.yml.
 
 on:
   pull_request:
@@ -12,27 +10,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Required by apps/*/src/lib/env.server.ts and env.client.ts (zod,
-    # throws at import time if missing) — `next build` collects page data
-    # for every Route Handler, which imports that validation module chain
-    # even though no real backend is ever called during a build. The
-    # values themselves don't matter (nothing here talks to them), only
-    # that they parse as valid URLs. Also declared in turbo.json's `build`
-    # task `env` allowlist — Turbo's strict env mode strips anything not
-    # listed there even when it's genuinely set here.
+    # Placeholder URLs so env validation passes during `next build`. Also listed in turbo.json's `build` env.
     env:
       LARAVEL_API_URL: http://127.0.0.1:9800
       NEXT_PUBLIC_APP_URL: http://127.0.0.1:3000
       NEXT_PUBLIC_BASE_URL: http://127.0.0.1:3000
+      # What "affected" is measured against: the PR base, or the commit before a push to main.
+      AFFECTED_BASE: ${{ github.event_name == 'push' && github.event.before || 'origin/main' }}
     steps:
-      # fetch-depth: 0, not the default shallow clone — every `--filter=...
-      # [origin/main]` below needs `origin/main` to actually resolve as a
-      # git ref. The default fetch-depth of 1 only fetches the triggering
-      # commit itself, so `git rev-parse origin/main` fails with "ambiguous
-      # argument 'origin/main': unknown revision" the moment this job runs
-      # against a push (there's no PR base ref to piggyback on either).
-      # bundle-budget below already does this for its own, different reason
-      # (a worktree checkout of the PR base SHA).
+      # Full history, so the affected base commit resolves.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -48,13 +34,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm turbo run lint --filter=...[origin/main]
+        run: pnpm turbo run lint --filter=...[$AFFECTED_BASE]
 
-      # Declining budget on @typescript-eslint/no-explicit-any (that rule is
-      # "warn" at the app layer, not "error" — see apps/*/eslint.config.mjs
-      # and docs/ARCHITECTURE.md Phase 3) — fails if either app's count grew.
-      # Not filtered by --filter=...[origin/main]: it's cheap enough to just
-      # always run both, and a change in one app can't silently exempt it.
+      # Fails if either app's `any` count grew. Runs for both apps every time.
       - name: Any-type budget
         run: |
           (cd apps/frontend && pnpm run lint:any-budget)
@@ -65,21 +47,14 @@ jobs:
         run: pnpm knip
 
       - name: Typecheck
-        run: pnpm turbo run typecheck --filter=...[origin/main]
+        run: pnpm turbo run typecheck --filter=...[$AFFECTED_BASE]
 
-      # Excludes @lemonade/e2e deliberately — its `test` script is a real
-      # Playwright run against a live lemonade-backend (MySQL, Mailpit,
-      # `php artisan serve`), infrastructure only .github/workflows/e2e.yml
-      # sets up. Without this exclusion, turbo's `...[origin/main]` scope
-      # picks it up whenever any e2e spec file is part of the diff (true
-      # for this push) and this job — which has none of that — fails
-      # trying to run it. Confirmed via `turbo run test --filter=...
-      # [origin/main] --dry-run=json` before adding this.
+      # e2e needs a live backend, so it runs in e2e.yml instead.
       - name: Test
-        run: pnpm turbo run test --filter=...[origin/main] --filter='!@lemonade/e2e'
+        run: pnpm turbo run test --filter=...[$AFFECTED_BASE] --filter='!@lemonade/e2e'
 
       - name: Build
-        run: pnpm turbo run build --filter=...[origin/main]
+        run: pnpm turbo run build --filter=...[$AFFECTED_BASE]
 
   contract-drift:
     runs-on: ubuntu-latest
