@@ -9,7 +9,6 @@
     "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
-    "@lemonade/config": "workspace:*",
     "vitest": "5.0.3"
   }
 }

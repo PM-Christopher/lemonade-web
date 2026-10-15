@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreBinaries": ["php", "playwright"],
+  "ignoreDependencies": ["sharp", "@svgr/webpack", "postcss-load-config", "prettier-plugin-tailwindcss"],
+  "workspaces": {
+    "apps/admin": {
+      "ignoreDependencies": ["pusher-js", "@lemonade/realtime"]
+    }
+  }
+}

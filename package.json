@@ -17,9 +17,11 @@
     "format": "prettier --config packages/config/prettier.config.mjs --write \"**/*.{ts,tsx,js,jsx,json}\" --ignore-path .gitignore",
     "format:check": "prettier --config packages/config/prettier.config.mjs --check \"**/*.{ts,tsx,js,jsx,json}\" --ignore-path .gitignore",
     "lemonade:check": "pnpm run format && pnpm turbo run lint typecheck test build --filter='!@lemonade/e2e'",
-    "lemonade:refresh": "mv node_modules /tmp/lemonade-node_modules-broken && pnpm install"
+    "lemonade:refresh": "mv node_modules /tmp/lemonade-node_modules-broken && pnpm install",
+    "knip": "knip --dependencies"
   },
   "devDependencies": {
+    "knip": "^6.41.0",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "turbo": "^2.11.7",

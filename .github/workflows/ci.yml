@@ -60,6 +60,10 @@ jobs:
           (cd apps/frontend && pnpm run lint:any-budget)
           (cd apps/admin && pnpm run lint:any-budget)
 
+      # Fails when a workspace lists a dependency it never imports, or imports one it doesn't list.
+      - name: Unused dependencies
+        run: pnpm knip
+
       - name: Typecheck
         run: pnpm turbo run typecheck --filter=...[origin/main]
 
