@@ -95,7 +95,8 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setFcmToken(token);
       } catch (error) {
-        console.error(error);
+        // Push is optional, so a blocked or offline FCM request is a warning, not an app error.
+        console.warn("FCM token registration failed", error);
       }
     };
 
