@@ -108,6 +108,15 @@
   }
 }
 
+@keyframes push-toast-countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.2s ease-out forwards;
 }

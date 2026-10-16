@@ -8,6 +8,7 @@ import { useAppSelector } from "@/redux/hook";
 import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutations";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { isAuthPath } from "@/lib/auth-paths";
+import { PushToast } from "@/components/global/PushToast";
 
 interface FcmContextProps {
   fcmToken: string | null;
@@ -110,29 +111,16 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
 
       toast.custom(
         (t) => (
-          <div
-            className={`bg-gradient-green ring-opacity-5 pointer-events-auto flex w-full max-w-sm rounded-xl p-4 shadow-lg ring-1 ring-black transition-all ${
-              t.visible ? "animate-enter" : "animate-leave"
-            }`}
-          >
-            <div className="w-0 flex-1">
-              <p className={"text-sm font-semibold text-white"}>New notification</p>
-              <p className="mt-2 text-sm font-semibold text-stone-100">
-                {payload?.notification?.title}
-              </p>
-              <p className="mt-0.25 text-sm text-stone-100">{payload?.notification?.body}</p>
-            </div>
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="ml-4 flex-shrink-0 text-gray-400 hover:text-gray-600 focus:outline-none"
-            >
-              ✕
-            </button>
-          </div>
+          <PushToast
+            title={payload?.notification?.title}
+            body={payload?.notification?.body}
+            type={payload?.data?.type}
+            durationMs={TOAST_DURATION_MS}
+            isVisible={t.visible}
+            onClose={() => toast.dismiss(t.id)}
+          />
         ),
-        {
-          duration: TOAST_DURATION_MS,
-        },
+        { duration: TOAST_DURATION_MS },
       );
       // Keep the toaster mounted until the toast has finished leaving.
       if (hideTimer.current) clearTimeout(hideTimer.current);
