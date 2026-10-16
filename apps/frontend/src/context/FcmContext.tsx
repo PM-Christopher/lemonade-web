@@ -4,10 +4,8 @@ import { usePathname } from "next/navigation";
 import { messaging, onMessage, getToken } from "@/lib/firebase";
 import type { MessagePayload } from "firebase/messaging";
 import { toast, Toaster } from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "@/redux/hook";
 import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutations";
-import { notificationKeys } from "@/features/notifications";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { isAuthPath } from "@/lib/auth-paths";
 
@@ -58,7 +56,6 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [notification, setNotification] = useState<MessagePayload["notification"] | null>(null);
   const [showToaster, setShowToaster] = useState(false);
-  const queryClient = useQueryClient();
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const authReady = useAuthReady();
@@ -110,8 +107,6 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onMessage(activeMessaging, (payload: MessagePayload) => {
       setNotification(payload?.notification);
       setShowToaster(true);
-      // Pull the new notification into the bell badge and list.
-      queryClient.invalidateQueries({ queryKey: notificationKeys.all() });
 
       toast.custom(
         (t) => (
@@ -150,7 +145,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
       unsubscribe();
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
-  }, [queryClient]);
+  }, []);
 
   return (
     <FcmContext.Provider value={{ fcmToken, notification }}>

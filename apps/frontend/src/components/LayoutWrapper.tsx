@@ -19,6 +19,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     authReady && !isAuthPath(pathname) && user?.id ? `request.${user.id}` : null;
 
   usePusher(realtimeChannel, "request.service");
+  usePusher(
+    authReady && !isAuthPath(pathname) && user?.id ? `notifications.${user.id}` : null,
+    "notification.received",
+  );
 
   return (
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>

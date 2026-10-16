@@ -12,8 +12,6 @@ export function useNotificationsQuery(options?: { enabled?: boolean }) {
     queryKey: notificationKeys.list(),
     queryFn: notificationsApi.list,
     staleTime: 60_000,
-    // Pushes that arrive while the tab is hidden show up on return.
-    refetchOnWindowFocus: "always",
     enabled: options?.enabled,
   });
 }

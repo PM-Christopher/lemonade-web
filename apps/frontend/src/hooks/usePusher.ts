@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { appendIncomingChatMessage } from "@/features/connect/queries";
+import { notificationKeys } from "@/features/notifications";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { RootState } from "@/redux/store";
 import type { OutgoingChatMessage } from "@/features/connect/api";
@@ -33,6 +34,9 @@ export const usePusher = (channelName: string | null, eventName: string) => {
 
       if (channelName === `chat.${user?.id}` && user?.id && receivedData.message) {
         appendIncomingChatMessage(queryClient, user.id, receivedData.message);
+      } else if (channelName === `notifications.${user?.id}`) {
+        // One refetch per server ping, no polling.
+        queryClient.invalidateQueries({ queryKey: notificationKeys.all() });
       } else if (channelName === `request.${user?.id}` && eventName === "request.service") {
         dispatch(
           updateToastifyReducer({
