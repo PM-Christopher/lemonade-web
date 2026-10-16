@@ -98,6 +98,7 @@ const TopNav = () => {
                 top: rect.bottom + 8,
                 right: Math.max(window.innerWidth - rect.right - 16, 8),
                 left: "auto",
+                translate: "none",
                 transform: "none",
               });
               setOpenNotifications(true);
