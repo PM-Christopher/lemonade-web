@@ -1,7 +1,9 @@
 import React from "react";
 import DotIcon from "@/images/icons/dot.svg";
 import { ChatInterface } from "@/interfaces/ChatInterface";
-import { formatTimeAgo } from "@/lib/helper";
+import { FallbackImage } from "@/components/global/FallbackImage";
+import { images } from "@/lib/images";
+import { formatTimeAgo, getInitials } from "@/lib/helper";
 
 type ChatListInterface = {
   active: boolean;
@@ -24,34 +26,26 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
     >
       {/* Avatar / Initials */}
       <div
-        className={`flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-semibold text-white shadow-sm ${
+        className={`flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-lg font-semibold text-white shadow-sm ${
           userType?.avatar ? "" : "bg-gray-500"
         }`}
-        style={
-          userType?.avatar
-            ? {
-                backgroundImage: `url(${userType.avatar})`,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-              }
-            : {}
-        }
       >
-        {!userType?.avatar && (
-          <>
-            {userType?.username
-              ?.split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()
-              .slice(0, 2)}
-          </>
+        {userType?.avatar ? (
+          <FallbackImage
+            src={userType.avatar}
+            fallbackSrc={images.AVATAR_4}
+            alt={userType.username ?? "avatar"}
+            width={48}
+            height={48}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          getInitials(userType?.username).slice(0, 2)
         )}
       </div>
 
       {/* Chat Info */}
-      <div className="border-grey-20 flex w-full flex-col border-b pb-2">
+      <div className="border-grey-20 flex min-w-0 flex-1 flex-col border-b pb-2">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
