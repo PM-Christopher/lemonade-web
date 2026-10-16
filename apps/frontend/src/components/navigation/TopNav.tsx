@@ -1,6 +1,6 @@
 import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
-import React, { useState } from "react";
+import React, { useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,6 +29,8 @@ const TopNav = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const isMobile = useIsMobile(641);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
+  // Panel position, taken from the bell so it opens right under it.
+  const [panelStyle, setPanelStyle] = useState<CSSProperties>({});
 
   const [selectedNotification, setSelectedNotification] = useState<AppNotification | null>(null);
   const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
@@ -90,7 +92,16 @@ const TopNav = () => {
             type="button"
             className="relative"
             aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
-            onClick={() => setOpenNotifications(true)}
+            onClick={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              setPanelStyle({
+                top: rect.bottom + 8,
+                right: Math.max(window.innerWidth - rect.right - 16, 8),
+                left: "auto",
+                transform: "none",
+              });
+              setOpenNotifications(true);
+            }}
           >
             <Image src={images.BELL} alt="" width={28} height={28} />
             {unreadCount > 0 && (
@@ -131,7 +142,8 @@ const TopNav = () => {
       <Dialog open={openNotifications} onOpenChange={setOpenNotifications}>
         <DialogContent
           overlayClassName="bg-transparent"
-          className={`flex max-h-[80vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-sm ${isMobile ? "" : "sm:top-8 sm:right-8 sm:translate-x-0 sm:translate-y-0"}`}
+          className="flex max-h-[80vh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-0 p-0 shadow-xl sm:max-w-sm"
+          style={isMobile ? undefined : panelStyle}
         >
           <DialogHeader className="flex-row items-center justify-between gap-2 border-b border-gray-100 py-3 pr-12 pl-4">
             <DialogTitle className="text-meta leading-normal font-semibold tracking-wide text-gray-600 uppercase">
