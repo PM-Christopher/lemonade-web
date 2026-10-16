@@ -1076,6 +1076,22 @@
   },
   {
     "method": "POST",
+    "uri": "/v1/shared/client-errors",
+    "name": "v1.shared.client-errors.store",
+    "guard": null,
+    "formRequest": "App\\Http\\Requests\\Shared\\ReportClientErrorRequest",
+    "fields": {
+      "message": ["required", "string", "max:2000"],
+      "app": ["required", "string", "in:frontend,admin"],
+      "path": ["nullable", "string", "max:500"],
+      "digest": ["nullable", "string", "max:200"],
+      "stack": ["nullable", "string", "max:8000"],
+      "correlation_id": ["nullable", "string", "max:100"],
+      "context": ["nullable", "array"]
+    }
+  },
+  {
+    "method": "POST",
     "uri": "/v1/shared/payment/paystack/webhook",
     "name": "v1.shared.payment.paystack.webhook",
     "guard": null,
@@ -2147,6 +2163,14 @@
     "method": "GET",
     "uri": "/v1/user/notification",
     "name": "v1.user.notification.list",
+    "guard": "user",
+    "formRequest": null,
+    "fields": null
+  },
+  {
+    "method": "PATCH",
+    "uri": "/v1/user/notification/{id}/read",
+    "name": "v1.user.notification.read",
     "guard": "user",
     "formRequest": null,
     "fields": null

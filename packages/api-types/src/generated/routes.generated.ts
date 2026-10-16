@@ -176,6 +176,10 @@ export const adminWalletRoutes = Object.freeze({
   WITHDRAWALS_RETRY: "/admin/wallet/withdrawals/{id}/retry", // PATCH
 });
 
+export const sharedClientErrorsRoutes = Object.freeze({
+  STORE: "/shared/client-errors", // POST
+});
+
 export const sharedPaymentRoutes = Object.freeze({
   PAYSTACK_WEBHOOK: "/shared/payment/paystack/webhook", // POST
   VERIFY: "/shared/payment/verify", // POST
@@ -317,6 +321,7 @@ export const userMessagesRoutes = Object.freeze({
 
 export const userNotificationRoutes = Object.freeze({
   LIST: "/user/notification", // GET
+  READ: "/user/notification/{id}/read", // PATCH
   SHOW: "/user/notification/{id}", // GET
 });
 

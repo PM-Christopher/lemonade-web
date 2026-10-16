@@ -356,6 +356,16 @@ export interface RenewSubscriptionRequest {
   redirect_url?: string;
 }
 
+export interface ReportClientErrorRequest {
+  message: string;
+  app: "frontend" | "admin";
+  path?: string;
+  digest?: string;
+  stack?: string;
+  correlation_id?: string;
+  context?: unknown[];
+}
+
 export interface ReportTribeThreadRequest {
   report: string;
 }

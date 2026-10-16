@@ -2,14 +2,16 @@
 import React, { useState } from "react";
 import RequestIcon from "@/images/icons/requestIcon.svg";
 import SettingsIcon from "@/images/icons/gear.svg";
-import SearchIcon from "@/images/icons/search.svg";
 import ChatListCard from "@/components/Jobs/ChatListCard";
 import UserInfoModal from "@/components/connect/Modal/UserInfoModal";
 import SettingsModal from "@/components/connect/Modal/SettingsModal";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { ChatInterface } from "@/interfaces/ChatInterface";
 import { useChatHistoryQuery, useChatQuery, useConnectionQuery } from "@/features/connect/queries";
+import UserSearch from "@/components/connect/UserSearch";
+import type { FoundUser } from "@/features/connect/api";
 import OpenedChat from "@/components/connect/OpenedChat";
 import EmptyChat from "@/components/connect/EmptyChat";
 import { usePusher } from "@/hooks/usePusher";
@@ -20,7 +22,13 @@ import { ChatListCardSkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
 
+// Loaded only once a searched user is picked.
+const ConnectModal = dynamic(() => import("@/components/connect/Modal/ConnectModal"), {
+  ssr: false,
+});
+
 const ConnectClient = () => {
+  const [connectTarget, setConnectTarget] = useState<FoundUser | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -44,6 +52,8 @@ const ConnectClient = () => {
   const connection_info = connectionData;
   const chatData = openedChat?.chat ?? null;
   const messagesData = openedChat?.messages ?? [];
+
+  const openConnectModal = (user: FoundUser) => setConnectTarget(user);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -99,28 +109,7 @@ const ConnectClient = () => {
             <div className="flex flex-col">
               <div className={`${chatOpened ? "hidden" : "flex"} h-162 w-screen flex-col bg-white`}>
                 <div className="p-2 px-4">
-                  <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
-                    {/* Icon */}
-                    <span className="shrink-0 text-gray-500">
-                      <SearchIcon />
-                    </span>
-
-                    {/* Input */}
-                    <input
-                      id="search"
-                      type="text"
-                      className="text-body-s w-full bg-transparent outline-none placeholder:text-gray-400"
-                      placeholder="Search user, chat..."
-                    />
-
-                    {/* Optional quick action */}
-                    <button
-                      type="button"
-                      className="text-meta shrink-0 rounded-xl bg-white px-3 py-2 leading-normal font-medium text-gray-700 ring-1 ring-black/5 transition hover:bg-gray-50 active:scale-[0.98]"
-                    >
-                      Search
-                    </button>
-                  </div>
+                  <UserSearch onSelect={openConnectModal} />
                 </div>
                 <div className="hide-scrollbar max-h-screen overflow-y-auto">
                   {loadingChat ? (
@@ -173,31 +162,7 @@ const ConnectClient = () => {
                 <p className="font-ruso text-black-light text-body-xl font-bold">Chats</p>
               </div>
               <div className="p-2 px-4">
-                <div className="bg-light_grey flex items-center gap-3 rounded-2xl px-4 py-3 shadow-sm ring-1 ring-black/5">
-                  {/* Icon */}
-                  <span className="shrink-0 text-gray-500">
-                    <SearchIcon />
-                  </span>
-
-                  {/* Input */}
-                  <input
-                    id="search"
-                    type="text"
-                    className="text-body-s w-full bg-transparent outline-none placeholder:text-gray-400"
-                    placeholder="Search user, chat..."
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") return;
-                    }}
-                  />
-
-                  {/* Optional quick action */}
-                  <button
-                    type="button"
-                    className="text-meta shrink-0 rounded-xl bg-white px-3 py-2 leading-normal font-medium text-gray-700 ring-1 ring-black/5 transition hover:bg-gray-50 active:scale-[0.98]"
-                  >
-                    Search
-                  </button>
-                </div>
+                <UserSearch onSelect={openConnectModal} />
               </div>
               <div className="hide-scrollbar max-h-screen overflow-y-auto">
                 {loadingChat ? (
@@ -245,6 +210,14 @@ const ConnectClient = () => {
           </div>
         </section>
 
+        {connectTarget && (
+          <ConnectModal
+            users={[connectTarget]}
+            isOpen
+            toggle={() => setConnectTarget(null)}
+            key={connectTarget.id}
+          />
+        )}
         <UserInfoModal userInfo={chatData} toggle={toggleModal} isOpen={isOpen} />
         <SettingsModal
           user_connect={connection_info}

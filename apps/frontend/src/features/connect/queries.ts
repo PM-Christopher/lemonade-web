@@ -1,5 +1,11 @@
 import { useQuery, type QueryClient } from "@tanstack/react-query";
-import { connectApi, type ChatDetailResponse, type OutgoingChatMessage } from "./api";
+import { ApiError } from "@lemonade/api-client";
+import {
+  connectApi,
+  type ChatDetailResponse,
+  type FoundUser,
+  type OutgoingChatMessage,
+} from "./api";
 
 export const connectKeys = {
   all: () => ["connect"] as const,
@@ -7,6 +13,7 @@ export const connectKeys = {
   chat: (receiverId: string) => [...connectKeys.all(), "chat", receiverId] as const,
   invites: () => [...connectKeys.all(), "invites"] as const,
   connection: () => [...connectKeys.all(), "connection"] as const,
+  userSearch: (term: string) => [...connectKeys.all(), "user-search", term] as const,
 };
 
 // Message history (sidebar) and an open chat — not money, but live/social
@@ -38,6 +45,24 @@ export function useInvitesQuery(options?: { enabled?: boolean }) {
     queryFn: connectApi.getInvites,
     staleTime: 30_000,
     enabled: options?.enabled,
+  });
+}
+
+// Typeahead lookup. The backend answers "no match" with an error, which here is an empty list.
+export function useFindUsersQuery(term: string) {
+  return useQuery({
+    queryKey: connectKeys.userSearch(term),
+    queryFn: async (): Promise<FoundUser[]> => {
+      try {
+        return await connectApi.findUser(term);
+      } catch (error) {
+        if (error instanceof ApiError && (error.status === 404 || error.status === 422)) return [];
+        throw error;
+      }
+    },
+    staleTime: 60_000,
+    retry: false,
+    enabled: term.length >= 2,
   });
 }
 

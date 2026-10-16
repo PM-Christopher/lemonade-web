@@ -1,6 +1,6 @@
 // Endpoints for the signed-in user's notifications.
 import { browserApi } from "@/lib/browser-api";
-import { userNotificationRoutes } from "@lemonade/api-types/generated";
+import { userNotificationRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface NotificationMeta {
   image?: string;
@@ -39,6 +39,14 @@ export interface NotificationsResponse {
   notifications: AppNotification[];
 }
 
+export interface MarkReadResponse {
+  id: string;
+  read_at: string | null;
+}
+
 export const notificationsApi = {
   list: () => browserApi.get<NotificationsResponse>(userNotificationRoutes.LIST),
+
+  markAsRead: (id: string) =>
+    browserApi.patch<MarkReadResponse>(buildPath(userNotificationRoutes.READ, { id })),
 };

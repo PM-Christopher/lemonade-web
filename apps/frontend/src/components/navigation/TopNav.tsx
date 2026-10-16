@@ -10,7 +10,13 @@ import { useSelector } from "react-redux";
 import { formatName, getInitials } from "@/lib/helper";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemonade/ui";
-import { useNotificationsQuery, type AppNotification } from "@/features/notifications";
+import {
+  useNotificationsQuery,
+  useMarkNotificationReadMutation,
+  countUnread,
+  formatBadgeCount,
+  type AppNotification,
+} from "@/features/notifications";
 import dayjs from "dayjs";
 import { FaBell } from "react-icons/fa";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
@@ -27,6 +33,8 @@ const TopNav = () => {
   const [openDetailModal, setOpenDetailModal] = useState<boolean>(false);
 
   const { data } = useNotificationsQuery();
+  const markRead = useMarkNotificationReadMutation();
+  const unreadCount = countUnread(data?.notifications);
   const { setSelectedMenu } = usePersistentMenuState();
 
   const handleViewMore = (notification: AppNotification) => {
@@ -75,16 +83,19 @@ const TopNav = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <div>
-            <Image
-              src={images.BELL}
-              alt="notification"
-              width={28}
-              height={28}
-              className="cursor-pointer"
-              onClick={() => setOpenNotifications(true)}
-            />
-          </div>
+          <button
+            type="button"
+            className="relative"
+            aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}
+            onClick={() => setOpenNotifications(true)}
+          >
+            <Image src={images.BELL} alt="" width={28} height={28} />
+            {unreadCount > 0 && (
+              <span className="text-meta absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 leading-none font-semibold text-white">
+                {formatBadgeCount(unreadCount)}
+              </span>
+            )}
+          </button>
           <div className="tablet:block hidden">
             <p className="text-body-xl font-sans font-normal">
               Hello,{" "}
@@ -138,7 +149,15 @@ const TopNav = () => {
                   </div>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-base font-medium text-gray-800">
+                      <p
+                        className={`text-base text-gray-800 ${notification.read_at ? "font-medium" : "font-bold"}`}
+                      >
+                        {!notification.read_at && (
+                          <span
+                            className="mr-2 inline-block size-2 rounded-full bg-green-500"
+                            aria-label="Unread"
+                          />
+                        )}
                         {notification?.title ?? ""}
                       </p>
                       <p className="text-sm text-gray-400">
@@ -153,7 +172,17 @@ const TopNav = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-end">
+                <div className="flex items-center justify-end gap-4">
+                  {!notification.read_at && (
+                    <Button
+                      variant="link"
+                      className="h-auto p-0 text-sm font-medium text-gray-500 hover:text-gray-700"
+                      loading={markRead.isPending && markRead.variables === notification.id}
+                      onClick={() => markRead.mutate(notification.id)}
+                    >
+                      Mark as read
+                    </Button>
+                  )}
                   <Button
                     variant="link"
                     className="h-auto p-0 text-sm font-medium text-green-600 hover:text-green-700"
