@@ -179,7 +179,7 @@ const ConnectClient = () => {
             </div>
           )}
           <div className="laptop:flex hidden">
-            <div className="flex h-162 w-93.75 flex-col rounded-tl-2xl rounded-bl-2xl border bg-white">
+            <div className="flex h-162 w-93.75 flex-col rounded-tl-2xl rounded-bl-2xl bg-white">
               <div className="p-4">
                 <p className="font-ruso text-black-light text-body-xl font-bold">Chats</p>
               </div>

@@ -171,7 +171,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   };
 
   return (
-    <div className="laptop:w-140 laptop:rounded-br-2xl laptop:rounded-tr-2xl laptop:border-b laptop:border-r laptop:border-t flex h-162 w-screen flex-col border-none bg-white">
+    <div className="laptop:w-140 laptop:rounded-br-2xl laptop:rounded-tr-2xl flex h-162 w-screen flex-col bg-white">
       {/* Header */}
       <div className="bg-grey-20 laptop:rounded-tr-2xl flex h-12 w-full items-center justify-between px-2 py-3 text-white">
         <div className="flex items-center gap-2 px-4">

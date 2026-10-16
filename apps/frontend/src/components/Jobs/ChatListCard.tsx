@@ -45,7 +45,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
       </div>
 
       {/* Chat Info */}
-      <div className="border-grey-20 flex min-w-0 flex-1 flex-col border-b pb-2">
+      <div className="flex min-w-0 flex-1 flex-col pb-2">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

@@ -91,7 +91,7 @@ export const ChatOptionsMenu = ({
             <MoreIcon className="cursor-pointer" />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-48 p-1">
+        <PopoverContent align="end" className="w-48 border-0 p-1 shadow-lg">
           <button
             type="button"
             className={itemClass}
@@ -149,13 +149,13 @@ export const ChatOptionsMenu = ({
       </Popover>
 
       <Dialog open={confirming !== null} onOpenChange={(open) => !open && setConfirming(null)}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-sm border-0">
           {confirming && (
             <>
               <DialogTitle>{CONFIRM_COPY[confirming].title}</DialogTitle>
               <DialogDescription>{CONFIRM_COPY[confirming].body}</DialogDescription>
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setConfirming(null)} disabled={isBusy}>
+                <Button variant="ghost" onClick={() => setConfirming(null)} disabled={isBusy}>
                   Cancel
                 </Button>
                 <Button onClick={confirm} disabled={isBusy}>
