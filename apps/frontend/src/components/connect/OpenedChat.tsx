@@ -207,7 +207,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
         <div className="hide-scrollbar flex w-full flex-col gap-3 overflow-y-auto">
           {messages.map((message: MessageInterface, index: number) => (
             <div
-              className={`max-w-75.75 rounded-xl p-2 ${
+              className={`max-w-[85%] rounded-xl p-2 ${
                 message?.sender
                   ? "bg-light-green-10 ml-auto text-right"
                   : "bg-grey-20 mr-auto text-left"
