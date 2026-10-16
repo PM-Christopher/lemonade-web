@@ -3,6 +3,9 @@ interface User {
   username: string;
   lemon_id: string;
   avatar: string;
+  industry?: string | null;
+  bio?: string | null;
+  socials?: Array<{ name?: string; value?: string }>;
 }
 
 interface LatestMessage {

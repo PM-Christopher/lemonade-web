@@ -67,3 +67,21 @@ export function useUpdateVisibilityMutation() {
     },
   });
 }
+
+// Block, unblock, end and delete (clear) a chat. All refresh the open chat and the chat list.
+function useChatContactMutation(action: (receiverId: string) => Promise<{ message: string }>) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: action,
+    onSuccess: (_data, receiverId) => {
+      queryClient.invalidateQueries({ queryKey: connectKeys.chat(receiverId) });
+      queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
+    },
+  });
+}
+
+export const useBlockUserMutation = () => useChatContactMutation(connectApi.blockUser);
+export const useUnblockUserMutation = () => useChatContactMutation(connectApi.unblockUser);
+export const useEndChatMutation = () => useChatContactMutation(connectApi.endChat);
+export const useClearChatMutation = () => useChatContactMutation(connectApi.clearChat);

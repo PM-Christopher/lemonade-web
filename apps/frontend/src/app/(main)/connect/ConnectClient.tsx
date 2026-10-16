@@ -59,6 +59,12 @@ const ConnectClient = () => {
   const connection_info = connectionData;
   const chatData = openedChat?.chat ?? null;
   const messagesData = openedChat?.messages ?? [];
+  // The other person in the open chat, whichever side started it.
+  const otherUser = chatData
+    ? chatData.sender.id === user?.id
+      ? chatData.receiver
+      : chatData.sender
+    : null;
 
   const openConnectModal = (user: FoundUser) => setConnectTarget(user);
 
@@ -164,6 +170,7 @@ const ConnectClient = () => {
                     toggleModal={toggleModal}
                     chat={chatData}
                     toggleOpenedChat={toggleChatOpened}
+                    blocked={openedChat?.blocked}
                   />
                 ) : (
                   <EmptyChat />
@@ -218,6 +225,7 @@ const ConnectClient = () => {
                 toggleModal={toggleModal}
                 chat={chatData}
                 toggleOpenedChat={toggleChatOpened}
+                blocked={openedChat?.blocked}
               />
             ) : (
               <EmptyChat />
@@ -233,7 +241,11 @@ const ConnectClient = () => {
             key={connectTarget.id}
           />
         )}
-        <UserInfoModal userInfo={chatData} toggle={toggleModal} isOpen={isOpen} />
+        <UserInfoModal
+          userInfo={otherUser ? { receiver: otherUser } : null}
+          toggle={toggleModal}
+          isOpen={isOpen}
+        />
         <SettingsModal
           user_connect={connection_info}
           toggle={toggleSettingsModal}

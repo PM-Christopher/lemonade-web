@@ -4,7 +4,6 @@ import { images } from "@/lib/images";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
-import MoreIcon from "@/images/icons/moreIcon.svg";
 import ImageIcon from "@/images/icons/imageIcon.svg";
 import { ChatInterface, MessageInterface } from "@/interfaces/ChatInterface";
 import SendIcon from "@/images/icons/sendIcon.svg";
@@ -20,6 +19,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { connectApi } from "@/features/connect/api";
 import { Loader2 } from "lucide-react";
 import type { RootState } from "@/redux/store";
+import { ChatOptionsMenu } from "@/components/connect/ChatOptionsMenu";
 import { ImageLightbox } from "@/components/connect/ImageLightbox";
 import { errorMessage } from "@/lib/api-error";
 
@@ -32,6 +32,7 @@ type OpenChatProps = {
   chat: ChatInterface | null;
   user_id: string | undefined;
   toggleOpenedChat?: () => void;
+  blocked?: { by_me: boolean; by_them: boolean };
 };
 
 const OpenedChat: React.FC<OpenChatProps> = ({
@@ -40,6 +41,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   messages,
   user_id,
   toggleOpenedChat,
+  blocked,
 }) => {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
@@ -49,6 +51,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const { user: authUser } = useSelector((state: RootState) => state.auth);
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver;
+  const isBlocked = Boolean(blocked?.by_me || blocked?.by_them);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
 
@@ -191,7 +194,12 @@ const OpenedChat: React.FC<OpenChatProps> = ({
           <DotIcon className="w-1" />
           <p className="text-text-grey text-body-s font-semibold">L{userType?.lemon_id}</p>
         </div>
-        <MoreIcon className="cursor-pointer" onClick={toggleModal} />
+        <ChatOptionsMenu
+          receiverId={userType?.id}
+          isBlockedByMe={Boolean(blocked?.by_me)}
+          onViewDetails={toggleModal}
+          onChatEnded={() => toggleOpenedChat?.()}
+        />
       </div>
 
       {/* Messages */}
@@ -238,7 +246,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
       </div>
 
       {/* Mobile Input */}
-      {isMobile && (
+      {!isBlocked && isMobile && (
         <div className="bg-light_grey w-full p-4 px-3.25 text-white">
           <div className="flex w-full items-center gap-2">
             <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-2xl border p-2 px-3">
@@ -312,75 +320,88 @@ const OpenedChat: React.FC<OpenChatProps> = ({
         </div>
       )}
 
+      {isBlocked && (
+        <div className="bg-light_grey text-text-grey text-body-s w-full p-4 text-center">
+          {blocked?.by_me
+            ? "You blocked this user. Unblock them from the menu to send messages."
+            : "You can no longer reply to this conversation."}
+        </div>
+      )}
+
       {/* Desktop Input */}
-      <div className="bg-light_grey laptop:flex hidden w-full p-4 px-3.25 text-white">
-        <div className="flex w-full items-center gap-2">
-          <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-2xl border p-2 px-3">
-            <div className={"flex items-center"}>
-              <div className="w-full">
-                <textarea
-                  ref={desktopTextareaRef}
-                  className="bg-light_grey text-black-light text-body-s mt-1 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Reply..."
-                  onChange={(e) => setText(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  value={text}
-                  rows={1}
-                />
+      {!isBlocked && (
+        <div className="bg-light_grey laptop:flex hidden w-full p-4 px-3.25 text-white">
+          <div className="flex w-full items-center gap-2">
+            <div className="bg-light_grey flex w-full flex-col justify-between gap-3 rounded-2xl border p-2 px-3">
+              <div className={"flex items-center"}>
+                <div className="w-full">
+                  <textarea
+                    ref={desktopTextareaRef}
+                    className="bg-light_grey text-black-light text-body-s mt-1 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
+                    placeholder="Reply..."
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    value={text}
+                    rows={1}
+                  />
+                </div>
+                {(text.trim() || mediaFiles.length > 0) && (
+                  <div className="flex-shrink-0">
+                    {mediaLoading ? (
+                      <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
+                    ) : (
+                      <SendIcon className="h-4.75 w-5 cursor-pointer" onClick={sendMessage} />
+                    )}
+                  </div>
+                )}
               </div>
-              {(text.trim() || mediaFiles.length > 0) && (
-                <div className="flex-shrink-0">
-                  {mediaLoading ? (
-                    <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
-                  ) : (
-                    <SendIcon className="h-4.75 w-5 cursor-pointer" onClick={sendMessage} />
+              {mediaFiles?.length > 0 && (
+                <div className={"flex flex-wrap gap-4"}>
+                  {mediaFiles?.slice(0, 2)?.map((mediaFile, index) => (
+                    <div
+                      key={index}
+                      className="group relative h-36 w-36 overflow-hidden rounded-2xl"
+                    >
+                      <Image
+                        alt="media_file"
+                        src={mediaFile}
+                        width={144}
+                        height={144}
+                        className="h-full w-full object-cover transition-all duration-200 group-hover:blur-sm"
+                      />
+                      <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                        <button
+                          className="rounded-md bg-red-600 px-2 py-1 font-sans text-sm text-white"
+                          onClick={() => removeImage(mediaFile)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {mediaFiles.length > 2 && (
+                    <div className="group relative h-36 w-36 overflow-hidden rounded-2xl">
+                      <Image
+                        alt="media_file"
+                        src={mediaFiles[2]}
+                        width={144}
+                        height={144}
+                        className="h-full w-full object-cover blur-sm brightness-75 filter"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-title-r leading-normal font-semibold text-white">
+                          +{mediaFiles.length - 2}
+                        </span>
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
             </div>
-            {mediaFiles?.length > 0 && (
-              <div className={"flex flex-wrap gap-4"}>
-                {mediaFiles?.slice(0, 2)?.map((mediaFile, index) => (
-                  <div key={index} className="group relative h-36 w-36 overflow-hidden rounded-2xl">
-                    <Image
-                      alt="media_file"
-                      src={mediaFile}
-                      width={144}
-                      height={144}
-                      className="h-full w-full object-cover transition-all duration-200 group-hover:blur-sm"
-                    />
-                    <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                      <button
-                        className="rounded-md bg-red-600 px-2 py-1 font-sans text-sm text-white"
-                        onClick={() => removeImage(mediaFile)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                {mediaFiles.length > 2 && (
-                  <div className="group relative h-36 w-36 overflow-hidden rounded-2xl">
-                    <Image
-                      alt="media_file"
-                      src={mediaFiles[2]}
-                      width={144}
-                      height={144}
-                      className="h-full w-full object-cover blur-sm brightness-75 filter"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-title-r leading-normal font-semibold text-white">
-                        +{mediaFiles.length - 2}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            <ImageIcon className="w-5 flex-shrink-0 cursor-pointer" onClick={handleMediaInput} />
           </div>
-          <ImageIcon className="w-5 flex-shrink-0 cursor-pointer" onClick={handleMediaInput} />
         </div>
-      </div>
+      )}
       <input
         type="file"
         multiple={true}

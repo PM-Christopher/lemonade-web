@@ -107,6 +107,10 @@ export interface ChangeSubscriptionPlanRequest {
   mode: "upgrade" | "downgrade";
 }
 
+export interface ChatContactRequest {
+  receiver_id: string;
+}
+
 export interface CommentOnTribeThreadRequest {
   body: string;
   parent_id?: unknown;

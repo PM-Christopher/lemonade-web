@@ -2122,12 +2122,42 @@
     }
   },
   {
+    "method": "POST",
+    "uri": "/v1/user/messages/block",
+    "name": "v1.user.messages.block",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Connect\\ChatContactRequest",
+    "fields": {
+      "receiver_id": ["uuid", "required", "exists:users,id"]
+    }
+  },
+  {
     "method": "GET",
     "uri": "/v1/user/messages/chat",
     "name": "v1.user.messages.chat",
     "guard": "user",
     "formRequest": null,
     "fields": null
+  },
+  {
+    "method": "POST",
+    "uri": "/v1/user/messages/clear",
+    "name": "v1.user.messages.clear",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Connect\\ChatContactRequest",
+    "fields": {
+      "receiver_id": ["uuid", "required", "exists:users,id"]
+    }
+  },
+  {
+    "method": "POST",
+    "uri": "/v1/user/messages/end",
+    "name": "v1.user.messages.end",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Connect\\ChatContactRequest",
+    "fields": {
+      "receiver_id": ["uuid", "required", "exists:users,id"]
+    }
   },
   {
     "method": "GET",
@@ -2157,6 +2187,16 @@
     "formRequest": "App\\Http\\Requests\\Connect\\SendTypingIndicatorRequest",
     "fields": {
       "receiver_id": ["uuid", "required"]
+    }
+  },
+  {
+    "method": "POST",
+    "uri": "/v1/user/messages/unblock",
+    "name": "v1.user.messages.unblock",
+    "guard": "user",
+    "formRequest": "App\\Http\\Requests\\Connect\\ChatContactRequest",
+    "fields": {
+      "receiver_id": ["uuid", "required", "exists:users,id"]
     }
   },
   {

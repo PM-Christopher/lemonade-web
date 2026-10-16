@@ -16,8 +16,8 @@ interface ConnectUserInfo {
     avatar?: string;
     username?: string;
     lemon_id?: string;
-    industry?: string;
-    bio?: string;
+    industry?: string | null;
+    bio?: string | null;
     socials?: Array<{ name?: string; value?: string }>;
   };
 }
@@ -63,7 +63,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
                 {userInfo?.receiver?.lemon_id})
               </p>
               <p className="text-text-grey text-meta leading-normal font-normal">
-                {formatString(userInfo?.receiver?.industry)}
+                {formatString(userInfo?.receiver?.industry ?? undefined)}
               </p>
               <div className="mt-4 flex items-center gap-2">
                 <LocationIcon />

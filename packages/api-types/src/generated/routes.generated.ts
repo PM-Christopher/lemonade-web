@@ -313,10 +313,14 @@ export const userListingRoutes = Object.freeze({
 });
 
 export const userMessagesRoutes = Object.freeze({
+  BLOCK: "/user/messages/block", // POST
   CHAT: "/user/messages/chat", // GET
+  CLEAR: "/user/messages/clear", // POST
+  END: "/user/messages/end", // POST
   HISTORY: "/user/messages", // GET
   SEND: "/user/messages", // POST
   TYPING: "/user/messages/typing", // POST
+  UNBLOCK: "/user/messages/unblock", // POST
 });
 
 export const userNotificationRoutes = Object.freeze({

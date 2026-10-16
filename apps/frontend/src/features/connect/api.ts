@@ -7,6 +7,7 @@ import type { ChatInterface, MessageInterface } from "@/interfaces/ChatInterface
 export interface ChatDetailResponse {
   chat: ChatInterface;
   messages: MessageInterface[];
+  blocked: { by_me: boolean; by_them: boolean };
 }
 
 export interface ChatHistoryResponse {
@@ -115,6 +116,18 @@ export const connectApi = {
       { message, media },
       { params: { receiver_id: receiverId } },
     ),
+
+  blockUser: (receiverId: string) =>
+    browserApi.post<{ message: string }>(userMessagesRoutes.BLOCK, { receiver_id: receiverId }),
+
+  unblockUser: (receiverId: string) =>
+    browserApi.post<{ message: string }>(userMessagesRoutes.UNBLOCK, { receiver_id: receiverId }),
+
+  endChat: (receiverId: string) =>
+    browserApi.post<{ message: string }>(userMessagesRoutes.END, { receiver_id: receiverId }),
+
+  clearChat: (receiverId: string) =>
+    browserApi.post<{ message: string }>(userMessagesRoutes.CLEAR, { receiver_id: receiverId }),
 
   inviteResponse: (id: string, option: "accepted" | "rejected") =>
     browserApi.post<InviteResponseResult>(buildPath(userConnectRoutes.INVITES_RESPOND, { id }), {
