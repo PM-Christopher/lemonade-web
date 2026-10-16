@@ -114,7 +114,7 @@ describe("LoginPage", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Continue with Google" }));
 
-    expect(googleMutateAsync).toHaveBeenCalledWith("google-access");
+    expect(googleMutateAsync).toHaveBeenCalledWith({ token: "google-access" });
     await waitFor(() => expect(push).toHaveBeenCalledWith("/settings/wallet"), { timeout: 2000 });
   });
 

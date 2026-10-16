@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Card, CardContent, Input, Label, FieldError } from "@lemonade/ui";
 import Image from "next/image";
 
@@ -17,6 +17,8 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+import { GoogleLinkDialog } from "@/components/auth/GoogleLinkDialog";
+import { ApiError } from "@lemonade/api-client";
 import type { LoginResult } from "@/features/authentication/api";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { errorMessage } from "@/lib/api-error";
@@ -51,6 +53,8 @@ export default function LoginPage() {
   const [, setCookie] = useCookies([ONBOARDING_TOKEN_COOKIE]);
   const loginMutation = useLoginMutation();
   const googleAuthMutation = useGoogleAuthMutation();
+  // Google token held while the user confirms their password to link accounts.
+  const [pendingGoogleToken, setPendingGoogleToken] = useState<string | null>(null);
   const next = useMemo(() => safeNext(getQueryParam("next")), [getQueryParam]);
 
   // Shared by password and Google sign-in: resume onboarding, or go to the original page.
@@ -105,10 +109,20 @@ export default function LoginPage() {
 
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
-      handleAuthResult(await googleAuthMutation.mutateAsync(tokenResponse.access_token));
+      handleAuthResult(await googleAuthMutation.mutateAsync({ token: tokenResponse.access_token }));
     } catch (error) {
+      if (error instanceof ApiError && error.errorCode === "password-required") {
+        setPendingGoogleToken(tokenResponse.access_token);
+        return;
+      }
       showLoginError(error);
     }
+  };
+
+  const linkGoogle = async (password: string) => {
+    if (!pendingGoogleToken) return;
+    handleAuthResult(await googleAuthMutation.mutateAsync({ token: pendingGoogleToken, password }));
+    setPendingGoogleToken(null);
   };
 
   return (
@@ -200,6 +214,11 @@ export default function LoginPage() {
           </form>
         </div>
       </div>
+      <GoogleLinkDialog
+        open={pendingGoogleToken !== null}
+        onSubmit={linkGoogle}
+        onCancel={() => setPendingGoogleToken(null)}
+      />
     </AuthLayout>
   );
 }

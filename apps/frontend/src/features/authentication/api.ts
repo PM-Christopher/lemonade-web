@@ -59,6 +59,12 @@ export interface AuthTokenResult {
   token_type: string;
 }
 
+export interface GoogleAuthPayload {
+  token: string;
+  /** Sent once, to link Google to an email/password account. */
+  password?: string;
+}
+
 export interface LoginPayload {
   email: string;
   password: string;
@@ -224,7 +230,7 @@ export const authApi = {
     browserApi.post<AuthTokenResult>(userAuthRoutes.REGISTER, data),
 
   // The BFF stores the session for finished accounts and only returns a token mid-onboarding.
-  googleAuth: (token: string) => authBff.post<LoginResult>("/google", { token }),
+  googleAuth: (payload: GoogleAuthPayload) => authBff.post<LoginResult>("/google", payload),
 
   // Onboarding steps, authorized by the onboarding cookie the BFF forwards.
   profileSetUp: (data: ProfileSetupRequest) =>

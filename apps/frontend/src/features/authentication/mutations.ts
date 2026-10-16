@@ -6,6 +6,7 @@ import {
   type SessionUser,
   type ChangePlanPayload,
   type DeleteAccountPayload,
+  type GoogleAuthPayload,
   type ForgotPasswordPayload,
   type LoginPayload,
   type NotificationSettingsPayload,
@@ -49,7 +50,7 @@ export function useGoogleAuthMutation() {
   const startSession = useStartSession();
 
   return useMutation({
-    mutationFn: (accessToken: string) => authApi.googleAuth(accessToken),
+    mutationFn: (payload: GoogleAuthPayload) => authApi.googleAuth(payload),
     onSuccess: (result) => {
       if (!result.needsOnboarding) startSession(result.user);
     },

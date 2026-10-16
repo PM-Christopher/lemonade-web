@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     } = await backendApi.requestWithHeaders<BackendAuthResult>({
       url: userAuthRoutes.GOOGLE,
       method: "post",
-      data: { token: body.token },
+      data: { token: body.token, ...(body.password ? { password: body.password } : {}) },
     });
 
     // Unfinished onboarding keeps a short-lived token; no main session cookie.

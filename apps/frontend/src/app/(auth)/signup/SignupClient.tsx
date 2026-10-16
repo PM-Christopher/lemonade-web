@@ -16,6 +16,9 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { authUser } from "@/features/authentication/authSlice";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+import { GoogleLinkDialog } from "@/components/auth/GoogleLinkDialog";
+import { ApiError } from "@lemonade/api-client";
+import type { LoginResult } from "@/features/authentication/api";
 import { useGoogleAuthMutation } from "@/features/authentication/mutations";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { errorMessage } from "@/lib/api-error";
@@ -50,6 +53,8 @@ export default function SignupPage() {
   const dispatch = useAppDispatch();
   const [, setCookie] = useCookies<string>([ONBOARDING_TOKEN_COOKIE]);
   const googleAuthMutation = useGoogleAuthMutation();
+  // Google token held while the user confirms their password to link accounts.
+  const [pendingGoogleToken, setPendingGoogleToken] = React.useState<string | null>(null);
   const [termOpen, setTermOpen] = React.useState(false);
   const [privacyOpen, setPrivacyOpen] = React.useState(false);
 
@@ -85,31 +90,40 @@ export default function SignupPage() {
   };
 
   // Google sign-up: resume onboarding, or go home when the account is already finished.
+  const handleGoogleResult = (result: LoginResult) => {
+    dispatch(setIsRouting(true));
+    dispatch(
+      updateToastifyReducer({ show: true, message: apiMessage("Successful"), type: "success" }),
+    );
+
+    if (result.needsOnboarding) {
+      setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
+        path: "/",
+        maxAge: 3600 * 6,
+        sameSite: "lax",
+      });
+      dispatch(authUser({ user: result.user }));
+      window.location.assign(
+        result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL,
+      );
+      return;
+    }
+
+    setTimeout(() => {
+      push(routes.HOME);
+    }, 500);
+  };
+
   const handleGoogleSuccess = async (tokenResponse: { access_token: string }) => {
     try {
-      const result = await googleAuthMutation.mutateAsync(tokenResponse.access_token);
-      dispatch(setIsRouting(true));
-      dispatch(
-        updateToastifyReducer({ show: true, message: apiMessage("Successful"), type: "success" }),
+      handleGoogleResult(
+        await googleAuthMutation.mutateAsync({ token: tokenResponse.access_token }),
       );
-
-      if (result.needsOnboarding) {
-        setCookie(ONBOARDING_TOKEN_COOKIE, result.token, {
-          path: "/",
-          maxAge: 3600 * 6,
-          sameSite: "lax",
-        });
-        dispatch(authUser({ user: result.user }));
-        window.location.assign(
-          result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL,
-        );
+    } catch (error) {
+      if (error instanceof ApiError && error.errorCode === "password-required") {
+        setPendingGoogleToken(tokenResponse.access_token);
         return;
       }
-
-      setTimeout(() => {
-        push(routes.HOME);
-      }, 500);
-    } catch (error) {
       dispatch(
         updateToastifyReducer({
           show: true,
@@ -118,6 +132,14 @@ export default function SignupPage() {
         }),
       );
     }
+  };
+
+  const linkGoogle = async (password: string) => {
+    if (!pendingGoogleToken) return;
+    handleGoogleResult(
+      await googleAuthMutation.mutateAsync({ token: pendingGoogleToken, password }),
+    );
+    setPendingGoogleToken(null);
   };
 
   return (
@@ -264,6 +286,11 @@ export default function SignupPage() {
       </div>
       <TermsOfUseModal toggle={toggleTermOpen} option={termOpen} />
       <PrivacyPolicyModal toggle={togglePrivacy} option={privacyOpen} />
+      <GoogleLinkDialog
+        open={pendingGoogleToken !== null}
+        onSubmit={linkGoogle}
+        onCancel={() => setPendingGoogleToken(null)}
+      />
     </AuthLayout>
   );
 }

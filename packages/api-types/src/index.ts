@@ -11,7 +11,7 @@
 // checked directly, not guessed) since response *shapes* aren't
 // introspected yet (only request-side FormRequest rules are — see the
 // generator's own README for why):
-//   app/Enums/Shared/ErrorCode.php  — 18 cases
+//   app/Enums/Shared/ErrorCode.php  — 19 cases
 //   app/Enums/Shared/TokenType.php  — 10 cases
 
 /** The backend's success envelope. `data` is omitted entirely when null. */
@@ -29,7 +29,7 @@ export interface ApiErrorBody {
   errors?: Record<string, string[]>;
 }
 
-/** Mirrors App\Enums\Shared\ErrorCode (backend, 18 cases). */
+/** Mirrors App\Enums\Shared\ErrorCode (backend, 19 cases). */
 export type ErrorCode =
   | "validation-failed"
   | "credentials-not-valid"
@@ -39,6 +39,7 @@ export type ErrorCode =
   | "account-inactive"
   | "email-not-verified"
   | "social-auth-failed"
+  | "password-required"
   | "rate-limit-exceeded"
   | "same-old-password"
   | "generation-failed"

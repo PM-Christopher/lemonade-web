@@ -68,8 +68,8 @@ describe("POST /api/auth/google", () => {
     requestWithHeaders.mockRejectedValue(
       new ApiError({
         status: 409,
-        errorCode: "not-specified",
-        message: "Account exists with email/password. Sign in with password instead.",
+        errorCode: "password-required",
+        message: "Enter your account password to link Google",
         kind: "conflict",
       }),
     );
@@ -77,7 +77,27 @@ describe("POST /api/auth/google", () => {
     const res = await post({ token: "google-token" });
 
     expect(res.status).toBe(409);
-    expect((await res.json()).message).toMatch(/Sign in with password/);
+    expect((await res.json()).message).toMatch(/account password/);
+  });
+
+  it("forwards the password when linking an existing account", async () => {
+    requestWithHeaders.mockResolvedValue({
+      data: {
+        user: finishedUser,
+        token: "access",
+        refresh_token: "refresh",
+        expires_in: 3600,
+        token_type: "access",
+      },
+      headers: {},
+    });
+
+    await post({ token: "google-token", password: "secret" });
+
+    expect(requestWithHeaders.mock.calls[0]?.[0].data).toEqual({
+      token: "google-token",
+      password: "secret",
+    });
   });
 
   it("rejects a request without a Google token", async () => {
