@@ -3,7 +3,7 @@ import { disconnectAuthenticatedPusher, pusherCon, pusherConfig } from "@/config
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { appendIncomingChatMessage } from "@/features/connect/queries";
+import { appendIncomingChatMessage, connectKeys } from "@/features/connect/queries";
 import { notificationKeys } from "@/features/notifications";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { RootState } from "@/redux/store";
@@ -37,6 +37,8 @@ export const usePusher = (channelName: string | null, eventName: string) => {
       } else if (channelName === `notifications.${user?.id}`) {
         // One refetch per server ping, no polling.
         queryClient.invalidateQueries({ queryKey: notificationKeys.all() });
+        // Keeps the pending-requests count on the Connect page current.
+        queryClient.invalidateQueries({ queryKey: connectKeys.invites() });
       } else if (channelName === `request.${user?.id}` && eventName === "request.service") {
         dispatch(
           updateToastifyReducer({

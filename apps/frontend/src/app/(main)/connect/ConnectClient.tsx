@@ -9,7 +9,12 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { ChatInterface } from "@/interfaces/ChatInterface";
-import { useChatHistoryQuery, useChatQuery, useConnectionQuery } from "@/features/connect/queries";
+import {
+  useChatHistoryQuery,
+  useChatQuery,
+  useConnectionQuery,
+  useInvitesQuery,
+} from "@/features/connect/queries";
 import UserSearch from "@/components/connect/UserSearch";
 import type { FoundUser } from "@/features/connect/api";
 import OpenedChat from "@/components/connect/OpenedChat";
@@ -45,6 +50,8 @@ const ConnectClient = () => {
   const { data: connectionData } = useConnectionQuery({
     enabled: Boolean(user?.id),
   });
+  const { data: invitesData } = useInvitesQuery({ enabled: Boolean(user?.id) });
+  const pendingCount = invitesData?.invites.length ?? 0;
   const { data: openedChat } = useChatQuery(selectedReceiverId, {
     enabled: chatOpened,
   });
@@ -91,6 +98,14 @@ const ConnectClient = () => {
                 <p className="font-semi-normal text-black-light laptop:block text-body-l hidden font-sans">
                   Requests
                 </p>
+                {pendingCount > 0 && (
+                  <span
+                    className="text-meta flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 leading-none font-semibold text-white"
+                    aria-label={`${pendingCount} pending requests`}
+                  >
+                    {pendingCount > 99 ? "99+" : pendingCount}
+                  </span>
+                )}
               </div>
             </Link>
             <div
