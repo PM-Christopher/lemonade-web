@@ -4,8 +4,10 @@ import { usePathname } from "next/navigation";
 import { messaging, onMessage, getToken } from "@/lib/firebase";
 import type { MessagePayload } from "firebase/messaging";
 import { toast, Toaster } from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "@/redux/hook";
 import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutations";
+import { notificationKeys } from "@/features/notifications";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { isAuthPath } from "@/lib/auth-paths";
 
@@ -13,6 +15,9 @@ interface FcmContextProps {
   fcmToken: string | null;
   notification: MessagePayload["notification"] | null;
 }
+
+// How long a push toast stays on screen.
+const TOAST_DURATION_MS = 10_000;
 
 export const FcmContext = createContext<FcmContextProps>({
   fcmToken: null,
@@ -53,6 +58,8 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [notification, setNotification] = useState<MessagePayload["notification"] | null>(null);
   const [showToaster, setShowToaster] = useState(false);
+  const queryClient = useQueryClient();
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const authReady = useAuthReady();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
@@ -103,6 +110,8 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onMessage(activeMessaging, (payload: MessagePayload) => {
       setNotification(payload?.notification);
       setShowToaster(true);
+      // Pull the new notification into the bell badge and list.
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all() });
 
       toast.custom(
         (t) => (
@@ -127,19 +136,21 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
           </div>
         ),
         {
-          duration: 4000,
+          duration: TOAST_DURATION_MS,
         },
       );
-      // Hide toaster after 4 seconds.
-      setTimeout(() => {
-        setShowToaster(false);
-      }, 2000);
+      // Keep the toaster mounted until the toast has finished leaving.
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(() => setShowToaster(false), TOAST_DURATION_MS + 1000);
     });
 
     register();
-    // Remove the listener on unmount.
-    return () => unsubscribe();
-  }, []);
+    // Remove the listener and pending timer on unmount.
+    return () => {
+      unsubscribe();
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
+  }, [queryClient]);
 
   return (
     <FcmContext.Provider value={{ fcmToken, notification }}>
