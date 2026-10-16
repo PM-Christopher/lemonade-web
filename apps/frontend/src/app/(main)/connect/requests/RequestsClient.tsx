@@ -54,8 +54,10 @@ const RequestsClient = () => {
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      if (e.currentTarget.value !== "") {
-        findUserMutation.mutate(e.currentTarget.value, {
+      // Keep the input; currentTarget is null once the request finishes.
+      const input = e.currentTarget;
+      if (input.value !== "") {
+        findUserMutation.mutate(input.value, {
           onSuccess: () => {
             dispatch(
               updateToastifyReducer({
@@ -64,7 +66,7 @@ const RequestsClient = () => {
                 type: "success",
               }),
             );
-            e.currentTarget.value = "";
+            input.value = "";
             toggleConnectModal();
           },
           onError: (err: { message?: string }) => {
