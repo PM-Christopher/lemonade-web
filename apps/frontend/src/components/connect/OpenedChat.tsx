@@ -198,8 +198,10 @@ const OpenedChat: React.FC<OpenChatProps> = ({
         <div className="hide-scrollbar flex w-full flex-col gap-3 overflow-y-auto">
           {messages.map((message: MessageInterface, index: number) => (
             <div
-              className={`ml-auto max-w-75.75 rounded-xl p-2 text-right ${
-                message?.sender ? "bg-light-green-10" : "bg-grey-20"
+              className={`max-w-75.75 rounded-xl p-2 ${
+                message?.sender
+                  ? "bg-light-green-10 ml-auto text-right"
+                  : "bg-grey-20 mr-auto text-left"
               }`}
               key={index}
             >
@@ -215,7 +217,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                   />
                 </>
               )}
-              <p className="text-text-grey text-meta text-right leading-normal">
+              <p className="text-text-grey text-meta leading-normal">
                 {formatSingleTime(message?.created_at)}
               </p>
             </div>
