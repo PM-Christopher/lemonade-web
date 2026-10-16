@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { appendIncomingChatMessage, connectKeys } from "@/features/connect/queries";
 import { notificationKeys } from "@/features/notifications";
+import { showPushToast } from "@/lib/pushToast";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { RootState } from "@/redux/store";
 import type { OutgoingChatMessage } from "@/features/connect/api";
@@ -34,6 +35,15 @@ export const usePusher = (channelName: string | null, eventName: string) => {
 
       if (channelName === `chat.${user?.id}` && user?.id && receivedData.message) {
         appendIncomingChatMessage(queryClient, user.id, receivedData.message);
+        // Alert only for messages from the other person.
+        if (receivedData.message.sender !== user.id) {
+          showPushToast({
+            id: receivedData.message.id,
+            title: "New message",
+            body: receivedData.message.message,
+            type: "new_message",
+          });
+        }
       } else if (channelName === `notifications.${user?.id}`) {
         // One refetch per server ping, no polling.
         queryClient.invalidateQueries({ queryKey: notificationKeys.all() });

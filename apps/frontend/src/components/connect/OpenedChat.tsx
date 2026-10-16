@@ -22,6 +22,9 @@ import { Loader2 } from "lucide-react";
 import type { RootState } from "@/redux/store";
 import { errorMessage } from "@/lib/api-error";
 
+// Tallest the message box grows before it scrolls.
+const MAX_INPUT_HEIGHT = 160;
+
 type OpenChatProps = {
   toggleModal: () => void;
   messages: MessageInterface[];
@@ -48,7 +51,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const mobileTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const desktopTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Scroll to bottom when messages are updated
@@ -58,13 +62,15 @@ const OpenedChat: React.FC<OpenChatProps> = ({
     }
   }, [messages]);
 
-  // Auto-resize textarea based on content
+  // Grow the input with its content, up to a cap, then scroll inside it.
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
-    }
-  }, [text]);
+    [mobileTextareaRef.current, desktopTextareaRef.current].forEach((el) => {
+      if (!el) return;
+      el.style.height = "auto";
+      el.style.height = `${Math.min(el.scrollHeight, MAX_INPUT_HEIGHT)}px`;
+      el.style.overflowY = el.scrollHeight > MAX_INPUT_HEIGHT ? "auto" : "hidden";
+    });
+  }, [text, isMobile]);
 
   const sendMessage = () => {
     if (!text.trim() && mediaFiles.length < 1) return; // Don't send empty messages
@@ -234,8 +240,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               <div className={"flex items-center"}>
                 <div className="w-full">
                   <textarea
-                    ref={textareaRef}
-                    className="bg-light_grey text-black-light text-body-s mt-1 max-h-30 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
+                    ref={mobileTextareaRef}
+                    className="bg-light_grey text-black-light text-body-s mt-1 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Reply..."
                     onChange={(e) => setText(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -308,8 +314,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({
             <div className={"flex items-center"}>
               <div className="w-full">
                 <textarea
-                  ref={textareaRef}
-                  className="bg-light_grey text-black-light text-body-s mt-1 max-h-30 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
+                  ref={desktopTextareaRef}
+                  className="bg-light_grey text-black-light text-body-s mt-1 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Reply..."
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -317,16 +323,15 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                   rows={1}
                 />
               </div>
-              {text.trim() ||
-                (mediaFiles.length > 0 && (
-                  <div className="flex-shrink-0">
-                    {mediaLoading ? (
-                      <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
-                    ) : (
-                      <SendIcon className="h-4.75 w-5 cursor-pointer" onClick={sendMessage} />
-                    )}
-                  </div>
-                ))}
+              {(text.trim() || mediaFiles.length > 0) && (
+                <div className="flex-shrink-0">
+                  {mediaLoading ? (
+                    <Loader2 className="text-light-green-90 h-5 w-5 animate-spin" />
+                  ) : (
+                    <SendIcon className="h-4.75 w-5 cursor-pointer" onClick={sendMessage} />
+                  )}
+                </div>
+              )}
             </div>
             {mediaFiles?.length > 0 && (
               <div className={"flex flex-wrap gap-4"}>
