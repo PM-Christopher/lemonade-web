@@ -45,8 +45,14 @@ export interface MarkReadResponse {
   read_at: string | null;
 }
 
+export interface MarkAllReadResponse {
+  unread: number;
+}
+
 export const notificationsApi = {
   list: () => browserApi.get<NotificationsResponse>(userNotificationRoutes.LIST),
+
+  markAllAsRead: () => browserApi.patch<MarkAllReadResponse>(userNotificationRoutes.READ_ALL),
 
   markAsRead: (id: string) =>
     browserApi.patch<MarkReadResponse>(buildPath(userNotificationRoutes.READ, { id })),

@@ -25,3 +25,26 @@ export function useMarkNotificationReadMutation() {
     },
   });
 }
+
+export function useMarkAllNotificationsReadMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => notificationsApi.markAllAsRead(),
+    onSuccess: () => {
+      const readAt = new Date().toISOString();
+      queryClient.setQueryData<NotificationsResponse>(notificationKeys.list(), (old) =>
+        old
+          ? {
+              ...old,
+              notifications: old.notifications.map((notification) => ({
+                ...notification,
+                read_at: notification.read_at ?? readAt,
+              })),
+            }
+          : old,
+      );
+      queryClient.invalidateQueries({ queryKey: notificationKeys.list() });
+    },
+  });
+}

@@ -13,12 +13,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemon
 import {
   useNotificationsQuery,
   useMarkNotificationReadMutation,
+  useMarkAllNotificationsReadMutation,
   countUnread,
   formatBadgeCount,
   type AppNotification,
 } from "@/features/notifications";
 import dayjs from "dayjs";
-import { FaBell } from "react-icons/fa";
+import { NotificationIcon } from "./NotificationIcon";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
@@ -34,12 +35,14 @@ const TopNav = () => {
 
   const { data } = useNotificationsQuery();
   const markRead = useMarkNotificationReadMutation();
+  const markAllRead = useMarkAllNotificationsReadMutation();
   const unreadCount = countUnread(data?.notifications);
   const { setSelectedMenu } = usePersistentMenuState();
 
   const handleViewMore = (notification: AppNotification) => {
     setSelectedNotification(notification);
     setOpenDetailModal(true);
+    if (!notification.read_at) markRead.mutate(notification.id);
   };
 
   return (
@@ -128,76 +131,80 @@ const TopNav = () => {
       <Dialog open={openNotifications} onOpenChange={setOpenNotifications}>
         <DialogContent
           overlayClassName="bg-transparent"
-          className={`scrollbar-hide max-h-[80vh] overflow-y-auto ${isMobile ? "" : "sm:top-8 sm:right-8 sm:translate-x-0 sm:translate-y-0"}`}
+          className={`flex max-h-[80vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-sm ${isMobile ? "" : "sm:top-8 sm:right-8 sm:translate-x-0 sm:translate-y-0"}`}
         >
-          <DialogHeader>
-            <DialogTitle className="text-lg font-semibold tracking-wide text-gray-600 uppercase">
+          <DialogHeader className="flex-row items-center justify-between gap-2 border-b border-gray-100 py-3 pr-12 pl-4">
+            <DialogTitle className="text-meta leading-normal font-semibold tracking-wide text-gray-600 uppercase">
               Notifications
             </DialogTitle>
-          </DialogHeader>
-          {(data?.notifications?.length ?? 0) > 0 ? (
-            data!.notifications.map((notification: AppNotification, index: number) => (
-              <div
-                key={index}
-                className={`${index !== 0 && "mt-4"} ${
-                  index !== data!.notifications.length - 1 && "border-b border-gray-200 pb-4"
-                } flex flex-col gap-3`}
+            {unreadCount > 0 && (
+              <Button
+                variant="link"
+                className="text-meta h-auto p-0 leading-normal font-medium text-green-600 hover:text-green-700"
+                loading={markAllRead.isPending}
+                onClick={() => markAllRead.mutate()}
               >
-                <div className="flex items-start gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-gray-500">
-                    <FaBell size={18} />
-                  </div>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <p
-                        className={`text-base text-gray-800 ${notification.read_at ? "font-medium" : "font-bold"}`}
-                      >
-                        {!notification.read_at && (
-                          <span
-                            className="mr-2 inline-block size-2 rounded-full bg-green-500"
-                            aria-label="Unread"
-                          />
-                        )}
-                        {notification?.title ?? ""}
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        {dayjs(notification?.meta?.created_at || notification?.created_at).format(
-                          "DD MMM",
-                        )}
-                      </p>
-                    </div>
-                    <p className="text-sm leading-relaxed text-gray-600">
-                      {notification?.body ?? ""}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end gap-4">
-                  {!notification.read_at && (
-                    <Button
-                      variant="link"
-                      className="h-auto p-0 text-sm font-medium text-gray-500 hover:text-gray-700"
-                      loading={markRead.isPending && markRead.variables === notification.id}
-                      onClick={() => markRead.mutate(notification.id)}
+                Mark all as read
+              </Button>
+            )}
+          </DialogHeader>
+          <div className="scrollbar-hide flex-1 overflow-y-auto">
+            {(data?.notifications?.length ?? 0) > 0 ? (
+              data!.notifications.map((notification: AppNotification) => {
+                const isRead = Boolean(notification.read_at);
+                return (
+                  <div key={notification.id} className="border-b border-gray-100 last:border-b-0">
+                    <button
+                      type="button"
+                      className="flex w-full items-start gap-3 px-4 py-3 text-left hover:bg-gray-50"
+                      onClick={() => handleViewMore(notification)}
                     >
-                      Mark as read
-                    </Button>
-                  )}
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 text-sm font-medium text-green-600 hover:text-green-700"
-                    onClick={() => handleViewMore(notification)}
-                  >
-                    View More
-                  </Button>
-                </div>
+                      <span
+                        className={`flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-100 ${isRead ? "text-gray-400" : "text-gray-700"}`}
+                      >
+                        <NotificationIcon type={notification.type} />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-start justify-between gap-2">
+                          <span
+                            className={`text-body-s font-semibold ${isRead ? "text-gray-400" : "text-gray-900"}`}
+                          >
+                            {notification.title ?? ""}
+                          </span>
+                          <span className="text-meta shrink-0 leading-normal text-gray-400">
+                            {dayjs(notification.meta?.created_at || notification.created_at).format(
+                              "DD MMM",
+                            )}
+                          </span>
+                        </span>
+                        <span
+                          className={`text-body-s block ${isRead ? "text-gray-400" : "text-gray-600"}`}
+                        >
+                          {notification.body ?? ""}
+                        </span>
+                      </span>
+                    </button>
+                    {!isRead && (
+                      <div className="flex justify-end px-4 pb-2">
+                        <Button
+                          variant="link"
+                          className="text-meta h-auto p-0 leading-normal font-medium text-gray-500 hover:text-gray-700"
+                          loading={markRead.isPending && markRead.variables === notification.id}
+                          onClick={() => markRead.mutate(notification.id)}
+                        >
+                          Mark as read
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 text-gray-500">
+                <p>No new notifications</p>
               </div>
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center py-10 text-gray-500">
-              <p>No new notifications</p>
-            </div>
-          )}
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -269,7 +276,6 @@ const TopNav = () => {
                       onClick={() => {
                         setOpenDetailModal(false);
                         setOpenNotifications(false);
-                        if (!selectedNotification.read_at) markRead.mutate(selectedNotification.id);
                       }}
                     >
                       View request

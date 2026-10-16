@@ -2176,6 +2176,14 @@
     "fields": null
   },
   {
+    "method": "PATCH",
+    "uri": "/v1/user/notification/read-all",
+    "name": "v1.user.notification.read-all",
+    "guard": "user",
+    "formRequest": null,
+    "fields": null
+  },
+  {
     "method": "GET",
     "uri": "/v1/user/notification/{id}",
     "name": "v1.user.notification.show",

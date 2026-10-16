@@ -322,6 +322,7 @@ export const userMessagesRoutes = Object.freeze({
 export const userNotificationRoutes = Object.freeze({
   LIST: "/user/notification", // GET
   READ: "/user/notification/{id}/read", // PATCH
+  READ_ALL: "/user/notification/read-all", // PATCH
   SHOW: "/user/notification/{id}", // GET
 });
 
