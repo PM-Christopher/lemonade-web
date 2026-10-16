@@ -1,7 +1,7 @@
 "use client";
 import { images } from "@/lib/images";
 import { FallbackImage } from "@/components/global/FallbackImage";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import UploadCamIcon from "@/images/icons/UploadCameraIcon.svg";
 import FacebookIcon from "@/images/icons/facebook-color.svg";
 import InstagramIcon from "@/images/icons/instagram-color.svg";
@@ -18,6 +18,8 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { isImageFile } from "@/lib/files";
 import { apiMessage } from "@/lib/api-message";
 import { useChangeProfileImageMutation } from "@/features/authentication/mutations";
+import { useCurrentUserQuery } from "@/features/authentication/queries";
+import { updateUser } from "@/features/authentication/authSlice";
 import { setIsRouting } from "@/redux/tempSlice";
 import type { RootState } from "@/redux/store";
 import { errorMessage } from "@/lib/api-error";
@@ -34,6 +36,12 @@ const ProfileSettingsClient = () => {
   const dispatch = useAppDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const changeProfileImageMutation = useChangeProfileImageMutation();
+  const { data: currentUser } = useCurrentUserQuery();
+
+  // Login only returns a partial user, so load the full profile into Redux.
+  useEffect(() => {
+    if (currentUser) dispatch(updateUser(currentUser));
+  }, [currentUser, dispatch]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toggleModal = () => {
     setIsOpen(!isOpen);
