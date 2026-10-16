@@ -3,20 +3,17 @@ import { useContext, createContext, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { messaging, onMessage, getToken } from "@/lib/firebase";
 import type { MessagePayload } from "firebase/messaging";
-import { toast, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useAppSelector } from "@/redux/hook";
 import { useRegisterDeviceTokenMutation } from "@/features/authentication/mutations";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { isAuthPath } from "@/lib/auth-paths";
-import { PushToast } from "@/components/global/PushToast";
+import { showPushToast } from "@/lib/pushToast";
 
 interface FcmContextProps {
   fcmToken: string | null;
   notification: MessagePayload["notification"] | null;
 }
-
-// How long a push toast stays on screen.
-const TOAST_DURATION_MS = 10_000;
 
 export const FcmContext = createContext<FcmContextProps>({
   fcmToken: null,
@@ -56,8 +53,6 @@ export const onForegroundMessage = () =>
 export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [notification, setNotification] = useState<MessagePayload["notification"] | null>(null);
-  const [showToaster, setShowToaster] = useState(false);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const authReady = useAuthReady();
   const { isLoggedIn, user } = useAppSelector((state) => state.auth);
@@ -107,38 +102,31 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
 
     const unsubscribe = onMessage(activeMessaging, (payload: MessagePayload) => {
       setNotification(payload?.notification);
-      setShowToaster(true);
 
-      toast.custom(
-        (t) => (
-          <PushToast
-            title={payload?.notification?.title}
-            body={payload?.notification?.body}
-            type={payload?.data?.type}
-            durationMs={TOAST_DURATION_MS}
-            isVisible={t.visible}
-            onClose={() => toast.dismiss(t.id)}
-          />
-        ),
-        { duration: TOAST_DURATION_MS },
-      );
-      // Keep the toaster mounted until the toast has finished leaving.
-      if (hideTimer.current) clearTimeout(hideTimer.current);
-      hideTimer.current = setTimeout(() => setShowToaster(false), TOAST_DURATION_MS + 1000);
+      // Chat pushes carry the message id, so the realtime toast for it is replaced, not doubled.
+      let messageId: string | undefined;
+      try {
+        messageId = JSON.parse(payload?.data?.chat_message ?? "null")?.id;
+      } catch {
+        messageId = undefined;
+      }
+
+      showPushToast({
+        id: messageId,
+        title: payload?.notification?.title,
+        body: payload?.notification?.body,
+        type: payload?.data?.type,
+      });
     });
 
     register();
-    // Remove the listener and pending timer on unmount.
-    return () => {
-      unsubscribe();
-      if (hideTimer.current) clearTimeout(hideTimer.current);
-    };
+    return () => unsubscribe();
   }, []);
 
   return (
     <FcmContext.Provider value={{ fcmToken, notification }}>
       {children}
-      {showToaster && <Toaster position="top-right" reverseOrder={true} />}
+      <Toaster position="top-right" reverseOrder={true} />
     </FcmContext.Provider>
   );
 };
