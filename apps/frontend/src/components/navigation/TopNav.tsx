@@ -202,10 +202,7 @@ const TopNav = () => {
       </Dialog>
 
       <Dialog open={openDetailModal} onOpenChange={setOpenDetailModal}>
-        <DialogContent
-          overlayClassName="bg-transparent"
-          className="scrollbar-hide max-h-[70vh] overflow-y-auto"
-        >
+        <DialogContent className="scrollbar-hide max-h-[70vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">
               {selectedNotification?.title ?? "Notification Detail"}
@@ -254,7 +251,8 @@ const TopNav = () => {
                   <p className="font-semibold">Connect Request Details</p>
                   <p>
                     <span className="font-medium">Message:</span>{" "}
-                    {selectedNotification.meta?.message}
+                    {selectedNotification.meta?.message ??
+                      selectedNotification.meta?.invite_message}
                   </p>
                   <p>
                     <span className="font-medium">From:</span>{" "}

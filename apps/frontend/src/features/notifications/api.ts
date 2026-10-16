@@ -14,6 +14,7 @@ export interface NotificationMeta {
   date_scheduled?: string;
   status?: string;
   message?: string;
+  invite_message?: string;
   user_id?: string;
   from_username?: string;
   created_at?: string;
