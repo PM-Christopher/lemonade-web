@@ -20,6 +20,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { connectApi } from "@/features/connect/api";
 import { Loader2 } from "lucide-react";
 import type { RootState } from "@/redux/store";
+import { ImageLightbox } from "@/components/connect/ImageLightbox";
 import { errorMessage } from "@/lib/api-error";
 
 // Tallest the message box grows before it scrolls.
@@ -48,6 +49,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const { user: authUser } = useSelector((state: RootState) => state.auth);
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver;
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -143,13 +145,6 @@ const OpenedChat: React.FC<OpenChatProps> = ({
           const result = await connectApi.uploadMultiple(formData);
           setMediaLoading(false);
           setMediaFiles((prev) => [...prev, ...result.images]);
-          dispatch(
-            updateToastifyReducer({
-              show: true,
-              message: "Images uploaded",
-              type: "success",
-            }),
-          );
         } catch (err) {
           setMediaLoading(false);
           dispatch(
@@ -213,15 +208,25 @@ const OpenedChat: React.FC<OpenChatProps> = ({
             >
               <p className="text-body-s font-normal whitespace-pre-wrap">{message?.message}</p>
               {message?.media && message?.media.length > 0 && (
-                <>
-                  <Image
-                    src={message?.media[0]}
-                    alt={"media-file"}
-                    className={"h-36 w-36"}
-                    width={144}
-                    height={144}
-                  />
-                </>
+                <div className="mt-1 flex flex-wrap justify-end gap-1">
+                  {message.media.map((mediaUrl) => (
+                    <button
+                      key={mediaUrl}
+                      type="button"
+                      onClick={() => setPreviewImage(mediaUrl)}
+                      aria-label="View image"
+                      className="cursor-zoom-in"
+                    >
+                      <Image
+                        src={mediaUrl}
+                        alt="media-file"
+                        className="h-36 w-36 rounded-lg object-cover"
+                        width={144}
+                        height={144}
+                      />
+                    </button>
+                  ))}
+                </div>
               )}
               <p className="text-text-grey text-meta leading-normal">
                 {formatSingleTime(message?.created_at)}
@@ -383,6 +388,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
+      <ImageLightbox src={previewImage} onClose={() => setPreviewImage(null)} />
     </div>
   );
 };
