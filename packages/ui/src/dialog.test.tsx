@@ -60,6 +60,22 @@ describe("Dialog", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it.each([
+    ["DialogContent", DialogContent],
+    ["DialogContentBare", DialogContentBare],
+  ])("%s keeps the dark backdrop by default", (_name, Content) => {
+    render(
+      <Dialog open>
+        <Content>
+          <DialogTitle>Title</DialogTitle>
+          <DialogDescription>Body</DialogDescription>
+        </Content>
+      </Dialog>,
+    );
+
+    expect(document.querySelector('[data-state="open"].fixed.inset-0')).toHaveClass("bg-black/80");
+  });
+
   it("lets the caller restyle the backdrop", () => {
     render(
       <Dialog open>
