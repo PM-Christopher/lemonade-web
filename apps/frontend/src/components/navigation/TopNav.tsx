@@ -263,6 +263,18 @@ const TopNav = () => {
                     <span className="font-medium">Requested At:</span>{" "}
                     {dayjs(selectedNotification.meta?.created_at).format("DD MMM YYYY, hh:mm A")}
                   </p>
+                  <Button asChild className="bg-gradient-green mt-2 w-full">
+                    <Link
+                      href={routes.CONNECT_REQUESTS}
+                      onClick={() => {
+                        setOpenDetailModal(false);
+                        setOpenNotifications(false);
+                        if (!selectedNotification.read_at) markRead.mutate(selectedNotification.id);
+                      }}
+                    >
+                      View request
+                    </Link>
+                  </Button>
                 </div>
               )}
 
