@@ -37,8 +37,9 @@ export const usePusher = (channelName: string | null, eventName: string) => {
       } else if (channelName === `notifications.${user?.id}`) {
         // One refetch per server ping, no polling.
         queryClient.invalidateQueries({ queryKey: notificationKeys.all() });
-        // Keeps the pending-requests count on the Connect page current.
+        // Keeps the requests count and chat list on the Connect page current.
         queryClient.invalidateQueries({ queryKey: connectKeys.invites() });
+        queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
       } else if (channelName === `request.${user?.id}` && eventName === "request.service") {
         dispatch(
           updateToastifyReducer({

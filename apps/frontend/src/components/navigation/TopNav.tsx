@@ -278,6 +278,37 @@ const TopNav = () => {
                 </div>
               )}
 
+              {selectedNotification?.type === "connect_response" && (
+                <div className="space-y-2 rounded-md border p-3">
+                  <p className="font-semibold">Connect Request Details</p>
+                  <p>
+                    <span className="font-medium">User:</span>{" "}
+                    {selectedNotification.meta?.from_username}
+                  </p>
+                  <p>
+                    <span className="font-medium">Status:</span>{" "}
+                    {selectedNotification.meta?.status === "accepted" ? "Accepted" : "Rejected"}
+                  </p>
+                  <p>
+                    <span className="font-medium">Responded At:</span>{" "}
+                    {dayjs(selectedNotification.meta?.created_at).format("DD MMM YYYY, hh:mm A")}
+                  </p>
+                  {selectedNotification.meta?.status === "accepted" && (
+                    <Button asChild className="bg-gradient-green mt-2 w-full">
+                      <Link
+                        href={routes.CONNECT}
+                        onClick={() => {
+                          setOpenDetailModal(false);
+                          setOpenNotifications(false);
+                        }}
+                      >
+                        Open chat
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              )}
+
               {selectedNotification?.type === "event" && (
                 <div className="space-y-2 rounded-md border p-3">
                   <p className="font-semibold">Event Details</p>
