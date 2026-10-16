@@ -228,7 +228,9 @@ const TopNav = () => {
                     {selectedNotification.meta?.message}
                   </p>
                   <p>
-                    <span className="font-medium">From:</span> {selectedNotification.meta?.user_id}
+                    <span className="font-medium">From:</span>{" "}
+                    {selectedNotification.meta?.from_username ??
+                      selectedNotification.body?.split(" wants")[0]}
                   </p>
                   <p>
                     <span className="font-medium">Requested At:</span>{" "}
