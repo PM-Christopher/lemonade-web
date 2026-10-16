@@ -19,7 +19,7 @@ const ChatListCard: React.FC<ChatListInterface> = ({ active, chat, toggleChat, u
   return (
     // <div className={`p-4 flex items-center gap-2 ${active && "bg-light-green-10"} cursor-pointer`}>
     <div
-      className={`flex items-center gap-3 rounded-xl p-4 transition-all duration-150 ${
+      className={`flex items-center gap-3 p-4 transition-all duration-150 ${
         active ? "bg-light-green-10" : "hover:bg-gray-50"
       } cursor-pointer`}
       onClick={() => toggleChat(receiver_id, chat.id)}
