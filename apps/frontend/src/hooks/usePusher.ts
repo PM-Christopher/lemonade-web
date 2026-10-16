@@ -8,7 +8,7 @@ import { notificationKeys } from "@/features/notifications";
 import { showPushToast } from "@/lib/pushToast";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { RootState } from "@/redux/store";
-import type { OutgoingChatMessage } from "@/features/connect/api";
+import type { ChatHistoryResponse, OutgoingChatMessage } from "@/features/connect/api";
 
 export const usePusher = (channelName: string | null, eventName: string) => {
   const [data, setData] = useState<unknown>(null);
@@ -37,9 +37,15 @@ export const usePusher = (channelName: string | null, eventName: string) => {
         appendIncomingChatMessage(queryClient, user.id, receivedData.message);
         // Alert only for messages from the other person.
         if (receivedData.message.sender !== user.id) {
+          const senderId = receivedData.message.sender;
+          const chats = queryClient.getQueryData<ChatHistoryResponse>(connectKeys.chats())?.chats;
+          const sender = chats
+            ?.flatMap((chat) => [chat.sender, chat.receiver])
+            .find((person) => person.id === senderId);
+
           showPushToast({
             id: receivedData.message.id,
-            title: "New message",
+            title: sender?.username ? `New message from ${sender.username}` : "New message",
             body: receivedData.message.message,
             type: "new_message",
           });
