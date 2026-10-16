@@ -32,6 +32,8 @@ export function useInviteResponseMutation() {
       connectApi.inviteResponse(id, option),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: connectKeys.invites() });
+      // An accepted invite adds a chat to the list.
+      queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
     },
   });
 }
