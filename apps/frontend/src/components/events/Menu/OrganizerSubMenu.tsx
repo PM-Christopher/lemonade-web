@@ -22,7 +22,7 @@ const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({ toggle }) => {
         <p className="font-semi-normal text-black-light text-body-l font-sans">Payment setting</p>
       </div>
       <Button
-        className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-10 w-39 rounded-xl border"
+        className="border-step-color bg-gradient-green h-10 w-39 rounded-xl border"
         onClick={() => push(routes.EVENT_CREATE)}
       >
         <div className="flex items-center gap-2">

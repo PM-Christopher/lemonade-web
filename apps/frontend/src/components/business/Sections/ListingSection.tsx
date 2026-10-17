@@ -44,7 +44,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
               Get started by adding your business, and get discovered by potential clients.
             </p>
             <Button
-              className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
+              className="bg-gradient-green h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
               onClick={() => push(routes.BUSINESS_ADD)}
             >
               <span className="font-semi-normal text-base">Add business</span>
@@ -57,7 +57,7 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
           <div className={"flex items-center justify-between"}>
             <h2 className="mb-4 font-sans text-lg font-semibold sm:text-xl">All Listings</h2>
             <Button
-              className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
+              className="bg-gradient-green h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
               onClick={() => push(routes.BUSINESS_ADD)}
             >
               <span className="font-semi-normal text-base">Add business</span>

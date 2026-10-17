@@ -144,7 +144,7 @@ const BankAccountModal: React.FC<BankAccountInterface> = ({ toggle, option }) =>
                   title="Submit"
                   isValid={isValid}
                   loading={isSubmitting}
-                  classes="w-full h-12 rounded-xl px-3.5 p-2.5 rounded-xl border-step-color shadow-green-inset hover:shadow-green-inset-strong"
+                  classes="w-full h-12 rounded-xl px-3.5 p-2.5 rounded-xl border-step-color"
                 />
               </div>
             </div>

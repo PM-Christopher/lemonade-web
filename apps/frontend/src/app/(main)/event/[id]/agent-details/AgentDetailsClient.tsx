@@ -84,7 +84,7 @@ function GenerateLinkCTA({
       <div
         className={[
           "border-step-color bg-gradient-green h-12 w-full rounded-xl border",
-          "shadow-green-inset flex items-center justify-center",
+          "flex items-center justify-center",
           className,
         ].join(" ")}
       >
@@ -97,7 +97,6 @@ function GenerateLinkCTA({
     <Button
       className={[
         "border-step-color bg-gradient-green h-12 w-full rounded-xl border",
-        "shadow-green-inset hover:shadow-green-inset-strong",
         "disabled:cursor-not-allowed disabled:opacity-60",
         className,
       ].join(" ")}

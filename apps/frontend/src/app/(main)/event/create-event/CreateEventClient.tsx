@@ -736,7 +736,7 @@ const CreateEventClient = () => {
                   error={isValid}
                   onClick={() => handleSubmit(onSubmit)()}
                   title="Continue"
-                  classes="mt-6 h-12 rounded-xl border border-step-color shadow-custom-bottom"
+                  classes="mt-6 h-12 rounded-xl border border-step-color"
                 />
               </div>
             </div>

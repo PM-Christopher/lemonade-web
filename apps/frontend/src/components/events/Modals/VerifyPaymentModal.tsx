@@ -97,7 +97,7 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               <p className="font-semi-normal text-black-light text-body-l font-sans">More events</p>
             </button>
             <button
-              className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
+              className="auth-button border-step-color rounded-xl p-2.5 px-3.5"
               onClick={toggleMore}
             >
               <p className="font-semi-normal text-body-l font-sans text-white">My tickets</p>

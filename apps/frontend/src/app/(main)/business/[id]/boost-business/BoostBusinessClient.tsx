@@ -326,7 +326,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                       title="Pay now"
                       isValid={isValid}
                       loading={isSubmitting}
-                      classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color shadow-green-inset hover:shadow-green-inset-strong"
+                      classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color"
                     />
                   </div>
                 </div>
@@ -342,7 +342,7 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                     title="Pay now"
                     isValid={isValid}
                     loading={isSubmitting}
-                    classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color shadow-custom-bottom"
+                    classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color"
                   />
                 </div>
               </div>

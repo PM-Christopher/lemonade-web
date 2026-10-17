@@ -43,7 +43,7 @@ const DisputeJobModal: React.FC<DisputeJobModalProps> = ({ isOpen, toggle, toggl
             </div>
             <div className="mt-4 flex w-full justify-center gap-3">
               <Button
-                className="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl p-3.5 px-12"
+                className="bg-gradient-green h-12 w-full rounded-xl p-3.5 px-12"
                 onClick={toggleModal}
               >
                 I understand

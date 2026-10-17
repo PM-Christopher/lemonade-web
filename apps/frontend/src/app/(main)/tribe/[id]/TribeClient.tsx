@@ -383,7 +383,7 @@ const TribeClient = ({ id }: { id: string }) => {
       </div>
       {isMobile && (
         <div
-          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-37.5 flex h-15 w-15 cursor-pointer items-center justify-center rounded-full p-4 text-white"
+          className="bg-gradient-green fixed right-4 bottom-37.5 flex h-15 w-15 cursor-pointer items-center justify-center rounded-full p-4 text-white"
           onClick={activateCreateThreadModal}
         >
           <EditIcon className="h-4.75 w-4.75" />

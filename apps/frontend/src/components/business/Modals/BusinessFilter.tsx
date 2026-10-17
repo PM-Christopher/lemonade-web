@@ -237,7 +237,7 @@ const BusinessFilter = ({ toggle, isOpen }: FilterBusinessInterface) => {
                 title="Apply filter"
                 isValid={isValid}
                 loading={isSubmitting}
-                classes="auth-button px-3.5 p-2.5 rounded-xl border-step-color shadow-custom-bottom"
+                classes="auth-button px-3.5 p-2.5 rounded-xl border-step-color"
               />
             </div>
           </div>

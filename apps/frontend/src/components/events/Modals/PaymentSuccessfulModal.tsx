@@ -81,7 +81,7 @@ const PaymentSuccessfulModal: React.FC<PSInterface> = ({ toggle, isOpen, promoti
           </div>
           <div className="mt-10">
             <button
-              className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
+              className="auth-button border-step-color rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
               <p className="font-semi-normal text-body-l font-sans text-white">Go to event</p>

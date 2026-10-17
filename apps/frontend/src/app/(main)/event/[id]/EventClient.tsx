@@ -142,7 +142,7 @@ const EventClient = ({ id }: { id: number }) => {
                   {/* CTA */}
                   <div className="laptop:flex hidden pt-6">
                     <Link href={buyTicketHref} passHref>
-                      <Button className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-14 w-57.75 items-center justify-center rounded-xl border-b-2 border-transparent transition-all duration-300 hover:opacity-90">
+                      <Button className="bg-gradient-green flex h-14 w-57.75 items-center justify-center rounded-xl border-b-2 border-transparent transition-all duration-300 hover:opacity-90">
                         <span className="text-field font-sans font-medium text-white">
                           Buy ticket from ₦{formatNumberWithCommas(event?.minimum_price)}
                         </span>
@@ -189,7 +189,7 @@ const EventClient = ({ id }: { id: number }) => {
 
                 <div className="mt-10">
                   <Link href={buyTicketHref}>
-                    <Button className="shadow-custom-bottomtransition-all bg-gradient-green h-14 w-57.75 gap-2 rounded-xl border-b-2 border-transparent px-6 py-3.5 duration-300 hover:opacity-90">
+                    <Button className="bg-gradient-green h-14 w-57.75 gap-2 rounded-xl border-b-2 border-transparent px-6 py-3.5 transition-all duration-300 hover:opacity-90">
                       <p className="text-field font-sans font-medium text-white">
                         Buy ticket from ₦
                         {event?.minimum_price == null

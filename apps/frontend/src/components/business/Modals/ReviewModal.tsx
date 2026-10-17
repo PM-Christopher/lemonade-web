@@ -28,7 +28,7 @@ const ReviewModal: React.FC<ReviewInterface> = ({ isOpen, toggleMenu }) => {
               <p className="tracking-custom text-body-xl font-sans font-semibold">Write a review</p>
             </div>
             <div>
-              <Button className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5">
+              <Button className="auth-button border-step-color rounded-xl p-2.5 px-3.5">
                 <p className="font-semi-normal text-meta font-sans leading-normal">
                   Submit a review
                 </p>

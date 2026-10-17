@@ -93,7 +93,7 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
       </section>
       {isMobile && (
         <div
-          className="bg-gradient-green shadow-custom-bottom fixed right-4 bottom-62.5 flex h-15 w-15 cursor-pointer items-center justify-center rounded-full p-4 text-white"
+          className="bg-gradient-green fixed right-4 bottom-62.5 flex h-15 w-15 cursor-pointer items-center justify-center rounded-full p-4 text-white"
           onClick={() => push(routes.EVENT_CREATE)}
         >
           <PlusIcon className="h-4.75 w-4.75" />

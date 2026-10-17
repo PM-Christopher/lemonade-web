@@ -115,7 +115,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
           <div className="my-2 flex justify-center">
             {tribe?.has_joined || tribe?.owner ? (
               <Button
-                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-15 rounded-full border p-3.5 px-6"
+                className="border-step-color bg-gradient-green h-15 rounded-full border p-3.5 px-6"
                 onClick={toggle}
               >
                 <div className="flex items-center justify-center gap-1">
@@ -125,7 +125,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               </Button>
             ) : (
               <Button
-                className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-15 rounded-full border p-3.5 px-6"
+                className="border-step-color bg-gradient-green h-15 rounded-full border p-3.5 px-6"
                 onClick={toggleJoin}
               >
                 <div className="flex justify-center gap-1">

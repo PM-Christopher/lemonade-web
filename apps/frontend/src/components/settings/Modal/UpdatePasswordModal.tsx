@@ -103,7 +103,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                   title="Save password"
                   isValid={isValid}
                   loading={changePasswordMutation.isPending}
-                  classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border shadow-custom-bottom"
+                  classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border"
                 />
               </div>
             </div>
@@ -182,7 +182,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                     title="Save password"
                     isValid={isValid}
                     loading={changePasswordMutation.isPending}
-                    classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border shadow-custom-bottom"
+                    classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border"
                   />
                 </div>
               </div>

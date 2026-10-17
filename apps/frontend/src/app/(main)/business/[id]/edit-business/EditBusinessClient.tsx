@@ -413,7 +413,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 title="Save changes"
                 isValid={isValid}
                 loading={isSubmitting}
-                classes="mt-8 h-12 p-3.5 px-12 rounded-xl border border-step-color shadow-custom-bottom"
+                classes="mt-8 h-12 p-3.5 px-12 rounded-xl border border-step-color"
               />
             </div>
           </form>

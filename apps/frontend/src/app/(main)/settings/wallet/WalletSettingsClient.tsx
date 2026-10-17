@@ -170,7 +170,7 @@ function WalletSettingsClient() {
                   <Button
                     className={`bg-gradient-green mt-4 h-12 w-fit rounded-xl p-3.5 px-12 ${
                       !profileLoading
-                        ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
+                        ? "border-step-color bg-gradient-green border"
                         : "bg-mid-green cursor-not-allowed opacity-70"
                     } `}
                     onClick={handlePayoutRequest}

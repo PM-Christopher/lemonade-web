@@ -124,7 +124,7 @@ const CancelSection = ({}) => {
         <Button
           className={`h-12 w-full rounded-xl ${
             !upgradeLoading
-              ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
+              ? "border-step-color bg-gradient-green border"
               : "bg-mid-green cursor-not-allowed opacity-70"
           } `}
           onClick={downgradePlan}

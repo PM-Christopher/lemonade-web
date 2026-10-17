@@ -67,7 +67,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
             </div>
             <div>
               <Button
-                className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
+                className="auth-button border-step-color rounded-xl p-2.5 px-3.5"
                 type="button"
                 onClick={submitThread}
                 loading={reportThreadMutation.isPending}

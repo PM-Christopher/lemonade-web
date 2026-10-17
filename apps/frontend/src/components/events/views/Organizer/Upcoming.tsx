@@ -95,7 +95,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
             </p>
             <button
               onClick={() => push(routes.EVENT_CREATE)}
-              className="bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong mt-4 rounded-lg px-4 py-2 text-sm font-medium text-white transition"
+              className="bg-gradient-green mt-4 rounded-lg px-4 py-2 text-sm font-medium text-white transition"
             >
               Add Event
             </button>

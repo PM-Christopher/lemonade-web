@@ -123,7 +123,7 @@ export default function TribeListClient() {
 
           {/* Create Button */}
           <Button
-            className="auth-button border-step-color shadow-custom-bottom flex items-center gap-2 rounded-xl px-4 py-2"
+            className="auth-button border-step-color flex items-center gap-2 rounded-xl px-4 py-2"
             onClick={activateModal}
           >
             <span className="text-base font-medium">{isMobile ? "+" : "+ Create Tribe"}</span>

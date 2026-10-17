@@ -781,7 +781,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   error={isValid}
                   onClick={() => handleSubmit(onSubmit)()}
                   title="Save changes"
-                  classes="mt-6 h-12 rounded-xl border border-step-color shadow-green-inset hover:shadow-green-inset-strong"
+                  classes="mt-6 h-12 rounded-xl border border-step-color"
                 />
               </div>
             </form>

@@ -108,7 +108,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
             <button
               type="button"
               onClick={toggle}
-              className="border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong text-body-l flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-sans font-medium text-white transition-all duration-300"
+              className="border-step-color bg-gradient-green text-body-l flex items-center justify-center gap-2 rounded-xl border px-4 py-2 font-sans font-medium text-white transition-all duration-300"
             >
               <span>Done</span>
             </button>

@@ -248,7 +248,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                   <div>
                     <Button
                       className={
-                        "bg-gradient-green shadow-custom-bottom h-12 w-54 gap-2 rounded-xl border-b-2 border-transparent px-12 py-3.5"
+                        "bg-gradient-green h-12 w-54 gap-2 rounded-xl border-b-2 border-transparent px-12 py-3.5"
                       }
                       onClick={proceed}
                     >

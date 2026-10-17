@@ -154,7 +154,7 @@ const GuestSideMenu: React.FC<SideMenuInterface> = ({
 
               {!guestDetails?.checked_in && (
                 <button
-                  className={`bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong flex h-12 items-center justify-center rounded-xl text-white ${checkInLoading && "cursor-not-allowed opacity-50"} `}
+                  className={`bg-gradient-green flex h-12 items-center justify-center rounded-xl text-white ${checkInLoading && "cursor-not-allowed opacity-50"} `}
                   type={"button"}
                   onClick={handleCheckInGuest}
                   disabled={checkInLoading}

@@ -163,7 +163,7 @@ const ConnectModal: React.FC<ConnectInterface> = ({ toggle, isOpen, users }) => 
                     title="Send Invite"
                     loading={isSubmitting}
                     isValid={isValid}
-                    classes="bg-gradient-green shadow-custom-bottom h-12 w-full rounded-xl transition-all hover:brightness-110"
+                    classes="bg-gradient-green h-12 w-full rounded-xl transition-all hover:brightness-110"
                   />
                 </div>
               </>

@@ -77,7 +77,7 @@ const ConfirmPaymentModal = ({
             </p>
             <div className="mt-10 flex w-full justify-center gap-3">
               <Button
-                className={`h-12 w-full rounded-xl p-3.5 px-12 ${requestPLoading ? "bg-light-green-20" : "bg-gradient-green"} shadow-custom-bottom`}
+                className={`h-12 w-full rounded-xl p-3.5 px-12 ${requestPLoading ? "bg-light-green-20" : "bg-gradient-green"}`}
                 onClick={handleRequestPayment}
                 disabled={requestPLoading}
               >

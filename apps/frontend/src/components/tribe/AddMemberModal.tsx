@@ -80,7 +80,7 @@ const AddMemberModal: React.FC<AddMemberIF> = ({ isOpen, toggle, id }) => {
             </div>
             <div>
               <Button
-                className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
+                className="auth-button border-step-color rounded-xl p-2.5 px-3.5"
                 onClick={handleAddTribeMember}
                 loading={addTribeMemberMutation.isPending}
               >

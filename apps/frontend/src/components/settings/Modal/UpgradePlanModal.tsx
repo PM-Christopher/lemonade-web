@@ -125,7 +125,7 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
                   disabled={!selected || upgradeLoading}
                   className={`text-body-l flex h-9.75 w-fit items-center justify-center gap-2 rounded-xl px-4 py-2 font-sans font-medium text-white transition-all duration-300 ${
                     selected && !upgradeLoading
-                      ? "border-step-color bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong border"
+                      ? "border-step-color bg-gradient-green border"
                       : "bg-mid-green cursor-not-allowed opacity-70"
                   }`}
                 >

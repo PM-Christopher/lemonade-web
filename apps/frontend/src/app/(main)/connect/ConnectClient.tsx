@@ -150,12 +150,7 @@ const ConnectClient = () => {
                       <p className={"font-ruso text-center"}>
                         Connect with someone new today to start chatting
                       </p>
-                      <button
-                        type={"button"}
-                        className={
-                          "bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong"
-                        }
-                      >
+                      <button type={"button"} className={"bg-gradient-green"}>
                         <p>Send request</p>
                       </button>
                     </div>
@@ -205,12 +200,7 @@ const ConnectClient = () => {
                       <p className={"font-ruso text-center"}>
                         Connect with someone new today to start chatting
                       </p>
-                      <button
-                        type={"button"}
-                        className={
-                          "bg-gradient-green shadow-green-inset hover:shadow-green-inset-strong h-12 rounded-xl px-3"
-                        }
-                      >
+                      <button type={"button"} className={"bg-gradient-green h-12 rounded-xl px-3"}>
                         <p className={"font-ruso text-white"}>Send request</p>
                       </button>
                     </div>

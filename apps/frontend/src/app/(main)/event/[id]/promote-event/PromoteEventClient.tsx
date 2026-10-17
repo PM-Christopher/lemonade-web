@@ -218,7 +218,7 @@ function PromoteEventClient({ id }: { id: number }) {
                   </div>
                   <div className="group relative flex flex-col items-center">
                     <button
-                      className={`border-step-color bg-gradient-green shadow-custom-bottom flex h-12 items-center rounded-xl p-3.5 px-12 ${
+                      className={`border-step-color bg-gradient-green flex h-12 items-center rounded-xl p-3.5 px-12 ${
                         selectedPromotion === null || promotionLoading
                           ? "cursor-not-allowed opacity-60"
                           : ""

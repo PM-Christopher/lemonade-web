@@ -231,7 +231,7 @@ const FilterEventModal = ({ toggle, isOpen, filterEventsMutation }: FilterEventI
                 </p>
               </button>
               <button
-                className="auth-button border-step-color shadow-custom-bottom rounded-xl p-2.5 px-3.5"
+                className="auth-button border-step-color rounded-xl p-2.5 px-3.5"
                 onClick={handleFilterEvent}
               >
                 <p className="font-semi-normal text-body-l font-sans text-white">Apply filter</p>

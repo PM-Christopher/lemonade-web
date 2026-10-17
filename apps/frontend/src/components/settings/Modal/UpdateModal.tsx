@@ -268,7 +268,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
               title="Save changes"
               isValid={isValid}
               loading={isSubmitting}
-              classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border shadow-custom-bottom"
+              classes="max-w-33.75 p-2 max-h-9.75 rounded-xl border"
             />
           </div>
         </div>
@@ -465,7 +465,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
                 title="Save changes"
                 isValid={isValid}
                 loading={isSubmitting}
-                classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border shadow-custom-bottom"
+                classes="w-full laptop:max-w-33.75 p-2 h-12 laptop:max-h-9.75 rounded-xl border"
               />
             </div>
           </div>

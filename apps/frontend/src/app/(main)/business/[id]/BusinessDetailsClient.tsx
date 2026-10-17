@@ -225,7 +225,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                   {!business?.owner && !business?.hasActiveServiceRequest && (
                     <div className="mt-4 flex justify-center">
                       <Button
-                        className="bg-gradient-green shadow-custom-bottom w-fit p-3.5 px-6"
+                        className="bg-gradient-green w-fit p-3.5 px-6"
                         onClick={toggleRequestModal}
                       >
                         <p className="font-normal text-white">Request service</p>
@@ -235,7 +235,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
 
                   {business?.hasActiveServiceRequest && (
                     <div className="mt-4 flex justify-center">
-                      <div className="bg-gradient-green shadow-custom-bottom flex items-center rounded-xl px-4 py-2">
+                      <div className="bg-gradient-green flex items-center rounded-xl px-4 py-2">
                         <p className="font-medium text-white">In Progress</p>
                       </div>
                     </div>
