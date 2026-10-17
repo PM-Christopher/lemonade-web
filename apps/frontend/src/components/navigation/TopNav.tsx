@@ -74,7 +74,7 @@ const TopNav = () => {
                     : "text-text-grey"
                 } `}
               >
-                <Image src={link.icon} alt="home" width={12.8} height={12.8} />
+                <Image src={link.icon} alt="home" width={16} height={16} />
                 <p
                   className={`text-meta ${
                     isActiveLink(pathname, link.path, true) ? "font-semibold" : "font-normal"
