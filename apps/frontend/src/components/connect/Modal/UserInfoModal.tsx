@@ -3,12 +3,8 @@ import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import LocationIcon from "@/images/icons/locationPinGreenIcon.svg";
-import FacebookIcon from "@/images/icons/facebook-color.svg";
-import InstagramIcon from "@/images/icons/instagram-color.svg";
-import LinkedInIcon from "@/images/icons/linkedin-color.svg";
-import TwitterIcon from "@/images/icons/twitter-color.svg";
-import WebIcon from "@/images/icons/webIcon.svg";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { SocialLinks } from "@/components/global/SocialLinks";
 import { formatString } from "@/lib/helper";
 
 interface ConnectUserInfo {
@@ -80,20 +76,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, userInfo }
               <p className="text-light-black text-body-s mt-4 max-w-104 text-center font-normal">
                 {userInfo?.receiver?.bio}
               </p>
-              <div className="mt-4">
-                <p className="text-body-s text-center font-semibold">Social links</p>
-                <div className="mt-3 flex justify-center gap-4">
-                  {userInfo?.receiver?.socials?.map((link) => (
-                    <a href={link.value} target="_blank" rel="noopener noreferrer" key={link.name}>
-                      {link.name === "facebook" && <FacebookIcon className="w-6" />}
-                      {link.name === "instagram" && <InstagramIcon className="w-6" />}
-                      {link.name === "linkedin" && <LinkedInIcon className="w-6" />}
-                      {link.name === "twitter" && <TwitterIcon className="w-6" />}
-                      {link.name === "website" && <WebIcon className="w-6" />}
-                    </a>
-                  ))}
-                </div>
-              </div>
+              <SocialLinks socials={userInfo?.receiver?.socials} />
             </div>
           </div>
         </div>

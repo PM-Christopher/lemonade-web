@@ -2,11 +2,7 @@ import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import FacebookIcon from "@/images/icons/facebook-color.svg";
-import InstagramIcon from "@/images/icons/instagram-color.svg";
-import LinkedInIcon from "@/images/icons/linkedin-color.svg";
-import TwitterIcon from "@/images/icons/twitter-color.svg";
-import WebIcon from "@/images/icons/webIcon.svg";
+import { SocialLinks } from "@/components/global/SocialLinks";
 import ChatIcon from "@/images/icons/chatIcon.svg";
 import { formatString, getInitials } from "@/lib/helper";
 import { TribeInterface } from "@/interfaces/TribeInterface";
@@ -109,27 +105,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
               <p className="text-light-black text-body-s mt-4 max-w-104 text-center font-normal">
                 {user?.bio}
               </p>
-              {user?.socials && user.socials.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-body-s text-center font-semibold">Social links</p>
-                  <div className="mt-3 flex gap-4">
-                    {user.socials.map((link) => (
-                      <a
-                        href={link.value}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        key={link.name}
-                      >
-                        {link.name === "facebook" && <FacebookIcon className="w-6" />}
-                        {link.name === "instagram" && <InstagramIcon className="w-6" />}
-                        {link.name === "linkedin" && <LinkedInIcon className="w-6" />}
-                        {link.name === "twitter" && <TwitterIcon className="w-6" />}
-                        {link.name === "website" && <WebIcon className="w-6" />}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <SocialLinks socials={user?.socials} />
               {!tribe?.owner &&
                 (user?.has_connected ? (
                   <Link href={routes.CONNECT}>
