@@ -52,8 +52,8 @@ export function GoogleLinkDialog({ open, onSubmit, onCancel }: GoogleLinkDialogP
         <form onSubmit={submit} className="flex flex-col gap-4">
           <DialogTitle>Link your Google account</DialogTitle>
           <DialogDescription>
-            This email already has a Lemonade account. Enter its password once to link Google. Next
-            time you can sign in with Google directly.
+            This email already has a Lemonade account. Enter your password once to link Google, then
+            sign in with Google next time.
           </DialogDescription>
           <div className="flex flex-col gap-2">
             <Label htmlFor="google-link-password">Password</Label>
