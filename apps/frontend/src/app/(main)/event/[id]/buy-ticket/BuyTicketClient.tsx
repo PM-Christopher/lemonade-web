@@ -111,6 +111,8 @@ const BuyTicketClient = ({ id }: { id: number }) => {
       );
       return;
     }
+    // A new selection starts a fresh reservation timer.
+    localStorage.removeItem(`ticketExpiryTime_${id}`);
     dispatch(addTickets({ tickets: selectedTickets }));
     push(assignTicketHref);
   };
@@ -128,16 +130,16 @@ const BuyTicketClient = ({ id }: { id: number }) => {
             <p className="tracking-custom text-body-l font-sans font-semibold">Buy ticket</p>
           </div>
         </div>
-        <section className="laptop:bg-none mt-4 bg-white">
+        <section className="laptop:bg-none laptop:pb-0 mt-4 bg-white pb-28">
           <div className="laptop:flex-row laptop:justify-around flex flex-col">
-            <div className="laptop:w-172 laptop:bg-white laptop:p-6 flex w-full flex-col justify-between gap-y-115 rounded-xl bg-none p-0 py-2.5">
+            <div className="laptop:w-172 laptop:bg-white laptop:p-6 flex w-full flex-col rounded-xl bg-none p-0 py-2.5">
               {loading ? (
                 <EventTicketDetailSkeleton />
               ) : (
                 <div className="">
-                  <div className="bg-green-tint laptop:flex-row laptop:p-6 flex flex-col gap-4 rounded-xl p-4 transition-shadow duration-300 hover:shadow-lg">
+                  <div className="bg-green-tint laptop:p-6 flex items-start gap-4 rounded-xl p-4">
                     {/* Event Poster */}
-                    <div className="laptop:h-30 laptop:w-30 h-30 w-full flex-shrink-0">
+                    <div className="laptop:h-30 laptop:w-30 h-16 w-16 flex-shrink-0">
                       <FallbackImage
                         src={event?.event_image}
                         fallbackSrc={images.DEFAULT_EVENT}
@@ -218,8 +220,8 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                   ))}
                 </div>
               )}
-              <div className="laptop:hidden flex items-center justify-center gap-4">
-                <div className="flex w-36.75 items-center gap-4">
+              <div className="laptop:hidden fixed inset-x-0 bottom-0 z-50 flex items-center justify-between gap-4 bg-white p-4">
+                <div className="flex items-center gap-3">
                   <p className="text-mid-green text-title-r leading-normal font-bold">
                     {totalLabel}
                   </p>
@@ -236,7 +238,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
               </div>
             </div>
             <div className="laptop:block hidden">
-              <div className="w-120 rounded-xl bg-white px-2.5 py-3">
+              <div className="w-120 rounded-xl bg-white p-4">
                 <p className="text-title-r font-sans font-semibold">Summary</p>
                 <TicketQuoteBreakdown {...quoteState} />
                 <div className="mt-5 flex items-center justify-between">

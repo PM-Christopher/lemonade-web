@@ -49,6 +49,15 @@ const EventClient = ({ id }: { id: number }) => {
     ? `/event/${event?.id}/buy-ticket?referral=${encodeURIComponent(referralFromUrl)}`
     : `/event/${event?.id}/buy-ticket`;
 
+  // Free events say so instead of "from ₦0".
+  const minimumPrice = event?.minimum_price;
+  const ticketLabel =
+    minimumPrice == null
+      ? "Buy ticket"
+      : minimumPrice === 0
+        ? "Get free ticket"
+        : `Buy ticket from ₦${formatNumberWithCommas(minimumPrice)}`;
+
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
@@ -66,22 +75,22 @@ const EventClient = ({ id }: { id: number }) => {
         ) : (
           <section className="mt-4 flex flex-col items-center">
             <div className="flex w-full justify-center px-4">
-              <section className="laptop:max-w-275 laptop:flex-row laptop:items-center flex w-full flex-col items-start gap-10 overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
+              <section className="laptop:max-w-275 laptop:flex-row laptop:items-center laptop:gap-10 laptop:p-4 flex w-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
                 {/* Event Image */}
-                <div className="laptop:w-120 w-full">
+                <div className="laptop:w-100 laptop:shrink-0 laptop:rounded-xl relative aspect-4/5 w-full overflow-hidden">
                   <FallbackImage
                     src={event?.event_image}
                     fallbackSrc={images.DEFAULT_EVENT}
                     alt={event?.event_name || "Event image"}
-                    width={496}
-                    height={532}
-                    loading="lazy"
-                    className="laptop:rounded-l-2xl h-auto w-full object-cover"
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 400px, 100vw"
+                    className="object-cover"
                   />
                 </div>
 
                 {/* Event Details */}
-                <article className="laptop:px-10 laptop:py-10 flex w-full flex-col justify-between space-y-4 px-6 py-8">
+                <article className="laptop:px-0 laptop:py-6 flex w-full flex-col space-y-4 px-6 py-6">
                   {/* Event Title */}
                   <h1 className="laptop:text-title-xl laptop:leading-normal text-title-r font-sans leading-snug font-semibold text-gray-900">
                     {event?.event_name}
@@ -144,7 +153,7 @@ const EventClient = ({ id }: { id: number }) => {
                     <Link href={buyTicketHref} passHref>
                       <Button className="bg-gradient-green flex h-14 w-57.75 items-center justify-center rounded-xl border-b-2 border-transparent transition-all duration-300 hover:opacity-90">
                         <span className="text-field font-sans font-medium text-white">
-                          Buy ticket from ₦{formatNumberWithCommas(event?.minimum_price)}
+                          {ticketLabel}
                         </span>
                       </Button>
                     </Link>
@@ -190,12 +199,7 @@ const EventClient = ({ id }: { id: number }) => {
                 <div className="mt-10">
                   <Link href={buyTicketHref}>
                     <Button className="bg-gradient-green h-14 w-57.75 gap-2 rounded-xl border-b-2 border-transparent px-6 py-3.5 transition-all duration-300 hover:opacity-90">
-                      <p className="text-field font-sans font-medium text-white">
-                        Buy ticket from ₦
-                        {event?.minimum_price == null
-                          ? "2,000"
-                          : formatNumberWithCommas(event.minimum_price)}
-                      </p>
+                      <p className="text-field font-sans font-medium text-white">{ticketLabel}</p>
                     </Button>
                   </Link>
                 </div>

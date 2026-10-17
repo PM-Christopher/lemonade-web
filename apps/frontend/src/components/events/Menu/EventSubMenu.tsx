@@ -18,23 +18,27 @@ const EventSubMenu: React.FC<EventSubMenuInterface> = ({
   filterEvent,
 }) => {
   return (
-    <div className="flex items-center justify-between gap-2.5 px-4">
-      <div className="bg-light_grey laptop:w-58.75 flex h-10 w-76.75 items-center gap-3 rounded-xl p-2 px-3">
-        <div>
-          <SearchIcon />
-        </div>
-        <div>
-          <input
-            id="search"
-            type="text"
-            className="bg-light_grey text-body-s rounded-xl border-0 focus:border-transparent focus:ring-0 focus:outline-none"
-            placeholder="Search events..."
-            value={searchTerm}
-            onChange={handleEventSearch}
-          />
-        </div>
+    <div className="flex items-center justify-between gap-2.5">
+      <div className="bg-light_grey laptop:w-58.75 laptop:flex-none flex h-10 min-w-0 flex-1 items-center gap-3 rounded-xl px-3">
+        <SearchIcon className="shrink-0" />
+        <input
+          id="search"
+          type="text"
+          aria-label="Search events"
+          className="text-body-s min-w-0 flex-1 rounded-xl border-0 bg-transparent focus:border-transparent focus:ring-0 focus:outline-none"
+          placeholder="Search events..."
+          value={searchTerm}
+          onChange={handleEventSearch}
+        />
       </div>
-      <FilterIcon className="h-4.5 w-4.75 cursor-pointer" onClick={filterEvent} />
+      <button
+        type="button"
+        aria-label="Filter events"
+        className="flex shrink-0 cursor-pointer"
+        onClick={filterEvent}
+      >
+        <FilterIcon className="h-4.5 w-4.75" />
+      </button>
       <div
         className="border-light-grey-50 laptop:flex hidden cursor-pointer items-center gap-2 rounded-xl border p-2 px-3.5"
         onClick={toggleMenu}

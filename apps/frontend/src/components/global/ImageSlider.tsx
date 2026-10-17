@@ -1,6 +1,8 @@
 import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React, { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { routes } from "@/lib/routes";
 import { CalendarIcon } from "lucide-react";
 import DotIcon from "@/images/icons/dot.svg";
 import { EventInterface } from "@/interfaces/EventInterface";
@@ -70,6 +72,11 @@ const Carousel: React.FC<ImageSlider> = ({
           </div>
         ))}
 
+        {/* Trending tag */}
+        <span className="bg-gradient-green-2 text-body-s absolute top-3 left-3 z-10 rounded-md px-3 py-1 font-sans font-medium text-black">
+          Trending
+        </span>
+
         {/* Arrows */}
         {showArrows && (events?.length ?? 0) > 1 && (
           <div className="absolute inset-0 flex items-center justify-between px-2 sm:px-3">
@@ -138,12 +145,12 @@ const Carousel: React.FC<ImageSlider> = ({
 
               {/* CTA */}
               <div className="flex sm:justify-end">
-                <button
-                  type="button"
+                <Link
+                  href={routes.EVENT_DETAIL(events?.[currentIndex]?.id ?? "")}
                   className="font-semi-normal text-body-s sm:text-body-l inline-flex w-full items-center justify-center rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 font-sans leading-4.75 text-white transition hover:bg-white/20 sm:w-auto"
                 >
                   Get ticket
-                </button>
+                </Link>
               </div>
             </div>
 

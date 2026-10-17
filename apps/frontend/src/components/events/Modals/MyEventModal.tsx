@@ -29,6 +29,10 @@ const MyEventModal = ({
   ticket: MyTicket | undefined;
   loading: boolean;
 }) => {
+  // A ticket for an event that already started can no longer be used.
+  const eventDate = ticket?.ticket?.[0]?.date;
+  const isVoid = Boolean(eventDate) && new Date(eventDate as string | Date) < new Date();
+
   return (
     <Dialog
       open={isOpen}
@@ -40,7 +44,12 @@ const MyEventModal = ({
         <DialogTitle className="sr-only">
           {ticket?.ticket?.[0]?.event_name || "My ticket"}
         </DialogTitle>
-        <div className="bg-light_grey laptop:bg-white laptop:p-6 laptop:shadow-lg max-h-[90vh] w-120 overflow-y-auto rounded-lg p-0 shadow-none">
+        <div className="bg-light_grey laptop:bg-white laptop:p-6 laptop:shadow-lg relative max-h-[90vh] w-120 overflow-y-auto rounded-lg p-0 shadow-none">
+          {isVoid && (
+            <span className="text-meta absolute top-5 -right-9 z-10 rotate-45 bg-red-600 px-10 py-0.5 font-semibold text-white">
+              Void
+            </span>
+          )}
           <div className="laptop:bg-none laptop:p-0 mt-10 flex items-center justify-between bg-white p-6">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
@@ -101,6 +110,7 @@ const MyEventModal = ({
                           alt="qr_code"
                           width={240}
                           height={240}
+                          className={isVoid ? "opacity-30" : undefined}
                         />
                       </div>
                     )}

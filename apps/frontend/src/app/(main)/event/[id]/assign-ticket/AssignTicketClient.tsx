@@ -5,7 +5,16 @@ import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useRef, useState } from "react";
 import UserIcon from "@/images/icons/users.svg";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label, Input, FieldError } from "@lemonade/ui";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  Label,
+  Input,
+  FieldError,
+} from "@lemonade/ui";
 import MultipleTicketCard from "@/components/events/MultipleTicketCard";
 import { usePathname, useSearchParams } from "next/navigation";
 import Switch from "react-switch";
@@ -28,6 +37,8 @@ import { errorMessage } from "@/lib/api-error";
 const AssignTicketClient = ({ id }: { id: number }) => {
   const COUNTDOWN_DURATION = 10 * 60;
   const [timeLeft, setTimeLeft] = useState(COUNTDOWN_DURATION);
+  const [isReleasing, setIsReleasing] = useState(false);
+  const isExpired = timeLeft <= 0;
   const { push, replace, back } = useNavigation();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
@@ -37,9 +48,6 @@ const AssignTicketClient = ({ id }: { id: number }) => {
   const loading = buyTicketMutation.isPending;
 
   const referralFromUrl = searchParams.get("referral");
-  const assignTicketHref = referralFromUrl
-    ? `${routes.EVENT_BUY_TICKET(id)}?referral=${encodeURIComponent(referralFromUrl)}`
-    : routes.EVENT_BUY_TICKET(id);
 
   const {
     register,
@@ -147,11 +155,8 @@ const AssignTicketClient = ({ id }: { id: number }) => {
       const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
       setTimeLeft(remaining);
 
-      if (remaining <= 0) {
-        clear();
-        localStorage.removeItem(key);
-        push(assignTicketHref);
-      }
+      // Stay on the page so the buyer sees the expiry; buying again starts a fresh hold.
+      if (remaining <= 0) clear();
     };
 
     updateTimer();
@@ -160,7 +165,13 @@ const AssignTicketClient = ({ id }: { id: number }) => {
     return () => {
       clear();
     };
-  }, [push, id, key, COUNTDOWN_DURATION, assignTicketHref]);
+  }, [key, COUNTDOWN_DURATION]);
+
+  const releaseTickets = () => {
+    localStorage.removeItem(key);
+    setIsReleasing(false);
+    back();
+  };
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -198,22 +209,37 @@ const AssignTicketClient = ({ id }: { id: number }) => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
-          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
-            <ChevronLeft className="cursor-pointer" />
+          <button
+            type="button"
+            className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
+            onClick={() => (isExpired ? releaseTickets() : setIsReleasing(true))}
+          >
+            <ChevronLeft />
             <p className="tracking-custom text-body-l font-sans font-semibold">Assign ticket</p>
-          </div>
+          </button>
         </div>
         <section className="mt-4">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-4 flex justify-center">
               <section className="w-160 gap-6 rounded-xl bg-white p-12">
-                <div className="bg-light-green-10 rounded-lg px-4 py-2">
-                  <p className="text-body-s font-sans font-normal">
-                    Your tickets has been reserved for{" "}
-                    <span className="font-semiBold text-light-tint-2">{formatTime(timeLeft)}</span>{" "}
-                    mins. Complete your purchase to secure your spot.
-                  </p>
-                </div>
+                {isExpired ? (
+                  <div role="alert" className="rounded-lg bg-red-50 px-4 py-2">
+                    <p className="text-body-s font-sans font-normal text-red-600">
+                      Your reservation for this event ticket has expired. Grab a new ticket if you
+                      wish to attend.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-light-green-10 rounded-lg px-4 py-2">
+                    <p className="text-body-s font-sans font-normal">
+                      Your tickets has been reserved for{" "}
+                      <span className="font-semiBold text-light-tint-2">
+                        {formatTime(timeLeft)}
+                      </span>{" "}
+                      mins. Complete your purchase to secure your spot.
+                    </p>
+                  </div>
+                )}
                 <div className="mt-6 grid gap-2">
                   <Label htmlFor="fullname" className="font-label">
                     Full name
@@ -264,6 +290,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
                           checkedIcon={false}
                           uncheckedIcon={false}
                           onColor="#9BE303"
+                          offColor="#E5E7EB"
                         />
                       )}
                     />
@@ -285,7 +312,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
                   <SubmitButton
                     title="Pay now"
                     loading={isSubmitting || loading}
-                    isValid={isValid}
+                    isValid={isValid && !isExpired}
                     classes="w-full h-12 gap-2 rounded-xl border-b-2 border-step-color"
                   />
                 </div>
@@ -294,6 +321,30 @@ const AssignTicketClient = ({ id }: { id: number }) => {
           </form>
         </section>
       </section>
+      <Dialog open={isReleasing} onOpenChange={setIsReleasing}>
+        <DialogContent className="max-w-sm border-0">
+          <DialogTitle>Release tickets</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to cancel? The previous reservation made for you will be
+            cancelled.
+          </DialogDescription>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="h-12 flex-1 rounded-xl text-red-600"
+              onClick={releaseTickets}
+            >
+              Release
+            </Button>
+            <Button
+              className="bg-gradient-green h-12 flex-1 rounded-xl"
+              onClick={() => setIsReleasing(false)}
+            >
+              Continue
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </MainLayout>
   );
 };
