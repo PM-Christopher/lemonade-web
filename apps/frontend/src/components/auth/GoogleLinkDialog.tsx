@@ -10,6 +10,7 @@ import {
   Input,
   Label,
 } from "@lemonade/ui";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import { errorMessage } from "@/lib/api-error";
 
 interface GoogleLinkDialogProps {
@@ -66,14 +67,15 @@ export function GoogleLinkDialog({ open, onSubmit, onCancel }: GoogleLinkDialogP
             />
             <FieldError message={error} />
           </div>
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={close} disabled={isBusy}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isBusy || password.length === 0}>
-              Link and sign in
-            </Button>
-          </div>
+          <SubmitButton
+            loading={isBusy}
+            title="Link and sign in"
+            isValid={password.length > 0}
+            classes="w-full h-12 rounded-xl"
+          />
+          <Button type="button" variant="ghost" onClick={close} disabled={isBusy}>
+            Cancel
+          </Button>
         </form>
       </DialogContent>
     </Dialog>
