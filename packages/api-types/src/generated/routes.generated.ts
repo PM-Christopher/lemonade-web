@@ -404,6 +404,7 @@ export const userTribesRoutes = Object.freeze({
   JOIN: "/user/tribes/join-tribe/{id}", // POST
   LIST: "/user/tribes", // GET
   MEMBERS: "/user/tribes/{id}/members", // GET
+  PUBLIC: "/user/tribes/public/{slug}", // GET
   REMOVE_MEMBER: "/user/tribes/remove-member/{id}", // DELETE
   SEARCH: "/user/tribes/search-tribe", // POST
   SHOW: "/user/tribes/{id}", // GET

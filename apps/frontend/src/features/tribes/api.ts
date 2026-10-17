@@ -13,6 +13,23 @@ export interface TribesListResponse {
   tribes: TribeInterface[];
 }
 
+/** What a signed-out visitor may see of an open tribe. */
+export interface PublicTribeResponse {
+  tribe: {
+    tribe_name: string;
+    slug: string;
+    category: string;
+    description: string;
+    image: string | null;
+    monetized: boolean;
+    membership_fee: string;
+    members: number;
+    threads: number;
+    created_by: string;
+    created_at: string;
+  };
+}
+
 export interface TribeDetailResponse {
   tribe: TribeInterface;
   threads: Thread[];

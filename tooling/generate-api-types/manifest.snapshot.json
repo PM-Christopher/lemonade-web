@@ -2778,6 +2778,14 @@
     "fields": null
   },
   {
+    "method": "GET",
+    "uri": "/v1/user/tribes/public/{slug}",
+    "name": "v1.user.tribes.public",
+    "guard": null,
+    "formRequest": null,
+    "fields": null
+  },
+  {
     "method": "DELETE",
     "uri": "/v1/user/tribes/remove-member/{id}",
     "name": "v1.user.tribes.remove-member",

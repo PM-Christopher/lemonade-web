@@ -76,6 +76,9 @@ const PUBLIC_PATHS = [
   "/profile-setup",
 ];
 
+// /tribe/{slug}, one segment only.
+const GUEST_TRIBE_PATH = /^\/tribe\/([^/]+)\/?$/;
+
 const PROTECTED_PREFIXES = ["/event", "/tribe", "/business", "/", "/settings"];
 
 function isPublic(pathname: string) {
@@ -111,6 +114,16 @@ export function middleware(req: NextRequest) {
     Boolean(req.cookies.get(SIGNED_IN_COOKIE)?.value) ||
     Boolean(req.cookies.get(USER_TOKEN_COOKIE)?.value);
   if (signedIn) return next();
+
+  // A shared tribe link shows a read-only preview to visitors who are not signed in.
+  const tribeSlug = GUEST_TRIBE_PATH.exec(pathname)?.[1];
+  if (tribeSlug) {
+    const previewUrl = req.nextUrl.clone();
+    previewUrl.pathname = `/share/tribe/${tribeSlug}`;
+    const res = NextResponse.rewrite(previewUrl, { request: { headers: requestHeaders } });
+    res.headers.set("Content-Security-Policy", csp);
+    return res;
+  }
 
   const loginUrl = req.nextUrl.clone();
   loginUrl.pathname = "/login";
