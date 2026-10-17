@@ -122,6 +122,7 @@ const UserInfoModal: React.FC<UserInfoInterface> = ({ toggle, isOpen, user, trib
                       className="border-light-grey-50 flex h-12 w-85.75 cursor-pointer items-center justify-center gap-2 rounded-xl border p-3.5 px-12"
                       onClick={sendConnect}
                     >
+                      <ChatIcon />
                       <p className="font-semi-normal text-black-light text-body-l">Send request</p>
                     </div>
                   </div>
