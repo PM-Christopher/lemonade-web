@@ -185,7 +185,7 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
       </div>
 
       {/* Comments List */}
-      <div className="space-y-0">
+      <div className="hide-scrollbar max-h-96 space-y-0 overflow-y-auto">
         {comments.length > 0 ? (
           comments.map((comment) => <CommentItem key={comment.id} comment={comment} />)
         ) : (

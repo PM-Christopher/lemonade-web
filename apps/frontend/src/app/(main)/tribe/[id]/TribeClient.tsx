@@ -302,7 +302,7 @@ const TribeClient = ({ id }: { id: string }) => {
             {/* Threads Section */}
             <div
               className={`mt-4 flex flex-col gap-4 rounded-xl bg-white shadow-sm ${
-                tribe?.has_joined ? "overflow-y-auto" : "overflow-hidden"
+                canViewContent ? "overflow-y-auto" : "overflow-hidden"
               } hide-scrollbar max-h-[100vh] p-4`}
             >
               {dataLoading || data === undefined ? (
