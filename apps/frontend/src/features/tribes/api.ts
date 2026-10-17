@@ -153,6 +153,12 @@ export const tribesApi = {
   getTribe: (id: string) =>
     browserApi.get<TribeDetailResponse>(buildPath(userTribesRoutes.SHOW, { id })),
 
+  changeTribeType: (slug: string) =>
+    browserApi.patch<{ tribe: TribeInterface }>(
+      buildPath(userTribesRoutes.CHANGE_TYPE, { id: slug }),
+      {},
+    ),
+
   joinTribe: (id: string, data: { redirect_url?: string | null }) =>
     browserApi.post<JoinTribeResponse>(buildPath(userTribesRoutes.JOIN, { id }), data),
 

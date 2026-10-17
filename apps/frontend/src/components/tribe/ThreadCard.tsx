@@ -55,6 +55,8 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   // CommentOnTribeThread actually require in the URL; tribe?.slug is what
   // useThreadsQuery/usePinnedThreadsQuery are keyed by — the two are
   // different identifiers on the backend (see mutations.ts's comment).
+  // Only members (and the owner) can comment.
+  const canComment = Boolean(tribe?.has_joined || tribe?.owner);
   const postCommentMutation = usePostCommentMutation(tribe?.slug ?? "");
   const likeThreadMutation = useLikeThreadMutation();
   const submitVoteMutation = useSubmitVoteMutation(tribe?.slug ?? "");
@@ -285,12 +287,14 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           <span className="text-sm">{likeCount}</span>
         </button>
 
-        <button
-          onClick={() => setShowCommentForm(!showCommentForm)}
-          className="flex items-center gap-1 rounded-lg bg-gray-100 px-3 py-1.5"
-        >
-          <ChatIcon className="h-5 w-5" />
-        </button>
+        {canComment && (
+          <button
+            onClick={() => setShowCommentForm(!showCommentForm)}
+            className="flex items-center gap-1 rounded-lg bg-gray-100 px-3 py-1.5"
+          >
+            <ChatIcon className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {/* Comments */}
@@ -304,7 +308,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
       />
 
       {/* Comment Form */}
-      {showCommentForm && (
+      {canComment && showCommentForm && (
         <form onSubmit={handleSubmitComment} className="flex flex-col gap-2">
           <textarea
             value={comment}

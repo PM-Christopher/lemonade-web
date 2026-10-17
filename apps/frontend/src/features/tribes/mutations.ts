@@ -11,6 +11,19 @@ import {
 } from "./api";
 import { tribeKeys } from "./queries";
 
+// Flips a tribe between public and private (owner only); refetch rather than guess the result.
+export function useChangeTribeTypeMutation(slug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => tribesApi.changeTribeType(slug),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: tribeKeys.detail(slug) });
+      queryClient.invalidateQueries({ queryKey: tribeKeys.lists() });
+    },
+  });
+}
+
 export function useJoinTribeMutation(slug: string) {
   const queryClient = useQueryClient();
 

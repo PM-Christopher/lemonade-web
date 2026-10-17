@@ -27,6 +27,7 @@ import {
   useFilterThreadsMutation,
   usePinThreadMutation,
   useViewProfileMutation,
+  useChangeTribeTypeMutation,
 } from "@/features/tribes/mutations";
 import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
@@ -40,6 +41,13 @@ import useNxtSearchParams from "@/hooks/useSearchParams";
 import PadlockIcon from "@/images/icons/padlockIconFilled.svg";
 import JoinedTribeModal from "@/components/tribe/JoinedTribeModal";
 import { ThreadsSkeleton } from "@/components/Skeletons";
+import { Clock, Flame, History } from "lucide-react";
+
+const SORT_OPTIONS = [
+  { value: "popular", label: "Popular", Icon: Flame },
+  { value: "newest", label: "Newest", Icon: Clock },
+  { value: "oldest", label: "Oldest", Icon: History },
+];
 
 // Off the initial bundle — both are only needed once a user opens the
 // corresponding modal (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy
@@ -80,6 +88,8 @@ const TribeClient = ({ id }: { id: string }) => {
   const user = viewProfileMutation.data?.user;
   const filterThreadsMutation = useFilterThreadsMutation(id);
   const pinThreadMutation = usePinThreadMutation(id);
+  const changeTribeTypeMutation = useChangeTribeTypeMutation(id);
+  const [sortBy, setSortBy] = useState("newest");
 
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
   const { push } = useNavigation();
@@ -172,8 +182,23 @@ const TribeClient = ({ id }: { id: string }) => {
     setReportThreadModal(!reportThreadModal);
   };
 
+  const togglePrivate = () => {
+    changeTribeTypeMutation.mutate(undefined, {
+      onError: (error) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(error, "Could not update the tribe"),
+            type: "error",
+          }),
+        );
+      },
+    });
+  };
+
   const sortThreads = (value: string) => {
     if (!tribe) return;
+    setSortBy(value);
     filterThreadsMutation.mutate({ tribeId: tribe.id, filter: value });
   };
 
@@ -233,23 +258,22 @@ const TribeClient = ({ id }: { id: string }) => {
                 />
               </div>
             </div>
-            <Select onValueChange={sortThreads}>
+            <Select value={sortBy} onValueChange={sortThreads}>
               <SelectTrigger
                 aria-label="Sort threads"
-                className="bg-mid-grey h-10 w-45 rounded-xl border-0 px-4"
+                className="bg-mid-grey text-text-grey text-meta h-10 w-45 rounded-xl border-0 px-4 font-sans font-semibold uppercase"
               >
-                <SelectValue
-                  placeholder={
-                    <span className="text-text-grey text-meta font-sans font-semibold">
-                      Select Option
-                    </span>
-                  }
-                />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="form-font">
-                <SelectItem value="popular">Popularity</SelectItem>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="oldest">Oldest</SelectItem>
+                {SORT_OPTIONS.map(({ value, label, Icon }) => (
+                  <SelectItem key={value} value={value}>
+                    <span className="flex items-center gap-2">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      {label}
+                    </span>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -332,6 +356,8 @@ const TribeClient = ({ id }: { id: string }) => {
                 toggleJoin={activateJoinTribeModal}
                 threads={threads}
                 loading={tribeLoading}
+                togglePrivate={togglePrivate}
+                isUpdatingPrivacy={changeTribeTypeMutation.isPending}
               />
             </aside>
           )}

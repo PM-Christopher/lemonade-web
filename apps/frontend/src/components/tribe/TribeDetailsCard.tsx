@@ -1,6 +1,6 @@
 import { images } from "@/lib/images";
 import { FallbackImage } from "@/components/global/FallbackImage";
-import React from "react";
+import React, { useState } from "react";
 import DotIcon from "@/images/icons/dot.svg";
 import ShareIcon from "@/images/icons/share.svg";
 import AddUserIcon from "@/images/icons/addUserIcon.svg";
@@ -22,7 +22,11 @@ type TribeDetailsInterface = {
   toggleAddMember: () => void;
   threads: Thread[];
   loading: boolean;
+  togglePrivate: () => void;
+  isUpdatingPrivacy: boolean;
 };
+
+const DESCRIPTION_PREVIEW_LENGTH = 100;
 const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
   toggle,
   tribe,
@@ -31,8 +35,13 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
   toggleJoin,
   threads,
   loading: tribeLoading,
+  togglePrivate,
+  isUpdatingPrivacy,
 }) => {
   const members = tribe?.member_list ?? [];
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const description = tribe?.description ?? "";
+  const isLongDescription = description.length > DESCRIPTION_PREVIEW_LENGTH;
 
   return (
     <>
@@ -77,11 +86,23 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
             <div className="flex w-77.75 flex-col items-center">
               <>
                 <p className="text-light-black text-body-s my-4 text-center font-sans font-normal">
-                  {tribe?.description}
+                  {isLongDescription && !showFullDescription
+                    ? `${description.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}...`
+                    : description}
+                  {isLongDescription && (
+                    <button
+                      type="button"
+                      className="text-light-green ml-1 font-semibold"
+                      onClick={() => setShowFullDescription(!showFullDescription)}
+                    >
+                      {showFullDescription ? "See less" : "See more"}
+                    </button>
+                  )}
                 </p>
                 <p className="text-text-grey text-meta my-2 font-sans leading-normal font-normal">
-                  Created by <span className="font-semibold">{tribe?.created_by}</span> on{" "}
-                  {formatLongDate(tribe?.created_at)}
+                  Created by{" "}
+                  <span className="font-semibold">{tribe?.owner ? "You" : tribe?.created_by}</span>{" "}
+                  on {formatLongDate(tribe?.created_at)}
                 </p>
               </>
             </div>
@@ -134,6 +155,35 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               </Button>
             )}
           </div>
+          {tribe?.owner && (
+            <div className="my-4 flex items-center justify-between">
+              <div className="flex flex-col">
+                <p className="font-semi-normal text-black-light text-body-l font-sans">
+                  Private Tribe
+                </p>
+                <p className="text-text-grey text-meta font-sans font-normal">
+                  Available to only added members.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={Boolean(tribe.private)}
+                aria-label="Private tribe"
+                disabled={isUpdatingPrivacy}
+                onClick={togglePrivate}
+                className={`relative h-6 w-10 shrink-0 rounded-full transition-colors disabled:opacity-60 ${
+                  tribe.private ? "bg-light-green" : "bg-gray-300"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                    tribe.private ? "translate-x-4" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+          )}
           {tribe?.monetized ? (
             <div className="my-4 flex items-center justify-between">
               <div className="flex flex-col">
