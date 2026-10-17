@@ -26,7 +26,7 @@ const Upcoming = ({ events, loading }: { events: EventInterface[]; loading: bool
             alt="poster"
             width={320}
             height={343}
-            className="w-80"
+            className="laptop:h-auto laptop:w-80 laptop:shrink-0 h-56 w-full rounded-2xl object-cover"
           />
           <div className="laptop:mt-6 mt-3 flex flex-col px-2.5 pb-2.5">
             <p className="text-title-l font-sans font-semibold">{events[0]?.event_name}</p>

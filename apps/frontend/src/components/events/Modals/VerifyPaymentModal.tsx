@@ -11,6 +11,7 @@ export interface VerifiedEvent {
       event_name?: string;
       start_date?: string;
     };
+    tickets?: { ticket_type?: string | null; ticket_code?: string | null }[];
   };
 }
 
@@ -77,18 +78,26 @@ const VerifyPaymentModal: React.FC<VPInterface> = ({ toggle, isOpen, event, togg
               </p>
             </div>
           </div>
-          {/*<div className="mt-6">*/}
-          {/*    <div className="flex flex-col">*/}
-          {/*        <p className="font-sans font-normal text-body-s text-text-grey leading-5">Ticket Type</p>*/}
-          {/*        <p className="font-sans font-semi-normal text-body-s tracking-custom">1</p>*/}
-          {/*    </div>*/}
-          {/*</div>*/}
-          {/*<div className="mt-6">*/}
-          {/*    <div className="flex flex-col">*/}
-          {/*        <p className="font-sans font-normal text-body-s text-text-grey leading-5">Ticket ID</p>*/}
-          {/*        <p className="font-sans font-semi-normal text-body-s tracking-custom">₦500,000</p>*/}
-          {/*    </div>*/}
-          {/*</div>*/}
+          {event?.data?.tickets?.map((ticket, index) => (
+            <div className="mt-6 flex flex-col gap-6" key={`${ticket.ticket_code}-${index}`}>
+              <div className="flex flex-col">
+                <p className="text-text-grey text-body-s font-sans leading-5 font-normal">
+                  Ticket type
+                </p>
+                <p className="font-semi-normal tracking-custom text-body-s font-sans uppercase">
+                  {ticket.ticket_type}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-text-grey text-body-s font-sans leading-5 font-normal">
+                  Ticket ID
+                </p>
+                <p className="font-semi-normal tracking-custom text-body-s font-sans">
+                  {ticket.ticket_code}
+                </p>
+              </div>
+            </div>
+          ))}
           <div className="mt-10 flex gap-1">
             <button
               className="border-light-grey-50 w-full rounded-xl border p-2.5 px-3.5"
