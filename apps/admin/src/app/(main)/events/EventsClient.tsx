@@ -6,6 +6,7 @@ import DateRangePicker, { type DateRange } from "@/components/global/DateRangePi
 import MainLayout from "@/components/layouts/MainLayout";
 import { eventViews } from "@/utils/pageViews";
 import EventView from "@/views/events/EventView";
+import PendingEventsView from "@/views/events/PendingEventsView";
 import PromotionView from "@/views/tribes/PromotionView";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -28,7 +29,11 @@ const EVENT_STATUSES = [
 ];
 
 const EventsClient = () => {
-  const [menuOption, setMenuOption] = useState("events");
+  const { searchParams } = useSearchParams();
+  // The dashboard links here with ?tab=pending.
+  const [menuOption, setMenuOption] = useState(
+    searchParams?.get("tab") === "pending" ? "pending" : "events",
+  );
   const dispatch = useDispatch<AppDispatch>();
   const [searchValue, setSearchValue] = useState("");
   const [status, setStatus] = useState("");
@@ -48,6 +53,8 @@ const EventsClient = () => {
     switch (menuOption) {
       case "events":
         return <EventView pageData={eventData} status={status} range={range} />;
+      case "pending":
+        return <PendingEventsView pageData={eventData} range={range} />;
       case "affiliates":
         return <AffiliateView pageData={eventData} />;
       case "promotions":

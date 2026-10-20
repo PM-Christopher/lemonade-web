@@ -175,6 +175,8 @@ export interface SupportMessagesResponse {
 export const settingsApi = {
   getSupportMessages: () => browserApi.get<SupportMessagesResponse>(userSupportRoutes.MESSAGES),
 
+  getUnreadSupportCount: () => browserApi.get<{ unread: number }>(userSupportRoutes.UNREAD),
+
   sendSupportMessage: (message: string) =>
     browserApi.post<{ new_message: SupportMessage }>(userSupportRoutes.SEND, { message }),
 

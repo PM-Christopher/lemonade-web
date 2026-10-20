@@ -115,7 +115,17 @@ function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: U
                   onClick={() => push(routes.USER_DETAIL(row.id))}
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>
+                    {row.fullname}
+                    {row.unread_support_messages > 0 && (
+                      <span
+                        aria-label={`${row.unread_support_messages} unread messages`}
+                        className="bg-red-1 text-meta ml-2 rounded-full px-1.5 leading-normal font-medium text-white"
+                      >
+                        {row.unread_support_messages}
+                      </span>
+                    )}
+                  </td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>
                     {capitalizeWords(row.account_plan)}

@@ -4160,6 +4160,14 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/user/support/unread",
+        "name": "v1.user.support.unread",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/user/threads/{tribe_id}/{id}/comments",
         "name": "v1.user.threads.comments",
         "guard": "user",

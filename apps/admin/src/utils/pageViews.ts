@@ -31,6 +31,7 @@ export const tribeViews = [
 
 export const eventViews = [
   { key: "events", title: "Events" },
+  { key: "pending", title: "Pending approval" },
   { key: "affiliates", title: "Affiliates" },
   { key: "promotions", title: "Promotions" },
 ];

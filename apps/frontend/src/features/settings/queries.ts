@@ -9,7 +9,8 @@ export const settingsKeys = {
   referral: () => [...settingsKeys.all(), "referral"] as const,
   referralActivity: () => [...settingsKeys.all(), "referral-activity"] as const,
   rewardsHistory: () => [...settingsKeys.all(), "rewards-history"] as const,
-  support: () => [...settingsKeys.all(), "support"] as const,
+  support: () => [...settingsKeys.all(), "support", "messages"] as const,
+  supportUnread: () => [...settingsKeys.all(), "support", "unread"] as const,
   tribeHistory: () => [...settingsKeys.all(), "tribe-history"] as const,
 };
 
@@ -90,6 +91,16 @@ export function useSupportMessagesQuery(options?: { enabled?: boolean }) {
     queryFn: settingsApi.getSupportMessages,
     staleTime: 0,
     refetchInterval: 10_000,
+    enabled: options?.enabled,
+  });
+}
+
+// Replies waiting in the support thread, shown as a badge on the settings menu.
+export function useSupportUnreadQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: settingsKeys.supportUnread(),
+    queryFn: settingsApi.getUnreadSupportCount,
+    staleTime: 30_000,
     enabled: options?.enabled,
   });
 }

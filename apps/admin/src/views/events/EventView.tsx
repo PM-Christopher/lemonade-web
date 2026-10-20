@@ -9,11 +9,7 @@ import type { DateRange } from "@/components/global/DateRangePicker";
 
 import dynamic from "next/dynamic";
 import useSearchParams from "@/hooks/useSearchParams";
-import type {
-  EventAffiliatesResponse,
-  EventListResponse,
-  EventPromotionsQueueResponse,
-} from "@/features/events/api";
+import type { EventTabData, EventListResponse } from "@/features/events/api";
 
 // Off the initial bundle — only needed once "Edit commission" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -22,7 +18,7 @@ const EditCommissionModal = dynamic(() => import("@/modals/events/EditCommission
 });
 
 interface EventViewProps {
-  pageData: EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | undefined;
+  pageData: EventTabData | undefined;
   status?: string;
   range?: DateRange | null;
 }

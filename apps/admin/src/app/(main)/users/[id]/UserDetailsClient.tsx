@@ -12,8 +12,10 @@ import BusinessView from "@/views/users/BusinessView";
 import EventView from "@/views/users/EventView";
 import WalletView from "@/views/users/WalletView";
 import { useSelector } from "react-redux";
+import { useQueryClient } from "@tanstack/react-query";
 import { RootState } from "@/redux/store";
 import {
+  userKeys,
   useAccountInfoQuery,
   useUserBusinessQuery,
   useUserDetailQuery,
@@ -58,6 +60,7 @@ function UserDetailsClient({ id }: { id: string }) {
   const [reactivateOpen, setReactivateOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const queryClient = useQueryClient();
   const [openTribeId, setOpenTribeId] = useState<string | number | undefined>(undefined);
   const [range, setRange] = useState<DateRange | null>(null);
   const [logPage, setLogPage] = useState(1);
@@ -149,6 +152,14 @@ function UserDetailsClient({ id }: { id: string }) {
               >
                 <MessageCircleIcon className="text-text-grey w-4" />
                 <p className="text-black-light text-body-s font-medium">Chat</p>
+                {user && user.unread_support_messages > 0 && (
+                  <span
+                    aria-label={`${user.unread_support_messages} unread messages`}
+                    className="bg-red-1 text-meta rounded-full px-1.5 leading-normal font-medium text-white"
+                  >
+                    {user.unread_support_messages}
+                  </span>
+                )}
               </button>
 
               {user && !isActive ? (
@@ -302,7 +313,15 @@ function UserDetailsClient({ id }: { id: string }) {
         <ReactivateUserModal isOpen toggle={() => setReactivateOpen(false)} id={id} />
       )}
       {chatOpen && (
-        <ChatModal isOpen toggle={() => setChatOpen(false)} userId={id} userName={user?.fullname} />
+        <ChatModal
+          isOpen
+          toggle={() => {
+            setChatOpen(false);
+            queryClient.invalidateQueries({ queryKey: userKeys.detail(id) });
+          }}
+          userId={id}
+          userName={user?.fullname}
+        />
       )}
       {planOpen && <AccountPlanModal isOpen toggle={() => setPlanOpen(false)} id={id} />}
       {openTribeId !== undefined && (

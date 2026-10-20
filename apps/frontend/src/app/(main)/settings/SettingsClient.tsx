@@ -19,6 +19,7 @@ import ReferralIcon from "@/images/icons/referralIcon.svg";
 import PaperIcon from "@/images/icons/paperIcon.svg";
 
 import { useSelector } from "react-redux";
+import { useSupportUnreadQuery } from "@/features/settings/queries";
 import { formatString, getInitials, splitLemonId } from "@/lib/helper";
 import { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
@@ -58,7 +59,8 @@ const earnSettings: SettingsItem[] = [
 // Profile card and settings menu for the signed-in user.
 function SettingsClient() {
   const { push } = useNavigation();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { data: supportUnread } = useSupportUnreadQuery({ enabled: isLoggedIn });
 
   const moreSettings: SettingsItem[] = [
     { title: "Support messages", icon: PaperIcon, path: routes.SETTINGS_SUPPORT },
@@ -182,6 +184,11 @@ function SettingsClient() {
                 <div className="flex items-center gap-2">
                   <item.icon />
                   <p className="text-body-l font-normal">{item.title}</p>
+                  {item.path === routes.SETTINGS_SUPPORT && (supportUnread?.unread ?? 0) > 0 && (
+                    <span className="bg-red-1 text-meta rounded-full px-1.5 leading-normal font-medium text-white">
+                      {supportUnread?.unread}
+                    </span>
+                  )}
                 </div>
                 <ChevronRight />
               </div>

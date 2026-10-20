@@ -38,6 +38,9 @@ export interface EventListResponse {
   commission_charge: number;
 }
 
+/** Events waiting for approval. */
+export type EventPendingResponse = Pick<EventListResponse, "events">;
+
 export interface EventAffiliateListItem {
   id: number;
   unique_id: string;
@@ -99,6 +102,10 @@ export interface EventAffiliateDetailResponse {
   affiliate: EventAffiliateDetail;
   programs: EventAffiliateProgram[];
 }
+
+/** What the events page holds for whichever tab is open. */
+export type EventTabData =
+  EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | EventPendingResponse;
 
 export interface EventPromotionQueueItem {
   id: string;
@@ -200,8 +207,15 @@ export interface EventDetailResponse {
 export const eventsApi = {
   getEventData: (
     trxType: string,
-  ): Promise<EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse> => {
+  ): Promise<
+    | EventListResponse
+    | EventAffiliatesResponse
+    | EventPromotionsQueueResponse
+    | EventPendingResponse
+  > => {
     switch (trxType) {
+      case "pending":
+        return browserApi.get<EventPendingResponse>(adminEventsRoutes.PENDING);
       case "affiliates":
         return browserApi.get<EventAffiliatesResponse>(adminAffiliatesRoutes.LIST);
       case "promotions":

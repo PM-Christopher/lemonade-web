@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { settingsKeys } from "@/features/settings/queries";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -22,6 +24,12 @@ const SupportClient = () => {
   const sendMutation = useSendSupportMessageMutation();
   const [text, setText] = useState("");
   const messages = data?.messages ?? [];
+  const queryClient = useQueryClient();
+
+  // Opening the thread marks replies as read, so the menu badge is refreshed.
+  useEffect(() => {
+    if (data) queryClient.invalidateQueries({ queryKey: settingsKeys.supportUnread() });
+  }, [data, queryClient]);
 
   const send = () => {
     const message = text.trim();

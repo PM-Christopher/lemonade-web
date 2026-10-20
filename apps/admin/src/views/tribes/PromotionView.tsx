@@ -6,14 +6,10 @@ import { useNavigation } from "@/hooks/useNavigation";
 import { routes } from "@/lib/routes";
 import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import { promotionMainHeaders } from "@/data/tableData";
-import type {
-  EventAffiliatesResponse,
-  EventListResponse,
-  EventPromotionsQueueResponse,
-} from "@/features/events/api";
+import type { EventTabData, EventPromotionsQueueResponse } from "@/features/events/api";
 
 interface PromotionViewProps {
-  pageData: EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | undefined;
+  pageData: EventTabData | undefined;
 }
 
 const PromotionView = ({ pageData: rawPageData }: PromotionViewProps) => {

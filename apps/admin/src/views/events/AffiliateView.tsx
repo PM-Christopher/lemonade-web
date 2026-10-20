@@ -5,14 +5,10 @@ import DataCard from "@/components/global/DataCard";
 import { affiliateMainHeaders, eventMainHeaders } from "@/data/tableData";
 
 import PaginationComp from "@/components/global/Pagination";
-import type {
-  EventAffiliatesResponse,
-  EventListResponse,
-  EventPromotionsQueueResponse,
-} from "@/features/events/api";
+import type { EventAffiliatesResponse, EventTabData } from "@/features/events/api";
 
 interface AffiliateViewProps {
-  pageData: EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | undefined;
+  pageData: EventTabData | undefined;
 }
 
 const AffiliateView = ({ pageData }: AffiliateViewProps) => {

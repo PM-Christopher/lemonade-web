@@ -7,6 +7,7 @@ import DataCard from "@/components/global/DataCard";
 import { useSelector } from "react-redux";
 import { useDashboardMetricsQuery } from "@/features/dashboard/queries";
 import { RootState } from "@/redux/store";
+import { routes } from "@/lib/routes";
 
 function DashboardClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -105,6 +106,24 @@ function DashboardClient() {
       isPrice: false,
     },
     {
+      title: "Pending Events",
+      value: metrics?.pending_events || 0,
+      isPrice: false,
+      link: `${routes.EVENTS}?tab=pending`,
+    },
+    {
+      title: "Pending Businesses",
+      value: metrics?.pending_businesses || 0,
+      isPrice: false,
+      link: routes.BUSINESSES,
+    },
+    {
+      title: "Open Reports",
+      value: metrics?.open_reports || 0,
+      isPrice: false,
+      link: routes.REPORTING,
+    },
+    {
       title: "Total Promoted Events",
       value: metrics?.total_promoted_events || 0,
       isPrice: false,
@@ -125,6 +144,8 @@ function DashboardClient() {
               key={index}
               title={item.title}
               count={item.value}
+              isLink={Boolean(item.link)}
+              pageLink={item.link}
             />
           ))}
         </div>

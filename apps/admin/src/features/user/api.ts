@@ -17,6 +17,7 @@ export interface AdminUser {
   social_links: Array<{ name: string; value: string }>;
   referrals: number;
   tribes_joined: number;
+  unread_support_messages: number;
   tribes_created: number;
   threads_created: number;
   business: string | null;

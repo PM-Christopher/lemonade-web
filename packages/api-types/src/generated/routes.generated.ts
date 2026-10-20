@@ -397,6 +397,7 @@ export const userSubscriptionRoutes = Object.freeze({
 export const userSupportRoutes = Object.freeze({
   MESSAGES: "/user/support", // GET
   SEND: "/user/support", // POST
+  UNREAD: "/user/support/unread", // GET
 });
 
 export const userThreadsRoutes = Object.freeze({

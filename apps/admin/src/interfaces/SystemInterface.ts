@@ -30,4 +30,7 @@ export interface PlatformStatistics {
   total_paid_tribe_earnings: number | string;
   total_paid_tribe_commissions: number | string;
   total_paid_tribes: number;
+  pending_events: number;
+  pending_businesses: number;
+  open_reports: number;
 }
