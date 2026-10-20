@@ -7,6 +7,7 @@ import { RootState } from "@/redux/store";
 import { useUserTribeHistoryQuery } from "@/features/user/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { manualTransactionsExport } from "@/utils/helper";
+import dayjs from "dayjs";
 
 interface TribeHistoryModalProps {
   isOpen: boolean;
@@ -68,7 +69,7 @@ function TribeHistoryModal({ isOpen, toggle, userId }: TribeHistoryModalProps) {
                     {item.tribe_name ? ` (${item.tribe_name})` : ""}
                   </p>
                   <p className="text-text-grey text-meta leading-normal font-normal">
-                    {item.created}
+                    {dayjs(item.created).format("D, MMM YYYY. hh:mmA")}
                   </p>
                 </div>
               ))

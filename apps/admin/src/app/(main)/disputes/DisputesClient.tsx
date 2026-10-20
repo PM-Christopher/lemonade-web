@@ -2,6 +2,7 @@
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
+import dayjs from "dayjs";
 import { SearchIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -128,7 +129,7 @@ function DisputesClient() {
                           {dispute.job ? `₦${dispute.job.amount}` : "N/A"}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          {dispute.date_raised}
+                          {dayjs(dispute.date_raised).format("DD MMM, YYYY hh:mm A")}
                         </td>
                         <td
                           className={`p-4 font-sans text-sm font-medium ${GetStatusClass(dispute.status === "pending" ? "Pending" : "Resolved")}`}

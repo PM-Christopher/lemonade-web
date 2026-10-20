@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import dayjs from "dayjs";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
@@ -94,7 +95,12 @@ function DisputeDetailsClient({ id }: { id: string }) {
             <Field label="Services" value={job?.services?.join(", ")} />
             <Field label="Additional info" value={job?.additional_info} />
             <Field label="Business remark" value={job?.remark} />
-            <Field label="Date raised" value={dispute?.date_raised} />
+            <Field
+              label="Date raised"
+              value={
+                dispute ? dayjs(dispute.date_raised).format("DD MMM, YYYY hh:mm A") : undefined
+              }
+            />
             {dispute?.dispute && (
               <div className={"flex flex-col gap-2"}>
                 <p className={"text-text-grey text-meta leading-normal font-medium"}>Dispute</p>

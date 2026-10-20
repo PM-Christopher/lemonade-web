@@ -30,7 +30,10 @@ function DataCard({
         <p className="text-text-grey text-body-s font-normal">{title}</p>
         <p className="font-semiBold text-title-l leading-normal">
           {isPrice && "₦"}
-          {Number(count)?.toLocaleString()}
+          {Number(count)?.toLocaleString("en-US", {
+            minimumFractionDigits: Number.isInteger(Number(count)) ? 0 : 2,
+            maximumFractionDigits: 2,
+          })}
           {isPercentage && "%"}
         </p>
       </div>

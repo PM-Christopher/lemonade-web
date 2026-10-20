@@ -2,6 +2,7 @@
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
+import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTribeListQuery } from "@/features/tribes/queries";
@@ -71,7 +72,9 @@ const TribeListView = ({ filter }: { filter: TribeListFilter }) => {
                   </td>
                 )}
                 <td className="p-4 font-sans text-sm font-medium">{tribe.members}</td>
-                <td className="p-4 font-sans text-sm font-medium">{tribe.date_created}</td>
+                <td className="p-4 font-sans text-sm font-medium">
+                  {dayjs(tribe.date_created).format("DD MMM, YYYY hh:mm A")}
+                </td>
               </tr>
             ))
           ) : (

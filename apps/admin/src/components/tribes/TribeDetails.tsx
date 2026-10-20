@@ -1,4 +1,5 @@
 import React from "react";
+import dayjs from "dayjs";
 import Image from "next/image";
 import { DotIcon, XIcon } from "lucide-react";
 import { TribeDetail, TribeMemberItem } from "@/features/tribes/api";
@@ -43,7 +44,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
             </p>
           </div>
           <p className="text-text-grey text-meta text-center leading-normal font-normal">
-            Created on {tribe?.created_at}
+            Created on {tribe?.created_at ? dayjs(tribe.created_at).format("DD MMM, YYYY") : ""}
           </p>
         </div>
       </div>
