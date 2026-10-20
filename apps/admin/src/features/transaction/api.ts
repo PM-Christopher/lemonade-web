@@ -209,11 +209,13 @@ export const transactionApi = {
   // Threaded through every case uniformly.
   getTransactionData: (
     trxType: TransactionListType,
-    pagination?: { page?: number; perPage?: number },
+    pagination?: { page?: number; perPage?: number; from?: string; to?: string },
   ) => {
-    const params = pagination?.page
-      ? { page: pagination.page, per_page: pagination.perPage }
-      : undefined;
+    const range = { from: pagination?.from, to: pagination?.to };
+    const params =
+      pagination?.page || range.from || range.to
+        ? { page: pagination?.page, per_page: pagination?.perPage, ...range }
+        : undefined;
 
     switch (trxType) {
       case "plan-subscriptions":

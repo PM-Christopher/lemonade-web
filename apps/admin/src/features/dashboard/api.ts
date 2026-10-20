@@ -4,5 +4,8 @@ import { adminAccountRoutes } from "@lemonade/api-types/generated";
 import type { PlatformStatistics } from "@/interfaces/SystemInterface";
 
 export const dashboardApi = {
-  getMetrics: () => browserApi.get<PlatformStatistics>(adminAccountRoutes.DASHBOARD),
+  getMetrics: (range?: { from?: string; to?: string }) =>
+    browserApi.get<PlatformStatistics>(adminAccountRoutes.DASHBOARD, {
+      params: { from: range?.from, to: range?.to },
+    }),
 };

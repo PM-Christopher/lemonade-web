@@ -19,11 +19,16 @@ import { useTransactionDataQuery } from "@/features/transaction/queries";
 import { transactionApi, type TransactionListType } from "@/features/transaction/api";
 import { manualTransactionsExport } from "@/utils/helper";
 import useSearchParams from "@/hooks/useSearchParams";
+import dayjs from "dayjs";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 
 const PER_PAGE = 10;
 
 function TransactionsClient() {
   const [menuOption, setMenuOption] = useState("plan-subscriptions");
+  const [range, setRange] = useState<DateRange | null>(null);
+  const from = range ? dayjs(range.start).format("YYYY-MM-DD") : undefined;
+  const to = range ? dayjs(range.end).format("YYYY-MM-DD") : undefined;
   // These two tabs run their own queries and filters.
   const isStandaloneTab = menuOption === "all-payments" || menuOption === "ledger";
   const { searchParams, setSearchParams } = useSearchParams();
@@ -35,6 +40,8 @@ function TransactionsClient() {
     enabled: isLoggedIn && !isStandaloneTab,
     page,
     perPage: PER_PAGE,
+    from,
+    to,
   });
 
   const switchOption = (option: string) => {
@@ -74,7 +81,10 @@ function TransactionsClient() {
   // (omitting page/perPage gets the old full-array shape back, see
   // docs/ARCHITECTURE.md §22 Conflict 1) rather than reusing trxData.
   const exportCSV = async () => {
-    const fullData = await transactionApi.getTransactionData(menuOption as TransactionListType);
+    const fullData = await transactionApi.getTransactionData(menuOption as TransactionListType, {
+      from,
+      to,
+    });
     manualTransactionsExport(fullData?.history || [], menuOption);
   };
 
@@ -114,14 +124,15 @@ function TransactionsClient() {
                             </div>
                             <ChevronDown className={"text-text-grey w-5"}/>
                         </div> */}
-            {/* <div
-                            className={"flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"}>
-                            <div className={'flex gap-2 items-center'}>
-                                <CalendarIcon className={"text-text-grey w-3.75 h-3.75"}/>
-                                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>ALL TIME</p>
-                            </div>
-                            <ChevronDown className={"text-text-grey w-5"}/>
-                        </div> */}
+            {isStandaloneTab ? null : (
+              <DateRangePicker
+                value={range}
+                onChange={(value) => {
+                  setRange(value);
+                  setSearchParams({ page: undefined });
+                }}
+              />
+            )}
             <div className={isStandaloneTab ? "hidden" : undefined}>
               <Button
                 onClick={exportCSV}

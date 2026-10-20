@@ -1,5 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import dayjs from "dayjs";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import MainLayout from "@/components/layouts/MainLayout";
 import DataCard from "@/components/global/DataCard";
 import { useSelector } from "react-redux";
@@ -8,7 +10,12 @@ import { RootState } from "@/redux/store";
 
 function DashboardClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: metrics } = useDashboardMetricsQuery({ enabled: isLoggedIn });
+  const [range, setRange] = useState<DateRange | null>(null);
+  const { data: metrics } = useDashboardMetricsQuery({
+    enabled: isLoggedIn,
+    from: range ? dayjs(range.start).format("YYYY-MM-DD") : undefined,
+    to: range ? dayjs(range.end).format("YYYY-MM-DD") : undefined,
+  });
 
   const data = [
     { title: "Total Users", value: metrics?.total_users || 0, isPrice: false },
@@ -107,17 +114,9 @@ function DashboardClient() {
   return (
     <MainLayout>
       <div className="mt-5 flex flex-col gap-5 px-10">
-        {/* <div
-          className={
-            "flex border border-grey-20 bg-none w-fit px-4 py-2.5 rounded-xl gap-7.5"
-          }
-        >
-          <div className={"flex gap-2 items-center"}>
-            <CalendarIcon className={"text-text-grey"} />
-            <p className={"text-meta leading-normal font-semiBold"}>ALL TIME</p>
-          </div>
-          <ChevronDown className={"text-text-grey"} />
-        </div> */}
+        <div className={"w-fit"}>
+          <DateRangePicker value={range} onChange={setRange} />
+        </div>
         <div className={"grid grid-cols-4 gap-5"}>
           {data.map((item, index) => (
             <DataCard

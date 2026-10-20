@@ -9,7 +9,7 @@ export default async function DashboardPage() {
 
   await queryClient.prefetchQuery({
     queryKey: dashboardKeys.metrics(),
-    queryFn: dashboardServerApi.getMetrics,
+    queryFn: () => dashboardServerApi.getMetrics(),
   });
 
   return (

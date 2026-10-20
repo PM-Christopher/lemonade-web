@@ -229,6 +229,13 @@ export interface CreateTribeThreadRequest {
   };
 }
 
+export interface DateRangeRequest {
+  from?: string;
+  to?: string;
+  page?: number;
+  per_page?: number;
+}
+
 export interface DeductUserWalletBalanceRequest {
   amount: number;
 }

@@ -8,10 +8,10 @@ import {
 
 export const transactionKeys = {
   all: () => ["transaction"] as const,
-  list: (trxType: string, page?: number) =>
+  list: (trxType: string, page?: number, from?: string, to?: string) =>
     page
-      ? ([...transactionKeys.all(), "list", trxType, page] as const)
-      : ([...transactionKeys.all(), "list", trxType] as const),
+      ? ([...transactionKeys.all(), "list", trxType, page, from ?? "", to ?? ""] as const)
+      : ([...transactionKeys.all(), "list", trxType, from ?? "", to ?? ""] as const),
   payments: (filters?: AllPaymentsFilters) =>
     [...transactionKeys.all(), "payments", filters ?? {}] as const,
   ledger: (filters?: LedgerFilters) => [...transactionKeys.all(), "ledger", filters ?? {}] as const,
@@ -24,14 +24,16 @@ export const transactionKeys = {
 /** Financial reporting data, not a live balance — but still money-adjacent, staleTime 0 like wallet. */
 export function useTransactionDataQuery(
   trxType: string,
-  options?: { enabled?: boolean; page?: number; perPage?: number },
+  options?: { enabled?: boolean; page?: number; perPage?: number; from?: string; to?: string },
 ) {
   return useQuery({
-    queryKey: transactionKeys.list(trxType, options?.page),
+    queryKey: transactionKeys.list(trxType, options?.page, options?.from, options?.to),
     queryFn: () =>
       transactionApi.getTransactionData(trxType as TransactionListType, {
         page: options?.page,
         perPage: options?.perPage,
+        from: options?.from,
+        to: options?.to,
       }),
     staleTime: 0,
     enabled: Boolean(trxType) && options?.enabled !== false,

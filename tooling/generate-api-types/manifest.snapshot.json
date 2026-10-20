@@ -42,8 +42,29 @@
         "uri": "/v1/admin/account/dashboard",
         "name": "v1.admin.account.dashboard",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "POST",
@@ -1025,8 +1046,29 @@
         "uri": "/v1/admin/transaction/boosts",
         "name": "v1.admin.transaction.boosts",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1041,8 +1083,29 @@
         "uri": "/v1/admin/transaction/events",
         "name": "v1.admin.transaction.events",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1129,16 +1192,58 @@
         "uri": "/v1/admin/transaction/promotions",
         "name": "v1.admin.transaction.promotions",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "GET",
         "uri": "/v1/admin/transaction/services",
         "name": "v1.admin.transaction.services",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1153,8 +1258,29 @@
         "uri": "/v1/admin/transaction/plan-subscription",
         "name": "v1.admin.transaction.subscriptions",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1169,8 +1295,29 @@
         "uri": "/v1/admin/transaction/tribes",
         "name": "v1.admin.transaction.tribes",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1185,8 +1332,29 @@
         "uri": "/v1/admin/transaction/wallet-withdrawals",
         "name": "v1.admin.transaction.wallet-withdrawals",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DateRangeRequest",
+        "fields": {
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:200"
+            ]
+        }
     },
     {
         "method": "POST",
