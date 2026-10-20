@@ -406,6 +406,10 @@ export interface ResetUserPasswordRequest {
   password: string;
 }
 
+export interface ResolveDisputeRequest {
+  resolution: "refund" | "release";
+}
+
 export interface ReviewCompletedJobRequest {
   title: string;
   rating: number;
@@ -461,6 +465,7 @@ export interface SubscriptionPlanRequest {
   yearly_charge: number;
   ver_badge: boolean;
   forum_creation: boolean;
+  business_listing?: boolean;
   lemon_id: boolean;
   event_creation: number;
   sales_commission: number;

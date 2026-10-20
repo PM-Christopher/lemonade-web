@@ -38,6 +38,9 @@ export const adminAuthRoutes = Object.freeze({
 export const adminBusinessesRoutes = Object.freeze({
   APPROVE: "/admin/businesses/{id}/approve", // PATCH
   DELETE: "/admin/businesses/{id}", // DELETE
+  DISPUTES_LIST: "/admin/businesses/disputes", // GET
+  DISPUTES_RESOLVE: "/admin/businesses/disputes/{id}/resolve", // PATCH
+  DISPUTES_SHOW: "/admin/businesses/disputes/{id}", // GET
   LIST: "/admin/businesses", // GET
   REACTIVATE: "/admin/businesses/{id}/reactivate", // PATCH
   REJECT: "/admin/businesses/{id}/reject", // PATCH
