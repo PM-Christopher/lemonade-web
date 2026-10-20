@@ -1259,7 +1259,7 @@ export const MyTicketSkeleton = () => {
 export const EventFormSkeleton = () => {
   return (
     <form>
-      <div className="mt-10 flex w-160 animate-pulse flex-col rounded-xl bg-white p-12">
+      <div className="laptop:mt-10 laptop:w-160 laptop:p-12 flex w-full animate-pulse flex-col rounded-xl bg-white p-4">
         {/* Header */}
         <div className="h-3 w-28 rounded bg-gray-200" />
 

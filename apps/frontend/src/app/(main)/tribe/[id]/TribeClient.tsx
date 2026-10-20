@@ -231,7 +231,7 @@ const TribeClient = ({ id }: { id: string }) => {
   return (
     <MainLayout>
       <div className="bg-light_grey pb-10">
-        <div className="tablet:flex-row tablet:items-center flex flex-col justify-between gap-4 border-t border-b bg-white p-5 px-10">
+        <div className="tablet:flex-row tablet:items-center flex flex-col justify-between gap-4 bg-white p-5 px-10">
           <div
             className="flex cursor-pointer items-center gap-2"
             onClick={() => push(routes.TRIBE)}

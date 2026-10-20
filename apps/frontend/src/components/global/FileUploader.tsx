@@ -3,6 +3,7 @@ import { images } from "@/lib/images";
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import Image from "next/image";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import { sharedApi } from "@/features/shared/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
@@ -103,8 +104,9 @@ export const SingleFileUploader = ({
         </Dropzone>
       ) : (
         <div className="relative inline-block h-50 w-50">
-          <Image
+          <FallbackImage
             src={elementImage}
+            fallbackSrc={images.DEFAULT_EVENT}
             alt="event_image"
             width={200}
             height={200}

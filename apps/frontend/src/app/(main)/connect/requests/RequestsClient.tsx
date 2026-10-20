@@ -94,7 +94,7 @@ const RequestsClient = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="laptop:flex-row laptop:items-center laptop:px-16 flex flex-col items-start justify-between border-t border-b bg-white p-2 px-4">
+        <div className="laptop:flex-row laptop:items-center laptop:px-16 flex flex-col items-start justify-between bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => push(routes.CONNECT)}

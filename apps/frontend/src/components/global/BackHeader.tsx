@@ -8,7 +8,7 @@ export function BackHeader({ title }: { title: string }) {
   const { back } = useNavigation();
 
   return (
-    <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
+    <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
       <button
         type="button"
         className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
