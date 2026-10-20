@@ -12,6 +12,7 @@ export type {
   UploadFileResponse,
   UploadMultipleFilesResponse,
   EventCategory,
+  Industry,
 } from "./api";
-export { sharedKeys, useBanksQuery, useEventCategoriesQuery } from "./queries";
+export { sharedKeys, useBanksQuery, useEventCategoriesQuery, useIndustriesQuery } from "./queries";
 export { useVerifyAccountMutation } from "./mutations";

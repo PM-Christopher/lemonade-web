@@ -46,6 +46,16 @@ export interface EventCategoriesResponse {
   categories: EventCategory[];
 }
 
+export interface Industry {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface IndustriesResponse {
+  industries: Industry[];
+}
+
 export interface BusinessCategoriesResponse {
   categories: BusinessCategory[];
 }
@@ -55,6 +65,8 @@ export const sharedApi = {
 
   getEventCategories: () =>
     browserApi.get<EventCategoriesResponse>(sharedUtilitiesRoutes.EVENT_CATEGORIES),
+
+  getIndustries: () => browserApi.get<IndustriesResponse>(sharedUtilitiesRoutes.INDUSTRIES),
 
   getBusinessCategories: () =>
     browserApi.get<BusinessCategoriesResponse>(sharedUtilitiesRoutes.BUSINESS_CATEGORIES),

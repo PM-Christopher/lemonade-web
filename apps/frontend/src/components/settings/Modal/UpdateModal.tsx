@@ -5,10 +5,11 @@ import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
-import { useForm, useWatch, type Resolver } from "react-hook-form";
+import { Controller, useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CountryList from "country-list-with-dial-code-and-flag";
 import { SubmitButton } from "@/components/global/SubmitButton";
+import { IndustrySelect } from "@/components/global/IndustrySelect";
 import { applyServerErrors } from "@/lib/form-errors";
 import { useUpdateProfileFieldMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -78,22 +79,20 @@ const INTERESTS = [
   "Marketing",
 ];
 
-const profileTypeHeader = (type: string) => {
+const profileTypeTitle = (type: string) => {
   switch (type) {
-    case "username":
-      return "username";
     case "bio":
-      return "bio";
+      return "Update bio";
     case "industry":
-      return "profession";
-    case "address":
-      return "address";
+      return "Update industry";
+    case "addresses":
+      return "Update address";
     case "skills-interest":
-      return "skills & interest";
+      return "Update skills & interests";
     case "socials":
-      return "socials";
+      return "Update social profiles";
     default:
-      return "username";
+      return "Change username";
   }
 };
 
@@ -261,7 +260,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
             <div className="cursor-pointer" onClick={toggle}>
               <CloseIcon className="w-2.75" />
             </div>
-            <p className="text-body-l font-semibold">Change {profileTypeHeader(type)}</p>
+            <p className="text-body-l font-semibold">{profileTypeTitle(type)}</p>
           </div>
           <div className="laptop:block hidden">
             <SubmitButton
@@ -310,14 +309,19 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
               {type === "industry" && (
                 <div className="mt-6 grid gap-1">
                   <Label htmlFor="industry" className="text-text-grey text-label font-normal">
-                    Profession
+                    Industry
                   </Label>
-                  <Input
-                    id="industry"
-                    type="text"
-                    placeholder=""
-                    className="border-step-color bg-light_grey h-12 rounded-xl border-2"
-                    {...register("industry")}
+                  <Controller
+                    control={control}
+                    name="industry"
+                    render={({ field }) => (
+                      <IndustrySelect
+                        id="industry"
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                      />
+                    )}
                   />
                   <FieldError message={errors.industry?.message} />
                 </div>
@@ -356,7 +360,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({ toggle, type, user }) => {
                     </Label>
                     <select
                       id="country"
-                      className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                      className="form-font bg-light_grey h-12 w-full min-w-0 rounded-xl border-0 px-2"
                       {...register("country")}
                     >
                       <option value="">Select country</option>
@@ -484,7 +488,7 @@ const UpdateModal: React.FC<UpdateInterface> = ({ toggle, isOpen, type, user }) 
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Change {profileTypeHeader(type)}</DialogTitle>
+        <DialogTitle className="sr-only">{profileTypeTitle(type)}</DialogTitle>
         {/* Remount when the edited field changes so the schema and defaults reset. */}
         <UpdateForm key={type} toggle={toggle} type={type} user={user} />
       </DialogContentBare>

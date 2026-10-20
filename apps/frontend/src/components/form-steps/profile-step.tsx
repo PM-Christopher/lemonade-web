@@ -1,20 +1,7 @@
 "use client";
 import { images } from "@/lib/images";
 import React, { useRef, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Label,
-  Input,
-  Textarea,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  FieldError,
-} from "@lemonade/ui";
+import { Card, CardContent, CardHeader, Label, Input, Textarea, FieldError } from "@lemonade/ui";
 import Image from "next/image";
 import { authApi } from "@/features/authentication/api";
 import { sharedApi } from "@/features/shared/api";
@@ -26,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSetupSchema, type ProfileSetupInput } from "@lemonade/validation";
 import { applyServerErrors } from "@/lib/form-errors";
 import { SubmitButton } from "@/components/global/SubmitButton";
+import { IndustrySelect } from "@/components/global/IndustrySelect";
 import { authFailure, authStart, loadStop } from "@/features/authentication/authSlice";
 import { errorMessage } from "@/lib/api-error";
 
@@ -208,17 +196,12 @@ const ProfileStep: React.FC<ProfileInterface> = ({ next_step }) => {
               control={control}
               name="industry"
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger id="industry" aria-label="Industry" onBlur={field.onBlur}>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent className="form-font">
-                    <SelectItem value="Software Development">Software Development</SelectItem>
-                    <SelectItem value="Engineering">Engineering</SelectItem>
-                    <SelectItem value="Health Care">Health Care</SelectItem>
-                    <SelectItem value="Construction">Construction</SelectItem>
-                  </SelectContent>
-                </Select>
+                <IndustrySelect
+                  id="industry"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
               )}
             />
             <FieldError message={errors.industry?.message} />
