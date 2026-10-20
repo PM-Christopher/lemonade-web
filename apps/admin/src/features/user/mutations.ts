@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { userApi } from "./api";
+import { userApi, type SupportMessagePayload } from "./api";
 import { userKeys } from "./queries";
 
 export function useSuspendUserMutation(id: string | number | undefined) {
@@ -61,4 +61,20 @@ export function useCancelPlanMutation(id: string | number | undefined) {
       queryClient.invalidateQueries({ queryKey: [...userKeys.all(), "account-plan"] });
     },
   });
+}
+
+export function useSendSupportMessageMutation(id: string | number | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: SupportMessagePayload) =>
+      userApi.sendSupportMessage(id as string | number, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...userKeys.all(), "support-chat", id] });
+    },
+  });
+}
+
+export function useUploadChatMediaMutation() {
+  return useMutation({ mutationFn: (file: File) => userApi.uploadChatMedia(file) });
 }

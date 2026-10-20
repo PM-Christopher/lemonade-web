@@ -8,6 +8,7 @@ import { RootState } from "@/redux/store";
 import { useTribeListQuery } from "@/features/tribes/queries";
 import type { AdminTribeListItem } from "@/features/tribes/api";
 import PaginationComp from "@/components/global/Pagination";
+import type { DateRange } from "@/components/global/DateRangePicker";
 
 export type TribeListFilter = "created" | "tln" | "paid";
 
@@ -23,18 +24,45 @@ const TAIL_HEADERS = ["MEMBERS", "DATE CREATED"];
 const PER_PAGE = 10;
 
 // One table for the Created, TLN and Paid tabs. Paid adds the access fee.
-const TribeListView = ({ filter }: { filter: TribeListFilter }) => {
+const TribeListView = ({
+  filter,
+  search = "",
+  range = null,
+}: {
+  filter: TribeListFilter;
+  search?: string;
+  range?: DateRange | null;
+}) => {
   const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data } = useTribeListQuery({ enabled: isLoggedIn });
   const [currentPage, setCurrentPage] = useState(1);
+  const [seenFilters, setSeenFilters] = useState({ search, range });
+  if (seenFilters.search !== search || seenFilters.range !== range) {
+    setSeenFilters({ search, range });
+    setCurrentPage(1);
+  }
 
   const showAccessFee = filter === "paid";
   const headers = showAccessFee
     ? [...BASE_HEADERS, "ACCESS FEE", ...TAIL_HEADERS]
     : [...BASE_HEADERS, ...TAIL_HEADERS];
 
-  const tribes = (data?.tribes ?? []).filter(FILTERS[filter]);
+  const term = search.trim().toLowerCase();
+  const tribes = (data?.tribes ?? []).filter(FILTERS[filter]).filter((tribe) => {
+    const matchesSearch =
+      term === "" ||
+      [tribe.name, tribe.uuid, tribe.created_by, tribe.category].some((value) =>
+        value?.toLowerCase().includes(term),
+      );
+    const created = dayjs(tribe.date_created);
+    const inRange =
+      range === null ||
+      !created.isValid() ||
+      (!created.isBefore(dayjs(range.start).startOf("day")) &&
+        !created.isAfter(dayjs(range.end).endOf("day")));
+    return matchesSearch && inRange;
+  });
   const totalPages = Math.ceil(tribes.length / PER_PAGE) || 1;
   const startIndex = (currentPage - 1) * PER_PAGE;
   const pageTribes = tribes.slice(startIndex, startIndex + PER_PAGE);

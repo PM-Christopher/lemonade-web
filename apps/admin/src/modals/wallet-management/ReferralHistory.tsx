@@ -1,11 +1,12 @@
 import React from "react";
-import { XIcon } from "lucide-react";
+import { PrinterIcon, XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useReferralHistoryQuery } from "@/features/user/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { manualTransactionsExport } from "@/utils/helper";
 
 type ReferralHistoryInterface = {
   isOpen: boolean;
@@ -20,6 +21,16 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle, a
     enabled: isLoggedIn && isOpen,
   });
   const history = data?.referral_history ?? [];
+
+  const print = () =>
+    manualTransactionsExport(
+      history.map((item) => ({
+        amount: item.amount,
+        type: item.type,
+        date: dayjs(item.created_at).format("D, MMM YYYY. hh:mmA"),
+      })),
+      "referral-history",
+    );
 
   if (!isOpen) return null;
   return (
@@ -46,7 +57,16 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle, a
                 Referral history
               </p>
             </div>
-            <div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                className="border-light-grey-50 flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2"
+                onClick={print}
+                disabled={history.length === 0}
+              >
+                <PrinterIcon className="w-4" />
+                <span className="text-body-s font-medium">Print</span>
+              </button>
               <button type="button" aria-label="Close" className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </button>

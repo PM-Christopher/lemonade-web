@@ -1,6 +1,6 @@
 // Endpoints for the user domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
-import { adminUsersRoutes, buildPath } from "@lemonade/api-types/generated";
+import { adminUsersRoutes, adminUtilitiesRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface AdminUser {
   id: number;
@@ -241,6 +241,38 @@ export interface ReferralHistoryResponse {
   referral_history: ReferralHistoryItem[];
 }
 
+export interface AffiliateHistoryItem {
+  amount: string;
+  created_at: string;
+}
+
+export interface AffiliateHistoryResponse {
+  affiliate_history: AffiliateHistoryItem[];
+}
+
+export interface SupportMedia {
+  type: "image" | "video";
+  url: string;
+}
+
+export interface SupportMessage {
+  id: string;
+  sender: "admin" | "user";
+  message: string | null;
+  media: SupportMedia[];
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface SupportMessagesResponse {
+  messages: SupportMessage[];
+}
+
+export interface SupportMessagePayload {
+  message?: string;
+  media?: SupportMedia[];
+}
+
 export interface UserActionResponse {
   user: AdminUser;
   message?: string;
@@ -332,6 +364,32 @@ export const userApi = {
 
   getPayoutHistory: (id: string | number) =>
     browserApi.get<PayoutHistoryResponse>(buildPath(adminUsersRoutes.PAYOUT_HISTORY, { id })),
+
+  getAffiliateHistory: (affiliateId: string | number) =>
+    browserApi.get<AffiliateHistoryResponse>(
+      buildPath(adminUsersRoutes.AFFILIATES_AFFILIATE_HISTORY, { id: affiliateId }),
+    ),
+
+  getSupportMessages: (id: string | number) =>
+    browserApi.get<SupportMessagesResponse>(buildPath(adminUsersRoutes.SUPPORT_CHAT, { id })),
+
+  sendSupportMessage: (id: string | number, payload: SupportMessagePayload) =>
+    browserApi.post<{ new_message: SupportMessage }>(
+      buildPath(adminUsersRoutes.SUPPORT_CHAT_SEND, { id }),
+      payload,
+    ),
+
+  // Uploads a picture or short video for the chat and returns its address.
+  uploadChatMedia: async (file: File): Promise<SupportMedia> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const uploaded = await browserApi.post<{ image: string }>(
+      adminUtilitiesRoutes.UPLOAD,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    return { type: file.type.startsWith("video/") ? "video" : "image", url: uploaded.image };
+  },
 
   getReferralHistory: (affiliateId: string | number) =>
     browserApi.get<ReferralHistoryResponse>(

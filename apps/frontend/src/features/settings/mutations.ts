@@ -44,3 +44,14 @@ export function useRedeemPointsMutation() {
     },
   });
 }
+
+export function useSendSupportMessageMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (message: string) => settingsApi.sendSupportMessage(message),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: settingsKeys.support() });
+    },
+  });
+}

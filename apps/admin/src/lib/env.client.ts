@@ -35,6 +35,9 @@ export const clientEnv = {
   // The BFF's own base URL — see config/url.ts.
   NEXT_PUBLIC_BASE_URL: requiredUrl("NEXT_PUBLIC_BASE_URL", process.env.NEXT_PUBLIC_BASE_URL),
 
+  // The user app's public address, used to build shareable referral links.
+  NEXT_PUBLIC_USER_APP_URL: blankAsUndefined(process.env.NEXT_PUBLIC_USER_APP_URL),
+
   // ADR-005: self-hosted Reverb, not Pusher Cloud, for moderation/withdrawal
   // realtime updates. Empty string in .env.local today.
   NEXT_PUBLIC_REVERB_KEY: blankAsUndefined(process.env.NEXT_PUBLIC_REVERB_KEY),

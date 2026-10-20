@@ -9,6 +9,7 @@ export const walletKeys = {
       ? ([...walletKeys.all(), "withdrawalRequests", page] as const)
       : ([...walletKeys.all(), "withdrawalRequests"] as const),
   detail: (id: string | number) => [...walletKeys.all(), "detail", id] as const,
+  earnings: (userId: string) => [...walletKeys.all(), "earnings", userId] as const,
   pointsRates: () => [...walletKeys.all(), "points-rates"] as const,
 };
 
@@ -57,5 +58,15 @@ export function usePointsRatesQuery(options?: { enabled?: boolean }) {
     queryFn: walletApi.getPointsRates,
     staleTime: 3_600_000,
     enabled: options?.enabled,
+  });
+}
+
+/** Earnings are money, so always refetched. */
+export function useUserEarningsQuery(userId: string | undefined, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: walletKeys.earnings(userId ?? ""),
+    queryFn: () => walletApi.getUserEarnings(userId as string),
+    staleTime: 0,
+    enabled: Boolean(userId) && options?.enabled !== false,
   });
 }

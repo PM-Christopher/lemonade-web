@@ -6,7 +6,6 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { usePayoutHistoryQuery } from "@/features/user/queries";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { GetStatusClass, capitalizeWords, manualTransactionsExport } from "@/utils/helper";
 
 interface PayoutHistoryModalProps {
@@ -64,7 +63,11 @@ function PayoutHistoryModal({ isOpen, toggle, userId }: PayoutHistoryModalProps)
                 <div className="flex items-center justify-between py-3" key={index}>
                   <div className="flex flex-col">
                     <p className="text-body-s font-medium">
-                      ₦{formatNumberWithCommas(Number(item.amount))}
+                      ₦
+                      {Number(item.amount).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </p>
                     <p className="text-text-grey text-meta leading-normal font-normal">
                       {dayjs(item.date).format("D, MMM YYYY. hh:mmA")}

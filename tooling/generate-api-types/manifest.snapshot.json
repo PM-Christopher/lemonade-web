@@ -1311,6 +1311,14 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/admin/users/affiliates/{id}/affiliate-history",
+        "name": "v1.admin.users.affiliates.affiliate-history",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/admin/users/affiliates/{id}/detail",
         "name": "v1.admin.users.affiliates.detail",
         "guard": "admin",
@@ -1418,6 +1426,46 @@
         "guard": "admin",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/support-chat",
+        "name": "v1.admin.users.support-chat",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/users/{id}/support-chat",
+        "name": "v1.admin.users.support-chat.send",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Support\\SendSupportMessageRequest",
+        "fields": {
+            "message": [
+                "nullable",
+                "string",
+                "max:2000",
+                "required_without:media"
+            ],
+            "media": [
+                "nullable",
+                "array",
+                "max:4",
+                "required_without:message"
+            ],
+            "media.*.type": [
+                "required",
+                "string",
+                "in:image,video"
+            ],
+            "media.*.url": [
+                "required",
+                "string",
+                "url",
+                "max:2048"
+            ]
+        }
     },
     {
         "method": "PATCH",
@@ -3901,6 +3949,46 @@
         "guard": null,
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/support",
+        "name": "v1.user.support.messages",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/support",
+        "name": "v1.user.support.send",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Support\\SendSupportMessageRequest",
+        "fields": {
+            "message": [
+                "nullable",
+                "string",
+                "max:2000",
+                "required_without:media"
+            ],
+            "media": [
+                "nullable",
+                "array",
+                "max:4",
+                "required_without:message"
+            ],
+            "media.*.type": [
+                "required",
+                "string",
+                "in:image,video"
+            ],
+            "media.*.url": [
+                "required",
+                "string",
+                "url",
+                "max:2048"
+            ]
+        }
     },
     {
         "method": "GET",

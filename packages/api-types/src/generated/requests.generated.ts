@@ -437,6 +437,14 @@ export interface SendChatMessageRequest {
   media?: unknown[];
 }
 
+export interface SendSupportMessageRequest {
+  message?: string;
+  media?: {
+    type: "image" | "video";
+    url: string;
+  }[];
+}
+
 export interface SendTypingIndicatorRequest {
   receiver_id: string;
 }

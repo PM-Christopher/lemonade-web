@@ -5,6 +5,7 @@ import { formatNumberWithCommas } from "@/lib/formatNumber";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
 import { RootState } from "@/redux/store";
 import { ChevronRight, CopyIcon } from "lucide-react";
+import { clientEnv } from "@/lib/env.client";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,6 +19,14 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: isData } = useAffiliateDetailQuery(id, { enabled: isLoggedIn });
+
+  // The user app's signup page prefills the code; needs the user app's address to build.
+  const referralCode = isData?.detail?.referral_code;
+  const userAppUrl = clientEnv.NEXT_PUBLIC_USER_APP_URL;
+  const referralLink =
+    referralCode && userAppUrl
+      ? `${userAppUrl.replace(/\/$/, "")}/signup?referral=${encodeURIComponent(referralCode)}`
+      : null;
 
   return (
     <MainLayout>
@@ -85,25 +94,26 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
               )}
             </div>
           </div>
-          {/* <div className={"flex gap-6 items-center-center"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Referral Link:
-              </p>
+          {referralLink && (
+            <div className={"items-center-center flex gap-6"}>
+              <div className={"w-28.75"}>
+                <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                  Referral Link:
+                </p>
+              </div>
+              <div className={"flex min-w-0 gap-1"}>
+                <p className={"text-body-s truncate font-medium"}>{referralLink}</p>
+                <button
+                  type="button"
+                  aria-label="Copy referral link"
+                  className="text-light-green cursor-pointer"
+                  onClick={() => void navigator.clipboard?.writeText(referralLink)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </button>
+              </div>
             </div>
-            <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>
-                https://app.lemonade.com/ref=?adeba123
-              </p>
-            </div>
-            <p
-              className={
-                "cursor-pointer font-medium text-body-s text-light-green"
-              }
-            >
-              copy icon
-            </p>
-          </div> */}
+          )}
         </div>
 
         <div className="flex w-full min-w-0 flex-1 flex-col">
@@ -126,7 +136,6 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
                         ₦ {formatNumberWithCommas(isData?.total_amount_earned || 0)}
                       </p>
                     </div>
-                    <ChevronRight className={"text-text-grey"} />
                   </div>
                   <div
                     className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}
@@ -137,7 +146,6 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
                         {formatNumberWithCommas(isData?.total_referrals || 0)}
                       </p>
                     </div>
-                    <ChevronRight className={"text-text-grey"} />
                   </div>
                   <div className={"flex cursor-pointer justify-between p-4"}>
                     <div className={"flex flex-col gap-2"}>
@@ -149,7 +157,6 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
                         {formatNumberWithCommas(isData?.total_subscribed_referrals || 0)}
                       </p>
                     </div>
-                    <ChevronRight className={"text-text-grey"} />
                   </div>
                 </div>
                 <div

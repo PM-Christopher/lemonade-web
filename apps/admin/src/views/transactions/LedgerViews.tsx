@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import PaginationComp from "@/components/global/Pagination";
 import { useLedgerQuery } from "@/features/transaction/queries";
 import type { LedgerAccountType } from "@/features/transaction/api";
@@ -20,8 +21,14 @@ const ACCOUNT_TYPES: LedgerAccountType[] = [
 
 function LedgerViews() {
   const [accountType, setAccountType] = useState<LedgerAccountType | "">("");
+  const [range, setRange] = useState<DateRange | null>(null);
   const [page, setPage] = useState(1);
-  const { data } = useLedgerQuery({ account_type: accountType || undefined, page });
+  const { data } = useLedgerQuery({
+    account_type: accountType || undefined,
+    from: range ? dayjs(range.start).format("YYYY-MM-DD") : undefined,
+    to: range ? dayjs(range.end).format("YYYY-MM-DD") : undefined,
+    page,
+  });
   const rows = data?.entries ?? [];
 
   return (
@@ -43,6 +50,13 @@ function LedgerViews() {
             </option>
           ))}
         </select>
+        <DateRangePicker
+          value={range}
+          onChange={(value) => {
+            setRange(value);
+            setPage(1);
+          }}
+        />
       </div>
       <div className="rounded-lg bg-white shadow-md">
         <table className="min-w-full table-auto border-collapse">

@@ -136,6 +136,8 @@ export interface AllPaymentsFilters {
   type?: PaymentType;
   status?: PaymentStatus;
   search?: string;
+  from?: string;
+  to?: string;
   page?: number;
 }
 
@@ -170,6 +172,8 @@ export interface LedgerEntry {
 
 export interface LedgerFilters {
   account_type?: LedgerAccountType;
+  from?: string;
+  to?: string;
   page?: number;
 }
 
@@ -185,13 +189,20 @@ export const transactionApi = {
         type: filters?.type,
         status: filters?.status,
         search: filters?.search || undefined,
+        from: filters?.from,
+        to: filters?.to,
         page: filters?.page,
       },
     }),
 
   getLedger: (filters?: LedgerFilters) =>
     browserApi.get<LedgerResponse>(adminTransactionRoutes.LEDGER, {
-      params: { account_type: filters?.account_type, page: filters?.page },
+      params: {
+        account_type: filters?.account_type,
+        from: filters?.from,
+        to: filters?.to,
+        page: filters?.page,
+      },
     }),
 
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).

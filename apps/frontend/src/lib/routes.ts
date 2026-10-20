@@ -48,6 +48,7 @@ export const routes = {
   SETTINGS_PLAN_CANCEL: "/settings/plan/cancel-subscription",
   SETTINGS_NOTIFICATION: "/settings/notification",
   SETTINGS_BILLING_HISTORY: "/settings/billing-history",
+  SETTINGS_SUPPORT: "/settings/support",
   SETTINGS_PRIVACY: "/settings/privacy",
   SETTINGS_TERMS: "/settings/terms-and-conditions",
 } as const;

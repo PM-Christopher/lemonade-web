@@ -9,14 +9,17 @@ import { Button } from "@lemonade/ui";
 import DataCard from "@/components/global/DataCard";
 import { walletHeaders } from "@/data/tableData";
 import dynamic from "next/dynamic";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useExportCsvMutation } from "@/features/exports/mutations";
+import { downloadCSV } from "@/utils/helper";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
 import {
   useWalletDataQuery,
   useWithdrawalRequestsQuery,
   usePointsRatesQuery,
 } from "@/features/wallet/queries";
 import type { WithdrawalRequestRow } from "@/features/wallet/api";
-import { RootState } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import dayjs from "dayjs";
 
 // Off the initial bundle — only needed once "Edit threshold"/"Edit" (points rate) is clicked
@@ -36,6 +39,24 @@ function WalletManagementClient() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 5; // Number of items per page
+  const dispatch = useDispatch<AppDispatch>();
+  const exportCsv = useExportCsvMutation();
+
+  const exportWithdrawals = () =>
+    exportCsv.mutate("withdrawal_requests", {
+      onSuccess: (csv) => {
+        downloadCSV(csv, "withdrawal_requests.csv");
+        dispatch(updateToastifyReducer({ show: true, message: "Downloaded", type: "success" }));
+      },
+      onError: (error) =>
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: error?.message || "Something went wrong",
+            type: "error",
+          }),
+        ),
+    });
 
   // Search active -> fetch the old unpaginated shape so client-side
   // filtering still sees every withdrawal request, not just the current
@@ -171,9 +192,15 @@ function WalletManagementClient() {
               <ChevronDown className={"text-text-grey w-5"} />
             </div> */}
             <div>
-              <Button className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}>
+              <Button
+                className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
+                onClick={exportWithdrawals}
+                disabled={exportCsv.isPending}
+              >
                 <UploadIcon className={"h-3.75 w-3.75 text-white"} />
-                <p className={"text-body-l font-medium text-white"}>Export</p>
+                <p className={"text-body-l font-medium text-white"}>
+                  {exportCsv.isPending ? "Exporting..." : "Export"}
+                </p>
               </Button>
             </div>
           </div>

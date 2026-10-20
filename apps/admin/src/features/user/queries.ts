@@ -175,3 +175,35 @@ export function useReferralHistoryQuery(
     ),
   );
 }
+
+export function useAffiliateHistoryQuery(
+  affiliateId: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery(
+    detailQuery(
+      [...userKeys.all(), "affiliate-history", affiliateId],
+      () => userApi.getAffiliateHistory(affiliateId as string | number),
+      affiliateId,
+      options,
+      0,
+    ),
+  );
+}
+
+/** The support thread is polled while the chat is open, so new replies show up. */
+export function useSupportMessagesQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    ...detailQuery(
+      [...userKeys.all(), "support-chat", id],
+      () => userApi.getSupportMessages(id as string | number),
+      id,
+      options,
+      0,
+    ),
+    refetchInterval: 10_000,
+  });
+}

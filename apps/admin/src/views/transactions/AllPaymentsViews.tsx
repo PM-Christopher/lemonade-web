@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import DataCard from "@/components/global/DataCard";
 import PaginationComp from "@/components/global/Pagination";
 import { useAllPaymentsQuery } from "@/features/transaction/queries";
@@ -23,6 +24,7 @@ function AllPaymentsViews() {
   const [status, setStatus] = useState<PaymentStatus | "">("");
   const [type, setType] = useState<PaymentType | "">("");
   const [search, setSearch] = useState("");
+  const [range, setRange] = useState<DateRange | null>(null);
   const [page, setPage] = useState(1);
   const { debouncedValue: debouncedSearch } = useDebounce(search, 500);
 
@@ -30,6 +32,8 @@ function AllPaymentsViews() {
     status: status || undefined,
     type: type || undefined,
     search: debouncedSearch.trim() || undefined,
+    from: range ? dayjs(range.start).format("YYYY-MM-DD") : undefined,
+    to: range ? dayjs(range.end).format("YYYY-MM-DD") : undefined,
     page,
   });
   const rows = data?.transactions ?? [];
@@ -89,6 +93,13 @@ function AllPaymentsViews() {
             </option>
           ))}
         </select>
+        <DateRangePicker
+          value={range}
+          onChange={(value) => {
+            setRange(value);
+            setPage(1);
+          }}
+        />
       </div>
       <div className="rounded-lg bg-white shadow-md">
         <table className="min-w-full table-auto border-collapse">

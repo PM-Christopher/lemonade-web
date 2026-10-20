@@ -9,6 +9,7 @@ export const settingsKeys = {
   referral: () => [...settingsKeys.all(), "referral"] as const,
   referralActivity: () => [...settingsKeys.all(), "referral-activity"] as const,
   rewardsHistory: () => [...settingsKeys.all(), "rewards-history"] as const,
+  support: () => [...settingsKeys.all(), "support"] as const,
   tribeHistory: () => [...settingsKeys.all(), "tribe-history"] as const,
 };
 
@@ -78,6 +79,17 @@ export function useTribeHistoryQuery(options?: { enabled?: boolean }) {
     queryKey: settingsKeys.tribeHistory(),
     queryFn: settingsApi.getTribeHistory,
     staleTime: 0,
+    enabled: options?.enabled,
+  });
+}
+
+// Replies from the support team arrive while the page is open, so it polls.
+export function useSupportMessagesQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: settingsKeys.support(),
+    queryFn: settingsApi.getSupportMessages,
+    staleTime: 0,
+    refetchInterval: 10_000,
     enabled: options?.enabled,
   });
 }

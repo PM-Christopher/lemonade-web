@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, MessageCircleIcon } from "lucide-react";
+import { SocialLink } from "@/components/global/SocialLink";
 import MainLayout from "@/components/layouts/MainLayout";
 import { usersDetailPageViews } from "@/utils/pageViews";
 import ActivitiesViews from "@/views/users/ActivitiesViews";
@@ -29,6 +30,7 @@ const ReactivateUserModal = dynamic(() => import("@/modals/users/ReactivateUserM
   ssr: false,
 });
 const AccountPlanModal = dynamic(() => import("@/modals/users/AccountPlanModal"), { ssr: false });
+const ChatModal = dynamic(() => import("@/modals/users/ChatModal"), { ssr: false });
 const UserTribeModal = dynamic(() => import("@/modals/users/UserTribeModal"), { ssr: false });
 
 const LOGS_PER_PAGE = 10;
@@ -55,6 +57,7 @@ function UserDetailsClient({ id }: { id: string }) {
   const [statusAction, setStatusAction] = useState<"suspend" | "deactivate" | null>(null);
   const [reactivateOpen, setReactivateOpen] = useState(false);
   const [planOpen, setPlanOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [openTribeId, setOpenTribeId] = useState<string | number | undefined>(undefined);
   const [range, setRange] = useState<DateRange | null>(null);
   const [logPage, setLogPage] = useState(1);
@@ -138,51 +141,62 @@ function UserDetailsClient({ id }: { id: string }) {
               <div className="bg-light-black h-16 w-16 rounded-full" />
             )}
 
-            {user && !isActive ? (
+            <div className="flex gap-3">
               <button
-                className="bg-gradient-green h-11 w-39 cursor-pointer rounded-xl border text-center"
-                onClick={() => setReactivateOpen(true)}
+                type="button"
+                className="border-light-grey-50 flex h-11 cursor-pointer items-center gap-2 rounded-xl border px-4"
+                onClick={() => setChatOpen(true)}
               >
-                <p className="text-body-l font-medium text-white">Reactivate user</p>
+                <MessageCircleIcon className="text-text-grey w-4" />
+                <p className="text-black-light text-body-s font-medium">Chat</p>
               </button>
-            ) : (
-              <div className="relative inline-block" ref={actionsRef}>
+
+              {user && !isActive ? (
                 <button
-                  type="button"
-                  aria-haspopup="menu"
-                  aria-expanded={actionsOpen}
-                  className="border-light-grey-50 flex h-11 w-37.25 cursor-pointer items-center justify-between rounded-xl border bg-none px-4 py-2.5"
-                  onClick={() => setActionsOpen((open) => !open)}
+                  className="bg-gradient-green h-11 w-39 cursor-pointer rounded-xl border text-center"
+                  onClick={() => setReactivateOpen(true)}
                 >
-                  <p className="text-black-light text-body-s font-medium">Actions</p>
-                  <ChevronDown className="text-text-grey w-5" />
+                  <p className="text-body-l font-medium text-white">Reactivate user</p>
                 </button>
-                {actionsOpen && (
-                  <ul
-                    role="menu"
-                    className="absolute top-full left-0 z-50 w-51.75 rounded-xl bg-white shadow"
+              ) : (
+                <div className="relative inline-block" ref={actionsRef}>
+                  <button
+                    type="button"
+                    aria-haspopup="menu"
+                    aria-expanded={actionsOpen}
+                    className="border-light-grey-50 flex h-11 w-37.25 cursor-pointer items-center justify-between rounded-xl border bg-none px-4 py-2.5"
+                    onClick={() => setActionsOpen((open) => !open)}
                   >
-                    {[
-                      { action: "suspend" as const, label: "Suspend user" },
-                      { action: "deactivate" as const, label: "Deactivate user" },
-                    ].map((item) => (
-                      <li key={item.action} role="none">
-                        <button
-                          role="menuitem"
-                          className="w-full cursor-pointer px-4 py-2 text-left hover:bg-gray-100"
-                          onClick={() => {
-                            setActionsOpen(false);
-                            setStatusAction(item.action);
-                          }}
-                        >
-                          <p className="text-body-l font-normal">{item.label}</p>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
+                    <p className="text-black-light text-body-s font-medium">Actions</p>
+                    <ChevronDown className="text-text-grey w-5" />
+                  </button>
+                  {actionsOpen && (
+                    <ul
+                      role="menu"
+                      className="absolute top-full left-0 z-50 w-51.75 rounded-xl bg-white shadow"
+                    >
+                      {[
+                        { action: "suspend" as const, label: "Suspend user" },
+                        { action: "deactivate" as const, label: "Deactivate user" },
+                      ].map((item) => (
+                        <li key={item.action} role="none">
+                          <button
+                            role="menuitem"
+                            className="w-full cursor-pointer px-4 py-2 text-left hover:bg-gray-100"
+                            onClick={() => {
+                              setActionsOpen(false);
+                              setStatusAction(item.action);
+                            }}
+                          >
+                            <p className="text-body-l font-normal">{item.label}</p>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <Row label="Full name">
             <p className="text-body-s font-medium">{user?.fullname}</p>
@@ -230,15 +244,7 @@ function UserDetailsClient({ id }: { id: string }) {
           <Row label="Social Links">
             <div className="flex gap-3">
               {user?.social_links?.map((item: AdminUser["social_links"][number], index: number) => (
-                <a
-                  key={index}
-                  className="text-body-s font-medium text-green-400 capitalize underline"
-                  href={item?.value}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item?.name}
-                </a>
+                <SocialLink key={index} name={item?.name ?? ""} href={item?.value} />
               ))}
             </div>
           </Row>
@@ -294,6 +300,9 @@ function UserDetailsClient({ id }: { id: string }) {
       )}
       {reactivateOpen && (
         <ReactivateUserModal isOpen toggle={() => setReactivateOpen(false)} id={id} />
+      )}
+      {chatOpen && (
+        <ChatModal isOpen toggle={() => setChatOpen(false)} userId={id} userName={user?.fullname} />
       )}
       {planOpen && <AccountPlanModal isOpen toggle={() => setPlanOpen(false)} id={id} />}
       {openTribeId !== undefined && (

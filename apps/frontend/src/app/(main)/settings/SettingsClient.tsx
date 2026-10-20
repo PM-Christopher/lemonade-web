@@ -61,6 +61,7 @@ function SettingsClient() {
   const { user } = useSelector((state: RootState) => state.auth);
 
   const moreSettings: SettingsItem[] = [
+    { title: "Support messages", icon: PaperIcon, path: routes.SETTINGS_SUPPORT },
     {
       title: "Terms and conditions",
       icon: PaperIcon,

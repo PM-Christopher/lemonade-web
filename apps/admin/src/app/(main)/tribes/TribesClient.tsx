@@ -7,13 +7,16 @@ import TribeListView, { type TribeListFilter } from "@/views/tribes/TribeListVie
 import { useTribeListQuery } from "@/features/tribes/queries";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { CalendarIcon, ChevronDown, PlusIcon, SearchIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import React, { useState } from "react";
 
 // Tribe list tabs, count and the create-tribe modal.
 const TribesClient = () => {
   const [menuOption, setMenuOption] = useState("created");
   const [isCreateTribeModalOpen, setIsCreateTribeModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [range, setRange] = useState<DateRange | null>(null);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   // Same cache as the "created" tab; only the count is read here.
   const { data: tribeListData } = useTribeListQuery({ enabled: isLoggedIn });
@@ -42,21 +45,13 @@ const TribesClient = () => {
                   type="text"
                   className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
                   placeholder="Search Tribe, ID..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </div>
 
-            <div
-              className={
-                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
-              }
-            >
-              <div className={"flex items-center gap-2"}>
-                <CalendarIcon className={"text-text-grey h-3.75 w-3.75"} />
-                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL TIME</p>
-              </div>
-              <ChevronDown className={"text-text-grey w-5"} />
-            </div>
+            <DateRangePicker value={range} onChange={setRange} />
             <div>
               <Button
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
@@ -87,7 +82,12 @@ const TribesClient = () => {
                 ))}
               </div>
             </div>
-            <TribeListView key={menuOption} filter={menuOption as TribeListFilter} />
+            <TribeListView
+              key={menuOption}
+              filter={menuOption as TribeListFilter}
+              search={search}
+              range={range}
+            />
           </div>
         </div>
       </section>

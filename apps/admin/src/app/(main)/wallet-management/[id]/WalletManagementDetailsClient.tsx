@@ -4,12 +4,12 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import WithdrawalDecisionModal from "@/modals/wallet-management/WithdrawalDecisionModal";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
-import PayoutHistory from "@/modals/wallet-management/PayoutHistory";
+import PayoutHistoryModal from "@/modals/users/PayoutHistoryModal";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
 import AffiliateHistory from "@/modals/wallet-management/AffiliateHistory";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useWalletDetailQuery } from "@/features/wallet/queries";
+import { useUserEarningsQuery, useWalletDetailQuery } from "@/features/wallet/queries";
 import { useRetryWithdrawalMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
@@ -53,6 +53,9 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
     });
   };
 
+  const userId = walletDetail?.history?.[0]?.user_id;
+  const { data: earnings } = useUserEarningsQuery(userId, { enabled: isLoggedIn });
+
   // side menu state
   const [isPayoutOpen, setIsPayoutOpen] = React.useState(false);
   const [isReferralOpen, setIsReferralOpen] = React.useState(false);
@@ -76,10 +79,6 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
     setIsReferralOpen(!isReferralOpen);
   };
 
-  const toggleAffiliateHistory = () => {
-    setIsAffiliateOpen(!isAffiliateOpen);
-  };
-
   const formatValue = (value: unknown): string => {
     if (typeof value === "object" && value !== null) {
       return Object.entries(value)
@@ -100,7 +99,8 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
           {walletDetail?.info ? (
             Object.entries(walletDetail?.info)
               .filter(
-                ([key]) => key !== "amount" && (key !== "failure_reason" || status === "failed"),
+                ([key]) =>
+                  key !== "amount_minor" && (key !== "failure_reason" || status === "failed"),
               )
               .map(([key, value]) => (
                 <div key={key} className="flex items-center gap-6">
@@ -115,7 +115,9 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
                     <p className="text-body-s font-medium">
                       {key === "date_paid"
                         ? dayjs(value as string).format("YYYY-MM-DD hh:mm:ssA")
-                        : formatValue(value)}
+                        : key === "amount"
+                          ? `₦${Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : formatValue(value)}
                     </p>
                   )}
                 </div>
@@ -186,29 +188,48 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
           </div>
           <div className={"px-6 pb-6"}>
             <div className={"border-mid-grey flex flex-col rounded-xl border-2 p-4"}>
-              <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
+              <button
+                type="button"
+                aria-label="View payout history"
+                className={"border-b-grey-20 flex justify-between border-b p-4 text-left"}
+                onClick={togglePayoutHistory}
+              >
                 <div className={"flex flex-col gap-2"}>
                   <p className={"text-text-grey text-body-s font-normal"}>Total amount earned</p>
                   <p className={"font-semiBold text-body-xl"}>
-                    ₦ {formatNumberWithCommas(walletDetail?.history[0]?.wallet?.balance || 0)}
+                    ₦ {formatNumberWithCommas(earnings?.total_amount || 0)}
                   </p>
                 </div>
-                <ChevronRight className={"cursor-pointer"} />
-              </div>
-              <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                aria-label="View referral history"
+                className={"border-b-grey-20 flex justify-between border-b p-4 text-left"}
+                onClick={toggleReferralHistory}
+              >
                 <div className={"flex flex-col gap-2"}>
                   <p className={"text-text-grey text-body-s font-normal"}>Referral earning</p>
-                  <p className={"font-semiBold text-body-xl"}> ₦ {formatNumberWithCommas(0)}</p>
+                  <p className={"font-semiBold text-body-xl"}>
+                    ₦ {formatNumberWithCommas(earnings?.referral_earning || 0)}
+                  </p>
                 </div>
-                <ChevronRight className={"cursor-pointer"} />
-              </div>
-              <div className={"flex cursor-pointer justify-between p-4"}>
+                <ChevronRight />
+              </button>
+              <button
+                type="button"
+                aria-label="View affiliate history"
+                className={"flex justify-between p-4 text-left"}
+                onClick={() => setIsAffiliateOpen(true)}
+              >
                 <div className={"flex flex-col gap-2"}>
                   <p className={"text-text-grey text-body-s font-normal"}>Affiliate earning</p>
-                  <p className={"font-semiBold text-body-xl"}> ₦ {formatNumberWithCommas(0)}</p>
+                  <p className={"font-semiBold text-body-xl"}>
+                    ₦ {formatNumberWithCommas(earnings?.affiliate_earning || 0)}
+                  </p>
                 </div>
-                <ChevronRight className={"cursor-pointer"} />
-              </div>
+                <ChevronRight />
+              </button>
             </div>
           </div>
         </div>
@@ -234,13 +255,17 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
         balance={walletDetail?.history[0]?.wallet?.balance}
       />
 
-      <PayoutHistory isOpen={isPayoutOpen} toggle={togglePayoutHistory} />
+      <PayoutHistoryModal isOpen={isPayoutOpen} toggle={togglePayoutHistory} userId={userId} />
+      <AffiliateHistory
+        isOpen={isAffiliateOpen}
+        toggle={() => setIsAffiliateOpen(false)}
+        affiliateId={walletDetail?.history?.[0]?.user_id ?? ""}
+      />
       <ReferralHistory
         isOpen={isReferralOpen}
         toggle={toggleReferralHistory}
         affiliateId={walletDetail?.history?.[0]?.user_id ?? ""}
       />
-      <AffiliateHistory isOpen={isAffiliateOpen} toggle={toggleAffiliateHistory} />
     </MainLayout>
   );
 }

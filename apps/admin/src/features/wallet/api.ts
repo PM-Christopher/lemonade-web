@@ -1,6 +1,7 @@
 // Endpoints for the wallet domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
 import {
+  adminUsersRoutes,
   adminWalletRoutes,
   adminTransactionRoutes,
   buildPath,
@@ -93,7 +94,18 @@ export interface WithdrawalDecisionResult {
   failure_reason: string | null;
 }
 
+/** A user's earnings in naira, from the same endpoint as the user page's wallet tab. */
+export interface UserEarnings {
+  total_amount?: number;
+  referral_earning?: number;
+  affiliate_earning?: number;
+  monetized_tribes?: number;
+}
+
 export const walletApi = {
+  getUserEarnings: (userId: string) =>
+    browserApi.get<UserEarnings>(buildPath(adminUsersRoutes.WALLET, { id: userId })),
+
   getWalletData: () => browserApi.get<WalletData>(adminWalletRoutes.DASHBOARD),
 
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).

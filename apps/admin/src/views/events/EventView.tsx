@@ -4,6 +4,8 @@ import React, { useMemo, useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import { eventMainHeaders } from "@/data/tableData";
 import PaginationComp from "@/components/global/Pagination";
+import dayjs from "dayjs";
+import type { DateRange } from "@/components/global/DateRangePicker";
 
 import dynamic from "next/dynamic";
 import useSearchParams from "@/hooks/useSearchParams";
@@ -21,9 +23,11 @@ const EditCommissionModal = dynamic(() => import("@/modals/events/EditCommission
 
 interface EventViewProps {
   pageData: EventListResponse | EventAffiliatesResponse | EventPromotionsQueueResponse | undefined;
+  status?: string;
+  range?: DateRange | null;
 }
 
-const EventView = ({ pageData }: EventViewProps) => {
+const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
   const { push } = useNavigation();
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("search");
@@ -47,8 +51,17 @@ const EventView = ({ pageData }: EventViewProps) => {
   const events = data_?.events;
   const data = useMemo(() => {
     const q = query?.toLowerCase()?.trim();
-    if (!q) return events;
-    return events?.filter((event) => {
+    const byFilters = events?.filter((event) => {
+      const created = dayjs(event.date_created_at);
+      const inRange =
+        range === null ||
+        !created.isValid() ||
+        (!created.isBefore(dayjs(range.start).startOf("day")) &&
+          !created.isAfter(dayjs(range.end).endOf("day")));
+      return inRange && (status === "" || event.status?.toLowerCase() === status);
+    });
+    if (!q) return byFilters;
+    return byFilters?.filter((event) => {
       return (
         event?.event_name?.toLowerCase().includes(q) ||
         event?.category?.toLowerCase().includes(q) ||
@@ -56,11 +69,16 @@ const EventView = ({ pageData }: EventViewProps) => {
         event?.event_type?.toLowerCase().includes(q)
       );
     });
-  }, [query, events]);
+  }, [query, events, status, range]);
 
-  const [seenList, setSeenList] = useState({ query, events });
-  if (query !== seenList.query || events !== seenList.events) {
-    setSeenList({ query, events });
+  const [seenList, setSeenList] = useState({ query, events, status, range });
+  if (
+    query !== seenList.query ||
+    events !== seenList.events ||
+    status !== seenList.status ||
+    range !== seenList.range
+  ) {
+    setSeenList({ query, events, status, range });
     setCurrentPage(1);
   }
 

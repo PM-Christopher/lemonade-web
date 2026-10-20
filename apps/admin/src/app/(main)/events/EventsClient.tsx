@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import AffiliateView from "@/views/events/AffiliateView";
-import { CalendarIcon, ChevronDown, SearchIcon, UploadIcon } from "lucide-react";
+import { SearchIcon, UploadIcon } from "lucide-react";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import MainLayout from "@/components/layouts/MainLayout";
 import { eventViews } from "@/utils/pageViews";
 import EventView from "@/views/events/EventView";
@@ -10,16 +11,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useEventListQuery } from "@/features/events/queries";
 import { useExportCsvMutation } from "@/features/exports/mutations";
-import { downloadCSV } from "@/utils/helper";
+import { capitalizeWords, downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { Button } from "@lemonade/ui";
 import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
 
+const EVENT_STATUSES = [
+  "active",
+  "pending",
+  "rejected",
+  "suspended",
+  "closed",
+  "draft",
+  "inactive",
+];
+
 const EventsClient = () => {
   const [menuOption, setMenuOption] = useState("events");
   const dispatch = useDispatch<AppDispatch>();
   const [searchValue, setSearchValue] = useState("");
+  const [status, setStatus] = useState("");
+  const [range, setRange] = useState<DateRange | null>(null);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: eventData } = useEventListQuery(menuOption, {
@@ -34,7 +47,7 @@ const EventsClient = () => {
   const renderViews = () => {
     switch (menuOption) {
       case "events":
-        return <EventView pageData={eventData} />;
+        return <EventView pageData={eventData} status={status} range={range} />;
       case "affiliates":
         return <AffiliateView pageData={eventData} />;
       case "promotions":
@@ -82,7 +95,7 @@ const EventsClient = () => {
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>
-            {(eventData && "events" in eventData ? eventData.events.length : 0) || 6} Events
+            {eventData && "events" in eventData ? eventData.events.length : 0} Events
           </p>
           <div className={"flex justify-between gap-3"}>
             <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
@@ -99,27 +112,22 @@ const EventsClient = () => {
                 />
               </div>
             </div>
-            <div
-              className={
-                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
-              }
-            >
-              <div className={"flex items-center justify-between"}>
-                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>STATUS</p>
-              </div>
-              <ChevronDown className={"text-text-grey w-5"} />
-            </div>
-            <div
-              className={
-                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
-              }
-            >
-              <div className={"flex items-center gap-2"}>
-                <CalendarIcon className={"text-text-grey h-3.75 w-3.75"} />
-                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL TIME</p>
-              </div>
-              <ChevronDown className={"text-text-grey w-5"} />
-            </div>
+            {menuOption === "events" && (
+              <select
+                aria-label="Filter by status"
+                className={"bg-light-grey h-10 rounded-xl px-3"}
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="">All statuses</option>
+                {EVENT_STATUSES.map((option) => (
+                  <option key={option} value={option}>
+                    {capitalizeWords(option)}
+                  </option>
+                ))}
+              </select>
+            )}
+            <DateRangePicker value={range} onChange={setRange} />
 
             {menuOption === "events" && (
               <>

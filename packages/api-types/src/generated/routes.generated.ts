@@ -150,6 +150,7 @@ export const adminTribesRoutes = Object.freeze({
 
 export const adminUsersRoutes = Object.freeze({
   ACCOUNT_PLAN: "/admin/users/{id}/account-plan", // GET
+  AFFILIATES_AFFILIATE_HISTORY: "/admin/users/affiliates/{id}/affiliate-history", // GET
   AFFILIATES_DETAIL: "/admin/users/affiliates/{id}/detail", // GET
   AFFILIATES_LOG: "/admin/users/affiliates/log", // GET
   AFFILIATES_REFERRAL_HISTORY: "/admin/users/affiliates/{id}/referral-history", // GET
@@ -163,6 +164,8 @@ export const adminUsersRoutes = Object.freeze({
   PAYOUT_HISTORY: "/admin/users/{id}/payout-history", // GET
   REACTIVATE: "/admin/users/{id}/reactivate-user", // PATCH
   SHOW: "/admin/users/{id}", // GET
+  SUPPORT_CHAT: "/admin/users/{id}/support-chat", // GET
+  SUPPORT_CHAT_SEND: "/admin/users/{id}/support-chat", // POST
   SUSPEND: "/admin/users/{id}/suspend-user", // PATCH
   TRIBE: "/admin/users/{id}/user-tribe/{tribe_id}", // GET
   TRIBE_HISTORY: "/admin/users/{id}/user-tribe-history", // GET
@@ -389,6 +392,11 @@ export const userProfileRoutes = Object.freeze({
 export const userSubscriptionRoutes = Object.freeze({
   LIST: "/user/subscription", // GET
   SHOW: "/user/subscription/{id}", // GET
+});
+
+export const userSupportRoutes = Object.freeze({
+  MESSAGES: "/user/support", // GET
+  SEND: "/user/support", // POST
 });
 
 export const userThreadsRoutes = Object.freeze({

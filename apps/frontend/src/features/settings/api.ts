@@ -1,6 +1,10 @@
 // Endpoints for the settings domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
-import { userProfileRoutes, userWalletRoutes } from "@lemonade/api-types/generated";
+import {
+  userProfileRoutes,
+  userSupportRoutes,
+  userWalletRoutes,
+} from "@lemonade/api-types/generated";
 
 export interface UserProfile {
   id: number;
@@ -155,7 +159,25 @@ export interface ReferralActivity {
   total_subscribed_referrals: number;
 }
 
+export interface SupportMessage {
+  id: string;
+  sender: "admin" | "user";
+  message: string | null;
+  media: Array<{ type: "image" | "video"; url: string }>;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface SupportMessagesResponse {
+  messages: SupportMessage[];
+}
+
 export const settingsApi = {
+  getSupportMessages: () => browserApi.get<SupportMessagesResponse>(userSupportRoutes.MESSAGES),
+
+  sendSupportMessage: (message: string) =>
+    browserApi.post<{ new_message: SupportMessage }>(userSupportRoutes.SEND, { message }),
+
   getUserProfile: () => browserApi.get<UserProfile>(userProfileRoutes.SHOW),
 
   getWallet: () => browserApi.get<WalletSettings>(userProfileRoutes.WALLET_SHOW),
