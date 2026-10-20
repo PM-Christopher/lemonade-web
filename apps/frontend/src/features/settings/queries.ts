@@ -9,6 +9,7 @@ export const settingsKeys = {
   referral: () => [...settingsKeys.all(), "referral"] as const,
   referralActivity: () => [...settingsKeys.all(), "referral-activity"] as const,
   rewardsHistory: () => [...settingsKeys.all(), "rewards-history"] as const,
+  tribeHistory: () => [...settingsKeys.all(), "tribe-history"] as const,
 };
 
 // User-owned content — CLAUDE.md's 60s bucket.
@@ -66,6 +67,16 @@ export function useRewardsHistoryQuery(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: settingsKeys.rewardsHistory(),
     queryFn: settingsApi.getRewardsHistory,
+    staleTime: 0,
+    enabled: options?.enabled,
+  });
+}
+
+// What paid members have added to the owner's earnings — money-adjacent, staleTime 0.
+export function useTribeHistoryQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: settingsKeys.tribeHistory(),
+    queryFn: settingsApi.getTribeHistory,
     staleTime: 0,
     enabled: options?.enabled,
   });

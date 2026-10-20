@@ -8,6 +8,9 @@ import PinnedIcon from "@/images/icons/pinnedIcon.svg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
+import TribeDetailsSheet from "@/components/tribe/TribeDetailsSheet";
+import RemoveMemberModal, { type MemberToRemove } from "@/components/tribe/RemoveMemberModal";
+import { Info as InfoCircle } from "lucide-react";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import { Thread } from "@/interfaces/TribeInterface";
 import MainLayout from "@/components/layouts/MainLayout";
@@ -15,7 +18,7 @@ import EditIcon from "@/images/icons/edit.svg";
 import { useMediaQuery } from "react-responsive";
 import ShareTribeModal from "@/components/tribe/ShareTribeModal";
 import UserInfoModal, { type TribeUserInfo } from "@/components/tribe/UserInfoModal";
-import { useQueryClient } from "@tanstack/react-query";
+import { useIsMutating, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import {
   useTribeQuery,
@@ -28,6 +31,7 @@ import {
   usePinThreadMutation,
   useViewProfileMutation,
   useChangeTribeTypeMutation,
+  createThreadMutationKey,
 } from "@/features/tribes/mutations";
 import { usePaymentReturn } from "@/features/transaction/usePaymentReturn";
 import DeleteThreadModal from "@/components/tribe/DeleteThreadModal";
@@ -68,6 +72,8 @@ const TribeClient = ({ id }: { id: string }) => {
   const [deleteThreadModal, setDeleteThreadModal] = useState(false);
   const [addUserModal, setAddUserModal] = useState(false);
   const [joinedTribeModal, setJoinedTribeModal] = useState(false);
+  const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<MemberToRemove | null>(null);
 
   const [threadId, setThreadId] = useState<string | null>(null);
   const dispatch = useAppDispatch();
@@ -90,6 +96,7 @@ const TribeClient = ({ id }: { id: string }) => {
   const pinThreadMutation = usePinThreadMutation(id);
   const changeTribeTypeMutation = useChangeTribeTypeMutation(id);
   const [sortBy, setSortBy] = useState("newest");
+  const uploadingThread = useIsMutating({ mutationKey: createThreadMutationKey(id) }) > 0;
 
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
   const { push } = useNavigation();
@@ -128,7 +135,7 @@ const TribeClient = ({ id }: { id: string }) => {
   };
 
   const activateCreateThreadModal = () => {
-    setCreateThreadModalOpen(!createThreadModalOpen);
+    setCreateThreadModalOpen((open) => !open);
   };
 
   const switchUserId = (id: string) => {
@@ -243,6 +250,27 @@ const TribeClient = ({ id }: { id: string }) => {
               <p className="text-body-l font-sans font-semibold">{tribe?.tribe_name}</p>
             </div>
           </div>
+          {isMobile && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="Tribe details"
+                className="text-text-grey cursor-pointer"
+                onClick={() => setDetailsSheetOpen(true)}
+              >
+                <InfoCircle className="h-5 w-5" />
+              </button>
+              {tribe && !tribe.has_joined && !tribe.owner && (
+                <button
+                  type="button"
+                  className="bg-gradient-green h-9 rounded-xl px-5 text-sm font-semibold text-white"
+                  onClick={activateJoinTribeModal}
+                >
+                  Join
+                </button>
+              )}
+            </div>
+          )}
           <div className="flex items-center justify-between gap-2.5">
             <div className="bg-light_grey tablet:w-75 flex h-10 w-61.75 items-center gap-3 rounded-xl px-4">
               <div>
@@ -278,6 +306,14 @@ const TribeClient = ({ id }: { id: string }) => {
             </Select>
           </div>
         </div>
+        {uploadingThread && (
+          <div className="mx-auto mt-4 flex w-full max-w-250 flex-col gap-2 rounded-lg bg-white p-3 px-4 shadow-sm">
+            <p className="text-text-grey text-body-s font-normal">Uploading thread...</p>
+            <div className="bg-grey-20 h-1 w-full overflow-hidden rounded-full">
+              <div className="bg-light-green h-full w-1/3 animate-pulse rounded-full" />
+            </div>
+          </div>
+        )}
         <div className="mt-4 flex justify-around">
           {/* Left Content Section */}
           <div className="laptop:px-10 flex w-full max-w-250 flex-col px-4">
@@ -358,9 +394,44 @@ const TribeClient = ({ id }: { id: string }) => {
                 loading={tribeLoading}
                 togglePrivate={togglePrivate}
                 isUpdatingPrivacy={changeTribeTypeMutation.isPending}
+                onRemoveMember={setMemberToRemove}
               />
             </aside>
           )}
+          {isMobile && (
+            <TribeDetailsSheet
+              isOpen={detailsSheetOpen}
+              onClose={() => setDetailsSheetOpen(false)}
+              share={activateShareTribeModal}
+              toggle={() => {
+                setDetailsSheetOpen(false);
+                activateCreateThreadModal();
+              }}
+              tribe={tribe}
+              toggleAddMember={() => {
+                setDetailsSheetOpen(false);
+                toggleAddMember();
+              }}
+              toggleJoin={() => {
+                setDetailsSheetOpen(false);
+                activateJoinTribeModal();
+              }}
+              threads={threads}
+              loading={tribeLoading}
+              togglePrivate={togglePrivate}
+              isUpdatingPrivacy={changeTribeTypeMutation.isPending}
+              onRemoveMember={setMemberToRemove}
+              onSearch={() => {
+                setDetailsSheetOpen(false);
+                document.getElementById("search")?.focus();
+              }}
+            />
+          )}
+          <RemoveMemberModal
+            tribeSlug={id}
+            member={memberToRemove}
+            onClose={() => setMemberToRemove(null)}
+          />
 
           {/* Modals */}
           <CreateThreadModal

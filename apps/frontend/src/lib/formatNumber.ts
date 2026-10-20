@@ -31,6 +31,10 @@ export const formatNaira = (value: NumberLike): string =>
     maximumFractionDigits: 2,
   })}`;
 
+/** Display only: "₦2,000", with decimals only when the amount has them. */
+export const formatNairaWhole = (value: NumberLike): string =>
+  `₦${(toNumber(value) ?? 0).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+
 /** Display only: kobo from the API as naira, e.g. 200000 becomes "₦2,000". */
 export const formatMinorNaira = (minor: NumberLike): string =>
   `₦${((toNumber(minor) ?? 0) / 100).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;

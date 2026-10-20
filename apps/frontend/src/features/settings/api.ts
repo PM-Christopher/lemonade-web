@@ -76,6 +76,20 @@ export interface RewardsHistoryResponse {
   affiliate_history: RewardsHistoryItem[];
 }
 
+export interface TribeHistoryItem {
+  amount_minor: number;
+  amount: string;
+  title: string;
+  // The paying member's username and the tribe they joined.
+  member: string | null;
+  tribe_name: string | null;
+  created: string;
+}
+
+export interface TribeHistoryResponse {
+  tribe_history: TribeHistoryItem[];
+}
+
 export interface RedeemPointsPayload {
   // Omit to redeem every point currently available.
   points?: number;
@@ -160,6 +174,8 @@ export const settingsApi = {
 
   getRewardsHistory: () =>
     browserApi.get<RewardsHistoryResponse>(userWalletRoutes.AFFILIATE_HISTORY),
+
+  getTribeHistory: () => browserApi.get<TribeHistoryResponse>(userWalletRoutes.TRIBE_HISTORY),
 
   redeemPoints: (data: RedeemPointsPayload) =>
     browserApi.post<RedeemPointsResponse>(userWalletRoutes.REDEEM_POINTS, data),

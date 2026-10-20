@@ -7,6 +7,7 @@ vi.mock("@/images/icons/share.svg", () => ({ default: () => <svg /> }));
 vi.mock("@/images/icons/addUserIcon.svg", () => ({ default: () => <svg /> }));
 vi.mock("@/images/icons/edit.svg", () => ({ default: () => <svg /> }));
 vi.mock("@/images/icons/delete.svg", () => ({ default: () => <svg /> }));
+vi.mock("@/images/icons/search.svg", () => ({ default: () => <svg /> }));
 vi.mock("@/components/global/FallbackImage", () => ({
   FallbackImage: ({ alt }: { alt: string }) => <span>{alt}</span>,
 }));
@@ -27,7 +28,11 @@ const tribe = {
   member_list: [],
 } as unknown as TribeInterface;
 
-const renderCard = (overrides: Partial<TribeInterface> = {}, togglePrivate = vi.fn()) =>
+const renderCard = (
+  overrides: Partial<TribeInterface> = {},
+  togglePrivate = vi.fn(),
+  extra: Partial<React.ComponentProps<typeof TribeDetailsCard>> = {},
+) =>
   render(
     <TribeDetailsCard
       toggle={vi.fn()}
@@ -39,6 +44,7 @@ const renderCard = (overrides: Partial<TribeInterface> = {}, togglePrivate = vi.
       loading={false}
       togglePrivate={togglePrivate}
       isUpdatingPrivacy={false}
+      {...extra}
     />,
   );
 
@@ -77,5 +83,31 @@ describe("TribeDetailsCard", () => {
     fireEvent.click(screen.getByRole("button", { name: "See more" }));
     expect(screen.getByText(/x{150}/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "See less" })).toBeInTheDocument();
+  });
+
+  it("lets the owner remove a member and gives members no remove button", () => {
+    const onRemoveMember = vi.fn();
+    const member_list = [
+      { id: 1, user: { id: "u1", fullname: "Chris Joe", username: "christjoe", avatar: "" } },
+    ] as unknown as TribeInterface["member_list"];
+    const { unmount } = renderCard({ member_list }, vi.fn(), { onRemoveMember });
+
+    fireEvent.click(screen.getByRole("button", { name: "Remove christjoe" }));
+    expect(onRemoveMember).toHaveBeenCalledWith({ userId: "u1", username: "christjoe" });
+    unmount();
+
+    renderCard({ member_list, owner: false }, vi.fn(), { onRemoveMember });
+    expect(screen.queryByRole("button", { name: "Remove christjoe" })).not.toBeInTheDocument();
+  });
+
+  it("shows a Search shortcut only when the sheet asks for one", () => {
+    const onSearch = vi.fn();
+    const { unmount } = renderCard();
+    expect(screen.queryByRole("button", { name: "Search" })).not.toBeInTheDocument();
+    unmount();
+
+    renderCard({}, vi.fn(), { onSearch });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    expect(onSearch).toHaveBeenCalled();
   });
 });

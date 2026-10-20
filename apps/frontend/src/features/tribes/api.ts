@@ -216,6 +216,12 @@ export const tribesApi = {
   addTribeMember: (id: string, data: AddTribeMemberPayload) =>
     browserApi.post<AddTribeMemberResponse>(buildPath(userTribesRoutes.ADD_MEMBER, { id }), data),
 
+  removeTribeMember: (slug: string, userId: string) =>
+    browserApi.delete<{ message?: string }>(
+      buildPath(userTribesRoutes.REMOVE_MEMBER, { id: slug }),
+      { params: { user_id: userId } },
+    ),
+
   postComment: (tribeId: number | string, threadId: string | string, data: PostCommentPayload) =>
     browserApi.post<PostCommentResponse>(
       buildPath(userThreadsRoutes.POST_COMMENT, { tribe_id: tribeId, id: threadId }),

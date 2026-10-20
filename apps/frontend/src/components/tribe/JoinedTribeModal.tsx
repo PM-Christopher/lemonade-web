@@ -18,19 +18,19 @@ const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe 
         if (!open) toggle();
       }}
     >
-      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+      <DialogContentBare className="laptop:top-[50%] laptop:bottom-auto laptop:left-[50%] laptop:w-fit laptop:translate-x-[-50%] laptop:translate-y-[-50%] laptop:rounded-lg fixed top-auto bottom-0 left-0 w-full max-w-none translate-x-0 translate-y-0 gap-0 rounded-t-2xl rounded-b-none border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Welcome to {tribe?.tribe_name}</DialogTitle>
-        <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
+        <div className="laptop:w-160 laptop:rounded-lg w-full rounded-t-2xl bg-white p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="cursor-pointer" onClick={toggle}>
+              <button type="button" aria-label="Close" className="cursor-pointer" onClick={toggle}>
                 <CloseIcon />
-              </div>
+              </button>
             </div>
           </div>
-          <div className="mt-10 flex flex-col items-center gap-6">
+          <div className="laptop:mt-10 mt-4 flex flex-col items-center gap-6">
             <div className="my-6 flex justify-center">
-              <div className="flex w-136 flex-col items-center gap-2">
+              <div className="laptop:w-136 flex w-full flex-col items-center gap-2">
                 <p className={"font-semiBold text-body-xl"}>Welcome to</p>
                 <p className="font-ruso text-title-l text-center leading-5.25 font-normal">
                   {tribe?.tribe_name}
@@ -45,7 +45,7 @@ const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe 
             </div>
 
             <div className="bg-light_grey flex justify-center rounded-xl">
-              <div className="flex w-136 flex-col gap-5 p-4 py-6">
+              <div className="laptop:w-136 flex w-full flex-col gap-5 p-4 py-6">
                 <div className="flex items-center gap-4">
                   <CheckedIcon />
                   <p className="font-semi-normal text-body-s font-sans">
@@ -65,7 +65,7 @@ const JoinedTribeModal: React.FC<JoinTribeInterface> = ({ toggle, isOpen, tribe 
               </div>
             </div>
             <button
-              className="auth-button border-step-color rounded-xl p-2.5 px-3.5"
+              className="auth-button border-step-color laptop:h-auto laptop:w-auto h-12 w-full rounded-xl p-2.5 px-3.5"
               onClick={toggle}
             >
               <p className="font-semi-normal text-body-l font-sans text-white">View tribe</p>

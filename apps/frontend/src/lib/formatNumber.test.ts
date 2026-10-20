@@ -3,6 +3,7 @@ import {
   formatMinorNaira,
   formatMoneyInput,
   formatNaira,
+  formatNairaWhole,
   formatNumberWithCommas,
   minorToNaira,
   sanitizeMoneyInput,
@@ -64,5 +65,16 @@ describe("formatMinorNaira", () => {
   it("converts kobo to a naira number for form prefill", () => {
     expect(minorToNaira(200000)).toBe(2000);
     expect(minorToNaira(undefined)).toBe(0);
+  });
+});
+
+describe("formatNairaWhole", () => {
+  it("drops the decimals when the amount is whole", () => {
+    expect(formatNairaWhole("2000.00")).toBe("₦2,000");
+    expect(formatNairaWhole(1500000)).toBe("₦1,500,000");
+  });
+
+  it("keeps real kobo", () => {
+    expect(formatNairaWhole("2000.50")).toBe("₦2,000.5");
   });
 });

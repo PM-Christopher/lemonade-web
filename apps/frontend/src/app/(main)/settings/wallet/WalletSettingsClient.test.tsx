@@ -43,6 +43,10 @@ vi.mock("@/components/settings/RewardsHistorySideMenu", () => ({
   default: () => null,
 }));
 
+vi.mock("@/components/settings/TribeHistorySideMenu", () => ({
+  default: ({ isOpen }: { isOpen: boolean }) => (isOpen ? <p>Tribe history panel</p> : null),
+}));
+
 vi.mock("@/components/settings/Modal/RequestPayoutModal", () => ({
   default: () => null,
 }));
@@ -139,6 +143,24 @@ const walletData = {
   payout_history: [],
   payout_request: true,
 };
+
+describe("WalletSettingsClient — monetized tribes", () => {
+  it("shows the tribe earnings and opens the tribe history", () => {
+    walletQueryMock.mockReturnValue({
+      data: { ...walletData, monetized_tribes: "4500.00" },
+      isLoading: false,
+    });
+
+    render(<WalletSettingsClient />);
+
+    expect(screen.getByText("Monetized Tribes")).toBeInTheDocument();
+    expect(screen.getByText("₦4,500")).toBeInTheDocument();
+    expect(screen.queryByText("Tribe history panel")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "View tribe history" }));
+    expect(screen.getByText("Tribe history panel")).toBeInTheDocument();
+  });
+});
 
 describe("WalletSettingsClient — payout request", () => {
   beforeEach(() => {

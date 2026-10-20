@@ -7,10 +7,11 @@ import AddUserIcon from "@/images/icons/addUserIcon.svg";
 import { Button } from "@lemonade/ui";
 import EditIcon from "@/images/icons/edit.svg";
 import DeleteIcon from "@/images/icons/delete.svg";
+import SearchIcon from "@/images/icons/search.svg";
 import { TribeInterface, TribeMemberInterface } from "@/interfaces/TribeInterface";
 import type { Thread } from "@/interfaces/TribeInterface";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
-import { formatNaira } from "@/lib/formatNumber";
+import { formatNairaWhole } from "@/lib/formatNumber";
 import { getInitials } from "@/lib/helper";
 import { TribeDetailsSkeleton } from "@/components/Skeletons";
 
@@ -24,6 +25,11 @@ type TribeDetailsInterface = {
   loading: boolean;
   togglePrivate: () => void;
   isUpdatingPrivacy: boolean;
+  // Owner removes a member from the list.
+  onRemoveMember?: (member: { userId: string; username: string }) => void;
+  // Mobile sheet only: jump to the thread search.
+  onSearch?: () => void;
+  className?: string;
 };
 
 const DESCRIPTION_PREVIEW_LENGTH = 100;
@@ -37,6 +43,9 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
   loading: tribeLoading,
   togglePrivate,
   isUpdatingPrivacy,
+  onRemoveMember,
+  onSearch,
+  className = "laptop:w-124",
 }) => {
   const members = tribe?.member_list ?? [];
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -48,7 +57,9 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
       {tribeLoading ? (
         <TribeDetailsSkeleton />
       ) : (
-        <div className="flex h-fit w-124 flex-col gap-2 rounded-xl bg-white p-4 py-4">
+        <div
+          className={`flex h-fit w-full flex-col gap-2 rounded-xl bg-white p-4 py-4 ${className}`}
+        >
           <div>
             <p className="text-body-l font-sans font-semibold">Tribe details</p>
           </div>
@@ -108,6 +119,18 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
             </div>
 
             <div className="flex gap-4">
+              {onSearch && (
+                <button
+                  type="button"
+                  className="flex cursor-pointer flex-col items-center"
+                  onClick={onSearch}
+                >
+                  <div className="bg-light_grey flex flex-col items-center rounded-2xl p-6">
+                    <SearchIcon />
+                  </div>
+                  <p className="font-semi-normal text-black-light text-body-s font-sans">Search</p>
+                </button>
+              )}
               <div
                 className="flex cursor-pointer flex-col items-center"
                 onClick={() => share(tribe)}
@@ -196,7 +219,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               </div>
               <div>
                 <p className="font-semi-normal text-light-black text-body-s font-sans">
-                  {formatNaira(tribe?.membership_fee)}
+                  {formatNairaWhole(tribe?.membership_fee)}
                 </p>
               </div>
             </div>
@@ -234,10 +257,20 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
                           </p>
                         </div>
                       </div>
-                      {tribe?.owner && (
-                        <div>
+                      {tribe?.owner && onRemoveMember && member?.user?.id && (
+                        <button
+                          type="button"
+                          aria-label={`Remove ${member.user.username}`}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            onRemoveMember({
+                              userId: member.user.id,
+                              username: member.user.username,
+                            })
+                          }
+                        >
                           <DeleteIcon />
-                        </div>
+                        </button>
                       )}
                     </div>
                     <div className="my-2 border-t"></div>

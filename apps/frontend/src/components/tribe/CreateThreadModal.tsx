@@ -189,6 +189,8 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
       };
     }
     const data = { ...values, polls: hasPolls, thread_polls };
+    // Close right away; the page shows the upload. A failure reopens the form with its content.
+    toggle();
     createThreadMutation.mutate(
       { tribeId: tribe_id as number, data },
       {
@@ -201,9 +203,9 @@ const CreateThreadModal: React.FC<CreateThreadInterface> = ({
             }),
           );
           reset();
-          toggle();
         },
         onError: (error: Error) => {
+          toggle();
           if (applyServerErrors(error, setError, ["topic", "thoughts"])) return;
           dispatch(
             updateToastifyReducer({

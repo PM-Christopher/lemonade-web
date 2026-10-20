@@ -5,6 +5,7 @@ import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import RewardsHistorySideMenu from "@/components/settings/RewardsHistorySideMenu";
+import TribeHistorySideMenu from "@/components/settings/TribeHistorySideMenu";
 
 import { useSelector } from "react-redux";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -39,6 +40,7 @@ function WalletSettingsClient() {
   const redeemPointsMutation = useRedeemPointsMutation();
   const profileLoading = requestPayoutMutation.isPending;
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
+  const [isTribeHistoryOpen, setIsTribeHistoryOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleRewardsMenu = () => {
@@ -113,6 +115,10 @@ function WalletSettingsClient() {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <RewardsHistorySideMenu toggleMenu={toggleRewardsMenu} isOpen={isRewardsOpen} />
+        <TribeHistorySideMenu
+          toggleMenu={() => setIsTribeHistoryOpen((open) => !open)}
+          isOpen={isTribeHistoryOpen}
+        />
         <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
@@ -152,7 +158,7 @@ function WalletSettingsClient() {
                     </Button>
                   )}
                 </div>
-                <div className="flex justify-between p-4">
+                <div className="border-b-mid-grey flex justify-between border-b p-4">
                   <div className="flex flex-col">
                     <p className="text-text-grey text-body-s font-normal">Rewards earned</p>
                     <p className="tracking-custom text-body-xl font-semibold">
@@ -160,6 +166,22 @@ function WalletSettingsClient() {
                     </p>
                   </div>
                   <ChevronRight onClick={toggleRewardsMenu} className="cursor-pointer" />
+                </div>
+                <div className="flex justify-between p-4">
+                  <div className="flex flex-col">
+                    <p className="text-text-grey text-body-s font-normal">Monetized Tribes</p>
+                    <p className="tracking-custom text-body-xl font-semibold">
+                      ₦{formatNumberWithCommas(Number(data?.monetized_tribes) || 0)}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="View tribe history"
+                    className="cursor-pointer"
+                    onClick={() => setIsTribeHistoryOpen(true)}
+                  >
+                    <ChevronRight />
+                  </button>
                 </div>
               </div>
               {data?.payout_request && (

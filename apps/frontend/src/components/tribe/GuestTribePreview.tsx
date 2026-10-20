@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import type { PublicTribeResponse } from "@/features/tribes/api";
-import { formatNaira } from "@/lib/formatNumber";
+import { formatNairaWhole } from "@/lib/formatNumber";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 
@@ -48,7 +48,7 @@ export function GuestTribePreview({ tribe }: GuestTribePreviewProps) {
           <div className="text-body-s flex gap-6 font-semibold">
             <span>{tribe.members.toLocaleString()} members</span>
             <span>{tribe.threads.toLocaleString()} threads</span>
-            <span>{tribe.monetized ? formatNaira(tribe.membership_fee) : "Free"}</span>
+            <span>{tribe.monetized ? formatNairaWhole(tribe.membership_fee) : "Free"}</span>
           </div>
 
           <div className="mt-2 flex flex-col gap-3">

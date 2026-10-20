@@ -46,10 +46,15 @@ export function useJoinTribeMutation(slug: string) {
 // in the same tribeKeys.threads()/pinnedThreads() entry the slug-keyed
 // queries read, and take the tribe's raw id separately, at call time, for
 // the endpoints that actually require it.
+// Lets the page show an "uploading" bar while the post is in flight.
+export const createThreadMutationKey = (tribeSlug: string) =>
+  ["tribes", "create-thread", tribeSlug] as const;
+
 export function useCreateThreadMutation(tribeSlug: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
+    mutationKey: createThreadMutationKey(tribeSlug),
     mutationFn: ({ tribeId, data }: { tribeId: string | number; data: CreateThreadPayload }) =>
       tribesApi.createThread(tribeId, data),
     // Refetch so the new thread shows in the server's order, with the tribe's counts.
@@ -161,6 +166,18 @@ export function useReportThreadMutation() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: ReportThreadPayload }) =>
       tribesApi.reportThread(id, data),
+  });
+}
+
+// Owner removes a member; refetch the tribe so the list and counts match the server.
+export function useRemoveTribeMemberMutation(tribeSlug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: string) => tribesApi.removeTribeMember(tribeSlug, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: tribeKeys.detail(tribeSlug) });
+    },
   });
 }
 
