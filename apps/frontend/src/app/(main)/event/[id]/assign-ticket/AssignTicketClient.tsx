@@ -32,6 +32,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { errorMessage } from "@/lib/api-error";
+import { useCurrentUserQuery } from "@/features/authentication/queries";
 
 // Buyer and ticket-holder details form shown before checkout.
 const AssignTicketClient = ({ id }: { id: number }) => {
@@ -46,6 +47,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
   const { tickets } = useSelector((state: RootState) => state.event);
   const buyTicketMutation = useBuyTicketMutation();
   const loading = buyTicketMutation.isPending;
+  const { data: currentUser } = useCurrentUserQuery();
 
   const referralFromUrl = searchParams.get("referral");
 
@@ -54,6 +56,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
     handleSubmit,
     control,
     setValue,
+    getValues,
     setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm<AssignEventTicketsInput>({
@@ -71,6 +74,14 @@ const AssignTicketClient = ({ id }: { id: number }) => {
     },
     mode: "onChange",
   });
+
+  // Prefill the buyer with the signed-in user, without overwriting anything typed.
+  useEffect(() => {
+    if (!currentUser) return;
+    if (!getValues("fullname"))
+      setValue("fullname", currentUser.fullname, { shouldValidate: true });
+    if (!getValues("email")) setValue("email", currentUser.email, { shouldValidate: true });
+  }, [currentUser, getValues, setValue]);
 
   const assignMultiple = useWatch({ control, name: "assign_multiple" });
 
@@ -104,7 +115,10 @@ const AssignTicketClient = ({ id }: { id: number }) => {
       };
     }
     try {
-      const result = await buyTicketMutation.mutateAsync({ eventId: id, data: formValues });
+      const result = await buyTicketMutation.mutateAsync({
+        eventId: id,
+        data: formValues,
+      });
       if (result.completed) {
         dispatch(freeEventState({ completed: true }));
         push(routes.EVENT);
@@ -208,7 +222,7 @@ const AssignTicketClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <button
             type="button"
             className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"

@@ -6,12 +6,12 @@ import ChevronLeft from "@/images/icons/chevron-left.svg";
 
 import SearchIcon from "@/images/icons/search.svg";
 import UploadIcon from "@/images/icons/uploadIcon.svg";
-import ScanIcon from "@/images/icons/scanIcon.svg";
 import GuestListCard from "@/components/events/GuestListCard";
 import { useGuestListQuery, useGuestDetailsQuery } from "@/features/events/queries";
 import { GuestListSkeleton } from "@/components/Skeletons";
 import { GuestListCardProps } from "@/interfaces/EventInterface";
 import GuestSideMenu from "@/components/events/GuestSideMenu";
+import ScanTicketButton from "@/components/events/ScanTicketButton";
 
 const CheckInsClient = ({ id }: { id: number }) => {
   const { data: guestListData, isLoading: loading } = useGuestListQuery(id);
@@ -47,7 +47,7 @@ const CheckInsClient = ({ id }: { id: number }) => {
           loading={guestDetailLoading}
           id={id}
         />
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft />
             <p className="tracking-custom text-body-l font-sans font-semibold">Guest list</p>
@@ -55,7 +55,9 @@ const CheckInsClient = ({ id }: { id: number }) => {
         </div>
 
         <div className={"mt-4 flex flex-col items-center gap-2"}>
-          <div className={"flex w-200 justify-between gap-2 rounded-xl bg-white p-6"}>
+          <div
+            className={"flex w-full max-w-200 justify-between gap-2 rounded-xl bg-white p-4 sm:p-6"}
+          >
             <div className="bg-light_grey flex h-12 w-full items-center gap-3 rounded-xl p-2 px-3">
               <SearchIcon className="shrink-0" />
               <input
@@ -69,12 +71,14 @@ const CheckInsClient = ({ id }: { id: number }) => {
               <UploadIcon className="h-5 w-5 text-gray-700" />
             </div>
 
-            <div className="bg-light_grey flex cursor-pointer items-center justify-center rounded-xl p-3 transition-all duration-200 hover:bg-gray-200">
-              <ScanIcon className="h-5 w-5 text-gray-700" />
-            </div>
+            <ScanTicketButton eventId={id} onGuest={setSelectedGuest} />
           </div>
 
-          <div className={"flex h-225 w-200 flex-col gap-4 rounded-xl bg-white p-6"}>
+          <div
+            className={
+              "flex h-auto min-h-100 w-full max-w-200 flex-col gap-4 rounded-xl bg-white p-4 sm:p-6"
+            }
+          >
             {loading ? (
               <GuestListSkeleton count={4} />
             ) : (

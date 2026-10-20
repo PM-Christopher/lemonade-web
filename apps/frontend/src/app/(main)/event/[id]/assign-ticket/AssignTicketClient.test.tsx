@@ -7,8 +7,12 @@ import AssignTicketClient from "./AssignTicketClient";
 const buyMutate = vi.fn();
 const dispatch = vi.fn();
 
-vi.mock("@/images/icons/users.svg", () => ({ default: () => <svg aria-hidden="true" /> }));
-vi.mock("@/images/icons/chevron-left.svg", () => ({ default: () => <svg aria-hidden="true" /> }));
+vi.mock("@/images/icons/users.svg", () => ({
+  default: () => <svg aria-hidden="true" />,
+}));
+vi.mock("@/images/icons/chevron-left.svg", () => ({
+  default: () => <svg aria-hidden="true" />,
+}));
 vi.mock("@/components/layouts/MainLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <main>{children}</main>,
 }));
@@ -18,12 +22,30 @@ vi.mock("react-redux", () => ({
     select({
       event: {
         tickets: [
-          { id: "t-regular", ticket_name: "Regular", quantity: 2, price: 5000, purchase_limit: 5 },
-          { id: "t-vip", ticket_name: "VIP", quantity: 0, price: 20000, purchase_limit: 2 },
+          {
+            id: "t-regular",
+            ticket_name: "Regular",
+            quantity: 2,
+            price: 5000,
+            purchase_limit: 5,
+          },
+          {
+            id: "t-vip",
+            ticket_name: "VIP",
+            quantity: 0,
+            price: 20000,
+            purchase_limit: 2,
+          },
         ],
         eventReferrals: {},
       },
     }),
+}));
+const currentUser = vi.hoisted(() => ({
+  data: undefined as { fullname: string; email: string } | undefined,
+}));
+vi.mock("@/features/authentication/queries", () => ({
+  useCurrentUserQuery: () => currentUser,
 }));
 vi.mock("@/features/events/mutations", () => ({
   useBuyTicketMutation: () => ({ mutateAsync: buyMutate, isPending: false }),
@@ -55,6 +77,15 @@ describe("AssignTicketClient checkout", () => {
     dispatch.mockReset();
   });
 
+  it("prefills the buyer with the signed-in user", async () => {
+    currentUser.data = { fullname: "Ada Lovelace", email: "ada@example.com" };
+    await renderPage();
+
+    expect(screen.getByLabelText("Full name")).toHaveValue("Ada Lovelace");
+    expect(screen.getByLabelText("Email address")).toHaveValue("ada@example.com");
+    currentUser.data = undefined;
+  });
+
   it("sends only ticket ids and quantities, never prices or totals", async () => {
     buyMutate.mockResolvedValue({ completed: true });
     await renderPage();
@@ -66,7 +97,10 @@ describe("AssignTicketClient checkout", () => {
     await waitFor(() => expect(buyMutate).toHaveBeenCalled());
     const [{ eventId, data }] = buyMutate.mock.calls[0];
     expect(eventId).toBe(5);
-    expect(data).toMatchObject({ fullname: "Ada Lovelace", email: "ada@example.com" });
+    expect(data).toMatchObject({
+      fullname: "Ada Lovelace",
+      email: "ada@example.com",
+    });
     for (const ticket of data.tickets) {
       expect(Object.keys(ticket).sort()).toEqual(["id", "quantity"]);
     }
@@ -91,7 +125,10 @@ describe("AssignTicketClient checkout", () => {
     await waitFor(() =>
       expect(dispatch).toHaveBeenCalledWith(
         expect.objectContaining({
-          payload: expect.objectContaining({ message: "Regular is sold out", type: "error" }),
+          payload: expect.objectContaining({
+            message: "Regular is sold out",
+            type: "error",
+          }),
         }),
       ),
     );

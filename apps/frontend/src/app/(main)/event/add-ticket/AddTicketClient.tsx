@@ -29,6 +29,8 @@ const BankAccountModal = dynamic(() => import("@/components/events/Modals/BankAc
   ssr: false,
 });
 
+const PURCHASE_LIMITS = [1, 2, 3, 4, 5];
+
 const emptyTicket = {
   ticket_id: "",
   ticket_type: "",
@@ -165,7 +167,7 @@ const AddTicketClient = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => back()}
@@ -314,14 +316,18 @@ const AddTicketClient = () => {
                     >
                       Purchase limit
                     </Label>
-                    <Input
+                    <select
                       id={`ticket-limit-${index}`}
-                      type="text"
-                      inputMode="numeric"
-                      placeholder=""
-                      className="form-font bg-light_grey h-12 w-full rounded-xl border-0"
+                      className="form-font bg-light_grey h-12 w-full rounded-xl border-0 p-2"
                       {...register(`tickets.${index}.purchase_limit`)}
-                    />
+                    >
+                      <option value="">Select limit</option>
+                      {PURCHASE_LIMITS.map((limit) => (
+                        <option key={limit} value={limit}>
+                          {limit} {limit === 1 ? "ticket" : "tickets"}
+                        </option>
+                      ))}
+                    </select>
                     {ticketFieldError(index, "purchase_limit")}
                   </div>
 

@@ -11,6 +11,8 @@ import TicketIcon from "@/images/icons/ticket.svg";
 import SettingsIcon from "@/images/icons/settingsIcon.svg";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
+import { useQueryClient } from "@tanstack/react-query";
+import { eventKeys } from "@/features/events/queries";
 import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { resetFreeEventState } from "@/features/events/event.slice";
@@ -22,6 +24,7 @@ import VerifyPaymentModal, {
   type VerifiedEvent,
 } from "@/components/events/Modals/VerifyPaymentModal";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
+import useDebounce from "@/hooks/useDebounce";
 
 // Off the initial bundle — only needed once the filter button is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -46,9 +49,13 @@ const EventListClient: React.FC = () => {
   const [toggleFilterEvent, setToggleFilterEvent] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const { free_event } = useSelector((state: RootState) => state.event);
   const searchEventsMutation = useSearchEventsMutation();
+  const { mutate: runSearch, reset: resetSearch } = searchEventsMutation;
   const searchResults = searchEventsMutation.data?.events ?? [];
+  const { debouncedValue: debouncedSearch } = useDebounce(searchTerm.trim(), 350);
+  const searchLoading = searchTerm.trim() !== debouncedSearch || searchEventsMutation.isPending;
   const filterEventsMutation = useFilterEventsMutation();
 
   const [paidEvent, setPaidEvent] = useState<VerifiedEvent>();
@@ -74,6 +81,7 @@ const EventListClient: React.FC = () => {
 
   usePaymentReturn<VerifiedEvent["data"]>((data) => {
     setPaidEvent({ data });
+    queryClient.invalidateQueries({ queryKey: eventKeys.myTickets() });
     dispatch(
       updateToastifyReducer({
         show: true,
@@ -84,10 +92,14 @@ const EventListClient: React.FC = () => {
     setToggleVPaymentModel(true);
   });
 
+  // Search runs once typing pauses, not on every keystroke.
+  useEffect(() => {
+    if (debouncedSearch) runSearch(debouncedSearch);
+    else resetSearch();
+  }, [debouncedSearch, runSearch, resetSearch]);
+
   const handleEventSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    searchEventsMutation.mutate(value);
+    setSearchTerm(e.target.value);
   };
 
   const activatePaymentModal = () => {
@@ -114,9 +126,11 @@ const EventListClient: React.FC = () => {
           <EventsSectionView
             results={searchResults}
             searchTerm={searchTerm}
+            searchLoading={searchLoading}
             filtered={filterEventsMutation.isSuccess}
             filteredEvents={filterEventsMutation.data?.events ?? []}
             filteredLoading={filterEventsMutation.isPending}
+            onClearFilter={filterEventsMutation.reset}
           />
         );
       case "organizer":

@@ -27,7 +27,7 @@ const OrganizerSubMenu: React.FC<OrganizerSubMenuInterface> = ({ toggle }) => {
       >
         <div className="flex items-center gap-2">
           <PlusIcon />
-          <p className="font-semi-normal text-body-l font-sans text-white">Add Event</p>
+          <p className="font-semi-normal text-body-l font-sans text-white">Add event</p>
         </div>
       </Button>
     </div>

@@ -20,23 +20,17 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
   });
   const payment_setting = paymentSettingData?.payment_setting;
   const updatePaymentSettingMutation = useUpdatePaymentSettingMutation();
-  const [paymentType, setPaymentType] = useState(payment_setting?.type || "");
+  // Until the buyer picks one, show the saved choice (weekly if none).
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const paymentType = selectedType ?? payment_setting?.type ?? "weekly";
 
   const handleUpdate = () => {
-    if (paymentType === null) {
-      dispatch(
-        updateToastifyReducer({
-          show: true,
-          message: "Please select a payment type",
-          type: "error",
-        }),
-      );
-      return;
-    }
     updatePaymentSettingMutation.mutate(
       { type: paymentType },
       {
         onSuccess: () => {
+          setSelectedType(null);
+          toggle();
           dispatch(
             updateToastifyReducer({
               show: true,
@@ -56,9 +50,9 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
         if (!open) toggle();
       }}
     >
-      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+      <DialogContentBare className="w-[calc(100vw-2rem)] max-w-160 gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Payment settings"}</DialogTitle>
-        <div className="w-160 rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-full rounded-lg bg-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
@@ -74,12 +68,12 @@ const PaymentSettingsModal: React.FC<PaymentSettingsInterface> = ({ toggle, opti
                 onClick={handleUpdate}
                 loading={updatePaymentSettingMutation.isPending}
               >
-                <p className="font-semi-normal text-meta font-sans leading-normal">Save Changes</p>
+                <p className="font-semi-normal text-meta font-sans leading-normal">Save changes</p>
               </Button>
             </div>
           </div>
           <div className="mt-10">
-            <RadioGroup value={paymentType} onValueChange={(val) => setPaymentType(val)}>
+            <RadioGroup value={paymentType} onValueChange={setSelectedType}>
               <div className="flex gap-2">
                 <RadioGroupItem
                   value="weekly"

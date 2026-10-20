@@ -23,7 +23,7 @@ import { addEvent } from "@/features/events/event.slice";
 
 import MainLayout from "@/components/layouts/MainLayout";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { FlatButton } from "@/components/global/FlatButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getTimeZones } from "@/lib/helper";
@@ -42,7 +42,7 @@ interface SocialMediaHandles {
 const CreateEventClient = () => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
-  const [eventType, setEventType] = useState("");
+  const [eventType, setEventType] = useState("physical");
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
     setChecked(!checked);
@@ -77,12 +77,12 @@ const CreateEventClient = () => {
       event_name: "",
       event_description: "",
       category: "",
-      event_type: "",
+      event_type: "physical",
       location: "",
       hosting_platform: "",
       meeting_link: "",
       meeting_passcode: "",
-      time_zone: "",
+      time_zone: "Africa/Lagos",
       start_date: "",
       start_time: "",
       end_date: "",
@@ -122,7 +122,7 @@ const CreateEventClient = () => {
         end_date: `${formValues.end_date}T${formValues.end_time}`,
         affiliate_program: formValues.affiliate_program,
         // The form takes a whole percent; the backend expects a fraction (2.5% -> 0.025).
-        commission: formValues.affiliate_program ? Number(formValues.commission) / 100 : null,
+        commission: formValues.affiliate_program ? Number(formValues.commission) : null,
         socials: filteredSocials,
       };
       dispatch(addEvent(data));
@@ -160,7 +160,7 @@ const CreateEventClient = () => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div
             className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => push(routes.EVENT)}
@@ -172,7 +172,7 @@ const CreateEventClient = () => {
         <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <div className="laptop:w-160 mt-10 flex w-full flex-col rounded-xl bg-white p-12">
+              <div className="laptop:mt-10 laptop:w-160 laptop:p-12 flex w-full flex-col rounded-xl bg-white p-4">
                 <p className="text-light-black text-meta font-sans font-bold">EVENT DETAILS</p>
                 <SingleFileUploader
                   length="single"
@@ -238,7 +238,7 @@ const CreateEventClient = () => {
                   </Label>
                   <select
                     id="fullname"
-                    className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                    className="form-font bg-light_grey h-12 w-full min-w-0 rounded-xl border-0 px-2"
                     value={values.category}
                     onChange={(e) => {
                       setValue("category", e.target.value, { shouldValidate: true });
@@ -328,7 +328,7 @@ const CreateEventClient = () => {
                       </Label>
                       <select
                         id="meeting-platform"
-                        className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                        className="form-font bg-light_grey h-12 w-full min-w-0 rounded-xl border-0 px-2"
                         value={values.hosting_platform}
                         onChange={(e) =>
                           setValue("hosting_platform", e.target.value, { shouldValidate: true })
@@ -731,12 +731,11 @@ const CreateEventClient = () => {
                     />
                   </div>
                 </div>
-                <FlatButton
+                <SubmitButton
                   loading={isSubmitting}
-                  error={isValid}
-                  onClick={() => handleSubmit(onSubmit)()}
+                  isValid={isValid}
                   title="Continue"
-                  classes="mt-6 h-12 rounded-xl border border-step-color"
+                  classes="mt-6 h-12 w-full rounded-xl"
                 />
               </div>
             </div>

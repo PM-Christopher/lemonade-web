@@ -23,9 +23,9 @@ const AffiliateLinkModal: React.FC<AffiliateLinkInterface> = ({ isOpen, toggle, 
         if (!open) toggle();
       }}
     >
-      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+      <DialogContentBare className="w-[calc(100vw-2rem)] max-w-120 gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Link generated!"}</DialogTitle>
-        <div className="relative flex w-120 items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
+        <div className="relative flex w-full items-center justify-center px-4 py-6 sm:px-6 sm:py-10">
           <div
             className="animate-in fade-in zoom-in-95 relative max-h-[calc(100vh-48px)] w-full overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl sm:max-h-[calc(100vh-80px)] sm:max-w-130 sm:p-6"
             role="dialog"

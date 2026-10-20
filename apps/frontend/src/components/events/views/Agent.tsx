@@ -16,6 +16,8 @@ function AgentSectionView({}) {
   const affiliate_events = affiliateEventsData?.events ?? [];
   const { data: affiliate_data, isLoading: affiliateDataLoading } = useAffiliateDataQuery();
 
+  const findEvents = affiliate_data?.[0]?.find_events ?? [];
+
   const { total_commission, tickets_sold } = useMemo(() => {
     // See features/events/api.ts's file-level note: this really is an
     // array with one entry, not a list to sum over.
@@ -28,11 +30,23 @@ function AgentSectionView({}) {
   const renderView = () => {
     switch (view) {
       case "promotions":
-        return <PromotionsSubMenu events={affiliate_events} loading={affiliateLoading} />;
+        return (
+          <PromotionsSubMenu
+            events={affiliate_events}
+            loading={affiliateLoading}
+            onFindEvents={() => setView("find_event")}
+          />
+        );
       case "find_event":
-        return <FindEventSubMenu />;
+        return <FindEventSubMenu initialEvents={findEvents} loading={affiliateDataLoading} />;
       default:
-        return <PromotionsSubMenu events={affiliate_events} loading={affiliateLoading} />;
+        return (
+          <PromotionsSubMenu
+            events={affiliate_events}
+            loading={affiliateLoading}
+            onFindEvents={() => setView("find_event")}
+          />
+        );
     }
   };
   return (
@@ -44,9 +58,9 @@ function AgentSectionView({}) {
             <div className="laptop:flex-row laptop:items-stretch flex flex-col gap-6">
               {/* Left card */}
               <aside className="laptop:w-105 w-full xl:w-137.5">
-                <div className="h-fit rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+                <div className="h-fit rounded-2xl bg-white p-5 sm:p-6">
                   <p className="text-text-grey text-meta sm:text-body-s mb-4 font-sans leading-normal">
-                    All time commission
+                    All Time Commission
                   </p>
 
                   {affiliateDataLoading ? (
@@ -87,32 +101,26 @@ function AgentSectionView({}) {
 
               {/* Right card */}
               <main className="w-full min-w-0">
-                <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6">
+                <div className="rounded-2xl bg-white p-5 sm:p-6">
                   {/* Tabs */}
-                  <div className="mb-4 flex w-full gap-2 overflow-x-auto rounded-xl bg-gray-50 p-1">
-                    <button
-                      type="button"
-                      onClick={() => setView("promotions")}
-                      className={`tracking-custom text-meta sm:text-body-s flex-1 rounded-lg px-4 py-2 text-center font-sans leading-normal whitespace-nowrap transition ${
-                        view === "promotions"
-                          ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                    >
-                      Promotions
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setView("find_event")}
-                      className={`tracking-custom text-meta sm:text-body-s flex-1 rounded-lg px-4 py-2 text-center font-sans leading-normal whitespace-nowrap transition ${
-                        view === "find_event"
-                          ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                    >
-                      Find events
-                    </button>
+                  <div className="border-mid-grey mb-4 flex w-full border-b">
+                    {[
+                      { key: "promotions", label: "Promotions" },
+                      { key: "find_event", label: "Find events" },
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setView(tab.key)}
+                        className={`tracking-custom text-meta sm:text-body-s -mb-px flex-1 border-b-2 px-4 py-3 text-center font-sans leading-normal whitespace-nowrap transition ${
+                          view === tab.key
+                            ? "border-step-color text-black-light font-semibold"
+                            : "text-text-grey border-transparent"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
 
                   <div className="min-w-0">{renderView()}</div>

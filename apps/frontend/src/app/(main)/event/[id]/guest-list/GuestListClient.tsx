@@ -15,6 +15,7 @@ import {
 import { GuestListSkeleton } from "@/components/Skeletons";
 import { GuestListCardProps } from "@/interfaces/EventInterface";
 import GuestSideMenu from "@/components/events/GuestSideMenu";
+import ScanTicketButton from "@/components/events/ScanTicketButton";
 import { Users } from "lucide-react";
 import useDebounce from "@/hooks/useDebounce";
 
@@ -66,7 +67,7 @@ const GuestListClient = ({ id }: { id: number }) => {
           loading={guestDetailLoading}
           id={id}
         />
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => back()}
@@ -101,6 +102,7 @@ const GuestListClient = ({ id }: { id: number }) => {
               >
                 <UploadIcon className="h-5 w-5 text-gray-700" />
               </button>
+              <ScanTicketButton eventId={id} onGuest={setSelectedGuest} />
             </div>
           </div>
 

@@ -35,7 +35,7 @@ const EventClient = ({ id }: { id: number }) => {
     const code = searchParams.get("referral");
     if (!code) return;
 
-    const eventId = Number(id);
+    const eventId = String(id);
 
     // Store in redux
     dispatch(setEventReferral({ eventId, code }));
@@ -61,7 +61,7 @@ const EventClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t border-b bg-white p-5 px-10">
+        <div className="flex items-center justify-between bg-white p-5 px-10">
           <Link href={routes.EVENT}>
             <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
               <ChevronLeft />
@@ -75,7 +75,7 @@ const EventClient = ({ id }: { id: number }) => {
         ) : (
           <section className="mt-4 flex flex-col items-center">
             <div className="flex w-full justify-center px-4">
-              <section className="laptop:max-w-275 laptop:flex-row laptop:items-center laptop:gap-10 laptop:p-4 flex w-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
+              <section className="laptop:max-w-275 laptop:flex-row laptop:items-center laptop:gap-10 laptop:p-4 flex w-full flex-col overflow-hidden rounded-2xl bg-white">
                 {/* Event Image */}
                 <div className="laptop:w-100 laptop:shrink-0 laptop:rounded-xl relative aspect-4/5 w-full overflow-hidden">
                   <FallbackImage

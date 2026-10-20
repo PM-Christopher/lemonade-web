@@ -83,12 +83,11 @@ function GenerateLinkCTA({
     return (
       <div
         className={[
-          "border-step-color bg-gradient-green h-12 w-full rounded-xl border",
-          "flex items-center justify-center",
+          "bg-disabled-green laptop:w-fit laptop:px-8 flex h-12 w-full items-center justify-center rounded-xl",
           className,
         ].join(" ")}
       >
-        <p className="font-semi-normal text-field text-white">Link generated</p>
+        <p className="font-semi-normal text-field text-white">Joined</p>
       </div>
     );
   }
@@ -96,7 +95,7 @@ function GenerateLinkCTA({
   return (
     <Button
       className={[
-        "border-step-color bg-gradient-green h-12 w-full rounded-xl border",
+        "bg-gradient-green laptop:w-fit laptop:px-8 h-12 w-full rounded-xl",
         "disabled:cursor-not-allowed disabled:opacity-60",
         className,
       ].join(" ")}
@@ -155,7 +154,7 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
         {/* Header */}
-        <div className="border-y border-gray-100 bg-white">
+        <div className="bg-white">
           <div className="tablet:px-6 laptop:px-10 mx-auto flex w-full max-w-328 items-center justify-between px-4 py-4">
             <Link
               href={routes.EVENT}
@@ -234,12 +233,16 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
 
                       {/* Contact + CTA (Laptop) */}
                       <div className="laptop:block mt-10 hidden">
-                        <p className="tracking-custom text-body-xl font-semibold text-gray-900">
-                          Contact Us
-                        </p>
-                        <div className="mt-4">
-                          <SocialLinks socials={event?.socials} />
-                        </div>
+                        {(event?.socials?.length ?? 0) > 0 && (
+                          <>
+                            <p className="tracking-custom text-body-xl font-semibold text-gray-900">
+                              Contact Us
+                            </p>
+                            <div className="mt-4">
+                              <SocialLinks socials={event?.socials} />
+                            </div>
+                          </>
+                        )}
 
                         <div className="mt-8">
                           <GenerateLinkCTA
@@ -269,56 +272,44 @@ const AgentDetailsClient = ({ id }: { id: number }) => {
                   </div>
 
                   {/* Contact (Mobile/Tablet) */}
-                  <div className="laptop:hidden mt-8">
-                    <p className="tracking-custom text-body-xl font-semibold text-gray-900">
-                      Contact Us
-                    </p>
-                    <div className="mt-4">
-                      <SocialLinks socials={event?.socials} />
+                  {(event?.socials?.length ?? 0) > 0 && (
+                    <div className="laptop:hidden mt-8">
+                      <p className="tracking-custom text-body-xl font-semibold text-gray-900">
+                        Contact Us
+                      </p>
+                      <div className="mt-4">
+                        <SocialLinks socials={event?.socials} />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Tickets */}
                 <aside className="tablet:p-7 laptop:w-105 w-full rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <p className="text-body-xl font-semibold text-gray-900">Tickets</p>
-                    {!!event?.isAffiliate && (
-                      <span className="rounded-full border border-green-100 bg-green-50 px-3 py-1 text-xs text-green-700">
-                        Affiliate
-                      </span>
-                    )}
                   </div>
 
-                  <div className="mt-4 space-y-3">
-                    {event?.isAffiliate && (event?.ticket_sold?.length ?? 0) > 0 ? (
-                      (
-                        event?.ticket_sold as
-                          | Array<{ id?: number; name?: string; count?: number; price?: number }>
-                          | undefined
-                      )?.map((item) => (
-                        <div
-                          key={item?.id}
-                          className="flex items-center justify-between rounded-xl border border-gray-100 p-3 transition hover:bg-gray-50"
-                        >
-                          <div className="flex flex-col">
-                            <p className="font-semi-normal text-body-s text-gray-900">
-                              {item?.name}
-                            </p>
-                            <p className="text-text-grey text-meta leading-normal font-normal">
-                              {item?.count}
-                            </p>
-                          </div>
+                  <div className="mt-4 flex flex-col gap-4">
+                    {(event?.tickets ?? []).map((ticket) => (
+                      <div key={ticket.id} className="flex items-start justify-between gap-3">
+                        <div className="flex flex-col">
                           <p className="font-semi-normal text-body-s text-gray-900">
-                            ₦{formatNumberWithCommas(item?.price)}
+                            {ticket.name}
+                          </p>
+                          <p className="text-text-grey text-meta leading-normal font-normal">
+                            {ticket.stock_type === "unlimited"
+                              ? "Unlimited tickets"
+                              : `${formatNumberWithCommas(ticket.ticket_stock)} available tickets`}
                           </p>
                         </div>
-                      ))
-                    ) : (
-                      <div className="rounded-xl border border-dashed border-gray-200 p-4 text-sm text-gray-600">
-                        No ticket sales to display yet.
+                        <p className="font-semi-normal text-body-s text-gray-900">
+                          {ticket.ticket_type === "free"
+                            ? "Free"
+                            : `₦${formatNumberWithCommas(ticket.price)}`}
+                        </p>
                       </div>
-                    )}
+                    ))}
                   </div>
 
                   {/* CTA (Mobile/Tablet) */}

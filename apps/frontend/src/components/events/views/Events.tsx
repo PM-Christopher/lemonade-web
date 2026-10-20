@@ -11,9 +11,11 @@ import { routes } from "@/lib/routes";
 type EventsInterface = {
   results: EventInterface[];
   searchTerm: string;
+  searchLoading?: boolean;
   filtered: boolean;
   filteredEvents: EventInterface[];
   filteredLoading: boolean;
+  onClearFilter?: () => void;
 };
 
 // One scrolling row on small screens, three columns on large ones.
@@ -38,10 +40,21 @@ function EmptyState({ title, hint }: { title: string; hint: string }) {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <section className="mb-8">
-      <p className="text-title-r mb-2 font-sans font-semibold">{title}</p>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <p className="text-title-r font-sans font-semibold">{title}</p>
+        {action}
+      </div>
       {children}
     </section>
   );
@@ -50,9 +63,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 const EventsSectionView: React.FC<EventsInterface> = ({
   results,
   searchTerm,
+  searchLoading = false,
   filtered,
   filteredEvents,
   filteredLoading,
+  onClearFilter,
 }) => {
   const { data: eventsData, isLoading: eventsLoading } = useEventsQuery();
   const events = eventsData ?? { trending: [], this_week: [], upcoming: [] };
@@ -76,14 +91,29 @@ const EventsSectionView: React.FC<EventsInterface> = ({
       <div className="laptop:w-252 mt-6 w-full rounded-xl p-4">
         {searchTerm ? (
           <Section title="Search results">
-            {results.length > 0 ? (
+            {searchLoading ? (
+              <EventsSkeleton count={3} />
+            ) : results.length > 0 ? (
               <EventList events={results} />
             ) : (
               <EmptyState title="No results found" hint="Search for another event." />
             )}
           </Section>
         ) : filtered ? (
-          <Section title="Filtered events">
+          <Section
+            title="Filtered events"
+            action={
+              onClearFilter && (
+                <button
+                  type="button"
+                  onClick={onClearFilter}
+                  className="text-body-s text-light-green cursor-pointer font-semibold"
+                >
+                  Clear filter
+                </button>
+              )
+            }
+          >
             {filteredLoading ? (
               <EventsSkeleton count={3} />
             ) : filteredEvents.length > 0 ? (

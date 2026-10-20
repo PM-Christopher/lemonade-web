@@ -117,14 +117,24 @@ export interface GuestListResponse {
 
 export interface GuestSearchResponse {
   guest_list: GuestListCardProps[];
-  meta: { current_page: number; per_page: number; total: number; last_page: number };
+  meta: {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+  };
 }
 
 // One guest's check-in card (backend GetEventGuest / CheckInEventGuest).
 export interface GuestDetails {
   id: number;
   checked_in?: boolean;
-  event?: { name?: string; start_date?: string; start_time?: string; end_time?: string };
+  event?: {
+    name?: string;
+    start_date?: string;
+    start_time?: string;
+    end_time?: string;
+  };
   user?: { name?: string; email?: string };
   ticket?: { ticket_id?: string; ticket_name?: string };
 }
@@ -199,7 +209,12 @@ export interface PaymentSettingResponse {
 
 export interface BuyTicketPayload {
   tickets?: { id: string; quantity: number }[];
-  assigned_tickets?: { id: string; quantity: number; fullname: string; email: string }[];
+  assigned_tickets?: {
+    id: string;
+    quantity: number;
+    fullname: string;
+    email: string;
+  }[];
   assign_multiple: boolean;
   fullname: string;
   email: string;
@@ -267,6 +282,9 @@ export const eventsApi = {
   publishEvent: (id: number | string) =>
     browserApi.patch<EventDetailResponse>(buildPath(userEventsRoutes.PUBLISH, { id })),
 
+  deleteEvent: (id: number | string) =>
+    browserApi.delete<{ deleted: boolean }>(buildPath(userEventsRoutes.DELETE, { id })),
+
   getEventTickets: (id: number | string) =>
     browserApi.get<EventTicketsResponse>(buildPath(userEventsRoutes.EVENT_TICKETS, { id })),
 
@@ -282,7 +300,9 @@ export const eventsApi = {
     browserApi.patch<PaymentSettingResponse>(userEventsRoutes.PAYMENT_SETTING_UPDATE, data),
 
   filterEvents: (data: FilterEventsPayload) =>
-    browserApi.get<FilterEventsResponse>(userEventsRoutes.FILTER, { params: data }),
+    browserApi.get<FilterEventsResponse>(userEventsRoutes.FILTER, {
+      params: data,
+    }),
 
   searchEvents: (data: { search: string }) =>
     browserApi.post<SearchEventsResponse>(userEventsRoutes.SEARCH, data),
@@ -313,7 +333,10 @@ export const eventsApi = {
 
   getEventPromotion: (id: number | string, promotionId: number | string) =>
     browserApi.get<EventPromotionResponse>(
-      buildPath(userEventsRoutes.EVENT_PROMOTION, { id, promo_id: promotionId }),
+      buildPath(userEventsRoutes.EVENT_PROMOTION, {
+        id,
+        promo_id: promotionId,
+      }),
     ),
 
   buyTicket: (eventId: number | string, data: BuyTicketPayload) =>
@@ -339,6 +362,11 @@ export const eventsApi = {
     browserApi.get<GuestDetailsResponse>(
       buildPath(userEventsRoutes.GUEST_DETAILS, { id, guest_id: guestId }),
     ),
+
+  scanTicket: (id: number | string, code: string) =>
+    browserApi.post<GuestDetailsResponse>(buildPath(userEventsRoutes.SCAN_TICKET, { id }), {
+      code,
+    }),
 
   checkInGuest: (id: number | string, guestId: number | string) =>
     browserApi.patch<GuestDetailsResponse>(

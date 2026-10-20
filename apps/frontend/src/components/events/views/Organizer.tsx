@@ -49,8 +49,8 @@ const OrganizerSectionView: React.FC<OrganizerSectionInterface> = ({
           <div className="flex gap-4 sm:gap-6">
             {[
               { label: "Upcoming", key: "upcoming" },
-              { label: "Past Events", key: "past" },
-              { label: "Drafts", key: "draft" },
+              { label: "Past events", key: "past" },
+              { label: "Draft", key: "draft" },
             ].map((tab) => {
               const isActive = orOption === tab.key;
 

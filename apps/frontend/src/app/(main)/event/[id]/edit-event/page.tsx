@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Edit event" };
 
 export default async function EditEventPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const eventId = Number(params.id);
+  const eventId = params.id;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({

@@ -14,7 +14,9 @@ import TrashIcon from "@/images/icons/trashIcon.svg";
 
 import GoLive from "@/images/icons/goLive.svg";
 import { useAppDispatch } from "@/redux/hook";
-import { usePublishEventMutation } from "@/features/events/mutations";
+import { useDeleteEventMutation, usePublishEventMutation } from "@/features/events/mutations";
+import { Button, Dialog, DialogContent, DialogDescription, DialogTitle } from "@lemonade/ui";
+import { errorMessage } from "@/lib/api-error";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 
@@ -35,6 +37,8 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
   const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const publishEventMutation = usePublishEventMutation();
+  const deleteEventMutation = useDeleteEventMutation();
+  const [isDeleting, setIsDeleting] = useState(false);
   const loading = publishEventMutation.isPending;
 
   const handleMoreIconClick = () => {
@@ -56,8 +60,33 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: apiMessage("Your event has been published"),
+            message: apiMessage("Event published"),
             type: "success",
+          }),
+        );
+      },
+    });
+  };
+
+  const deleteEvent = () => {
+    deleteEventMutation.mutate(event.id, {
+      onSuccess: () => {
+        setIsDeleting(false);
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: apiMessage("Event deleted"),
+            type: "success",
+          }),
+        );
+      },
+      onError: (error) => {
+        setIsDeleting(false);
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(error, "We couldn't delete this event."),
+            type: "error",
           }),
         );
       },
@@ -118,7 +147,7 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
                 className="flex w-full items-center gap-2 rounded-t-xl px-4 py-3 text-left text-gray-700 transition-colors hover:bg-gray-50"
               >
                 <PencilIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-sm font-medium">Edit Event</span>
+                <span className="text-sm font-medium">Edit event</span>
               </button>
 
               {/* Go Live - only if draft */}
@@ -163,14 +192,42 @@ const OrganizerEventCard: React.FC<OrganizerEventInterface> = ({ draft, event })
               )}
 
               {/* Delete */}
-              <button className="flex w-full items-center gap-2 rounded-b-xl px-4 py-3 text-left text-red-600 transition-colors hover:bg-red-50">
+              <button
+                onClick={() => {
+                  setModalVisible(false);
+                  setIsDeleting(true);
+                }}
+                className="flex w-full items-center gap-2 rounded-b-xl px-4 py-3 text-left text-red-600 transition-colors hover:bg-red-50"
+              >
                 <TrashIcon className="h-4 w-4 text-red-600" />
-                <span className="text-sm font-medium">Delete Event</span>
+                <span className="text-sm font-medium">Delete event</span>
               </button>
             </div>
           )}
         </div>
       </div>
+      <Dialog open={isDeleting} onOpenChange={setIsDeleting}>
+        <DialogContent className="max-w-sm border-0">
+          <DialogTitle>Delete event</DialogTitle>
+          <DialogDescription>Are you sure you want to delete this event?</DialogDescription>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="h-12 flex-1 rounded-xl border-0 text-red-600"
+              disabled={deleteEventMutation.isPending}
+              onClick={deleteEvent}
+            >
+              Yes, delete
+            </Button>
+            <Button
+              className="bg-gradient-green h-12 flex-1 rounded-xl"
+              onClick={() => setIsDeleting(false)}
+            >
+              No, don&apos;t delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

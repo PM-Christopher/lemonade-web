@@ -49,6 +49,17 @@ export function usePublishEventMutation() {
   });
 }
 
+export function useDeleteEventMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number | string) => eventsApi.deleteEvent(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventKeys.organizerList() });
+    },
+  });
+}
+
 export function useEditEventTicketsMutation(id: number | string | undefined) {
   const queryClient = useQueryClient();
 
@@ -83,7 +94,9 @@ export function useGenerateAffiliateLinkMutation() {
   return useMutation({
     mutationFn: (id: number | string) => eventsApi.generateAffiliateLink(id),
     onSuccess: (_result, id) => {
-      queryClient.invalidateQueries({ queryKey: eventKeys.affiliateEventDetail(id) });
+      queryClient.invalidateQueries({
+        queryKey: eventKeys.affiliateEventDetail(id),
+      });
     },
   });
 }
@@ -110,6 +123,17 @@ export function useEventPromotionMutation() {
   });
 }
 
+export function useScanTicketMutation(id: number | string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (code: string) => eventsApi.scanTicket(id as number, code),
+    onSuccess: (result) => {
+      if (id) queryClient.setQueryData(eventKeys.guestDetails(id, result.guest_details.id), result);
+    },
+  });
+}
+
 export function useCheckInGuestMutation(id: number | string | undefined) {
   const queryClient = useQueryClient();
 
@@ -133,9 +157,15 @@ export function useCheckInGuestMutation(id: number | string | undefined) {
 }
 
 export function useBuyTicketMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ eventId, data }: { eventId: number | string; data: BuyTicketPayload }) =>
       eventsApi.buyTicket(eventId, data),
+    // Free bookings are complete here; paid ones are refreshed after payment returns.
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventKeys.myTickets() });
+    },
   });
 }
 

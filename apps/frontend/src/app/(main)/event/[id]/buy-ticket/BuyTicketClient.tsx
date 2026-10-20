@@ -124,7 +124,7 @@ const BuyTicketClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft className="cursor-pointer" />
             <p className="tracking-custom text-body-l font-sans font-semibold">Buy ticket</p>

@@ -34,6 +34,9 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
   const { push, back } = useNavigation();
   const { data: programDetails } = useAffiliateEventDetailQuery(id);
+  const [now] = useState(() => Date.now());
+  const endDate = programDetails?.events?.end_date;
+  const hasEnded = endDate ? new Date(endDate).getTime() < now : false;
   const affiliatePath = programDetails?.events?.affiliate_link;
   const affiliateLink = affiliatePath ? appUrl(affiliatePath) : "";
 
@@ -54,7 +57,7 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="flex items-center justify-between border-t border-b bg-white p-5 px-10">
+        <div className="flex items-center justify-between bg-white p-5 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1" onClick={() => back()}>
             <ChevronLeft />
             <p className="tracking-custom text-body-l font-sans font-semibold">Program details</p>
@@ -65,20 +68,27 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
           <div className="laptop:flex-row laptop:justify-between laptop:gap-10 flex flex-col">
             <div className="laptop:w-160 laptop:bg-white w-full gap-6 rounded-xl bg-none">
               <div className="laptop:p-6 p-0">
-                <div className="bg-green-tint laptop:w-full flex w-screen items-center gap-3 rounded-lg p-2 px-4">
+                <div className="bg-green-tint relative flex w-full items-center gap-3 rounded-lg p-2 px-4">
+                  <span
+                    className={`text-meta absolute top-1 right-2 rounded-md px-2 py-0.5 font-sans font-medium ${
+                      hasEnded ? "bg-red-50 text-red-600" : "bg-light-green-60 text-light-green-70"
+                    }`}
+                  >
+                    {hasEnded ? "Ended" : "Active"}
+                  </span>
                   <FallbackImage
                     src={programDetails?.events?.event_image}
                     fallbackSrc={images.DEFAULT_EVENT}
                     alt="details"
                     width={120}
                     height={120}
-                    className={"h-30 w-30 rounded-xl"}
+                    className={"laptop:h-30 laptop:w-30 h-20 w-20 shrink-0 rounded-xl object-cover"}
                   />
                   <div className="flex flex-col">
                     <p className="tracking-custom text-body-xl font-sans font-semibold">
                       {programDetails?.events?.event_name}
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2">
                       <CalendarIcon />
                       <p className="tracking-custom text-text-grey text-body-l font-sans leading-6.75 font-normal">
                         {formatLongDate(programDetails?.events?.start_date, "mid")}
@@ -124,7 +134,7 @@ const ProgramDetailsClient = ({ id }: { id: number }) => {
                       }
                       onClick={() => push(routes.EVENT_AGENT_DETAILS(id))}
                     >
-                      <p className={"font-medium text-white"}>Generate payment link</p>
+                      <p className={"font-medium text-white"}>Generate affiliate link</p>
                     </div>
                   )}
                 </div>

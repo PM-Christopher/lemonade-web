@@ -13,7 +13,6 @@ import EditIcon from "@/images/icons/editIconBlack.svg";
 import TicketIcon from "@/images/icons/ticket.svg";
 import ChevronRightIcon from "@/images/icons/chevronRight.svg";
 import AffiliateUsersIcon from "@/images/icons/affiliate_users.svg";
-import CheckIcon from "@/images/icons/checkedFilledIcon.svg";
 import PaymentSuccessfulModal, {
   type PaidPromotion,
 } from "@/components/events/Modals/PaymentSuccessfulModal";
@@ -53,13 +52,16 @@ const EventDetailsClient = ({ id }: { id: number }) => {
 
   usePaymentReturn<PromotionPaymentMeta>((meta) => {
     queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
-    setPromotionData({ ...meta?.promo, promotion_date: meta?.promotion?.promotion_date });
+    setPromotionData({
+      ...meta?.promo,
+      promotion_date: meta?.promotion?.promotion_date,
+    });
     activateModal();
   });
 
-  const handleGetEventPromotion = () => {
+  const handleGetEventPromotion = (promotionId: number) => {
     eventPromotionMutation.mutate(
-      { id: id, promotionId: event?.promotion?.[0]?.id ?? 0 },
+      { id: id, promotionId },
       {
         onSuccess: (result) => {
           setEventPromotion(result.promotion as PromotionInterface);
@@ -72,7 +74,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => back()}
@@ -84,11 +86,11 @@ const EventDetailsClient = ({ id }: { id: number }) => {
         {loading ? (
           <EventProgramDetailSkeleton />
         ) : (
-          <div className="mt-4 flex flex-col items-center">
-            <div className="flex justify-between gap-6">
+          <div className="mt-4 flex flex-col items-center px-4">
+            <div className="laptop:flex-row laptop:w-auto laptop:gap-6 flex w-full flex-col justify-between gap-3">
               <div>
-                <div className="flex w-160 flex-col rounded-xl bg-white p-6">
-                  <div className="bg-green-tint/60 flex items-center gap-6 rounded-xl p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
+                <div className="laptop:w-160 laptop:p-6 flex w-full flex-col rounded-xl bg-white p-4">
+                  <div className="bg-green-tint/60 laptop:gap-6 flex items-center gap-4 rounded-xl p-4 shadow-sm transition-shadow duration-300 hover:shadow-md">
                     <div className="relative overflow-hidden rounded-lg shadow-md">
                       <FallbackImage
                         src={event?.event_image}
@@ -123,34 +125,17 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-6 flex items-center justify-center gap-8">
-                    {(event?.promotion?.length ?? 0) > 0 ? (
-                      <div
-                        className="relative flex cursor-pointer flex-col items-center gap-2"
-                        onClick={handleGetEventPromotion}
-                      >
-                        <div className="bg-light-green-60 absolute top-0 left-0 flex h-5 w-5 -translate-x-1/3 -translate-y-1/3 items-center justify-center rounded-full shadow-md">
-                          <CheckIcon className="h-2.5 w-2.5" stroke="#009D44" />
-                        </div>
+                  <div className="laptop:justify-center laptop:gap-8 mt-6 flex items-center justify-between gap-4 px-2">
+                    <Link href={routes.EVENT_PROMOTE(id)}>
+                      <div className="flex flex-col items-center gap-2">
                         <div className="border-grey-20 rounded-2xl border p-4">
                           <MicIcon />
                         </div>
                         <p className="font-semi-normal text-text-grey text-meta font-sans">
-                          Promoted
+                          Promote
                         </p>
                       </div>
-                    ) : (
-                      <Link href={routes.EVENT_PROMOTE(id)}>
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="border-grey-20 rounded-2xl border p-4">
-                            <MicIcon />
-                          </div>
-                          <p className="font-semi-normal text-text-grey text-meta font-sans">
-                            Promote
-                          </p>
-                        </div>
-                      </Link>
-                    )}
+                    </Link>
                     <Link href={routes.EVENT_GUEST_LIST(id)}>
                       <div className="flex flex-col items-center gap-2">
                         <div className="border-grey-20 rounded-2xl border p-4">
@@ -225,10 +210,30 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       </p>
                     </div>
                   </div>
+                  {(event?.promotion?.length ?? 0) > 0 && (
+                    <div className="mt-6 flex flex-col gap-3">
+                      <p className="tracking-custom text-body-l font-sans font-semibold">
+                        Promotions
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {event?.promotion?.map((promotion) => (
+                          <button
+                            key={promotion.id}
+                            type="button"
+                            onClick={() => handleGetEventPromotion(promotion.id)}
+                            className="bg-light-green-60 text-light-green-70 text-meta flex cursor-pointer items-center gap-1 rounded-lg px-3 py-2 font-sans font-medium"
+                          >
+                            {promotion.name}
+                            <ChevronRightIcon className="h-3 w-3" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col gap-3">
-                <div className="flex w-120 flex-col rounded-lg bg-white p-4">
+                <div className="laptop:w-120 flex w-full flex-col rounded-lg bg-white p-4">
                   <p className="tracking-custom text-body-l font-sans font-semibold">
                     Sales revenue by ticket type
                   </p>
@@ -268,7 +273,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       );
                     })}
                 </div>
-                <div className="flex w-120 flex-col rounded-lg bg-white p-4">
+                <div className="laptop:w-120 flex w-full flex-col rounded-lg bg-white p-4">
                   <p className="tracking-custom text-body-l font-sans font-semibold">
                     Ticket sold by ticket type
                   </p>
@@ -317,7 +322,7 @@ const EventDetailsClient = ({ id }: { id: number }) => {
                       );
                     })}
                 </div>
-                <div className="flex w-120 flex-col rounded-lg bg-white p-4">
+                <div className="laptop:w-120 flex w-full flex-col rounded-lg bg-white p-4">
                   <p className="tracking-custom text-body-l font-sans font-semibold">
                     Check ins by ticket type
                   </p>

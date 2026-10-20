@@ -27,7 +27,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label, Input } from "@lemonade/ui";
-import { FlatButton } from "@/components/global/FlatButton";
+import { SubmitButton } from "@/components/global/SubmitButton";
 
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
@@ -129,9 +129,8 @@ const buildInitialValues = (event?: EventInterface): EventFormValues => {
     end_date: end.date,
     end_time: end.time,
     affiliate_program: Boolean(event?.affiliate_program),
-    // The backend stores commission as a fraction of the sale (0.1 = 10%); this field displays
-    // and collects a whole percent (e.g. "10"), so convert on the way in and back on submit.
-    commission: event?.commission != null ? String(event.commission * 100) : "",
+    // The API returns and accepts commission as a whole percent (e.g. 10).
+    commission: event?.commission != null ? String(event.commission) : "",
     socials: socialsObj,
   };
 };
@@ -140,13 +139,13 @@ const EditEventClient = ({ id }: { id: string }) => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
 
-  const eventId = Number(id);
+  const eventId = id;
   const { data: eventData, isLoading: loading, refetch } = useEventQuery(eventId);
   const event = eventData?.event;
   const updateEventMutation = useUpdateEventMutation(eventId);
 
   useEffect(() => {
-    if (!Number.isFinite(eventId)) return;
+    if (!eventId) return;
 
     const onPageShow = () => refetch();
     window.addEventListener("pageshow", onPageShow);
@@ -221,7 +220,7 @@ const EditEventClient = ({ id }: { id: string }) => {
           start_date: `${formValues.start_date}T${formValues.start_time}`,
           end_date: `${formValues.end_date}T${formValues.end_time}`,
           affiliate_program: formValues.affiliate_program,
-          commission: formValues.affiliate_program ? Number(formValues.commission) / 100 : null,
+          commission: formValues.affiliate_program ? Number(formValues.commission) : null,
           socials: filteredSocials,
         },
       };
@@ -289,12 +288,12 @@ const EditEventClient = ({ id }: { id: string }) => {
     return base;
   })();
 
-  const ready = !loading && event && Number(event?.id) === eventId;
+  const ready = !loading && event && String(event?.id) === eventId;
 
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <button
             type="button"
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
@@ -305,12 +304,12 @@ const EditEventClient = ({ id }: { id: string }) => {
           </button>
         </div>
 
-        <section className="mt-4 flex flex-col items-center">
+        <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
           {!ready ? (
             <EventFormSkeleton />
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mt-10 flex w-160 flex-col rounded-xl bg-white p-12">
+              <div className="laptop:mt-10 laptop:w-160 laptop:p-12 flex w-full flex-col rounded-xl bg-white p-4">
                 <p className="text-light-black text-meta font-sans font-bold">EVENT DETAILS</p>
 
                 <SingleFileUploader
@@ -369,7 +368,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <select
                     id="event-category"
                     name="category"
-                    className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                    className="form-font bg-light_grey h-12 w-full min-w-0 rounded-xl border-0 px-2"
                     value={values.category}
                     onChange={(e) => setValue("category", e.target.value, { shouldValidate: true })}
                   >
@@ -448,7 +447,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                       <select
                         id="hosting_platform"
                         name="hosting_platform"
-                        className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                        className="form-font bg-light_grey h-12 w-full min-w-0 rounded-xl border-0 px-2"
                         value={values.hosting_platform}
                         onChange={(e) =>
                           setValue("hosting_platform", e.target.value, { shouldValidate: true })
@@ -508,7 +507,7 @@ const EditEventClient = ({ id }: { id: string }) => {
                   <select
                     id="time_zone"
                     name="time_zone"
-                    className="form-font bg-light_grey h-12 rounded-xl border-0 px-2"
+                    className="form-font bg-light_grey h-12 w-full min-w-0 rounded-xl border-0 px-2"
                     value={values.time_zone}
                     onChange={(e) =>
                       setValue("time_zone", e.target.value, { shouldValidate: true })
@@ -776,12 +775,11 @@ const EditEventClient = ({ id }: { id: string }) => {
                   </div>
                 ))}
 
-                <FlatButton
+                <SubmitButton
                   loading={isSubmitting}
-                  error={isValid}
-                  onClick={() => handleSubmit(onSubmit)()}
+                  isValid={isValid}
                   title="Save changes"
-                  classes="mt-6 h-12 rounded-xl border border-step-color"
+                  classes="mt-6 h-12 w-full rounded-xl"
                 />
               </div>
             </form>

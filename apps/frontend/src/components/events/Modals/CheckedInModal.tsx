@@ -19,9 +19,9 @@ const CheckedInModal: React.FC<CheckedInInterface> = ({ toggle, isOpen, guestDet
         if (!open) toggle();
       }}
     >
-      <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
+      <DialogContentBare className="w-[calc(100vw-2rem)] max-w-120 gap-0 border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">{"Check in Successful!"}</DialogTitle>
-        <div className="w-120 rounded-lg bg-white p-6 shadow-lg">
+        <div className="w-full rounded-lg bg-white p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="cursor-pointer" onClick={toggle}>
