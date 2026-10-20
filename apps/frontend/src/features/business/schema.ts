@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { countWords, MAX_DESCRIPTION_WORDS } from "@/lib/richText";
+import { countWords, MAX_DESCRIPTION_WORDS } from "@lemonade/domain";
 import {
   amountField,
   emailField,

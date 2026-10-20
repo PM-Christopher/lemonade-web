@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { applyFormat, countWords, isSafeUrl, parseBlocks, parseInline } from "./richText";
+import {
+  applyFormat,
+  countWords,
+  insertMedia,
+  isSafeUrl,
+  parseBlocks,
+  parseInline,
+} from "./richText";
 
 describe("applyFormat", () => {
   it("wraps the selection in bold and unwraps it again", () => {
@@ -81,5 +88,32 @@ describe("helpers", () => {
     expect(countWords("")).toBe(0);
     expect(isSafeUrl("https://a.test")).toBe(true);
     expect(isSafeUrl("javascript:alert(1)")).toBe(false);
+  });
+});
+
+describe("media lines", () => {
+  it("reads whole-line images and videos as their own blocks", () => {
+    expect(
+      parseBlocks("intro\n![cat](https://x.test/cat.png)\n@video(https://x.test/v.mp4)"),
+    ).toEqual([
+      { type: "paragraph", line: { text: "intro", indent: 0 } },
+      { type: "image", url: "https://x.test/cat.png", alt: "cat" },
+      { type: "video", url: "https://x.test/v.mp4" },
+    ]);
+  });
+
+  it("does not treat unsafe addresses as media", () => {
+    expect(parseBlocks("![x](javascript:alert(1))")).toEqual([
+      { type: "paragraph", line: { text: "![x](javascript:alert(1))", indent: 0 } },
+    ]);
+  });
+
+  it("inserts media on its own line at the caret", () => {
+    expect(insertMedia("hello", 5, "image", "https://x.test/a.png").text).toBe(
+      "hello\n![](https://x.test/a.png)",
+    );
+    expect(insertMedia("a\nb", 2, "video", "https://x.test/v.mp4").text).toBe(
+      "a\n@video(https://x.test/v.mp4)\nb",
+    );
   });
 });

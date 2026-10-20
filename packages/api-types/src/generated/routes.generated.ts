@@ -24,6 +24,7 @@ export const adminAnnouncementRoutes = Object.freeze({
   CREATE: "/admin/announcement", // POST
   LIST: "/admin/announcement", // GET
   SHOW: "/admin/announcement/{id}", // GET
+  UPDATE: "/admin/announcement/{id}", // PUT
 });
 
 export const adminAuthRoutes = Object.freeze({
@@ -110,6 +111,7 @@ export const adminSubscriptionsRoutes = Object.freeze({
 });
 
 export const adminTeamMembersRoutes = Object.freeze({
+  ACTIVITY_LOGS: "/admin/team-members/{id}/activity-logs", // GET
   CHANGE_PASSWORD: "/admin/team-members/change-password/{id}", // PATCH
   CREATE: "/admin/team-members", // POST
   DELETE: "/admin/team-members/delete-admin/{id}", // DELETE

@@ -1,5 +1,5 @@
 import React from "react";
-import { parseBlocks, parseInline } from "@/lib/richText";
+import { parseBlocks, parseInline } from "@lemonade/domain";
 
 const Inline = ({ line }: { line: string }) => (
   <>
@@ -34,6 +34,22 @@ const Inline = ({ line }: { line: string }) => (
 export const FormattedText = ({ text, className = "" }: { text: string; className?: string }) => (
   <div className={`space-y-1 break-words ${className}`}>
     {parseBlocks(text).map((block, index) => {
+      if (block.type === "image") {
+        return (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={index}
+            src={block.url}
+            alt={block.alt}
+            className="max-h-96 max-w-full rounded-lg"
+          />
+        );
+      }
+      if (block.type === "video") {
+        return (
+          <video key={index} src={block.url} controls className="max-h-96 max-w-full rounded-lg" />
+        );
+      }
       if (block.type === "paragraph") {
         return (
           <p key={index} style={{ marginLeft: `${block.line.indent}rem` }}>

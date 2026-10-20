@@ -1,5 +1,6 @@
-// Plain-text formatting for business descriptions: **bold**, *italic*, ++underline++,
-// [text](https://link), "- " bullets, "1. " numbers and two-space indents. Stored as text, rendered by FormattedText (never as HTML).
+// Plain-text rich text: **bold**, *italic*, ++underline++, [text](https://link), "- " bullets,
+// "1. " numbers, two-space indents, and whole-line media: ![alt](https://image) and
+// @video(https://video). Stored as text and rendered by FormattedText, never as HTML.
 
 export const MAX_DESCRIPTION_WORDS = 500;
 
@@ -135,7 +136,7 @@ export function parseInline(line: string): InlinePart[] {
     if (match[1] !== undefined) parts.push({ type: "bold", value: match[1] });
     else if (match[2] !== undefined) parts.push({ type: "underline", value: match[2] });
     else if (match[3] !== undefined) parts.push({ type: "italic", value: match[3] });
-    else parts.push({ type: "link", value: match[4], href: match[5] });
+    else parts.push({ type: "link", value: match[4] ?? "", href: match[5] ?? "" });
     last = match.index + match[0].length;
   }
   if (last < line.length) parts.push({ type: "text", value: line.slice(last) });
@@ -148,7 +149,10 @@ export interface Line {
 }
 
 export type Block =
-  { type: "paragraph"; line: Line } | { type: "bullets" | "numbers"; items: Line[] };
+  | { type: "image"; url: string; alt: string }
+  | { type: "video"; url: string }
+  | { type: "paragraph"; line: Line }
+  | { type: "bullets" | "numbers"; items: Line[] };
 
 export function parseBlocks(text: string): Block[] {
   const blocks: Block[] = [];
@@ -157,6 +161,18 @@ export function parseBlocks(text: string): Block[] {
     const spaces = raw.length - raw.trimStart().length;
     const indent = Math.min(Math.floor(spaces / 2), MAX_INDENT);
     const line = raw.trimStart();
+    const image = /^!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)$/.exec(line);
+    const video = /^@video\((https?:\/\/[^\s)]+)\)$/.exec(line);
+
+    if (image) {
+      blocks.push({ type: "image", url: image[2] ?? "", alt: image[1] ?? "" });
+      continue;
+    }
+    if (video) {
+      blocks.push({ type: "video", url: video[1] ?? "" });
+      continue;
+    }
+
     const bullet = /^- (.*)$/.exec(line);
     const number = /^\d+\. (.*)$/.exec(line);
     const kind = bullet ? "bullets" : number ? "numbers" : null;
@@ -172,4 +188,22 @@ export function parseBlocks(text: string): Block[] {
     }
   }
   return blocks;
+}
+
+// Puts an image or video on its own line at the caret.
+export function insertMedia(
+  text: string,
+  caret: number,
+  kind: "image" | "video",
+  url: string,
+): Edit {
+  const line = kind === "image" ? `![](${url})` : `@video(${url})`;
+  const before = text.slice(0, caret);
+  const after = text.slice(caret);
+  const lead = before === "" || before.endsWith("\n") ? "" : "\n";
+  const tail = after === "" || after.startsWith("\n") ? "" : "\n";
+  const next = `${before}${lead}${line}${tail}${after}`;
+  const end = before.length + lead.length + line.length;
+
+  return { text: next, start: end, end };
 }

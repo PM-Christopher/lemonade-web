@@ -47,3 +47,5 @@ export {
   DialogDescription,
 } from "./dialog";
 export { cn } from "./lib/utils";
+export { FormattedText } from "./formatted-text";
+export { RichTextField } from "./rich-text-field";

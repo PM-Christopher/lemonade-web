@@ -33,6 +33,13 @@ export interface AddUserWalletBalanceRequest {
   amount: number;
 }
 
+export interface AnnouncementRequest {
+  title: string;
+  content: string;
+  draft?: boolean;
+  date_scheduled?: string;
+}
+
 export interface AppNotificationSettingsRequest {
   type:
     | "new_thread"

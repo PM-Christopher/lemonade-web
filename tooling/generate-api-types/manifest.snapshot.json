@@ -104,8 +104,26 @@
         "uri": "/v1/admin/announcement",
         "name": "v1.admin.announcement.create",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\AnnouncementRequest",
+        "fields": {
+            "title": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "content": [
+                "required",
+                "string"
+            ],
+            "draft": [
+                "nullable",
+                "boolean"
+            ],
+            "date_scheduled": [
+                "nullable",
+                "date"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -122,6 +140,32 @@
         "guard": "admin",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "PUT",
+        "uri": "/v1/admin/announcement/{id}",
+        "name": "v1.admin.announcement.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AnnouncementRequest",
+        "fields": {
+            "title": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "content": [
+                "required",
+                "string"
+            ],
+            "draft": [
+                "nullable",
+                "boolean"
+            ],
+            "date_scheduled": [
+                "nullable",
+                "date"
+            ]
+        }
     },
     {
         "method": "POST",
@@ -871,6 +915,14 @@
                 "nullable"
             ]
         }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/team-members/{id}/activity-logs",
+        "name": "v1.admin.team-members.activity-logs",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
     },
     {
         "method": "PATCH",
