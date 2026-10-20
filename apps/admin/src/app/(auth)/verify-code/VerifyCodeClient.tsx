@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import OtpInput from "react-otp-input";
 import { Controller, useForm } from "react-hook-form";
@@ -17,10 +17,20 @@ import { errorMessage } from "@/lib/api-error";
 import { apiMessage } from "@/lib/api-message";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
+import { RESET_EMAIL_KEY } from "@/lib/reset-email";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
 const RESEND_SECONDS = 60;
+
+const noSubscription = () => () => {};
+const readEmail = () => {
+  try {
+    return sessionStorage.getItem(RESET_EMAIL_KEY) ?? "";
+  } catch {
+    return "";
+  }
+};
 
 function VerifyCodeClient() {
   const { push } = useNavigation();
@@ -28,6 +38,7 @@ function VerifyCodeClient() {
   const verifyMutation = useVerifyResetCodeMutation();
   const resendMutation = useForgotPasswordMutation();
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+  const email = useSyncExternalStore(noSubscription, readEmail, () => "");
 
   const {
     control,
@@ -90,7 +101,8 @@ function VerifyCodeClient() {
                     Verification Code
                   </p>
                   <p className="text-text-grey text-body-s font-normal">
-                    Enter the 4-digit code sent to your email to reset your password.
+                    Enter the 4-digit code sent {email ? <strong>{email}</strong> : "to your email"}{" "}
+                    to reset your password.
                   </p>
                 </div>
                 <div className="flex flex-col items-center justify-center">
@@ -117,7 +129,7 @@ function VerifyCodeClient() {
                 </div>
                 {secondsLeft > 0 ? (
                   <p className="text-light-green text-body-l text-center font-medium">
-                    Resend in {secondsLeft} secs
+                    Resend code in {secondsLeft} secs
                   </p>
                 ) : (
                   <button

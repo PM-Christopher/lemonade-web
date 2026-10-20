@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { walletApi } from "./api";
+import { walletApi, type WithdrawalFilters } from "./api";
 
 export const walletKeys = {
   all: () => ["wallet"] as const,
   data: () => [...walletKeys.all(), "data"] as const,
-  withdrawalRequests: (page?: number) =>
-    page
-      ? ([...walletKeys.all(), "withdrawalRequests", page] as const)
-      : ([...walletKeys.all(), "withdrawalRequests"] as const),
+  withdrawalLists: () => [...walletKeys.all(), "withdrawalRequests"] as const,
+  withdrawalRequests: (page?: number, filters?: WithdrawalFilters) =>
+    [...walletKeys.all(), "withdrawalRequests", page ?? 0, filters ?? {}] as const,
   detail: (id: string | number) => [...walletKeys.all(), "detail", id] as const,
   earnings: (userId: string) => [...walletKeys.all(), "earnings", userId] as const,
   pointsRates: () => [...walletKeys.all(), "points-rates"] as const,
@@ -24,17 +23,14 @@ export function useWalletDataQuery(options?: { enabled?: boolean }) {
 }
 
 /** The withdrawal-request queue — "operational queue" per the staleness table. */
-export function useWithdrawalRequestsQuery(options?: {
-  enabled?: boolean;
-  page?: number;
-  perPage?: number;
-}) {
+export function useWithdrawalRequestsQuery(options?: WithdrawalFilters & { enabled?: boolean }) {
+  const { enabled, ...filters } = options ?? {};
+
   return useQuery({
-    queryKey: walletKeys.withdrawalRequests(options?.page),
-    queryFn: () =>
-      walletApi.getWithdrawalRequests({ page: options?.page, perPage: options?.perPage }),
+    queryKey: walletKeys.withdrawalRequests(filters.page, filters),
+    queryFn: () => walletApi.getWithdrawalRequests(filters),
     staleTime: 30_000,
-    enabled: options?.enabled,
+    enabled,
   });
 }
 

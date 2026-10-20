@@ -119,7 +119,7 @@ export interface EventPromotionQueueItem {
 }
 
 export interface EventPromotionsQueueResponse {
-  promotions_revenue: number;
+  promotions_revenue: number | string;
   total_promotions: number;
   offered_promotions: number;
   history: EventPromotionQueueItem[];

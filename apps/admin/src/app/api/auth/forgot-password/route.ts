@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({
       success: true,
       message: messageOr(message, "A verification code has been sent to your email"),
-      data: {},
+      data: { email },
     });
     setResetCookie(response, RESET_TOKEN_COOKIE, data.token);
     setResetCookie(response, RESET_EMAIL_COOKIE, email);

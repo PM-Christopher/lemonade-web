@@ -22,11 +22,25 @@ export interface WalletData {
 export interface WithdrawalRequestRow {
   id: string;
   txn_id?: string;
+  user_id?: string;
+  wallet_id?: string | null;
+  // Formatted by the backend, in naira.
+  balance?: string;
+  image?: string | null;
   fullname: string;
   amount: number;
   created_at: string;
   date_paid: string;
   status: string;
+}
+
+export interface WithdrawalFilters {
+  page?: number;
+  perPage?: number;
+  status?: string;
+  search?: string;
+  from?: string;
+  to?: string;
 }
 
 export interface PaginationMeta {
@@ -60,6 +74,10 @@ export interface PointsRatesResponse {
 export interface WalletDetail {
   info: Record<string, unknown> & {
     fullname?: string;
+    image?: string | null;
+    user_id?: string;
+    wallet_id?: string | null;
+    balance?: string;
     transaction_id?: string | null;
     date_paid?: string;
     status?: string;
@@ -109,11 +127,16 @@ export const walletApi = {
   getWalletData: () => browserApi.get<WalletData>(adminWalletRoutes.DASHBOARD),
 
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
-  getWithdrawalRequests: (pagination?: { page?: number; perPage?: number }) =>
+  getWithdrawalRequests: (filters?: WithdrawalFilters) =>
     browserApi.get<WithdrawalRequests>(adminTransactionRoutes.WALLET_WITHDRAWALS, {
-      params: pagination?.page
-        ? { page: pagination.page, per_page: pagination.perPage }
-        : undefined,
+      params: {
+        page: filters?.page,
+        per_page: filters?.perPage,
+        status: filters?.status,
+        search: filters?.search,
+        from: filters?.from,
+        to: filters?.to,
+      },
     }),
 
   getWalletDetail: (id: string | number) =>

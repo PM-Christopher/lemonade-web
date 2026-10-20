@@ -180,6 +180,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
         isOpen={isUpdateOpen}
         toggle={toggleUpdateBalance}
         updateType={updateType}
+        userId={id}
         reload={reloadFunc}
         balance={userDetail?.wallet_balance}
       />

@@ -12,12 +12,14 @@
 // below; not fixture data.
 export const planHeaders = ["TXN ID", "FULL NAME", "ACCOUNT PLAN", "AMOUNT", "DATE PAID", "STATUS"];
 
-export const walletHeaders = [
-  "TXN ID",
+export const walletHeaders = ["TXN ID", "FULL NAME", "AMOUNT", "DATE PAID", "STATUS"];
+
+export const walletManagementHeaders = [
+  "WALLET ID",
   "FULL NAME",
   "AMOUNT",
-  "DATE REQUESTED",
-  "DATE PAID",
+  "BALANCE",
+  "REQUEST DATE",
   "STATUS",
 ];
 

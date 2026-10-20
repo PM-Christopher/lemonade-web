@@ -1,24 +1,39 @@
 import React from "react";
 import DataCard from "@/components/global/DataCard";
-import { paymentTransactionHeaders } from "@/data/tableData";
-import PaginationComp from "@/components/global/Pagination";
-import dayjs from "dayjs";
-import type { TransactionListResponse } from "@/features/transaction/api";
+import { AvatarName } from "@/components/global/AvatarName";
+import { TransactionTable, type TransactionColumn } from "@/components/global/TransactionTable";
+import { useNavigation } from "@/hooks/useNavigation";
+import { routes } from "@/lib/routes";
+import { transactionStatus } from "@/utils/helper";
+import type { TransactionHistoryRow, TransactionListResponse } from "@/features/transaction/api";
+import { naira, shortDate } from "./transactionFormat";
 
-interface PromotionIF {
+interface ViewProps {
   trx_data: TransactionListResponse | undefined;
   page: number;
   onPageChange: (page: number) => void;
 }
 
-// Server-paginated (docs/ARCHITECTURE.md §22 Conflict 1) — trx_data.history
-// is already just the current page; page/onPageChange are URL state owned
-// by TransactionsClient. Rows aren't clickable: the backend has no detail
-// (single-item) endpoint for promotion transactions yet, only the list.
-function PromotionViews({ trx_data, page, onPageChange }: PromotionIF) {
-  const totalPages = trx_data?.meta?.last_page ?? 1;
-  const perPage = trx_data?.meta?.per_page ?? 10;
-  const paginatedData = trx_data?.history;
+const Status = ({ value }: { value: string | undefined }) => {
+  const status = transactionStatus(value);
+  return <span className={status.className}>{status.label}</span>;
+};
+
+const columns: ReadonlyArray<TransactionColumn<TransactionHistoryRow>> = [
+  { header: "TXN ID", cell: (row) => row.txn_id },
+  {
+    header: "EVENT NAME",
+    cell: (row) => <AvatarName name={row.event?.name} image={row.event?.image} />,
+  },
+  { header: "PROMOTION NAME", cell: (row) => row.promotion_name ?? "N/A" },
+  { header: "AMOUNT", cell: (row) => naira(row.amount) },
+  { header: "DATE PAID", cell: (row) => shortDate(row.date_paid) },
+  { header: "STATUS", cell: (row) => <Status value={row.status} /> },
+];
+
+// Server-paginated: trx_data.history is only the current page.
+function PromotionViews({ trx_data, page, onPageChange }: ViewProps) {
+  const { push } = useNavigation();
 
   return (
     <>
@@ -31,59 +46,20 @@ function PromotionViews({ trx_data, page, onPageChange }: PromotionIF) {
         />
         <DataCard
           styles={"w-full"}
-          title={"Total Transactions"}
+          title={"Total Promotions"}
           count={trx_data?.meta?.total ?? trx_data?.total_transactions ?? 0}
         />
       </div>
-      <div className="rounded-lg bg-white shadow-md">
-        <table className="min-w-full table-auto border-collapse">
-          <thead>
-            <tr className="bg-mid-grey">
-              {paymentTransactionHeaders.map((header, idx) => (
-                <th
-                  className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
-                  key={idx}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((row, index) => (
-                <tr key={index} className="border-grey-20 h-18 border-b">
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.reference}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.user?.name ?? "N/A"}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.amount}</td>
-                  <td className={"p-4 font-sans text-sm font-medium capitalize"}>{row.provider}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>
-                    {row.paid_at ? dayjs(row.paid_at).format("DD MMM, YYYY hh:mmA") : "—"}
-                  </td>
-                  <td className={"p-4 font-sans text-sm font-medium capitalize"}>{row.status}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={paymentTransactionHeaders.length}
-                  className="p-4 text-center text-sm text-gray-500"
-                >
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
-        {/* Pagination */}
-        <PaginationComp
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-          perPage={perPage}
-        />
-      </div>
+      <TransactionTable
+        columns={columns}
+        rows={trx_data?.history}
+        getKey={(row, index) => String(row.id ?? index)}
+        onRowClick={(row) => push(routes.TRANSACTION_PROMOTION(String(row.id)))}
+        page={page}
+        totalPages={trx_data?.meta?.last_page ?? 1}
+        perPage={trx_data?.meta?.per_page ?? 10}
+        onPageChange={onPageChange}
+      />
     </>
   );
 }

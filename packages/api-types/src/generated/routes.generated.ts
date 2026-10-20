@@ -121,12 +121,15 @@ export const adminTeamMembersRoutes = Object.freeze({
 });
 
 export const adminTransactionRoutes = Object.freeze({
+  BOOST: "/admin/transaction/boost/{id}", // GET
   BOOSTS: "/admin/transaction/boosts", // GET
   EVENT: "/admin/transaction/event/{id}", // GET
   EVENTS: "/admin/transaction/events", // GET
   LEDGER: "/admin/transaction/ledger", // GET
   LIST: "/admin/transaction", // GET
+  PROMOTION: "/admin/transaction/promotion/{id}", // GET
   PROMOTIONS: "/admin/transaction/promotions", // GET
+  SERVICE: "/admin/transaction/service/{id}", // GET
   SERVICES: "/admin/transaction/services", // GET
   SUBSCRIPTION: "/admin/transaction/plan-subscription/{id}", // GET
   SUBSCRIPTIONS: "/admin/transaction/plan-subscription", // GET

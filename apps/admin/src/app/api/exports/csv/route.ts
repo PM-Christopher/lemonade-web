@@ -21,13 +21,14 @@ export async function GET(req: NextRequest) {
   }
 
   const table = req.nextUrl.searchParams.get("table");
+  const type = req.nextUrl.searchParams.get("type") === "pdf" ? "pdf" : "csv";
 
   if (!table) {
     return NextResponse.json({ message: "table is required" }, { status: 422 });
   }
 
   const upstream = await fetch(
-    `${LARAVEL_API_URL}/v1/admin/account/export?table=${encodeURIComponent(table)}&type=csv`,
+    `${LARAVEL_API_URL}/v1/admin/account/export?table=${encodeURIComponent(table)}&type=${type}`,
     { headers: { Authorization: `Bearer ${token}` } },
   );
 
@@ -35,6 +36,9 @@ export async function GET(req: NextRequest) {
 
   return new NextResponse(body, {
     status: upstream.status,
-    headers: { "Content-Type": upstream.headers.get("content-type") ?? "text/csv" },
+    headers: {
+      "Content-Type":
+        upstream.headers.get("content-type") ?? (type === "pdf" ? "application/pdf" : "text/csv"),
+    },
   });
 }

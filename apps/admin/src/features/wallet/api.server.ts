@@ -5,12 +5,12 @@ import {
   adminTransactionRoutes,
   buildPath,
 } from "@lemonade/api-types/generated";
-import type { WalletData, WithdrawalRequests, WalletDetail } from "./api";
+import type { WalletData, WithdrawalFilters, WithdrawalRequests, WalletDetail } from "./api";
 
 export const walletServerApi = {
   getWalletData: () => backendApi.get<WalletData>(adminWalletRoutes.DASHBOARD),
 
-  getWithdrawalRequests: (pagination?: { page?: number; perPage?: number }) =>
+  getWithdrawalRequests: (pagination?: WithdrawalFilters) =>
     backendApi.get<WithdrawalRequests>(adminTransactionRoutes.WALLET_WITHDRAWALS, {
       params: pagination?.page
         ? { page: pagination.page, per_page: pagination.perPage }

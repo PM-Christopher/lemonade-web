@@ -1,26 +1,40 @@
-import { routes } from "@/lib/routes";
-import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import DataCard from "@/components/global/DataCard";
-import { walletHeaders } from "@/data/tableData";
-import PaginationComp from "@/components/global/Pagination";
+import { AvatarName } from "@/components/global/AvatarName";
+import { TransactionTable, type TransactionColumn } from "@/components/global/TransactionTable";
+import { useNavigation } from "@/hooks/useNavigation";
+import { routes } from "@/lib/routes";
+import { transactionStatus } from "@/utils/helper";
+import type { TransactionHistoryRow, TransactionListResponse } from "@/features/transaction/api";
+import { naira, shortDate } from "./transactionFormat";
 
-import type { TransactionListResponse } from "@/features/transaction/api";
-
-interface WalletIF {
+interface ViewProps {
   trx_data: TransactionListResponse | undefined;
   page: number;
   onPageChange: (page: number) => void;
 }
 
-// Server-paginated (docs/ARCHITECTURE.md §22 Conflict 1) — trx_data.history
-// is already just the current page; page/onPageChange are URL state owned
-// by TransactionsClient.
-function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
+const Status = ({ value }: { value: string | undefined }) => {
+  const status = transactionStatus(value);
+  return <span className={status.className}>{status.label}</span>;
+};
+
+const columns: ReadonlyArray<TransactionColumn<TransactionHistoryRow>> = [
+  { header: "TXN ID", cell: (row) => row.txn_id ?? "N/A" },
+  {
+    header: "FULL NAME",
+    cell: (row) => (
+      <AvatarName name={row.fullname} image={row.image as string | null | undefined} />
+    ),
+  },
+  { header: "AMOUNT", cell: (row) => naira(row.amount) },
+  { header: "DATE PAID", cell: (row) => shortDate(row.created_at) },
+  { header: "STATUS", cell: (row) => <Status value={row.status} /> },
+];
+
+// Server-paginated: trx_data.history is only the current page.
+function WalletViews({ trx_data, page, onPageChange }: ViewProps) {
   const { push } = useNavigation();
-  const totalPages = trx_data?.meta?.last_page ?? 1;
-  const perPage = trx_data?.meta?.per_page ?? 10;
-  const paginatedData = trx_data?.history;
 
   return (
     <>
@@ -31,62 +45,18 @@ function WalletViews({ trx_data, page, onPageChange }: WalletIF) {
           count={trx_data?.wallet_revenue || 0}
           isPrice={true}
         />
-        <DataCard
-          styles={"w-full"}
-          title={"Total Wallets"}
-          count={trx_data?.meta?.total ?? trx_data?.history?.length ?? 0}
-        />
+        <DataCard styles={"w-full"} title={"Total Wallets"} count={trx_data?.total_wallets ?? 0} />
       </div>
-      <div className="rounded-lg bg-white shadow-md">
-        <table className="min-w-full table-auto border-collapse">
-          <thead>
-            <tr className="bg-mid-grey">
-              {walletHeaders.map((header, idx) => (
-                <th
-                  className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
-                  key={idx}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((row, index) => (
-                <tr
-                  key={index}
-                  className="border-grey-20 h-18 cursor-pointer border-b"
-                  onClick={() => push(routes.TRANSACTION_WALLET(row.id!))}
-                >
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.txn_id}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.amount}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.created_at}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>{row.status}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={walletHeaders.length}
-                  className="p-4 text-center text-sm text-gray-500"
-                >
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
-        {/* Pagination */}
-        <PaginationComp
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-          perPage={perPage}
-        />
-      </div>
+      <TransactionTable
+        columns={columns}
+        rows={trx_data?.history}
+        getKey={(row, index) => String(row.id ?? index)}
+        onRowClick={(row) => push(routes.TRANSACTION_WALLET(String(row.id)))}
+        page={page}
+        totalPages={trx_data?.meta?.last_page ?? 1}
+        perPage={trx_data?.meta?.per_page ?? 10}
+        onPageChange={onPageChange}
+      />
     </>
   );
 }

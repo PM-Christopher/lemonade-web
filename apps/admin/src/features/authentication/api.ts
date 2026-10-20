@@ -70,7 +70,7 @@ export const authApi = {
   logout: () => postJson<void>("/api/auth/logout"),
   // The temporary reset token stays in an httpOnly cookie set by these Route Handlers.
   forgotPassword: (payload: ForgotPasswordPayload) =>
-    postJson<Record<string, never>>("/api/auth/forgot-password", payload),
+    postJson<{ email: string }>("/api/auth/forgot-password", payload),
   verifyResetCode: (code: string) =>
     postJson<Record<string, never>>("/api/auth/verify-reset-code", { code }),
   resetPassword: (password: string) =>

@@ -92,7 +92,7 @@ function SubscriptionDetailsClient({ id }: { id: string }) {
 
   return (
     <MainLayout>
-      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
+      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
         {/* User Info Card */}
         <div className="flex h-fit w-full flex-col gap-4 rounded-xl bg-white p-4 md:gap-5 md:p-6 lg:w-1/3">
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
@@ -152,7 +152,7 @@ function SubscriptionDetailsClient({ id }: { id: string }) {
         </div>
 
         {/* Account Plan and Payment History */}
-        <div className="flex w-full flex-col lg:w-2/3">
+        <div className="flex w-full flex-col lg:min-w-0 lg:flex-1">
           <div className="overflow-hidden rounded-t-xl bg-white">
             <div className="border-b-grey-20 flex items-center justify-between border-b p-4 md:p-6">
               <p className="text-base font-semibold">Account plan</p>

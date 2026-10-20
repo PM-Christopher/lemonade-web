@@ -2,7 +2,6 @@ import React from "react";
 import { XIcon } from "lucide-react";
 import { Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
-import { useParams } from "next/navigation";
 import { AppDispatch } from "@/redux/store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +16,9 @@ type UpdateBalanceInterface = {
   isOpen: boolean;
   toggle: () => void;
   updateType: string;
+  // The user whose wallet is changed.
+  userId: string | undefined;
+  // Their wallet balance in naira.
   balance?: number;
   // Optional: a consumer outside the wallet-management domain (e.g. the
   // user detail page's WalletView, refreshing its own Redux-backed account
@@ -29,12 +31,11 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
   isOpen,
   toggle,
   updateType,
+  userId: id,
   balance,
   reload,
 }) => {
-  const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
-  const id = params.id ? (Array.isArray(params.id) ? params.id[0] : params.id) : undefined;
 
   const addToWallet = useAddToWalletMutation(id);
   const deductFromWallet = useDeductFromWalletMutation(id);
@@ -85,6 +86,10 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
 
   const onSubmit = (values: WalletAdjustmentInput) => {
     const amount = Number(values.amount);
+    if (updateType === "deduct" && balance !== undefined && amount > balance) {
+      setError("amount", { message: "Amount cannot be higher than balance" });
+      return;
+    }
     if (updateType === "deduct") {
       deductFromWallet.mutate(amount, onMutationSettled);
     } else {
@@ -126,7 +131,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
               Wallet balance:{" "}
               <span className={"text-body-s font-bold"}>
                 {" "}
-                ₦ {formatNumberWithCommas(balance || 0)}
+                ₦{formatNumberWithCommas(balance || 0)}
               </span>
             </p>
 

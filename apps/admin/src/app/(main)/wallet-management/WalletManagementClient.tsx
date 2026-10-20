@@ -1,29 +1,31 @@
 "use client";
-import { routes } from "@/lib/routes";
-import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-
-import MainLayout from "@/components/layouts/MainLayout";
-import { SearchIcon, UploadIcon } from "lucide-react";
-import { Button } from "@lemonade/ui";
-import DataCard from "@/components/global/DataCard";
-import { walletHeaders } from "@/data/tableData";
+import dayjs from "dayjs";
 import dynamic from "next/dynamic";
+import { SearchIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { useExportCsvMutation } from "@/features/exports/mutations";
-import { downloadCSV } from "@/utils/helper";
+import MainLayout from "@/components/layouts/MainLayout";
+import DataCard from "@/components/global/DataCard";
+import PaginationComp from "@/components/global/Pagination";
+import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
+import { AvatarName } from "@/components/global/AvatarName";
+import { ExportMenu } from "@/components/global/ExportMenu";
+import { useNavigation } from "@/hooks/useNavigation";
+import { naira } from "@/views/transactions/transactionFormat";
+import useDebounce from "@/hooks/useDebounce";
+import { routes } from "@/lib/routes";
+import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { walletManagementHeaders } from "@/data/tableData";
+import { downloadBlob, downloadCSV, transactionStatus } from "@/utils/helper";
 import {
+  usePointsRatesQuery,
   useWalletDataQuery,
   useWithdrawalRequestsQuery,
-  usePointsRatesQuery,
 } from "@/features/wallet/queries";
-import type { WithdrawalRequestRow } from "@/features/wallet/api";
-import { AppDispatch, RootState } from "@/redux/store";
-import dayjs from "dayjs";
+import { useExportCsvMutation, useExportFileMutation } from "@/features/exports/mutations";
 
-// Off the initial bundle — only needed once "Edit threshold"/"Edit" (points rate) is clicked
-// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+// Off the initial bundle — only needed once "Edit threshold"/"Edit" (points rate) is clicked.
 const WalletThresholdModal = dynamic(
   () => import("@/modals/wallet-management/WalletThresholdModal"),
   { ssr: false },
@@ -32,177 +34,107 @@ const PointsRateModal = dynamic(() => import("@/modals/wallet-management/PointsR
   ssr: false,
 });
 
+const PER_PAGE = 10;
+const STATUS_OPTIONS = ["pending", "successful", "rejected"] as const;
+
+// Withdrawal requests with their wallet totals, filters and export.
 function WalletManagementClient() {
   const { push } = useNavigation();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [editThreshold, setEditThreshold] = useState(false);
   const [editingRateCurrency, setEditingRateCurrency] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const itemsPerPage = 5; // Number of items per page
-  const dispatch = useDispatch<AppDispatch>();
-  const exportCsv = useExportCsvMutation();
+  const [status, setStatus] = useState("");
+  const [range, setRange] = useState<DateRange | null>(null);
+  const { debouncedValue: search } = useDebounce(searchTerm, 500);
 
-  const exportWithdrawals = () =>
-    exportCsv.mutate("withdrawal_requests", {
-      onSuccess: (csv) => {
-        downloadCSV(csv, "withdrawal_requests.csv");
-        dispatch(updateToastifyReducer({ show: true, message: "Downloaded", type: "success" }));
-      },
-      onError: (error) =>
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error?.message || "Something went wrong",
-            type: "error",
-          }),
-        ),
-    });
-
-  // Search active -> fetch the old unpaginated shape so client-side
-  // filtering still sees every withdrawal request, not just the current
-  // page. See docs/ARCHITECTURE.md §22 Conflict 1.
-  const isFiltering = Boolean(searchTerm.trim());
-
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: withdrawalRequests } = useWithdrawalRequestsQuery({
     enabled: isLoggedIn,
-    page: isFiltering ? undefined : currentPage,
-    perPage: itemsPerPage,
+    page: currentPage,
+    perPage: PER_PAGE,
+    status: status || undefined,
+    search: search.trim() || undefined,
+    from: range ? dayjs(range.start).format("YYYY-MM-DD") : undefined,
+    to: range ? dayjs(range.end).format("YYYY-MM-DD") : undefined,
   });
   const { data: walletData } = useWalletDataQuery({ enabled: isLoggedIn });
   const { data: pointsRatesData } = usePointsRatesQuery({ enabled: isLoggedIn });
   const editingRate = pointsRatesData?.rates.find((rate) => rate.currency === editingRateCurrency);
+  const exportCsv = useExportCsvMutation();
+  const exportFile = useExportFileMutation();
 
-  const isServerPaginated = Boolean(withdrawalRequests?.meta) && !isFiltering;
+  const rows = withdrawalRequests?.history ?? [];
+  const totalPages = withdrawalRequests?.meta?.last_page ?? 1;
 
-  // Handle searching
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on search
+  // Any filter change goes back to the first page.
+  const filtered = <T,>(setter: (value: T) => void) => {
+    return (value: T) => {
+      setter(value);
+      setCurrentPage(1);
+    };
   };
 
-  // Filter data based on search term — a no-op filter once the backend
-  // already paginated (isServerPaginated), since there's nothing left to
-  // narrow down client-side at that point.
-  const filteredData = isServerPaginated
-    ? withdrawalRequests?.history || []
-    : withdrawalRequests?.history?.filter((row: WithdrawalRequestRow) =>
-        row?.fullname?.toLowerCase().includes(searchTerm.toLowerCase()),
-      ) || [];
+  const notify = (message: string, type: "success" | "error") =>
+    dispatch(updateToastifyReducer({ show: true, message, type }));
 
-  // Calculate total pages
-  const totalPages = isServerPaginated
-    ? (withdrawalRequests?.meta?.last_page ?? 1)
-    : Math.ceil(filteredData.length / itemsPerPage);
-
-  // Get current items for the page — already just the current page when
-  // server-paginated, otherwise slice the client-filtered array same as before.
-  const currentItems = isServerPaginated
-    ? filteredData
-    : filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  // Change page
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const toggleEditThreshold = () => {
-    setEditThreshold(!editThreshold);
-  };
-
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const maxPageButtons = 5;
-    const pageNumbers = [];
-
-    if (totalPages <= maxPageButtons) {
-      // Show all pages if total pages are less than max buttons
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      // Calculate which page numbers to show
-      if (currentPage <= 3) {
-        // If we're near the beginning
-        for (let i = 1; i <= 5; i++) {
-          pageNumbers.push(i);
-        }
-      } else if (currentPage >= totalPages - 2) {
-        // If we're near the end
-        for (let i = totalPages - 4; i <= totalPages; i++) {
-          pageNumbers.push(i);
-        }
-      } else {
-        // If we're in the middle
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-          pageNumbers.push(i);
-        }
-      }
+  const onExport = (type: "csv" | "pdf") => {
+    const onError = (error: Error) => notify(error?.message || "Something went wrong", "error");
+    if (type === "csv") {
+      exportCsv.mutate("withdrawal_requests", {
+        onSuccess: (csv) => {
+          downloadCSV(csv, "withdrawal_requests.csv");
+          notify("Downloaded", "success");
+        },
+        onError,
+      });
+      return;
     }
-
-    return pageNumbers;
+    exportFile.mutate(
+      { table: "withdrawal_requests", type },
+      {
+        onSuccess: (file) => {
+          downloadBlob(file, "withdrawal_requests.pdf");
+          notify("Downloaded", "success");
+        },
+        onError,
+      },
+    );
   };
 
   return (
     <MainLayout>
       <section className="mt-5 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-body-l"}>
-            {withdrawalRequests?.meta?.total ?? withdrawalRequests?.history?.length ?? 0} Wallets
-          </p>
+          <p className={"font-semiBold text-body-l"}>{walletData?.total_wallets ?? 0} Wallets</p>
           <div className={"flex justify-between gap-3"}>
             <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
-              <div>
-                <SearchIcon className={"text-grey-40 h-3 w-3"} />
-              </div>
-              <div className="w-full">
-                <input
-                  id="search"
-                  type="text"
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Search guest name, email address"
-                />
-              </div>
+              <SearchIcon className={"text-grey-40 h-3 w-3"} />
+              <input
+                id="search"
+                type="text"
+                value={searchTerm}
+                onChange={(e) => filtered(setSearchTerm)(e.target.value)}
+                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
+                placeholder="Search name..."
+              />
             </div>
-            {/* <div
-              className={
-                "flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"
-              }
+            <select
+              aria-label="Filter by status"
+              className={"bg-light-grey h-10 rounded-xl px-3"}
+              value={status}
+              onChange={(e) => filtered(setStatus)(e.target.value)}
             >
-              <div className={"flex justify-between items-center"}>
-                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>
-                  STATUS
-                </p>
-              </div>
-              <ChevronDown className={"text-text-grey w-5"} />
-            </div> */}
-            {/* <div
-              className={
-                "flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"
-              }
-            >
-              <div className={"flex gap-2 items-center"}>
-                <CalendarIcon className={"text-text-grey w-3.75 h-3.75"} />
-                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>
-                  ALL TIME
-                </p>
-              </div>
-              <ChevronDown className={"text-text-grey w-5"} />
-            </div> */}
-            <div>
-              <Button
-                className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
-                onClick={exportWithdrawals}
-                disabled={exportCsv.isPending}
-              >
-                <UploadIcon className={"h-3.75 w-3.75 text-white"} />
-                <p className={"text-body-l font-medium text-white"}>
-                  {exportCsv.isPending ? "Exporting..." : "Export"}
-                </p>
-              </Button>
-            </div>
+              <option value="">Status</option>
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {transactionStatus(option).label}
+                </option>
+              ))}
+            </select>
+            <DateRangePicker value={range} onChange={filtered(setRange)} />
+            <ExportMenu onExport={onExport} isBusy={exportCsv.isPending || exportFile.isPending} />
           </div>
         </div>
         <div className={"flex flex-col px-5"}>
@@ -219,7 +151,7 @@ function WalletManagementClient() {
                 count={walletData?.withdrawal_threshold || 0}
                 isPrice={true}
                 isEditable={true}
-                handleChange={toggleEditThreshold}
+                handleChange={() => setEditThreshold(true)}
               />
               {pointsRatesData?.rates.map((rate) => (
                 <DataCard
@@ -236,10 +168,10 @@ function WalletManagementClient() {
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-mid-grey">
-                    {walletHeaders.map((header, idx) => (
+                    {walletManagementHeaders.map((header) => (
                       <th
                         className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
-                        key={idx}
+                        key={header}
                       >
                         {header}
                       </th>
@@ -247,33 +179,42 @@ function WalletManagementClient() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.length > 0 ? (
-                    currentItems.map((row: WithdrawalRequestRow, index: number) => (
-                      <tr
-                        key={index}
-                        className="border-grey-20 h-18 cursor-pointer border-b"
-                        onClick={() => push(routes.WALLET_DETAIL(row.id))}
-                      >
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {row?.txn_id ?? "N/A"}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>{row.fullname}</td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>₦{row.amount}</td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {dayjs(row.created_at).format("YYYY-MM-DD hh:mm:ss A")}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
-                          {dayjs(row.date_paid).format("YYYY-MM-DD hh:mm:ss A")}
-                        </td>
-                        <td className={"p-4 font-sans text-sm font-medium capitalize"}>
-                          {row.status}
-                        </td>
-                      </tr>
-                    ))
+                  {rows.length > 0 ? (
+                    rows.map((row) => {
+                      const rowStatus = transactionStatus(row.status);
+                      return (
+                        <tr
+                          key={row.id}
+                          className="border-grey-20 h-18 cursor-pointer border-b"
+                          onClick={() => push(routes.WALLET_DETAIL(row.id))}
+                        >
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            {row.wallet_id ?? "N/A"}
+                          </td>
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            <AvatarName name={row.fullname} image={row.image} />
+                          </td>
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            {naira(row.amount)}
+                          </td>
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            {naira(row.balance)}
+                          </td>
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            {dayjs(row.created_at).format("DD MMM, YYYY hh:mm A")}
+                          </td>
+                          <td
+                            className={`p-4 font-sans text-sm font-medium ${rowStatus.className}`}
+                          >
+                            {rowStatus.label}
+                          </td>
+                        </tr>
+                      );
+                    })
                   ) : (
                     <tr>
                       <td
-                        colSpan={walletHeaders.length}
+                        colSpan={walletManagementHeaders.length}
                         className="p-4 text-center text-sm text-gray-500"
                       >
                         No data available
@@ -282,42 +223,17 @@ function WalletManagementClient() {
                   )}
                 </tbody>
               </table>
-
-              {/* Pagination */}
-              <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <div className="flex gap-2">
-                  {getPageNumbers().map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => handlePageChange(page)}
-                      className={`h-8 w-8 rounded-lg p-2 text-sm font-medium ${
-                        page === currentPage ? "bg-light-white text-text-grey" : "text-gray-500"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  disabled={currentPage === totalPages || totalPages === 0}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="border-light-grey-50 flex h-9 items-center gap-2 rounded-lg border-2 p-2 text-gray-500 disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
+              <PaginationComp
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                perPage={PER_PAGE}
+              />
             </div>
           </div>
         </div>
       </section>
-      <WalletThresholdModal isOpen={editThreshold} toggle={toggleEditThreshold} />
+      <WalletThresholdModal isOpen={editThreshold} toggle={() => setEditThreshold(false)} />
       {editingRate && (
         <PointsRateModal
           isOpen={Boolean(editingRateCurrency)}

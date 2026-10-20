@@ -12,8 +12,13 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  // Create an array with page numbers (e.g., [1, 2, 3, ..., totalPages])
-  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
+  // First, last and the pages around the current one, with "…" for the gaps (e.g. 1 … 4 5 6 … 20).
+  const pages: Array<number | "gap"> = [];
+  for (let page = 1; page <= totalPages; page++) {
+    const isNear = Math.abs(page - currentPage) <= 1;
+    if (page === 1 || page === totalPages || isNear) pages.push(page);
+    else if (pages[pages.length - 1] !== "gap") pages.push("gap");
+  }
 
   return (
     <div className="bg-mid-grey flex items-center justify-between rounded-br-lg rounded-bl-lg p-4 px-10">
@@ -25,17 +30,23 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
         Previous
       </button>
       <div className="flex gap-2">
-        {pages.map((page) => (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`h-8 w-8 rounded-lg p-2 text-sm font-medium ${
-              page === currentPage ? "bg-light-white text-text-grey" : "text-gray-500"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+        {pages.map((page, index) =>
+          page === "gap" ? (
+            <span key={`gap-${index}`} className="flex h-8 items-end px-1 text-gray-500">
+              …
+            </span>
+          ) : (
+            <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`h-8 w-8 rounded-lg p-2 text-sm font-medium ${
+                page === currentPage ? "bg-light-white text-text-grey" : "text-gray-500"
+              }`}
+            >
+              {page}
+            </button>
+          ),
+        )}
       </div>
       <button
         disabled={Number(currentPage) === Number(totalPages)}

@@ -53,6 +53,16 @@
                 "nullable",
                 "after_or_equal:from"
             ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ],
             "page": [
                 "integer",
                 "nullable",
@@ -1043,6 +1053,14 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/admin/transaction/boost/{id}",
+        "name": "v1.admin.transaction.boost",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/admin/transaction/boosts",
         "name": "v1.admin.transaction.boosts",
         "guard": "admin",
@@ -1056,6 +1074,16 @@
                 "date",
                 "nullable",
                 "after_or_equal:from"
+            ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
             ],
             "page": [
                 "integer",
@@ -1093,6 +1121,16 @@
                 "date",
                 "nullable",
                 "after_or_equal:from"
+            ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
             ],
             "page": [
                 "integer",
@@ -1189,6 +1227,14 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/admin/transaction/promotion/{id}",
+        "name": "v1.admin.transaction.promotion",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/admin/transaction/promotions",
         "name": "v1.admin.transaction.promotions",
         "guard": "admin",
@@ -1202,6 +1248,16 @@
                 "date",
                 "nullable",
                 "after_or_equal:from"
+            ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
             ],
             "page": [
                 "integer",
@@ -1218,6 +1274,14 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/admin/transaction/service/{id}",
+        "name": "v1.admin.transaction.service",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/admin/transaction/services",
         "name": "v1.admin.transaction.services",
         "guard": "admin",
@@ -1231,6 +1295,16 @@
                 "date",
                 "nullable",
                 "after_or_equal:from"
+            ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
             ],
             "page": [
                 "integer",
@@ -1269,6 +1343,16 @@
                 "nullable",
                 "after_or_equal:from"
             ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ],
             "page": [
                 "integer",
                 "nullable",
@@ -1306,6 +1390,16 @@
                 "nullable",
                 "after_or_equal:from"
             ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ],
             "page": [
                 "integer",
                 "nullable",
@@ -1342,6 +1436,16 @@
                 "date",
                 "nullable",
                 "after_or_equal:from"
+            ],
+            "status": [
+                "string",
+                "nullable",
+                "in:successful,failed,pending,rejected,active,inactive"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
             ],
             "page": [
                 "integer",

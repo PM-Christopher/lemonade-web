@@ -60,6 +60,42 @@ export const formatThousandSeparator = (num: number | string): string => {
   return Number(num).toLocaleString();
 };
 
+export const downloadBlob = (blob: Blob, filename: string) => {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+/** How a payment, payout or withdrawal status reads on screen, and its colour. */
+export const transactionStatus = (status: string | null | undefined) => {
+  switch ((status ?? "").toLowerCase()) {
+    case "success":
+    case "successful":
+    case "paid":
+    case "active":
+      return { label: "Successful", className: "text-light-green-70", chip: "bg-green-50" };
+    case "pending":
+      return { label: "Pending", className: "text-warning-bold", chip: "bg-orange-50" };
+    case "approved":
+    case "processing":
+      return { label: "Processing", className: "text-warning-bold", chip: "bg-orange-50" };
+    case "rejected":
+      return { label: "Rejected", className: "text-red-1", chip: "bg-red-50" };
+    case "failed":
+    case "abandoned":
+      return { label: "Failed", className: "text-red-1", chip: "bg-red-50" };
+    case "reversed":
+      return { label: "Reversed", className: "text-red-1", chip: "bg-red-50" };
+    default:
+      return { label: capitalizeWords(status), className: "", chip: "bg-gray-100" };
+  }
+};
+
 export const downloadCSV = (csvString: string, filename: string = "data.csv") => {
   if (!csvString) {
     console.error("CSV data is empty");

@@ -14,6 +14,7 @@ import { errorMessage } from "@/lib/api-error";
 import { apiMessage } from "@/lib/api-message";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
+import { RESET_EMAIL_KEY } from "@/lib/reset-email";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 
@@ -34,7 +35,13 @@ function ForgotPasswordClient() {
 
   const onSubmit = (values: ForgotPasswordInput) => {
     forgotMutation.mutate(values, {
-      onSuccess: () => {
+      onSuccess: (result) => {
+        // Remembered only so the next screen can say where the code went.
+        try {
+          sessionStorage.setItem(RESET_EMAIL_KEY, result.email);
+        } catch {
+          // Private mode: the next screen just shows less.
+        }
         dispatch(
           updateToastifyReducer({
             show: true,

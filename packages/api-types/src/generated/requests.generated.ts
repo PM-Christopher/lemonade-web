@@ -232,6 +232,8 @@ export interface CreateTribeThreadRequest {
 export interface DateRangeRequest {
   from?: string;
   to?: string;
+  status?: "successful" | "failed" | "pending" | "rejected" | "active" | "inactive";
+  search?: string;
   page?: number;
   per_page?: number;
 }

@@ -19,7 +19,7 @@ export default async function WalletManagementPage() {
 
   await Promise.all([
     queryClient.prefetchQuery({
-      queryKey: walletKeys.withdrawalRequests(1),
+      queryKey: walletKeys.withdrawalRequests(1, { page: 1, perPage: DEFAULT_PER_PAGE }),
       queryFn: () => walletServerApi.getWithdrawalRequests({ page: 1, perPage: DEFAULT_PER_PAGE }),
     }),
     queryClient.prefetchQuery({

@@ -6,7 +6,7 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { usePayoutHistoryQuery } from "@/features/user/queries";
-import { GetStatusClass, capitalizeWords, manualTransactionsExport } from "@/utils/helper";
+import { manualTransactionsExport, transactionStatus } from "@/utils/helper";
 
 interface PayoutHistoryModalProps {
   isOpen: boolean;
@@ -74,9 +74,9 @@ function PayoutHistoryModal({ isOpen, toggle, userId }: PayoutHistoryModalProps)
                     </p>
                   </div>
                   <p
-                    className={`rounded-lg px-2 py-1 text-xs font-medium ${GetStatusClass(capitalizeWords(item.status))}`}
+                    className={`rounded-lg px-2 py-1 text-xs font-medium ${transactionStatus(item.status).className} ${transactionStatus(item.status).chip}`}
                   >
-                    {capitalizeWords(item.status)}
+                    {transactionStatus(item.status).label}
                   </p>
                 </div>
               ))

@@ -1,189 +1,58 @@
 "use client";
-import { routes } from "@/lib/routes";
-import { useNavigation } from "@/hooks/useNavigation";
-import React, { useState } from "react";
-import { PrinterIcon } from "lucide-react";
-import MainLayout from "@/components/layouts/MainLayout";
-
+import React from "react";
+import Link from "next/link";
+import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { AvatarName } from "@/components/global/AvatarName";
+import { TransactionDetailLayout } from "@/components/transactions/TransactionDetailLayout";
 import { useTransactionEventDetailQuery } from "@/features/transaction/queries";
-import type { TransactionHistoryRow } from "@/features/transaction/api";
-import { capitalizeWords } from "@/utils/helper";
-import PaginationComp from "@/components/global/Pagination";
-import dayjs from "dayjs";
+import { routes } from "@/lib/routes";
+import { transactionStatus } from "@/utils/helper";
+
+const date = (value: unknown) =>
+  typeof value === "string" ? dayjs(value).format("DD MMM, YYYY hh:mm A") : "N/A";
 
 function TransactionEventDetailsClient({ id }: { id: string }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10);
-  const { push } = useNavigation();
-
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: event } = useTransactionEventDetailQuery(id, {
-    enabled: isLoggedIn,
-  });
+  const { data: event } = useTransactionEventDetailQuery(id, { enabled: isLoggedIn });
+  const info = event?.info;
+  const status = transactionStatus(info?.status);
+  const image = (info as { event_image?: string | null } | undefined)?.event_image;
+  const amount = (info as { amount?: string } | undefined)?.amount;
 
-  // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil((event?.history?.length ?? 0) / perPage);
-
-  // Determine the start and end indices for slicing the data array
-  const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = event?.history?.slice(startIndex, startIndex + perPage);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const printCSV = () => {
-    if (!event?.history || event?.history.length === 0) {
-      alert("No data available to export");
-      return;
-    }
-
-    // Define CSV headers
-    const headers = ["Id", "Amount", "Created At", "Status"];
-
-    // Convert data to CSV rows
-    const csvRows = [
-      headers.join(","), // Header row
-      ...event.history.map((item: TransactionHistoryRow) => {
-        return [item.unique_id, item.amount, `"${item.created_at}"`, item.status].join(",");
-      }),
-    ];
-
-    // Create CSV content
-    const csvContent = csvRows.join("\n");
-
-    // Create a Blob and trigger download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    // Set up download link
-    link.setAttribute("href", url);
-    link.setAttribute("download", `payment_history_${new Date().toISOString().split("T")[0]}.csv`);
-    link.style.visibility = "hidden";
-
-    // Append to document, trigger download and clean up
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
   return (
-    <MainLayout>
-      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Event name:</p>
+    <TransactionDetailLayout
+      rows={[
+        { label: "Event Name", value: <AvatarName name={info?.event_name} image={image} /> },
+        {
+          label: "Event Owner",
+          value: (
+            <div className="flex items-center gap-3">
+              <span>{info?.organizer}</span>
+              {info?.user_id ? (
+                <Link href={routes.USER_DETAIL(info.user_id)} className="text-light-green">
+                  View profile
+                </Link>
+              ) : null}
             </div>
-            <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>{event?.info?.event_name}</p>
-              {/*<p className={"cursor-pointer font-medium text-body-s text-light-green"}>View business</p>*/}
-            </div>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Event owner:</p>
-            </div>
-            <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>{event?.info?.organizer}</p>
-              <p
-                className={"text-light-green text-body-s cursor-pointer font-medium"}
-                onClick={() => push(routes.USER_DETAIL(event!.info!.user_id!))}
-              >
-                View profile
-              </p>
-            </div>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Transaction Id:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>{event?.info?.transaction_id}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>N0</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Tickets sold:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{event?.info?.tickets_sold}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date paid:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>
-              {dayjs(event?.info?.created_at).format("DD MMM, YYYY hh:mmA")}
-            </p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
-            </div>
-            <p className={"text-light-green-70 text-body-s font-medium"}>
-              {capitalizeWords(event?.info?.status)}
-            </p>
-          </div>
-        </div>
-
-        {/* history  */}
-        <div className="flex w-full flex-col lg:w-2/3">
-          <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
-            <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
-              <p className={"font-semiBold text-body-l"}>Boosting history</p>
-              <div
-                className={
-                  "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
-                }
-                onClick={printCSV}
-              >
-                <PrinterIcon className={"w-5"} />
-                <p className={"text-black-light text-body-l font-medium"}>Print</p>
-              </div>
-            </div>
-
-            <div className={"flex flex-col px-6"}>
-              {paginatedData?.map((item: TransactionHistoryRow, index: number) => (
-                <div className="px-4 pt-4 pb-6" key={index}>
-                  <div className="flex justify-between">
-                    <div className="flex flex-col">
-                      <p className={"text-body-s font-medium"}>
-                        {item?.unique_id} - ₦{item?.amount}
-                      </p>
-                      <p className={"text-text-grey text-meta leading-normal font-normal"}>
-                        {item?.created_at}
-                      </p>
-                    </div>
-                    <div className={"bg-light-green-60 h-fit gap-1 rounded-lg px-2 py-1"}>
-                      <p className={"text-light-green-70 text-meta leading-normal font-medium"}>
-                        {capitalizeWords(item?.status)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* Pagination */}
-          <div className="mt-2">
-            <PaginationComp
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              perPage={perPage}
-            />
-          </div>
-        </div>
-      </section>
-    </MainLayout>
+          ),
+        },
+        { label: "Transaction Id", value: info?.transaction_id },
+        { label: "Amount", value: `₦${Number(amount ?? 0).toLocaleString()}` },
+        { label: "Tickets Sold", value: info?.tickets_sold },
+        { label: "Date Paid", value: date(info?.created_at) },
+        { label: "Status", value: <span className={status.className}>{status.label}</span> },
+      ]}
+      historyTitle="Ticket sales"
+      printName="event_ticket_sales"
+      entries={(event?.history ?? []).map((item, index) => ({
+        key: `${item.unique_id}-${index}`,
+        title: `${item.unique_id} - ₦${Number(item.amount ?? 0).toLocaleString()}`,
+        date: date(item.created_at),
+        status: String(item.status ?? ""),
+      }))}
+    />
   );
 }
 

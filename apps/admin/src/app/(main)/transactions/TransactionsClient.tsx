@@ -21,12 +21,29 @@ import { manualTransactionsExport } from "@/utils/helper";
 import useSearchParams from "@/hooks/useSearchParams";
 import dayjs from "dayjs";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
+import useDebounce from "@/hooks/useDebounce";
+import { SearchIcon } from "lucide-react";
+import { transactionStatus } from "@/utils/helper";
 
 const PER_PAGE = 10;
+
+// Status words each tab can filter by; the backend maps them to its own values.
+const STATUS_OPTIONS: Record<string, string[]> = {
+  "plan-subscriptions": ["active", "inactive"],
+  "wallet-withdrawals": ["pending", "successful", "rejected"],
+  boosting: ["successful", "failed", "pending"],
+  "tribe-payments": ["successful", "failed", "pending"],
+  services: ["successful", "failed", "pending"],
+  promotions: ["successful", "failed", "pending"],
+  events: [],
+};
 
 function TransactionsClient() {
   const [menuOption, setMenuOption] = useState("plan-subscriptions");
   const [range, setRange] = useState<DateRange | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState("");
+  const { debouncedValue: search } = useDebounce(searchTerm, 500);
   const from = range ? dayjs(range.start).format("YYYY-MM-DD") : undefined;
   const to = range ? dayjs(range.end).format("YYYY-MM-DD") : undefined;
   // These two tabs run their own queries and filters.
@@ -42,10 +59,13 @@ function TransactionsClient() {
     perPage: PER_PAGE,
     from,
     to,
+    status: status || undefined,
+    search: search.trim() || undefined,
   });
 
   const switchOption = (option: string) => {
     setMenuOption(option);
+    setStatus("");
     setSearchParams({ page: undefined }); // reset to page 1 on tab switch
   };
 
@@ -84,6 +104,8 @@ function TransactionsClient() {
     const fullData = await transactionApi.getTransactionData(menuOption as TransactionListType, {
       from,
       to,
+      status: status || undefined,
+      search: search.trim() || undefined,
     });
     manualTransactionsExport(fullData?.history || [], menuOption);
   };
@@ -93,37 +115,45 @@ function TransactionsClient() {
       <section className="mt-5 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>
-            {/* subscribers (real subscriber count) still wins for plan-subscriptions
-                — it's a different number from meta.total (total history rows),
-                not just a fallback for it. */}
             {isStandaloneTab
               ? "Transactions"
-              : `${trxData?.subscribers ?? trxData?.meta?.total ?? trxData?.history?.length ?? 0} Transactions`}
+              : `${(trxData?.meta?.total ?? trxData?.history?.length ?? 0).toLocaleString()} Transactions`}
           </p>
           <div className={"flex justify-between gap-3"}>
-            {/* <div
-                            className="flex items-center gap-3 bg-light_grey p-2 px-3 h-10 w-71.25 rounded-xl border border-grey-20">
-                            <div>
-                                <SearchIcon className={"w-3 h-3 text-grey-40"}/>
-                            </div>
-                            <div className="w-full">
-                                <input
-                                    id="search"
-                                    type="text"
-                                    className="rounded-xl text-body-s bg-light-grey focus:outline-none focus:ring-0 focus:border-transparent w-full py-4"
-                                    placeholder="Search transactions, ID..."
-                                />
-                            </div>
-                        </div> */}
-            {/* <div
-                            className={"flex border border-grey-20 bg-none w-48.25 h-10 px-4 py-2.5 rounded-xl justify-between items-center"}>
-                            <div className={'flex justify-between items-center'}>
-                                <p className={"text-meta leading-normal font-semiBold text-text-grey"}>
-                                    STATUS
-                                </p>
-                            </div>
-                            <ChevronDown className={"text-text-grey w-5"}/>
-                        </div> */}
+            {isStandaloneTab ? null : (
+              <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+                <SearchIcon className={"text-grey-40 h-3 w-3"} />
+                <input
+                  id="search"
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setSearchParams({ page: undefined });
+                  }}
+                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
+                  placeholder="Search transaction, ID..."
+                />
+              </div>
+            )}
+            {!isStandaloneTab && (STATUS_OPTIONS[menuOption] ?? []).length > 0 && (
+              <select
+                aria-label="Filter by status"
+                className={"bg-light-grey h-10 rounded-xl px-3"}
+                value={status}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                  setSearchParams({ page: undefined });
+                }}
+              >
+                <option value="">Status</option>
+                {(STATUS_OPTIONS[menuOption] ?? []).map((option) => (
+                  <option key={option} value={option}>
+                    {transactionStatus(option).label}
+                  </option>
+                ))}
+              </select>
+            )}
             {isStandaloneTab ? null : (
               <DateRangePicker
                 value={range}

@@ -122,7 +122,7 @@ function LoginPage({}) {
                   href={routes.FORGOT_PASSWORD}
                   className="text-light-green text-body-l font-medium underline"
                 >
-                  Forgot password
+                  Forgot password?
                 </Link>
                 <SubmitButton
                   loading={isSubmitting}

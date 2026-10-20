@@ -88,8 +88,10 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
   };
   return (
     <MainLayout>
-      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
+      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
+        <div
+          className={"flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150"}
+        >
           <div className={"items-center-center flex gap-6"}>
             <div className={"w-28.75"}>
               <p className={"text-text-grey text-meta leading-normal font-medium"}>Full name:</p>
@@ -145,7 +147,7 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
         </div>
 
         {/* payout history */}
-        <div className="flex w-full flex-col lg:w-2/3">
+        <div className="flex w-full flex-col lg:min-w-0 lg:flex-1">
           <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
             <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
               <p className={"font-semiBold text-body-l"}>Payout history</p>

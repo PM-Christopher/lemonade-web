@@ -3,15 +3,33 @@ import {
   transactionApi,
   type AllPaymentsFilters,
   type LedgerFilters,
+  type TransactionListFilters,
   type TransactionListType,
 } from "./api";
 
 export const transactionKeys = {
   all: () => ["transaction"] as const,
-  list: (trxType: string, page?: number, from?: string, to?: string) =>
-    page
-      ? ([...transactionKeys.all(), "list", trxType, page, from ?? "", to ?? ""] as const)
-      : ([...transactionKeys.all(), "list", trxType, from ?? "", to ?? ""] as const),
+  list: (
+    trxType: string,
+    page?: number,
+    from?: string,
+    to?: string,
+    status?: string,
+    search?: string,
+  ) =>
+    [
+      ...transactionKeys.all(),
+      "list",
+      trxType,
+      page ?? 0,
+      from ?? "",
+      to ?? "",
+      status ?? "",
+      search ?? "",
+    ] as const,
+  boostDetail: (id: string) => [...transactionKeys.all(), "boost-detail", id] as const,
+  serviceDetail: (id: string) => [...transactionKeys.all(), "service-detail", id] as const,
+  promotionDetail: (id: string) => [...transactionKeys.all(), "promotion-detail", id] as const,
   payments: (filters?: AllPaymentsFilters) =>
     [...transactionKeys.all(), "payments", filters ?? {}] as const,
   ledger: (filters?: LedgerFilters) => [...transactionKeys.all(), "ledger", filters ?? {}] as const,
@@ -24,16 +42,25 @@ export const transactionKeys = {
 /** Financial reporting data, not a live balance — but still money-adjacent, staleTime 0 like wallet. */
 export function useTransactionDataQuery(
   trxType: string,
-  options?: { enabled?: boolean; page?: number; perPage?: number; from?: string; to?: string },
+  options?: TransactionListFilters & { enabled?: boolean },
 ) {
   return useQuery({
-    queryKey: transactionKeys.list(trxType, options?.page, options?.from, options?.to),
+    queryKey: transactionKeys.list(
+      trxType,
+      options?.page,
+      options?.from,
+      options?.to,
+      options?.status,
+      options?.search,
+    ),
     queryFn: () =>
       transactionApi.getTransactionData(trxType as TransactionListType, {
         page: options?.page,
         perPage: options?.perPage,
         from: options?.from,
         to: options?.to,
+        status: options?.status,
+        search: options?.search,
       }),
     staleTime: 0,
     enabled: Boolean(trxType) && options?.enabled !== false,
@@ -89,5 +116,32 @@ export function useLedgerQuery(filters?: LedgerFilters) {
     queryKey: transactionKeys.ledger(filters),
     queryFn: () => transactionApi.getLedger(filters),
     staleTime: 0,
+  });
+}
+
+export function useBoostTransactionQuery(id: string | undefined) {
+  return useQuery({
+    queryKey: transactionKeys.boostDetail(id ?? ""),
+    queryFn: () => transactionApi.getBoostDetail(id as string),
+    staleTime: 0,
+    enabled: Boolean(id),
+  });
+}
+
+export function useServiceTransactionQuery(id: string | undefined) {
+  return useQuery({
+    queryKey: transactionKeys.serviceDetail(id ?? ""),
+    queryFn: () => transactionApi.getServiceDetail(id as string),
+    staleTime: 0,
+    enabled: Boolean(id),
+  });
+}
+
+export function usePromotionTransactionQuery(id: string | undefined) {
+  return useQuery({
+    queryKey: transactionKeys.promotionDetail(id ?? ""),
+    queryFn: () => transactionApi.getPromotionDetail(id as string),
+    staleTime: 0,
+    enabled: Boolean(id),
   });
 }

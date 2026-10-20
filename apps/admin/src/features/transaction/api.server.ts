@@ -6,9 +6,25 @@ import type {
   PlanSubscriptionDetailResponse,
   TransactionEventDetailResponse,
   TransactionTribeDetailResponse,
+  BoostTransactionDetailResponse,
+  ServiceTransactionDetailResponse,
+  PromotionTransactionDetailResponse,
 } from "./api";
 
 export const transactionServerApi = {
+  getBoostDetail: (id: string) =>
+    backendApi.get<BoostTransactionDetailResponse>(buildPath(adminTransactionRoutes.BOOST, { id })),
+
+  getServiceDetail: (id: string) =>
+    backendApi.get<ServiceTransactionDetailResponse>(
+      buildPath(adminTransactionRoutes.SERVICE, { id }),
+    ),
+
+  getPromotionDetail: (id: string) =>
+    backendApi.get<PromotionTransactionDetailResponse>(
+      buildPath(adminTransactionRoutes.PROMOTION, { id }),
+    ),
+
   getPlanSubscriptions: (pagination?: { page?: number; perPage?: number }) =>
     backendApi.get<TransactionListResponse>(adminTransactionRoutes.SUBSCRIPTIONS, {
       params: pagination?.page

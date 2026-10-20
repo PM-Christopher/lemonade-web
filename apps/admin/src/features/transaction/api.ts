@@ -35,6 +35,16 @@ export interface TransactionHistoryRow {
   tickets_sold?: number;
   // "tribe-payments" rows.
   tribe_name?: string | null;
+  // Boosting, services and promotions rows.
+  business?: { id: string; name: string; image: string | null } | null;
+  client?: { id: string; name: string } | null;
+  event?: { id: string; name: string; image: string | null } | null;
+  boost_type?: string | null;
+  duration_days?: number | null;
+  promotion_name?: string | null;
+  transaction_type?: string;
+  date_created?: string;
+  start_date?: string;
   [key: string]: unknown;
 }
 
@@ -65,6 +75,9 @@ export interface TransactionListResponse {
   // domain's own WalletData.wallet_revenue (features/wallet/api.ts).
   wallet_revenue?: string;
   churn_rate?: number;
+  boosted_businesses?: number;
+  amount_in_escrow?: string;
+  pending_services?: number;
   meta?: PaginationMeta;
   [key: string]: unknown;
 }
@@ -98,6 +111,15 @@ export interface TransactionEventDetailResponse {
 export interface TransactionTribeDetailResponse {
   info: TransactionHistoryRow;
   history: TransactionHistoryRow[];
+}
+
+export interface TransactionListFilters {
+  page?: number;
+  perPage?: number;
+  from?: string;
+  to?: string;
+  status?: string;
+  search?: string;
 }
 
 export type TransactionListType =
@@ -182,7 +204,74 @@ export interface LedgerResponse {
   meta: { current_page: number; last_page: number; per_page: number; total: number };
 }
 
+export interface TransactionHistoryEntry {
+  txn_id: string;
+  label: string;
+  amount: string;
+  status: string;
+  date: string;
+}
+
+export interface BoostTransactionDetailResponse {
+  transaction: {
+    id: string;
+    txn_id: string;
+    business: { id: string; name: string; image: string | null };
+    owner: { id: string; name: string; image: string | null } | null;
+    boost_type: string;
+    duration_days: number;
+    amount: string;
+    start_date: string;
+    end_date: string;
+    transaction_date: string;
+    status: string;
+  };
+  history: TransactionHistoryEntry[];
+}
+
+export interface ServiceTransactionDetailResponse {
+  transaction: {
+    id: string;
+    txn_id: string;
+    business: { id: string; name: string; image: string | null };
+    client: { id: string; name: string } | null;
+    amount: string;
+    transaction_type: string;
+    date_paid: string;
+    status: string;
+  };
+  history: TransactionHistoryEntry[];
+}
+
+export interface PromotionTransactionDetailResponse {
+  transaction: {
+    id: string;
+    txn_id: string;
+    event: { id: string; name: string; image: string | null };
+    owner: { id: string; name: string; image: string | null } | null;
+    promotion_name: string | null;
+    amount: string;
+    date_paid: string;
+    promotion_date: string | null;
+    status: string;
+  };
+  history: TransactionHistoryEntry[];
+}
+
 export const transactionApi = {
+  getBoostDetail: (id: string) =>
+    browserApi.get<BoostTransactionDetailResponse>(buildPath(adminTransactionRoutes.BOOST, { id })),
+
+  getServiceDetail: (id: string) =>
+    browserApi.get<ServiceTransactionDetailResponse>(
+      buildPath(adminTransactionRoutes.SERVICE, { id }),
+    ),
+
+  getPromotionDetail: (id: string) =>
+    browserApi.get<PromotionTransactionDetailResponse>(
+      buildPath(adminTransactionRoutes.PROMOTION, { id }),
+    ),
+
   getAllPayments: (filters?: AllPaymentsFilters) =>
     browserApi.get<AllPaymentsResponse>(adminTransactionRoutes.LIST, {
       params: {
@@ -207,15 +296,15 @@ export const transactionApi = {
 
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
   // Threaded through every case uniformly.
-  getTransactionData: (
-    trxType: TransactionListType,
-    pagination?: { page?: number; perPage?: number; from?: string; to?: string },
-  ) => {
-    const range = { from: pagination?.from, to: pagination?.to };
-    const params =
-      pagination?.page || range.from || range.to
-        ? { page: pagination?.page, per_page: pagination?.perPage, ...range }
-        : undefined;
+  getTransactionData: (trxType: TransactionListType, pagination?: TransactionListFilters) => {
+    const params = {
+      page: pagination?.page,
+      per_page: pagination?.perPage,
+      from: pagination?.from,
+      to: pagination?.to,
+      status: pagination?.status,
+      search: pagination?.search,
+    };
 
     switch (trxType) {
       case "plan-subscriptions":
