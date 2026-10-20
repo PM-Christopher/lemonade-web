@@ -44,8 +44,8 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
         { label: "Date Paid", value: date(info?.created_at) },
         { label: "Status", value: <span className={status.className}>{status.label}</span> },
       ]}
-      historyTitle="Ticket sales"
-      printName="event_ticket_sales"
+      historyTitle="Payout history"
+      printName="event_payout_history"
       entries={(event?.history ?? []).map((item, index) => ({
         key: `${item.unique_id}-${index}`,
         title: `${item.unique_id} - ₦${Number(item.amount ?? 0).toLocaleString()}`,
