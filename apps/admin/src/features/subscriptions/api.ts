@@ -5,6 +5,7 @@ import { adminSubscriptionsRoutes, buildPath } from "@lemonade/api-types/generat
 export interface AdminSubscriptionPlanBenefits {
   verification_badge: boolean;
   tribe_creation: boolean;
+  business_listing: boolean;
   lemon_id: boolean;
   event_creation: number;
   ticket_sales_commission: number;
@@ -61,6 +62,7 @@ export interface SubscriptionPlanPayload {
   yearly_charge: number;
   ver_badge: boolean;
   forum_creation: boolean;
+  business_listing: boolean;
   lemon_id: boolean;
   event_creation: number;
   sales_commission: number;

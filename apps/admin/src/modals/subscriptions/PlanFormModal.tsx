@@ -27,6 +27,7 @@ const emptyValues: PlanInput = {
   yearly_charge: "",
   ver_badge: false,
   forum_creation: false,
+  business_listing: true,
   lemon_id: false,
   event_creation: "",
   sales_commission: "",
@@ -45,6 +46,7 @@ function toFormValues(plan: AdminSubscriptionPlan): PlanInput {
     yearly_charge: plan.yearly_charge,
     ver_badge: plan.benefits.verification_badge,
     forum_creation: plan.benefits.tribe_creation,
+    business_listing: plan.benefits.business_listing,
     lemon_id: plan.benefits.lemon_id,
     event_creation: String(plan.benefits.event_creation),
     sales_commission: String(plan.benefits.ticket_sales_commission),
@@ -56,11 +58,18 @@ function toFormValues(plan: AdminSubscriptionPlan): PlanInput {
 }
 
 const checkboxFields: Array<{
-  name: "ver_badge" | "forum_creation" | "lemon_id" | "offline_benefits" | "recommended";
+  name:
+    | "ver_badge"
+    | "forum_creation"
+    | "business_listing"
+    | "lemon_id"
+    | "offline_benefits"
+    | "recommended";
   label: string;
 }> = [
   { name: "ver_badge", label: "Verification badge" },
   { name: "forum_creation", label: "Tribe creation" },
+  { name: "business_listing", label: "Business listing" },
   { name: "lemon_id", label: "Lemon ID" },
   { name: "offline_benefits", label: "Offline benefits" },
   { name: "recommended", label: "Recommended plan" },
@@ -91,6 +100,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
       yearly_charge: Number(values.yearly_charge),
       ver_badge: values.ver_badge,
       forum_creation: values.forum_creation,
+      business_listing: values.business_listing,
       lemon_id: values.lemon_id,
       event_creation: Number(values.event_creation),
       sales_commission: Number(values.sales_commission),

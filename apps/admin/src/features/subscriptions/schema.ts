@@ -21,6 +21,7 @@ export const planSchema = z.object({
   yearly_charge: amountField({ label: "Yearly charge", allowZero: true }),
   ver_badge: z.boolean(),
   forum_creation: z.boolean(),
+  business_listing: z.boolean(),
   lemon_id: z.boolean(),
   event_creation: wholeNumber("Event creation"),
   sales_commission: wholeNumber("Sales commission", 100),
