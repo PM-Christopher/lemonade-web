@@ -162,7 +162,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
               <div className={"w-28.75"}>
                 <p className={"text-text-grey text-meta leading-normal font-medium"}>Event ID:</p>
               </div>
-              <p className={"text-body-s font-medium"}>EV112332</p>
+              <p className={"text-body-s font-medium"}>{event?.event?.unique_id ?? "N/A"}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
               <div className={"w-28.75"}>
@@ -174,6 +174,18 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                 {capitalizeWords(event?.event?.status)}
               </p>
             </div>
+            {isRejected && event?.event?.rejection_reason ? (
+              <div className={"items-center-center flex gap-6"}>
+                <div className={"w-28.75"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Rejection reason:
+                  </p>
+                </div>
+                <p className={"text-red-1 text-body-s font-medium"}>
+                  {event.event.rejection_reason}
+                </p>
+              </div>
+            ) : null}
             <div className={"items-center-center flex gap-6"}>
               <div className={"w-28.75"}>
                 <p className={"text-text-grey text-meta leading-normal font-medium"}>

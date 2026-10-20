@@ -6,6 +6,8 @@ export const moderationKeys = {
   queue: () => [...moderationKeys.all(), "queue"] as const,
   content: (type: ModerationContentType, filters?: ModerationContentFilters) =>
     [...moderationKeys.all(), "content", type, filters ?? {}] as const,
+  item: (type: ModerationContentType, id: string | number) =>
+    [...moderationKeys.all(), "item", type, id] as const,
 };
 
 /** Operational queue per the staleness table (30s) — same class as reporting's. */
@@ -28,5 +30,17 @@ export function useModerationContentQuery(
     queryFn: () => moderationApi.getContent(type, filters),
     staleTime: 30_000,
     enabled: options?.enabled,
+  });
+}
+
+export function useModerationContentItemQuery(
+  type: ModerationContentType,
+  id: string | number | undefined,
+) {
+  return useQuery({
+    queryKey: moderationKeys.item(type, id ?? ""),
+    queryFn: () => moderationApi.getContentItem(type, id as string | number),
+    staleTime: 30_000,
+    enabled: Boolean(id),
   });
 }

@@ -15,3 +15,9 @@ export const ADMIN_REFRESH_COOKIE = "lemonade_admin_refresh";
 // own presence check above it. Must match the backend's default exactly —
 // see lemonade-backend's config/session.php.
 export const SIGNED_IN_COOKIE = "lemonade-network-signed-in";
+
+// Password-reset flow, httpOnly and short-lived: the temporary backend token, the emailed
+// code once it is verified, and the email (so the code can be re-sent).
+export const RESET_TOKEN_COOKIE = "lemonade_admin_reset_token";
+export const RESET_CODE_COOKIE = "lemonade_admin_reset_code";
+export const RESET_EMAIL_COOKIE = "lemonade_admin_reset_email";

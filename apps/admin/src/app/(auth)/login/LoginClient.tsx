@@ -2,6 +2,7 @@
 import React from "react";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent, Input, Label, FieldError } from "@lemonade/ui";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import { useForm } from "react-hook-form";
@@ -117,9 +118,12 @@ function LoginPage({}) {
                   />
                   <FieldError message={errors.password?.message} />
                 </div>
-                <p className="text-light-green text-body-l font-medium underline">
+                <Link
+                  href={routes.FORGOT_PASSWORD}
+                  className="text-light-green text-body-l font-medium underline"
+                >
                   Forgot password
-                </p>
+                </Link>
                 <SubmitButton
                   loading={isSubmitting}
                   title="Login"

@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi, type LoginPayload, type RegisterDeviceTokenPayload } from "./api";
+import {
+  authApi,
+  type ForgotPasswordPayload,
+  type LoginPayload,
+  type RegisterDeviceTokenPayload,
+} from "./api";
 import { authKeys } from "./queries";
 import { useAppDispatch } from "@/redux/hook";
 import { authSuccess, resetAuth } from "./authSlice";
@@ -49,4 +54,18 @@ export function useRegisterDeviceTokenMutation() {
   return useMutation({
     mutationFn: (data: RegisterDeviceTokenPayload) => authApi.registerDeviceToken(data),
   });
+}
+
+export function useForgotPasswordMutation() {
+  return useMutation({
+    mutationFn: (payload: ForgotPasswordPayload) => authApi.forgotPassword(payload),
+  });
+}
+
+export function useVerifyResetCodeMutation() {
+  return useMutation({ mutationFn: (code: string) => authApi.verifyResetCode(code) });
+}
+
+export function useResetPasswordMutation() {
+  return useMutation({ mutationFn: (password: string) => authApi.resetPassword(password) });
 }

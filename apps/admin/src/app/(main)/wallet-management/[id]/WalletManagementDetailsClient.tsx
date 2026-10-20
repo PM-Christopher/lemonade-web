@@ -7,9 +7,12 @@ import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
 import PayoutHistory from "@/modals/wallet-management/PayoutHistory";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
 import AffiliateHistory from "@/modals/wallet-management/AffiliateHistory";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { useWalletDetailQuery } from "@/features/wallet/queries";
+import { useRetryWithdrawalMutation } from "@/features/wallet/mutations";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import SkeletonLoader from "@/components/global/SkeletonLoader";
 import { capitalizeWords } from "@/utils/helper";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
@@ -29,6 +32,26 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
   const { data: walletDetail, isLoading: walletLoading } = useWalletDetailQuery(id, {
     enabled: isLoggedIn,
   });
+
+  const dispatch = useDispatch<AppDispatch>();
+  const retryMutation = useRetryWithdrawalMutation(id);
+  const status = walletDetail?.info?.status?.toLowerCase();
+
+  const retryPayout = () => {
+    retryMutation.mutate(undefined, {
+      onSuccess: (result) =>
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message:
+              result.payout_status === "failed"
+                ? `The payout failed again: ${result.failure_reason || "unknown reason"}`
+                : apiMessage("Payout retried"),
+            type: result.payout_status === "failed" ? "error" : "success",
+          }),
+        ),
+    });
+  };
 
   // side menu state
   const [isPayoutOpen, setIsPayoutOpen] = React.useState(false);
@@ -76,7 +99,9 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
 
           {walletDetail?.info ? (
             Object.entries(walletDetail?.info)
-              .filter(([key]) => key !== "amount") // Exclude 'amount'
+              .filter(
+                ([key]) => key !== "amount" && (key !== "failure_reason" || status === "failed"),
+              )
               .map(([key, value]) => (
                 <div key={key} className="flex items-center gap-6">
                   <div className="w-28.75">
@@ -110,8 +135,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
             </>
           )}
 
-          {/* && walletDetail.status === "pending"  */}
-          {walletDetail && walletDetail?.info?.status?.toLowerCase() !== "approved" && (
+          {status === "pending" && (
             <div className={"flex justify-between gap-4"}>
               <button
                 className={"border-light-grey-50 w-full rounded-xl border bg-white px-12 py-2.75"}
@@ -128,6 +152,17 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
                 <p className={"text-body-l font-medium text-white"}>Approve Withdrawal</p>
               </button>
             </div>
+          )}
+          {status === "failed" && (
+            <button
+              className={
+                "border-step-color bg-gradient-green w-full rounded-xl border px-12 py-2.75 disabled:opacity-70"
+              }
+              onClick={retryPayout}
+              disabled={retryMutation.isPending}
+            >
+              <p className={"text-body-l font-medium text-white"}>Retry payout</p>
+            </button>
           )}
         </div>
 
@@ -200,7 +235,11 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
       />
 
       <PayoutHistory isOpen={isPayoutOpen} toggle={togglePayoutHistory} />
-      <ReferralHistory isOpen={isReferralOpen} toggle={toggleReferralHistory} />
+      <ReferralHistory
+        isOpen={isReferralOpen}
+        toggle={toggleReferralHistory}
+        affiliateId={walletDetail?.history?.[0]?.user_id ?? ""}
+      />
       <AffiliateHistory isOpen={isAffiliateOpen} toggle={toggleAffiliateHistory} />
     </MainLayout>
   );

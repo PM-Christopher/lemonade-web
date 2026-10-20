@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { ChevronDown, MessageCircleMore } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { usersDetailPageViews } from "@/utils/pageViews";
 import ActivitiesViews from "@/views/users/ActivitiesViews";
@@ -10,357 +12,298 @@ import EventView from "@/views/users/EventView";
 import WalletView from "@/views/users/WalletView";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useAccountInfoQuery, useUserDetailQuery } from "@/features/user/queries";
-import { useReactivateUserMutation } from "@/features/user/mutations";
+import {
+  useAccountInfoQuery,
+  useUserBusinessQuery,
+  useUserDetailQuery,
+} from "@/features/user/queries";
 import type { AdminUser } from "@/features/user/api";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { FaSpinner } from "react-icons/fa6";
+import { toApiTime, type DateRange } from "@/components/global/DateRangePicker";
+import { GetStatusClass, capitalizeWords } from "@/utils/helper";
 
-// Off the initial bundle — all four are only needed once their triggering
-// action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const TribeModal = dynamic(() => import("@/components/users/TribeModal"), {
+// Each dialog loads only when its action is used.
+const UserStatusActionModal = dynamic(() => import("@/modals/users/UserStatusActionModal"), {
   ssr: false,
 });
-const BalanceModal = dynamic(() => import("@/modals/users/BalanceModal"), {
+const ReactivateUserModal = dynamic(() => import("@/modals/users/ReactivateUserModal"), {
   ssr: false,
 });
-const DeactivateModal = dynamic(() => import("@/modals/users/DeactivateModal"), { ssr: false });
-const SuspendModal = dynamic(() => import("@/modals/users/SuspendModal"), {
-  ssr: false,
-});
+const AccountPlanModal = dynamic(() => import("@/modals/users/AccountPlanModal"), { ssr: false });
+const UserTribeModal = dynamic(() => import("@/modals/users/UserTribeModal"), { ssr: false });
+
+const LOGS_PER_PAGE = 10;
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-6">
+      <div className="w-28.75 shrink-0">
+        <p className="text-text-grey text-meta leading-normal font-medium">{label}:</p>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 function UserDetailsClient({ id }: { id: string }) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: userDetailData } = useUserDetailQuery(id, {
-    enabled: isLoggedIn,
-  });
+  const { data: userDetailData } = useUserDetailQuery(id, { enabled: isLoggedIn });
   const user = userDetailData?.user;
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const [isReactivatingUser, setReactivatingUser] = useState<boolean>(false);
-
-  const handleToggleDropdown = () => {
-    setDropdownOpen((prev) => !prev);
-  };
-
-  const handleClickOutside = (event: Event) => {
-    if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-      setDropdownOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside as EventListener);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside as EventListener);
-    };
-  }, []);
-
-  const reloadFunc = () => {
-    window.location.reload();
-  };
 
   const [menuOption, setMenuOption] = useState("activities-log");
-  const [tribeOpen, setTribeOpen] = useState(false);
-  const [balanceModalOpen, setBalanceModalOpen] = useState(false);
-  const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
-  const [suspendModalOpen, setSuspendModalOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const [statusAction, setStatusAction] = useState<"suspend" | "deactivate" | null>(null);
+  const [reactivateOpen, setReactivateOpen] = useState(false);
+  const [planOpen, setPlanOpen] = useState(false);
+  const [openTribeId, setOpenTribeId] = useState<string | number | undefined>(undefined);
+  const [range, setRange] = useState<DateRange | null>(null);
+  const [logPage, setLogPage] = useState(1);
+  const [eventFilter, setEventFilter] = useState("all");
 
-  const switchOption = (option: string) => {
-    setMenuOption(option);
-  };
+  useEffect(() => {
+    const close = (event: MouseEvent) => {
+      if (actionsRef.current && !actionsRef.current.contains(event.target as Node)) {
+        setActionsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
 
-  const toggleBalanceModalOpen = () => {
-    setBalanceModalOpen(!balanceModalOpen);
-  };
-
-  const toggleDeactivateModalOpen = () => {
-    setDeactivateModalOpen(!deactivateModalOpen);
-  };
-
-  const toggleSuspendModalOpen = () => {
-    setSuspendModalOpen(!suspendModalOpen);
-  };
+  const params =
+    menuOption === "activities-log"
+      ? {
+          page: logPage,
+          per_page: LOGS_PER_PAGE,
+          ...(range ? { start_date: toApiTime(range.start), end_date: toApiTime(range.end) } : {}),
+        }
+      : menuOption === "events"
+        ? { filter: eventFilter }
+        : undefined;
 
   const { data: userDetail } = useAccountInfoQuery(id, menuOption, {
-    enabled: isLoggedIn,
+    enabled: isLoggedIn && menuOption !== "business",
+    params,
+  });
+  const { data: businessData, isLoading: businessLoading } = useUserBusinessQuery(id, {
+    enabled: isLoggedIn && menuOption === "business",
   });
 
   const renderViews = () => {
     switch (menuOption) {
       case "activities-log":
-        return <ActivitiesViews userDetail={userDetail} />;
+        return (
+          <ActivitiesViews
+            userDetail={userDetail}
+            range={range}
+            onRangeChange={(next) => {
+              setRange(next);
+              setLogPage(1);
+            }}
+            page={logPage}
+            perPage={LOGS_PER_PAGE}
+            onPageChange={setLogPage}
+          />
+        );
       case "tribes":
-        return <TribeViews userDetail={userDetail} />;
+        return <TribeViews userDetail={userDetail} onOpen={setOpenTribeId} />;
       case "business":
-        return <BusinessView userDetail={userDetail} />;
+        return <BusinessView business={businessData?.business} loading={businessLoading} />;
       case "events":
-        return <EventView userDetail={userDetail} />;
+        return (
+          <EventView userDetail={userDetail} filter={eventFilter} onFilterChange={setEventFilter} />
+        );
       case "wallet":
         return <WalletView userDetail={userDetail} />;
     }
   };
 
-  const toggleTribeModal = () => {
-    setTribeOpen(!tribeOpen);
-  };
-
-  const reactivateUserMutation = useReactivateUserMutation(id);
-
-  const reactivateUser = () => {
-    if (isLoggedIn && id) {
-      setReactivatingUser(true);
-      reactivateUserMutation.mutate(undefined, {
-        onSettled: () => {
-          reloadFunc();
-          setReactivatingUser(false);
-        },
-      });
-    }
-  };
-
-  /**
-   *
-   * */
+  const isActive = user?.status === "ACTIVE";
+  const statusLabel = user?.status ? capitalizeWords(user.status) : "";
 
   return (
     <MainLayout>
-      <TribeModal toggle={toggleTribeModal} isOpen={tribeOpen} />
-      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
-          <div className={"flex justify-between"}>
+      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
+        <div className="flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150">
+          <div className="flex justify-between">
             {user?.profile_image ? (
               <Image
-                src={user?.profile_image}
-                alt="image"
+                src={user.profile_image}
+                alt={user.fullname}
                 width={89}
                 height={83}
-                className={"bg-light-black h-16 w-16 rounded-full"}
+                className="bg-light-black h-16 w-16 rounded-full object-cover"
               />
             ) : (
-              // null
-              <div className={"bg-light-black h-16 w-16 rounded-full"}></div>
+              <div className="bg-light-black h-16 w-16 rounded-full" />
             )}
 
-            <div className={"flex gap-1"}>
-              <div
-                className={
-                  "border-light-grey-50 flex h-11 items-center gap-2 rounded-xl border px-3.5 py-3"
-                }
+            {user && !isActive ? (
+              <button
+                className="bg-gradient-green h-11 w-39 cursor-pointer rounded-xl border text-center"
+                onClick={() => setReactivateOpen(true)}
               >
-                <MessageCircleMore className="w-3.75" />
-                <p className={"text-body-s font-medium"}>Chat</p>
-              </div>
-              {user?.status !== "ACTIVE" ? (
+                <p className="text-body-l font-medium text-white">Reactivate user</p>
+              </button>
+            ) : (
+              <div className="relative inline-block" ref={actionsRef}>
                 <button
-                  className={"bg-gradient-green h-11 w-39 rounded-xl border text-center"}
-                  onClick={reactivateUser}
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={actionsOpen}
+                  className="border-light-grey-50 flex h-11 w-37.25 cursor-pointer items-center justify-between rounded-xl border bg-none px-4 py-2.5"
+                  onClick={() => setActionsOpen((open) => !open)}
                 >
-                  {isReactivatingUser ? (
-                    <div className="flex items-center justify-center">
-                      <FaSpinner size={20} className="animate-spin text-white" />
-                    </div>
-                  ) : (
-                    <p className={"text-body-l font-medium text-white"}>Reactivate user</p>
-                  )}
+                  <p className="text-black-light text-body-s font-medium">Actions</p>
+                  <ChevronDown className="text-text-grey w-5" />
                 </button>
-              ) : (
-                <div className="relative inline-block">
-                  <div
-                    className={
-                      "border-light-grey-50 flex h-11 w-37.25 cursor-pointer items-center justify-between rounded-xl border bg-none px-4 py-2.5"
-                    }
-                    onClick={handleToggleDropdown}
+                {actionsOpen && (
+                  <ul
+                    role="menu"
+                    className="absolute top-full left-0 z-50 w-51.75 rounded-xl bg-white shadow"
                   >
-                    <div className={"flex items-center justify-between"}>
-                      <p className={"text-black-light text-body-s font-medium"}>Actions</p>
-                    </div>
-                    <ChevronDown className={"text-text-grey w-5"} />
-                  </div>
-                  {dropdownOpen && (
-                    <div className="absolute top-full left-0 z-50 w-51.75 rounded-xl bg-white shadow">
-                      <ul>
-                        <li
-                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                          onClick={toggleSuspendModalOpen}
+                    {[
+                      { action: "suspend" as const, label: "Suspend user" },
+                      { action: "deactivate" as const, label: "Deactivate user" },
+                    ].map((item) => (
+                      <li key={item.action} role="none">
+                        <button
+                          role="menuitem"
+                          className="w-full cursor-pointer px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() => {
+                            setActionsOpen(false);
+                            setStatusAction(item.action);
+                          }}
                         >
-                          <p className={"text-body-l font-normal"}>Suspend User</p>
-                        </li>
-                        <li
-                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                          onClick={toggleDeactivateModalOpen}
-                        >
-                          <p className={"text-body-l font-normal"}>Deactivate User</p>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                          <p className="text-body-l font-normal">{item.label}</p>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Full name:</p>
-            </div>
-            <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>{user?.fullname}</p>
-            </div>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>User ID:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.unique_id}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Account Plan:</p>
-            </div>
-            <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>{user?.account_plan}</p>
-              <p className={"text-light-green text-body-s cursor-pointer font-medium"}>
-                View history
-              </p>
-            </div>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
-            </div>
-            <p className={"text-light-green-70 text-body-s font-medium"}>{user?.status}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Email Address:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.email}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Username:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.username}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Lemonade Tag:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.unique_id}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date Joined:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.date_joined}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Location:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.location}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Social Links:</p>
-            </div>
-
-            {user?.social_links?.map((item: AdminUser["social_links"][number], index: number) => (
-              <a
-                key={index}
-                className={"text-body-s font-medium text-green-400 capitalize underline"}
-                href={item?.value}
-                target="_blank"
+          <Row label="Full name">
+            <p className="text-body-s font-medium">{user?.fullname}</p>
+          </Row>
+          <Row label="User ID">
+            <p className="text-body-s font-medium">{user?.unique_id}</p>
+          </Row>
+          <Row label="Account Plan">
+            <div className="flex gap-1">
+              <p className="text-body-s font-medium capitalize">{user?.account_plan}</p>
+              <button
+                type="button"
+                className="text-light-green text-body-s cursor-pointer font-medium"
+                onClick={() => setPlanOpen(true)}
               >
-                {item?.name}
-              </a>
-            ))}
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Referrals:</p>
+                View history
+              </button>
             </div>
-            <p className={"text-body-s font-medium"}>{user?.referrals}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Tribes Joined:
-              </p>
+          </Row>
+          <Row label="Status">
+            <p className={`text-body-s font-medium ${GetStatusClass(statusLabel)}`}>
+              {statusLabel}
+            </p>
+          </Row>
+          {user?.status_reason && (
+            <Row label="Reason">
+              <p className="text-body-s font-medium">{user.status_reason}</p>
+            </Row>
+          )}
+          <Row label="Email Address">
+            <p className="text-body-s font-medium">{user?.email}</p>
+          </Row>
+          <Row label="Username">
+            <p className="text-body-s font-medium">{user?.username}</p>
+          </Row>
+          <Row label="Lemonade Tag">
+            <p className="text-body-s font-medium">{user?.lemon_id}</p>
+          </Row>
+          <Row label="Date Joined">
+            <p className="text-body-s font-medium">{user?.date_joined}</p>
+          </Row>
+          <Row label="Location">
+            <p className="text-body-s font-medium">{user?.location}</p>
+          </Row>
+          <Row label="Social Links">
+            <div className="flex gap-3">
+              {user?.social_links?.map((item: AdminUser["social_links"][number], index: number) => (
+                <a
+                  key={index}
+                  className="text-body-s font-medium text-green-400 capitalize underline"
+                  href={item?.value}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item?.name}
+                </a>
+              ))}
             </div>
-            <p className={"text-body-s font-medium"}>{user?.tribes_joined}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Tribes created:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.tribes_created}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Threads Created:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.threads_created}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Business:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.business}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Event Created:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>{user?.events_created}</p>
-          </div>
+          </Row>
+          <Row label="Referrals">
+            <p className="text-body-s font-medium">{user?.referrals}</p>
+          </Row>
+          <Row label="Tribes Joined">
+            <p className="text-body-s font-medium">{user?.tribes_joined}</p>
+          </Row>
+          <Row label="Tribes created">
+            <p className="text-body-s font-medium">{user?.tribes_created}</p>
+          </Row>
+          <Row label="Threads Created">
+            <p className="text-body-s font-medium">{user?.threads_created}</p>
+          </Row>
+          <Row label="Business">
+            <p className="text-body-s font-medium">{user?.business ?? "None"}</p>
+          </Row>
+          <Row label="Events Created">
+            <p className="text-body-s font-medium">{user?.events_created}</p>
+          </Row>
         </div>
 
-        {/*  */}
-        <div className="flex w-full flex-col lg:w-2/3">
-          <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
+        <div className="flex w-full min-w-0 flex-1 flex-col">
+          <div className="min-h-175 rounded-tl-xl rounded-tr-xl bg-white">
             <div className="border-b-light-grey-50 mt-2.5 flex justify-between border-b">
-              {usersDetailPageViews.map((view, idx) => (
-                <div
-                  onClick={() => switchOption(view.key)}
+              {usersDetailPageViews.map((view) => (
+                <button
+                  type="button"
+                  onClick={() => setMenuOption(view.key)}
                   className={`h-10 cursor-pointer px-4 py-2 ${
                     menuOption === view.key && "border-b-step-color border-b-2"
                   }`}
-                  key={idx}
+                  key={view.key}
                 >
                   <p className="tracking-custom text-body-s text-center font-sans font-medium">
                     {view.title}
                   </p>
-                </div>
+                </button>
               ))}
             </div>
             {renderViews()}
           </div>
         </div>
       </section>
-      <BalanceModal isOpen={balanceModalOpen} toggle={toggleBalanceModalOpen} />
-      <DeactivateModal
-        isOpen={deactivateModalOpen}
-        toggle={toggleDeactivateModalOpen}
-        id={id}
-        reload={reloadFunc}
-      />
-      <SuspendModal
-        isOpen={suspendModalOpen}
-        toggle={toggleSuspendModalOpen}
-        id={id}
-        reload={reloadFunc}
-      />
+      {statusAction && (
+        <UserStatusActionModal
+          isOpen
+          toggle={() => setStatusAction(null)}
+          id={id}
+          action={statusAction}
+        />
+      )}
+      {reactivateOpen && (
+        <ReactivateUserModal isOpen toggle={() => setReactivateOpen(false)} id={id} />
+      )}
+      {planOpen && <AccountPlanModal isOpen toggle={() => setPlanOpen(false)} id={id} />}
+      {openTribeId !== undefined && (
+        <UserTribeModal
+          isOpen
+          toggle={() => setOpenTribeId(undefined)}
+          userId={id}
+          tribeId={openTribeId}
+        />
+      )}
     </MainLayout>
   );
 }

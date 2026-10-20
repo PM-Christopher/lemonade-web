@@ -22,6 +22,8 @@ export interface AdminBusiness {
   categories: string[];
   services: string[];
   service_rate: number | null;
+  // Server-formatted naira.
+  service_rate_naira: string | null;
   city: string;
   country: string;
   email: string;

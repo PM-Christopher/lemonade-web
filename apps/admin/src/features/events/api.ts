@@ -101,11 +101,12 @@ export interface EventAffiliateDetailResponse {
 }
 
 export interface EventPromotionQueueItem {
-  id: number;
+  id: string;
+  unique_id: string | null;
   event_name: string;
   event_image: string | null;
   promotion_name: string;
-  promotion_price: number;
+  promotion_price: string;
   date_paid: string;
   status: string;
 }
@@ -116,6 +117,48 @@ export interface EventPromotionsQueueResponse {
   offered_promotions: number;
   history: EventPromotionQueueItem[];
 }
+
+export interface EventPromotionDetail {
+  event_summary: {
+    id: string;
+    unique_id: string | null;
+    event_name: string;
+    event_image: string | null;
+    owner: string;
+    promotion_name: string;
+    promotion_price: string;
+    date_paid: string;
+    promotion_date: string | null;
+    status: string;
+  };
+  event: {
+    id: string;
+    image: string | null;
+    name: string;
+    event_date: string;
+    event_time: string;
+    location: string | null;
+    description: string | null;
+    promotions: unknown[] | null;
+  };
+}
+
+export const eventPromotionsApi = {
+  getDetail: (id: string) =>
+    browserApi.get<EventPromotionDetail>(buildPath(adminEventPromotionsRoutes.SHOW, { id })),
+
+  schedule: (id: string, promotionDate: string) =>
+    browserApi.post<{ scheduled: boolean }>(
+      buildPath(adminEventPromotionsRoutes.SCHEDULE, { id }),
+      { promotion_date: promotionDate },
+    ),
+
+  complete: (id: string) =>
+    browserApi.patch<{ completed: boolean }>(
+      buildPath(adminEventPromotionsRoutes.COMPLETED, { id }),
+      {},
+    ),
+};
 
 export interface EventTicket {
   id: number;
@@ -131,12 +174,14 @@ export interface EventTicket {
 
 export interface EventDetail {
   id: number;
+  unique_id: string | null;
   owner: { fullname: string; image: string | null };
   event_name: string;
   event_image: string | null;
   event_date: string;
   event_time: string;
   status: string;
+  rejection_reason: string | null;
   location: string;
   created_at: string;
   category: string;
@@ -202,6 +247,8 @@ export interface Promotion {
   id: number;
   name: string;
   price: number;
+  // The price in naira, formatted by the backend (`price` is kobo).
+  price_naira: string;
   price_option: string;
   breakdown: string[];
   image: string | null;

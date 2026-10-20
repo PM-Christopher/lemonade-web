@@ -152,12 +152,15 @@ export const adminUsersRoutes = Object.freeze({
   ACCOUNT_PLAN: "/admin/users/{id}/account-plan", // GET
   AFFILIATES_DETAIL: "/admin/users/affiliates/{id}/detail", // GET
   AFFILIATES_LOG: "/admin/users/affiliates/log", // GET
+  AFFILIATES_REFERRAL_HISTORY: "/admin/users/affiliates/{id}/referral-history", // GET
+  BUSINESS: "/admin/users/{id}/user-business", // GET
   CANCEL_PLAN: "/admin/users/{id}/cancel-plan", // PATCH
   CHANGE_PLAN: "/admin/users/{id}/change-plan", // PATCH
   DEACTIVATE: "/admin/users/{id}/deactivate-user", // PATCH
   EVENTS: "/admin/users/{id}/user-events", // GET
   LIST: "/admin/users", // GET
   LOGS: "/admin/users/{id}/user-logs", // GET
+  PAYOUT_HISTORY: "/admin/users/{id}/payout-history", // GET
   REACTIVATE: "/admin/users/{id}/reactivate-user", // PATCH
   SHOW: "/admin/users/{id}", // GET
   SUSPEND: "/admin/users/{id}/suspend-user", // PATCH

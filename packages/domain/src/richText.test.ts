@@ -117,3 +117,36 @@ describe("media lines", () => {
     );
   });
 });
+
+describe("edge cases", () => {
+  it("italicises and bullets a selection", () => {
+    expect(applyFormat("hi", 0, 2, "italic").text).toBe("*hi*");
+    expect(applyFormat("hi", 0, 2, "bullets").text).toBe("- hi");
+  });
+
+  it("uses the address as the link text when nothing is selected", () => {
+    expect(applyFormat("", 0, 0, "link", "https://a.co").text).toBe("[https://a.co](https://a.co)");
+  });
+
+  it("takes the first selected line when outdenting an unindented one", () => {
+    expect(applyFormat("  a\nb", 0, 5, "outdent").text).toBe("a\nb");
+  });
+
+  it("keeps image alt text and skips blank lines", () => {
+    expect(parseBlocks("![pic](https://a.co/x.png)\n\n")).toEqual([
+      { type: "image", url: "https://a.co/x.png", alt: "pic" },
+    ]);
+  });
+
+  it("starts a new list when the kind changes", () => {
+    const blocks = parseBlocks("- a\n1. b");
+    expect(blocks.map((b) => b.type)).toEqual(["bullets", "numbers"]);
+  });
+
+  it("inserts media at the start and the end of the text", () => {
+    expect(insertMedia("", 0, "image", "https://a.co/x.png").text).toBe("![](https://a.co/x.png)");
+    expect(insertMedia("a\n", 2, "video", "https://a.co/v.mp4").text).toBe(
+      "a\n@video(https://a.co/v.mp4)",
+    );
+  });
+});

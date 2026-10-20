@@ -109,7 +109,91 @@ export type TransactionListType =
   | "events"
   | "promotions";
 
+export type PaymentStatus = "pending" | "success" | "failed" | "abandoned";
+export type PaymentType =
+  "ticket" | "subscription" | "tribe" | "promotion" | "boost" | "service_request";
+
+export interface PaymentTransaction {
+  id: string;
+  reference: string;
+  type: string;
+  status: PaymentStatus;
+  provider: string | null;
+  currency: string;
+  // Formatted by the backend, shown as-is.
+  amount: string;
+  paid_at: string | null;
+  created_at: string;
+  user: { id: string; name: string; username: string | null; email: string } | null;
+}
+
+export interface PaymentTotalsByStatus {
+  count: number;
+  amount: string;
+}
+
+export interface AllPaymentsFilters {
+  type?: PaymentType;
+  status?: PaymentStatus;
+  search?: string;
+  page?: number;
+}
+
+export interface AllPaymentsResponse {
+  transactions: PaymentTransaction[];
+  totals_by_status: Partial<Record<PaymentStatus, PaymentTotalsByStatus>>;
+  meta: { current_page: number; last_page: number; per_page: number; total: number };
+}
+
+export type LedgerAccountType =
+  | "platform"
+  | "user_wallet"
+  | "tribe_owner"
+  | "event_organizer"
+  | "affiliate"
+  | "escrow_hold"
+  | "gateway"
+  | "payout_clearing";
+
+export interface LedgerEntry {
+  id: string;
+  transaction_id: string;
+  account_id: string;
+  account_type: LedgerAccountType;
+  entry_type: string;
+  amount: string;
+  currency: string;
+  description: string | null;
+  reference_type: string;
+  created_at: string;
+}
+
+export interface LedgerFilters {
+  account_type?: LedgerAccountType;
+  page?: number;
+}
+
+export interface LedgerResponse {
+  entries: LedgerEntry[];
+  meta: { current_page: number; last_page: number; per_page: number; total: number };
+}
+
 export const transactionApi = {
+  getAllPayments: (filters?: AllPaymentsFilters) =>
+    browserApi.get<AllPaymentsResponse>(adminTransactionRoutes.LIST, {
+      params: {
+        type: filters?.type,
+        status: filters?.status,
+        search: filters?.search || undefined,
+        page: filters?.page,
+      },
+    }),
+
+  getLedger: (filters?: LedgerFilters) =>
+    browserApi.get<LedgerResponse>(adminTransactionRoutes.LEDGER, {
+      params: { account_type: filters?.account_type, page: filters?.page },
+    }),
+
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
   // Threaded through every case uniformly.
   getTransactionData: (

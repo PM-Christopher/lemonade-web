@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { userApi } from "./api";
+import { userApi, type AccountInfoParams } from "./api";
 
 export const userKeys = {
   all: () => ["user"] as const,
@@ -18,11 +18,21 @@ export const userKeys = {
 
 export function useUserListQuery(
   trxType: string,
-  options?: { enabled?: boolean; page?: number; perPage?: number },
+  options?: {
+    enabled?: boolean;
+    page?: number;
+    perPage?: number;
+    dates?: { start_date?: string; end_date?: string };
+  },
 ) {
   return useQuery({
-    queryKey: userKeys.list(trxType, options?.page),
-    queryFn: () => userApi.getUserData(trxType, { page: options?.page, perPage: options?.perPage }),
+    queryKey: [...userKeys.list(trxType, options?.page), options?.dates ?? {}],
+    queryFn: () =>
+      userApi.getUserData(
+        trxType,
+        { page: options?.page, perPage: options?.perPage },
+        options?.dates,
+      ),
     staleTime: 60_000,
     enabled: options?.enabled,
   });
@@ -55,11 +65,11 @@ export function useAffiliateDetailQuery(
 export function useAccountInfoQuery(
   id: string | number | undefined,
   infoType: string,
-  options?: { enabled?: boolean },
+  options?: { enabled?: boolean; params?: AccountInfoParams },
 ) {
   return useQuery({
-    queryKey: userKeys.accountInfo(id ?? 0, infoType),
-    queryFn: () => userApi.getAccountInfo(id as string | number, infoType),
+    queryKey: [...userKeys.accountInfo(id ?? 0, infoType), options?.params ?? {}],
+    queryFn: () => userApi.getAccountInfo(id as string | number, infoType, options?.params),
     staleTime: 60_000,
     enabled: Boolean(id) && Boolean(infoType) && options?.enabled !== false,
   });
@@ -76,4 +86,92 @@ export function useUserTribeHistoryQuery(
     staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
   });
+}
+
+const detailQuery = <T>(
+  key: readonly unknown[],
+  fn: () => Promise<T>,
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+  staleTime = 60_000,
+) => ({
+  queryKey: key,
+  queryFn: fn,
+  staleTime,
+  enabled: Boolean(id) && options?.enabled !== false,
+});
+
+export function useUserBusinessQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery(
+    detailQuery(
+      [...userKeys.all(), "business", id],
+      () => userApi.getBusiness(id as string | number),
+      id,
+      options,
+    ),
+  );
+}
+
+export function useUserTribeQuery(
+  id: string | number | undefined,
+  tribeId: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery(
+    detailQuery(
+      [...userKeys.all(), "tribe", id, tribeId],
+      () => userApi.getUserTribe(id as string | number, tribeId as string | number),
+      tribeId === undefined ? undefined : id,
+      options,
+    ),
+  );
+}
+
+// Plan and payout data is money-adjacent, so always fresh.
+export function useAccountPlanQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery(
+    detailQuery(
+      [...userKeys.all(), "account-plan", id],
+      () => userApi.getAccountPlan(id as string | number),
+      id,
+      options,
+      0,
+    ),
+  );
+}
+
+export function usePayoutHistoryQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery(
+    detailQuery(
+      [...userKeys.all(), "payout-history", id],
+      () => userApi.getPayoutHistory(id as string | number),
+      id,
+      options,
+      0,
+    ),
+  );
+}
+
+export function useReferralHistoryQuery(
+  affiliateId: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery(
+    detailQuery(
+      [...userKeys.all(), "referral-history", affiliateId],
+      () => userApi.getReferralHistory(affiliateId as string | number),
+      affiliateId,
+      options,
+      0,
+    ),
+  );
 }

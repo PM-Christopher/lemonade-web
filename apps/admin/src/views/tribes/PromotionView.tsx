@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import dayjs from "dayjs";
 import DataCard from "@/components/global/DataCard";
-import GlobalTable from "@/components/global/GlobalTable";
+import PaginationComp from "@/components/global/Pagination";
+import { useNavigation } from "@/hooks/useNavigation";
+import { routes } from "@/lib/routes";
+import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import { promotionMainHeaders } from "@/data/tableData";
 import type {
   EventAffiliatesResponse,
@@ -18,6 +22,12 @@ const PromotionView = ({ pageData: rawPageData }: PromotionViewProps) => {
   // union prop type comes from eventData being shared across three sibling
   // views that each render for exactly one tab.
   const pageData = rawPageData as EventPromotionsQueueResponse | undefined;
+  const { push } = useNavigation();
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 10;
+  const rows = pageData?.history ?? [];
+  const totalPages = Math.max(1, Math.ceil(rows.length / perPage));
+  const pageRows = rows.slice((currentPage - 1) * perPage, currentPage * perPage);
   return (
     <>
       <>
@@ -41,19 +51,65 @@ const PromotionView = ({ pageData: rawPageData }: PromotionViewProps) => {
             pageLink={"/events/add-promotions"}
           />
         </div>
-        {/* GlobalTable's content prop is a generic stringly-keyed row shape
-            (no named interface) — EventPromotionQueueItem's fields are all
-            string|number|null, but TS only accepts a nominal interface
-            against a Record<string,...> index signature via an explicit
-            cast, not structurally. */}
-        <GlobalTable
-          headers={promotionMainHeaders}
-          content={
-            (pageData?.history ?? []) as unknown as Array<
-              Record<string, string | number | null | undefined>
-            >
-          }
-        />
+        <div className="rounded-lg bg-white shadow-md">
+          <table className="min-w-full table-auto border-collapse">
+            <thead>
+              <tr className="bg-mid-grey">
+                {promotionMainHeaders.map((header) => (
+                  <th
+                    className="font-semiBold text-text-grey text-meta p-4 text-left leading-normal"
+                    key={header}
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {pageRows.length > 0 ? (
+                pageRows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="border-grey-20 h-18 cursor-pointer border-b"
+                    onClick={() => push(routes.EVENT_PROMOTIONS(row.id))}
+                  >
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {row.unique_id ?? "N/A"}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>{row.event_name}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>{row.promotion_name}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      ₦{Number(row.promotion_price).toLocaleString()}
+                    </td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {dayjs(row.date_paid).format("DD MMM, YYYY hh:mm A")}
+                    </td>
+                    <td
+                      className={`p-4 font-sans text-sm font-medium ${GetStatusClass(capitalizeWords(row.status))}`}
+                    >
+                      {capitalizeWords(row.status)}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={promotionMainHeaders.length}
+                    className="p-4 text-center text-sm text-gray-500"
+                  >
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <PaginationComp
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            perPage={perPage}
+          />
+        </div>
       </>
     </>
   );

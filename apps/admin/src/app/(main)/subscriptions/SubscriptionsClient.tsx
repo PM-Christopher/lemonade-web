@@ -6,7 +6,11 @@ import { Button } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
-import { useSubscriptionPlanListQuery } from "@/features/subscriptions/queries";
+import {
+  useSubscriptionOverviewQuery,
+  useSubscriptionPlanListQuery,
+} from "@/features/subscriptions/queries";
+import DataCard from "@/components/global/DataCard";
 import type { AdminSubscriptionPlan } from "@/features/subscriptions/api";
 import type { PlanAction } from "@/modals/subscriptions/ConfirmPlanActionModal";
 
@@ -25,6 +29,9 @@ const headers = [
 const PlanFormModal = dynamic(() => import("@/modals/subscriptions/PlanFormModal"), {
   ssr: false,
 });
+const PlanSubscribersModal = dynamic(() => import("@/modals/subscriptions/PlanSubscribersModal"), {
+  ssr: false,
+});
 const ConfirmPlanActionModal = dynamic(
   () => import("@/modals/subscriptions/ConfirmPlanActionModal"),
   { ssr: false },
@@ -33,6 +40,8 @@ const ConfirmPlanActionModal = dynamic(
 function SubscriptionsClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: planData } = useSubscriptionPlanListQuery({ enabled: isLoggedIn });
+  const { data: overview } = useSubscriptionOverviewQuery({ enabled: isLoggedIn });
+  const [subscribersPlan, setSubscribersPlan] = useState<AdminSubscriptionPlan | undefined>();
 
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<AdminSubscriptionPlan | undefined>(undefined);
@@ -82,6 +91,19 @@ function SubscriptionsClient() {
             </Button>
           </div>
         </div>
+        <div className={"flex gap-6 px-5"}>
+          <DataCard
+            styles={"w-full"}
+            title={"Total Subscribers"}
+            count={overview?.total_subscribers ?? 0}
+          />
+          <div className={"shadow-card-shadow flex w-full flex-col gap-4 rounded-xl bg-white p-4"}>
+            <p className="text-text-grey text-body-s font-normal">Recurring Revenue</p>
+            <p className="font-semiBold text-title-l leading-normal">
+              ₦{Number(overview?.total_recurring_revenue ?? 0).toLocaleString("en-US")}
+            </p>
+          </div>
+        </div>
         <div className={"flex flex-col px-5"}>
           <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
@@ -127,7 +149,13 @@ function SubscriptionsClient() {
                           </span>
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          {plan.subscriber_count ?? 0}
+                          <button
+                            type="button"
+                            className="text-light-green underline"
+                            onClick={() => setSubscribersPlan(plan)}
+                          >
+                            {plan.subscriber_count ?? 0}
+                          </button>
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           <div className="flex items-center gap-3">
@@ -184,6 +212,12 @@ function SubscriptionsClient() {
         </div>
       </section>
 
+      <PlanSubscribersModal
+        isOpen={subscribersPlan !== undefined}
+        toggle={() => setSubscribersPlan(undefined)}
+        planId={subscribersPlan?.id}
+        planTitle={subscribersPlan?.title}
+      />
       <PlanFormModal isOpen={formModalOpen} toggle={closeFormModal} plan={selectedPlan} />
       {confirmAction && (
         <ConfirmPlanActionModal

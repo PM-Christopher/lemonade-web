@@ -3,6 +3,7 @@ import { backendApi } from "@/lib/server-api";
 import {
   adminEventsRoutes,
   adminAffiliatesRoutes,
+  adminEventPromotionsRoutes,
   adminPromotionsRoutes,
   buildPath,
 } from "@lemonade/api-types/generated";
@@ -10,6 +11,7 @@ import type {
   EventListResponse,
   EventDetailResponse,
   EventAffiliateDetailResponse,
+  EventPromotionDetail,
   PromotionListResponse,
 } from "./api";
 
@@ -25,4 +27,9 @@ export const eventsServerApi = {
 
 export const promotionsServerApi = {
   getPromotions: () => backendApi.get<PromotionListResponse>(adminPromotionsRoutes.LIST),
+};
+
+export const eventPromotionsServerApi = {
+  getDetail: (id: string) =>
+    backendApi.get<EventPromotionDetail>(buildPath(adminEventPromotionsRoutes.SHOW, { id })),
 };

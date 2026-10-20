@@ -21,3 +21,14 @@ export const promotionSchema = z.object({
     .min(1, { error: "Add at least one breakdown" }),
 });
 export type PromotionInput = z.infer<typeof promotionSchema>;
+
+// Mirrors ScheduleEventPromotionRequest: promotion_date is required, a date, today or later.
+export const schedulePromotionSchema = z.object({
+  promotion_date: z
+    .string()
+    .min(1, { error: "Pick a promotion date" })
+    .refine((value) => value >= new Date().toISOString().slice(0, 10), {
+      error: "The promotion date can't be in the past",
+    }),
+});
+export type SchedulePromotionInput = z.infer<typeof schedulePromotionSchema>;

@@ -1,25 +1,60 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Card, CardContent } from "@lemonade/ui";
-import OtpInput from "react-otp-input";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardContent, FieldError, Input, Label } from "@lemonade/ui";
+import { forgotPasswordSchema, type ForgotPasswordInput } from "@lemonade/validation";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { otpSchema, type OtpCodeInput } from "@lemonade/validation";
+import { useForgotPasswordMutation } from "@/features/authentication/mutations";
+import { useNavigation } from "@/hooks/useNavigation";
+import { errorMessage } from "@/lib/api-error";
+import { apiMessage } from "@/lib/api-message";
 import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
+import { useAppDispatch } from "@/redux/hook";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
 
-function ForgotPasswordPage({}) {
-  // Not wired to the backend yet: there's no admin reset-code endpoint to submit to.
+function ForgotPasswordClient() {
+  const { push } = useNavigation();
+  const dispatch = useAppDispatch();
+  const forgotMutation = useForgotPasswordMutation();
+
   const {
-    control,
-    formState: { isValid, isSubmitting },
-  } = useForm<OtpCodeInput>({
-    resolver: zodResolver(otpSchema),
-    defaultValues: { code: "" },
-    mode: "onChange",
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ForgotPasswordInput>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+    mode: "onTouched",
   });
+
+  const onSubmit = (values: ForgotPasswordInput) => {
+    forgotMutation.mutate(values, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: apiMessage("A verification code has been sent to your email"),
+            type: "success",
+          }),
+        );
+        push(routes.VERIFY_CODE);
+      },
+      onError: (error) =>
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(error, "Couldn't send the code. Please try again."),
+            type: "error",
+          }),
+        ),
+    });
+  };
+
   return (
     <AuthLayout>
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
@@ -29,53 +64,52 @@ function ForgotPasswordPage({}) {
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">
-          <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-sm">
-            <CardContent className="tablet:gap-10 grid gap-6">
-              <div>
-                <p className="font-ruso text-title-l leading-normal font-normal">
-                  Verification Code
-                </p>
-                <p className="text-text-grey text-body-s font-normal">
-                  Enter the 4-digit code sent adminlogin@admin.com to reset your password.
-                </p>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <Controller
-                  control={control}
-                  name="code"
-                  render={({ field }) => (
-                    <OtpInput
-                      value={field.value}
-                      onChange={field.onChange}
-                      numInputs={4}
-                      renderSeparator={<span> </span>}
-                      renderInput={(props) => <input {...props} />}
-                      containerStyle="gap-2"
-                      inputStyle={{
-                        width: "48px",
-                        height: "48px",
-                        background: "#F9FAFA",
-                        borderRadius: "12px",
-                      }}
-                    />
-                  )}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Card className="tablet:w-120 w-full rounded-2xl border-none p-6 shadow-sm">
+              <CardContent className="tablet:gap-10 grid gap-6">
+                <div>
+                  <p className="font-ruso text-title-l leading-normal font-normal">
+                    Forgot password
+                  </p>
+                  <p className="text-text-grey text-body-s font-normal">
+                    Enter your email address and we will send you a code to reset your password.
+                  </p>
+                </div>
+                <div className="grid gap-2">
+                  <Label
+                    htmlFor="email"
+                    className="text-text-grey text-body-s font-sans font-normal"
+                  >
+                    Email address
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="e.g. Janedoe@example.com"
+                    className="form-font bg-light-grey h-12 rounded-xl border-0"
+                    {...register("email")}
+                  />
+                  <FieldError message={errors.email?.message} />
+                </div>
+                <SubmitButton
+                  loading={forgotMutation.isPending}
+                  title="Send code"
+                  isValid={isValid}
+                  classes="w-full h-12 rounded-xl"
                 />
-              </div>
-              <p className="text-light-green text-body-l text-center font-medium">
-                Resend in 60 secs
-              </p>
-              <SubmitButton
-                loading={isSubmitting}
-                title="Verify"
-                isValid={isValid}
-                classes="w-full h-12 rounded-xl"
-              />
-            </CardContent>
-          </Card>
+                <Link
+                  href={routes.LOGIN}
+                  className="text-light-green text-body-l text-center font-medium underline"
+                >
+                  Back to login
+                </Link>
+              </CardContent>
+            </Card>
+          </form>
         </div>
       </section>
     </AuthLayout>
   );
 }
 
-export default ForgotPasswordPage;
+export default ForgotPasswordClient;

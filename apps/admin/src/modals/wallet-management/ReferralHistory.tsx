@@ -1,14 +1,26 @@
 import React from "react";
 import { XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { referralHistoryData } from "@/data/walletData";
+import dayjs from "dayjs";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useReferralHistoryQuery } from "@/features/user/queries";
+import { formatNumberWithCommas } from "@/lib/formatNumber";
 
 type ReferralHistoryInterface = {
   isOpen: boolean;
   toggle: () => void;
+  // The referrer whose history to show.
+  affiliateId: string;
 };
 
-const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle }) => {
+const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle, affiliateId }) => {
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { data, isLoading } = useReferralHistoryQuery(affiliateId, {
+    enabled: isLoggedIn && isOpen,
+  });
+  const history = data?.referral_history ?? [];
+
   if (!isOpen) return null;
   return (
     <Dialog
@@ -35,22 +47,29 @@ const ReferralHistory: React.FC<ReferralHistoryInterface> = ({ isOpen, toggle })
               </p>
             </div>
             <div>
-              <XIcon className="cursor-pointer" onClick={toggle} />
+              <button type="button" aria-label="Close" className="cursor-pointer" onClick={toggle}>
+                <XIcon />
+              </button>
             </div>
           </div>
           <div className={"mt-4 flex flex-col px-6"}>
-            {referralHistoryData.map((item, index: number) => (
+            {history.map((item, index: number) => (
               <div className={"flex justify-between px-4 pt-4 pb-6"} key={index}>
                 <div className={"flex flex-col"}>
                   <p className={"text-body-s font-medium"}>
-                    {item.amount} - {item.type}
+                    ₦{formatNumberWithCommas(Number(item.amount))} - {item.type}
                   </p>
                   <p className={"text-text-grey text-meta leading-normal font-normal"}>
-                    {item.date}
+                    {dayjs(item.created_at).format("D, MMM YYYY. hh:mmA")}
                   </p>
                 </div>
               </div>
             ))}
+            {history.length === 0 && (
+              <p className="text-text-grey text-body-s px-4 font-normal">
+                {isLoading ? "Loading..." : "No referral payments yet."}
+              </p>
+            )}
           </div>
         </div>
       </DialogContentBare>

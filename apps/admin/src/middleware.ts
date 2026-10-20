@@ -71,7 +71,7 @@ function withCsp(requestHeaders: Headers, nonce: string): string {
   return csp;
 }
 
-const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password"];
+const PUBLIC_PATHS = ["/login", "/forgot-password", "/verify-code", "/reset-password"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));

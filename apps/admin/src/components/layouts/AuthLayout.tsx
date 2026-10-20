@@ -18,6 +18,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       const isAuthRoute =
         pathname === routes.LOGIN ||
         pathname === routes.FORGOT_PASSWORD ||
+        pathname === routes.VERIFY_CODE ||
         pathname === routes.RESET_PASSWORD;
       if (!isAuthRoute) {
         replace(routes.LOGIN);

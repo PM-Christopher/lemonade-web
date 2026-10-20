@@ -6,6 +6,8 @@ export const transactionPageViews = [
   { key: "services", title: "Services" },
   { key: "events", title: "Events" },
   { key: "promotions", title: "Promotions" },
+  { key: "all-payments", title: "All payments" },
+  { key: "ledger", title: "Ledger" },
 ];
 
 export const usersPageViews = [
@@ -16,7 +18,7 @@ export const usersPageViews = [
 export const usersDetailPageViews = [
   { key: "activities-log", title: "Activities log" },
   { key: "tribes", title: "Tribes" },
-  // {key: "business", title: "Business"},
+  { key: "business", title: "Business" },
   { key: "events", title: "Events" },
   { key: "wallet", title: "Wallet" },
 ];

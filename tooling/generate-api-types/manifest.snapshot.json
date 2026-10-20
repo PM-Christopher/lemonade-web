@@ -27,8 +27,15 @@
         "uri": "/v1/admin/account/change-profile-image",
         "name": "v1.admin.account.change-profile-image",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\ChangeAdminProfileImageRequest",
+        "fields": {
+            "image": [
+                "required",
+                "string",
+                "url",
+                "max:2048"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -362,8 +369,14 @@
         "uri": "/v1/admin/event-promotions/{id}/schedule",
         "name": "v1.admin.event-promotions.schedule",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\ScheduleEventPromotionRequest",
+        "fields": {
+            "promotion_date": [
+                "required",
+                "date",
+                "after_or_equal:today"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1313,6 +1326,22 @@
         "fields": null
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/users/affiliates/{id}/referral-history",
+        "name": "v1.admin.users.affiliates.referral-history",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-business",
+        "name": "v1.admin.users.business",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "PATCH",
         "uri": "/v1/admin/users/{id}/cancel-plan",
         "name": "v1.admin.users.cancel-plan",
@@ -1333,8 +1362,14 @@
         "uri": "/v1/admin/users/{id}/deactivate-user",
         "name": "v1.admin.users.deactivate",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\UserStatusReasonRequest",
+        "fields": {
+            "reason": [
+                "required",
+                "string",
+                "max:255"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1361,6 +1396,14 @@
         "fields": null
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/payout-history",
+        "name": "v1.admin.users.payout-history",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "PATCH",
         "uri": "/v1/admin/users/{id}/reactivate-user",
         "name": "v1.admin.users.reactivate",
@@ -1381,8 +1424,14 @@
         "uri": "/v1/admin/users/{id}/suspend-user",
         "name": "v1.admin.users.suspend",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\UserStatusReasonRequest",
+        "fields": {
+            "reason": [
+                "required",
+                "string",
+                "max:255"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1426,8 +1475,8 @@
             "file": [
                 "required",
                 "file",
-                "mimes:jpeg,png,jpg,mp4,avi,mov",
-                "max:10240"
+                "mimes:jpeg,png,jpg,mp4,avi,mov,webm",
+                "mediaFileSize"
             ]
         }
     },
@@ -1443,7 +1492,7 @@
             ],
             "files.*": [
                 "file",
-                "max:10240"
+                "mediaFileSize"
             ]
         }
     },
@@ -1716,8 +1765,8 @@
             "file": [
                 "required",
                 "file",
-                "mimes:jpeg,png,jpg,mp4,avi,mov",
-                "max:10240"
+                "mimes:jpeg,png,jpg,mp4,avi,mov,webm",
+                "mediaFileSize"
             ]
         }
     },
@@ -1733,7 +1782,7 @@
             ],
             "files.*": [
                 "file",
-                "max:10240"
+                "mediaFileSize"
             ]
         }
     },

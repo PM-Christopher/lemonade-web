@@ -59,7 +59,7 @@ function PromotionsCard({
         </div>
       </div>
       <p className={"font-semiBold text-title-r leading-normal"}>
-        N{formatThousandSeparator(promotion?.price)}
+        N{formatThousandSeparator(promotion?.price_naira)}
       </p>
       <div className={"flex flex-col gap-2"}>
         {promotion?.breakdown?.map((item: string, index: number) => (

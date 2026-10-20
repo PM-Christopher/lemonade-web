@@ -11,6 +11,8 @@ import ServiceViews from "@/views/transactions/serviceViews";
 import TribePaymentViews from "@/views/transactions/tribeViews";
 import EventViews from "@/views/transactions/eventViews";
 import PromotionViews from "@/views/transactions/promotionViews";
+import AllPaymentsViews from "@/views/transactions/AllPaymentsViews";
+import LedgerViews from "@/views/transactions/LedgerViews";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useTransactionDataQuery } from "@/features/transaction/queries";
@@ -22,13 +24,15 @@ const PER_PAGE = 10;
 
 function TransactionsClient() {
   const [menuOption, setMenuOption] = useState("plan-subscriptions");
+  // These two tabs run their own queries and filters.
+  const isStandaloneTab = menuOption === "all-payments" || menuOption === "ledger";
   const { searchParams, setSearchParams } = useSearchParams();
   const page = Number(searchParams?.get("page") ?? 1);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
   const { data: trxData } = useTransactionDataQuery(menuOption, {
-    enabled: isLoggedIn,
+    enabled: isLoggedIn && !isStandaloneTab,
     page,
     perPage: PER_PAGE,
   });
@@ -44,6 +48,10 @@ function TransactionsClient() {
 
   const renderViews = () => {
     switch (menuOption) {
+      case "all-payments":
+        return <AllPaymentsViews />;
+      case "ledger":
+        return <LedgerViews />;
       case "plan-subscriptions":
         return <PlansViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "wallet-withdrawals":
@@ -78,8 +86,9 @@ function TransactionsClient() {
             {/* subscribers (real subscriber count) still wins for plan-subscriptions
                 — it's a different number from meta.total (total history rows),
                 not just a fallback for it. */}
-            {trxData?.subscribers ?? trxData?.meta?.total ?? trxData?.history?.length ?? 0}{" "}
-            Transactions
+            {isStandaloneTab
+              ? "Transactions"
+              : `${trxData?.subscribers ?? trxData?.meta?.total ?? trxData?.history?.length ?? 0} Transactions`}
           </p>
           <div className={"flex justify-between gap-3"}>
             {/* <div
@@ -113,7 +122,7 @@ function TransactionsClient() {
                             </div>
                             <ChevronDown className={"text-text-grey w-5"}/>
                         </div> */}
-            <div>
+            <div className={isStandaloneTab ? "hidden" : undefined}>
               <Button
                 onClick={exportCSV}
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}

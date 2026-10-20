@@ -1,209 +1,332 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import dayjs from "dayjs";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import { images } from "@/lib/images";
-import MainLayout from "@/components/layouts/MainLayout";
 import { useDispatch, useSelector } from "react-redux";
+import { CalendarIcon, ClockIcon, MapPinIcon } from "lucide-react";
+import { FormattedText } from "@lemonade/ui";
+import MainLayout from "@/components/layouts/MainLayout";
 import { AppDispatch, RootState } from "@/redux/store";
+import { images } from "@/lib/images";
 import { useReportDetailQuery } from "@/features/reporting/queries";
 import {
   useDeleteReportContentMutation,
   useResolveReportMutation,
 } from "@/features/reporting/mutations";
-import { capitalizeWords } from "@/utils/helper";
+import type { ReportPreview } from "@/features/reporting/api";
+import { GetStatusClass } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
+import { reportStatusLabel } from "../ReportingClient";
+
+const ConfirmReportActionModal = dynamic(
+  () => import("@/modals/reporting/ConfirmReportActionModal"),
+  { ssr: false },
+);
+
+// Moderation deletes threads (and the like); events and businesses are only shown.
+const DELETABLE = ["thread", "threads", "forum", "forums", "tribe", "tribes"];
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-6">
+      <div className="w-28.75 shrink-0">
+        <p className="text-text-grey text-meta leading-normal font-medium">{label}:</p>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function Person({ person }: { person: { name: string; image: string | null } | null | undefined }) {
+  if (!person) return <p className="text-body-s font-medium">Unknown</p>;
+  return (
+    <div className="flex items-center gap-2">
+      <Image
+        unoptimized
+        src={person.image || images.AVATAR_1}
+        alt=""
+        width={20}
+        height={20}
+        className="h-5 w-5 rounded-full object-cover"
+      />
+      <p className="text-body-s font-medium">{person.name}</p>
+    </div>
+  );
+}
+
+function Content({ preview }: { preview: ReportPreview | null }) {
+  if (!preview) {
+    return <p className="text-text-grey text-body-s p-6 text-center">No content available</p>;
+  }
+
+  if (preview.type === "thread") {
+    return (
+      <div className="flex flex-col gap-3 p-6">
+        <div className="flex items-center gap-2">
+          <Image
+            unoptimized
+            src={preview.author?.image || images.AVATAR_1}
+            alt=""
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-full object-cover"
+          />
+          <p className="text-body-s font-semibold">{preview.author?.name ?? "Unknown"}</p>
+        </div>
+        <p className="text-body-s font-semibold">{preview.topic}</p>
+        <FormattedText text={preview.thoughts ?? ""} className="text-body-s font-normal" />
+        <div className="flex flex-col gap-3">
+          {preview.media.map((src) => (
+            <Image
+              unoptimized
+              key={src}
+              src={src}
+              alt="Thread media"
+              width={640}
+              height={480}
+              className="max-h-96 w-full rounded-xl object-cover"
+            />
+          ))}
+          {preview.videos.map((src) => (
+            <video key={src} src={src} controls className="max-h-96 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (preview.type === "event") {
+    return (
+      <div className="flex flex-col gap-3 p-6">
+        {preview.image && (
+          <Image
+            unoptimized
+            src={preview.image}
+            alt={preview.name ?? "Event"}
+            width={640}
+            height={256}
+            className="h-64 w-full rounded-xl object-cover"
+          />
+        )}
+        <p className="text-title-l font-semibold">{preview.name}</p>
+        {preview.starts_at && (
+          <p className="text-body-s flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4" />
+            {dayjs(preview.starts_at).format("ddd, D MMM")}
+          </p>
+        )}
+        {preview.starts_at && (
+          <p className="text-body-s flex items-center gap-2">
+            <ClockIcon className="h-4 w-4" />
+            {dayjs(preview.starts_at).format("hh:mmA")}
+            {preview.ends_at ? ` - ${dayjs(preview.ends_at).format("hh:mmA")}` : ""}
+          </p>
+        )}
+        {preview.location && (
+          <p className="text-body-s flex items-center gap-2">
+            <MapPinIcon className="h-4 w-4" />
+            {preview.location}
+          </p>
+        )}
+        <p className="text-body-s font-semibold">About Event</p>
+        <FormattedText text={preview.description ?? ""} className="text-body-s font-normal" />
+        <Person person={preview.owner} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4 p-6">
+      <div className="flex flex-col items-center rounded-xl bg-[#f3f9d8] p-4">
+        <Image
+          unoptimized
+          src={preview.image || images.BUSINESS_JOB_LOGO}
+          alt={preview.name ?? "Business"}
+          width={64}
+          height={64}
+          className="h-16 w-16 rounded-2xl object-cover"
+        />
+        <p className="text-body-l mt-2 font-semibold">{preview.name}</p>
+        <p className="text-text-grey text-body-s">
+          {[preview.city, preview.country].filter(Boolean).join(", ")}
+        </p>
+        {preview.service_rate_naira && (
+          <p className="text-body-s font-semibold">
+            ₦{Number(preview.service_rate_naira).toLocaleString()}/hr
+          </p>
+        )}
+      </div>
+      <div>
+        <p className="text-body-l font-bold">About business</p>
+        <FormattedText text={preview.description ?? ""} className="text-body-s mt-2" />
+      </div>
+      <div>
+        <p className="text-body-l font-bold">Business categories</p>
+        <p className="text-body-s mt-2">{preview.categories.join(", ")}</p>
+      </div>
+      <div>
+        <p className="text-body-l font-bold">Services</p>
+        <p className="text-body-s mt-2">{preview.services.join(", ")}</p>
+      </div>
+      {preview.gallery.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {preview.gallery.map((src) => (
+            <Image
+              unoptimized
+              key={src}
+              src={src}
+              alt="Portfolio"
+              width={150}
+              height={150}
+              className="h-36 w-36 rounded-sm object-cover"
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function ReportDetailsClient({ id }: { id: string }) {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-
   const { data: detail } = useReportDetailQuery(id, { enabled: isLoggedIn });
   const report = detail?.report;
-
   const resolveMutation = useResolveReportMutation(id);
   const deleteMutation = useDeleteReportContentMutation(id);
+  const [confirm, setConfirm] = useState<"resolve" | "delete" | null>(null);
 
-  const event = report?.content?.events ?? null;
+  const isPending = report?.status === "pending";
+  const isDeleted = report?.status === "deleted";
+  const canDelete = isPending && DELETABLE.includes((report?.category ?? "").toLowerCase());
+  const status = report ? reportStatusLabel(report.status) : "";
+  const contentLabel = report?.preview?.type ?? "content";
 
-  const resolve = () => {
+  const notify = (message: string, type: "success" | "error") =>
+    dispatch(
+      updateToastifyReducer({
+        show: true,
+        message: type === "success" ? apiMessage(message) : message,
+        type,
+      }),
+    );
+
+  const resolve = () =>
     resolveMutation.mutate(undefined, {
       onSuccess: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: apiMessage("Report marked as resolved"),
-            type: "success",
-          }),
-        );
+        notify("Report marked as resolved", "success");
+        setConfirm(null);
       },
-      onError: (error) => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error?.message || "error",
-            type: "error",
-          }),
-        );
-      },
+      onError: (error) => notify(error?.message || "Something went wrong", "error"),
     });
-  };
-  const handleDelete = () => {
-    const data = {
-      category: report?.category,
-      category_id: report?.content?.id,
-    };
-    deleteMutation.mutate(data, {
-      onSuccess: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: apiMessage("Report deleted successfully"),
-            type: "success",
-          }),
-        );
+
+  const remove = () =>
+    deleteMutation.mutate(
+      { category: report?.category, category_id: report?.content?.id },
+      {
+        onSuccess: () => {
+          notify("Content deleted", "success");
+          setConfirm(null);
+        },
+        onError: (error) => notify(error?.message || "Something went wrong", "error"),
       },
-      onError: (error) => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: error?.message || "error",
-            type: "error",
-          }),
-        );
-      },
-    });
-  };
+    );
 
   return (
     <MainLayout>
-      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-200 flex-col rounded-xl bg-white"}>
-          <div className={"border-b-grey-20 flex flex-col gap-5 border-b p-6"}>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                  Reported By:
-                </p>
-              </div>
-              <div className={"flex gap-1"}>
-                <p className={"text-body-s font-medium"}>{report?.reported_by?.name}</p>
-              </div>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Report ID:</p>
-              </div>
-              <p className={"text-body-s font-medium"}>{report?.unique_id}</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Category:</p>
-              </div>
-              <p className={"text-body-s font-medium"}>{capitalizeWords(report?.category)}</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Case:</p>
-              </div>
-              <div className={"flex gap-1"}>
-                <p className={"text-body-s font-medium"}>{report?.case}</p>
-              </div>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                  Date Submitted:
-                </p>
-              </div>
-              <p className={"text-body-s font-medium"}>{report?.date_submitted}</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
-              </div>
-              <p className={"text-warning-bold text-body-s font-medium"}>
-                {capitalizeWords(report?.status)}
+      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
+        <div className="flex h-fit w-full shrink-0 flex-col rounded-xl bg-white lg:w-150">
+          <div className="border-b-grey-20 flex flex-col gap-5 border-b p-6">
+            <Field label="Reported By">
+              <Person person={report?.reported_by} />
+            </Field>
+            <Field label="Report ID">
+              <p className="text-body-s font-medium">{report?.unique_id}</p>
+            </Field>
+            <Field label="Category">
+              <p className="text-body-s font-medium capitalize">{report?.category}</p>
+            </Field>
+            <Field label="Case">
+              <p className="text-body-s font-medium">{report?.case}</p>
+            </Field>
+            <Field label="Date Submitted">
+              <p className="text-body-s font-medium">
+                {report ? dayjs(report.date_submitted_iso).format("DD MMM, YYYY hh:mm A") : ""}
               </p>
-            </div>
-          </div>
-          <div className={"p-6"}>
-            <button
-              onClick={resolve}
-              className={
-                "border-step-color bg-gradient-green text-body-l w-full rounded-xl border px-12 py-2.75 font-sans font-medium text-white"
-              }
-              type={"button"}
-            >
-              Mark as resolved
-            </button>
-          </div>
-        </div>
-        <div className={"flex h-190.5 w-full flex-col rounded-xl bg-white lg:w-2/3"}>
-          <div className={"border-b-grey-20 flex items-center justify-between border-b p-4.5"}>
-            <p className={"font-semiBold text-body-l"}>Content</p>
-            <div className={"cursor-pointer rounded-xl border p-2.5 px-3.5"} onClick={handleDelete}>
-              <p className={"text-body-s font-medium"}>Delete</p>
-            </div>
-          </div>
-
-          <div className="mx-auto max-w-2xl rounded-2xl bg-white p-6 shadow-lg">
-            {event ? (
-              <div className="space-y-4">
-                {/* Event Image */}
-                {event.event_image && (
-                  <Image
-                    src={event.event_image}
-                    alt={event.event_name ?? "event"}
-                    width={672}
-                    height={256}
-                    className="h-64 w-full rounded-xl object-cover"
-                  />
+            </Field>
+            <Field label="Status">
+              <p className={`text-body-s font-medium ${GetStatusClass(status)}`}>{status}</p>
+            </Field>
+            {report && !isPending && report.resolved_by && (
+              <>
+                <Field label="Resolved By">
+                  <Person person={report.resolved_by} />
+                </Field>
+                {report.resolved_at_iso && (
+                  <Field label="Resolved Date">
+                    <p className="text-body-s font-medium">
+                      {dayjs(report.resolved_at_iso).format("DD MMM, YYYY hh:mm A")}
+                    </p>
+                  </Field>
                 )}
-
-                {/* Event Info */}
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">{event.event_name}</h2>
-                  <p className="text-sm text-gray-500">
-                    {event.category} • {event.location}
-                  </p>
-                </div>
-
-                {/* Organizer */}
-                <div className="flex items-center gap-3">
-                  <Image
-                    src={event.owner?.image || images.AVATAR_1}
-                    alt={event.owner?.fullname ?? "organizer"}
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
-                  <p className="font-medium text-gray-700">{event.owner?.fullname}</p>
-                </div>
-
-                {/* Date and Time */}
-                <div className="space-y-1 text-sm text-gray-600">
-                  <p>
-                    <strong>Date:</strong> {event.event_date}
-                  </p>
-                  <p>
-                    <strong>Time:</strong> {event.event_time}
-                  </p>
-                  <p>
-                    <strong>Created At:</strong>{" "}
-                    {event.created_at ? new Date(event.created_at).toLocaleString() : "—"}
-                  </p>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-800">{event.description}</p>
-              </div>
-            ) : (
-              <p className="text-center text-gray-500">No content available</p>
+              </>
             )}
           </div>
+          {isPending && (
+            <div className="p-6">
+              <button
+                onClick={() => setConfirm("resolve")}
+                className="border-step-color bg-gradient-green text-body-l w-full cursor-pointer rounded-xl border px-12 py-2.75 font-sans font-medium text-white"
+                type="button"
+              >
+                Make as resolved
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="flex min-h-190 w-full min-w-0 flex-1 flex-col rounded-xl bg-white">
+          <div className="border-b-grey-20 flex items-center justify-between border-b p-4.5">
+            <p className="font-semiBold text-body-l">Content</p>
+            {isDeleted ? (
+              <span className="bg-red-1 rounded-lg px-3 py-1.5 text-sm font-medium text-white">
+                Deleted
+              </span>
+            ) : canDelete ? (
+              <button
+                type="button"
+                className="cursor-pointer rounded-xl border p-2.5 px-3.5"
+                onClick={() => setConfirm("delete")}
+              >
+                <p className="text-body-s font-medium">Delete</p>
+              </button>
+            ) : null}
+          </div>
+          <Content preview={report?.preview ?? null} />
         </div>
       </section>
+      <ConfirmReportActionModal
+        isOpen={confirm === "resolve"}
+        toggle={() => setConfirm(null)}
+        title="Mark as resolved"
+        body="Make sure you resolve the issue before marking it as resolved."
+        confirmLabel="Resolve"
+        tone="green"
+        pending={resolveMutation.isPending}
+        onConfirm={resolve}
+      />
+      <ConfirmReportActionModal
+        isOpen={confirm === "delete"}
+        toggle={() => setConfirm(null)}
+        title={`Delete ${contentLabel}`}
+        body={`Are you sure you want to delete this ${contentLabel}?`}
+        confirmLabel="Delete"
+        tone="red"
+        pending={deleteMutation.isPending}
+        onConfirm={remove}
+      />
     </MainLayout>
   );
 }

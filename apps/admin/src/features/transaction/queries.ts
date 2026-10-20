@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { transactionApi, type TransactionListType } from "./api";
+import {
+  transactionApi,
+  type AllPaymentsFilters,
+  type LedgerFilters,
+  type TransactionListType,
+} from "./api";
 
 export const transactionKeys = {
   all: () => ["transaction"] as const,
@@ -7,6 +12,9 @@ export const transactionKeys = {
     page
       ? ([...transactionKeys.all(), "list", trxType, page] as const)
       : ([...transactionKeys.all(), "list", trxType] as const),
+  payments: (filters?: AllPaymentsFilters) =>
+    [...transactionKeys.all(), "payments", filters ?? {}] as const,
+  ledger: (filters?: LedgerFilters) => [...transactionKeys.all(), "ledger", filters ?? {}] as const,
   subscriptionDetail: (id: string | number) =>
     [...transactionKeys.all(), "subscription-detail", id] as const,
   eventDetail: (id: string | number) => [...transactionKeys.all(), "event-detail", id] as const,
@@ -63,5 +71,21 @@ export function useTransactionTribeDetailQuery(
     queryFn: () => transactionApi.getTribeDetail(id as string | number),
     staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+export function useAllPaymentsQuery(filters?: AllPaymentsFilters) {
+  return useQuery({
+    queryKey: transactionKeys.payments(filters),
+    queryFn: () => transactionApi.getAllPayments(filters),
+    staleTime: 0,
+  });
+}
+
+export function useLedgerQuery(filters?: LedgerFilters) {
+  return useQuery({
+    queryKey: transactionKeys.ledger(filters),
+    queryFn: () => transactionApi.getLedger(filters),
+    staleTime: 0,
   });
 }

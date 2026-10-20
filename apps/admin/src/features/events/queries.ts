@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { eventsApi, promotionsApi } from "./api";
+import { eventPromotionsApi, eventsApi, promotionsApi } from "./api";
 
 export const eventKeys = {
   all: () => ["event"] as const,
@@ -8,6 +8,11 @@ export const eventKeys = {
   details: () => [...eventKeys.all(), "detail"] as const,
   detail: (id: string | number) => [...eventKeys.details(), id] as const,
   affiliateDetail: (id: string | number) => [...eventKeys.all(), "affiliate-detail", id] as const,
+};
+
+export const eventPromotionKeys = {
+  all: () => ["event-promotion"] as const,
+  detail: (id: string) => [...eventPromotionKeys.all(), "detail", id] as const,
 };
 
 export const promotionKeys = {
@@ -35,6 +40,15 @@ export function useEventDetailQuery(
   return useQuery({
     queryKey: eventKeys.detail(id ?? 0),
     queryFn: () => eventsApi.getEventDetail(id as string | number),
+    staleTime: 30_000,
+    enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+export function useEventPromotionQuery(id: string | undefined, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: eventPromotionKeys.detail(id ?? ""),
+    queryFn: () => eventPromotionsApi.getDetail(id as string),
     staleTime: 30_000,
     enabled: Boolean(id) && options?.enabled !== false,
   });

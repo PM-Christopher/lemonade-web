@@ -30,6 +30,19 @@ export function useWithdrawalRequestDecisionMutation(id: string | number) {
   });
 }
 
+export function useRetryWithdrawalMutation(id: string | number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => walletApi.retryWithdrawal(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: walletKeys.withdrawalRequests() });
+      queryClient.invalidateQueries({ queryKey: walletKeys.data() });
+      queryClient.invalidateQueries({ queryKey: walletKeys.detail(id) });
+    },
+  });
+}
+
 export function useAddToWalletMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 

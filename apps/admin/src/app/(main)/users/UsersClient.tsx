@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
-import { CalendarIcon, ChevronDown, SearchIcon, UploadIcon } from "lucide-react";
+import { SearchIcon, UploadIcon } from "lucide-react";
+import DateRangePicker, { toApiTime, type DateRange } from "@/components/global/DateRangePicker";
 import {
   Button,
   Select,
@@ -23,7 +24,7 @@ import useDebounce from "@/hooks/useDebounce";
 import useSearchParams from "@/hooks/useSearchParams";
 
 function UsersClient() {
-  const statusOptions = ["Clear selection", "Active", "Inactive", "Suspended", "Deactivated"];
+  const statusOptions = ["Clear selection", "Active", "Suspended", "Deactivated"];
   const [menuOption, setMenuOption] = useState("users");
   const [searchValue, setSearchValue] = useState("");
   const [status, setStatus] = useState<string>("");
@@ -39,7 +40,8 @@ function UsersClient() {
   // Search/status filter active -> fetch the old unpaginated shape so
   // client-side filtering (in UsersViews) still sees every user, not just
   // the current page. See docs/ARCHITECTURE.md §22 Conflict 1.
-  const isFiltering = Boolean(query?.trim()) || Boolean(statusParam?.trim());
+  const [range, setRange] = useState<DateRange | null>(null);
+  const isFiltering = Boolean(query?.trim()) || Boolean(statusParam?.trim()) || range !== null;
   const page =
     menuOption === "users" && !isFiltering ? Number(searchParams?.get("page") ?? 1) : undefined;
 
@@ -47,6 +49,9 @@ function UsersClient() {
     enabled: isLoggedIn,
     page,
     perPage: 10,
+    dates: range
+      ? { start_date: toApiTime(range.start), end_date: toApiTime(range.end) }
+      : undefined,
   });
 
   const handlePageChange = (nextPage: number) => {
@@ -157,17 +162,7 @@ function UsersClient() {
                 </SelectContent>
               </Select>
             )}
-            <div
-              className={
-                "border-grey-20 flex h-10 w-48.25 items-center justify-between rounded-xl border bg-none px-4 py-2.5"
-              }
-            >
-              <div className={"flex items-center gap-2"}>
-                <CalendarIcon className={"text-text-grey h-3.75 w-3.75"} />
-                <p className={"font-semiBold text-text-grey text-meta leading-normal"}>ALL TIME</p>
-              </div>
-              <ChevronDown className={"text-text-grey w-5"} />
-            </div>
+            <DateRangePicker value={range} onChange={setRange} />
             <div>
               <Button
                 onClick={exportUser}

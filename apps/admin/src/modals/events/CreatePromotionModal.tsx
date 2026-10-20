@@ -43,7 +43,7 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
     () => ({
       name: editing?.name ?? "",
       price_option: editing?.price_option ?? "",
-      price: editing ? String(editing.price ?? "") : "",
+      price: editing ? String(editing.price_naira ?? "") : "",
       breakdown: editing?.breakdown?.length ? editing.breakdown : [""],
     }),
     [editing],

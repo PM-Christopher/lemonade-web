@@ -1,6 +1,6 @@
 // Endpoints for the profile domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
-import { adminAccountRoutes } from "@lemonade/api-types/generated";
+import { adminAccountRoutes, adminUtilitiesRoutes } from "@lemonade/api-types/generated";
 
 export interface AdminProfile {
   id: string | number;
@@ -29,4 +29,18 @@ export const profileApi = {
 
   changePassword: (payload: ChangePasswordPayload) =>
     browserApi.patch<{ message?: string }>(adminAccountRoutes.CHANGE_PASSWORD, payload),
+
+  // Uploads the picture first, then saves the returned address on the profile.
+  changeImage: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const uploaded = await browserApi.post<{ image: string }>(
+      adminUtilitiesRoutes.UPLOAD,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    return browserApi.patch<AdminProfileResponse>(adminAccountRoutes.CHANGE_PROFILE_IMAGE, {
+      image: uploaded.image,
+    });
+  },
 };

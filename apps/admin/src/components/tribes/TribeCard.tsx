@@ -23,7 +23,7 @@ const TribeCard = ({
         <div className="flex items-center justify-between rounded-2xl bg-white p-4">
           <div className="flex items-center gap-2">
             <div>
-              <Image src={image} alt="tribe image" width={40} height={40} />
+              <Image unoptimized src={image} alt="tribe image" width={40} height={40} />
             </div>
             <div className="flex flex-col">
               <div>

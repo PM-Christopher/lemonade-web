@@ -2,11 +2,16 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
-import { RootState } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { useAdminProfileQuery } from "@/features/profile/queries";
-import { useChangeOwnPasswordMutation } from "@/features/profile/mutations";
+import {
+  useChangeOwnPasswordMutation,
+  useChangeProfileImageMutation,
+} from "@/features/profile/mutations";
 import { capitalizeSpecial, GetStatusClass } from "@/utils/helper";
 
 const UpdatePasswordModal = dynamic(() => import("@/modals/team/UpdatePasswordModal"), {
@@ -30,6 +35,30 @@ function ProfileClient() {
   const profile = data?.admin;
   const [passwordOpen, setPasswordOpen] = useState(false);
   const changePassword = useChangeOwnPasswordMutation();
+  const changeImage = useChangeProfileImageMutation();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const onPickImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      dispatch(
+        updateToastifyReducer({ show: true, message: "Choose an image file", type: "error" }),
+      );
+      return;
+    }
+    changeImage.mutate(file, {
+      onSuccess: () =>
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: apiMessage("Profile image updated"),
+            type: "success",
+          }),
+        ),
+    });
+  };
   const status = profile?.status === 1 ? "Active" : "Suspended";
 
   return (
@@ -47,6 +76,16 @@ function ProfileClient() {
             ) : (
               <div className="bg-mid-grey h-16 w-16 rounded-full" />
             )}
+            <label className="text-light-green text-body-s w-fit cursor-pointer font-medium">
+              {changeImage.isPending ? "Uploading…" : "Change photo"}
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={onPickImage}
+                disabled={changeImage.isPending}
+              />
+            </label>
             <Field label="Full Name">
               <p className="text-body-s font-medium">{profile?.name}</p>
             </Field>

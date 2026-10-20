@@ -4,7 +4,7 @@ import { useAffiliateDetailQuery } from "@/features/user/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
 import { RootState } from "@/redux/store";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, CopyIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -21,8 +21,10 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
 
   return (
     <MainLayout>
-      <section className="flex w-full max-w-full flex-row gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-col">
-        <div className={"flex h-fit w-150 flex-col gap-5 rounded-xl bg-white p-6"}>
+      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
+        <div
+          className={"flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150"}
+        >
           <div className={"flex justify-between"}>
             {/* <div
               className={"w-16 h-16 bg-light-black rounded-full"}
@@ -71,13 +73,16 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
             </div>
             <div className={"flex gap-1"}>
               <p className={"text-body-s font-medium"}> {isData?.detail?.referral_code}</p>
-              {/* <p
-                className={
-                  "cursor-pointer font-medium text-body-s text-light-green"
-                }
-              >
-                copy icon
-              </p> */}
+              {isData?.detail?.referral_code && (
+                <button
+                  type="button"
+                  aria-label="Copy referral code"
+                  className="text-light-green cursor-pointer"
+                  onClick={() => void navigator.clipboard?.writeText(isData.detail.referral_code)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </button>
+              )}
             </div>
           </div>
           {/* <div className={"flex gap-6 items-center-center"}>
@@ -101,7 +106,7 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
           </div> */}
         </div>
 
-        <div className="flex w-full flex-col lg:w-2/3">
+        <div className="flex w-full min-w-0 flex-1 flex-col">
           <div className={"flex h-175 flex-col rounded-tl-xl rounded-tr-xl bg-white"}>
             <div className="border-b-grey-20 mt-2.5 flex h-10 justify-between border-b px-4 py-2">
               <p className="text-body-l font-semibold">Referral activity</p>
@@ -159,7 +164,7 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
           </div>
         </div>
       </section>
-      <ReferralHistory toggle={toggleHistoryOpen} isOpen={refHistoryOpen} />
+      <ReferralHistory toggle={toggleHistoryOpen} isOpen={refHistoryOpen} affiliateId={id} />
     </MainLayout>
   );
 };

@@ -29,6 +29,8 @@ export const GetStatusClass = (status: string) => {
       break;
     case "Rejected":
     case "Suspended":
+    case "Deactivated":
+    case "Deleted":
     case "Removed":
     case "Inactive":
     case "INACTIVE":

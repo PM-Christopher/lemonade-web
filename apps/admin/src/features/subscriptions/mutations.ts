@@ -8,7 +8,7 @@ export function useCreatePlanMutation() {
   return useMutation({
     mutationFn: (payload: SubscriptionPlanPayload) => subscriptionsApi.createPlan(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all() });
     },
   });
 }
@@ -20,7 +20,7 @@ export function useUpdatePlanMutation(id: string | undefined) {
     mutationFn: (payload: SubscriptionPlanPayload) =>
       subscriptionsApi.updatePlan(id as string, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all() });
     },
   });
 }
@@ -31,7 +31,7 @@ export function useActivatePlanMutation() {
   return useMutation({
     mutationFn: (id: string) => subscriptionsApi.activatePlan(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all() });
     },
   });
 }
@@ -42,7 +42,7 @@ export function useDeactivatePlanMutation() {
   return useMutation({
     mutationFn: (id: string) => subscriptionsApi.deactivatePlan(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all() });
     },
   });
 }
@@ -53,7 +53,7 @@ export function useDeletePlanMutation() {
   return useMutation({
     mutationFn: (id: string) => subscriptionsApi.deletePlan(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: subscriptionKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: subscriptionKeys.all() });
     },
   });
 }

@@ -3,6 +3,7 @@ export const routes = {
   HOME: "/",
   LOGIN: "/login",
   FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_CODE: "/verify-code",
   RESET_PASSWORD: "/reset-password",
   PROFILE: "/profile",
   PROFILE_SETUP: "/profile-setup",

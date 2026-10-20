@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
 import TribeHistoryModal from "@/modals/users/TribeHistoryModal";
+import PayoutHistoryModal from "@/modals/users/PayoutHistoryModal";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { userKeys } from "@/features/user/queries";
@@ -19,6 +20,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
 
   const [updateType, setUpdateType] = React.useState<string>("add");
   const [tribeHistoryOpen, setTribeHistoryOpen] = React.useState(false);
+  const [payoutOpen, setPayoutOpen] = React.useState(false);
 
   const reloadFunc = () => {
     if (id) {
@@ -89,32 +91,37 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
 
       <div className={"flex flex-col p-6"}>
         <div className={"border-mid-grey flex flex-col rounded-xl border p-4"}>
-          <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
+          <button
+            type="button"
+            aria-label="View payout history"
+            className={
+              "border-b-grey-20 flex cursor-pointer justify-between border-b p-4 text-left"
+            }
+            onClick={() => setPayoutOpen(true)}
+          >
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Total Amount Earned</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
-                ₦ {formatNumberWithCommas(userDetail?.total_amount || 0)}{" "}
+                ₦{formatNumberWithCommas(userDetail?.total_amount || 0)}
               </p>
             </div>
             <ChevronRight className={"text-text-grey"} />
-          </div>
-          <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
+          </button>
+          <div className={"border-b-grey-20 flex justify-between border-b p-4"}>
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Referral Earning</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
                 ₦{formatNumberWithCommas(userDetail?.referral_earning || 0)}
               </p>
             </div>
-            <ChevronRight className={"text-text-grey"} />
           </div>
-          <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
+          <div className={"border-b-grey-20 flex justify-between border-b p-4"}>
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Affiliate Earning</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
                 ₦{formatNumberWithCommas(userDetail?.affiliate_earning || 0)}
               </p>
             </div>
-            <ChevronRight className={"text-text-grey"} />
           </div>
           <button
             type="button"
@@ -133,6 +140,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
         </div>
       </div>
 
+      <PayoutHistoryModal isOpen={payoutOpen} toggle={() => setPayoutOpen(false)} userId={id} />
       <TribeHistoryModal
         isOpen={tribeHistoryOpen}
         toggle={() => setTribeHistoryOpen(false)}
@@ -143,7 +151,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
         toggle={toggleUpdateBalance}
         updateType={updateType}
         reload={reloadFunc}
-        balance={userDetail?.total_amount}
+        balance={userDetail?.wallet_balance}
       />
     </div>
   );

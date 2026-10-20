@@ -101,6 +101,10 @@ export interface ChangeAdminPasswordRequest {
   new_password_confirmation: string;
 }
 
+export interface ChangeAdminProfileImageRequest {
+  image: string;
+}
+
 export interface ChangePasswordRequest {
   password: string;
   new_password: string;
@@ -423,6 +427,10 @@ export interface ReviewCompletedJobRequest {
   description: string;
 }
 
+export interface ScheduleEventPromotionRequest {
+  promotion_date: string;
+}
+
 export interface SendChatMessageRequest {
   receiver_id: string;
   message?: string;
@@ -566,6 +574,10 @@ export interface UploadMultipleFilesRequest {
 
 export interface UsernameRequest {
   username: string;
+}
+
+export interface UserStatusReasonRequest {
+  reason: string;
 }
 
 export interface VerifyAccountDeletionRequest {

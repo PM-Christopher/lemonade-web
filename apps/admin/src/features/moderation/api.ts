@@ -13,6 +13,8 @@ import { adminModerationRoutes, buildPath } from "@lemonade/api-types/generated"
 
 export type ModerationContentType = "forums" | "forum-comments";
 
+export type ForumStatus = "active" | "inactive" | "suspended";
+
 export interface ModerationContentAuthor {
   id: number;
   name: string;
@@ -77,6 +79,17 @@ export const moderationApi = {
           per_page: filters?.perPage,
         },
       },
+    ),
+
+  getContentItem: (type: ModerationContentType, id: string | number) =>
+    browserApi.get<{ content: ModerationContentItem }>(
+      buildPath(adminModerationRoutes.CONTENT_SHOW, { type, id }),
+    ),
+
+  updateForumStatus: (id: string | number, status: ForumStatus) =>
+    browserApi.patch<{ content: ModerationContentItem }>(
+      buildPath(adminModerationRoutes.FORUMS_STATUS, { id }),
+      { status },
     ),
 
   deleteContent: (type: ModerationContentType, id: number) =>

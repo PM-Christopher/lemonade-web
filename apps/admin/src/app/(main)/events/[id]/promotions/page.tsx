@@ -1,143 +1,27 @@
-import React from "react";
-import MainLayout from "@/components/layouts/MainLayout";
-import { CalendarIcon, ChevronRight, ClockIcon, MapPinIcon } from "lucide-react";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/query-client.server";
+import { eventPromotionKeys } from "@/features/events/queries";
+import { eventPromotionsServerApi } from "@/features/events/api.server";
+import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
+import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import EventPromotionDetailsClient from "./EventPromotionDetailsClient";
 
-const PromotionDetailsPage = ({}) => {
+export default async function EventPromotionDetailsPage(props: {
+  params: Promise<{ id: string }>;
+}) {
+  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.events);
+
+  const { id } = await props.params;
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: eventPromotionKeys.detail(id),
+    queryFn: () => eventPromotionsServerApi.getDetail(id),
+  });
+
   return (
-    <MainLayout>
-      <section className={"flex justify-between p-5"}>
-        <div className={"flex h-fit w-147 flex-col gap-3 rounded-xl bg-white"}>
-          <div className={"flex items-center justify-between border-b p-6"}>
-            <p className={"font-semiBold text-body-l"}>Event summary</p>
-          </div>
-          <div className={"flex flex-col gap-5 p-6"}>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Event Name:</p>
-              </div>
-              <p className={"text-body-s font-medium"}>Unlocking business potentials</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                  Event Owner:
-                </p>
-              </div>
-              <div className={"flex gap-1"}>
-                <p className={"text-body-s font-medium"}>Adebayo Akintoye</p>
-                <p className={"text-light-green text-body-s font-medium"}>Open chat</p>
-              </div>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Event ID:</p>
-              </div>
-              <p className={"text-body-s font-medium"}>PR112332</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                  Promotion Name:
-                </p>
-              </div>
-              <p className={"text-body-s font-medium"}>Instagram Feed Post</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
-              </div>
-              <div className={"flex gap-1"}>
-                <p className={"text-body-s font-medium"}>N30,000</p>
-              </div>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>Date Paid:</p>
-              </div>
-              <p className={"text-body-s font-medium"}>23 Apr, 2024 09:45 PM</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                  Promotion Date:
-                </p>
-              </div>
-              <p className={"text-body-s font-medium"}>N/A</p>
-            </div>
-            <div className={"items-center-center flex gap-6"}>
-              <div className={"w-28.75"}>
-                <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                  Promotion Status:
-                </p>
-              </div>
-              <p className={"text-warning-bold text-body-s font-medium"}>Pending</p>
-            </div>
-            <div className={"items-center-center mt-10 flex justify-between gap-6"}>
-              <button
-                className={"border-light-grey-50 w-74.75 rounded-xl border-2 px-12 py-2.75"}
-                type={"button"}
-              >
-                Mark as completed
-              </button>
-              <button
-                className={
-                  "border-step-color bg-gradient-green text-body-l w-74.75 rounded-xl border px-12 py-2.75 font-medium text-white"
-                }
-                type={"button"}
-              >
-                Schedule
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className={"flex h-fit w-220 flex-col gap-4 rounded-tl-xl rounded-tr-xl bg-white p-6"}>
-          <div className={"h-85.75 w-80 rounded-2xl bg-gray-600"}></div>
-          <p className={"font-semiBold text-title-r leading-normal"}>
-            Unlocking business potentials
-          </p>
-          <div className={"flex flex-col gap-2"}>
-            <div className={"flex items-center gap-2"}>
-              <CalendarIcon className={"text-text-grey"} />
-              <p className={"text-text-grey text-body-s font-medium"}>Mon, 23 Mar - Mon 23 Mar</p>
-            </div>
-            <div className={"flex items-center gap-2"}>
-              <ClockIcon className={"text-text-grey"} />
-              <p className={"text-text-grey text-body-s font-medium"}>04:00PM - 11:00PM</p>
-            </div>
-            <div className={"flex items-center gap-2"}>
-              <MapPinIcon className={"text-text-grey"} />
-              <p className={"text-text-grey text-body-s font-medium"}>Lekki phase 1</p>
-            </div>
-          </div>
-          <p className={"font-semiBold text-body-l"}>Contact Us</p>
-          <p className={"font-semiBold text-body-l"}>About Event</p>
-          <p className={"text-text-grey text-body-s font-normal"}>
-            This is the content of the message for the event you are seeing here
-          </p>
-          <p className={"font-semiBold text-body-l"}>Promotions</p>
-          <div className={"flex flex-wrap gap-3"}>
-            <div
-              className={
-                "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
-              }
-            >
-              <p className={"text-body-s font-medium"}>IG Feed</p>
-              <ChevronRight className={"text-grey-40 w-5"} />
-            </div>
-            <div
-              className={
-                "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
-              }
-            >
-              <p className={"text-body-s font-medium"}>IG Story</p>
-              <ChevronRight className={"text-grey-40 w-5"} />
-            </div>
-          </div>
-        </div>
-      </section>
-    </MainLayout>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <EventPromotionDetailsClient id={id} />
+    </HydrationBoundary>
   );
-};
-
-export default PromotionDetailsPage;
+}

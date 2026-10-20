@@ -62,6 +62,7 @@ export interface WalletDetail {
     transaction_id?: string | null;
     date_paid?: string;
     status?: string;
+    failure_reason?: string | null;
     amount_minor?: number;
     amount?: string;
     account_number?: string;
@@ -105,6 +106,12 @@ export const walletApi = {
 
   getWalletDetail: (id: string | number) =>
     browserApi.get<WalletDetail>(buildPath(adminTransactionRoutes.WALLET_WITHDRAWAL, { id })),
+
+  retryWithdrawal: (id: string | number) =>
+    browserApi.patch<Pick<WithdrawalDecisionResult, "payout_status" | "failure_reason">>(
+      buildPath(adminWalletRoutes.WITHDRAWALS_RETRY, { id: String(id) }),
+      {},
+    ),
 
   updateWithdrawalThreshold: (threshold: number) =>
     browserApi.patch(adminWalletRoutes.UPDATE_WITHDRAWAL_THRESHOLD, { threshold }),

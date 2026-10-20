@@ -12,14 +12,27 @@ import useSearchParams from "@/hooks/useSearchParams";
 import useDebounce from "@/hooks/useDebounce";
 import dayjs from "dayjs";
 import { useModerationContentQuery, useModerationQueueQuery } from "@/features/moderation/queries";
-import { useRestoreModeratedContentMutation } from "@/features/moderation/mutations";
-import type { ModerationContentType } from "@/features/moderation/api";
+import {
+  useRestoreModeratedContentMutation,
+  useUpdateForumStatusMutation,
+} from "@/features/moderation/mutations";
+import type { ForumStatus, ModerationContentType } from "@/features/moderation/api";
 
 const DeleteContentModal = dynamic(() => import("@/modals/moderation/DeleteContentModal"), {
   ssr: false,
 });
 
+const ViewContentModal = dynamic(() => import("@/modals/moderation/ViewContentModal"), {
+  ssr: false,
+});
+
 const PER_PAGE = 10;
+
+const FORUM_STATUSES: ReadonlyArray<{ value: ForumStatus; label: string }> = [
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+  { value: "suspended", label: "Suspended" },
+];
 
 const CONTENT_TABS: ReadonlyArray<{ type: ModerationContentType; label: string }> = [
   { type: "forums", label: "Forums" },
@@ -54,7 +67,9 @@ function ForumClient() {
   );
 
   const [deleteTarget, setDeleteTarget] = useState<{ id: number; label: string } | null>(null);
+  const [viewId, setViewId] = useState<string | number | undefined>();
   const restoreMutation = useRestoreModeratedContentMutation(activeType);
+  const forumStatusMutation = useUpdateForumStatusMutation();
 
   const switchType = (type: ModerationContentType) => {
     setSearchParams({ type, page: undefined });
@@ -170,30 +185,61 @@ function ForumClient() {
                             {dayjs(row.created_at).format("DD MMM, YYYY hh:mmA")}
                           </td>
                           <td className={"p-4 font-sans text-sm font-medium"}>
-                            {isDeleted ? "Removed" : capitalizeWords(row.status ?? "active")}
-                          </td>
-                          <td className={"p-4 font-sans text-sm font-medium"}>
-                            {isDeleted ? (
-                              <button
-                                className={"text-light-green-70"}
-                                disabled={restoreMutation.isPending}
-                                onClick={() => restoreMutation.mutate(row.id)}
-                              >
-                                Restore
-                              </button>
-                            ) : (
-                              <button
-                                className={"text-red-1"}
-                                onClick={() =>
-                                  setDeleteTarget({
+                            {!isDeleted && activeType === "forums" ? (
+                              <select
+                                aria-label="Forum status"
+                                className={"bg-light-grey h-9 rounded-lg px-2"}
+                                value={(row.status ?? "active").toLowerCase()}
+                                disabled={forumStatusMutation.isPending}
+                                onChange={(e) =>
+                                  forumStatusMutation.mutate({
                                     id: row.id,
-                                    label: row.type_label,
+                                    status: e.target.value as ForumStatus,
                                   })
                                 }
                               >
-                                Remove
-                              </button>
+                                {FORUM_STATUSES.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : isDeleted ? (
+                              "Removed"
+                            ) : (
+                              capitalizeWords(row.status ?? "active")
                             )}
+                          </td>
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            <div className={"flex gap-4"}>
+                              <button
+                                className={"text-text-grey"}
+                                onClick={() => setViewId(row.id)}
+                              >
+                                View
+                              </button>
+                              {isDeleted ? (
+                                <button
+                                  className={"text-light-green-70"}
+                                  disabled={restoreMutation.isPending}
+                                  onClick={() => restoreMutation.mutate(row.id)}
+                                >
+                                  Restore
+                                </button>
+                              ) : (
+                                <button
+                                  className={"text-red-1"}
+                                  onClick={() =>
+                                    setDeleteTarget({
+                                      id: row.id,
+                                      label: row.type_label,
+                                    })
+                                  }
+                                >
+                                  Remove
+                                </button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );
@@ -221,6 +267,12 @@ function ForumClient() {
           </div>
         </div>
       </section>
+      <ViewContentModal
+        isOpen={viewId !== undefined}
+        toggle={() => setViewId(undefined)}
+        type={activeType}
+        id={viewId}
+      />
       <DeleteContentModal
         isOpen={deleteTarget !== null}
         toggle={() => setDeleteTarget(null)}

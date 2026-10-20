@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { eventsApi, promotionsApi, type PromotionPayload } from "./api";
-import { eventKeys, promotionKeys } from "./queries";
+import { eventPromotionsApi, eventsApi, promotionsApi, type PromotionPayload } from "./api";
+import { eventKeys, eventPromotionKeys, promotionKeys } from "./queries";
 
 export function useSuspendEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
@@ -102,6 +102,30 @@ export function useDeletePromotionMutation() {
     mutationFn: (id: number) => promotionsApi.deletePromotion(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: promotionKeys.lists() });
+    },
+  });
+}
+
+export function useScheduleEventPromotionMutation(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (promotionDate: string) => eventPromotionsApi.schedule(id, promotionDate),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventPromotionKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
+    },
+  });
+}
+
+export function useCompleteEventPromotionMutation(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => eventPromotionsApi.complete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventPromotionKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
     },
   });
 }

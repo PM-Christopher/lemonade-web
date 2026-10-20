@@ -61,9 +61,20 @@ async function postJson<T>(path: string, body?: unknown): Promise<T> {
   return envelope.data as T;
 }
 
+export interface ForgotPasswordPayload {
+  email?: string;
+}
+
 export const authApi = {
   login: (payload: LoginPayload) => postJson<LoginResult>("/api/auth/login", payload),
   logout: () => postJson<void>("/api/auth/logout"),
+  // The temporary reset token stays in an httpOnly cookie set by these Route Handlers.
+  forgotPassword: (payload: ForgotPasswordPayload) =>
+    postJson<Record<string, never>>("/api/auth/forgot-password", payload),
+  verifyResetCode: (code: string) =>
+    postJson<Record<string, never>>("/api/auth/verify-reset-code", { code }),
+  resetPassword: (password: string) =>
+    postJson<Record<string, never>>("/api/auth/reset-password", { password }),
   // GetAdminProfile::execute() (lemonade-backend) returns ['admin' => new
   // AdminResource($admin)] — the envelope is { admin: {...} }, not the admin
   // flat. Pre-existing: this was already wrong for `email`/`name` before the

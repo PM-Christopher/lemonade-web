@@ -111,7 +111,11 @@ function BusinessDetailsClient({ id }: { id: string }) {
               label="Service rate"
               // Server-computed figure, rendered as-is — no client-side
               // arithmetic performed on it.
-              value={business?.service_rate != null ? String(business.service_rate) : undefined}
+              value={
+                business?.service_rate_naira != null
+                  ? `₦${Number(business.service_rate_naira).toLocaleString()}/hr`
+                  : undefined
+              }
             />
             <Field label="Categories" value={business?.categories?.join(", ")} />
             <Field label="Services" value={business?.services?.join(", ")} />

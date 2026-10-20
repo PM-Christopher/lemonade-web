@@ -21,6 +21,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
       <div className="w-full rounded-lg bg-white p-4">
         <div className="mb-4 flex flex-col items-center gap-2">
           <Image
+            unoptimized
             src={tribe?.image || images.DEFAULT_TRIBE}
             alt={tribe?.name ?? "Tribe"}
             width={96}
@@ -66,6 +67,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
             <div className={"border-b-grey-20 flex justify-between border-b py-2.5"}>
               <div className={"flex items-center gap-2"}>
                 <Image
+                  unoptimized
                   src={tribe.creator.image || images.DEFAULT_TRIBE}
                   alt={tribe.creator.name}
                   width={20}
@@ -87,6 +89,7 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
                 >
                   <div className={"flex items-center gap-2"}>
                     <Image
+                      unoptimized
                       src={member.user?.profile_image || images.DEFAULT_TRIBE}
                       alt={member.user?.fullname ?? "member"}
                       width={20}
