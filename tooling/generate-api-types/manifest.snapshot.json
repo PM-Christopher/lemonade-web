@@ -529,8 +529,14 @@
         "uri": "/v1/admin/events/{id}/delete-event",
         "name": "v1.admin.events.delete",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\EventActionReasonRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "nullable",
+                "max:1000"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -592,8 +598,14 @@
         "uri": "/v1/admin/events/{id}/suspend-event",
         "name": "v1.admin.events.suspend",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\EventActionReasonRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "nullable",
+                "max:1000"
+            ]
+        }
     },
     {
         "method": "PATCH",
@@ -1586,6 +1598,39 @@
             ],
             "tags.*": [
                 "string"
+            ],
+            "polls": [
+                "boolean",
+                "sometimes"
+            ],
+            "thread_polls": [
+                "required_if:polls,1,true",
+                "array",
+                "nullable"
+            ],
+            "thread_polls.title": [
+                "required_if:polls,1,true",
+                "string",
+                "max:255"
+            ],
+            "thread_polls.options": [
+                "required_if:polls,1,true",
+                "array",
+                "min:2"
+            ],
+            "thread_polls.options.*": [
+                "required_if:polls,1,true",
+                "string",
+                "max:100"
+            ],
+            "thread_polls.start_at": [
+                "required_if:polls,1,true",
+                "date"
+            ],
+            "thread_polls.end_at": [
+                "required_if:polls,1,true",
+                "date",
+                "after:thread_polls.start_at"
             ]
         }
     },
@@ -1630,6 +1675,42 @@
         "guard": "admin",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/tribes/deletion-requests",
+        "name": "v1.admin.tribes.deletion-requests",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/tribes/deletion-requests/{id}/approve",
+        "name": "v1.admin.tribes.deletion-requests.approve",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\DecideTribeDeletionRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "nullable",
+                "max:1000"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/tribes/deletion-requests/{id}/reject",
+        "name": "v1.admin.tribes.deletion-requests.reject",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\DecideTribeDeletionRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "nullable",
+                "max:1000"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -4386,11 +4467,50 @@
     },
     {
         "method": "DELETE",
+        "uri": "/v1/user/threads/comments/{id}",
+        "name": "v1.user.threads.comments.delete",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/threads/comments/{id}",
+        "name": "v1.user.threads.comments.edit",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\EditThreadCommentRequest",
+        "fields": {
+            "body": [
+                "string",
+                "required"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
         "uri": "/v1/user/threads/{id}/delete-thread",
         "name": "v1.user.threads.delete",
         "guard": "user",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/user/threads/{id}/edit-thread",
+        "name": "v1.user.threads.edit",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\UpdateTribeThreadRequest",
+        "fields": {
+            "topic": [
+                "string",
+                "required_without:thoughts",
+                "max:255"
+            ],
+            "thoughts": [
+                "string",
+                "required_without:topic"
+            ]
+        }
     },
     {
         "method": "POST",
@@ -4511,6 +4631,20 @@
         "guard": "user",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/user/tribes/{id}",
+        "name": "v1.user.tribes.delete",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\DeleteTribeRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "nullable",
+                "max:1000"
+            ]
+        }
     },
     {
         "method": "DELETE",

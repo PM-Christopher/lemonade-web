@@ -110,7 +110,46 @@ export interface UploadImageResponse {
   image: string;
 }
 
+export interface TribeDeletionRequestItem {
+  id: string;
+  status: "pending" | "approved" | "rejected";
+  reason: string | null;
+  decision_reason: string | null;
+  requested_at: string;
+  decided_at: string | null;
+  tribe: {
+    id: string;
+    name: string;
+    members: number;
+    // Naira, formatted by the backend.
+    access_fee: string;
+    total_earned: string;
+  } | null;
+  owner: { id: string; name: string } | null;
+}
+
+export interface TribeDeletionRequestsResponse {
+  requests: TribeDeletionRequestItem[];
+}
+
 export const tribesApi = {
+  getDeletionRequests: (status?: string) =>
+    browserApi.get<TribeDeletionRequestsResponse>(adminTribesRoutes.DELETION_REQUESTS, {
+      params: status ? { status } : undefined,
+    }),
+
+  // `approve` deletes the tribe; `reject` keeps it and tells the owner why.
+  decideDeletion: (id: string, decision: "approve" | "reject", reason?: string) =>
+    browserApi.patch<{ id: string; status: string }>(
+      buildPath(
+        decision === "approve"
+          ? adminTribesRoutes.DELETION_REQUESTS_APPROVE
+          : adminTribesRoutes.DELETION_REQUESTS_REJECT,
+        { id },
+      ),
+      { reason },
+    ),
+
   getTribeList: () => browserApi.get<TribeListResponse>(adminTribesRoutes.LIST),
 
   getTribeDetail: (id: string) =>

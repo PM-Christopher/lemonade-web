@@ -7,6 +7,7 @@ export const tribeKeys = {
   details: () => [...tribeKeys.all(), "detail"] as const,
   detail: (id: string) => [...tribeKeys.details(), id] as const,
   categories: () => [...tribeKeys.all(), "categories"] as const,
+  deletions: (status: string) => [...tribeKeys.all(), "deletions", status] as const,
 };
 
 // Moderation/oversight data — the "operational queues" bucket from
@@ -35,6 +36,16 @@ export function useTribeCategoriesQuery(options?: { enabled?: boolean }) {
     queryKey: tribeKeys.categories(),
     queryFn: tribesApi.getTribeCategories,
     staleTime: 60 * 60_000,
+    enabled: options?.enabled,
+  });
+}
+
+// Paid-tribe deletions are money-related, so they are never served stale.
+export function useTribeDeletionRequestsQuery(status: string, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: tribeKeys.deletions(status),
+    queryFn: () => tribesApi.getDeletionRequests(status),
+    staleTime: 0,
     enabled: options?.enabled,
   });
 }

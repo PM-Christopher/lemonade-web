@@ -97,3 +97,22 @@ export function useDeleteTribeMutation(id: string | undefined) {
     },
   });
 }
+
+export function useDecideTribeDeletionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      decision,
+      reason,
+    }: {
+      id: string;
+      decision: "approve" | "reject";
+      reason?: string;
+    }) => tribesApi.decideDeletion(id, decision, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: tribeKeys.all() });
+    },
+  });
+}

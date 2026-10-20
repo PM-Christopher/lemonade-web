@@ -148,6 +148,9 @@ export const adminTribesRoutes = Object.freeze({
   CREATE: "/admin/tribes/create-tribe", // POST
   DELETE: "/admin/tribes/{id}", // DELETE
   DELETE_THREAD: "/admin/tribes/{id}/delete-thread", // DELETE
+  DELETION_REQUESTS: "/admin/tribes/deletion-requests", // GET
+  DELETION_REQUESTS_APPROVE: "/admin/tribes/deletion-requests/{id}/approve", // PATCH
+  DELETION_REQUESTS_REJECT: "/admin/tribes/deletion-requests/{id}/reject", // PATCH
   LIST: "/admin/tribes", // GET
   PIN_THREAD: "/admin/tribes/{id}/pin-thread", // PATCH
   REACTIVATE: "/admin/tribes/{id}/reactivate-tribe", // PATCH
@@ -410,7 +413,10 @@ export const userSupportRoutes = Object.freeze({
 
 export const userThreadsRoutes = Object.freeze({
   COMMENTS: "/user/threads/{tribe_id}/{id}/comments", // GET
+  COMMENTS_DELETE: "/user/threads/comments/{id}", // DELETE
+  COMMENTS_EDIT: "/user/threads/comments/{id}", // PATCH
   DELETE: "/user/threads/{id}/delete-thread", // DELETE
+  EDIT: "/user/threads/{id}/edit-thread", // PATCH
   LIKE_COMMENT: "/user/threads/{thread_id}/like-comment/{comment_id}", // POST
   PIN: "/user/threads/{id}/pin-thread", // POST
   PINNED: "/user/threads/{id}/pinned", // GET
@@ -429,6 +435,7 @@ export const userTribesRoutes = Object.freeze({
   ADD_MEMBER: "/user/tribes/add-member/{id}", // POST
   CHANGE_TYPE: "/user/tribes/change-tribe-type/{id}", // PATCH
   CREATE: "/user/tribes/create-tribe", // POST
+  DELETE: "/user/tribes/{id}", // DELETE
   EXIT: "/user/tribes/exit-tribe/{id}", // DELETE
   JOIN: "/user/tribes/join-tribe/{id}", // POST
   LIST: "/user/tribes", // GET

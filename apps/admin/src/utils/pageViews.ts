@@ -27,6 +27,7 @@ export const tribeViews = [
   { key: "created", title: "Created Tribes" },
   { key: "tln", title: "TLN Tribes" },
   { key: "paid", title: "Paid Tribes" },
+  { key: "deletions", title: "Deletion requests" },
 ];
 
 export const eventViews = [

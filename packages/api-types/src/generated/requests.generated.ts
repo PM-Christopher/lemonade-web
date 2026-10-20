@@ -13,6 +13,13 @@ export interface AddAdminTribeThreadRequest {
   media?: {}[];
   videos?: {}[];
   tags?: {}[];
+  polls?: boolean;
+  thread_polls?: {
+    title?: string;
+    options?: {}[];
+    start_at?: string;
+    end_at?: string;
+  };
 }
 
 export interface AddForumMemberRequest {
@@ -246,6 +253,10 @@ export interface DateRangeRequest {
   per_page?: number;
 }
 
+export interface DecideTribeDeletionRequest {
+  reason?: string;
+}
+
 export interface DeductUserWalletBalanceRequest {
   amount: number;
 }
@@ -261,6 +272,10 @@ export interface DeleteBusinessRequest {
 export interface DeleteReportedContentRequest {
   category: string;
   category_id: string;
+}
+
+export interface DeleteTribeRequest {
+  reason?: string;
 }
 
 export interface DisputeJobRequest {
@@ -280,6 +295,14 @@ export interface EditEventTicketsRequest {
     purchase_limit: number;
     description: string;
   }[];
+}
+
+export interface EditThreadCommentRequest {
+  body: string;
+}
+
+export interface EventActionReasonRequest {
+  reason?: string;
 }
 
 export interface FindConnectUserRequest {
@@ -591,6 +614,11 @@ export interface UpdatePromotionRequest {
 
 export interface UpdateServiceCommissionRequest {
   commission_percentage: number;
+}
+
+export interface UpdateTribeThreadRequest {
+  topic?: string;
+  thoughts?: string;
 }
 
 export interface UpdateWithdrawalThresholdRequest {

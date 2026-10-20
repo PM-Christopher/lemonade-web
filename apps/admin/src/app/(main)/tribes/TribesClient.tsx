@@ -11,6 +11,7 @@ import {
 import CreateTribeModal from "@/modals/tribes/CreateTribeModal";
 import { tribeViews } from "@/utils/pageViews";
 import TribeListView, { type TribeListFilter } from "@/views/tribes/TribeListView";
+import DeletionRequestsView from "@/views/tribes/DeletionRequestsView";
 import { useTribeListQuery } from "@/features/tribes/queries";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -103,13 +104,17 @@ const TribesClient = () => {
                 ))}
               </div>
             </div>
-            <TribeListView
-              key={menuOption}
-              filter={menuOption as TribeListFilter}
-              search={search}
-              status={status}
-              range={range}
-            />
+            {menuOption === "deletions" ? (
+              <DeletionRequestsView />
+            ) : (
+              <TribeListView
+                key={menuOption}
+                filter={menuOption as TribeListFilter}
+                search={search}
+                status={status}
+                range={range}
+              />
+            )}
           </div>
         </div>
       </section>
