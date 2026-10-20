@@ -31,10 +31,7 @@ export const routes = {
   TRANSACTION_EVENT: (id: string | number) => `/transactions/${id}/event-details` as const,
   TRANSACTION_SUBSCRIPTION: (id: string | number) =>
     `/transactions/${id}/subscription-details` as const,
-  TRANSACTION_PROMOTION: (id: string | number) => `/transactions/${id}/promotion-details` as const,
-  TRANSACTION_BOOSTING: (id: string | number) => `/transactions/${id}/boosting-details` as const,
   TRANSACTION_TRIBE: (id: string | number) => `/transactions/${id}/tribe-details` as const,
-  TRANSACTION_SERVICE: (id: string | number) => `/transactions/${id}/service-details` as const,
 
   WALLET_MANAGEMENT: "/wallet-management",
   WALLET_DETAIL: (id: string | number) => `/wallet-management/${id}` as const,

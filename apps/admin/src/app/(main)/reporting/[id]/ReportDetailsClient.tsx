@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { CalendarIcon, ClockIcon, MapPinIcon } from "lucide-react";
 import { FormattedText } from "@lemonade/ui";
 import MainLayout from "@/components/layouts/MainLayout";
 import { AppDispatch, RootState } from "@/redux/store";
 import { images } from "@/lib/images";
+import { routes } from "@/lib/routes";
 import { useReportDetailQuery } from "@/features/reporting/queries";
 import {
   useDeleteReportContentMutation,
@@ -202,6 +204,18 @@ function ReportDetailsClient({ id }: { id: string }) {
   const isDeleted = report?.status === "deleted";
   const canDelete = isPending && DELETABLE.includes((report?.category ?? "").toLowerCase());
   const status = report ? reportStatusLabel(report.status) : "";
+  // Events and businesses are actioned from their own admin pages.
+  const category = (report?.category ?? "").toLowerCase();
+  const reportedId = report?.content?.id;
+  const openPath =
+    isPending && reportedId
+      ? category.startsWith("event")
+        ? routes.EVENT_DETAIL(reportedId)
+        : category.startsWith("business")
+          ? routes.BUSINESS_DETAIL(reportedId)
+          : null
+      : null;
+  const openLabel = category.startsWith("event") ? "Open event" : "Open business";
   const contentLabel = report?.preview?.type ?? "content";
 
   const notify = (message: string, type: "success" | "error") =>
@@ -294,6 +308,10 @@ function ReportDetailsClient({ id }: { id: string }) {
               <span className="bg-red-1 rounded-lg px-3 py-1.5 text-sm font-medium text-white">
                 Deleted
               </span>
+            ) : openPath ? (
+              <Link href={openPath} className="rounded-xl border p-2.5 px-3.5">
+                <p className="text-body-s font-medium">{openLabel}</p>
+              </Link>
             ) : canDelete ? (
               <button
                 type="button"

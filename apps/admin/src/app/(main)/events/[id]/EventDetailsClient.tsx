@@ -297,7 +297,9 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                     </p>
                   </div>
                   <p className={"text-body-s font-medium"}>
-                    {ticket?.sales_revenue === 0 ? "-" : ticket?.sales_revenue}
+                    {Number(ticket?.sales_revenue) === 0
+                      ? "-"
+                      : `₦${Number(ticket?.sales_revenue).toLocaleString()}`}
                   </p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>

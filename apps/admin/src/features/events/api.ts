@@ -168,7 +168,8 @@ export interface EventTicket {
   price: number;
   purchase_limit: number;
   tickets_sold: number;
-  sales_revenue: number;
+  // Naira, formatted by the backend.
+  sales_revenue: string;
   check_ins: number;
 }
 
