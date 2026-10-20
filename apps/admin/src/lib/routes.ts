@@ -23,6 +23,7 @@ export const routes = {
 
   BUSINESSES: "/businesses",
   BUSINESS_DETAIL: (id: string | number) => `/businesses/${id}` as const,
+  SERVICE_DETAIL: (id: string | number) => `/businesses/services/${id}` as const,
   DISPUTES: "/disputes",
   DISPUTE_DETAIL: (id: string | number) => `/disputes/${id}` as const,
 

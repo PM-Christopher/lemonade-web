@@ -42,11 +42,11 @@ function RestrictTribeModal({ isOpen, toggle, id }: RestrictTribeModalProps) {
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Restrict tribe</DialogTitle>
+        <DialogTitle className="sr-only">Restrict Tribe</DialogTitle>
         <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="text-body-xl font-sans font-semibold">Restrict tribe</p>
+              <p className="text-body-xl font-sans font-semibold">Restrict Tribe</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
@@ -54,8 +54,8 @@ function RestrictTribeModal({ isOpen, toggle, id }: RestrictTribeModalProps) {
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to restrict this tribe? It will no longer be visible or joinable
-              until reactivated.
+              Are you sure you want to restrict this Tribe? All Tribe activity will be suspended,
+              including adding team members, posting, and accessing of the Tribe.
             </p>
             <div className={"flex justify-between gap-2.5"}>
               <button

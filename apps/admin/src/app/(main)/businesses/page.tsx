@@ -11,12 +11,10 @@ export default async function BusinessesPage() {
 
   const queryClient = getQueryClient();
 
-  // Prefetches the default "pending" review queue — BusinessesClient's own
-  // default status filter — same "prefetch only the default view" pattern
-  // as app/(main)/events/page.tsx.
+  // Prefetches the default view (every listing), matching BusinessesClient's default filter.
   await queryClient.prefetchQuery({
-    queryKey: businessKeys.list("pending"),
-    queryFn: () => businessesServerApi.getBusinesses(),
+    queryKey: businessKeys.list({ status: "all" }),
+    queryFn: () => businessesServerApi.getBusinesses({ status: "all" }),
   });
 
   return (

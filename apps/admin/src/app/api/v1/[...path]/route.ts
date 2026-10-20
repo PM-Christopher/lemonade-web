@@ -16,7 +16,7 @@ import { ApiError } from "@lemonade/api-client";
 import { messageOr } from "@/lib/api-message";
 import { backendApi, syncSignedInCookieFromHeaders } from "@/lib/server-api";
 
-const JSON_METHODS = new Set(["POST", "PATCH", "PUT"]);
+const JSON_METHODS = new Set(["POST", "PATCH", "PUT", "DELETE"]);
 
 async function handle(req: NextRequest, path: string[], method: string): Promise<NextResponse> {
   const targetUrl = `/${path.join("/")}${req.nextUrl.search}`;

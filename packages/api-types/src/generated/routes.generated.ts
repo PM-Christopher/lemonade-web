@@ -38,6 +38,7 @@ export const adminAuthRoutes = Object.freeze({
 
 export const adminBusinessesRoutes = Object.freeze({
   APPROVE: "/admin/businesses/{id}/approve", // PATCH
+  COMMISSION: "/admin/businesses/commission", // PATCH
   DELETE: "/admin/businesses/{id}", // DELETE
   DISPUTES_LIST: "/admin/businesses/disputes", // GET
   DISPUTES_RESOLVE: "/admin/businesses/disputes/{id}/resolve", // PATCH
@@ -45,6 +46,9 @@ export const adminBusinessesRoutes = Object.freeze({
   LIST: "/admin/businesses", // GET
   REACTIVATE: "/admin/businesses/{id}/reactivate", // PATCH
   REJECT: "/admin/businesses/{id}/reject", // PATCH
+  SERVICES_LIST: "/admin/businesses/services", // GET
+  SERVICES_SETTLE: "/admin/businesses/services/{id}/settle", // PATCH
+  SERVICES_SHOW: "/admin/businesses/services/{id}", // GET
   SHOW: "/admin/businesses/{id}", // GET
   SUSPEND: "/admin/businesses/{id}/suspend", // PATCH
 });
@@ -145,6 +149,7 @@ export const adminTribesRoutes = Object.freeze({
   DELETE: "/admin/tribes/{id}", // DELETE
   DELETE_THREAD: "/admin/tribes/{id}/delete-thread", // DELETE
   LIST: "/admin/tribes", // GET
+  PIN_THREAD: "/admin/tribes/{id}/pin-thread", // PATCH
   REACTIVATE: "/admin/tribes/{id}/reactivate-tribe", // PATCH
   REMOVE_MEMBER: "/admin/tribes/{id}/remove-user/{user_id}", // DELETE
   RESTRICT: "/admin/tribes/{id}/restrict-tribe", // PATCH

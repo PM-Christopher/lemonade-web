@@ -45,11 +45,11 @@ function TribeStatusModal({ isOpen, toggle, id }: TribeStatusModalProps) {
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Reactivate tribe</DialogTitle>
+        <DialogTitle className="sr-only">Reactivate Tribe</DialogTitle>
         <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="text-body-xl font-sans font-semibold">Reactivate tribe</p>
+              <p className="text-body-xl font-sans font-semibold">Reactivate Tribe</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
@@ -57,7 +57,7 @@ function TribeStatusModal({ isOpen, toggle, id }: TribeStatusModalProps) {
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to reactivate this tribe? It will be visible and joinable again.
+              Are you sure you want to reactivate this Tribe? Tribe activities will resume.
             </p>
             <div className={"flex justify-between gap-2.5"}>
               <button
@@ -72,7 +72,7 @@ function TribeStatusModal({ isOpen, toggle, id }: TribeStatusModalProps) {
                 disabled={reactivateTribeMutation.isPending}
               >
                 <p className={"text-body-l font-medium text-white"}>
-                  {reactivateTribeMutation.isPending ? "Reactivating..." : "Reactivate"}
+                  {reactivateTribeMutation.isPending ? "Activating..." : "Activate"}
                 </p>
               </button>
             </div>

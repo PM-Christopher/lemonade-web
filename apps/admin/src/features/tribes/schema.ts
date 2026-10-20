@@ -14,6 +14,9 @@ export type CreateTribeInput = z.infer<typeof createTribeSchema>;
 export const addTribeThreadSchema = z.object({
   topic: z.string().min(1, "Topic is required"),
   thoughts: z.string().min(1, "Thoughts are required"),
+  media: z.array(z.string()).optional(),
+  videos: z.array(z.string()).optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export type AddTribeThreadInput = z.infer<typeof addTribeThreadSchema>;

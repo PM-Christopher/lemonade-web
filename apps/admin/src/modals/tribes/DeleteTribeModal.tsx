@@ -47,11 +47,11 @@ function DeleteTribeModal({ isOpen, toggle, id }: DeleteTribeModalProps) {
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Delete tribe</DialogTitle>
+        <DialogTitle className="sr-only">Delete Tribe</DialogTitle>
         <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="text-body-xl font-sans font-semibold">Delete tribe</p>
+              <p className="text-body-xl font-sans font-semibold">Delete Tribe</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
@@ -59,8 +59,8 @@ function DeleteTribeModal({ isOpen, toggle, id }: DeleteTribeModalProps) {
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to delete this tribe? All threads and members will be lost
-              forever.
+              Are you sure you want to delete this Tribe? All activities within the Tribe will be
+              deleted automatically.
             </p>
             <div className={"flex justify-between gap-2.5"}>
               <button

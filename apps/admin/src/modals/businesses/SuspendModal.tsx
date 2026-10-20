@@ -1,7 +1,17 @@
 "use client";
 import React, { useState } from "react";
 import { XIcon } from "lucide-react";
-import { Dialog, DialogContentBare, DialogTitle, Textarea } from "@lemonade/ui";
+import {
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@lemonade/ui";
+import { BUSINESS_ACTION_REASONS } from "./reasons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useSuspendBusinessMutation } from "@/features/businesses/mutations";
@@ -14,35 +24,25 @@ interface SuspendModalProps {
   id: string;
 }
 
-// Mirrors RejectSubmissionRequest's `reason` rule (required string,
-// 3-1000 chars) — suspend shares that FormRequest with reject on the
-// backend. Client-side check is for responsiveness only.
-const MIN_REASON_LENGTH = 3;
-const MAX_REASON_LENGTH = 1000;
-
 function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState<string>(BUSINESS_ACTION_REASONS[0]);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const suspendBusinessMutation = useSuspendBusinessMutation(id);
 
-  const trimmedLength = reason.trim().length;
-  const isReasonValid = trimmedLength >= MIN_REASON_LENGTH && trimmedLength <= MAX_REASON_LENGTH;
-
   const submitAction = () => {
-    if (!isLoggedIn || !isReasonValid) return;
+    if (!isLoggedIn) return;
     suspendBusinessMutation.mutate(
-      { reason: reason.trim() },
+      { reason },
       {
         onSuccess: () => {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: apiMessage("Business suspended"),
+              message: apiMessage("Business restricted"),
               type: "success",
             }),
           );
-          setReason("");
           toggle();
         },
         onError: (error) => {
@@ -66,11 +66,11 @@ function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Suspend business</DialogTitle>
+        <DialogTitle className="sr-only">Restrict business</DialogTitle>
         <div className="w-90 rounded-xl bg-white pt-4 pb-1">
           <div className={"px-4 py-1"}>
             <div className="flex items-center justify-between">
-              <p className="text-body-xl font-sans font-semibold">Suspend business</p>
+              <p className="text-body-xl font-sans font-semibold">Restrict business</p>
               <div className="cursor-pointer" onClick={toggle}>
                 <XIcon />
               </div>
@@ -78,17 +78,22 @@ function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to suspend this listing? It will no longer be visible on the
-              platform.
+              Are you sure you want to restrict this business? It will no longer be listed and all
+              pending services will be lost.
             </p>
             <p className={"text-text-grey text-body-s font-normal"}>Reason</p>
-            <Textarea
-              className="bg-light-grey min-h-24 rounded-xl"
-              placeholder="Explain why this listing is being suspended..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              maxLength={MAX_REASON_LENGTH}
-            />
+            <Select value={reason} onValueChange={setReason}>
+              <SelectTrigger aria-label="Reason" className="bg-light-grey h-12 rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {BUSINESS_ACTION_REASONS.map((item) => (
+                  <SelectItem key={item} value={item}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className={"flex justify-between gap-2.5"}>
               <button
                 className={"border-light-grey-50 h-12 w-39 rounded-xl border bg-white"}
@@ -101,9 +106,9 @@ function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
                   "border-red-2 bg-red-1 h-12 w-39 rounded-xl border text-center disabled:opacity-50"
                 }
                 onClick={submitAction}
-                disabled={!isReasonValid}
+                disabled={suspendBusinessMutation.isPending}
               >
-                <p className={"text-body-l font-medium text-white"}>Suspend</p>
+                <p className={"text-body-l font-medium text-white"}>Restrict</p>
               </button>
             </div>
           </div>

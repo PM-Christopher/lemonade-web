@@ -11,6 +11,7 @@ export interface AddAdminTribeThreadRequest {
   topic: string;
   thoughts: string;
   media?: {}[];
+  videos?: {}[];
   tags?: {}[];
 }
 
@@ -93,6 +94,13 @@ export interface BoostBusinessRequest {
   start_date: string;
   start_time: string;
   callback_url?: string;
+}
+
+export interface BusinessFilterRequest {
+  status?: string;
+  from?: string;
+  to?: string;
+  search?: string;
 }
 
 export interface ChangeAdminPasswordRequest {
@@ -244,6 +252,10 @@ export interface DeductUserWalletBalanceRequest {
 
 export interface DeleteAccountRequest {
   confirmation: "DELETE";
+}
+
+export interface DeleteBusinessRequest {
+  reason?: string;
 }
 
 export interface DeleteReportedContentRequest {
@@ -575,6 +587,10 @@ export interface UpdatePromotionRequest {
   price: number;
   image: string;
   breakdown: {}[];
+}
+
+export interface UpdateServiceCommissionRequest {
+  commission_percentage: number;
 }
 
 export interface UpdateWithdrawalThresholdRequest {

@@ -41,6 +41,17 @@ export function useDeleteTribeThreadMutation(tribeId: string | undefined) {
   });
 }
 
+export function usePinTribeThreadMutation(tribeId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (threadId: string) => tribesApi.pinThread(threadId),
+    onSuccess: () => {
+      if (tribeId) queryClient.invalidateQueries({ queryKey: tribeKeys.detail(tribeId) });
+    },
+  });
+}
+
 export function useRemoveTribeMemberMutation(tribeId: string | undefined) {
   const queryClient = useQueryClient();
 

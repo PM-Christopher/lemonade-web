@@ -1,6 +1,13 @@
 "use client";
 import MainLayout from "@/components/layouts/MainLayout";
-import { Button } from "@lemonade/ui";
+import {
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@lemonade/ui";
 import CreateTribeModal from "@/modals/tribes/CreateTribeModal";
 import { tribeViews } from "@/utils/pageViews";
 import TribeListView, { type TribeListFilter } from "@/views/tribes/TribeListView";
@@ -16,6 +23,7 @@ const TribesClient = () => {
   const [menuOption, setMenuOption] = useState("created");
   const [isCreateTribeModalOpen, setIsCreateTribeModalOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
   const [range, setRange] = useState<DateRange | null>(null);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   // Same cache as the "created" tab; only the count is read here.
@@ -51,6 +59,19 @@ const TribesClient = () => {
               </div>
             </div>
 
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger
+                aria-label="Filter by status"
+                className="font-semiBold text-text-grey text-meta h-10 w-40 rounded-xl leading-normal"
+              >
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="ACTIVE">Active</SelectItem>
+                <SelectItem value="RESTRICTED">Restricted</SelectItem>
+              </SelectContent>
+            </Select>
             <DateRangePicker value={range} onChange={setRange} />
             <div>
               <Button
@@ -86,6 +107,7 @@ const TribesClient = () => {
               key={menuOption}
               filter={menuOption as TribeListFilter}
               search={search}
+              status={status}
               range={range}
             />
           </div>

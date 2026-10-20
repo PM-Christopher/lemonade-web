@@ -23,6 +23,7 @@ export interface AdminTribeListItem {
   access_fee: string;
   // Admin-created tribes are the TLN tribes.
   created_by_admin: boolean;
+  status: TribeStatus;
 }
 
 export interface TribeListResponse {
@@ -39,6 +40,9 @@ export interface TribeThreadAuthor {
   fullname: string;
   username: string;
   profile_image: string | null;
+  bio?: string | null;
+  industry?: string | null;
+  socials?: Array<{ name: string; value: string }> | null;
 }
 
 export interface TribeThread {
@@ -47,6 +51,9 @@ export interface TribeThread {
   thoughts: string;
   pinned: boolean;
   created_at: string;
+  media?: string[] | null;
+  videos?: string[] | null;
+  tags?: string[] | null;
   user: TribeThreadAuthor | null;
 }
 
@@ -62,6 +69,7 @@ export type TribeStatus = "PENDING" | "ACTIVE" | "INACTIVE" | "CLOSED" | "RESTRI
 
 export interface TribeDetail {
   id: string;
+  uuid?: string;
   image: string | null;
   name: string;
   category: string;
@@ -118,6 +126,13 @@ export const tribesApi = {
     browserApi.post<{ posted: boolean }>(
       buildPath(adminTribesRoutes.ADD_THREAD, { id: tribeId }),
       data,
+    ),
+
+  // Pins an unpinned thread, or unpins a pinned one. `threadId` is the thread's id.
+  pinThread: (threadId: string) =>
+    browserApi.patch<{ pinned: boolean }>(
+      buildPath(adminTribesRoutes.PIN_THREAD, { id: threadId }),
+      {},
     ),
 
   // The backend's route nests this under /admin/tribes/ for organization

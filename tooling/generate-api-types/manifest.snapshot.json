@@ -288,12 +288,33 @@
         "fields": null
     },
     {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/commission",
+        "name": "v1.admin.businesses.commission",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\UpdateServiceCommissionRequest",
+        "fields": {
+            "commission_percentage": [
+                "integer",
+                "required",
+                "min:0",
+                "max:100"
+            ]
+        }
+    },
+    {
         "method": "DELETE",
         "uri": "/v1/admin/businesses/{id}",
         "name": "v1.admin.businesses.delete",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\DeleteBusinessRequest",
+        "fields": {
+            "reason": [
+                "string",
+                "nullable",
+                "max:1000"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -330,8 +351,28 @@
         "uri": "/v1/admin/businesses",
         "name": "v1.admin.businesses.list",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\BusinessFilterRequest",
+        "fields": {
+            "status": [
+                "string",
+                "nullable",
+                "max:30"
+            ],
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ]
+        }
     },
     {
         "method": "PATCH",
@@ -355,6 +396,56 @@
                 "max:1000"
             ]
         }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/businesses/services",
+        "name": "v1.admin.businesses.services.list",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\BusinessFilterRequest",
+        "fields": {
+            "status": [
+                "string",
+                "nullable",
+                "max:30"
+            ],
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/services/{id}/settle",
+        "name": "v1.admin.businesses.services.settle",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ResolveDisputeRequest",
+        "fields": {
+            "resolution": [
+                "string",
+                "required",
+                "in:refund,release"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/businesses/services/{id}",
+        "name": "v1.admin.businesses.services.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
     },
     {
         "method": "GET",
@@ -1482,6 +1573,13 @@
             "media.*": [
                 "string"
             ],
+            "videos": [
+                "array",
+                "sometimes"
+            ],
+            "videos.*": [
+                "string"
+            ],
             "tags": [
                 "array",
                 "sometimes"
@@ -1537,6 +1635,14 @@
         "method": "GET",
         "uri": "/v1/admin/tribes",
         "name": "v1.admin.tribes.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/tribes/{id}/pin-thread",
+        "name": "v1.admin.tribes.pin-thread",
         "guard": "admin",
         "formRequest": null,
         "fields": null

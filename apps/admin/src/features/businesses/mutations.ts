@@ -61,7 +61,31 @@ export function useDeleteBusinessMutation(id: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => businessesApi.deleteBusiness(id as string),
+    mutationFn: (reason?: string) => businessesApi.deleteBusiness(id as string, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: businessKeys.lists() });
+    },
+  });
+}
+
+// Not optimistic: escrow moves money, so the lists refetch instead.
+export function useSettleServiceMutation(id: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (resolution: "release" | "refund") =>
+      businessesApi.settleService(id as string, resolution),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: businessKeys.all() });
+    },
+  });
+}
+
+export function useUpdateCommissionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (percentage: number) => businessesApi.updateCommission(percentage),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: businessKeys.lists() });
     },

@@ -55,7 +55,7 @@ function DeleteThreadModal({ isOpen, toggle, tribeId, threadId }: DeleteThreadMo
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to delete this thread? This can&apos;t be undone.
+              Are you sure you want to delete this thread?
             </p>
             <div className={"flex justify-between gap-2.5"}>
               <button

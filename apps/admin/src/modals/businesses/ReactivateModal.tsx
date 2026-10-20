@@ -64,8 +64,7 @@ function ReactivateModal({ isOpen, toggle, id }: ReactivateModalProps) {
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to reactivate this listing? It will be visible on the platform
-              again.
+              Are you sure you want to reactivate this business? It will be re-listed.
             </p>
             <div className={"flex justify-between gap-2.5"}>
               <button
@@ -80,7 +79,7 @@ function ReactivateModal({ isOpen, toggle, id }: ReactivateModalProps) {
                 }
                 onClick={submitAction}
               >
-                <p className={"text-body-l font-medium text-white"}>Reactivate</p>
+                <p className={"text-body-l font-medium text-white"}>Activate</p>
               </button>
             </div>
           </div>

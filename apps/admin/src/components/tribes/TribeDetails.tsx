@@ -1,7 +1,7 @@
 import React from "react";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { DotIcon, XIcon } from "lucide-react";
+import { DotIcon, PenSquareIcon, Trash2Icon } from "lucide-react";
 import { TribeDetail, TribeMemberItem } from "@/features/tribes/api";
 import { images } from "@/lib/images";
 
@@ -13,9 +13,15 @@ interface TribeDetailsProps {
   tribe?: TribeDetail;
   members?: TribeMemberItem[];
   onRemoveMember?: (userId: string, memberName: string) => void;
+  onCreateThread?: () => void;
 }
 
-const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps) => {
+const TribeDetails = ({
+  tribe,
+  members = [],
+  onRemoveMember,
+  onCreateThread,
+}: TribeDetailsProps) => {
   return (
     <div className="flex h-fit w-full flex-col gap-6">
       <div className="w-full rounded-lg bg-white p-4">
@@ -29,7 +35,17 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
             className="rounded"
           />
           <p className="font-semiBold text-body-l text-center">{tribe?.name}</p>
-          <p className={"text-text-grey text-body-s font-medium"}>{tribe?.category}</p>
+          {tribe?.uuid && (
+            <p className="text-text-grey text-meta leading-normal font-normal">
+              ID: <span className="font-semibold text-black">{tribe.uuid}</span>
+            </p>
+          )}
+          <p className={"text-text-grey text-body-s font-medium italic"}>{tribe?.category}</p>
+          {tribe?.status === "RESTRICTED" && (
+            <p className="bg-red-1 text-meta rounded px-2 py-0.5 font-medium text-white">
+              Restricted
+            </p>
+          )}
           <div className={"flex items-center"}>
             <p className={"text-text-grey text-meta leading-normal font-normal"}>
               {tribe?.members_count ?? 0} members
@@ -47,6 +63,17 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
           <p className="text-text-grey text-meta text-center leading-normal font-normal">
             Created on {tribe?.created_at ? dayjs(tribe.created_at).format("DD MMM, YYYY") : ""}
           </p>
+          {onCreateThread && (
+            <button
+              type="button"
+              disabled={tribe?.status === "RESTRICTED"}
+              className="bg-gradient-green mt-2 flex h-11 items-center gap-2 rounded-full px-6 disabled:opacity-50"
+              onClick={onCreateThread}
+            >
+              <PenSquareIcon className="h-4 w-4 text-white" />
+              <span className="text-body-s font-medium text-white">Create thread</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -74,7 +101,9 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
                   height={20}
                   className="rounded-full"
                 />
-                <p className={"text-body-s font-medium"}>{tribe.creator.name}</p>
+                <p className={"text-body-s font-medium"}>
+                  {tribe.creator.is_admin ? "TLN" : tribe.creator.name}
+                </p>
               </div>
               <p className={"text-text-grey text-meta font-normal italic"}>Creator</p>
             </div>
@@ -104,12 +133,13 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
                     <button
                       type="button"
                       aria-label="Remove member"
-                      className="text-text-grey hover:text-red-1 cursor-pointer"
+                      disabled={tribe?.status === "RESTRICTED"}
+                      className="text-text-grey hover:text-red-1 cursor-pointer disabled:opacity-40"
                       onClick={() =>
                         onRemoveMember(member.user_id, member.user?.fullname ?? "this member")
                       }
                     >
-                      <XIcon className="h-4 w-4" />
+                      <Trash2Icon className="h-4 w-4" />
                     </button>
                   )}
                 </div>

@@ -1,9 +1,19 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
-import React from "react";
+import React, { useState } from "react";
 import { XIcon } from "lucide-react";
 
-import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import {
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@lemonade/ui";
+import { BUSINESS_ACTION_REASONS } from "./reasons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDeleteBusinessMutation } from "@/features/businesses/mutations";
@@ -22,10 +32,11 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { push } = useNavigation();
   const deleteBusinessMutation = useDeleteBusinessMutation(id);
+  const [reason, setReason] = useState<string>(BUSINESS_ACTION_REASONS[0]);
 
   const submitAction = () => {
     if (!isLoggedIn) return;
-    deleteBusinessMutation.mutate(undefined, {
+    deleteBusinessMutation.mutate(reason, {
       onSuccess: () => {
         dispatch(
           updateToastifyReducer({
@@ -69,8 +80,22 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
           </div>
           <div className={"flex flex-col gap-4 px-4 py-4"}>
             <p className={"text-light-black text-body-s font-normal"}>
-              Are you sure you want to delete this listing? This cannot be undone from here.
+              Are you sure you want to delete this business? They will lose all their services in
+              progress if you complete this action.
             </p>
+            <p className={"text-text-grey text-body-s font-normal"}>Reason</p>
+            <Select value={reason} onValueChange={setReason}>
+              <SelectTrigger aria-label="Reason" className="bg-light-grey h-12 rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {BUSINESS_ACTION_REASONS.map((item) => (
+                  <SelectItem key={item} value={item}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className={"flex justify-between gap-2.5"}>
               <button
                 className={"border-light-grey-50 h-12 w-39 rounded-xl border bg-white"}
@@ -81,6 +106,7 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
               <button
                 className={"border-red-2 bg-red-1 h-12 w-39 rounded-xl border text-center"}
                 onClick={submitAction}
+                disabled={deleteBusinessMutation.isPending}
               >
                 <p className={"text-body-l font-medium text-white"}>Delete</p>
               </button>
