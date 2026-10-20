@@ -13,6 +13,8 @@ interface SubmitButtonProps {
   classes?: string | null;
   bgColor?: string | null;
   errorColor?: string | null;
+  /** Id of the form to submit when the button renders outside it (e.g. in a portal). */
+  form?: string;
 }
 
 export const SubmitButton = ({
@@ -22,6 +24,7 @@ export const SubmitButton = ({
   classes = null,
   bgColor = null,
   errorColor = null,
+  form,
 }: SubmitButtonProps) => {
   const isDisabled = loading || !isValid;
   const defaultBg = bgColor === null ? (!isValid ? "bg-disabled-green" : "bg-gradient-green") : "";
@@ -29,6 +32,7 @@ export const SubmitButton = ({
   return (
     <button
       type="submit"
+      form={form}
       className={`${
         classes === null
           ? "flex h-12 w-fit items-center justify-center rounded-xl px-3.5 py-2.5"

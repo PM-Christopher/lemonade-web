@@ -1,43 +1,38 @@
 "use client";
-import { routes } from "@/lib/routes";
-import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useAppDispatch } from "@/redux/hook";
 
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { setSelectedJob } from "@/redux/tempSlice";
 import { useRequestJobPaymentMutation } from "@/features/business/mutations";
 import type { ServiceRequestJob } from "@/features/business/api";
 const ConfirmPaymentModal = ({
   isOpen,
   toggleMenu,
   job,
-  sMenu,
 }: {
   isOpen: boolean;
   toggleMenu: () => void;
-  sMenu: () => void;
   job: ServiceRequestJob;
 }) => {
   const dispatch = useAppDispatch();
-  const { push } = useNavigation();
   const requestJobPaymentMutation = useRequestJobPaymentMutation(job.id);
   const requestPLoading = requestJobPaymentMutation.isPending;
 
   const handleRequestPayment = () => {
     requestJobPaymentMutation.mutate(undefined, {
       onSuccess: (result) => {
+        dispatch(setSelectedJob(result.job));
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: result?.message,
+            message: "Payment request sent",
             type: "success",
           }),
         );
         toggleMenu();
-        sMenu();
-        if (job.business) push(routes.BUSINESS_JOBS(job.business.id));
       },
       onError: () => {
         dispatch(

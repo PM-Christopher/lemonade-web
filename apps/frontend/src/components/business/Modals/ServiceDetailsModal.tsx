@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import ClockIconOrange from "@/images/icons/clockIconOrange.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 import { formatStringUCFirst, getInitials } from "@/lib/helper";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -17,7 +17,12 @@ import CheckGIcon from "@/images/icons/checkGreenIcon.svg";
 import CheckPIcon from "@/images/icons/checkPurpleIcon.svg";
 import CloseRedIcon from "@/images/icons/closeRedIcon.svg";
 import PayNowModal from "@/components/business/Modals/PayNowModal";
-import { useMarkJobRequestMutation } from "@/features/business/mutations";
+import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
+import SubmitDisputeModal from "@/components/business/Modals/SubmitDisputeModal";
+import ReviewModal from "@/components/business/Modals/ReviewModal";
+import RequestServiceModal from "@/components/business/Modals/RequestServiceModal";
+import { useReviewJobMutation, useMarkJobRequestMutation } from "@/features/business/mutations";
+import { useBusinessQuery } from "@/features/business/queries";
 import { formatCountry } from "@lemonade/domain";
 import ConfirmCompletionModal from "@/components/business/Modals/ConfirmCompletionModal";
 import type { ServiceRequestJob } from "@/features/business/api";
@@ -29,27 +34,67 @@ type ServiceDetailsInterface = {
   loading: boolean;
 };
 
+type StatusBadge = { label: string; className: string; icon: React.ReactNode };
+
+const STATUS_BADGES: Record<string, StatusBadge> = {
+  PENDING: {
+    label: "Awaiting",
+    className: "bg-warning text-warning-bold",
+    icon: <ClockIconOrange />,
+  },
+  ACCEPTED: {
+    label: "Accepted",
+    className: "bg-purple-1 text-blue-accent-1",
+    icon: <CheckPIcon />,
+  },
+  REJECTED: { label: "Rejected", className: "bg-red-accent-1 text-red-1", icon: <CloseRedIcon /> },
+  IN_PROGRESS: {
+    label: "In progress",
+    className: "bg-warning text-warning-bold",
+    icon: <ClockIconOrange />,
+  },
+  IN_DISPUTE: {
+    label: "In dispute",
+    className: "bg-red-accent-1 text-red-1",
+    icon: <CloseRedIcon />,
+  },
+  COMPLETED: {
+    label: "Completed",
+    className: "bg-light-green-60 text-light-green-70",
+    icon: <CheckGIcon />,
+  },
+};
+
+const Notice = ({ children }: { children: React.ReactNode }) => (
+  <div className="text-body-s w-full rounded-xl bg-purple-50 px-4 py-2 text-center font-medium text-purple-700">
+    {children}
+  </div>
+);
+
 const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggleMenu, job }) => {
   const [remark, setRemark] = useState("");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isPayNowOpen, setIsPayNowOpen] = useState(false);
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
+  const [isDisputeInfoOpen, setIsDisputeInfoOpen] = useState(false);
+  const [isDisputeFormOpen, setIsDisputeFormOpen] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
   const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const markJobRequestMutation = useMarkJobRequestMutation(job.id);
+  const reviewJobMutation = useReviewJobMutation(job.id);
   const markLoading = markJobRequestMutation.isPending;
 
-  const toggleConfirmPayment = () => {
-    setIsConfirmOpen(!isConfirmOpen);
-  };
-
-  const togglePayNow = () => {
-    setIsPayNowOpen(!isPayNowOpen);
-  };
-
-  const toggleCompletion = () => {
-    setIsCompletionOpen(!isCompletionOpen);
-  };
+  const isOwner = job.is_owner;
+  const status = job.status;
+  // The API can send these flags as 0 or 1.
+  const paymentRequested = Boolean(job.payment_requested);
+  const canSendAnotherQuote = !isOwner && status === "REJECTED";
+  // Services to pick from when sending another quote.
+  const { data: businessData } = useBusinessQuery(job.business?.id, {
+    enabled: isOpen && canSendAnotherQuote,
+  });
 
   const markJob = (option: string) => {
     markJobRequestMutation.mutate(
@@ -79,70 +124,8 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
     );
   };
 
-  const markCompleted = async () => {
-    toggleCompletion();
-  };
-
-  const requestStatus = () => {
-    switch (job?.status) {
-      case "PENDING":
-        return (
-          <div>
-            <p className="text-text-grey text-body-s font-normal">Service status</p>
-            <div className="bg-warning mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
-              <ClockIconOrange />
-              <p className="font-semi-normal text-warning-bold text-body-s">Awaiting</p>
-            </div>
-          </div>
-        );
-      case "ACCEPTED":
-        return (
-          <div>
-            <p className="text-text-grey text-body-s font-normal">Service status</p>
-            <div className="bg-purple-1 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
-              <CheckPIcon />
-              <p className="font-semi-normal text-blue-accent-1 text-body-s">Accepted</p>
-            </div>
-          </div>
-        );
-      case "REJECTED":
-        return (
-          <div>
-            <p className="text-text-grey text-body-s font-normal">Service status</p>
-            <div className="bg-red-accent-1 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
-              <CloseRedIcon />
-              <p className="font-semi-normal text-red-1 text-body-s">Rejected</p>
-            </div>
-          </div>
-        );
-      case "IN_PROGRESS":
-        return (
-          <div>
-            <p className="text-text-grey text-body-s font-normal">Service status</p>
-            <div className="bg-warning mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
-              <ClockIconOrange />
-              <p className="font-semi-normal text-warning-bold text-body-s">In progress</p>
-            </div>
-          </div>
-        );
-      case "COMPLETED":
-        return (
-          <div>
-            <p className="text-text-grey text-body-s font-normal">Service status</p>
-            <div className="bg-light-green-60 mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2">
-              <CheckGIcon />
-              <p className="font-semi-normal text-light-green-70 text-body-s">Completed</p>
-            </div>
-          </div>
-        );
-      default:
-        break;
-    }
-  };
-
-  const navigateDispute = () => {
-    if (job.business) push(`${routes.BUSINESS_DETAIL(job.business.id)}?modal=disputeOpen`);
-  };
+  const badge = STATUS_BADGES[status];
+  const person = isOwner ? job.user : null;
 
   return (
     <Dialog
@@ -152,46 +135,43 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">{"Service Details"}</DialogTitle>
-        <div className="laptop:w-160 w-full px-4 py-[5vh]">
-          <div className="hide-scrollbar relative max-h-[90vh] w-full overflow-y-auto rounded-2xl bg-white shadow-lg">
-            {/* Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+        <DialogTitle className="sr-only">{"Service details"}</DialogTitle>
+        <div className="laptop:w-160 laptop:px-4 laptop:py-[5vh] w-screen">
+          <div className="hide-scrollbar laptop:max-h-[90vh] laptop:rounded-2xl laptop:h-auto relative h-screen w-full overflow-y-auto bg-white shadow-lg">
+            <div className="sticky top-0 z-10 flex items-center justify-between bg-white px-6 py-4">
               <div className="flex items-center gap-3">
-                <div className="cursor-pointer" onClick={toggleMenu}>
+                <button type="button" aria-label="Close" onClick={toggleMenu}>
                   <CloseIcon className="text-gray-600 transition-colors duration-200 hover:text-black" />
-                </div>
+                </button>
                 <p className="text-body-xl font-semibold tracking-wide text-black">
-                  Service Details
+                  Service details
                 </p>
               </div>
             </div>
 
-            {/* Content */}
-            <div className="flex flex-col gap-6 px-6 py-6">
-              {/* User or Job Image Card */}
+            <div className="flex flex-col gap-6 px-6 pt-2 pb-6">
               <div
-                className="relative flex w-full flex-col items-center justify-center rounded-2xl bg-cover bg-center p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
+                className="relative flex w-full flex-col items-center justify-center rounded-2xl bg-cover bg-center p-6"
                 style={{ backgroundImage: `url(${images.BUSINESS_BG})` }}
               >
-                {job?.status === "PENDING" || job?.status === "ACCEPTED" ? (
+                {person ? (
                   <>
-                    {job.user?.profile_image ? (
+                    {person.profile_image ? (
                       <FallbackImage
-                        src={job.user.profile_image}
+                        src={person.profile_image}
                         fallbackSrc={images.AVATAR_4}
                         alt="avatar"
                         width={72}
                         height={72}
-                        className="rounded-xl border border-gray-300 object-cover"
+                        className="h-18 w-18 rounded-xl border border-gray-300 object-cover"
                       />
                     ) : (
                       <div className="text-title-l flex h-18 w-18 items-center justify-center rounded-xl bg-gradient-to-r from-green-400 to-green-600 leading-normal font-bold text-white">
-                        {getInitials(job?.user?.fullname)}
+                        {getInitials(person.fullname)}
                       </div>
                     )}
                     <p className="text-body-l mt-3 text-center font-semibold text-black">
-                      {job?.user?.username}
+                      {person.username}
                     </p>
                   </>
                 ) : (
@@ -202,7 +182,7 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                       alt="job logo"
                       width={72}
                       height={72}
-                      className="border-step-color h-16 rounded-xl border object-cover"
+                      className="border-step-color h-16 w-16 rounded-xl border object-cover"
                     />
                     <p className="text-body-l mt-3 text-center font-semibold text-black">
                       {job.business?.name}
@@ -212,191 +192,211 @@ const ServiceDetailsModal: React.FC<ServiceDetailsInterface> = ({ isOpen, toggle
                     </p>
                     {(job.business?.service_rate ?? 0) > 0 && (
                       <p className="text-body-l mt-1 text-center font-semibold">
-                        N{formatNumberWithCommas(job.business?.service_rate ?? 0)}/hr
+                        {formatMinorNaira(job.business?.service_rate)}/hr
                       </p>
                     )}
                   </>
                 )}
               </div>
 
-              {/* Payment Requested */}
-              {job?.payment_requested && job.is_owner && job?.status === "ACCEPTED" ? (
-                <div className="w-full rounded-xl bg-purple-50 px-4 py-2 text-center font-medium text-purple-700">
-                  Payment requested. Awaiting confirmation
+              {isOwner && status === "ACCEPTED" && (
+                <Notice>You&apos;ll get payment notification to begin.</Notice>
+              )}
+              {isOwner && status === "IN_PROGRESS" && paymentRequested && (
+                <Notice>Payment requested. Awaiting confirmation.</Notice>
+              )}
+              {!isOwner && status === "IN_PROGRESS" && paymentRequested && (
+                <Notice>Business owner is requesting payment.</Notice>
+              )}
+              {status === "COMPLETED" && job.refunded && (
+                <Notice>
+                  {isOwner ? "Client has been refunded" : "Your payment was refunded"}
+                </Notice>
+              )}
+
+              {badge && (
+                <div>
+                  <p className="text-text-grey text-body-s font-normal">Service status</p>
+                  <div
+                    className={`mt-2 flex w-fit items-center gap-2 rounded-xl p-0.5 px-2 ${badge.className}`}
+                  >
+                    {badge.icon}
+                    <p className="font-semi-normal text-body-s">{badge.label}</p>
+                  </div>
                 </div>
-              ) : null}
+              )}
 
-              {/* Request Status */}
-              {requestStatus()}
-
-              {/* Amount */}
               <div>
-                <p className="text-body-s text-gray-500">Amount</p>
-                <p className="text-body-xl font-semibold">
-                  N{formatNumberWithCommas(job?.amount ?? 0)}
-                </p>
+                <p className="text-text-grey text-body-s">Amount</p>
+                <p className="text-body-xl font-semibold">{formatMinorNaira(job?.amount)}</p>
               </div>
 
-              {/* Required Services */}
               {Array.isArray(job?.services) && job.services.length > 0 && (
                 <div>
-                  <p className="text-body-s text-gray-500">Required Services</p>
+                  <p className="text-text-grey text-body-s">Required services</p>
                   <p className="text-body-l mt-1 text-black">
-                    {job.services.map((service: string, index: number) => (
-                      <span key={index}>
-                        {formatStringUCFirst(service)}
-                        {index < (job.services?.length ?? 0) - 1 && ", "}
-                      </span>
-                    ))}
+                    {job.services.map((service: string) => formatStringUCFirst(service)).join(", ")}
                   </p>
                 </div>
               )}
 
-              {/* Additional Info */}
               {job.additional_info && (
                 <div>
-                  <p className="text-body-s text-gray-500">Additional Information</p>
+                  <p className="text-text-grey text-body-s">Additional information</p>
                   <p className="text-body-l mt-1 text-black">{job.additional_info}</p>
                 </div>
               )}
 
-              {/* Remark */}
-              {job?.remark && job?.status === "ACCEPTED" && (
+              {job?.remark && status !== "PENDING" && (
                 <div className="rounded-2xl bg-gray-100 p-4">
                   <p className="text-body-s font-semibold text-gray-500">Remark</p>
-                  <p className="text-body-l mt-1 text-black">{job?.remark}</p>
+                  <p className="text-body-l mt-1 text-black">{job.remark}</p>
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div className="laptop:flex-row mt-6 flex w-full flex-col gap-3">
-                {/* Owner vs User Actions */}
-                {!job.is_owner && job?.status === "IN_PROGRESS" && (
+              <div className="laptop:flex-row flex w-full flex-col gap-3">
+                {!isOwner && status === "REJECTED" && (
+                  <Button
+                    className="bg-gradient-green h-12 w-full rounded-xl font-semibold"
+                    onClick={() => setIsRequestOpen(true)}
+                  >
+                    Send another quote
+                  </Button>
+                )}
+
+                {!isOwner && status === "ACCEPTED" && (
+                  <Button
+                    className="bg-gradient-green text-light-white h-12 w-full rounded-xl font-semibold"
+                    onClick={() => setIsPayNowOpen(true)}
+                  >
+                    Make payment
+                  </Button>
+                )}
+
+                {!isOwner && status === "IN_PROGRESS" && (
                   <>
                     <Button
-                      className={`bg-gradient-green h-12 w-full rounded-2xl shadow-md`}
-                      onClick={markCompleted}
+                      className="bg-gradient-green h-12 w-full rounded-xl"
+                      onClick={() => setIsCompletionOpen(true)}
                     >
-                      <p className="text-light-white text-body-l font-medium">Mark as Completed</p>
+                      <p className="text-light-white text-body-l font-medium">Mark as completed</p>
                     </Button>
                     <Button
-                      className="h-12 w-full rounded-2xl border border-gray-300 bg-white font-medium text-black"
-                      onClick={navigateDispute}
+                      variant="outline"
+                      className="h-12 w-full rounded-xl border border-gray-300 bg-white font-medium text-black"
+                      onClick={() => setIsDisputeInfoOpen(true)}
                     >
                       Dispute
                     </Button>
                   </>
                 )}
 
-                {!job.is_owner && job?.status === "ACCEPTED" && job?.payment_requested && (
+                {!isOwner && status === "COMPLETED" && (
                   <Button
-                    className="bg-gradient-green text-light-white h-12 w-full rounded-2xl font-semibold shadow-md"
-                    onClick={togglePayNow}
+                    className="bg-gradient-green h-12 w-full rounded-xl font-semibold"
+                    onClick={() => setIsReviewOpen(true)}
                   >
-                    Make Payment
+                    Rate business
                   </Button>
                 )}
 
-                {job.is_owner &&
-                  job?.status === "ACCEPTED" &&
-                  (job?.payment_made ? (
-                    <div className="laptop:w-136 mt-10 mb-2.5 flex w-full justify-center gap-3">
-                      <Button className="border-light-grey-50 h-12 w-full rounded-xl border bg-white p-3.5 px-12 shadow-none">
-                        <p className="font-semi-normal text-black-light text-body-l">Dispute Job</p>
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="laptop:w-136 mt-10 mb-2.5 flex w-full justify-center gap-3">
-                      <Button
-                        className="bg-gradient-green h-12 w-full rounded-xl p-3.5 px-12"
-                        onClick={toggleConfirmPayment}
-                      >
-                        <p className="font-semi-normal text-body-l">Request payment</p>
-                      </Button>
-                    </div>
-                  ))}
+                {isOwner && status === "IN_PROGRESS" && !paymentRequested && (
+                  <Button
+                    className="bg-gradient-green h-12 w-full rounded-xl p-3.5 px-12"
+                    onClick={() => setIsConfirmOpen(true)}
+                  >
+                    <p className="font-semi-normal text-body-l">Request payment</p>
+                  </Button>
+                )}
 
-                {job.is_owner && job?.status === "PENDING" && (
-                  <div className={"flex w-full flex-col"}>
+                {isOwner && status === "IN_PROGRESS" && paymentRequested && (
+                  <Button
+                    variant="outline"
+                    className="border-light-grey-50 h-12 w-full rounded-xl border bg-white p-3.5 px-12"
+                    onClick={() => setIsDisputeInfoOpen(true)}
+                  >
+                    <p className="font-semi-normal text-black-light text-body-l">Dispute job</p>
+                  </Button>
+                )}
+
+                {isOwner && status === "PENDING" && (
+                  <div className="flex w-full flex-col">
                     <div className="flex w-full flex-col gap-2 rounded-2xl border border-gray-200 p-4">
                       <p className="text-body-s font-semibold">
-                        Include a message with your offer response
+                        Include a message with your offer response.
                       </p>
+                      <div className="flex justify-between">
+                        <label htmlFor="job-remark" className="text-text-grey text-meta">
+                          Remark
+                        </label>
+                        <span className="text-text-grey text-meta">100 characters</span>
+                      </div>
                       <textarea
+                        id="job-remark"
+                        maxLength={100}
                         className="text-body-s h-20 w-full resize-none rounded-xl bg-gray-50 p-3"
-                        placeholder="Write your remark..."
                         value={remark}
                         onChange={(e) => setRemark(e.target.value)}
                       />
                     </div>
-                    {markLoading ? (
-                      <div
-                        className={
-                          "bg-gradient-green mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl font-semibold shadow-md"
-                        }
+                    <div className="mt-4 flex gap-3">
+                      <Button
+                        className="bg-gradient-green h-12 w-full rounded-2xl font-semibold"
+                        onClick={() => markJob("accepted")}
+                        disabled={markLoading}
                       >
-                        <svg
-                          className="h-4 w-4 animate-spin text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                          />
-                        </svg>
-                        <p className="font-semi-normal text-light-white text-body-l">Loading...</p>
-                      </div>
-                    ) : (
-                      <div className="mt-4 flex gap-3">
-                        <Button
-                          className="bg-gradient-green h-12 w-full rounded-2xl font-semibold shadow-md"
-                          onClick={() => markJob("accepted")}
-                          disabled={markLoading}
-                        >
-                          Accept
-                        </Button>
-                        <Button
-                          className="hover:text-light-white h-12 w-full rounded-2xl border border-gray-300 bg-white font-semibold text-black"
-                          onClick={() => markJob("rejected")}
-                          disabled={markLoading}
-                        >
-                          Reject
-                        </Button>
-                      </div>
-                    )}
+                        {markLoading ? "Loading..." : "Accept"}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="hover:text-light-white h-12 w-full rounded-2xl border border-gray-300 bg-white font-semibold text-black"
+                        onClick={() => markJob("rejected")}
+                        disabled={markLoading}
+                      >
+                        Reject
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {job && (
-            <>
-              {/* Nested Modals */}
-              <ConfirmPaymentModal
-                isOpen={isConfirmOpen}
-                toggleMenu={toggleConfirmPayment}
-                sMenu={toggleMenu}
-                job={job}
-              />
-              <PayNowModal job={job} isOpen={isPayNowOpen} toggleMenu={togglePayNow} />
-              <ConfirmCompletionModal
-                isOpen={isCompletionOpen}
-                toggle={toggleCompletion}
-                job={job}
-              />
-            </>
+          <ConfirmPaymentModal
+            isOpen={isConfirmOpen}
+            toggleMenu={() => setIsConfirmOpen(false)}
+            job={job}
+          />
+          <PayNowModal job={job} isOpen={isPayNowOpen} toggleMenu={() => setIsPayNowOpen(false)} />
+          <ConfirmCompletionModal
+            isOpen={isCompletionOpen}
+            toggle={() => setIsCompletionOpen(false)}
+            job={job}
+          />
+          <DisputeJobModal
+            isOpen={isDisputeInfoOpen}
+            toggle={() => setIsDisputeInfoOpen(false)}
+            toggleSubmit={() => setIsDisputeFormOpen(true)}
+            isOwner={isOwner}
+          />
+          <SubmitDisputeModal
+            isOpen={isDisputeFormOpen}
+            toggle={() => setIsDisputeFormOpen(false)}
+            jobId={job.id}
+            onSubmitted={toggleMenu}
+          />
+          <ReviewModal
+            isOpen={isReviewOpen}
+            toggleMenu={() => setIsReviewOpen(false)}
+            submit={(values) => reviewJobMutation.mutateAsync(values)}
+          />
+          {job.business && canSendAnotherQuote && (
+            <RequestServiceModal
+              id={job.business.id}
+              isOpen={isRequestOpen}
+              toggleMenu={() => setIsRequestOpen(false)}
+              services={businessData?.business.services}
+            />
           )}
         </div>
       </DialogContentBare>

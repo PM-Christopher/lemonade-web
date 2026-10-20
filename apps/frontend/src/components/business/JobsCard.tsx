@@ -6,7 +6,7 @@ import Image from "next/image";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import { formatCountry } from "@lemonade/domain";
 import { formatStringUCFirst } from "@/lib/helper";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 import { useAppDispatch } from "@/redux/hook";
 import { useSelector } from "react-redux";
 import { useGetJobMutation } from "@/features/business/mutations";
@@ -117,7 +117,7 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                     )}
                   </div>
                   <p className="text-body-s font-semibold text-black">
-                    N{formatNumberWithCommas(job?.amount ?? 0)}
+                    {formatMinorNaira(job?.amount)}
                   </p>
                 </div>
 

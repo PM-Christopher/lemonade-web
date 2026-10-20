@@ -21,7 +21,7 @@ type RequestServiceInterface = {
   // surfaced now that `business?.services` is properly typed instead of
   // `any`.
   services: string[] | undefined;
-  id: number;
+  id: number | string;
 };
 
 const RequestServiceModal: React.FC<RequestServiceInterface> = ({
@@ -93,7 +93,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">{"Request a service"}</DialogTitle>
+        <DialogTitle className="sr-only">{"Request service"}</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="laptop:w-160 w-full px-4 py-[5vh]">
             <div className="hide-scrollbar max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
@@ -103,7 +103,7 @@ const RequestServiceModal: React.FC<RequestServiceInterface> = ({
                     <CloseIcon />
                   </div>
                   <p className="tracking-custom text-body-xl font-sans font-semibold">
-                    Request a service
+                    Request service
                   </p>
                 </div>
                 <div className="laptop:block hidden">

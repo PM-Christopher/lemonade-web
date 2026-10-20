@@ -8,19 +8,24 @@ import { applyServerErrors } from "@/lib/form-errors";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import MultipleFileUploader from "@/components/global/MultipleFileUploader";
 import { SubmitButton } from "@/components/global/SubmitButton";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { useAppDispatch } from "@/redux/hook";
 import { useDisputeJobMutation } from "@/features/business/mutations";
 
 interface SubmitDisputeModalProps {
   isOpen: boolean;
   toggle: () => void;
+  jobId: string;
+  // Called after the dispute is sent, so the caller can close the job details too.
+  onSubmitted: () => void;
 }
 
-const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle }) => {
-  const { selectedJob: job } = useSelector((state: RootState) => state.temp);
-  const disputeJobMutation = useDisputeJobMutation(job?.id ?? "");
+const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({
+  isOpen,
+  toggle,
+  jobId,
+  onSubmitted,
+}) => {
+  const disputeJobMutation = useDisputeJobMutation(jobId);
   const dispatch = useAppDispatch();
 
   const {
@@ -40,12 +45,13 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
 
   const onSubmit = (values: DisputeJobInput) => {
     disputeJobMutation.mutate(values, {
-      onSuccess: (result) => {
+      onSuccess: () => {
         toggle();
+        onSubmitted();
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: result?.message,
+            message: "Dispute submitted",
             type: "success",
           }),
         );
@@ -71,10 +77,10 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">{"Dispute Job"}</DialogTitle>
+        <DialogTitle className="sr-only">{"Dispute job"}</DialogTitle>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="hide-scrollbar laptop:p-8 max-h-[90vh] w-full max-w-160 overflow-y-auto scroll-smooth rounded-2xl bg-white p-6 shadow-xl"
+          className="hide-scrollbar laptop:p-8 laptop:w-160 laptop:max-h-[90vh] laptop:rounded-2xl laptop:min-h-0 max-h-screen min-h-screen w-screen overflow-y-auto scroll-smooth bg-white p-6 shadow-xl"
         >
           {/* Header */}
           <div className="sticky top-0 z-10 mb-6 flex items-center justify-between bg-white pt-2 pb-4">
@@ -86,16 +92,18 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
                 <CloseIcon />
               </div>
               <h2 className="laptop:text-body-xl text-body-l font-sans font-semibold text-black">
-                Dispute Job
+                Dispute job
               </h2>
             </div>
 
-            <SubmitButton
-              title="Submit"
-              classes="h-10 w-22.5 rounded-xl"
-              loading={isSubmitting}
-              isValid={isValid}
-            />
+            <div className="laptop:block hidden">
+              <SubmitButton
+                title="Submit"
+                classes="h-10 w-22.5 rounded-xl"
+                loading={isSubmitting}
+                isValid={isValid}
+              />
+            </div>
           </div>
 
           {/* Body */}
@@ -116,6 +124,7 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
                   errors.dispute ? "border-red-500" : "border-gray-200"
                 } placeholder:text-grey-40 focus:ring-step-color text-body-s placeholder:text-body-s transition placeholder:font-normal focus:border-transparent focus:ring-2 focus:outline-none`}
                 placeholder="Dispute details"
+                maxLength={200}
                 {...register("dispute")}
               />
               <FieldError message={errors.dispute?.message} />
@@ -141,6 +150,14 @@ const SubmitDisputeModal: React.FC<SubmitDisputeModalProps> = ({ isOpen, toggle 
                 title="Upload multiple images"
               />
               <FieldError message={errors.attachments?.message} />
+            </div>
+            <div className="laptop:hidden">
+              <SubmitButton
+                title="Submit"
+                classes="h-12 w-full rounded-xl"
+                loading={isSubmitting}
+                isValid={isValid}
+              />
             </div>
           </div>
         </form>

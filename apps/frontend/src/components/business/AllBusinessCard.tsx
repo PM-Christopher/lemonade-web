@@ -6,7 +6,7 @@ import Image from "next/image";
 import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatCountry } from "@lemonade/domain";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 
 type BusinessCardIF = {
   business: BusinessInterface;
@@ -94,7 +94,7 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
           {/* ...existing service_rate code... */}
           {business.service_rate && (
             <p className="flex-shrink-0 text-sm font-semibold whitespace-nowrap">
-              {"₦" + formatNumberWithCommas(business.service_rate) + "/hr"}
+              {formatMinorNaira(business.service_rate) + "/hr"}
             </p>
           )}
         </div>

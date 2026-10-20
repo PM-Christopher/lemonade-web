@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { countWords, MAX_DESCRIPTION_WORDS } from "@/lib/richText";
 import {
   amountField,
   emailField,
@@ -23,7 +24,13 @@ export const createBusinessSchema = z.object({
   image: z.string().min(1, { error: "Business image is required" }),
   name: z.string().trim().min(1, { error: "Business name is required" }),
   categories: z.array(z.string()).min(1, { error: "At least one category is required" }),
-  description: z.string().trim().min(1, { error: "Description is required" }),
+  description: z
+    .string()
+    .trim()
+    .min(1, { error: "Description is required" })
+    .refine((value) => countWords(value) <= MAX_DESCRIPTION_WORDS, {
+      error: `Keep the description under ${MAX_DESCRIPTION_WORDS} words`,
+    }),
   city: requiredTextField("city"),
   country: requiredTextField("country"),
   services: z.array(z.string()).min(1, { error: "At least one service is required" }),
@@ -72,12 +79,20 @@ export const requestServiceSchema = z.object({
 });
 export type RequestServiceInput = z.infer<typeof requestServiceSchema>;
 
-// Client-only business browse filter (no matching FormRequest).
+// Client-only business browse filter (no matching FormRequest). Budget is in naira.
 export const businessFilterSchema = z.object({
   category: optionalTextField(),
   location: optionalTextField(),
   service_type: optionalTextField(),
-  start_range: optionalTextField(),
-  end_range: optionalTextField(),
+  start_range: z.string().trim(),
+  end_range: z.string().trim(),
 });
 export type BusinessFilterInput = z.infer<typeof businessFilterSchema>;
+
+// Mirrors App\Http\Requests\Business\WriteBusinessReviewRequest and ReviewCompletedJobRequest.
+export const reviewSchema = z.object({
+  rating: z.number().min(1, { error: "Pick a rating" }).max(5),
+  title: z.string().trim().min(1, { error: "Title is required" }).max(100),
+  description: z.string().trim().min(1, { error: "Description is required" }).max(100),
+});
+export type ReviewInput = z.infer<typeof reviewSchema>;

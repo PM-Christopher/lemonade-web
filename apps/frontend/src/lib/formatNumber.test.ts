@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  formatMinorNaira,
   formatMoneyInput,
   formatNaira,
   formatNumberWithCommas,
+  minorToNaira,
   sanitizeMoneyInput,
 } from "./formatNumber";
 
@@ -49,5 +51,18 @@ describe("money input helpers", () => {
     ["", ""],
   ])("formats %j as %j", (raw, expected) => {
     expect(formatMoneyInput(raw)).toBe(expected);
+  });
+});
+
+describe("formatMinorNaira", () => {
+  it("shows kobo from the API as naira", () => {
+    expect(formatMinorNaira(200000)).toBe("₦2,000");
+    expect(formatMinorNaira(150050)).toBe("₦1,500.5");
+    expect(formatMinorNaira(null)).toBe("₦0");
+  });
+
+  it("converts kobo to a naira number for form prefill", () => {
+    expect(minorToNaira(200000)).toBe(2000);
+    expect(minorToNaira(undefined)).toBe(0);
   });
 });

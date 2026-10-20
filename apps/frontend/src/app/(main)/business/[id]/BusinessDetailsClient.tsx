@@ -1,7 +1,7 @@
 "use client";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import Image from "next/image";
 import { Button } from "@lemonade/ui";
@@ -18,17 +18,25 @@ import RocketIconGrey from "@/images/icons/rocketIconGrey.svg";
 import RatingsBar from "@/components/global/RatingsBar";
 import Reviews, { type Review } from "@/components/global/Reviews";
 import ReviewModal from "@/components/business/Modals/ReviewModal";
+import { FormattedText } from "@/components/global/FormattedText";
+import HowItWorksModal from "@/components/business/Modals/HowItWorksModal";
+import DeleteBusinessModal from "@/components/business/Modals/DeleteBusinessModal";
+import { FallbackImage } from "@/components/global/FallbackImage";
 import dynamic from "next/dynamic";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 import { formatDecimal, formatStringUCFirst } from "@/lib/helper";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal, { type Boost } from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
 
 import { businessButtons } from "@/lib/constant";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  useDeleteListingMutation,
+  useWriteBusinessReviewMutation,
+} from "@/features/business/mutations";
 import { businessApi } from "@/features/business/api";
 import {
   businessKeys,
@@ -39,19 +47,16 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { errorMessage } from "@/lib/api-error";
 import { BusinessDetailSkeleton } from "@/components/Skeletons";
-import DisputeJobModal from "@/components/business/Modals/DisputeJobModal";
 import { routes } from "@/lib/routes";
 
-// Off the initial bundle — both are only needed once their triggering
-// action fires (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+// Off the initial bundle — only needed once the user asks for a service
+// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
 const RequestServiceModal = dynamic(
   () => import("@/components/business/Modals/RequestServiceModal"),
   { ssr: false },
 );
-const SubmitDisputeModal = dynamic(
-  () => import("@/components/business/Modals/SubmitDisputeModal"),
-  { ssr: false },
-);
+
+const HOW_IT_WORKS_KEY = "lemonade:business-quote-how-it-works";
 
 const BusinessDetailsClient = ({ id }: { id: number }) => {
   const queryClient = useQueryClient();
@@ -66,9 +71,11 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   const [boost, setBoost] = useState<Boost | null>(null);
   const [boostDetails, setBoostDetails] = useState(false);
   const { replace, back } = useNavigation();
-  const [isDisputeOpen, setIsDisputeOpen] = useState(false);
-  const [isSubmitDisputeOpen, setIsSubmitDisputeOpen] = useState(false);
-  const pathname = usePathname();
+  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [aboutExpanded, setAboutExpanded] = useState(false);
+  const deleteMutation = useDeleteListingMutation(id);
+  const writeReviewMutation = useWriteBusinessReviewMutation(id);
 
   const { data: businessData, isLoading: loading } = useBusinessQuery(id);
   const business = businessData?.business;
@@ -89,24 +96,47 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
     setBoostDetails(!boostDetails);
   };
 
-  const toggleDisputeModal = useCallback(() => {
-    setIsDisputeOpen((prev) => !prev);
-  }, []);
-
-  const toggleSubmitDisputeModal = () => {
-    setIsSubmitDisputeOpen(!isSubmitDisputeOpen);
+  const startRequest = () => {
+    let seen = false;
+    try {
+      seen = localStorage.getItem(HOW_IT_WORKS_KEY) === "1";
+    } catch {
+      // Storage can be blocked; show the explainer every time.
+    }
+    if (seen) setIsRequestOpen(true);
+    else setIsHowItWorksOpen(true);
   };
 
-  const shouldOpenDispute = searchParams.get("modal") === "disputeOpen";
-  const [openedDisputeFromUrl, setOpenedDisputeFromUrl] = useState(false);
-  if (shouldOpenDispute && !openedDisputeFromUrl) {
-    setOpenedDisputeFromUrl(true);
-    setIsDisputeOpen(true);
-  }
+  const closeHowItWorks = () => {
+    setIsHowItWorksOpen(false);
+    try {
+      localStorage.setItem(HOW_IT_WORKS_KEY, "1");
+    } catch {
+      // Ignore blocked storage.
+    }
+    setIsRequestOpen(true);
+  };
 
-  useEffect(() => {
-    if (shouldOpenDispute) replace(pathname);
-  }, [shouldOpenDispute, replace, pathname]);
+  const confirmDelete = () => {
+    deleteMutation.mutate(undefined, {
+      onSuccess: () => {
+        setIsDeleteOpen(false);
+        dispatch(
+          updateToastifyReducer({ show: true, message: "Business deleted", type: "success" }),
+        );
+        replace(routes.BUSINESS);
+      },
+      onError: (error) => {
+        dispatch(
+          updateToastifyReducer({
+            show: true,
+            message: errorMessage(error, "We couldn't delete your business."),
+            type: "error",
+          }),
+        );
+      },
+    });
+  };
 
   // business reviews
   const { data: reviewData, isPending: reviewLoading } = useBusinessReviewsQuery(id);
@@ -171,7 +201,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft className="cursor-pointer" onClick={() => back()} />
             <p className="tracking-custom text-body-l font-sans font-semibold">Business details</p>
@@ -188,10 +218,11 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
               >
                 <div className="flex flex-col">
                   <div className="flex justify-center">
-                    <Image
-                      src={images.BUSINESS_JOB_LOGO}
+                    <FallbackImage
+                      src={business?.image}
+                      fallbackSrc={images.BUSINESS_JOB_LOGO}
                       alt="logo"
-                      className="border-step-color flex justify-center rounded-2xl border"
+                      className="border-step-color h-16 w-16 rounded-2xl border object-cover"
                       width={64}
                       height={64}
                     />
@@ -203,7 +234,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     </p>
                     {business?.service_rate ? (
                       <p className="text-body-l mt-1 text-center font-semibold">
-                        ₦{formatNumberWithCommas(business?.service_rate)}/hr
+                        {formatMinorNaira(business?.service_rate)}/hr
                       </p>
                     ) : (
                       <></>
@@ -224,10 +255,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
 
                   {!business?.owner && !business?.hasActiveServiceRequest && (
                     <div className="mt-4 flex justify-center">
-                      <Button
-                        className="bg-gradient-green w-fit p-3.5 px-6"
-                        onClick={toggleRequestModal}
-                      >
+                      <Button className="bg-gradient-green w-fit p-3.5 px-6" onClick={startRequest}>
                         <p className="font-normal text-white">Request service</p>
                       </Button>
                     </div>
@@ -291,7 +319,10 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       </div>
                     </div>
                   </Link>
-                  <div className="flex flex-col items-center gap-2">
+                  <div
+                    className="flex cursor-pointer flex-col items-center gap-2"
+                    onClick={() => setIsDeleteOpen(true)}
+                  >
                     <div className="border-grey-20 rounded-2xl border bg-white p-4">
                       <TrashIcon />
                     </div>
@@ -351,10 +382,19 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                 <div className="rounded-tl-3xl rounded-tr-3xl bg-white">
                   <div className="pt-4 pr-4 pb-6 pl-4">
                     <p className="text-body-l font-semibold">About business</p>
-                    <p className="text-light-black text-body-s mt-3 font-normal">
-                      {business?.description}
-                    </p>
-                    <p className="font-semi-normal text-light-green text-body-s">More</p>
+                    <FormattedText
+                      text={business?.description ?? ""}
+                      className={`text-light-black text-body-s mt-3 font-normal ${aboutExpanded ? "" : "line-clamp-3"}`}
+                    />
+                    {(business?.description?.length ?? 0) > 160 && (
+                      <button
+                        type="button"
+                        className="font-semi-normal text-light-green text-body-s cursor-pointer"
+                        onClick={() => setAboutExpanded((open) => !open)}
+                      >
+                        {aboutExpanded ? "Less" : "More"}
+                      </button>
+                    )}
                     <div className="border-t-mid-grey my-6 border-t"></div>
                     <p className="text-body-l font-semibold">Business categories</p>
                     <p className="text-light-black text-body-s mt-3 font-normal">
@@ -365,6 +405,26 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         </span>
                       ))}
                     </p>
+                    {business?.owner && (
+                      <>
+                        <div className="border-t-mid-grey my-6 border-t"></div>
+                        <p className="text-body-l font-semibold">Contact details</p>
+                        <div className="text-body-s mt-3 flex flex-col gap-3">
+                          <p className="flex items-center gap-2">
+                            <MessageIcon className="h-4 w-4 shrink-0" />
+                            {business.email}
+                          </p>
+                          <p className="flex items-center gap-2">
+                            <PhoneIcon className="h-4 w-4 shrink-0" />
+                            {business.phone_number}
+                          </p>
+                          <p className="flex items-center gap-2">
+                            <WebIcon className="h-4 w-4 shrink-0" />
+                            {business.website_url}
+                          </p>
+                        </div>
+                      </>
+                    )}
                     <div className="border-t-mid-grey my-6 border-t"></div>
                     <p className="text-body-l font-semibold">Services</p>
                     <p className="text-light-black text-body-s mt-3 font-normal">
@@ -397,7 +457,18 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     </div>
 
                     <div className="border-t-mid-grey my-6 border-t"></div>
-                    <p className="text-body-l font-semibold">Reviews</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-body-l font-semibold">Reviews</p>
+                      {!business?.owner && (
+                        <button
+                          type="button"
+                          className="font-semi-normal text-light-green text-body-s cursor-pointer"
+                          onClick={toggleMenu}
+                        >
+                          Write a review
+                        </button>
+                      )}
+                    </div>
                     <div className="flex justify-between">
                       <div className="bg-light_grey flex flex-col rounded-xl p-3 px-5">
                         <div className="flex justify-center">
@@ -453,7 +524,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
           )}
         </section>
         <VerifyBoost boost={boost} isOpen={isVerifyBoost} toggleMenu={toggleVerifyBoost} />
-        <ReviewModal isOpen={isOpen} toggleMenu={toggleMenu} />
+        <ReviewModal
+          isOpen={isOpen}
+          toggleMenu={toggleMenu}
+          submit={(values) => writeReviewMutation.mutateAsync(values)}
+        />
+        <HowItWorksModal isOpen={isHowItWorksOpen} onClose={closeHowItWorks} variant="requester" />
         <RequestServiceModal
           id={id}
           isOpen={isRequestOpen}
@@ -465,13 +541,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
           isOpen={boostDetails}
           toggleMenu={toggleBoostDetails}
         />
-        <DisputeJobModal
-          isOpen={isDisputeOpen}
-          toggle={toggleDisputeModal}
-          job={(business ?? {}) as Record<string, unknown>}
-          toggleSubmit={toggleSubmitDisputeModal}
+        <DeleteBusinessModal
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          onConfirm={confirmDelete}
+          loading={deleteMutation.isPending}
         />
-        <SubmitDisputeModal isOpen={isSubmitDisputeOpen} toggle={toggleSubmitDisputeModal} />
       </section>
     </MainLayout>
   );

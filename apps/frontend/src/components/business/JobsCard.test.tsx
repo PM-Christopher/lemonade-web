@@ -32,6 +32,7 @@ const job = (is_owner: boolean): ServiceRequestJob => ({
   status: "PENDING",
   payment_requested: false,
   payment_made: false,
+  refunded: false,
   is_owner,
   created_at: "2026-10-01T10:00:00Z",
 });

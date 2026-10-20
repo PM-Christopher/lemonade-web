@@ -24,9 +24,19 @@ interface BusinessSectionProps {
   businesses: BusinessInterface[];
   featured: BusinessInterface[];
   loading: boolean;
+  searching?: boolean;
+  searchTerm?: string;
+  onClear?: () => void;
 }
 
-const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured, loading }) => {
+const BusinessSection: React.FC<BusinessSectionProps> = ({
+  businesses,
+  featured,
+  loading,
+  searching = false,
+  searchTerm = "",
+  onClear,
+}) => {
   const dispatch = useAppDispatch();
   const { replace } = useNavigation();
   const searchParams = useSearchParams();
@@ -80,43 +90,64 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
   return (
     <section className="mt-4 flex flex-col items-center px-4 sm:px-6 lg:px-8">
       {/* Featured Section */}
-      <div className="bg-light-green-50 w-full max-w-328 gap-3 rounded-none p-4 sm:rounded-xl">
-        <p className="mb-3 text-lg font-semibold sm:text-xl">Featured</p>
-        {loading ? (
-          <BusinessCarouselSkeleton count={4} />
-        ) : featured?.length > 0 ? (
-          <BusinessCarousel businesses={featured} showDots={false} showArrows={false} />
-        ) : (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm sm:py-12">
-            <div className="flex max-w-md flex-col items-center text-center">
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="h-6 w-6 text-gray-400"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9.75 9V5.25m4.5 3.75V5.25M3 9h18M4.5 19.5h15a1.5 1.5 0 001.5-1.5V9H3v9a1.5 1.5 0 001.5 1.5z"
-                  />
-                </svg>
+      {!searching && (
+        <div className="bg-light-green-50 w-full max-w-328 gap-3 rounded-none p-4 sm:rounded-xl">
+          <p className="mb-3 text-lg font-semibold sm:text-xl">Featured</p>
+          {loading ? (
+            <BusinessCarouselSkeleton count={4} />
+          ) : featured?.length > 0 ? (
+            <BusinessCarousel businesses={featured} showDots={false} showArrows={false} />
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm sm:py-12">
+              <div className="flex max-w-md flex-col items-center text-center">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-6 w-6 text-gray-400"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.75 9V5.25m4.5 3.75V5.25M3 9h18M4.5 19.5h15a1.5 1.5 0 001.5-1.5V9H3v9a1.5 1.5 0 001.5 1.5z"
+                    />
+                  </svg>
+                </div>
+                <p className="text-base font-semibold text-gray-700">No Featured Businesses</p>
+                <p className="mt-1 text-sm text-gray-500">
+                  Check back later — new businesses may be added soon.
+                </p>
               </div>
-              <p className="text-base font-semibold text-gray-700">No Featured Businesses</p>
-              <p className="mt-1 text-sm text-gray-500">
-                Check back later — new businesses may be added soon.
-              </p>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* All Business Sections */}
-      <div className="mt-6 w-full max-w-328 rounded-xl bg-white p-4 shadow-sm">
-        <p className="mb-4 text-lg font-semibold sm:text-xl">All businesses</p>
+      <div
+        className={`${searching ? "" : "mt-6"} w-full max-w-328 rounded-xl bg-white p-4 shadow-sm`}
+      >
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <p className="text-lg font-semibold sm:text-xl">
+            {!searching
+              ? "All businesses"
+              : searchTerm
+                ? `Showing results for “${searchTerm}”`
+                : "Showing filtered results"}
+          </p>
+          {searching && onClear && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="text-light-green text-body-s cursor-pointer font-semibold"
+            >
+              Clear
+            </button>
+          )}
+        </div>
         <div
           className={`grid gap-2 ${
             !loading && (!businesses || businesses.length === 0)
@@ -151,9 +182,13 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({ businesses, featured,
                     />
                   </svg>
                 </div>
-                <p className="text-base font-semibold text-gray-700">No Businesses</p>
+                <p className="text-base font-semibold text-gray-700">
+                  {searching ? "No businesses found" : "No Businesses"}
+                </p>
                 <p className="mt-1 text-sm text-gray-500">
-                  Check back later — new businesses may be added soon.
+                  {searching
+                    ? "Try a different search or clear the filters."
+                    : "Check back later — new businesses may be added soon."}
                 </p>
               </div>
             </div>

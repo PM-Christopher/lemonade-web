@@ -73,6 +73,7 @@ export interface ServiceRequestJob {
   status: string;
   payment_requested: boolean;
   payment_made: boolean;
+  refunded: boolean;
   is_owner: boolean;
   created_at: string;
 }
@@ -106,6 +107,16 @@ export interface RequestServiceResponse {
 
 export interface GetJobResponse {
   job: ServiceRequestJob;
+}
+
+// Empty values are ignored by the backend. Budget is in naira.
+export interface BusinessFilterParams {
+  search?: string;
+  location?: string;
+  category?: string;
+  service_type?: string;
+  start_range?: string;
+  end_range?: string;
 }
 
 export interface FilterBusinessResponse {
@@ -166,6 +177,12 @@ export interface BusinessReviewsResponse {
   average_rating: number;
 }
 
+export interface ReviewPayload {
+  rating: number;
+  title: string;
+  description: string;
+}
+
 export const businessApi = {
   // Confirm a Paystack checkout after the redirect back to the app.
   verifyJobPayment: (reference: string) =>
@@ -189,6 +206,15 @@ export const businessApi = {
   updateListing: (id: number | string, values: CreateOrUpdateBusinessPayload) =>
     browserApi.patch<BusinessDetailResponse>(buildPath(userListingRoutes.UPDATE, { id }), values),
 
+  deleteListing: (id: number | string) =>
+    browserApi.delete<{ deleted: boolean }>(buildPath(userListingRoutes.DELETE, { id })),
+
+  writeBusinessReview: (id: number | string, data: ReviewPayload) =>
+    browserApi.post<unknown>(buildPath(userBusinessRoutes.WRITE_REVIEW, { id }), data),
+
+  reviewJob: (id: string, data: ReviewPayload) =>
+    browserApi.post<{ message: string }>(buildPath(userBusinessRoutes.JOBS_REVIEW, { id }), data),
+
   boostListing: (id: number | string, data: BoostBusinessPayload) =>
     browserApi.post<BoostBusinessResponse>(buildPath(userListingRoutes.BOOST, { id }), data),
 
@@ -205,7 +231,7 @@ export const businessApi = {
   getBusiness: (id: number | string) =>
     browserApi.get<BusinessDetailResponse>(buildPath(userBusinessRoutes.SHOW, { id })),
 
-  requestService: (id: number, data: unknown) =>
+  requestService: (id: number | string, data: unknown) =>
     browserApi.post<RequestServiceResponse>(
       buildPath(userBusinessRoutes.REQUEST_SERVICE, { id }),
       data,
@@ -219,13 +245,7 @@ export const businessApi = {
       }),
     ),
 
-  filterBusiness: (value: {
-    location: string;
-    category: string;
-    service_type: string;
-    start_range: string;
-    end_range: string;
-  }) =>
+  filterBusiness: (value: BusinessFilterParams) =>
     browserApi.get<FilterBusinessResponse>(userBusinessRoutes.FILTER, {
       params: value,
     }),

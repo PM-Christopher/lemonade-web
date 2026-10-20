@@ -6,7 +6,7 @@ import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import { formatCountry } from "@lemonade/domain";
 import medal from "@/images/icons/medal.png";
-import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira, formatNumber } from "@/lib/formatNumber";
 
 interface BusinessIF {
   business: BusinessInterface;
@@ -84,7 +84,7 @@ const FeaturedBusiness: React.FC<BusinessIF> = ({ business }) => {
           </div>
 
           <p className="text-body-l font-sans font-semibold whitespace-nowrap">
-            ₦{formatNumberWithCommas(business.service_rate)}/hr
+            {formatMinorNaira(business.service_rate)}/hr
           </p>
         </div>
       </div>

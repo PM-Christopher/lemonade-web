@@ -4,11 +4,13 @@ import { appUrl } from "@/lib/app-url";
 import { images } from "@/lib/images";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label, FieldError } from "@lemonade/ui";
+import { Label, FieldError, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { ChevronUp, X } from "lucide-react";
+import { useNavigation } from "@/hooks/useNavigation";
 import ClockIcon from "@/images/icons/clock.svg";
 import CalendarIcon from "@/images/icons/calendar.svg";
 import Image from "next/image";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { boostBusinessSchema, type BoostBusinessInput } from "@/features/business/schema";
@@ -31,6 +33,8 @@ interface BoostPackages {
 
 const BoostBusinessClient = ({ id }: { id: number }) => {
   const dispatch = useAppDispatch();
+  const { back } = useNavigation();
+  const [summaryOpen, setSummaryOpen] = useState(false);
   const [packageTitle, setPackageTitle] = useState("");
   const [selectedPackage, setSelectedPackage] = useState({
     price: 0,
@@ -123,17 +127,56 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
     return d;
   };
 
+  const hasPackage = selectedPackage.duration > 0;
+  const total = hasPackage ? formatMinorNaira(selectedPackage.price) : "-";
+
+  const summaryRows = (
+    <>
+      <div className="mt-4 flex justify-between">
+        <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
+          {packageTitle ? "Featured" : "-"}
+        </p>
+        <p className="text-body-s font-sans font-semibold">
+          {packageTitle ? `₦${packageTitle}` : "-"}
+        </p>
+      </div>
+      <div className="mt-4 flex justify-between">
+        <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
+          {hasPackage
+            ? `${selectedPackage.duration} ${selectedPackage.duration > 1 ? "days" : "day"}`
+            : "-"}
+        </p>
+        <p className="text-body-s font-sans font-semibold">{total}</p>
+      </div>
+      <div className="border-t-mid-grey my-4 border-t"></div>
+      <div className="mt-4 flex justify-between">
+        <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">Subtotal</p>
+        <p className="text-body-s font-sans font-semibold">{total}</p>
+      </div>
+      <div className="border-t-mid-grey my-4 border-t"></div>
+      <div className="mt-4 flex justify-between">
+        <p className="tracking-custom text-text-grey text-body-xl font-sans leading-5.25 font-normal">
+          Total
+        </p>
+        <p className="text-body-xl font-sans leading-5.25 font-semibold">{total}</p>
+      </div>
+    </>
+  );
+
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
-          <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
+          <div
+            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
+            onClick={() => back()}
+          >
             <ChevronLeft />
             <p className="tracking-custom text-body-l font-sans font-semibold">Boost business</p>
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form id="boost-form" onSubmit={handleSubmit(onSubmit)}>
             <div className="laptop:flex-row laptop:justify-between flex flex-col gap-10 gap-y-38.5">
               <div className="flex flex-col">
                 <div className="laptop:w-160 laptop:bg-white w-screen rounded-xl bg-none p-6 px-12">
@@ -188,7 +231,8 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                               index: number,
                             ) => (
                               <option value={index} key={index}>
-                                {pkg.duration} {pkg.duration > 1 ? "days" : "day"}
+                                {pkg.duration} {pkg.duration > 1 ? "days" : "day"} (
+                                {formatMinorNaira(pkg.price)})
                               </option>
                             ),
                           )}
@@ -284,44 +328,9 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
               <div className="laptop:flex hidden flex-col">
                 <div className="w-120 rounded-xl bg-white p-6 px-12">
                   <p className="text-title-r font-sans font-semibold">Summary</p>
-                  <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
-                      Featured
-                    </p>
-                    <p className="text-body-s font-sans font-semibold">₦ {packageTitle}</p>
-                  </div>
-                  <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
-                      {selectedPackage.duration} days
-                    </p>
-                    <p className="text-body-s font-sans font-semibold">
-                      ₦ {formatNumberWithCommas(selectedPackage.price)}
-                    </p>
-                  </div>
-                  <div className="border-t-mid-grey my-4 border-t"></div>
-                  <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey text-body-s font-sans font-normal">
-                      Subtotal
-                    </p>
-                    <p className="text-body-s font-sans font-semibold">
-                      ₦ {formatNumberWithCommas(selectedPackage.price)}
-                    </p>
-                  </div>
-                  <div className="border-t-mid-grey my-4 border-t"></div>
-                  <div className="mt-4 flex justify-between">
-                    <p className="tracking-custom text-text-grey text-body-xl font-sans leading-5.25 font-normal">
-                      Total
-                    </p>
-                    <p className="text-body-xl font-sans leading-5.25 font-semibold">
-                      ₦ {formatNumberWithCommas(selectedPackage.price)}
-                    </p>
-                  </div>
+                  {summaryRows}
                   <div className="mt-6 flex items-center justify-around gap-4 pt-4 pr-4 pl-4">
-                    <div className="">
-                      <p className="text-mid-green font-sans font-bold">
-                        ₦ {formatNumberWithCommas(selectedPackage.price)}
-                      </p>
-                    </div>
+                    <p className="text-mid-green font-sans font-bold">{total}</p>
                     <SubmitButton
                       title="Pay now"
                       isValid={isValid}
@@ -331,23 +340,47 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
                   </div>
                 </div>
               </div>
-              <div className="laptop:hidden border-t">
-                <div className="mt-6 flex items-center justify-around gap-4 pt-4 pr-4 pl-4">
-                  <div className="">
-                    <p className="text-mid-green font-sans font-bold">
-                      ₦ {formatNumberWithCommas(selectedPackage.price)}
-                    </p>
-                  </div>
-                  <SubmitButton
-                    title="Pay now"
-                    isValid={isValid}
-                    loading={isSubmitting}
-                    classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color"
-                  />
-                </div>
-              </div>
             </div>
           </form>
+          <div className="laptop:hidden border-mid-grey fixed inset-x-0 bottom-16 z-40 flex items-center justify-between gap-4 border-t bg-white p-4">
+            <button
+              type="button"
+              onClick={() => setSummaryOpen(true)}
+              className="text-mid-green flex cursor-pointer items-center gap-2 font-sans font-bold"
+              aria-label="View summary"
+            >
+              {total}
+              <ChevronUp className="h-4 w-4" />
+            </button>
+            <SubmitButton
+              form="boost-form"
+              title="Pay now"
+              isValid={isValid}
+              loading={isSubmitting}
+              classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color"
+            />
+          </div>
+          <Dialog open={summaryOpen} onOpenChange={setSummaryOpen}>
+            <DialogContentBare className="laptop:hidden fixed top-auto bottom-0 left-0 w-full max-w-none translate-x-0 translate-y-0 gap-0 rounded-t-2xl rounded-b-none border-0 bg-white p-6">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-title-r font-sans font-semibold">Summary</DialogTitle>
+                <button type="button" aria-label="Close" onClick={() => setSummaryOpen(false)}>
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              {summaryRows}
+              <div className="mt-6 flex items-center justify-between gap-4">
+                <p className="text-mid-green font-sans font-bold">{total}</p>
+                <SubmitButton
+                  form="boost-form"
+                  title="Pay now"
+                  isValid={isValid}
+                  loading={isSubmitting}
+                  classes="px-12 p-3.5 h-12 flex items-center rounded-xl border-step-color"
+                />
+              </div>
+            </DialogContentBare>
+          </Dialog>
         </section>
       </section>
     </MainLayout>

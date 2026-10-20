@@ -31,6 +31,13 @@ export const formatNaira = (value: NumberLike): string =>
     maximumFractionDigits: 2,
   })}`;
 
+/** Display only: kobo from the API as naira, e.g. 200000 becomes "₦2,000". */
+export const formatMinorNaira = (minor: NumberLike): string =>
+  `₦${((toNumber(minor) ?? 0) / 100).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+
+/** Kobo from the API as a plain naira number, for form prefill. */
+export const minorToNaira = (minor: NumberLike): number => (toNumber(minor) ?? 0) / 100;
+
 /** Keeps digits and one decimal point (max 2 decimals) from what the user typed. */
 export const sanitizeMoneyInput = (text: string): string => {
   const cleaned = text.replace(/[^0-9.]/g, "");

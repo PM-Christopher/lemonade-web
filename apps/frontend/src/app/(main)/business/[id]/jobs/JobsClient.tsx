@@ -2,15 +2,20 @@
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
+import ChevronRight from "@/images/icons/chevronRight.svg";
 import JobsCard from "@/components/business/JobsCard";
 
 import { useBusinessJobDataQuery } from "@/features/business/queries";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { useUserProfileQuery } from "@/features/settings/queries";
+import { formatMinorNaira } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
+import HowItWorksModal from "@/components/business/Modals/HowItWorksModal";
+import InfoIcon from "@/images/icons/infoIcon.svg";
 
 const JobsClient = ({ id }: { id: number }) => {
   const { back } = useNavigation();
   const [jobType, setJobType] = useState("in-progress");
+  const [howItWorksOpen, setHowItWorksOpen] = useState(false);
 
   const renderCards = () => {
     switch (jobType) {
@@ -26,11 +31,12 @@ const JobsClient = ({ id }: { id: number }) => {
   };
 
   const { data } = useBusinessJobDataQuery(id);
+  const { data: profile } = useUserProfileQuery();
 
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => back()}
@@ -38,31 +44,51 @@ const JobsClient = ({ id }: { id: number }) => {
             <ChevronLeft />
             <p className="tracking-custom text-body-l font-sans font-semibold">Jobs</p>
           </div>
+          <button
+            type="button"
+            aria-label="How it works"
+            className="cursor-pointer"
+            onClick={() => setHowItWorksOpen(true)}
+          >
+            <InfoIcon />
+          </button>
         </div>
+        <HowItWorksModal
+          isOpen={howItWorksOpen}
+          onClose={() => setHowItWorksOpen(false)}
+          variant="owner"
+          serviceFeePercent={profile?.subscriptions?.benefits.service_commission}
+        />
         <section className="mt-6 flex flex-col items-center">
-          <div className="laptop:flex-row flex w-full max-w-320 flex-col gap-6">
+          <div className="laptop:flex-row laptop:px-6 flex w-full max-w-320 flex-col gap-6 px-4">
             {/* Stats Card */}
             <div className="laptop:w-145 w-full">
-              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-md">
+              <div className="laptop:p-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
                 {[
-                  {
-                    label: "Revenue",
-                    value: `N${formatNumberWithCommas(data?.count?.revenue ?? 0)}`,
-                  },
-                  { label: "In-progress", value: data?.count?.in_progress },
-                  { label: "Completed", value: data?.count?.completed },
-                  { label: "Requests", value: data?.count?.sent_offers },
+                  { label: "Revenue", value: formatMinorNaira(data?.count?.revenue), tab: null },
+                  { label: "In-progress", value: data?.count?.in_progress, tab: "in-progress" },
+                  { label: "Completed", value: data?.count?.completed, tab: "completed" },
+                  { label: "Requests", value: data?.count?.sent_offers, tab: "sent-offers" },
                 ].map((item, index, arr) => (
-                  <div key={item.label} className="py-3">
-                    <p className="text-text-grey text-body-s font-normal">{item.label}</p>
-
-                    <p className="tracking-custom text-title-r mt-1 leading-8 font-semibold">
-                      {item.value}
-                    </p>
-
-                    {/* Premium Divider */}
+                  <div key={item.label}>
+                    <button
+                      type="button"
+                      disabled={item.tab === null}
+                      onClick={() => item.tab && setJobType(item.tab)}
+                      className="laptop:cursor-default laptop:py-3 flex w-full items-center justify-between py-2 text-left"
+                    >
+                      <span>
+                        <span className="text-text-grey text-body-s block font-normal">
+                          {item.label}
+                        </span>
+                        <span className="tracking-custom text-title-r mt-1 block leading-8 font-semibold">
+                          {item.value}
+                        </span>
+                      </span>
+                      {item.tab && <ChevronRight className="text-text-grey laptop:hidden" />}
+                    </button>
                     {index !== arr.length - 1 && (
-                      <div className="my-5 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                      <div className="laptop:my-5 my-2 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                     )}
                   </div>
                 ))}
@@ -88,7 +114,7 @@ const JobsClient = ({ id }: { id: number }) => {
                   {[
                     { key: "in-progress", label: "In-progress" },
                     { key: "completed", label: "Completed" },
-                    { key: "sent-offers", label: "Received offers" },
+                    { key: "sent-offers", label: "Sent offers" },
                   ].map((tab) => {
                     const isActive = jobType === tab.key;
 

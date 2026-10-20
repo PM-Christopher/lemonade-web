@@ -5,6 +5,7 @@ import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
+import { RichTextField } from "@/components/global/RichTextField";
 import { Label, Input, FieldError } from "@lemonade/ui";
 import MessageIcon from "@/images/icons/messageIcon.svg";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
@@ -26,6 +27,10 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import MainLayout from "@/components/layouts/MainLayout";
 import { errorMessage } from "@/lib/api-error";
+import BusinessBankModal from "@/components/business/Modals/BusinessBankModal";
+import UpgradePlanCard from "@/components/business/UpgradePlanCard";
+import { useCanListBusiness } from "@/hooks/useCanListBusiness";
+import { useBankAccountQuery } from "@/features/settings/queries";
 
 interface businessCategories {
   value: string;
@@ -37,6 +42,9 @@ const AddBusinessClient = () => {
   const dispatch = useAppDispatch();
   const createListingMutation = useCreateListingMutation();
   const [inputValue, setInputValue] = useState("");
+  const [pendingValues, setPendingValues] = useState<CreateBusinessInput | null>(null);
+  const { canList } = useCanListBusiness();
+  const { data: bankData } = useBankAccountQuery();
 
   const {
     register,
@@ -97,7 +105,7 @@ const AddBusinessClient = () => {
     }));
   }, [data]);
 
-  const onSubmit = async (values: CreateBusinessInput) => {
+  const createListing = async (values: CreateBusinessInput) => {
     const rate = values.service_rate?.replace(/,/g, "") ?? "";
     try {
       await createListingMutation.mutateAsync({
@@ -141,10 +149,44 @@ const AddBusinessClient = () => {
     }
   };
 
+  // Payouts need a bank account, so ask for one before the first listing.
+  const onSubmit = async (values: CreateBusinessInput) => {
+    if (bankData && bankData.bank_account === null) {
+      setPendingValues(values);
+      return;
+    }
+    await createListing(values);
+  };
+
+  const onBankSaved = () => {
+    const values = pendingValues;
+    setPendingValues(null);
+    if (values) void createListing(values);
+  };
+
+  if (!canList) {
+    return (
+      <MainLayout>
+        <section className="bg-white pb-10">
+          <div className="flex items-center gap-2 bg-white p-3 px-10">
+            <ChevronLeft className="cursor-pointer" onClick={() => back()} />
+            <p className="tracking-custom text-body-l font-sans font-semibold">Add business</p>
+          </div>
+          <UpgradePlanCard />
+        </section>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
+      <BusinessBankModal
+        isOpen={pendingValues !== null}
+        toggle={() => setPendingValues(null)}
+        onSaved={onBankSaved}
+      />
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div className="flex items-center gap-2 rounded-xl p-1 pr-4 pl-1">
             <ChevronLeft className="cursor-pointer" onClick={() => back()} />
             <p className="tracking-custom text-body-l font-sans font-semibold">Add business</p>
@@ -207,10 +249,18 @@ const AddBusinessClient = () => {
                 >
                   Business description
                 </Label>
-                <textarea
-                  className="form-font bg-light_grey h-32.75 resize-none rounded-xl border-0 p-4"
-                  {...register("description")}
-                ></textarea>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <RichTextField
+                      id="description"
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
+                />
                 <FieldError message={errors.description?.message} />
               </div>
               <p className="text-light-black text-meta mt-12 font-sans font-bold">

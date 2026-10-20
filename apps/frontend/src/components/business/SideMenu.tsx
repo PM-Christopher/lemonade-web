@@ -37,11 +37,11 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
   return (
     <>
       <div
-        className={`bg-opacity-50 fixed top-0 right-0 z-50 h-full transform bg-gray-800 transition-transform ${
+        className={`fixed top-0 right-0 z-50 h-full transform bg-white transition-transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="laptop:w-146.25 h-full w-screen bg-white p-12 px-5">
+        <div className="laptop:w-146.25 flex h-full w-screen flex-col bg-white px-5 pt-12">
           <div className="flex items-center justify-between">
             <div>
               <p className="tracking-custom text-body-l font-sans font-semibold">Jobs</p>
@@ -66,7 +66,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
               {[
                 { key: "in-progress", label: "In-progress" },
                 { key: "completed", label: "Completed" },
-                { key: "sent-offers", label: "Received offers" },
+                { key: "sent-offers", label: "Sent offers" },
               ].map((tab) => {
                 const isActive = jobType === tab.key;
 
@@ -87,7 +87,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
             </div>
           </div>
 
-          <div className="mt-8 h-screen p-4 px-8">
+          <div className="laptop:px-8 mt-8 min-h-0 flex-1 overflow-y-auto px-4 pb-6">
             {loading ? <JobListSkeleton count={6} /> : renderCards()}
           </div>
         </div>
@@ -95,7 +95,7 @@ const SideMenu: React.FC<SideMenuInterface> = ({ toggleMenu, isOpen, detailsTogg
       {isOpen && (
         <div
           className={`fixed inset-0 z-10 transition-all duration-300 ${
-            isOpen ? "bg-opacity-50 bg-black backdrop-blur-sm" : "bg-transparent"
+            isOpen ? "bg-black/50 backdrop-blur-sm" : "bg-transparent"
           }`}
           onClick={toggleMenu}
         ></div>

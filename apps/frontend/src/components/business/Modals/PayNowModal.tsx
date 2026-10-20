@@ -3,7 +3,7 @@ import { appUrl } from "@/lib/app-url";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
 import { useMakeJobPaymentMutation } from "@/features/business/mutations";
@@ -72,7 +72,7 @@ const PayNowModal = ({
           <div className="mt-2 flex flex-col items-center py-4">
             <div className="border-mid-green bg-light-green-10 gap-2 rounded-lg border border-dashed p-7.75 px-25.5">
               <p className="font-semiBold text-mid-green text-title-l leading-normal">
-                ₦{formatNumberWithCommas(job?.amount ?? 0)}
+                {formatMinorNaira(job?.amount)}
               </p>
             </div>
             <p className="text-body-s mt-4 font-normal">

@@ -4,7 +4,7 @@ import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
 import Image from "next/image";
 import { Button, Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira } from "@/lib/formatNumber";
 
 export interface PaymentConfirmJob {
   amount?: number;
@@ -64,7 +64,7 @@ const PaymentConfirmModal = ({
           <div className="mt-6">
             <p className="text-text-grey text-body-s">Amount paid</p>
             <p className="text-title-r mt-1 leading-normal font-semibold">
-              N{formatNumberWithCommas(job?.amount ?? 0)}
+              {formatMinorNaira(job?.amount)}
             </p>
           </div>
 

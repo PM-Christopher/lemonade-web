@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import BusinessSection from "@/components/business/Sections/BusinessSection";
+import { useCanListBusiness } from "@/hooks/useCanListBusiness";
 import ListingSection from "@/components/business/Sections/ListingSection";
 import BusinessSubMenu from "@/components/business/Menu/BusinessSubMenu";
 import SideMenu from "@/components/business/SideMenu";
@@ -8,7 +9,13 @@ import { useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import BusinessFilter from "@/components/business/Modals/BusinessFilter";
 import { RootState } from "@/redux/store";
-import { useBusinessesQuery, useListingsQuery } from "@/features/business/queries";
+import {
+  useBusinessesQuery,
+  useBusinessSearchQuery,
+  useListingsQuery,
+} from "@/features/business/queries";
+import useDebounce from "@/hooks/useDebounce";
+import type { BusinessFilterInput } from "@/features/business/schema";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import dynamic from "next/dynamic";
 
@@ -18,6 +25,14 @@ const ServiceDetailsModal = dynamic(
   () => import("@/components/business/Modals/ServiceDetailsModal"),
   { ssr: false },
 );
+
+const EMPTY_FILTERS: BusinessFilterInput = {
+  category: "",
+  location: "",
+  service_type: "",
+  start_range: "",
+  end_range: "",
+};
 
 const BusinessListClient = () => {
   const { setActive, getActive } = usePersistentMenuState();
@@ -33,6 +48,9 @@ const BusinessListClient = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isServiceOpen, setItServiceOpen] = useState(false);
   const [businessFilter, setBusinessFilter] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<BusinessFilterInput>(EMPTY_FILTERS);
+  const { debouncedValue: debouncedSearch } = useDebounce(search.trim(), 350);
 
   const { selectedJob: job } = useSelector((state: RootState) => state.temp);
   const { data: businessesData, isLoading: businessesLoading } = useBusinessesQuery({
@@ -41,10 +59,27 @@ const BusinessListClient = () => {
   const { data: listingsData, isLoading: listingsLoading } = useListingsQuery({
     enabled: menuOption === "listings",
   });
-  const businesses = businessesData?.businesses ?? [];
+  const { canList } = useCanListBusiness();
+  const filterActive = Object.values(filters).some(Boolean);
+  const searchParams = {
+    search: debouncedSearch,
+    category: filters.category,
+    location: filters.location,
+    service_type: filters.service_type,
+    start_range: filters.start_range,
+    end_range: filters.end_range,
+  };
+  const searching = menuOption === "business" && (debouncedSearch !== "" || filterActive);
+  const { data: searchData, isLoading: searchLoading } = useBusinessSearchQuery(searchParams, {
+    enabled: searching,
+  });
+  const businesses = searching
+    ? (searchData?.businesses ?? [])
+    : (businessesData?.businesses ?? []);
   const featured = businessesData?.featured ?? [];
   const listings = listingsData?.listings ?? [];
-  const loading = menuOption === "business" ? businessesLoading : listingsLoading;
+  const loading =
+    menuOption === "business" ? (searching ? searchLoading : businessesLoading) : listingsLoading;
   const jobLoading = false;
 
   const switchOption = (option: string) => {
@@ -66,22 +101,61 @@ const BusinessListClient = () => {
   const renderView = () => {
     switch (menuOption) {
       case "business":
-        return <BusinessSection businesses={businesses} loading={loading} featured={featured} />;
+        return (
+          <BusinessSection
+            businesses={businesses}
+            loading={loading}
+            featured={featured}
+            searching={searching}
+            searchTerm={debouncedSearch}
+            onClear={clearSearch}
+          />
+        );
       case "listings":
-        return <ListingSection businesses={listings} loading={loading} />;
+        return <ListingSection businesses={listings} loading={loading} canList={canList} />;
       default:
-        return <BusinessSection businesses={businesses} featured={featured} loading={loading} />;
+        return (
+          <BusinessSection
+            businesses={businesses}
+            loading={loading}
+            featured={featured}
+            searching={searching}
+            searchTerm={debouncedSearch}
+            onClear={clearSearch}
+          />
+        );
     }
+  };
+
+  const clearSearch = () => {
+    setSearch("");
+    setFilters(EMPTY_FILTERS);
   };
 
   const renderSubMenu = () => {
     switch (menuOption) {
       case "business":
-        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
+        return (
+          <BusinessSubMenu
+            toggle={toggleMenu}
+            toggleBusiness={toggleBusinessFilter}
+            search={search}
+            onSearch={setSearch}
+            filterActive={filterActive}
+          />
+        );
       case "listings":
         return <></>;
       default:
-        return <BusinessSubMenu toggle={toggleMenu} toggleBusiness={toggleBusinessFilter} />;
+        return (
+          <BusinessSubMenu
+            toggle={toggleMenu}
+            toggleBusiness={toggleBusinessFilter}
+            search={search}
+            onSearch={setSearch}
+            filterActive={filterActive}
+          />
+        );
     }
   };
 
@@ -106,7 +180,7 @@ const BusinessListClient = () => {
 
             {[
               { key: "business", label: "Business" },
-              { key: "listings", label: "Listings" },
+              { key: "listings", label: "Listing" },
             ].map((tab) => {
               const isActive = menuOption === tab.key;
 
@@ -144,7 +218,13 @@ const BusinessListClient = () => {
             loading={jobLoading}
           />
         )}
-        <BusinessFilter toggle={toggleBusinessFilter} isOpen={businessFilter} />
+        <BusinessFilter
+          toggle={toggleBusinessFilter}
+          isOpen={businessFilter}
+          values={filters}
+          onApply={setFilters}
+          onReset={() => setFilters(EMPTY_FILTERS)}
+        />
       </section>
     </MainLayout>
   );

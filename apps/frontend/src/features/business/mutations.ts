@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   businessApi,
   type BoostBusinessPayload,
-  type BusinessListResponse,
   type CreateOrUpdateBusinessPayload,
+  type ReviewPayload,
 } from "./api";
 import { businessKeys } from "./queries";
 
@@ -37,7 +37,7 @@ export function useBoostListingMutation(id: number | string | undefined) {
   });
 }
 
-export function useRequestServiceMutation(id: number) {
+export function useRequestServiceMutation(id: number | string) {
   return useMutation({
     mutationFn: (data: unknown) => businessApi.requestService(id, data),
   });
@@ -51,26 +51,37 @@ export function useGetJobMutation() {
   });
 }
 
-export function useFilterBusinessMutation() {
+export function useDeleteListingMutation(id: number | string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (value: {
-      location: string;
-      category: string;
-      service_type: string;
-      start_range: string;
-      end_range: string;
-    }) => businessApi.filterBusiness(value),
-    onSuccess: (result) => {
-      // Filtering replaces what's shown as "businesses" — write
-      // straight into the businesses query's cache rather than a
-      // separate piece of state, so BusinessSection (which reads that
-      // query) reflects the filtered results without extra plumbing.
-      queryClient.setQueryData<BusinessListResponse>(businessKeys.businesses(), (old) => ({
-        businesses: result.businesses,
-        featured: old?.featured ?? [],
-      }));
+    mutationFn: () => businessApi.deleteListing(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: businessKeys.listings() });
+      queryClient.invalidateQueries({ queryKey: businessKeys.businesses() });
+    },
+  });
+}
+
+export function useWriteBusinessReviewMutation(id: number | string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ReviewPayload) => businessApi.writeBusinessReview(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: businessKeys.reviews(id) });
+      queryClient.invalidateQueries({ queryKey: businessKeys.detail(id) });
+    },
+  });
+}
+
+export function useReviewJobMutation(id: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ReviewPayload) => businessApi.reviewJob(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: businessKeys.all() });
     },
   });
 }
@@ -81,7 +92,7 @@ export function useMarkJobRequestMutation(id: string) {
   return useMutation({
     mutationFn: (data: unknown) => businessApi.markJobRequest(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: businessKeys.jobsData() });
+      queryClient.invalidateQueries({ queryKey: businessKeys.all() });
     },
   });
 }
@@ -92,7 +103,7 @@ export function useRequestJobPaymentMutation(id: string) {
   return useMutation({
     mutationFn: () => businessApi.requestJobPayment(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: businessKeys.jobsData() });
+      queryClient.invalidateQueries({ queryKey: businessKeys.all() });
     },
   });
 }
@@ -113,7 +124,7 @@ export function useMarkJobCompletedMutation(id: string) {
       // reducer manually moved the job between in_progress/completed
       // arrays client-side; this refetches the authoritative list
       // instead.
-      queryClient.invalidateQueries({ queryKey: businessKeys.jobsData() });
+      queryClient.invalidateQueries({ queryKey: businessKeys.all() });
     },
   });
 }
@@ -124,7 +135,7 @@ export function useDisputeJobMutation(id: string) {
   return useMutation({
     mutationFn: (data: unknown) => businessApi.disputeJob(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: businessKeys.jobsData() });
+      queryClient.invalidateQueries({ queryKey: businessKeys.all() });
     },
   });
 }

@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { businessApi } from "./api";
+import { businessApi, type BusinessFilterParams } from "./api";
 
 export const businessKeys = {
   all: () => ["business"] as const,
   businesses: () => [...businessKeys.all(), "businesses"] as const,
+  search: (params: BusinessFilterParams) => [...businessKeys.all(), "search", params] as const,
   listings: () => [...businessKeys.all(), "listings"] as const,
   detail: (id: number | string) => [...businessKeys.all(), "detail", id] as const,
   jobsData: () => [...businessKeys.all(), "jobsData"] as const,
@@ -18,6 +19,19 @@ export function useBusinessesQuery(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: businessKeys.businesses(),
     queryFn: businessApi.getBusinesses,
+    staleTime: 5 * 60_000,
+    enabled: options?.enabled,
+  });
+}
+
+// Search and filter results over other users' businesses — discovery content (5m).
+export function useBusinessSearchQuery(
+  params: BusinessFilterParams,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: businessKeys.search(params),
+    queryFn: () => businessApi.filterBusiness(params),
     staleTime: 5 * 60_000,
     enabled: options?.enabled,
   });

@@ -9,13 +9,16 @@ import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { AllBusinessSkeleton } from "@/components/Skeletons";
 import Link from "next/link";
 import AllBusinessCard from "@/components/business/AllBusinessCard";
+import UpgradePlanCard from "@/components/business/UpgradePlanCard";
 
 interface ListingInterface {
   businesses: BusinessInterface[];
   loading: boolean;
+  // False when the user's plan does not include listing a business.
+  canList?: boolean;
 }
 
-const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => {
+const ListingSection: React.FC<ListingInterface> = ({ businesses, loading, canList = true }) => {
   const { push } = useNavigation();
 
   return (
@@ -28,6 +31,8 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
             <AllBusinessSkeleton count={8} />
           </div>
         </div>
+      ) : businesses?.length === 0 && !canList ? (
+        <UpgradePlanCard />
       ) : businesses?.length === 0 ? (
         // Empty State
         <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
@@ -56,12 +61,14 @@ const ListingSection: React.FC<ListingInterface> = ({ businesses, loading }) => 
         <div className="mt-6 w-full max-w-328 rounded-xl bg-white p-4 pb-5 shadow-sm">
           <div className={"flex items-center justify-between"}>
             <h2 className="mb-4 font-sans text-lg font-semibold sm:text-xl">All Listings</h2>
-            <Button
-              className="bg-gradient-green h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
-              onClick={() => push(routes.BUSINESS_ADD)}
-            >
-              <span className="font-semi-normal text-base">Add business</span>
-            </Button>
+            {canList && (
+              <Button
+                className="bg-gradient-green h-12 rounded-xl px-8 transition-opacity hover:opacity-90 sm:px-12"
+                onClick={() => push(routes.BUSINESS_ADD)}
+              >
+                <span className="font-semi-normal text-base">Add business</span>
+              </Button>
+            )}
           </div>
           <div className="laptop:grid-cols-4 grid grid-cols-1 gap-2">
             {businesses.map((business: BusinessInterface) => (

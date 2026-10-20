@@ -16,6 +16,7 @@ import { apiMessage } from "@/lib/api-message";
 import { useAppDispatch } from "@/redux/hook";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
+import { RichTextField } from "@/components/global/RichTextField";
 import { Label, Input, FieldError } from "@lemonade/ui";
 import { MultiSelect } from "@/components/ui/multi-select";
 import CountryList from "country-list-with-dial-code-and-flag";
@@ -25,6 +26,7 @@ import MessageIcon from "@/images/icons/messageIcon.svg";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
 import { SubmitButton } from "@/components/global/SubmitButton";
+import { minorToNaira } from "@/lib/formatNumber";
 import MainLayout from "@/components/layouts/MainLayout";
 import { errorMessage } from "@/lib/api-error";
 
@@ -37,15 +39,8 @@ const EditBusinessClient = ({ id }: { id: number }) => {
   const { push, back } = useNavigation();
   const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState("");
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
 
   const { data } = useBusinessQuery(id);
-  const business = data?.business;
-  const [seenBusinessId, setSeenBusinessId] = useState(business?.id);
-  if (business && business.id !== seenBusinessId) {
-    setSeenBusinessId(business.id);
-    setSelectedFrameworks([...(business.categories ?? [])]);
-  }
   const updateListingMutation = useUpdateListingMutation(id);
   const { data: categories } = useBusinessCategoriesQuery();
   const frameworksList = useMemo<businessCategories[]>(() => {
@@ -110,7 +105,6 @@ const EditBusinessClient = ({ id }: { id: number }) => {
 
   useEffect(() => {
     if (!data?.business) return;
-    // API returns service_rate in minor units; keep existing prefill (no /100) for edit continuity.
     const rate = data.business.service_rate;
     reset({
       image: data.business.image ?? "",
@@ -120,7 +114,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
       city: data.business.city ?? "",
       country: data.business.country ?? "",
       services: data.business.services ?? [],
-      service_rate: rate != null && rate !== undefined ? String(rate) : "",
+      service_rate: rate != null ? String(minorToNaira(rate)) : "",
       gallery: data.business.gallery ?? [],
       email: data.business.email ?? "",
       phone_number: data.business.phone_number ?? "",
@@ -175,7 +169,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
   return (
     <MainLayout>
       <section className="laptop:bg-light_grey bg-white pb-10">
-        <div className="border-b-grey-20 border-t-grey-20 flex items-center justify-between border-t border-b bg-white p-3 px-10">
+        <div className="flex items-center justify-between bg-white p-3 px-10">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => back()}
@@ -226,7 +220,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                     <MultiSelect
                       options={frameworksList}
                       onValueChange={field.onChange}
-                      defaultValue={selectedFrameworks}
+                      defaultValue={field.value}
                       placeholder="Select Category"
                       className="form-font bg-light_grey h-12 rounded-xl border-0 shadow-none"
                     />
@@ -241,10 +235,18 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 >
                   Business description
                 </Label>
-                <textarea
-                  className="form-font bg-light_grey h-32.75 resize-none rounded-xl border-0 p-4"
-                  {...register("description")}
-                ></textarea>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <RichTextField
+                      id="description"
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                    />
+                  )}
+                />
                 <FieldError message={errors.description?.message} />
               </div>
               <p className="text-light-black text-meta mt-12 font-sans font-bold">
