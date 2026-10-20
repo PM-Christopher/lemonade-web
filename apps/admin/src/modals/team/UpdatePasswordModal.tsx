@@ -16,6 +16,8 @@ interface UpdatePasswordModalProps {
   toggle: () => void;
   // Sends the change for whoever's password this is (the admin's own, or a team member's).
   submit: (values: ChangePasswordInput) => Promise<unknown>;
+  // Whose password the "Current password" field asks for, when it is not the one being changed.
+  currentPasswordHint?: string;
 }
 
 const FIELDS: { name: keyof ChangePasswordInput; label: string }[] = [
@@ -24,7 +26,12 @@ const FIELDS: { name: keyof ChangePasswordInput; label: string }[] = [
   { name: "new_password_confirmation", label: "Confirm password" },
 ];
 
-function UpdatePasswordModal({ isOpen, toggle, submit }: UpdatePasswordModalProps) {
+function UpdatePasswordModal({
+  isOpen,
+  toggle,
+  submit,
+  currentPasswordHint,
+}: UpdatePasswordModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const {
     register,
@@ -98,6 +105,9 @@ function UpdatePasswordModal({ isOpen, toggle, submit }: UpdatePasswordModalProp
                   className="form-font bg-light_grey h-12 rounded-xl border-0"
                   {...register(name)}
                 />
+                {name === "password" && currentPasswordHint && (
+                  <p className="text-text-grey text-meta font-normal">{currentPasswordHint}</p>
+                )}
                 <FieldError message={errors[name]?.message} />
               </div>
             ))}

@@ -17,6 +17,19 @@ const fill = (current: string, next: string, confirm: string) => {
 };
 
 describe("UpdatePasswordModal", () => {
+  it("says whose password the current-password field wants when asked", () => {
+    render(
+      <UpdatePasswordModal
+        isOpen
+        toggle={toggle}
+        submit={submit}
+        currentPasswordHint="Enter your own password to confirm the change."
+      />,
+    );
+
+    expect(screen.getByText("Enter your own password to confirm the change.")).toBeInTheDocument();
+  });
+
   beforeEach(() => {
     submit.mockReset();
     toggle.mockReset();

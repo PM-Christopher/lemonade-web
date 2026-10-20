@@ -186,7 +186,7 @@ export const RichTextField = ({
             <input
               ref={videoInput}
               type="file"
-              accept="video/mp4,video/quicktime"
+              accept="video/mp4,video/quicktime,video/webm"
               className="hidden"
               aria-label="Video file"
               onChange={(event) => {

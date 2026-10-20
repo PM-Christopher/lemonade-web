@@ -192,6 +192,7 @@ function TeamDetailsClient({ id }: { id: string }) {
         isOpen={passwordOpen}
         toggle={() => setPasswordOpen(false)}
         submit={(values) => changePassword.mutateAsync(values)}
+        currentPasswordHint="Enter your own password to confirm the change."
       />
       <RemoveTeamMemberModal
         isOpen={removeOpen}
