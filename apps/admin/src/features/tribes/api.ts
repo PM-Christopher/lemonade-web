@@ -11,6 +11,8 @@ import type { AddTribeThreadInput, CreateTribeInput } from "./schema";
 export interface AdminTribeListItem {
   id: string;
   uuid: string;
+  // Short readable id such as TR12345.
+  display_id: string;
   name: string;
   image: string | null;
   category: string;
@@ -51,6 +53,12 @@ export interface TribeThread {
   thoughts: string;
   pinned: boolean;
   created_at: string;
+  likes_count?: number;
+  comments_count?: number;
+  poll?: {
+    title: string;
+    options: Array<{ id: string; content: string; votes_count?: number }>;
+  } | null;
   media?: string[] | null;
   videos?: string[] | null;
   tags?: string[] | null;
@@ -70,6 +78,7 @@ export type TribeStatus = "PENDING" | "ACTIVE" | "INACTIVE" | "CLOSED" | "RESTRI
 export interface TribeDetail {
   id: string;
   uuid?: string;
+  display_id?: string;
   image: string | null;
   name: string;
   category: string;

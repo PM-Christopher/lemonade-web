@@ -12,11 +12,6 @@ import { XIcon } from "lucide-react";
 import {
   Input,
   Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Textarea,
   Dialog,
   DialogContentBare,
@@ -26,6 +21,7 @@ import {
 import { ApiError } from "@lemonade/api-client";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { CategoryPicker } from "@/components/tribes/CategoryPicker";
 import { tribesApi } from "@/features/tribes/api";
 import { useTribeCategoriesQuery } from "@/features/tribes/queries";
 import { useCreateTribeMutation } from "@/features/tribes/mutations";
@@ -196,22 +192,12 @@ const CreateTribeModal = ({ isOpen, toggle }: CreateTribeModalProps) => {
                   name="category"
                   control={control}
                   render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        id="category"
-                        aria-label="Category"
-                        className="bg-light_grey h-12 rounded-xl border-0"
-                      >
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent className="form-font">
-                        {categoriesData?.categories.map((category) => (
-                          <SelectItem value={category.name} key={category.name}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <CategoryPicker
+                      id="category"
+                      value={field.value}
+                      options={categoriesData?.categories.map((category) => category.name) ?? []}
+                      onChange={field.onChange}
+                    />
                   )}
                 />
                 {errors.category && (

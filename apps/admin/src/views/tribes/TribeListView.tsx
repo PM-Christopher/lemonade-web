@@ -58,7 +58,7 @@ const TribeListView = ({
   const tribes = (data?.tribes ?? []).filter(FILTERS[filter]).filter((tribe) => {
     const matchesSearch =
       term === "" ||
-      [tribe.name, tribe.uuid, tribe.created_by, tribe.category].some((value) =>
+      [tribe.name, tribe.display_id, tribe.uuid, tribe.created_by, tribe.category].some((value) =>
         value?.toLowerCase().includes(term),
       );
     const created = dayjs(tribe.date_created);
@@ -97,7 +97,7 @@ const TribeListView = ({
                 className="border-grey-20 h-18 cursor-pointer border-b"
                 onClick={() => push(routes.TRIBE_DETAIL(tribe.id))}
               >
-                <td className="p-4 font-sans text-sm font-medium">{tribe.uuid}</td>
+                <td className="p-4 font-sans text-sm font-medium">{tribe.display_id}</td>
                 <td className="p-4 font-sans text-sm font-medium">{tribe.name}</td>
                 <td className="p-4 font-sans text-sm font-medium">{tribe.created_by}</td>
                 <td className="p-4 font-sans text-sm font-medium">{tribe.category}</td>

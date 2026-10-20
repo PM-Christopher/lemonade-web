@@ -35,9 +35,9 @@ const TribeDetails = ({
             className="rounded"
           />
           <p className="font-semiBold text-body-l text-center">{tribe?.name}</p>
-          {tribe?.uuid && (
+          {tribe?.display_id && (
             <p className="text-text-grey text-meta leading-normal font-normal">
-              ID: <span className="font-semibold text-black">{tribe.uuid}</span>
+              ID: <span className="font-semibold text-black">{tribe.display_id}</span>
             </p>
           )}
           <p className={"text-text-grey text-body-s font-medium italic"}>{tribe?.category}</p>

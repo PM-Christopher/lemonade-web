@@ -17,6 +17,15 @@ export const addTribeThreadSchema = z.object({
   media: z.array(z.string()).optional(),
   videos: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
+  polls: z.boolean().optional(),
+  thread_polls: z
+    .object({
+      title: z.string().min(1, "Poll question is required").max(255),
+      options: z.array(z.string().min(1).max(100)).min(2, "Add at least two options"),
+      start_at: z.string().min(1),
+      end_at: z.string().min(1),
+    })
+    .optional(),
 });
 
 export type AddTribeThreadInput = z.infer<typeof addTribeThreadSchema>;

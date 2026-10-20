@@ -36,7 +36,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 function JobItem({ job, onOpen }: { job: ServiceJobRow; onOpen: () => void }) {
-  const place = [job.business?.city, job.business?.country].filter(Boolean).join(", ");
+  const place = job.client?.location ?? "";
   return (
     <button
       type="button"
@@ -44,7 +44,7 @@ function JobItem({ job, onOpen }: { job: ServiceJobRow; onOpen: () => void }) {
       onClick={onOpen}
     >
       <div className="flex items-center justify-between">
-        <AvatarName name={job.client?.name} image={job.business?.image} />
+        <AvatarName name={job.client?.name} image={job.client?.image} />
         <ChevronRight className="text-text-grey h-4 w-4" />
       </div>
       <p className="text-text-grey text-meta">{place || "N/A"}</p>

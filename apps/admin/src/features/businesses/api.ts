@@ -61,7 +61,7 @@ export interface ServiceJobRow {
     city: string;
     country: string;
   } | null;
-  client: { id: string; name: string } | null;
+  client: { id: string; name: string; image: string | null; location: string | null } | null;
   // Server-formatted naira.
   amount: string;
   services: string[];

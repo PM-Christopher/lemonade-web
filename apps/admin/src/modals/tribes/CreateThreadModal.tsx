@@ -1,7 +1,8 @@
 "use client";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { ImageIcon, PlusIcon, VideoIcon, XIcon } from "lucide-react";
+import dayjs from "dayjs";
+import { ImageIcon, ListChecksIcon, PlusIcon, VideoIcon, XIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContentBare, DialogTitle, Input, Textarea } from "@lemonade/ui";
@@ -12,6 +13,8 @@ import { tribesApi } from "@/features/tribes/api";
 import { useAddTribeThreadMutation } from "@/features/tribes/mutations";
 import { addTribeThreadSchema, type AddTribeThreadInput } from "@/features/tribes/schema";
 import { errorMessage } from "@/lib/api-error";
+
+const LOCAL_FORMAT = "YYYY-MM-DDTHH:mm";
 
 interface CreateThreadModalProps {
   isOpen: boolean;
@@ -31,6 +34,12 @@ function CreateThreadModal({ isOpen, toggle, tribeId }: CreateThreadModalProps) 
   const [tagText, setTagText] = useState("");
   const [addingTag, setAddingTag] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [pollOn, setPollOn] = useState(false);
+  const [pollTitle, setPollTitle] = useState("");
+  const [pollOptions, setPollOptions] = useState(["", ""]);
+  const [pollStart, setPollStart] = useState(() => dayjs().format(LOCAL_FORMAT));
+  const [pollEnd, setPollEnd] = useState(() => dayjs().add(1, "day").format(LOCAL_FORMAT));
+  const [pollError, setPollError] = useState<string | null>(null);
 
   const {
     register,
@@ -75,12 +84,40 @@ function CreateThreadModal({ isOpen, toggle, tribeId }: CreateThreadModalProps) 
     setTags([]);
     setTagText("");
     setAddingTag(false);
+    setPollOn(false);
+    setPollTitle("");
+    setPollOptions(["", ""]);
+    setPollError(null);
     toggle();
   };
 
   const onSubmit = (data: AddTribeThreadInput) => {
+    const options = pollOptions.map((option) => option.trim()).filter(Boolean);
+
+    if (pollOn) {
+      if (!pollTitle.trim()) return setPollError("Add a poll question.");
+      if (options.length < 2) return setPollError("Add at least two options.");
+      if (!dayjs(pollEnd).isAfter(dayjs(pollStart)))
+        return setPollError("The end must be after the start.");
+    }
+
+    setPollError(null);
     addThreadMutation.mutate(
-      { ...data, media: images, videos, tags },
+      {
+        ...data,
+        media: images,
+        videos,
+        tags,
+        ...(pollOn && {
+          polls: true,
+          thread_polls: {
+            title: pollTitle.trim(),
+            options,
+            start_at: dayjs(pollStart).toISOString(),
+            end_at: dayjs(pollEnd).toISOString(),
+          },
+        }),
+      },
       {
         onSuccess: close,
         onError: (error) => toast(errorMessage(error, "Something went wrong")),
@@ -169,6 +206,66 @@ function CreateThreadModal({ isOpen, toggle, tribeId }: CreateThreadModalProps) 
                 ))}
               </div>
             )}
+            {pollOn && (
+              <div className="border-grey-20 flex flex-col gap-2 rounded-xl border p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-body-s font-semibold">Poll</p>
+                  <button type="button" aria-label="Remove poll" onClick={() => setPollOn(false)}>
+                    <XIcon className="h-4 w-4" />
+                  </button>
+                </div>
+                <Input
+                  aria-label="Poll question"
+                  placeholder="Poll question"
+                  value={pollTitle}
+                  onChange={(event) => setPollTitle(event.target.value)}
+                />
+                {pollOptions.map((option, index) => (
+                  <Input
+                    key={index}
+                    aria-label={`Option ${index + 1}`}
+                    placeholder={`Option ${index + 1}`}
+                    maxLength={100}
+                    value={option}
+                    onChange={(event) =>
+                      setPollOptions((current) =>
+                        current.map((item, at) => (at === index ? event.target.value : item)),
+                      )
+                    }
+                  />
+                ))}
+                {pollOptions.length < 6 && (
+                  <button
+                    type="button"
+                    className="text-light-green-70 text-body-s w-fit cursor-pointer font-medium"
+                    onClick={() => setPollOptions((current) => [...current, ""])}
+                  >
+                    + Add option
+                  </button>
+                )}
+                <div className="flex gap-3">
+                  <label className="text-text-grey text-meta flex flex-1 flex-col gap-1">
+                    Starts
+                    <input
+                      type="datetime-local"
+                      className="text-body-s rounded-lg border px-2 py-1 text-black"
+                      value={pollStart}
+                      onChange={(event) => setPollStart(event.target.value)}
+                    />
+                  </label>
+                  <label className="text-text-grey text-meta flex flex-1 flex-col gap-1">
+                    Ends
+                    <input
+                      type="datetime-local"
+                      className="text-body-s rounded-lg border px-2 py-1 text-black"
+                      value={pollEnd}
+                      onChange={(event) => setPollEnd(event.target.value)}
+                    />
+                  </label>
+                </div>
+                {pollError && <p className="text-red-1 text-meta leading-normal">{pollError}</p>}
+              </div>
+            )}
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
@@ -205,6 +302,14 @@ function CreateThreadModal({ isOpen, toggle, tribeId }: CreateThreadModalProps) 
               onClick={() => videoInput.current?.click()}
             >
               <VideoIcon className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              aria-label="Add poll"
+              className="cursor-pointer"
+              onClick={() => setPollOn(true)}
+            >
+              <ListChecksIcon className="h-5 w-5" />
             </button>
             {addingTag ? (
               <input

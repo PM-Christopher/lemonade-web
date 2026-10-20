@@ -139,6 +139,20 @@ const MainTribeCard = ({ thread, onDelete, onPin, onViewProfile }: MainTribeCard
           ))}
         </div>
       ) : null}
+      {thread.poll && (
+        <div className="bg-light-grey flex flex-col gap-2 rounded-xl p-3">
+          <p className="text-body-s font-semibold">{thread.poll.title}</p>
+          {thread.poll.options.map((option) => (
+            <div
+              key={option.id}
+              className="text-body-s flex justify-between rounded-lg bg-white px-3 py-2"
+            >
+              <span>{option.content}</span>
+              <span className="text-text-grey">{option.votes_count ?? 0} votes</span>
+            </div>
+          ))}
+        </div>
+      )}
       {(thread.tags?.length ?? 0) > 0 && (
         <div className="flex flex-wrap gap-2">
           {thread.tags?.map((tag) => (
