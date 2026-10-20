@@ -278,6 +278,7 @@ export const userEventsRoutes = Object.freeze({
   PROMOTE: "/user/events/{id}/promote-event", // POST
   PROMOTIONS: "/user/events/promotions", // GET
   PUBLISH: "/user/events/publish-event/{id}", // PATCH
+  SCAN_TICKET: "/user/events/{id}/scan-ticket", // POST
   SEARCH: "/user/events/search-events", // POST
   SEARCH_AFFILIATE: "/user/events/search-affiliate-events", // POST
   SEARCH_GUEST_LIST: "/user/events/{id}/search-guest-list", // POST

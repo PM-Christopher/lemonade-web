@@ -1841,6 +1841,14 @@
   },
   {
     "method": "POST",
+    "uri": "/v1/user/events/{id}/scan-ticket",
+    "name": "v1.user.events.scan-ticket",
+    "guard": "user",
+    "formRequest": null,
+    "fields": null
+  },
+  {
+    "method": "POST",
     "uri": "/v1/user/events/search-events",
     "name": "v1.user.events.search",
     "guard": null,
@@ -2362,7 +2370,7 @@
       "profile_image": ["string", "nullable"],
       "username": ["string", "required", "unique:users"],
       "bio": ["string", "required"],
-      "industry": ["string", "required"]
+      "industry": ["required", "string", "exists"]
     }
   },
   {
@@ -2423,7 +2431,7 @@
     "guard": "user",
     "formRequest": "App\\Http\\Requests\\Identity\\ProfessionRequest",
     "fields": {
-      "industry": ["string", "required"]
+      "industry": ["required", "string", "exists"]
     }
   },
   {
