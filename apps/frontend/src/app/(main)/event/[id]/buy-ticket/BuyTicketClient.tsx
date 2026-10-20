@@ -22,6 +22,9 @@ import { ChevronUp } from "lucide-react";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { EventTicketDetailSkeleton } from "@/components/Skeletons";
 
+// Most tickets one purchase can hold. More can be bought in another purchase.
+const MAX_TICKETS_PER_PURCHASE = 10;
+
 const TicketSummary = dynamic(() => import("@/components/events/Modals/TicketSummary"), {
   ssr: false,
 });
@@ -51,7 +54,11 @@ const BuyTicketClient = ({ id }: { id: number }) => {
     setQuantities(initialQuantities);
   }
 
+  const totalSelected = quantities.reduce((sum, ticket) => sum + ticket.quantity, 0);
+  const atPurchaseCap = totalSelected >= MAX_TICKETS_PER_PURCHASE;
+
   const handleIncrement = (index: number) => {
+    if (atPurchaseCap) return;
     setQuantities((prevQuantities) =>
       prevQuantities.map((ticketDetail, i) => {
         if (i == index) {
@@ -174,6 +181,13 @@ const BuyTicketClient = ({ id }: { id: number }) => {
                     </div>
                   </div>
 
+                  <p
+                    className={`text-meta mt-4 px-4 font-sans ${atPurchaseCap ? "text-red-1" : "text-text-grey"}`}
+                  >
+                    {atPurchaseCap
+                      ? `That's the ${MAX_TICKETS_PER_PURCHASE}-ticket limit for one purchase. You can buy more after you pay.`
+                      : `You can buy up to ${MAX_TICKETS_PER_PURCHASE} tickets at a time.`}
+                  </p>
                   {tickets?.map((ticket: TicketInterface, index: number) => (
                     <div className="laptop:none px-4" key={index}>
                       <div className="mt-6 flex items-center justify-between">

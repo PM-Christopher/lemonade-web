@@ -46,6 +46,13 @@ const ticketData = vi.hoisted(() => ({
         purchase_limit: 5,
       },
       { id: "t-vip", name: "VIP", price: 1000050, price_display: "₦11,000.55", purchase_limit: 2 },
+      {
+        id: "t-group",
+        name: "Group",
+        price: 200000,
+        price_display: "₦2,000.00",
+        purchase_limit: 5,
+      },
     ],
   },
 }));
@@ -102,6 +109,22 @@ describe("BuyTicketClient", () => {
     fireEvent.click(screen.getByRole("button", { name: "Add one VIP" }));
 
     expect(quoteQuery).toHaveBeenLastCalledWith(42, [{ id: "t-vip", quantity: 2 }]);
+  });
+
+  it("stops at 10 tickets in one purchase and says more can be bought afterwards", () => {
+    renderPage();
+
+    for (let i = 0; i < 5; i += 1) {
+      fireEvent.click(screen.getByRole("button", { name: "Add one Regular" }));
+      fireEvent.click(screen.getByRole("button", { name: "Add one Group" }));
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Add one VIP" }));
+
+    expect(quoteQuery).toHaveBeenLastCalledWith(42, [
+      { id: "t-regular", quantity: 5 },
+      { id: "t-group", quantity: 5 },
+    ]);
+    expect(screen.getByText(/10-ticket limit/)).toBeInTheDocument();
   });
 
   it("shows the server's figures, fees included, not a client estimate", async () => {

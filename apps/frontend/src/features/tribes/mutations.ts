@@ -4,6 +4,7 @@ import {
   type AddTribeMemberPayload,
   type CreateThreadPayload,
   type CreateTribePayload,
+  type EditThreadPayload,
   type PostCommentPayload,
   type ReportThreadPayload,
   type SubmitVotePayload,
@@ -193,6 +194,92 @@ export function useDeleteThreadMutation(tribeSlug: string) {
       queryClient.setQueryData<ThreadsResponse>(tribeKeys.pinnedThreads(tribeSlug), (old) =>
         old ? { threads: old.threads.filter((t) => t.id !== result.thread_id) } : old,
       );
+    },
+  });
+}
+
+// Rewrites one thread in both cached lists (all threads and pinned).
+function patchThread(
+  queryClient: ReturnType<typeof useQueryClient>,
+  tribeSlug: string,
+  threadId: string,
+  change: (thread: ThreadsResponse["threads"][number]) => ThreadsResponse["threads"][number],
+) {
+  for (const key of [tribeKeys.threads(tribeSlug), tribeKeys.pinnedThreads(tribeSlug)]) {
+    queryClient.setQueryData<ThreadsResponse>(key, (old) =>
+      old
+        ? {
+            threads: old.threads.map((thread) =>
+              thread.id === threadId ? change(thread) : thread,
+            ),
+          }
+        : old,
+    );
+  }
+}
+
+// The author changes a thread's title or content.
+export function useEditThreadMutation(tribeSlug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: EditThreadPayload }) =>
+      tribesApi.editThread(id, data),
+    onSuccess: (result) =>
+      patchThread(queryClient, tribeSlug, result.thread_id, (thread) => ({
+        ...thread,
+        topic: result.topic,
+        thoughts: result.thoughts,
+        edited_at: result.edited_at,
+      })),
+  });
+}
+
+// A commenter changes their own comment.
+export function useEditCommentMutation(tribeSlug: string, threadId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: string }) => tribesApi.editComment(id, body),
+    onSuccess: (result) =>
+      patchThread(queryClient, tribeSlug, threadId, (thread) => ({
+        ...thread,
+        all_comments: (thread.all_comments ?? []).map((comment) =>
+          comment.id === result.comment_id
+            ? { ...comment, body: result.body, edited_at: result.edited_at }
+            : comment,
+        ),
+      })),
+  });
+}
+
+// A commenter deletes their own comment; its replies go with it.
+export function useDeleteCommentMutation(tribeSlug: string, threadId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => tribesApi.deleteComment(id),
+    onSuccess: (result) =>
+      patchThread(queryClient, tribeSlug, threadId, (thread) => ({
+        ...thread,
+        comments: Math.max((thread.comments ?? 1) - 1, 0),
+        all_comments: (thread.all_comments ?? []).filter(
+          (comment) => comment.id !== result.comment_id,
+        ),
+      })),
+  });
+}
+
+// Free tribes go at once; paid ones become a request, so refetch the tribe and lists either way.
+export function useDeleteTribeMutation(slug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
+      tribesApi.deleteTribe(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: tribeKeys.detail(slug) });
+      queryClient.invalidateQueries({ queryKey: tribeKeys.lists() });
     },
   });
 }

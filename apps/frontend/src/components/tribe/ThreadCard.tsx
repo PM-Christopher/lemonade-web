@@ -10,10 +10,12 @@ import {
   Flag as FlagIcon,
   Trash2 as TrashIcon,
   Pin as PinIcon,
+  Pencil as EditIcon,
   User as UserIcon,
 } from "lucide-react";
 import ImageCarousel from "@/components/global/ImageCarousel";
 import CommentsSection from "./CommentSection";
+import EditThreadModal from "./EditThreadModal";
 import { useAppDispatch } from "@/redux/hook";
 import {
   usePostCommentMutation,
@@ -68,6 +70,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   const [hasLiked, setHasLiked] = useState(thread?.hasLiked || false);
   const [likeCount, setLikeCount] = useState(thread?.likes || 0);
 
+  const [isEditOpen, setEditOpen] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState<ModalPosition | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -224,6 +227,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
             )}
           </div>
           <span className="text-xs text-gray-500">{thread?.created_at}</span>
+          {thread?.edited_at && <span className="text-xs text-gray-400">(edited)</span>}
         </div>
         <div ref={moreIconRef}>
           <MoreIcon className="h-5 w-5 cursor-pointer" onClick={handleMoreIconClick} />
@@ -305,6 +309,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         onLikeComment={() => null}
         onReplyToComment={() => null}
         thread={thread}
+        tribeSlug={tribe?.slug ?? ""}
       />
 
       {/* Comment Form */}
@@ -365,6 +370,16 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           )}
           {thread?.owner && (
             <ModalItem
+              icon={<EditIcon size={16} />}
+              label="Edit Thread"
+              onClick={() => {
+                setModalVisible(false);
+                setEditOpen(true);
+              }}
+            />
+          )}
+          {thread?.owner && (
+            <ModalItem
               icon={<TrashIcon size={16} className="text-red-500" />}
               label="Delete Thread"
               danger
@@ -373,6 +388,14 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           )}
         </div>
       )}
+      <EditThreadModal
+        isOpen={isEditOpen}
+        toggle={() => setEditOpen(false)}
+        tribeSlug={tribe?.slug ?? ""}
+        threadId={thread.id}
+        topic={thread.topic}
+        thoughts={thread.thoughts}
+      />
       <div className="w-full border-b" />
     </div>
   );

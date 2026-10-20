@@ -37,3 +37,10 @@ export const createThreadSchema = z.object({
   polls: z.boolean(),
 });
 export type CreateThreadInput = z.infer<typeof createThreadSchema>;
+
+// Mirrors App\Http\Requests\Tribe\UpdateTribeThreadRequest (title and content, at least one).
+export const editThreadSchema = z.object({
+  topic: z.string().trim().min(1, { error: "Topic is required" }).max(255),
+  thoughts: z.string().trim().min(1, { error: "Thoughts is required" }),
+});
+export type EditThreadInput = z.infer<typeof editThreadSchema>;

@@ -9,6 +9,10 @@ import { getInitials } from "@/lib/helper";
 import { Thread } from "@/interfaces/TribeInterface";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useAppDispatch } from "@/redux/hook";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { errorMessage } from "@/lib/api-error";
+import { useDeleteCommentMutation, useEditCommentMutation } from "@/features/tribes/mutations";
 
 interface Comment {
   id: string;
@@ -25,6 +29,7 @@ interface Comment {
   created_at: string;
   likes: number;
   hasLikedComment: boolean;
+  edited_at?: string | null;
   children: Comment[];
 }
 
@@ -35,9 +40,45 @@ interface CommentsProps {
   onLikeComment?: (commentId: string) => void;
   onReplyToComment?: (commentId: string, parentId?: string) => void;
   thread: Thread | null;
+  // The tribe's slug, to keep its cached threads in step after an edit or delete.
+  tribeSlug: string;
 }
 
-const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
+const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible, thread, tribeSlug }) => {
+  const dispatch = useAppDispatch();
+  const editMutation = useEditCommentMutation(tribeSlug, thread?.id ?? "");
+  const deleteMutation = useDeleteCommentMutation(tribeSlug, thread?.id ?? "");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const toast = (message: string, type: "success" | "error") =>
+    dispatch(updateToastifyReducer({ show: true, message, type }));
+
+  const saveEdit = (id: string) => {
+    const body = draft.trim();
+    if (!body) return;
+    editMutation.mutate(
+      { id, body },
+      {
+        onSuccess: () => {
+          setEditingId(null);
+          toast("Comment updated", "success");
+        },
+        onError: (error) => toast(errorMessage(error, "Could not update comment"), "error"),
+      },
+    );
+  };
+
+  const confirmDelete = (id: string) =>
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        setDeletingId(null);
+        toast("Comment deleted", "success");
+      },
+      onError: (error) => toast(errorMessage(error, "Could not delete comment"), "error"),
+    });
+
   const [expandedReplies] = useState<Set<string>>(new Set());
 
   // This state forces re-render every minute
@@ -64,11 +105,9 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
     return date.fromNow(); // e.g. "2 hours ago", "3 days ago"
   };
 
-  const CommentItem: React.FC<{ comment: Comment; isReply?: boolean }> = ({
-    comment,
-    isReply = false,
-  }) => (
-    <div className={`${isReply ? "mt-3 ml-12" : "mt-4"} first:mt-0`}>
+  // A plain render function, not a component, so typing in an edit box keeps its focus.
+  const renderComment = (comment: Comment, isReply = false): React.ReactNode => (
+    <div key={comment.id} className={`${isReply ? "mt-3 ml-12" : "mt-4"} first:mt-0`}>
       <div className="flex gap-3">
         {/* Avatar */}
         <div className="flex-shrink-0">
@@ -112,11 +151,82 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
 
           {/* Comment Body */}
           <div className="mb-3">
-            <p className="text-black-light text-sm leading-relaxed">{comment.body}</p>
+            {editingId === comment.id ? (
+              <div className="flex flex-col gap-2">
+                <textarea
+                  aria-label="Edit comment"
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  className="focus:ring-light-green h-20 w-full resize-none rounded-md border border-gray-300 p-2 text-sm focus:ring-1"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    disabled={editMutation.isPending || !draft.trim()}
+                    onClick={() => saveEdit(comment.id)}
+                    className="bg-light-green rounded-md px-3 py-1 text-xs text-white disabled:opacity-60"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(null)}
+                    className="rounded-md border border-gray-300 px-3 py-1 text-xs"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-black-light text-sm leading-relaxed">
+                {comment.body}
+                {comment.edited_at && <span className="ml-2 text-xs text-gray-400">(edited)</span>}
+              </p>
+            )}
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-4">
+            {comment.user_id === user?.id && editingId !== comment.id && (
+              <>
+                {deletingId === comment.id ? (
+                  <span className="flex items-center gap-2 text-xs text-gray-600">
+                    Delete this comment?
+                    <button
+                      type="button"
+                      disabled={deleteMutation.isPending}
+                      onClick={() => confirmDelete(comment.id)}
+                      className="font-medium text-red-500"
+                    >
+                      Yes
+                    </button>
+                    <button type="button" onClick={() => setDeletingId(null)}>
+                      No
+                    </button>
+                  </span>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDraft(comment.body);
+                        setEditingId(comment.id);
+                      }}
+                      className="hover:text-light-green text-xs text-gray-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeletingId(comment.id)}
+                      className="text-xs text-gray-500 hover:text-red-500"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
+              </>
+            )}
             {/* Like Button */}
             {/* <button
                             onClick={() => onLikeComment?.(comment.id)}
@@ -159,9 +269,7 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
           {/* Nested Replies */}
           {comment.children && comment.children.length > 0 && expandedReplies.has(comment.id) && (
             <div className="mt-3 space-y-3">
-              {comment.children.map((reply) => (
-                <CommentItem key={reply.id} comment={reply} isReply={true} />
-              ))}
+              {comment.children.map((reply) => renderComment(reply, true))}
             </div>
           )}
         </div>
@@ -187,7 +295,7 @@ const CommentsSection: React.FC<CommentsProps> = ({ comments, isVisible }) => {
       {/* Comments List */}
       <div className="hide-scrollbar max-h-96 space-y-0 overflow-y-auto">
         {comments.length > 0 ? (
-          comments.map((comment) => <CommentItem key={comment.id} comment={comment} />)
+          comments.map((comment) => renderComment(comment))
         ) : (
           <div className="py-8 text-center">
             <p className="text-sm text-gray-500">No comments yet</p>

@@ -26,6 +26,12 @@ export interface TribeInterface {
   created_by: string;
   created_at: Date;
   member_list: TribeMemberInterface[];
+  // Set for the owner of a paid tribe after asking for it to be deleted.
+  deletion_request?: {
+    status: "pending" | "approved" | "rejected";
+    requested_at: string;
+    decision_reason: string | null;
+  } | null;
 }
 
 export interface TribeMemberInterface {
@@ -89,6 +95,7 @@ export interface ThreadComment {
   created_at: string;
   likes: number;
   hasLikedComment: boolean;
+  edited_at?: string | null;
   children: ThreadComment[];
 }
 
@@ -107,6 +114,7 @@ export interface Thread {
   likes: number;
   comments: number;
   all_comments: ThreadComment[];
+  edited_at?: string | null;
   created_at: string;
   created_by: CreatedBy;
   thread_polls: ThreadPolls;

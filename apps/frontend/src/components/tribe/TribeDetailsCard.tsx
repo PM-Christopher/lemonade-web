@@ -27,6 +27,8 @@ type TribeDetailsInterface = {
   isUpdatingPrivacy: boolean;
   // Owner removes a member from the list.
   onRemoveMember?: (member: { userId: string; username: string }) => void;
+  // Owner starts deleting the tribe.
+  onDeleteTribe?: () => void;
   // Mobile sheet only: jump to the thread search.
   onSearch?: () => void;
   className?: string;
@@ -44,6 +46,7 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
   togglePrivate,
   isUpdatingPrivacy,
   onRemoveMember,
+  onDeleteTribe,
   onSearch,
   className = "laptop:w-124",
 }) => {
@@ -281,6 +284,33 @@ const TribeDetailsCard: React.FC<TribeDetailsInterface> = ({
               )}
             </div>
           </div>
+          {tribe?.owner && onDeleteTribe && (
+            <div className="mt-4 flex flex-col gap-2">
+              {tribe.deletion_request?.status === "pending" ? (
+                <p className="bg-light_grey text-body-s rounded-xl p-3 font-sans">
+                  Your request to delete this tribe is waiting for admin approval.
+                </p>
+              ) : (
+                <>
+                  {tribe.deletion_request?.status === "rejected" && (
+                    <p className="bg-light_grey text-body-s rounded-xl p-3 font-sans">
+                      Your last deletion request was declined
+                      {tribe.deletion_request.decision_reason
+                        ? `: ${tribe.deletion_request.decision_reason}`
+                        : "."}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    className="text-red-1 text-body-s w-fit cursor-pointer font-sans font-medium"
+                    onClick={onDeleteTribe}
+                  >
+                    Delete tribe
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
     </>

@@ -10,6 +10,7 @@ import ThreadCard from "@/components/tribe/ThreadCard";
 import TribeDetailsCard from "@/components/tribe/TribeDetailsCard";
 import TribeDetailsSheet from "@/components/tribe/TribeDetailsSheet";
 import RemoveMemberModal, { type MemberToRemove } from "@/components/tribe/RemoveMemberModal";
+import DeleteTribeModal from "@/components/tribe/DeleteTribeModal";
 import { Info as InfoCircle } from "lucide-react";
 import JoinTribeModal from "@/components/tribe/JoinTribeModal";
 import { Thread } from "@/interfaces/TribeInterface";
@@ -74,6 +75,7 @@ const TribeClient = ({ id }: { id: string }) => {
   const [joinedTribeModal, setJoinedTribeModal] = useState(false);
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<MemberToRemove | null>(null);
+  const [deleteTribeOpen, setDeleteTribeOpen] = useState(false);
 
   const [threadId, setThreadId] = useState<string | null>(null);
   const dispatch = useAppDispatch();
@@ -395,6 +397,7 @@ const TribeClient = ({ id }: { id: string }) => {
                 togglePrivate={togglePrivate}
                 isUpdatingPrivacy={changeTribeTypeMutation.isPending}
                 onRemoveMember={setMemberToRemove}
+                onDeleteTribe={() => setDeleteTribeOpen(true)}
               />
             </aside>
           )}
@@ -421,10 +424,23 @@ const TribeClient = ({ id }: { id: string }) => {
               togglePrivate={togglePrivate}
               isUpdatingPrivacy={changeTribeTypeMutation.isPending}
               onRemoveMember={setMemberToRemove}
+              onDeleteTribe={() => {
+                setDetailsSheetOpen(false);
+                setDeleteTribeOpen(true);
+              }}
               onSearch={() => {
                 setDetailsSheetOpen(false);
                 document.getElementById("search")?.focus();
               }}
+            />
+          )}
+          {tribe && (
+            <DeleteTribeModal
+              isOpen={deleteTribeOpen}
+              toggle={() => setDeleteTribeOpen(false)}
+              tribeId={String(tribe.id)}
+              tribeSlug={id}
+              isPaid={Boolean(tribe.monetized)}
             />
           )}
           <RemoveMemberModal

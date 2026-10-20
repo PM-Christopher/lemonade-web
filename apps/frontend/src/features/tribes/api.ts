@@ -106,6 +106,31 @@ export interface DeleteThreadResponse {
   thread_id: string;
 }
 
+export interface EditThreadPayload {
+  topic?: string;
+  thoughts?: string;
+}
+
+export interface EditThreadResponse {
+  thread_id: string;
+  topic: string;
+  thoughts: string;
+  edited_at: string;
+}
+
+export interface EditCommentResponse {
+  comment_id: string;
+  body: string;
+  edited_at: string;
+}
+
+// A free tribe is deleted at once; a paid one waits for an admin.
+export interface DeleteTribeResponse {
+  deleted: boolean;
+  status: "deleted" | "pending_approval";
+  message: string;
+}
+
 export interface SearchTribeResponse {
   tribes: TribeInterface[];
 }
@@ -209,6 +234,22 @@ export const tribesApi = {
 
   deleteThread: (id: number | string) =>
     browserApi.delete<DeleteThreadResponse>(buildPath(userThreadsRoutes.DELETE, { id })),
+
+  editThread: (id: string, data: EditThreadPayload) =>
+    browserApi.patch<EditThreadResponse>(buildPath(userThreadsRoutes.EDIT, { id }), data),
+
+  editComment: (id: string, body: string) =>
+    browserApi.patch<EditCommentResponse>(buildPath(userThreadsRoutes.COMMENTS_EDIT, { id }), {
+      body,
+    }),
+
+  deleteComment: (id: string) =>
+    browserApi.delete<{ comment_id: string }>(buildPath(userThreadsRoutes.COMMENTS_DELETE, { id })),
+
+  deleteTribe: (id: string, reason?: string) =>
+    browserApi.delete<DeleteTribeResponse>(buildPath(userTribesRoutes.DELETE, { id }), {
+      data: reason ? { reason } : undefined,
+    }),
 
   searchTribe: (data: { search: string }) =>
     browserApi.post<SearchTribeResponse>(userTribesRoutes.SEARCH, data),
