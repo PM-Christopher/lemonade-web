@@ -5,6 +5,7 @@ function DataInfoCard({
   styles,
   title,
   isEditable = false,
+  handleChange,
 }: {
   styles?: string;
   title: string;
@@ -18,7 +19,15 @@ function DataInfoCard({
           <FileIcon className={"h-4.25 w-3.5"} />
         </div>
         <p className="text-body-l font-medium">{title}</p>
-        {isEditable && <p className="text-light-green text-body-s font-medium">Edit</p>}
+        {isEditable && (
+          <button
+            type="button"
+            className="text-light-green text-body-s cursor-pointer text-left font-medium"
+            onClick={handleChange}
+          >
+            Edit
+          </button>
+        )}
       </div>
     </div>
   );

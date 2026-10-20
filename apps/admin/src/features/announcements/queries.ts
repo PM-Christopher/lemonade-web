@@ -5,6 +5,7 @@ export const announcementKeys = {
   all: () => ["announcements"] as const,
   list: () => [...announcementKeys.all(), "list"] as const,
   detail: (id: string | number) => [...announcementKeys.all(), "detail", id] as const,
+  pageContent: () => [...announcementKeys.all(), "page-content"] as const,
 };
 
 export function useAnnouncementsQuery(options?: { enabled?: boolean }) {
@@ -25,5 +26,14 @@ export function useAnnouncementDetailQuery(
     queryFn: () => announcementsApi.getAnnouncement(id as string | number),
     staleTime: 60_000,
     enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+export function usePageContentQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: announcementKeys.pageContent(),
+    queryFn: announcementsApi.getPageContent,
+    staleTime: 60_000,
+    enabled: options?.enabled,
   });
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { teamApi, type CreateTeamMemberPayload } from "./api";
+import { teamApi, type ChangePasswordPayload, type CreateTeamMemberPayload } from "./api";
 import { teamKeys } from "./queries";
 
 export function useAddTeamMemberMutation() {
@@ -11,6 +11,23 @@ export function useAddTeamMemberMutation() {
       // The old thunk-based modal never refreshed the list after adding —
       // a new member wouldn't show up without a manual reload. Fixed here
       // as a side effect of mutations owning their own invalidation.
+      queryClient.invalidateQueries({ queryKey: teamKeys.list() });
+    },
+  });
+}
+
+export function useChangeTeamPasswordMutation(id: string | number) {
+  return useMutation({
+    mutationFn: (payload: ChangePasswordPayload) => teamApi.changePassword(id, payload),
+  });
+}
+
+export function useRemoveTeamMemberMutation(id: string | number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => teamApi.removeMember(id),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: teamKeys.list() });
     },
   });

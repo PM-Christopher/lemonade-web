@@ -13,10 +13,20 @@ export interface AdminProfile {
   role: string;
 }
 
+// Mirrors App\Http\Requests\Admin\ChangeAdminPasswordRequest.
+export interface ChangePasswordPayload {
+  password: string;
+  new_password: string;
+  new_password_confirmation: string;
+}
+
 export interface AdminProfileResponse {
   admin: AdminProfile;
 }
 
 export const profileApi = {
   getProfile: () => browserApi.get<AdminProfileResponse>(adminAccountRoutes.PROFILE),
+
+  changePassword: (payload: ChangePasswordPayload) =>
+    browserApi.patch<{ message?: string }>(adminAccountRoutes.CHANGE_PASSWORD, payload),
 };
