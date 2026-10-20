@@ -21,6 +21,16 @@ describe("applyFormat", () => {
     expect(applyFormat("- one", 0, 5, "numbers").text).toBe("1. one");
   });
 
+  it("underlines the selection", () => {
+    expect(applyFormat("mark this", 5, 9, "underline").text).toBe("mark ++this++");
+  });
+
+  it("indents and outdents every selected line, up to three levels", () => {
+    expect(applyFormat("a\nb", 0, 3, "indent").text).toBe("  a\n  b");
+    expect(applyFormat("  a\n  b", 0, 7, "outdent").text).toBe("a\nb");
+    expect(applyFormat("      deep", 0, 10, "indent").text).toBe("      deep");
+  });
+
   it("inserts a link around the selection", () => {
     expect(applyFormat("visit us", 6, 8, "link", "https://lemonade.test").text).toBe(
       "visit [us](https://lemonade.test)",
@@ -30,9 +40,11 @@ describe("applyFormat", () => {
 
 describe("parseInline", () => {
   it("splits bold, italic and links out of a line", () => {
-    expect(parseInline("a **b** *c* [d](https://x.test)")).toEqual([
+    expect(parseInline("a **b** ++u++ *c* [d](https://x.test)")).toEqual([
       { type: "text", value: "a " },
       { type: "bold", value: "b" },
+      { type: "text", value: " " },
+      { type: "underline", value: "u" },
       { type: "text", value: " " },
       { type: "italic", value: "c" },
       { type: "text", value: " " },
@@ -49,10 +61,16 @@ describe("parseInline", () => {
 
 describe("parseBlocks", () => {
   it("groups consecutive list lines and keeps paragraphs apart", () => {
-    expect(parseBlocks("intro\n- a\n- b\n1. c")).toEqual([
-      { type: "paragraph", line: "intro" },
-      { type: "bullets", items: ["a", "b"] },
-      { type: "numbers", items: ["c"] },
+    expect(parseBlocks("intro\n- a\n  - b\n1. c")).toEqual([
+      { type: "paragraph", line: { text: "intro", indent: 0 } },
+      {
+        type: "bullets",
+        items: [
+          { text: "a", indent: 0 },
+          { text: "b", indent: 1 },
+        ],
+      },
+      { type: "numbers", items: [{ text: "c", indent: 0 }] },
     ]);
   });
 });

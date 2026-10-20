@@ -1,9 +1,12 @@
-// Plain-text formatting for business descriptions: **bold**, *italic*, [text](https://link),
-// "- " bullets and "1. " numbers. Stored as text, rendered by FormattedText (never as HTML).
+// Plain-text formatting for business descriptions: **bold**, *italic*, ++underline++,
+// [text](https://link), "- " bullets, "1. " numbers and two-space indents. Stored as text, rendered by FormattedText (never as HTML).
 
 export const MAX_DESCRIPTION_WORDS = 500;
 
-export type FormatKind = "bold" | "italic" | "bullets" | "numbers" | "link";
+export type FormatKind =
+  "bold" | "italic" | "underline" | "bullets" | "numbers" | "link" | "indent" | "outdent";
+
+export const MAX_INDENT = 3;
 
 export interface Edit {
   text: string;
@@ -35,11 +38,35 @@ const wrap = (text: string, start: number, end: number, mark: string): Edit => {
   };
 };
 
-// Prefixes every selected line, or removes the prefix when they all have it.
-const prefixLines = (text: string, start: number, end: number, numbered: boolean): Edit => {
+const lineRange = (text: string, start: number, end: number) => {
   const lineStart = text.lastIndexOf("\n", start - 1) + 1;
   const newline = text.indexOf("\n", end);
-  const lineEnd = newline === -1 ? text.length : newline;
+  return { lineStart, lineEnd: newline === -1 ? text.length : newline };
+};
+
+// Adds or removes one two-space indent level on every selected line.
+const shiftLines = (text: string, start: number, end: number, deeper: boolean): Edit => {
+  const { lineStart, lineEnd } = lineRange(text, start, end);
+  const next = text
+    .slice(lineStart, lineEnd)
+    .split("\n")
+    .map((line) => {
+      const level = Math.floor((line.length - line.trimStart().length) / 2);
+      if (deeper) return level >= MAX_INDENT ? line : `  ${line}`;
+      return line.startsWith("  ") ? line.slice(2) : line.trimStart();
+    })
+    .join("\n");
+
+  return {
+    text: text.slice(0, lineStart) + next + text.slice(lineEnd),
+    start: lineStart,
+    end: lineStart + next.length,
+  };
+};
+
+// Prefixes every selected line, or removes the prefix when they all have it.
+const prefixLines = (text: string, start: number, end: number, numbered: boolean): Edit => {
+  const { lineStart, lineEnd } = lineRange(text, start, end);
   const lines = text.slice(lineStart, lineEnd).split("\n");
   const marker = (index: number) => (numbered ? `${index + 1}. ` : "- ");
   const pattern = numbered ? /^\d+\. / : /^- /;
@@ -70,6 +97,12 @@ export function applyFormat(
       return wrap(text, start, end, "**");
     case "italic":
       return wrap(text, start, end, "*");
+    case "underline":
+      return wrap(text, start, end, "++");
+    case "indent":
+      return shiftLines(text, start, end, true);
+    case "outdent":
+      return shiftLines(text, start, end, false);
     case "bullets":
       return prefixLines(text, start, end, false);
     case "numbers":
@@ -88,10 +121,10 @@ export function applyFormat(
 
 export type InlinePart =
   | { type: "text"; value: string }
-  | { type: "bold" | "italic"; value: string }
+  | { type: "bold" | "italic" | "underline"; value: string }
   | { type: "link"; value: string; href: string };
 
-const INLINE = /\*\*(.+?)\*\*|\*(.+?)\*|\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g;
+const INLINE = /\*\*(.+?)\*\*|\+\+(.+?)\+\+|\*(.+?)\*|\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g;
 
 export function parseInline(line: string): InlinePart[] {
   const parts: InlinePart[] = [];
@@ -100,32 +133,42 @@ export function parseInline(line: string): InlinePart[] {
   for (const match of line.matchAll(INLINE)) {
     if (match.index > last) parts.push({ type: "text", value: line.slice(last, match.index) });
     if (match[1] !== undefined) parts.push({ type: "bold", value: match[1] });
-    else if (match[2] !== undefined) parts.push({ type: "italic", value: match[2] });
-    else parts.push({ type: "link", value: match[3], href: match[4] });
+    else if (match[2] !== undefined) parts.push({ type: "underline", value: match[2] });
+    else if (match[3] !== undefined) parts.push({ type: "italic", value: match[3] });
+    else parts.push({ type: "link", value: match[4], href: match[5] });
     last = match.index + match[0].length;
   }
   if (last < line.length) parts.push({ type: "text", value: line.slice(last) });
   return parts;
 }
 
+export interface Line {
+  text: string;
+  indent: number;
+}
+
 export type Block =
-  { type: "paragraph"; line: string } | { type: "bullets" | "numbers"; items: string[] };
+  { type: "paragraph"; line: Line } | { type: "bullets" | "numbers"; items: Line[] };
 
 export function parseBlocks(text: string): Block[] {
   const blocks: Block[] = [];
 
-  for (const line of text.split("\n")) {
+  for (const raw of text.split("\n")) {
+    const spaces = raw.length - raw.trimStart().length;
+    const indent = Math.min(Math.floor(spaces / 2), MAX_INDENT);
+    const line = raw.trimStart();
     const bullet = /^- (.*)$/.exec(line);
     const number = /^\d+\. (.*)$/.exec(line);
     const kind = bullet ? "bullets" : number ? "numbers" : null;
     const previous = blocks[blocks.length - 1];
+    const item = { text: (bullet ?? number)?.[1] ?? "", indent };
 
     if (kind && previous?.type === kind) {
-      previous.items.push((bullet ?? number)![1]);
+      previous.items.push(item);
     } else if (kind) {
-      blocks.push({ type: kind, items: [(bullet ?? number)![1]] });
-    } else if (line.trim() !== "") {
-      blocks.push({ type: "paragraph", line });
+      blocks.push({ type: kind, items: [item] });
+    } else if (line !== "") {
+      blocks.push({ type: "paragraph", line: { text: line, indent } });
     }
   }
   return blocks;

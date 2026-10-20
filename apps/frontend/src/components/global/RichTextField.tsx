@@ -1,6 +1,15 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Bold, Italic, Link as LinkIcon, List, ListOrdered } from "lucide-react";
+import {
+  Bold,
+  IndentDecrease,
+  IndentIncrease,
+  Italic,
+  Link as LinkIcon,
+  List,
+  ListOrdered,
+  Underline,
+} from "lucide-react";
 import {
   applyFormat,
   countWords,
@@ -20,8 +29,11 @@ interface RichTextFieldProps {
 const TOOLS: { kind: Exclude<FormatKind, "link">; label: string; Icon: typeof Bold }[] = [
   { kind: "bold", label: "Bold", Icon: Bold },
   { kind: "italic", label: "Italic", Icon: Italic },
+  { kind: "underline", label: "Underline", Icon: Underline },
   { kind: "bullets", label: "Bulleted list", Icon: List },
   { kind: "numbers", label: "Numbered list", Icon: ListOrdered },
+  { kind: "outdent", label: "Decrease indent", Icon: IndentDecrease },
+  { kind: "indent", label: "Increase indent", Icon: IndentIncrease },
 ];
 
 const buttonClass = "text-text-grey hover:text-black-light cursor-pointer rounded p-1";

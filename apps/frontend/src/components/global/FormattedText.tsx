@@ -9,6 +9,8 @@ const Inline = ({ line }: { line: string }) => (
           return <strong key={index}>{part.value}</strong>;
         case "italic":
           return <em key={index}>{part.value}</em>;
+        case "underline":
+          return <u key={index}>{part.value}</u>;
         case "link":
           return (
             <a
@@ -34,8 +36,8 @@ export const FormattedText = ({ text, className = "" }: { text: string; classNam
     {parseBlocks(text).map((block, index) => {
       if (block.type === "paragraph") {
         return (
-          <p key={index}>
-            <Inline line={block.line} />
+          <p key={index} style={{ marginLeft: `${block.line.indent}rem` }}>
+            <Inline line={block.line.text} />
           </p>
         );
       }
@@ -46,8 +48,8 @@ export const FormattedText = ({ text, className = "" }: { text: string; classNam
           className={`pl-5 ${block.type === "bullets" ? "list-disc" : "list-decimal"}`}
         >
           {block.items.map((item, itemIndex) => (
-            <li key={itemIndex}>
-              <Inline line={item} />
+            <li key={itemIndex} style={{ marginLeft: `${item.indent}rem` }}>
+              <Inline line={item.text} />
             </li>
           ))}
         </List>

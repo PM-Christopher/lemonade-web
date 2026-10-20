@@ -25,7 +25,7 @@ const ConfirmCompletionModal: React.FC<ConfirmCompletionModalProps> = ({ isOpen,
         dispatch(
           updateToastifyReducer({
             show: true,
-            message: result?.message,
+            message: "Service completed",
             type: "success",
           }),
         );
