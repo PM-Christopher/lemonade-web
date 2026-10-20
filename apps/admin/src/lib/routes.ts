@@ -22,6 +22,8 @@ export const routes = {
 
   BUSINESSES: "/businesses",
   BUSINESS_DETAIL: (id: string | number) => `/businesses/${id}` as const,
+  DISPUTES: "/disputes",
+  DISPUTE_DETAIL: (id: string | number) => `/disputes/${id}` as const,
 
   TRANSACTIONS: "/transactions",
   TRANSACTION_WALLET: (id: string | number) => `/transactions/${id}/wallet-details` as const,
