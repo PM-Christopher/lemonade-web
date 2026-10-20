@@ -28,7 +28,7 @@ interface CommissionModalProps {
   current: number;
 }
 
-// Sets the percentage kept from every completed service.
+// Sets the default percentage kept from a completed service when the owner has no plan.
 function CommissionModal({ isOpen, toggle, current }: CommissionModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const mutation = useUpdateCommissionMutation();
@@ -62,16 +62,17 @@ function CommissionModal({ isOpen, toggle, current }: CommissionModalProps) {
       }}
     >
       <DialogContentBare className="w-fit max-w-none gap-0 border-0 bg-transparent p-0 shadow-none">
-        <DialogTitle className="sr-only">Commission percentage</DialogTitle>
+        <DialogTitle className="sr-only">Default commission</DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="w-90 rounded-xl bg-white p-4">
           <div className="flex items-center justify-between">
-            <p className="text-body-xl font-sans font-semibold">Commission percentage</p>
+            <p className="text-body-xl font-sans font-semibold">Default commission</p>
             <button type="button" aria-label="Close" className="cursor-pointer" onClick={toggle}>
               <XIcon />
             </button>
           </div>
           <p className="text-light-black text-body-s mt-4 font-normal">
-            Set the commission to be earned on every completed service.
+            Set the commission earned on a completed service when the business owner has no plan.
+            Owners on a plan keep the rate set on that plan.
           </p>
           <label htmlFor="commission" className="text-text-grey text-meta mt-4 block">
             Commission percentage

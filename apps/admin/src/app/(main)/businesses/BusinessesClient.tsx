@@ -134,7 +134,9 @@ function BusinessesClient() {
               <div className="flex flex-col gap-3 p-3">
                 <div className="flex items-start justify-between rounded-xl bg-white p-5">
                   <div>
-                    <p className="text-text-grey text-body-s font-normal">Commission percentage</p>
+                    <p className="text-text-grey text-body-s font-normal">
+                      Default commission (no plan)
+                    </p>
                     <p className="text-body-xl mt-2 font-semibold">{commission}%</p>
                   </div>
                   <button
