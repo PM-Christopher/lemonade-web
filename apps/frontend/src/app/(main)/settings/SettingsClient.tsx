@@ -8,7 +8,6 @@ import InstagramIcon from "@/images/icons/instagram-color.svg";
 import LinkedInIcon from "@/images/icons/linkedin-color.svg";
 import TwitterIcon from "@/images/icons/twitter-color.svg";
 import WebIcon from "@/images/icons/webIcon.svg";
-import { Loader2 } from "lucide-react";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import ProfileIcon from "@/images/icons/profileIcon.svg";
 import GearIcon from "@/images/icons/settingsGearIcon.svg";
@@ -18,15 +17,10 @@ import BellIcon from "@/images/icons/bellIcon.svg";
 import WalletIcon from "@/images/icons/walletIcon.svg";
 import ReferralIcon from "@/images/icons/referralIcon.svg";
 import PaperIcon from "@/images/icons/paperIcon.svg";
-import LogoutIcon from "@/images/icons/logoutIcon.svg";
 
 import { useSelector } from "react-redux";
 import { formatString, getInitials, splitLemonId } from "@/lib/helper";
 import { RootState } from "@/redux/store";
-import { useAppDispatch } from "@/redux/hook";
-import { useLogoutMutation } from "@/features/authentication/mutations";
-import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { apiMessage } from "@/lib/api-message";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 
@@ -34,8 +28,6 @@ type SettingsItem = {
   title: string;
   icon: React.ComponentType;
   path?: string;
-  onClick?: () => void;
-  textColor?: string;
 };
 
 const accountSettings: SettingsItem[] = [
@@ -45,9 +37,9 @@ const accountSettings: SettingsItem[] = [
     path: routes.SETTINGS_PROFILE,
   },
   { title: "Account settings", icon: GearIcon, path: routes.SETTINGS_ACCOUNT },
-  { title: "Plan", icon: PricingIcon, path: routes.SETTINGS_PLAN },
+  { title: "Pricing", icon: PricingIcon, path: routes.SETTINGS_PLAN },
   {
-    title: "Billing History",
+    title: "Billing history",
     icon: BillingIcon,
     path: routes.SETTINGS_BILLING_HISTORY,
   },
@@ -66,26 +58,7 @@ const earnSettings: SettingsItem[] = [
 // Profile card and settings menu for the signed-in user.
 function SettingsClient() {
   const { push } = useNavigation();
-  const dispatch = useAppDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
-  const logoutMutation = useLogoutMutation();
-
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: apiMessage("Logged out"),
-            type: "success",
-          }),
-        );
-      },
-      onSettled: () => {
-        push(routes.LOGIN);
-      },
-    });
-  };
 
   const moreSettings: SettingsItem[] = [
     {
@@ -94,19 +67,9 @@ function SettingsClient() {
       path: routes.SETTINGS_TERMS,
     },
     { title: "Privacy policy", icon: PaperIcon, path: routes.SETTINGS_PRIVACY },
-    {
-      title: "Log out",
-      icon: LogoutIcon,
-      onClick: handleLogout,
-      textColor: "text-red-1",
-    },
   ];
 
   const openItem = (item: SettingsItem) => {
-    if (item.onClick) {
-      item.onClick();
-      return;
-    }
     if (item.path) push(item.path);
   };
 
@@ -209,29 +172,19 @@ function SettingsClient() {
         <div className="laptop:w-160 mt-6 w-full rounded-xl bg-white p-4">
           <p className="text-black-light text-meta leading-normal font-bold">MORE</p>
           <div>
-            {moreSettings.map((item) => {
-              const isBusy = item.onClick === handleLogout && logoutMutation.isPending;
-              return (
-                <div
-                  key={item.title}
-                  className="my-5.25 flex cursor-pointer items-center justify-between"
-                  onClick={() => !isBusy && openItem(item)}
-                  aria-busy={isBusy || undefined}
-                >
-                  <div className="flex items-center gap-2">
-                    <item.icon />
-                    <p className={`text-body-l font-normal ${item.textColor ?? ""}`}>
-                      {item.title}
-                    </p>
-                  </div>
-                  {isBusy ? (
-                    <Loader2 className="animate-spin text-gray-400" aria-hidden="true" />
-                  ) : (
-                    <ChevronRight />
-                  )}
+            {moreSettings.map((item) => (
+              <div
+                key={item.title}
+                className="my-5.25 flex cursor-pointer items-center justify-between"
+                onClick={() => openItem(item)}
+              >
+                <div className="flex items-center gap-2">
+                  <item.icon />
+                  <p className="text-body-l font-normal">{item.title}</p>
                 </div>
-              );
-            })}
+                <ChevronRight />
+              </div>
+            ))}
           </div>
         </div>
       </div>

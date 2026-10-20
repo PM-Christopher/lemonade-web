@@ -25,6 +25,7 @@ interface authState {
     benefits?: {
       ver_badge?: boolean;
       forum_creation?: boolean;
+      business_listing?: boolean;
       lemon_id?: boolean;
       event_creation?: number;
       sales_commission?: number;

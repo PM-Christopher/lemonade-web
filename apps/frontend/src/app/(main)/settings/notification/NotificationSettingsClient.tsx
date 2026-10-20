@@ -28,8 +28,8 @@ const NotificationSettingsClient = () => {
     switch (notificationType) {
       case "new_thread":
         return {
-          title: "New thread in tribe",
-          description: "Notify me when there is a new thread in any tribe I have joined.",
+          title: "New thread in Tribe",
+          description: "Notify me when there is a new thread in any Tribe I have joined.",
         };
       case "thread_engagements":
         return {
@@ -93,7 +93,7 @@ const NotificationSettingsClient = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
+        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => push(routes.SETTINGS)}

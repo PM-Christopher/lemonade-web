@@ -16,7 +16,7 @@ import { apiMessage } from "@/lib/api-message";
 import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
 
-// Lazy-loaded; only needed once "Update Password" is clicked.
+// Lazy-loaded; only needed once "Update password" is clicked.
 const UpdatePasswordModal = dynamic(
   () => import("@/components/settings/Modal/UpdatePasswordModal"),
   { ssr: false },
@@ -56,7 +56,7 @@ const AccountSettingsClient = () => {
     {
       id: "update-password",
       icon: <PadlockIcon />,
-      label: "Update Password",
+      label: "Update password",
       onClick: toggleSettingsModal,
       textColor: "text-black",
     },

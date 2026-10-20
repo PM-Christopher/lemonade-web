@@ -29,6 +29,8 @@ export interface UserProfile {
     benefits: {
       verification_badge: boolean;
       tribe_creation: boolean;
+      // Missing on older backends, which allow listing for every plan.
+      business_listing?: boolean;
       lemon_id: boolean;
       event_creation: boolean;
       ticket_sales_commission: number;

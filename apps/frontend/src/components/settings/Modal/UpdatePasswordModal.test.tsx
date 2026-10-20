@@ -16,7 +16,7 @@ vi.mock("@/features/authentication/mutations", () => ({
 
 const fill = () => {
   fireEvent.change(screen.getByLabelText("Current password"), { target: { value: "Old-Pass-1" } });
-  fireEvent.change(screen.getByLabelText("New Password"), { target: { value: "New-Pass-123" } });
+  fireEvent.change(screen.getByLabelText("New password"), { target: { value: "New-Pass-123" } });
   fireEvent.change(screen.getByLabelText("Confirm password"), {
     target: { value: "New-Pass-123" },
   });
@@ -41,7 +41,7 @@ describe("UpdatePasswordModal", () => {
 
     await waitFor(() => expect(toggle).toHaveBeenCalledTimes(1));
     expect(screen.getByLabelText("Current password")).toHaveValue("");
-    expect(screen.getByLabelText("New Password")).toHaveValue("");
+    expect(screen.getByLabelText("New password")).toHaveValue("");
     expect(screen.getByLabelText("Confirm password")).toHaveValue("");
   });
 

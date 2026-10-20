@@ -81,15 +81,12 @@ test("sign up, verify email with a real OTP, and complete profile setup", async 
   await page.locator("#username").fill(`e2euser${uniqueSuffix}`);
   await page.locator("#bio").fill("E2E test bio.");
   await page.locator('[aria-label="Industry"]').click();
-  // Radix Select also renders a hidden native <select> with the same
-  // option text for form-compat — scope to the open listbox to avoid it.
-  await page.getByRole("listbox").getByText("Software Development", { exact: true }).click();
-  // Radix blocks pointer events while the listbox is open; wait for it to close.
+  await page.getByRole("option", { name: "Software development", exact: true }).click();
   await expect(page.getByRole("listbox")).toBeHidden();
   await page.getByRole("button", { name: "Next", exact: true }).click();
 
-  // Step 2 — address-step.tsx. Country is a plain native <select>, not the
-  // shadcn one industry above used.
+  // Step 2 — address-step.tsx. Country is a plain native <select>, not a
+  // custom picker like the industry one above.
   await expect(page.getByText("Contact address")).toBeVisible({ timeout: 10_000 });
   await page.locator("#address").fill("1 Test Street");
   await page.locator("#city").fill("Lagos");

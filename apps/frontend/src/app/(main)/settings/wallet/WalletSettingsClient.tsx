@@ -91,7 +91,7 @@ function WalletSettingsClient() {
           dispatch(
             updateToastifyReducer({
               show: true,
-              message: `Redeemed ${result.points_redeemed} points for N${formatNumberWithCommas(Number(result.amount) || 0)}`,
+              message: `Redeemed ${result.points_redeemed} points for ₦${formatNumberWithCommas(Number(result.amount) || 0)}`,
               type: "success",
             }),
           );
@@ -113,7 +113,7 @@ function WalletSettingsClient() {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <RewardsHistorySideMenu toggleMenu={toggleRewardsMenu} isOpen={isRewardsOpen} />
-        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
+        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => push(routes.SETTINGS)}
@@ -132,7 +132,7 @@ function WalletSettingsClient() {
                 <div className="border-b-mid-grey flex flex-col border-b p-4">
                   <p className="text-text-grey text-body-s font-normal">Total Amount Earned</p>
                   <p className="tracking-custom text-body-xl font-semibold">
-                    N{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
+                    ₦{formatNumberWithCommas(Number(data?.total_amount_earned) || 0)}
                   </p>
                 </div>
                 <div className="border-b-mid-grey flex items-center justify-between border-b p-4">
@@ -156,7 +156,7 @@ function WalletSettingsClient() {
                   <div className="flex flex-col">
                     <p className="text-text-grey text-body-s font-normal">Rewards earned</p>
                     <p className="tracking-custom text-body-xl font-semibold">
-                      N{formatNumberWithCommas(Number(data?.rewards_earned) || 0)}
+                      ₦{formatNumberWithCommas(Number(data?.rewards_earned) || 0)}
                     </p>
                   </div>
                   <ChevronRight onClick={toggleRewardsMenu} className="cursor-pointer" />
@@ -209,7 +209,7 @@ function WalletSettingsClient() {
             </div>
           )}
           <div>
-            <div className="laptop:min-w-171 flex w-full flex-col rounded-xl bg-white">
+            <div className="laptop:w-171 flex w-full flex-col rounded-xl bg-white">
               <div className="border-b p-4">
                 <p className="text-body-l font-semibold">Payout history</p>
               </div>
@@ -221,7 +221,7 @@ function WalletSettingsClient() {
                     <div className="flex items-center justify-between pt-4 pb-6" key={index}>
                       <div className="flex flex-col">
                         <p className="font-semi-normal text-body-s">
-                          N{formatNumberWithCommas(Number(history?.amount) || 0)}
+                          ₦{formatNumberWithCommas(Number(history?.amount) || 0)}
                         </p>
                         <p className="text-text-grey text-meta leading-normal font-normal">
                           {history?.date}

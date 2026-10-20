@@ -161,27 +161,29 @@ const UpgradePlanModal = ({ isOpen, toggle, sub_id, subMode, pricing }: UpgradeP
             </div>
             <div className="mt-10">
               <div className={"flex flex-col gap-4"}>
-                {pricing?.map((membership) => (
-                  <button
-                    type="button"
-                    aria-pressed={selected === membership.id}
-                    className={`w-full cursor-pointer rounded-xl p-4 text-left ${selected === membership.id ? "border-step-color bg-light-green-10 border" : "bg-mid-grey"}`}
-                    key={membership.id}
-                    onClick={() => handleSelectedPlan(membership)}
-                  >
-                    <div className={"flex items-center justify-between"}>
-                      <p className={"font-semiBold text-black-light text-body-l"}>
-                        {membership.title}
+                {[...(pricing ?? [])]
+                  .sort((a, b) => Number(b.amount) - Number(a.amount))
+                  .map((membership) => (
+                    <button
+                      type="button"
+                      aria-pressed={selected === membership.id}
+                      className={`w-full cursor-pointer rounded-xl p-4 text-left ${selected === membership.id ? "border-step-color bg-light-green-10 border" : "bg-mid-grey"}`}
+                      key={membership.id}
+                      onClick={() => handleSelectedPlan(membership)}
+                    >
+                      <div className={"flex items-center justify-between"}>
+                        <p className={"font-semiBold text-black-light text-body-l"}>
+                          {membership.title}
+                        </p>
+                        <p className={"font-semiBold text-black-light text-body-l"}>
+                          ₦{formatNumberWithCommas(Number(membership.amount))} / {membership.pay_by}
+                        </p>
+                      </div>
+                      <p className={"text-text-grey text-body-s font-normal"}>
+                        Billed {membership.type}
                       </p>
-                      <p className={"font-semiBold text-black-light text-body-l"}>
-                        ₦{formatNumberWithCommas(Number(membership.amount))}/{membership.pay_by}
-                      </p>
-                    </div>
-                    <p className={"text-text-grey text-body-s font-normal"}>
-                      Billed {membership.type}
-                    </p>
-                  </button>
-                ))}
+                    </button>
+                  ))}
               </div>
             </div>
           </div>

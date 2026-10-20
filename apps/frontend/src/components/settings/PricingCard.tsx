@@ -12,6 +12,7 @@ import BagIcon from "@/images/icons/caseFilledIcon.svg";
 import WebIcon from "@/images/icons/webFilledIcon.svg";
 import ReferralIcon from "@/images/icons/referralFilledIcon.svg";
 import { Button } from "@lemonade/ui";
+import { formatNumberWithCommas } from "@/lib/formatNumber";
 
 import CheckIcon from "@/images/icons/checkGreenIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
@@ -88,10 +89,12 @@ const PricingCard: React.FC<PricingInterface> = ({
         className={`w-77.75 rounded-xl border-2 ${active ? "border-step-color" : "border-light-grey-60"}`}
       >
         <div className={`rounded-tl-xl rounded-tr-xl ${active ? "bg-step-color" : "bg-grey-20"}`}>
-          {subscription?.monthly_charge === 0 ? (
+          {Number(subscription?.monthly_charge) === 0 ? (
             <p className="text-body-l p-3 font-semibold">Free forever</p>
           ) : (
-            <p className="text-body-l p-3 font-semibold">N{subscription?.monthly_charge}/month</p>
+            <p className="text-body-l p-3 font-semibold">
+              ₦{formatNumberWithCommas(Number(subscription?.monthly_charge))} / month
+            </p>
           )}
         </div>
         <div className="flex flex-col gap-5 rounded-br-xl rounded-bl-xl bg-white p-4">
@@ -121,7 +124,7 @@ const PricingCard: React.FC<PricingInterface> = ({
               <CalendarIcon />
               <p className="font-semi-normal text-body-s">Event creation</p>
             </div>
-            {subscription?.event_creation === 0 ? (
+            {Number(subscription?.event_creation) === 0 ? (
               <p className="font-semi-normal text-text-grey text-body-s">Unlimited</p>
             ) : (
               <p className="font-semi-normal text-text-grey text-body-s">
@@ -134,7 +137,7 @@ const PricingCard: React.FC<PricingInterface> = ({
               <TicketIcon />
               <p className="font-semi-normal text-body-s">Ticket sales commission</p>
             </div>
-            {subscription?.sales_commission === 0 ? (
+            {Number(subscription?.sales_commission) === 0 ? (
               <p className="font-semi-normal text-text-grey text-body-s">None</p>
             ) : (
               <p className="font-semi-normal text-text-grey text-body-s">
@@ -147,7 +150,7 @@ const PricingCard: React.FC<PricingInterface> = ({
               <BagIcon />
               <p className="font-semi-normal text-body-s">Service commission</p>
             </div>
-            {subscription?.service_commission === 0 ? (
+            {Number(subscription?.service_commission) === 0 ? (
               <p className="font-semi-normal text-text-grey text-body-s">None</p>
             ) : (
               <p className="font-semi-normal text-text-grey text-body-s">
@@ -173,6 +176,11 @@ const PricingCard: React.FC<PricingInterface> = ({
           </div>
         </div>
       </div>
+      {Number(subscription?.monthly_charge) > 0 && (
+        <span className="bg-gradient-green-2 text-meta -mt-2 rounded-full px-3 py-0.5 font-sans font-semibold text-black uppercase">
+          Recommended
+        </span>
+      )}
       <Button
         className={`mt-14 h-12 rounded-xl border p-3.5 px-17.5 shadow-none ${!active ? "bg-gradient-green" : "border-light-grey-70 bg-light-grey-70"}`}
       >

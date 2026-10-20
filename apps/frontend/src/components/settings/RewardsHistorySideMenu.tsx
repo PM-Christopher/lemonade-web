@@ -39,7 +39,7 @@ const RewardsHistorySideMenu: React.FC<RewardsHistorySideMenuInterface> = ({
               history.map((entry, index) => (
                 <div className="flex flex-col border-b pt-4 pb-6" key={index}>
                   <p className="font-semi-normal text-body-s">
-                    N{formatNumberWithCommas(Number(entry.amount) || 0)}
+                    ₦{formatNumberWithCommas(Number(entry.amount) || 0)}
                   </p>
                   <p className="text-text-grey text-meta leading-normal font-normal">
                     {entry.created_at}

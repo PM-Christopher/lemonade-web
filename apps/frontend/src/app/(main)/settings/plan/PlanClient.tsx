@@ -96,13 +96,13 @@ const PlanClient = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between border-t border-b bg-white p-2 px-4">
+        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
           <div
             className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
             onClick={() => back()}
           >
             <ChevronLeft />
-            <p className="tracking-custom text-body-l font-sans font-semibold">Plan</p>
+            <p className="tracking-custom text-body-l font-sans font-semibold">Pricing</p>
           </div>
         </div>
 

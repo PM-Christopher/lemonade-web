@@ -176,6 +176,7 @@ export interface RegisterDeviceTokenPayload {
 export interface SubscriptionBenefits {
   verification_badge: boolean;
   tribe_creation: boolean;
+  business_listing?: boolean;
   lemon_id: boolean;
   event_creation: number;
   ticket_sales_commission: number;
@@ -204,6 +205,7 @@ export function toSubscriptionState(response: SubscriptionResponse) {
     benefits: {
       ver_badge: benefits.verification_badge,
       forum_creation: benefits.tribe_creation,
+      business_listing: benefits.business_listing,
       lemon_id: benefits.lemon_id,
       event_creation: benefits.event_creation,
       sales_commission: benefits.ticket_sales_commission,

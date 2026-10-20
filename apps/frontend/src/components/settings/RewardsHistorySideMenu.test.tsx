@@ -28,8 +28,8 @@ describe("RewardsHistorySideMenu", () => {
 
     render(<RewardsHistorySideMenu isOpen={true} toggleMenu={vi.fn()} />);
 
-    expect(screen.getByText("N1,500")).toBeInTheDocument();
-    expect(screen.getByText("N500")).toBeInTheDocument();
+    expect(screen.getByText("₦1,500")).toBeInTheDocument();
+    expect(screen.getByText("₦500")).toBeInTheDocument();
     expect(screen.queryByText(/no rewards earned yet/i)).not.toBeInTheDocument();
   });
 

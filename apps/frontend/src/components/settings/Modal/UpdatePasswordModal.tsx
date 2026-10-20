@@ -136,7 +136,7 @@ const UpdatePasswordModal: React.FC<UpdatePasswordInterface> = ({ toggle, isOpen
                       htmlFor="new-password"
                       className="text-text-grey text-label font-sans font-normal"
                     >
-                      New Password
+                      New password
                     </Label>
                     <div className="bg-light_grey flex h-12 w-full items-center justify-between gap-3 rounded-xl p-2 px-3">
                       <div className="w-full">
