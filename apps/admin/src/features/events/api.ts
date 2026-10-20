@@ -70,6 +70,7 @@ export interface EventAffiliateTicketSoldBreakdown extends EventAffiliateTicketB
 
 export interface EventAffiliateProgram {
   event_name: string;
+  event_image: string | null;
   start_date: string;
   location: string | null;
   affiliate_link: string;
@@ -84,6 +85,7 @@ export interface EventAffiliateProgram {
 
 export interface EventAffiliateDetail {
   id: number;
+  user_id: string;
   unique_id: string;
   name: string;
   image: string | null;
@@ -132,6 +134,7 @@ export interface EventPromotionDetail {
     event_name: string;
     event_image: string | null;
     owner: string;
+    owner_id: string;
     promotion_name: string;
     promotion_price: string;
     date_paid: string;
@@ -183,7 +186,10 @@ export interface EventTicket {
 export interface EventDetail {
   id: number;
   unique_id: string | null;
-  owner: { fullname: string; image: string | null };
+  owner: { id: string; fullname: string; image: string | null };
+  // Naira, formatted by the backend.
+  ticket_revenue: string;
+  payment_settings: string | null;
   event_name: string;
   event_image: string | null;
   event_date: string;
@@ -193,9 +199,10 @@ export interface EventDetail {
   location: string;
   created_at: string;
   category: string;
-  socials: unknown;
+  socials: Array<{ name: string; value: string }> | null;
   description: string;
-  promotions: unknown[];
+  // The promotions bought for this event; `id` opens the promotion page.
+  promotions: Array<{ id: string; name: string | null }>;
   account: { name: string | null; bank: string | null; account_number: string | null };
 }
 
@@ -232,14 +239,18 @@ export const eventsApi = {
   getEventAffiliateDetail: (id: string | number) =>
     browserApi.get<EventAffiliateDetailResponse>(buildPath(adminAffiliatesRoutes.SHOW, { id })),
 
-  suspendEvent: (id: string | number) =>
-    browserApi.patch<{ suspended: boolean }>(buildPath(adminEventsRoutes.SUSPEND, { id }), {}),
+  suspendEvent: (id: string | number, reason?: string) =>
+    browserApi.patch<{ suspended: boolean }>(buildPath(adminEventsRoutes.SUSPEND, { id }), {
+      reason,
+    }),
 
   activateEvent: (id: string | number) =>
     browserApi.patch<{ activated: boolean }>(buildPath(adminEventsRoutes.ACTIVATE, { id }), {}),
 
-  deleteEvent: (id: string | number) =>
-    browserApi.delete<{ deleted: boolean }>(buildPath(adminEventsRoutes.DELETE, { id })),
+  deleteEvent: (id: string | number, reason?: string) =>
+    browserApi.delete<{ deleted: boolean }>(buildPath(adminEventsRoutes.DELETE, { id }), {
+      data: reason ? { reason } : undefined,
+    }),
 
   approveEvent: (id: string | number) =>
     browserApi.patch<{ event: EventDetail }>(buildPath(adminEventsRoutes.APPROVE, { id }), {}),

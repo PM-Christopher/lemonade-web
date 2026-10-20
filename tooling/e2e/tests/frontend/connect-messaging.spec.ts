@@ -88,7 +88,10 @@ test("a message sent by one user reaches the other without a reload", async ({ p
     expect(sentResponse.ok(), `${sentResponse.status()} ${await sentResponse.text()}`).toBeTruthy();
 
     // The recipient sees it live, no navigation or reload.
-    await expect(pageTwo.getByText(text)).toBeVisible({ timeout: 30_000 });
+    // The chat bubble, not the notification toast that shows the same text.
+    await expect(pageTwo.locator("p.whitespace-pre-wrap", { hasText: text })).toBeVisible({
+      timeout: 30_000,
+    });
   } finally {
     await contextTwo.close();
   }

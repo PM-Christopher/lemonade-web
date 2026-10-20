@@ -2,16 +2,23 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import DataCard from "@/components/global/DataCard";
-import { affiliateMainHeaders, eventMainHeaders } from "@/data/tableData";
+import { affiliateMainHeaders } from "@/data/tableData";
 
 import PaginationComp from "@/components/global/Pagination";
+import dayjs from "dayjs";
+import { AvatarName } from "@/components/global/AvatarName";
+import type { DateRange } from "@/components/global/DateRangePicker";
+import useSearchParams from "@/hooks/useSearchParams";
 import type { EventAffiliatesResponse, EventTabData } from "@/features/events/api";
 
 interface AffiliateViewProps {
   pageData: EventTabData | undefined;
+  range?: DateRange | null;
 }
 
-const AffiliateView = ({ pageData }: AffiliateViewProps) => {
+const AffiliateView = ({ pageData, range = null }: AffiliateViewProps) => {
+  const { searchParams } = useSearchParams();
+  const term = searchParams?.get("search")?.toLowerCase().trim() ?? "";
   const { push } = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 10;
@@ -27,11 +34,24 @@ const AffiliateView = ({ pageData }: AffiliateViewProps) => {
   };
 
   // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil((data?.affiliates?.length ?? 0) / perPage);
+  const affiliates = (data?.affiliates ?? []).filter((row) => {
+    const joined = dayjs(row.date_joined);
+    const inRange =
+      range === null ||
+      !joined.isValid() ||
+      (!joined.isBefore(dayjs(range.start).startOf("day")) &&
+        !joined.isAfter(dayjs(range.end).endOf("day")));
+    const matches =
+      term === "" ||
+      row.name?.toLowerCase().includes(term) ||
+      row.unique_id?.toLowerCase().includes(term);
+    return inRange && matches;
+  });
+  const totalPages = Math.max(1, Math.ceil(affiliates.length / perPage));
 
   // Determine the start and end indices for slicing the data array
   const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = data?.affiliates?.slice(startIndex, startIndex + perPage);
+  const paginatedData = affiliates.slice(startIndex, startIndex + perPage);
   return (
     <>
       <>
@@ -71,15 +91,21 @@ const AffiliateView = ({ pageData }: AffiliateViewProps) => {
                     onClick={() => push(routes.EVENT_AFFILIATES(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.name}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      <AvatarName name={row?.name} image={row?.image} />
+                    </td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.programs}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.date_joined}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {dayjs(row?.date_joined).isValid()
+                        ? dayjs(row.date_joined).format("DD MMM, YYYY hh:mm A")
+                        : row?.date_joined}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan={eventMainHeaders.length}
+                    colSpan={affiliateMainHeaders.length}
                     className="p-4 text-center text-sm text-gray-500"
                   >
                     No data available

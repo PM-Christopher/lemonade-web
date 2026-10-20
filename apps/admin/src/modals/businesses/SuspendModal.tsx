@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@lemonade/ui";
-import { BUSINESS_ACTION_REASONS } from "./reasons";
+import { ACTION_REASONS } from "@/modals/reasons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useSuspendBusinessMutation } from "@/features/businesses/mutations";
@@ -25,7 +25,7 @@ interface SuspendModalProps {
 }
 
 function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
-  const [reason, setReason] = useState<string>(BUSINESS_ACTION_REASONS[0]);
+  const [reason, setReason] = useState<string>(ACTION_REASONS[0]);
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const suspendBusinessMutation = useSuspendBusinessMutation(id);
@@ -87,7 +87,7 @@ function SuspendModal({ isOpen, toggle, id }: SuspendModalProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {BUSINESS_ACTION_REASONS.map((item) => (
+                {ACTION_REASONS.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>

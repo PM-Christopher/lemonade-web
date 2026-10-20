@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
 // domain was the last one still on fully static mock content (see
 // docs/ARCHITECTURE.md Phase 6's "tribes/page.tsx ... static mock content"
 // finding, closed 2026-09-24). Covers the four actions that were unwired:
-// create tribe (with a real image upload), add thread, delete thread.
+// create tribe (with a real image upload), add thread, delete thread from the thread menu.
 test("admin can create a tribe, post a thread, and delete it", async ({ page }) => {
   test.setTimeout(60_000); // real image upload + two real write round trips
 
@@ -50,8 +50,8 @@ test("admin can create a tribe, post a thread, and delete it", async ({ page }) 
 
   await dialog.getByLabel("Tribe name").fill(tribeName);
 
-  await dialog.getByRole("combobox", { name: "Category" }).click();
-  await page.getByRole("option").first().click();
+  await dialog.getByRole("button", { name: "Category" }).click();
+  await dialog.locator("ul li button").first().click();
 
   await dialog.getByLabel("Description").fill("Created by the tribes e2e spec.");
 
@@ -63,13 +63,18 @@ test("admin can create a tribe, post a thread, and delete it", async ({ page }) 
   await expect(page.getByText(tribeName)).toBeVisible();
 
   const topic = `E2E topic ${Date.now()}`;
-  await page.getByPlaceholder("Topic").fill(topic);
-  await page.getByPlaceholder("Write something...").fill("Posted by the tribes e2e spec.");
-  await page.getByRole("button", { name: "Post thread" }).click();
+  await page.getByRole("button", { name: "Create thread" }).click();
+  const threadDialog = page.getByRole("dialog");
+  await threadDialog.getByPlaceholder("Topic").fill(topic);
+  await threadDialog
+    .getByPlaceholder("Share your thoughts...")
+    .fill("Posted by the tribes e2e spec.");
+  await threadDialog.getByRole("button", { name: "Post", exact: true }).click();
 
   const thread = page.getByText(topic);
   await expect(thread).toBeVisible({ timeout: 15_000 });
 
+  await page.getByRole("button", { name: "Thread actions" }).first().click();
   await page.getByRole("button", { name: "Delete thread" }).click();
   await page.getByRole("button", { name: "Delete", exact: true }).click();
   await expect(thread).toHaveCount(0, { timeout: 15_000 });

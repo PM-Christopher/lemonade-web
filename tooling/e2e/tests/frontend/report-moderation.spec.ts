@@ -91,8 +91,10 @@ test("a reported thread reaches the admin queue and can be resolved", async ({ p
     await adminPage.goto(`/reporting/${reportId}`);
     await expect(adminPage.getByText(report?.unique_id ?? "")).toBeVisible({ timeout: 45_000 });
     await expect(adminPage.getByText("Pending")).toBeVisible();
-    await adminPage.getByRole("button", { name: "Mark as resolved" }).click();
-    await expect(adminPage.getByText("Completed")).toBeVisible({ timeout: 30_000 });
+    await adminPage.getByRole("button", { name: "Make as resolved" }).click();
+    // The confirmation dialog asks first.
+    await adminPage.getByRole("dialog").getByRole("button", { name: "Resolve" }).click();
+    await expect(adminPage.getByText("Resolved", { exact: true })).toBeVisible({ timeout: 30_000 });
 
     const resolved = (await listReports(adminContext.request)).find((row) => row.id === reportId);
     expect(resolved?.status).toBe("completed");

@@ -5,13 +5,21 @@ import { useEventAffiliateDetailQuery } from "@/features/events/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { RootState } from "@/redux/store";
-import { CalendarIcon, CopyIcon, MapPinIcon } from "lucide-react";
+import { CalendarIcon, CopyIcon, ExternalLinkIcon, MapPinIcon } from "lucide-react";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+import { AvatarName } from "@/components/global/AvatarName";
 import { useSelector } from "react-redux";
+
+const PayoutHistoryModal = dynamic(() => import("@/modals/users/PayoutHistoryModal"), {
+  ssr: false,
+});
 
 const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data } = useEventAffiliateDetailQuery(id, { enabled: isLoggedIn });
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const handleCopyLink = (link: string) => {
     navigator.clipboard.writeText(link);
@@ -33,7 +41,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
               </p>
             </div>
             <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>{affiliate?.name}</p>
+              <AvatarName name={affiliate?.name} image={affiliate?.image} />
             </div>
           </div>
           <div className={"items-center-center flex gap-6"}>
@@ -108,6 +116,17 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
           ) : (
             <p className={"text-text-grey text-body-s font-normal"}>No bank account on file</p>
           )}
+          {affiliate?.user_id && (
+            <button
+              type="button"
+              className={
+                "text-light-green-70 text-body-s flex w-fit cursor-pointer items-center gap-1 font-medium"
+              }
+              onClick={() => setHistoryOpen(true)}
+            >
+              View transaction history <ExternalLinkIcon className={"h-3.5 w-3.5"} />
+            </button>
+          )}
         </div>
         <div className={"flex h-fit w-195 flex-col gap-4 rounded-xl bg-white"}>
           <div className={"border-b p-6"}>
@@ -125,7 +144,18 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                   className={"bg-light-grey flex flex-col gap-2 rounded-xl p-2"}
                 >
                   <div className={"bg-green-tint flex items-center gap-3 p-2 px-4"}>
-                    <div className={"h-24 w-24 rounded-lg bg-gray-600"}></div>
+                    {program.event_image ? (
+                      <Image
+                        unoptimized
+                        src={program.event_image}
+                        alt={program.event_name}
+                        width={96}
+                        height={96}
+                        className={"h-24 w-24 rounded-lg object-cover"}
+                      />
+                    ) : (
+                      <div className={"h-24 w-24 rounded-lg bg-gray-600"}></div>
+                    )}
                     <div className={"flex flex-col gap-1"}>
                       <p className={"font-semiBold text-body-xl"}>{program.event_name}</p>
                       <div className={"flex items-center gap-1"}>
@@ -220,6 +250,11 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
           </div>
         </div>
       </section>
+      <PayoutHistoryModal
+        isOpen={historyOpen}
+        toggle={() => setHistoryOpen(false)}
+        userId={affiliate?.user_id}
+      />
     </MainLayout>
   );
 };

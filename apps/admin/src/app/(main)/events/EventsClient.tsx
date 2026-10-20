@@ -28,6 +28,8 @@ const EVENT_STATUSES = [
   "inactive",
 ];
 
+const PROMOTION_STATUSES = ["pending", "scheduled", "completed"];
+
 const EventsClient = () => {
   const { searchParams } = useSearchParams();
   // The dashboard links here with ?tab=pending.
@@ -47,6 +49,7 @@ const EventsClient = () => {
   const exportCsv = useExportCsvMutation();
   const switchOption = (option: string) => {
     setMenuOption(option);
+    setStatus("");
   };
 
   const renderViews = () => {
@@ -56,9 +59,9 @@ const EventsClient = () => {
       case "pending":
         return <PendingEventsView pageData={eventData} range={range} />;
       case "affiliates":
-        return <AffiliateView pageData={eventData} />;
+        return <AffiliateView pageData={eventData} range={range} />;
       case "promotions":
-        return <PromotionView pageData={eventData} />;
+        return <PromotionView pageData={eventData} status={status} range={range} />;
       default:
         return <></>;
     }
@@ -119,7 +122,7 @@ const EventsClient = () => {
                 />
               </div>
             </div>
-            {menuOption === "events" && (
+            {(menuOption === "events" || menuOption === "promotions") && (
               <select
                 aria-label="Filter by status"
                 className={"bg-light-grey h-10 rounded-xl px-3"}
@@ -127,7 +130,7 @@ const EventsClient = () => {
                 onChange={(e) => setStatus(e.target.value)}
               >
                 <option value="">All statuses</option>
-                {EVENT_STATUSES.map((option) => (
+                {(menuOption === "events" ? EVENT_STATUSES : PROMOTION_STATUSES).map((option) => (
                   <option key={option} value={option}>
                     {capitalizeWords(option)}
                   </option>

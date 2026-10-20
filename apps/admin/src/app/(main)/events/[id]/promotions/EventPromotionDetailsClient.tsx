@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
-import { CalendarIcon, ClockIcon, MapPinIcon } from "lucide-react";
+import { CalendarIcon, ClockIcon, DownloadIcon, MapPinIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -13,6 +13,7 @@ import { useEventPromotionQuery } from "@/features/events/queries";
 import { useCompleteEventPromotionMutation } from "@/features/events/mutations";
 import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 
+const ChatModal = dynamic(() => import("@/modals/users/ChatModal"), { ssr: false });
 const SchedulePromotionModal = dynamic(() => import("@/modals/events/SchedulePromotionModal"), {
   ssr: false,
 });
@@ -32,6 +33,7 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
   const { data } = useEventPromotionQuery(id, { enabled: isLoggedIn });
   const completeMutation = useCompleteEventPromotionMutation(id);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const summary = data?.event_summary;
   const event = data?.event;
@@ -59,7 +61,20 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
           </div>
           <div className={"flex flex-col gap-5 p-6"}>
             <SummaryRow label={"Event Name:"}>{summary?.event_name}</SummaryRow>
-            <SummaryRow label={"Event Owner:"}>{summary?.owner}</SummaryRow>
+            <SummaryRow label={"Event Owner:"}>
+              <span className={"flex items-center gap-3"}>
+                {summary?.owner}
+                {summary?.owner_id && (
+                  <button
+                    type="button"
+                    className={"text-light-green-70 cursor-pointer font-medium"}
+                    onClick={() => setChatOpen(true)}
+                  >
+                    Open chat
+                  </button>
+                )}
+              </span>
+            </SummaryRow>
             <SummaryRow label={"Promotion ID:"}>{summary?.unique_id ?? "N/A"}</SummaryRow>
             <SummaryRow label={"Promotion Name:"}>{summary?.promotion_name}</SummaryRow>
             <SummaryRow label={"Amount:"}>
@@ -106,14 +121,27 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
 
         <div className={"flex h-fit w-full flex-col gap-4 rounded-xl bg-white p-6 lg:w-220"}>
           {event?.image ? (
-            <Image
-              src={event.image}
-              alt={event.name ?? ""}
-              width={320}
-              height={343}
-              unoptimized
-              className={"h-85.75 w-80 rounded-2xl object-cover"}
-            />
+            <div className={"relative w-80"}>
+              <Image
+                src={event.image}
+                alt={event.name ?? ""}
+                width={320}
+                height={343}
+                unoptimized
+                className={"h-85.75 w-80 rounded-2xl object-cover"}
+              />
+              <a
+                href={event.image}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                className={
+                  "text-meta absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-lg bg-white px-3 py-1 font-medium"
+                }
+              >
+                <DownloadIcon className={"h-3.5 w-3.5"} /> Download
+              </a>
+            </div>
           ) : null}
           <p className={"font-semiBold text-title-r leading-normal"}>{event?.name}</p>
           <div className={"flex flex-col gap-2"}>
@@ -146,6 +174,14 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
         id={id}
         currentDate={summary?.promotion_date}
       />
+      {chatOpen && summary?.owner_id && (
+        <ChatModal
+          isOpen
+          toggle={() => setChatOpen(false)}
+          userId={summary.owner_id}
+          userName={summary.owner}
+        />
+      )}
     </MainLayout>
   );
 };

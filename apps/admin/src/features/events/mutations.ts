@@ -6,7 +6,7 @@ export function useSuspendEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => eventsApi.suspendEvent(id as string | number),
+    mutationFn: (reason?: string) => eventsApi.suspendEvent(id as string | number, reason),
     onSuccess: () => {
       if (id) queryClient.invalidateQueries({ queryKey: eventKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
@@ -54,7 +54,7 @@ export function useDeleteEventMutation(id: string | number | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => eventsApi.deleteEvent(id as string | number),
+    mutationFn: (reason?: string) => eventsApi.deleteEvent(id as string | number, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: eventKeys.lists() });
     },

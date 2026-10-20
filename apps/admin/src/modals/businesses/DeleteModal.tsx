@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@lemonade/ui";
-import { BUSINESS_ACTION_REASONS } from "./reasons";
+import { ACTION_REASONS } from "@/modals/reasons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDeleteBusinessMutation } from "@/features/businesses/mutations";
@@ -32,7 +32,7 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { push } = useNavigation();
   const deleteBusinessMutation = useDeleteBusinessMutation(id);
-  const [reason, setReason] = useState<string>(BUSINESS_ACTION_REASONS[0]);
+  const [reason, setReason] = useState<string>(ACTION_REASONS[0]);
 
   const submitAction = () => {
     if (!isLoggedIn) return;
@@ -89,7 +89,7 @@ function DeleteModal({ isOpen, toggle, id }: DeleteModalProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {BUSINESS_ACTION_REASONS.map((item) => (
+                {ACTION_REASONS.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>

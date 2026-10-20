@@ -4,6 +4,8 @@ import React, { useMemo, useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import { eventMainHeaders } from "@/data/tableData";
 import PaginationComp from "@/components/global/Pagination";
+import { AvatarName } from "@/components/global/AvatarName";
+import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import dayjs from "dayjs";
 import type { DateRange } from "@/components/global/DateRangePicker";
 
@@ -128,11 +130,21 @@ const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
                     onClick={() => push(routes.EVENT_DETAIL(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.event_name}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      <AvatarName name={row?.event_name} image={row?.event_image} />
+                    </td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.event_type}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.category}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.date_created_at}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row?.status}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      {dayjs(row?.date_created_at).isValid()
+                        ? dayjs(row.date_created_at).format("DD MMM, YYYY hh:mm A")
+                        : row?.date_created_at}
+                    </td>
+                    <td
+                      className={`p-4 font-sans text-sm font-medium ${GetStatusClass(capitalizeWords(row?.status))}`}
+                    >
+                      {capitalizeWords(row?.status)}
+                    </td>
                   </tr>
                 ))
               ) : (

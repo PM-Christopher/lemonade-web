@@ -23,6 +23,7 @@ function mockDetail(
   return {
     affiliate: {
       id: 1,
+      user_id: "user-1",
       unique_id: "AF112332",
       name: "Adebayo Akintoye",
       image: null,
@@ -38,6 +39,7 @@ function mockDetail(
     },
     programs: [
       {
+        event_image: null,
         event_name: "Halloween Party",
         start_date: "2026-03-23T16:00:00Z",
         location: "Lekki phase 1",

@@ -6,8 +6,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEventDetailQuery } from "@/features/events/queries";
 import type { EventTicket } from "@/features/events/api";
-import { useActivateEventMutation, useApproveEventMutation } from "@/features/events/mutations";
-import { capitalizeWords } from "@/utils/helper";
+import { useApproveEventMutation } from "@/features/events/mutations";
+import Link from "next/link";
+import { AvatarName } from "@/components/global/AvatarName";
+import { SocialLink } from "@/components/global/SocialLink";
+import { routes } from "@/lib/routes";
+import { naira } from "@/views/transactions/transactionFormat";
+import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
@@ -17,6 +22,9 @@ const SuspendModal = dynamic(() => import("@/modals/events/SuspendModal"), {
   ssr: false,
 });
 const DeleteModal = dynamic(() => import("@/modals/events/DeleteModal"), {
+  ssr: false,
+});
+const UnsuspendModal = dynamic(() => import("@/modals/events/UnsuspendModal"), {
   ssr: false,
 });
 const RejectEventModal = dynamic(() => import("@/modals/events/RejectEventModal"), {
@@ -29,6 +37,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [unsuspendOpen, setUnsuspendOpen] = useState(false);
 
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -62,14 +71,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
     setRejectModalOpen(!rejectModalOpen);
   };
 
-  const activateEventMutation = useActivateEventMutation(id);
   const approveEventMutation = useApproveEventMutation(id);
-
-  const unsuspendEvent = () => {
-    if (isLoggedIn && id) {
-      activateEventMutation.mutate();
-    }
-  };
 
   const approveEvent = () => {
     if (isLoggedIn && id) {
@@ -80,6 +82,11 @@ const EventDetailsClient = ({ id }: { id: string }) => {
   const status = event?.event?.status;
   const isPending = status === "PENDING";
   const isRejected = status === "REJECTED";
+  // The organiser's social links, shown as badges.
+  const rawSocials = event?.event?.socials;
+  const socialLinks = (
+    Array.isArray(rawSocials) ? (rawSocials as Array<{ name?: string; value?: string }>) : []
+  ).filter((link): link is { name: string; value: string } => Boolean(link.name && link.value));
 
   return (
     <MainLayout>
@@ -108,9 +115,11 @@ const EventDetailsClient = ({ id }: { id: string }) => {
             ) : event?.event?.status !== "ACTIVE" ? (
               <button
                 className={"bg-gradient-green h-11 w-39 rounded-xl border text-center"}
-                onClick={unsuspendEvent}
+                onClick={() => setUnsuspendOpen(true)}
               >
-                <p className={"text-body-l font-medium text-white"}>Reactivate event</p>
+                <p className={"text-body-l font-medium text-white"}>
+                  {status === "SUSPENDED" ? "Unsuspend event" : "Reactivate event"}
+                </p>
               </button>
             ) : (
               <div className="relative inline-block">
@@ -152,10 +161,18 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                 </p>
               </div>
               <div className={"flex gap-1"}>
-                <p className={"text-body-s font-medium"}>{event?.event?.owner?.fullname}</p>
-                {/* <p className={"text-body-s font-medium text-light-green"}>
-                  View profile
-                </p> */}
+                <AvatarName
+                  name={event?.event?.owner?.fullname}
+                  image={event?.event?.owner?.image}
+                />
+                {event?.event?.owner?.id && (
+                  <Link
+                    href={routes.USER_DETAIL(event.event.owner.id)}
+                    className={"text-light-green-70 text-body-s ml-2 font-medium whitespace-nowrap"}
+                  >
+                    View profile
+                  </Link>
+                )}
               </div>
             </div>
             <div className={"items-center-center flex gap-6"}>
@@ -170,7 +187,9 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                   Event Status:
                 </p>
               </div>
-              <p className={"text-light-green-70 text-body-s font-medium"}>
+              <p
+                className={`text-body-s font-medium ${GetStatusClass(capitalizeWords(event?.event?.status))}`}
+              >
                 {capitalizeWords(event?.event?.status)}
               </p>
             </div>
@@ -210,7 +229,11 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                   Payment Settings:
                 </p>
               </div>
-              <p className={"text-body-s font-medium"}>Monthly</p>
+              <p className={"text-body-s font-medium"}>
+                {event?.event?.payment_settings
+                  ? capitalizeWords(event.event.payment_settings)
+                  : "Not set"}
+              </p>
             </div>
             <div className={"items-center-center flex gap-6"}>
               <div className={"w-28.75"}>
@@ -240,7 +263,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                   Ticket Revenue:
                 </p>
               </div>
-              <p className={"text-body-s font-medium"}>N300,000</p>
+              <p className={"text-body-s font-medium"}>{naira(event?.event?.ticket_revenue)}</p>
             </div>
             <div className={"items-center-center flex gap-6"}>
               <div className={"w-28.75"}>
@@ -263,7 +286,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
                     <p className={"text-text-grey text-meta leading-normal font-medium"}>Price:</p>
                   </div>
                   <p className={"text-body-s font-medium"}>
-                    {ticket?.price === 0 ? "-" : ticket?.price}
+                    {Number(ticket?.price) === 0 ? "-" : naira(ticket?.price)}
                   </p>
                 </div>
                 <div className={"items-center-center flex gap-6"}>
@@ -325,6 +348,15 @@ const EventDetailsClient = ({ id }: { id: string }) => {
             "flex h-190.5 w-full flex-col gap-4 rounded-tl-xl rounded-tr-xl bg-white p-6 lg:min-w-0 lg:flex-1"
           }
         >
+          {status === "SUSPENDED" && (
+            <p
+              className={
+                "bg-red-1 text-meta ml-auto w-fit rounded px-2 py-0.5 font-medium text-white"
+              }
+            >
+              Suspended
+            </p>
+          )}
           {event?.event?.event_image && (
             <Image
               src={event.event.event_image}
@@ -349,32 +381,42 @@ const EventDetailsClient = ({ id }: { id: string }) => {
               <p className={"text-text-grey text-body-s font-medium"}>{event?.event?.location}</p>
             </div>
           </div>
-          <p className={"font-semiBold text-body-l"}>Contact Us</p>
+          {socialLinks.length > 0 && (
+            <>
+              <p className={"font-semiBold text-body-l"}>Contact Us</p>
+              <div className={"flex gap-3"}>
+                {socialLinks.map((link) => (
+                  <SocialLink key={link.name} name={link.name} href={link.value} />
+                ))}
+              </div>
+            </>
+          )}
           <p className={"font-semiBold text-body-l"}>About Event</p>
           <p className={"text-text-grey text-body-s font-normal"}>{event?.event?.description}</p>
-          <p className={"font-semiBold text-body-l"}>Promotions</p>
-          <div className={"flex flex-wrap gap-3"}>
-            <div
-              className={
-                "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
-              }
-            >
-              <p className={"text-body-s font-medium"}>IG Feed</p>
-              <ChevronRight className={"text-grey-40 w-5"} />
-            </div>
-            <div
-              className={
-                "gap-[] border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
-              }
-            >
-              <p className={"text-body-s font-medium"}>IG Story</p>
-              <ChevronRight className={"text-grey-40 w-5"} />
-            </div>
-          </div>
+          {(event?.event?.promotions.length ?? 0) > 0 && (
+            <>
+              <p className={"font-semiBold text-body-l"}>Promotions</p>
+              <div className={"flex flex-wrap gap-3"}>
+                {event?.event?.promotions.map((promotion) => (
+                  <Link
+                    key={promotion.id}
+                    href={routes.EVENT_PROMOTIONS(promotion.id)}
+                    className={
+                      "border-light-green-tint bg-light-tint flex w-fit items-center rounded-xl border p-2"
+                    }
+                  >
+                    <p className={"text-body-s font-medium"}>{promotion.name}</p>
+                    <ChevronRight className={"text-grey-40 w-5"} />
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
       <SuspendModal isOpen={suspendModalOpen} toggle={toggleSuspendModalOpen} id={id} />
       <DeleteModal isOpen={deleteModalOpen} toggle={toggleDeleteModalOpen} id={id} />
+      <UnsuspendModal isOpen={unsuspendOpen} toggle={() => setUnsuspendOpen(false)} id={id} />
       <RejectEventModal isOpen={rejectModalOpen} toggle={toggleRejectModalOpen} id={id} />
     </MainLayout>
   );
