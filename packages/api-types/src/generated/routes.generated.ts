@@ -128,6 +128,8 @@ export const adminTransactionRoutes = Object.freeze({
   SERVICES: "/admin/transaction/services", // GET
   SUBSCRIPTION: "/admin/transaction/plan-subscription/{id}", // GET
   SUBSCRIPTIONS: "/admin/transaction/plan-subscription", // GET
+  TRIBE: "/admin/transaction/tribe/{id}", // GET
+  TRIBES: "/admin/transaction/tribes", // GET
   WALLET_WITHDRAWAL: "/admin/transaction/wallet-withdrawal/{id}", // GET
   WALLET_WITHDRAWALS: "/admin/transaction/wallet-withdrawals", // GET
 });
@@ -158,6 +160,7 @@ export const adminUsersRoutes = Object.freeze({
   SHOW: "/admin/users/{id}", // GET
   SUSPEND: "/admin/users/{id}/suspend-user", // PATCH
   TRIBE: "/admin/users/{id}/user-tribe/{tribe_id}", // GET
+  TRIBE_HISTORY: "/admin/users/{id}/user-tribe-history", // GET
   TRIBES: "/admin/users/{id}/user-tribes", // GET
   WALLET: "/admin/users/{id}/user-wallet", // GET
 });

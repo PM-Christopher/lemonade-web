@@ -1093,6 +1093,22 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/admin/transaction/tribe/{id}",
+        "name": "v1.admin.transaction.tribe",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/transaction/tribes",
+        "name": "v1.admin.transaction.tribes",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/admin/transaction/wallet-withdrawal/{id}",
         "name": "v1.admin.transaction.wallet-withdrawal",
         "guard": "admin",
@@ -1320,6 +1336,14 @@
         "method": "GET",
         "uri": "/v1/admin/users/{id}/user-tribe/{tribe_id}",
         "name": "v1.admin.users.tribe",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/user-tribe-history",
+        "name": "v1.admin.users.tribe-history",
         "guard": "admin",
         "formRequest": null,
         "fields": null

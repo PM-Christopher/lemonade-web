@@ -2,6 +2,7 @@ export const transactionPageViews = [
   { key: "plan-subscriptions", title: "Plan subscriptions" },
   { key: "wallet-withdrawals", title: "Wallet withdrawals" },
   { key: "boosting", title: "Boosting" },
+  { key: "tribe-payments", title: "Tribe payments" },
   { key: "services", title: "Services" },
   { key: "events", title: "Events" },
   { key: "promotions", title: "Promotions" },
@@ -23,6 +24,7 @@ export const usersDetailPageViews = [
 export const tribeViews = [
   { key: "created", title: "Created Tribes" },
   { key: "tln", title: "TLN Tribes" },
+  { key: "paid", title: "Paid Tribes" },
 ];
 
 export const eventViews = [

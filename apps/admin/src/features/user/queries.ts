@@ -13,6 +13,7 @@ export const userKeys = {
   affiliateDetail: (id: string | number) => [...userKeys.all(), "affiliate-detail", id] as const,
   accountInfo: (id: string | number, infoType: string) =>
     [...userKeys.all(), "account-info", id, infoType] as const,
+  tribeHistory: (id: string | number) => [...userKeys.all(), "tribe-history", id] as const,
 };
 
 export function useUserListQuery(
@@ -61,5 +62,18 @@ export function useAccountInfoQuery(
     queryFn: () => userApi.getAccountInfo(id as string | number, infoType),
     staleTime: 60_000,
     enabled: Boolean(id) && Boolean(infoType) && options?.enabled !== false,
+  });
+}
+
+// Money-adjacent history, so always fresh.
+export function useUserTribeHistoryQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: userKeys.tribeHistory(id ?? 0),
+    queryFn: () => userApi.getTribeHistory(id as string | number),
+    staleTime: 0,
+    enabled: Boolean(id) && options?.enabled !== false,
   });
 }

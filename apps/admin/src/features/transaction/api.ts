@@ -15,7 +15,7 @@ export interface TransactionHistoryRow {
   date_paid?: string;
   wallet_id?: string;
   subscription_type?: string;
-  user?: { fullname?: string; name?: string; username?: string; email?: string };
+  user?: { id?: string; fullname?: string; name?: string; username?: string; email?: string };
   wallet?: { wallet_id?: string };
   // PaymentTransactionResource fields — boosting/services/promotions history
   // rows (see app/Http/Resources/Billing/PaymentTransactionResource.php).
@@ -33,6 +33,8 @@ export interface TransactionHistoryRow {
   event_image?: string;
   organizer?: string;
   tickets_sold?: number;
+  // "tribe-payments" rows.
+  tribe_name?: string | null;
   [key: string]: unknown;
 }
 
@@ -55,6 +57,10 @@ export interface TransactionListResponse {
   total_transactions?: number;
   successful_transactions?: number;
   total_wallets?: number;
+  // "tribe-payments" only: server-formatted naira, plus the paid-tribe count.
+  tribe_earnings?: string;
+  tribe_commissions?: string;
+  total_paid_tribes?: number;
   // Wallet-withdrawals trxType only — same field/shape as the wallet
   // domain's own WalletData.wallet_revenue (features/wallet/api.ts).
   wallet_revenue?: string;
@@ -89,8 +95,19 @@ export interface TransactionEventDetailResponse {
   history: TransactionHistoryRow[];
 }
 
+export interface TransactionTribeDetailResponse {
+  info: TransactionHistoryRow;
+  history: TransactionHistoryRow[];
+}
+
 export type TransactionListType =
-  "plan-subscriptions" | "wallet-withdrawals" | "boosting" | "services" | "events" | "promotions";
+  | "plan-subscriptions"
+  | "wallet-withdrawals"
+  | "boosting"
+  | "tribe-payments"
+  | "services"
+  | "events"
+  | "promotions";
 
 export const transactionApi = {
   // page omitted -> old unpaginated shape (docs/ARCHITECTURE.md §22 Conflict 1).
@@ -114,6 +131,8 @@ export const transactionApi = {
         });
       case "boosting":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.BOOSTS, { params });
+      case "tribe-payments":
+        return browserApi.get<TransactionListResponse>(adminTransactionRoutes.TRIBES, { params });
       case "services":
         return browserApi.get<TransactionListResponse>(adminTransactionRoutes.SERVICES, { params });
       case "events":
@@ -129,6 +148,9 @@ export const transactionApi = {
     browserApi.get<PlanSubscriptionDetailResponse>(
       buildPath(adminTransactionRoutes.SUBSCRIPTION, { id }),
     ),
+
+  getTribeDetail: (id: string | number) =>
+    browserApi.get<TransactionTribeDetailResponse>(buildPath(adminTransactionRoutes.TRIBE, { id })),
 
   getEventDetail: (id: string | number) =>
     browserApi.get<TransactionEventDetailResponse>(buildPath(adminTransactionRoutes.EVENT, { id })),

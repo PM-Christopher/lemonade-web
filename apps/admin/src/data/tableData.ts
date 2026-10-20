@@ -33,6 +33,15 @@ export const paymentTransactionHeaders = [
   "STATUS",
 ];
 
+export const tribePaymentHeaders = [
+  "TXN ID",
+  "FULL NAME",
+  "TRIBE NAME",
+  "AMOUNT",
+  "DATE PAID",
+  "STATUS",
+];
+
 export const eventsHeaders = [
   "ID",
   "EVENT NAME",
@@ -59,61 +68,6 @@ export const affiliateHeaders = [
   "TOTAL REFERRALS",
   "SUBSCRIBED REFERRALS",
   "REFERRAL EARNINGS",
-];
-
-// "TLN Tribes" has no backend equivalent (confirmed while wiring the
-// "Created Tribes" tab to real data — see docs/ARCHITECTURE.md §22 Conflict
-// 2) — this stays as real fixture UI, not dead code, until there's an
-// actual TLN concept on the backend to wire it to.
-export const tribeTlnHeaders = [
-  "TRIBE ID",
-  "TRIBE NAME",
-  "CREATED BY",
-  "CATEGORY",
-  "MEMBERS",
-  "CREATED AT",
-];
-export const tribeTlnData = [
-  {
-    "TRIBE ID": "TB12343",
-    "TRIBE NAME": "Structural Tech Enthusiasts",
-    "CREATED BY": "John Smith",
-    CATEGORY: "Technology",
-    MEMBERS: 156,
-    "CREATED AT": "23 Apr, 2024 09:45 PM",
-  },
-  {
-    "TRIBE ID": "TB12344",
-    "TRIBE NAME": "Fitness Warriors",
-    "CREATED BY": "Sarah Johnson",
-    CATEGORY: "Health & Fitness",
-    MEMBERS: 243,
-    "CREATED AT": "22 Apr, 2024 03:20 PM",
-  },
-  {
-    "TRIBE ID": "TB12345",
-    "TRIBE NAME": "Book Lovers Club",
-    "CREATED BY": "Michael Brown",
-    CATEGORY: "Literature",
-    MEMBERS: 89,
-    "CREATED AT": "21 Apr, 2024 11:15 AM",
-  },
-  {
-    "TRIBE ID": "TB12346",
-    "TRIBE NAME": "Digital Artists",
-    "CREATED BY": "Emma Wilson",
-    CATEGORY: "Art",
-    MEMBERS: 178,
-    "CREATED AT": "20 Apr, 2024 05:30 PM",
-  },
-  {
-    "TRIBE ID": "TB12347",
-    "TRIBE NAME": "Crypto Traders",
-    "CREATED BY": "David Chen",
-    CATEGORY: "Finance",
-    MEMBERS: 312,
-    "CREATED AT": "19 Apr, 2024 02:45 PM",
-  },
 ];
 
 export const eventMainHeaders = [

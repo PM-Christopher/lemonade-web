@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
+import TribeHistoryModal from "@/modals/users/TribeHistoryModal";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { userKeys } from "@/features/user/queries";
@@ -17,6 +18,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
   const [isUpdateOpen, setIsUpdateOpen] = React.useState<boolean>(false);
 
   const [updateType, setUpdateType] = React.useState<string>("add");
+  const [tribeHistoryOpen, setTribeHistoryOpen] = React.useState(false);
 
   const reloadFunc = () => {
     if (id) {
@@ -105,7 +107,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             </div>
             <ChevronRight className={"text-text-grey"} />
           </div>
-          <div className={"flex cursor-pointer justify-between p-4"}>
+          <div className={"border-b-grey-20 flex cursor-pointer justify-between border-b p-4"}>
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Affiliate Earning</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
@@ -114,9 +116,28 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             </div>
             <ChevronRight className={"text-text-grey"} />
           </div>
+          <button
+            type="button"
+            className={"flex cursor-pointer justify-between p-4 text-left"}
+            onClick={() => setTribeHistoryOpen(true)}
+            aria-label="View tribe history"
+          >
+            <div className={"flex flex-col gap-2"}>
+              <p className={"text-text-grey text-body-s font-normal"}>Monetized Tribes</p>
+              <p className={"font-semiBold text-black-light text-body-xl"}>
+                ₦{formatNumberWithCommas(userDetail?.monetized_tribes || 0)}
+              </p>
+            </div>
+            <ChevronRight className={"text-text-grey"} />
+          </button>
         </div>
       </div>
 
+      <TribeHistoryModal
+        isOpen={tribeHistoryOpen}
+        toggle={() => setTribeHistoryOpen(false)}
+        userId={id}
+      />
       <UpdateBalance
         isOpen={isUpdateOpen}
         toggle={toggleUpdateBalance}

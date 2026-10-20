@@ -48,44 +48,71 @@ const TribeDetails = ({ tribe, members = [], onRemoveMember }: TribeDetailsProps
         </div>
       </div>
 
+      {tribe?.monetized && (
+        <div className={"flex items-center justify-between"}>
+          <div className={"flex flex-col"}>
+            <p className={"text-body-l font-medium"}>Monetized Tribe</p>
+            <p className={"text-text-grey text-meta font-normal"}>Only paid users are allowed.</p>
+          </div>
+          <p className={"text-body-s font-medium"}>₦{Number(tribe.access_fee).toLocaleString()}</p>
+        </div>
+      )}
+
       <div>
         <p className="text-body-l mb-4 font-medium">Members</p>
         <div className={"bg-light-grey flex flex-col gap-2 rounded-xl px-6 py-4"}>
-          {members.length > 0 ? (
-            members.map((member) => (
-              <div
-                key={member.id}
-                className={"border-b-grey-20 flex justify-between border-b py-2.5 last:border-b-0"}
-              >
-                <div className={"flex items-center gap-2"}>
-                  <Image
-                    src={member.user?.profile_image || images.DEFAULT_TRIBE}
-                    alt={member.user?.fullname ?? "member"}
-                    width={20}
-                    height={20}
-                    className="rounded-full"
-                  />
-                  <p className={"text-body-s font-medium"}>
-                    {member.user?.fullname ?? "Unknown member"}
-                  </p>
-                </div>
-                {onRemoveMember && member.user_id && (
-                  <button
-                    type="button"
-                    aria-label="Remove member"
-                    className="text-text-grey hover:text-red-1 cursor-pointer"
-                    onClick={() =>
-                      onRemoveMember(member.user_id, member.user?.fullname ?? "this member")
-                    }
-                  >
-                    <XIcon className="h-4 w-4" />
-                  </button>
-                )}
+          {tribe?.creator && (
+            <div className={"border-b-grey-20 flex justify-between border-b py-2.5"}>
+              <div className={"flex items-center gap-2"}>
+                <Image
+                  src={tribe.creator.image || images.DEFAULT_TRIBE}
+                  alt={tribe.creator.name}
+                  width={20}
+                  height={20}
+                  className="rounded-full"
+                />
+                <p className={"text-body-s font-medium"}>{tribe.creator.name}</p>
               </div>
-            ))
-          ) : (
-            <p className="text-text-grey text-body-s font-normal">No members yet</p>
+              <p className={"text-text-grey text-meta font-normal italic"}>Creator</p>
+            </div>
           )}
+          {members.length > 0
+            ? members.map((member) => (
+                <div
+                  key={member.id}
+                  className={
+                    "border-b-grey-20 flex justify-between border-b py-2.5 last:border-b-0"
+                  }
+                >
+                  <div className={"flex items-center gap-2"}>
+                    <Image
+                      src={member.user?.profile_image || images.DEFAULT_TRIBE}
+                      alt={member.user?.fullname ?? "member"}
+                      width={20}
+                      height={20}
+                      className="rounded-full"
+                    />
+                    <p className={"text-body-s font-medium"}>
+                      {member.user?.fullname ?? "Unknown member"}
+                    </p>
+                  </div>
+                  {onRemoveMember && member.user_id && (
+                    <button
+                      type="button"
+                      aria-label="Remove member"
+                      className="text-text-grey hover:text-red-1 cursor-pointer"
+                      onClick={() =>
+                        onRemoveMember(member.user_id, member.user?.fullname ?? "this member")
+                      }
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              ))
+            : !tribe?.creator && (
+                <p className="text-text-grey text-body-s font-normal">No members yet</p>
+              )}
         </div>
       </div>
     </div>

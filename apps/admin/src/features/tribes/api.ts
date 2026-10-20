@@ -18,6 +18,11 @@ export interface AdminTribeListItem {
   members: number;
   date_created: string;
   slug: string;
+  monetized: boolean;
+  // Server-formatted naira, e.g. "5000.00".
+  access_fee: string;
+  // Admin-created tribes are the TLN tribes.
+  created_by_admin: boolean;
 }
 
 export interface TribeListResponse {
@@ -65,6 +70,9 @@ export interface TribeDetail {
   description: string;
   created_at: string;
   status: TribeStatus;
+  monetized: boolean;
+  access_fee: string;
+  creator: { id: string; name: string; image: string | null; is_admin: boolean } | null;
 }
 
 export interface TribeDetailResponse {

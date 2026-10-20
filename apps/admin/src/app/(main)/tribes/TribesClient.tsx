@@ -3,8 +3,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import { Button } from "@lemonade/ui";
 import CreateTribeModal from "@/modals/tribes/CreateTribeModal";
 import { tribeViews } from "@/utils/pageViews";
-import CreatedTribeViews from "@/views/tribes/CreatedViews";
-import TlnTribeViews from "@/views/tribes/TlnViews";
+import TribeListView, { type TribeListFilter } from "@/views/tribes/TribeListView";
 import { useTribeListQuery } from "@/features/tribes/queries";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -27,16 +26,6 @@ const TribesClient = () => {
     setIsCreateTribeModalOpen(!isCreateTribeModalOpen);
   };
 
-  const renderViews = () => {
-    switch (menuOption) {
-      case "created":
-        return <CreatedTribeViews />;
-      case "tln":
-        return <TlnTribeViews />;
-      default:
-        <> </>;
-    }
-  };
   return (
     <MainLayout>
       <section className="flex flex-col gap-5">
@@ -98,7 +87,7 @@ const TribesClient = () => {
                 ))}
               </div>
             </div>
-            {renderViews()}
+            <TribeListView key={menuOption} filter={menuOption as TribeListFilter} />
           </div>
         </div>
       </section>

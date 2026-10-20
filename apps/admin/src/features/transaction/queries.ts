@@ -10,6 +10,7 @@ export const transactionKeys = {
   subscriptionDetail: (id: string | number) =>
     [...transactionKeys.all(), "subscription-detail", id] as const,
   eventDetail: (id: string | number) => [...transactionKeys.all(), "event-detail", id] as const,
+  tribeDetail: (id: string | number) => [...transactionKeys.all(), "tribe-detail", id] as const,
 };
 
 /** Financial reporting data, not a live balance — but still money-adjacent, staleTime 0 like wallet. */
@@ -48,6 +49,18 @@ export function useTransactionEventDetailQuery(
   return useQuery({
     queryKey: transactionKeys.eventDetail(id ?? 0),
     queryFn: () => transactionApi.getEventDetail(id as string | number),
+    staleTime: 0,
+    enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+export function useTransactionTribeDetailQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: transactionKeys.tribeDetail(id ?? 0),
+    queryFn: () => transactionApi.getTribeDetail(id as string | number),
     staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
   });

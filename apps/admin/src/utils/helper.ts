@@ -117,6 +117,8 @@ export const manualTransactionsExport = (data: Array<Record<string, unknown>>, t
       "Status",
       "Created At",
     ];
+  } else if (type === "tribe-payments") {
+    headers = ["Reference", "User", "Tribe", "Amount", "Paid At", "Status"];
   } else if (type === "boosting" || type === "services" || type === "promotions") {
     headers = ["Reference", "User", "Amount", "Provider", "Paid At", "Status"];
   } else {
@@ -162,6 +164,15 @@ export const manualTransactionsExport = (data: Array<Record<string, unknown>>, t
         item.tickets_sold || "",
         item.status || "",
         item.created_at || "",
+      ];
+    } else if (type === "tribe-payments") {
+      row = [
+        item.reference || "",
+        userName(item.user),
+        item.tribe_name || "",
+        item.amount || "",
+        item.paid_at || "",
+        item.status || "",
       ];
     } else if (type === "boosting" || type === "services" || type === "promotions") {
       row = [

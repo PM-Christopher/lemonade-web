@@ -5,6 +5,7 @@ import type {
   TransactionListResponse,
   PlanSubscriptionDetailResponse,
   TransactionEventDetailResponse,
+  TransactionTribeDetailResponse,
 } from "./api";
 
 export const transactionServerApi = {
@@ -19,6 +20,9 @@ export const transactionServerApi = {
     backendApi.get<PlanSubscriptionDetailResponse>(
       buildPath(adminTransactionRoutes.SUBSCRIPTION, { id }),
     ),
+
+  getTribeDetail: (id: number | string) =>
+    backendApi.get<TransactionTribeDetailResponse>(buildPath(adminTransactionRoutes.TRIBE, { id })),
 
   getEventDetail: (id: number | string) =>
     backendApi.get<TransactionEventDetailResponse>(buildPath(adminTransactionRoutes.EVENT, { id })),

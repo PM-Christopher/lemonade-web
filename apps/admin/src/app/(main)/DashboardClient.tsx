@@ -14,7 +14,7 @@ function DashboardClient() {
     { title: "Total Users", value: metrics?.total_users || 0, isPrice: false },
     {
       title: "Total Subscription Revenue",
-      value: metrics?.total_users || 0,
+      value: metrics?.total_subscription_revenue || 0,
       isPrice: true,
     },
     {
@@ -43,6 +43,16 @@ function DashboardClient() {
       isPrice: true,
     },
     {
+      title: "Total Paid Tribe Earnings",
+      value: metrics?.total_paid_tribe_earnings || 0,
+      isPrice: true,
+    },
+    {
+      title: "Total Paid Tribe Commissions",
+      value: metrics?.total_paid_tribe_commissions || 0,
+      isPrice: true,
+    },
+    {
       title: "Total Membership Plan Users",
       value: metrics?.total_membership_plan_users || 0,
       isPrice: false,
@@ -65,6 +75,11 @@ function DashboardClient() {
     {
       title: "Total Tribes",
       value: metrics?.total_tribes || 0,
+      isPrice: false,
+    },
+    {
+      title: "Total Paid Tribes",
+      value: metrics?.total_paid_tribes || 0,
       isPrice: false,
     },
     {

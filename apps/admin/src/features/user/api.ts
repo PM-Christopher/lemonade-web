@@ -111,6 +111,21 @@ export interface AccountInfoResponse {
   total_amount?: number;
   referral_earning?: number;
   affiliate_earning?: number;
+  // Naira, from the backend's tribe ledger.
+  monetized_tribes?: number;
+}
+
+export interface UserTribeHistoryItem {
+  amount_minor: number;
+  amount: string;
+  title: string;
+  member: string | null;
+  tribe_name: string | null;
+  created: string;
+}
+
+export interface UserTribeHistoryResponse {
+  tribe_history: UserTribeHistoryItem[];
 }
 
 export interface UserActionResponse {
@@ -168,6 +183,9 @@ export const userApi = {
         return browserApi.get<AccountInfoResponse>(buildPath(adminUsersRoutes.LOGS, { id }));
     }
   },
+
+  getTribeHistory: (id: string | number) =>
+    browserApi.get<UserTribeHistoryResponse>(buildPath(adminUsersRoutes.TRIBE_HISTORY, { id })),
 
   suspendUser: (id: string | number) =>
     browserApi.patch<UserActionResponse>(buildPath(adminUsersRoutes.SUSPEND, { id }), {}),

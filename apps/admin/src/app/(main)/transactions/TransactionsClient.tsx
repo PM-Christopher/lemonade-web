@@ -8,6 +8,7 @@ import PlansViews from "@/views/transactions/PlansViews";
 import WalletViews from "@/views/transactions/walletViews";
 import BoostingViews from "@/views/transactions/boostingViews";
 import ServiceViews from "@/views/transactions/serviceViews";
+import TribePaymentViews from "@/views/transactions/tribeViews";
 import EventViews from "@/views/transactions/eventViews";
 import PromotionViews from "@/views/transactions/promotionViews";
 import { useSelector } from "react-redux";
@@ -49,6 +50,8 @@ function TransactionsClient() {
         return <WalletViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "boosting":
         return <BoostingViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
+      case "tribe-payments":
+        return <TribePaymentViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "services":
         return <ServiceViews trx_data={trxData} page={page} onPageChange={handlePageChange} />;
       case "events":

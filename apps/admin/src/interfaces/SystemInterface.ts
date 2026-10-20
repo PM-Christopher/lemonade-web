@@ -26,4 +26,8 @@ export interface PlatformStatistics {
   total_events: number;
   total_boosted_business: number;
   total_promoted_events: number;
+  // Server-formatted naira, e.g. "4500.00".
+  total_paid_tribe_earnings: number | string;
+  total_paid_tribe_commissions: number | string;
+  total_paid_tribes: number;
 }
