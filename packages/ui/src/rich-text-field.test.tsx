@@ -117,3 +117,83 @@ describe("FormattedText", () => {
     expect(container.querySelector("video")).toHaveAttribute("src", "https://x.test/v.mp4");
   });
 });
+
+describe("toolbar buttons", () => {
+  it.each([
+    ["Italic", "*loud*"],
+    ["Underline", "++loud++"],
+    ["Bulleted list", "- loud"],
+    ["Numbered list", "1. loud"],
+    ["Increase indent", "  loud"],
+  ])("%s formats the selection", (name, expected) => {
+    render(<Harness initial="loud" />);
+    area().setSelectionRange(0, 4);
+
+    fireEvent.click(screen.getByRole("button", { name }));
+
+    expect(area().value).toBe(expected);
+  });
+
+  it("outdents an indented line", () => {
+    render(<Harness initial="  loud" />);
+    area().setSelectionRange(0, 6);
+
+    fireEvent.click(screen.getByRole("button", { name: "Decrease indent" }));
+
+    expect(area().value).toBe("loud");
+  });
+
+  it("adds a link when Enter is pressed in the address box", () => {
+    render(<Harness initial="visit us" />);
+    area().setSelectionRange(6, 8);
+    fireEvent.select(area());
+
+    fireEvent.click(screen.getByRole("button", { name: "Link" }));
+    const input = screen.getByLabelText("Link address");
+    fireEvent.change(input, { target: { value: "https://a.co" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(area().value).toBe("visit [us](https://a.co)");
+  });
+});
+
+describe("FormattedText blocks", () => {
+  it("renders emphasis, media and nested lists", () => {
+    const { container } = render(
+      <FormattedText
+        text={
+          "*it* ++under++\n![pic](https://a.co/x.png)\n@video(https://a.co/v.mp4)\n- one\n  - two\n1. n"
+        }
+      />,
+    );
+
+    expect(container.querySelector("em")).toHaveTextContent("it");
+    expect(container.querySelector("u")).toHaveTextContent("under");
+    expect(container.querySelector("img")).toHaveAttribute("alt", "pic");
+    expect(container.querySelector("video")).toBeInTheDocument();
+    expect(container.querySelector("ul")).toBeInTheDocument();
+    expect(container.querySelector("ol")).toBeInTheDocument();
+  });
+});
+
+describe("media buttons", () => {
+  it("opens the file pickers from the toolbar", () => {
+    render(<Harness onUploadImage={vi.fn()} onUploadVideo={vi.fn()} />);
+    const click = vi.spyOn(HTMLInputElement.prototype, "click").mockImplementation(() => {});
+
+    fireEvent.click(screen.getByRole("button", { name: "Add image" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add video" }));
+
+    expect(click).toHaveBeenCalledTimes(2);
+    click.mockRestore();
+  });
+
+  it("ignores a file picker that was closed without a file", () => {
+    const onUploadImage = vi.fn();
+    render(<Harness onUploadImage={onUploadImage} />);
+
+    fireEvent.change(screen.getByLabelText("Image file"), { target: { files: [] } });
+
+    expect(onUploadImage).not.toHaveBeenCalled();
+  });
+});
