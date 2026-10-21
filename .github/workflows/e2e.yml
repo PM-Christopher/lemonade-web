@@ -9,6 +9,8 @@ on:
 
 jobs:
   e2e:
+    # Dependabot cannot read repo secrets, so it cannot check out the private backend.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     services:
