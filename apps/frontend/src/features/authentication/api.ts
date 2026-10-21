@@ -190,6 +190,7 @@ export interface SubscriptionSummary {
   payment_method: string;
   plan_price: string;
   next_billing_date: string;
+  is_member?: boolean;
 }
 
 export interface SubscriptionResponse {
@@ -218,12 +219,20 @@ export function toSubscriptionState(response: SubscriptionResponse) {
 
 export interface BillingHistoryItem {
   title: string;
-  amount: number;
+  // Naira, e.g. "5000.00"; amount_minor is the same in kobo.
+  amount: string;
+  amount_minor: number;
   created_at: string;
 }
 
+export interface BillingPlan extends SubscriptionSummary {
+  plan_price_amount: string;
+  plan_price_minor: number;
+  billing_cycle: "month" | "year";
+}
+
 export interface BillingHistoryResponse {
-  plan: SubscriptionSummary;
+  plan: BillingPlan;
   histories: BillingHistoryItem[];
 }
 

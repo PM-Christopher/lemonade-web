@@ -1,8 +1,7 @@
 "use client";
 import { routes } from "@/lib/routes";
-import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
+import { BackHeader } from "@/components/global/BackHeader";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import dynamic from "next/dynamic";
 import { useNotificationSettingsQuery } from "@/features/authentication/queries";
@@ -10,233 +9,145 @@ import type { AppSettings } from "@/features/authentication/api";
 
 import MainLayout from "@/components/layouts/MainLayout";
 
-// Off the initial bundle — only needed once a notification row is clicked
-// (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
+// Off the initial bundle; only needed once a notification row is clicked.
 const NotificationSettingsModal = dynamic(
   () => import("@/components/settings/Modal/NotificationSettingsModal"),
   { ssr: false },
 );
 
+type SettingKey = Exclude<keyof AppSettings, "id" | "push_notification">;
+
+type SettingRow = { key: SettingKey; title: string; description: string };
+
+const sections: { label: string; rows: SettingRow[] }[] = [
+  {
+    label: "TRIBE",
+    rows: [
+      {
+        key: "new_thread",
+        title: "New thread in Tribe",
+        description: "Notify me when there is a new thread in any Tribe I have joined.",
+      },
+      {
+        key: "thread_engagements",
+        title: "Thread engagements",
+        description: "Notify me when I have new likes and comments on my threads.",
+      },
+    ],
+  },
+  {
+    label: "EVENT",
+    rows: [
+      {
+        key: "ticket_sales",
+        title: "Ticket sales",
+        description: "Notify me when I have new ticket sales on events I created.",
+      },
+      {
+        key: "ticket_payout",
+        title: "Ticket payout",
+        description: "Notify me when I receive payouts for my events.",
+      },
+    ],
+  },
+  {
+    label: "BUSINESS",
+    rows: [
+      {
+        key: "service_offer",
+        title: "Service offer",
+        description: "Notify me when I receive new service offers.",
+      },
+      {
+        key: "service_status",
+        title: "Service status",
+        description:
+          "Notify me of updates on active services like payment, progress, and disputes.",
+      },
+      {
+        key: "service_payout",
+        title: "Service payout",
+        description: "Notify me when I receive payouts for my completed services.",
+      },
+    ],
+  },
+  {
+    label: "CONNECT",
+    rows: [
+      {
+        key: "connect_request",
+        title: "Connect request",
+        description: "Notify me when I get new connect requests",
+      },
+      {
+        key: "new_message",
+        title: "New message",
+        description: "Notify me when I get new messages",
+      },
+    ],
+  },
+];
+
+// Both channels are on until the user turns them off.
+const channelLabel = (setting?: AppSettings[SettingKey] | null) => {
+  const channels = [
+    setting?.in_app_notification !== false && "In-app",
+    setting?.email !== false && "Email",
+  ].filter(Boolean);
+  return channels.length ? channels.join(", ") : "Off";
+};
+
 const NotificationSettingsClient = () => {
-  const { push } = useNavigation();
   const { data } = useNotificationSettingsQuery();
   const [isOpen, setIsOpen] = useState(false);
-  const [notificationType, setNotificationType] = useState("");
+  const [notificationType, setNotificationType] = useState<SettingKey | "">("");
   const [notificationSettings, setNotificationSettings] = useState({});
-
-  const renderHeader = () => {
-    switch (notificationType) {
-      case "new_thread":
-        return {
-          title: "New thread in Tribe",
-          description: "Notify me when there is a new thread in any Tribe I have joined.",
-        };
-      case "thread_engagements":
-        return {
-          title: "Thread engagements",
-          description: "Notify me when I have new likes and comments on my threads.",
-        };
-      case "ticket_sales":
-        return {
-          title: "Ticket sales",
-          description: "Notify me when I have new ticket sales on events I created.",
-        };
-      case "ticket_payout":
-        return {
-          title: "Ticket payout",
-          description: "Notify me when I receive payouts for my events.",
-        };
-      case "service_offer":
-        return {
-          title: "Service offer",
-          description: "Notify me when I receive new service offers.",
-        };
-      case "service_status":
-        return {
-          title: "Service status",
-          description:
-            "Notify me of updates on active services like payment, progress, and disputes.",
-        };
-      case "service_payout":
-        return {
-          title: "Service payout",
-          description: "Notify me when I receive payouts for my completed services.",
-        };
-      case "connect_request":
-        return {
-          title: "connect request",
-          description: "Notify me when I get new connect requests",
-        };
-      case "new_message":
-        return {
-          title: "New message",
-          description: "Notify me when I get new messages",
-        };
-      default:
-        return {
-          title: "",
-          description: "",
-        };
-    }
-  };
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
 
-  const selectNotification = (type: string) => {
+  const selectNotification = (type: SettingKey) => {
     setNotificationType(type);
-    setNotificationSettings(data?.app_settings?.[type as keyof AppSettings] ?? {});
+    setNotificationSettings(data?.app_settings?.[type] ?? {});
     toggleModal();
+  };
+
+  const renderHeader = () => {
+    const row = sections.flatMap((section) => section.rows).find((r) => r.key === notificationType);
+    return { title: row?.title ?? "", description: row?.description ?? "" };
   };
 
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => push(routes.SETTINGS)}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom text-body-l font-sans font-semibold">
-              Notification settings
-            </p>
-          </div>
-        </div>
+        <BackHeader title="Notification settings" href={routes.SETTINGS} />
         <section className="mt-4 flex flex-col items-center px-2.5">
           <div className="laptop:w-160 flex w-full flex-col gap-6 rounded-xl">
-            <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-meta leading-normal">TRIBE</p>
-              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">New thread in Tribe</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("new_thread")}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Thread engagements</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("thread_engagements")}
-                  />
+            {sections.map((section) => (
+              <div key={section.label} className="flex flex-col gap-4">
+                <p className="font-semi-normal text-light-black text-meta leading-normal">
+                  {section.label}
+                </p>
+                <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
+                  {section.rows.map((row) => (
+                    <div
+                      key={row.key}
+                      className="flex cursor-pointer items-center justify-between p-3 px-4"
+                      onClick={() => selectNotification(row.key)}
+                    >
+                      <div className="flex flex-col">
+                        <p className="font-semi-normal text-body-s">{row.title}</p>
+                        <p className="text-text-grey text-meta leading-normal font-normal">
+                          {channelLabel(data?.app_settings?.[row.key])}
+                        </p>
+                      </div>
+                      <ChevronRight />
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-meta leading-normal">EVENT</p>
-              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Ticket sales</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("ticket_sales")}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Ticket payout</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("ticket_payout")}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-meta leading-normal">BUSINESS</p>
-              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Service offer</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("service_offer")}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Service status</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("service_status")}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Service payout</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("service_payout")}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <p className="font-semi-normal text-light-black text-meta leading-normal">CONNECT</p>
-              <div className="laptop:w-160 flex w-full flex-col rounded-xl bg-white">
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">Connect request</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("connect_request")}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-3 px-4">
-                  <div className="flex flex-col">
-                    <p className="font-semi-normal text-body-s">New message</p>
-                    <p className="text-text-grey text-meta leading-normal font-normal">
-                      In-app, Email
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className="cursor-pointer"
-                    onClick={() => selectNotification("new_message")}
-                  />
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
         <NotificationSettingsModal

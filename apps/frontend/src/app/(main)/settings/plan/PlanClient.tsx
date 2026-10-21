@@ -1,10 +1,14 @@
 "use client";
-import { useNavigation } from "@/hooks/useNavigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
+import { BackHeader } from "@/components/global/BackHeader";
 import PricingCard, { type PricingPlan } from "@/components/settings/PricingCard";
 import { useSelector } from "react-redux";
-import { useSubscriptionPlansQuery, useSubscriptionQuery } from "@/features/authentication/queries";
+import {
+  authKeys,
+  useSubscriptionPlansQuery,
+  useSubscriptionQuery,
+} from "@/features/authentication/queries";
+import { useQueryClient } from "@tanstack/react-query";
 import { toSubscriptionState } from "@/features/authentication/api";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useSearchParams } from "next/navigation";
@@ -38,8 +42,8 @@ const VerifiedSubscriptionModal = dynamic(
 
 const PlanClient = () => {
   const { subscription, isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { back } = useNavigation();
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const subscriptionPlanMutation = useSubscriptionPlanMutation();
   const pricing = subscriptionPlanMutation.data;
   const searchParams = useSearchParams();
@@ -80,6 +84,9 @@ const PlanClient = () => {
       isSuccess: (data: VerifyTransactionResult) => data.status === "successful",
       onSuccess: (data: VerifyTransactionResult) => {
         dispatch(changeSubscription(data.data?.history));
+        // Refresh the membership tag and billing history after a paid plan.
+        queryClient.invalidateQueries({ queryKey: authKeys.subscription() });
+        queryClient.invalidateQueries({ queryKey: authKeys.billingHistory() });
         setPaymentSuccess(true);
         toggleVerMembership();
         const cleanUrl = window.location.pathname;
@@ -87,7 +94,7 @@ const PlanClient = () => {
       },
       pollingInterval: 4000,
     };
-  }, [trxref, dispatch, toggleVerMembership]);
+  }, [trxref, dispatch, queryClient, toggleVerMembership]);
 
   const { data: verData, loading: verifying } = useTransactionPolling<
     SubscriptionTransactionMeta | undefined
@@ -96,15 +103,7 @@ const PlanClient = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => back()}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom text-body-l font-sans font-semibold">Pricing</p>
-          </div>
-        </div>
+        <BackHeader title="Pricing" />
 
         <section className="mt-12 flex flex-col items-center">
           <div className="laptop:flex-row flex flex-col gap-12">
