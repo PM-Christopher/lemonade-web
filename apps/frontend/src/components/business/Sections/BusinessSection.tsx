@@ -96,7 +96,7 @@ const BusinessSection: React.FC<BusinessSectionProps> = ({
           {loading ? (
             <BusinessCarouselSkeleton count={4} />
           ) : featured?.length > 0 ? (
-            <BusinessCarousel businesses={featured} showDots={false} showArrows={false} />
+            <BusinessCarousel businesses={featured} />
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white px-4 py-8 shadow-sm sm:py-12">
               <div className="flex max-w-md flex-col items-center text-center">

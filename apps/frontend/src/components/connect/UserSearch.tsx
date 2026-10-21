@@ -7,10 +7,14 @@ import type { FoundUser } from "@/features/connect/api";
 
 type UserSearchProps = {
   onSelect: (user: FoundUser) => void;
+  placeholder?: string;
 };
 
 // Search box that lists matching usernames as you type.
-const UserSearch: React.FC<UserSearchProps> = ({ onSelect }) => {
+const UserSearch: React.FC<UserSearchProps> = ({
+  onSelect,
+  placeholder = "Search user, chat...",
+}) => {
   const listId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [value, setValue] = useState("");
@@ -50,7 +54,7 @@ const UserSearch: React.FC<UserSearchProps> = ({ onSelect }) => {
           aria-autocomplete="list"
           autoComplete="off"
           className="text-body-s w-full bg-transparent outline-none placeholder:text-gray-400"
-          placeholder="Search user, chat..."
+          placeholder={placeholder}
           value={value}
           onChange={(event) => {
             setValue(event.target.value);

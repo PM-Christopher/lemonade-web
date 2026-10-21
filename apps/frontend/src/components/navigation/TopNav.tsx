@@ -42,6 +42,15 @@ const TopNav = () => {
   const { setSelectedMenu } = usePersistentMenuState();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  // Closing two stacked dialogs can leave the page unclickable; clear it once both are shut.
+  useEffect(() => {
+    if (openNotifications || openDetailModal) return;
+    const timer = setTimeout(() => {
+      if (document.body.style.pointerEvents === "none") document.body.style.pointerEvents = "";
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [openNotifications, openDetailModal]);
+
   // Publishes the nav height so sticky sub-headers can sit right under it.
   useEffect(() => {
     const el = wrapperRef.current;
@@ -56,6 +65,7 @@ const TopNav = () => {
 
   const handleViewMore = (notification: AppNotification) => {
     setSelectedNotification(notification);
+    setOpenNotifications(false);
     setOpenDetailModal(true);
     if (!notification.read_at) markRead.mutate(notification.id);
   };

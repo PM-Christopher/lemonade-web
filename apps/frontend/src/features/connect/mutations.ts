@@ -38,14 +38,6 @@ export function useInviteResponseMutation() {
   });
 }
 
-// Not cacheable server state — a one-shot search action, same pattern as
-// admin's affiliate/event lookups this session.
-export function useFindUserMutation() {
-  return useMutation({
-    mutationFn: (search: string) => connectApi.findUser(search),
-  });
-}
-
 export function useSendInviteMutation() {
   const queryClient = useQueryClient();
 

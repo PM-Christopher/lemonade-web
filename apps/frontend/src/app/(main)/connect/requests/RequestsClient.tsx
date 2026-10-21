@@ -2,17 +2,14 @@
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import SearchIcon from "@/images/icons/search.svg";
+import UserSearch from "@/components/connect/UserSearch";
+import type { FoundUser } from "@/features/connect/api";
 import RequestCard from "@/components/connect/RequestCard";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 
 import MainLayout from "@/components/layouts/MainLayout";
 import { useInvitesQuery } from "@/features/connect/queries";
-import { useFindUserMutation } from "@/features/connect/mutations";
-import { useAppDispatch } from "@/redux/hook";
-import { updateToastifyReducer } from "@/redux/toastifySlice";
-import { apiMessage } from "@/lib/api-message";
 import { InviteSkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
@@ -29,66 +26,20 @@ const ConnectModal = dynamic(() => import("@/components/connect/Modal/ConnectMod
 const RequestsClient = () => {
   const { push } = useNavigation();
   const [isOpen, setIsOpen] = useState(false);
-  const [isConnectOpen, setIsConnectOpen] = useState(false);
   const [inviteIndex, setInviteIndex] = useState<number | null>(null);
-  const dispatch = useAppDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const { data: invitesData, isLoading: loading } = useInvitesQuery({
     enabled: Boolean(user?.id),
   });
   const invites = invitesData?.invites ?? [];
-  const findUserMutation = useFindUserMutation();
-  const connUser = findUserMutation.data;
+  const [connectTarget, setConnectTarget] = useState<FoundUser | null>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const toggleConnectModal = () => {
-    setIsConnectOpen(!isConnectOpen);
-  };
-
   const toggleInviteIndex = (index: number) => {
     setInviteIndex(index);
-  };
-
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      // Keep the input; currentTarget is null once the request finishes.
-      const input = e.currentTarget;
-      if (input.value !== "") {
-        findUserMutation.mutate(input.value, {
-          onSuccess: () => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: apiMessage("User found"),
-                type: "success",
-              }),
-            );
-            input.value = "";
-            toggleConnectModal();
-          },
-          onError: (err: { message?: string }) => {
-            dispatch(
-              updateToastifyReducer({
-                show: true,
-                message: err?.message || "User not found",
-                type: "error",
-              }),
-            );
-          },
-        });
-      } else {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: "Please enter a user name to proceed",
-            type: "error",
-          }),
-        );
-      }
-    }
   };
 
   return (
@@ -104,27 +55,8 @@ const RequestsClient = () => {
               Connection requests
             </p>
           </div>
-          <div className="group laptop:w-fit relative flex w-full items-center gap-2">
-            {/* Search Container */}
-            <div className="bg-light_grey laptop:w-58.75 flex h-10 w-full items-center gap-3 rounded-xl p-2 px-3">
-              <div>
-                <SearchIcon />
-              </div>
-              <div className="relative w-full">
-                <input
-                  id="search"
-                  type="text"
-                  className="bg-light_grey text-body-s w-full rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Search username..."
-                  onKeyDown={(e) => handleSearch(e)}
-                />
-
-                {/* Tooltip */}
-                <div className="text-meta pointer-events-none absolute left-0 mt-1 w-max translate-y-1 rounded-md bg-gray-800 px-2 py-1 leading-normal text-white opacity-0 transition-all duration-300 group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                  Press <span className="font-semibold">Enter</span> to search
-                </div>
-              </div>
-            </div>
+          <div className="laptop:w-72 w-full">
+            <UserSearch onSelect={setConnectTarget} placeholder="Search username..." />
           </div>
         </div>
         <section className="mt-4 flex flex-col items-center">
@@ -175,8 +107,13 @@ const RequestsClient = () => {
         {inviteIndex !== null && (
           <InviteModal invite={invites[inviteIndex]} toggle={toggleMenu} isOpen={isOpen} />
         )}
-        {connUser && (
-          <ConnectModal users={connUser} toggle={toggleConnectModal} isOpen={isConnectOpen} />
+        {connectTarget && (
+          <ConnectModal
+            users={[connectTarget]}
+            toggle={() => setConnectTarget(null)}
+            isOpen
+            key={connectTarget.id}
+          />
         )}
       </section>
     </MainLayout>

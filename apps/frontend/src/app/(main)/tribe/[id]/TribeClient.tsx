@@ -273,8 +273,8 @@ const TribeClient = ({ id }: { id: string }) => {
               )}
             </div>
           )}
-          <div className="flex items-center justify-between gap-2.5">
-            <div className="bg-light_grey tablet:w-75 flex h-10 w-61.75 items-center gap-3 rounded-xl px-4">
+          <div className="laptop:w-124 flex w-full items-center gap-2.5">
+            <div className="bg-light_grey flex h-10 min-w-0 flex-1 items-center gap-3 rounded-xl px-4">
               <div>
                 <SearchIcon />
               </div>
@@ -288,24 +288,26 @@ const TribeClient = ({ id }: { id: string }) => {
                 />
               </div>
             </div>
-            <Select value={sortBy} onValueChange={sortThreads}>
-              <SelectTrigger
-                aria-label="Sort threads"
-                className="bg-mid-grey text-text-grey text-meta h-10 w-45 rounded-xl border-0 px-4 font-sans font-semibold uppercase"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="form-font">
-                {SORT_OPTIONS.map(({ value, label, Icon }) => (
-                  <SelectItem key={value} value={value}>
-                    <span className="flex items-center gap-2">
-                      <Icon className="h-4 w-4" aria-hidden="true" />
-                      {label}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="min-w-0 flex-1">
+              <Select value={sortBy} onValueChange={sortThreads}>
+                <SelectTrigger
+                  aria-label="Sort threads"
+                  className="bg-mid-grey text-text-grey text-meta h-10 w-full rounded-xl border-0 px-4 font-sans font-semibold uppercase"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="form-font">
+                  {SORT_OPTIONS.map(({ value, label, Icon }) => (
+                    <SelectItem key={value} value={value}>
+                      <span className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                        {label}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
         {uploadingThread && (

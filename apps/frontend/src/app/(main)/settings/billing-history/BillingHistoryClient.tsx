@@ -70,7 +70,7 @@ const BillingHistoryClient = () => {
                 </p>
 
                 {data?.histories?.length ? (
-                  <div className="divide-light-green-20 border-light-green-20 flex flex-col divide-y overflow-hidden rounded-xl border">
+                  <div className="divide-light-green-20 border-light-green-20 flex max-h-[calc(100vh-30rem)] min-h-56 flex-col divide-y overflow-y-auto rounded-xl border">
                     {data.histories.map((history, index: number) => (
                       <div
                         key={index}

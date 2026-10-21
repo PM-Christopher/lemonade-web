@@ -58,7 +58,7 @@ const DeleteAccountPage = () => {
                 Your account cannot be deleted if these criteria are not met
               </p>
             </div>
-            <div className="mt-9 flex items-center justify-between">
+            <Link href={routes.SETTINGS_SUPPORT} className="mt-9 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <SuppprtIcon />
                 <p className="font-semi-normal text-body-s">
@@ -66,7 +66,7 @@ const DeleteAccountPage = () => {
                 </p>
               </div>
               <ChevronRight />
-            </div>
+            </Link>
             <div className="mt-6 flex justify-between gap-4">
               <Button
                 asChild
