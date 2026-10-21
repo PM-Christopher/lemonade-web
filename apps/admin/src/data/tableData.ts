@@ -20,6 +20,7 @@ export const walletManagementHeaders = [
   "AMOUNT",
   "BALANCE",
   "REQUEST DATE",
+  "RISK",
   "STATUS",
 ];
 

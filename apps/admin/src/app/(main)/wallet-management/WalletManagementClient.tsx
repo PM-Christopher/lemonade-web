@@ -6,6 +6,7 @@ import { SearchIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import DataCard from "@/components/global/DataCard";
+import { RiskBadge } from "@/components/wallet/PayoutRisk";
 import PaginationComp from "@/components/global/Pagination";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import { AvatarName } from "@/components/global/AvatarName";
@@ -202,6 +203,9 @@ function WalletManagementClient() {
                           </td>
                           <td className={"p-4 font-sans text-sm font-medium"}>
                             {dayjs(row.created_at).format("DD MMM, YYYY hh:mm A")}
+                          </td>
+                          <td className={"p-4 font-sans text-sm font-medium"}>
+                            {row.status === "pending" ? <RiskBadge risk={row.risk} /> : null}
                           </td>
                           <td
                             className={`p-4 font-sans text-sm font-medium ${rowStatus.className}`}

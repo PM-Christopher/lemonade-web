@@ -21,7 +21,13 @@ export function useWithdrawalRequestDecisionMutation(id: string | number) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (type: "approve" | "reject") => walletApi.withdrawalRequestDecision(id, type),
+    mutationFn: ({
+      type,
+      acknowledgeRisk,
+    }: {
+      type: "approve" | "reject";
+      acknowledgeRisk?: boolean;
+    }) => walletApi.withdrawalRequestDecision(id, type, acknowledgeRisk),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: walletKeys.withdrawalLists() });
       queryClient.invalidateQueries({ queryKey: walletKeys.data() });

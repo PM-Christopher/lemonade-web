@@ -1,20 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
-import { disputesApi } from "./api";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { disputesApi, type DisputeFilters } from "./api";
 
 export const disputeKeys = {
   all: () => ["dispute"] as const,
   lists: () => [...disputeKeys.all(), "list"] as const,
-  list: (status: string) => [...disputeKeys.lists(), status] as const,
+  list: (status: string, filters: DisputeFilters = {}) =>
+    [...disputeKeys.lists(), status, filters] as const,
   details: () => [...disputeKeys.all(), "detail"] as const,
   detail: (id: string) => [...disputeKeys.details(), id] as const,
 };
 
 // Operational queue, 30s. "pending" maps to an omitted `?status=`, which the backend defaults to open.
-export function useDisputeListQuery(status: string, options?: { enabled?: boolean }) {
+export function useDisputeListQuery(
+  status: string,
+  options?: { enabled?: boolean; filters?: DisputeFilters },
+) {
   return useQuery({
-    queryKey: disputeKeys.list(status),
-    queryFn: () => disputesApi.getDisputes(status === "pending" ? undefined : status),
+    queryKey: disputeKeys.list(status, options?.filters),
+    queryFn: () =>
+      disputesApi.getDisputes(status === "pending" ? undefined : status, options?.filters),
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
     enabled: options?.enabled,
   });
 }

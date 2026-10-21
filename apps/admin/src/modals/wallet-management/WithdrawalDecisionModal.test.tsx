@@ -54,7 +54,10 @@ describe("WithdrawalDecisionModal", () => {
     expect(useDecision).toHaveBeenCalledWith(withdrawalId);
 
     fireEvent.click(screen.getByRole("button", { name: "Approve" }));
-    expect(decideMutate).toHaveBeenCalledWith("approve", expect.any(Object));
+    expect(decideMutate).toHaveBeenCalledWith(
+      { type: "approve", acknowledgeRisk: false },
+      expect.any(Object),
+    );
   });
 
   it("warns when an approved payout fails at the gateway", () => {
@@ -89,7 +92,10 @@ describe("WithdrawalDecisionModal", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Reject" }));
 
-    expect(decideMutate).toHaveBeenCalledWith("reject", expect.any(Object));
+    expect(decideMutate).toHaveBeenCalledWith(
+      { type: "reject", acknowledgeRisk: false },
+      expect.any(Object),
+    );
     expect(dispatch).toHaveBeenCalledWith(
       toast("Withdrawal request has already been rejected.", "error"),
     );
@@ -98,5 +104,41 @@ describe("WithdrawalDecisionModal", () => {
   it("has no accessibility violations", async () => {
     renderModal("approve");
     expect(await axe(document.body)).toHaveNoViolations();
+  });
+
+  it("makes a reviewer confirm the flags before approving a high-risk payout", () => {
+    const risky = {
+      ...withdrawal,
+      risk: {
+        level: "high" as const,
+        score: 5,
+        flags: [
+          { code: "bank_changed", label: "Bank account changed in the last 3 days" },
+          { code: "first_payout", label: "First payout request" },
+        ],
+      },
+    };
+    render(
+      <WithdrawalDecisionModal
+        isOpen
+        toggle={vi.fn()}
+        decision="approve"
+        withdrawalId={withdrawalId}
+        withdrawal={risky}
+      />,
+    );
+
+    expect(screen.getByText("Bank account changed in the last 3 days")).toBeInTheDocument();
+    const approve = screen.getByRole("button", { name: "Approve" });
+    expect(approve).toBeDisabled();
+
+    fireEvent.click(screen.getByRole("checkbox"));
+    expect(approve).toBeEnabled();
+    fireEvent.click(approve);
+
+    expect(decideMutate).toHaveBeenCalledWith(
+      { type: "approve", acknowledgeRisk: true },
+      expect.any(Object),
+    );
   });
 });

@@ -27,6 +27,10 @@ export const adminAnnouncementRoutes = Object.freeze({
   UPDATE: "/admin/announcement/{id}", // PUT
 });
 
+export const adminAuditLogRoutes = Object.freeze({
+  LIST: "/admin/audit-log", // GET
+});
+
 export const adminAuthRoutes = Object.freeze({
   CHECK_OTP: "/admin/auth/check-otp", // POST
   FORGOT_PASSWORD: "/admin/auth/forgot-password", // POST
@@ -40,6 +44,7 @@ export const adminBusinessesRoutes = Object.freeze({
   APPROVE: "/admin/businesses/{id}/approve", // PATCH
   COMMISSION: "/admin/businesses/commission", // PATCH
   DELETE: "/admin/businesses/{id}", // DELETE
+  DISPUTES_ASSIGN: "/admin/businesses/disputes/{id}/assign", // PATCH
   DISPUTES_LIST: "/admin/businesses/disputes", // GET
   DISPUTES_RESOLVE: "/admin/businesses/disputes/{id}/resolve", // PATCH
   DISPUTES_SHOW: "/admin/businesses/disputes/{id}", // GET
@@ -88,6 +93,11 @@ export const adminPageContentRoutes = Object.freeze({
   SHOW: "/admin/page-content", // GET
 });
 
+export const adminPaymentsRoutes = Object.freeze({
+  LIST: "/admin/payments", // GET
+  VERIFY: "/admin/payments/{id}/verify", // POST
+});
+
 export const adminPromotionsRoutes = Object.freeze({
   CREATE: "/admin/promotions", // POST
   DELETE: "/admin/promotions/{id}", // DELETE
@@ -112,6 +122,17 @@ export const adminSubscriptionsRoutes = Object.freeze({
   STORE: "/admin/subscriptions", // POST
   SUBSCRIBERS: "/admin/subscriptions/{id}/subscribers", // GET
   UPDATE: "/admin/subscriptions/{id}", // PATCH
+});
+
+export const adminSupportRoutes = Object.freeze({
+  ASSIGN: "/admin/support/{userId}/assign", // PATCH
+  INBOX: "/admin/support/inbox", // GET
+  REOPEN: "/admin/support/{userId}/reopen", // PATCH
+  REPLIES_CREATE: "/admin/support/replies", // POST
+  REPLIES_DELETE: "/admin/support/replies/{id}", // DELETE
+  REPLIES_LIST: "/admin/support/replies", // GET
+  REPLIES_UPDATE: "/admin/support/replies/{id}", // PUT
+  RESOLVE: "/admin/support/{userId}/resolve", // PATCH
 });
 
 export const adminTeamMembersRoutes = Object.freeze({

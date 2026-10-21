@@ -19,6 +19,13 @@ export interface WalletData {
   wallets: unknown[];
 }
 
+// What a reviewer should double-check on a payout; it never blocks one by itself.
+export interface PayoutRisk {
+  level: "low" | "medium" | "high";
+  score: number;
+  flags: Array<{ code: string; label: string }>;
+}
+
 export interface WithdrawalRequestRow {
   id: string;
   txn_id?: string;
@@ -32,6 +39,7 @@ export interface WithdrawalRequestRow {
   created_at: string;
   date_paid: string;
   status: string;
+  risk?: PayoutRisk;
 }
 
 export interface WithdrawalFilters {
@@ -82,6 +90,7 @@ export interface WalletDetail {
     date_paid?: string;
     status?: string;
     failure_reason?: string | null;
+    risk?: PayoutRisk;
     amount_minor?: number;
     amount?: string;
     account_number?: string;
@@ -151,10 +160,15 @@ export const walletApi = {
   updateWithdrawalThreshold: (threshold: number) =>
     browserApi.patch(adminWalletRoutes.UPDATE_WITHDRAWAL_THRESHOLD, { threshold }),
 
-  withdrawalRequestDecision: (id: string | number, type: "approve" | "reject") =>
+  // A high-risk payout is only approved once the reviewer has confirmed the flags.
+  withdrawalRequestDecision: (
+    id: string | number,
+    type: "approve" | "reject",
+    acknowledgeRisk = false,
+  ) =>
     browserApi.patch<WithdrawalDecisionResult>(
       buildPath(adminWalletRoutes.USER_WITHDRAWAL_REQUEST, { id: String(id) }),
-      { type },
+      { type, acknowledge_risk: acknowledgeRisk },
     ),
 
   // amount must go out as a JSON number — the backend's Money::fromUnits()

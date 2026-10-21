@@ -15,3 +15,16 @@ export function useResolveDisputeMutation(id: string | undefined) {
     },
   });
 }
+
+// Taking or releasing a dispute reloads the queue so the counts stay true.
+export function useAssignDisputeMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, adminId }: { id: string; adminId?: string | null }) =>
+      disputesApi.assignDispute(id, adminId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: disputeKeys.all() });
+    },
+  });
+}

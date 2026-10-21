@@ -34,6 +34,17 @@ export const pageLinks: PageLink[] = [
     path: routes.FORUM,
     permission: ADMIN_SECTION_PERMISSIONS.moderation,
   },
+  {
+    name: "Payments review",
+    path: routes.PAYMENTS_REVIEW,
+    permission: ADMIN_SECTION_PERMISSIONS.wallet,
+  },
+  {
+    name: "Support inbox",
+    path: routes.SUPPORT_INBOX,
+    permission: ADMIN_SECTION_PERMISSIONS.users,
+  },
   { name: "Announcements", path: routes.ANNOUNCEMENTS },
   { name: "Team members", path: routes.TEAM, permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
+  { name: "Audit log", path: routes.AUDIT_LOG, permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
 ];

@@ -7,6 +7,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useDisputeDetailQuery } from "@/features/disputes/queries";
+import { useAssignDisputeMutation } from "@/features/disputes/mutations";
+import { useCurrentAdminQuery } from "@/features/authentication/queries";
+import { waitingLabel } from "../DisputesClient";
 import type { DisputeParty, DisputeResolution } from "@/features/disputes/api";
 import { capitalizeWords } from "@/utils/helper";
 
@@ -37,6 +40,9 @@ function DisputeDetailsClient({ id }: { id: string }) {
   const [resolution, setResolution] = useState<DisputeResolution | null>(null);
 
   const isOpen = dispute?.status === "pending";
+  const assignMutation = useAssignDisputeMutation();
+  const { data: me } = useCurrentAdminQuery();
+  const assignedToMe = Boolean(me && dispute?.assignee?.id === String(me.id));
 
   return (
     <MainLayout>
@@ -68,6 +74,53 @@ function DisputeDetailsClient({ id }: { id: string }) {
               label="Status"
               value={dispute ? (isOpen ? "Open" : capitalizeWords(dispute.status)) : undefined}
             />
+            {isOpen && dispute && (
+              <div className={"flex items-center gap-6"}>
+                <div className={"w-35 shrink-0"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    Assigned to:
+                  </p>
+                </div>
+                <div className={"flex items-center gap-3"}>
+                  <p className={"text-body-s font-medium"}>
+                    {dispute.assignee ? dispute.assignee.name : "Nobody yet"}
+                  </p>
+                  {!assignedToMe && (
+                    <button
+                      type="button"
+                      disabled={assignMutation.isPending}
+                      className={
+                        "border-light-grey-50 cursor-pointer rounded-lg border px-3 py-1 text-xs"
+                      }
+                      onClick={() => assignMutation.mutate({ id })}
+                    >
+                      {dispute.assignee ? "Take over" : "Take it"}
+                    </button>
+                  )}
+                  {assignedToMe && (
+                    <button
+                      type="button"
+                      disabled={assignMutation.isPending}
+                      className={"text-text-grey cursor-pointer text-xs underline"}
+                      onClick={() => assignMutation.mutate({ id, adminId: null })}
+                    >
+                      Release
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+            {isOpen && dispute && (
+              <div className={"flex items-center gap-6"}>
+                <div className={"w-35 shrink-0"}>
+                  <p className={"text-text-grey text-meta leading-normal font-medium"}>Waiting:</p>
+                </div>
+                <p className={`text-body-s font-medium ${dispute.overdue ? "text-red-1" : ""}`}>
+                  {waitingLabel(dispute.age_hours)}
+                  {dispute.overdue ? " (overdue)" : ""}
+                </p>
+              </div>
+            )}
             <Field label="Business" value={job?.business?.name} />
             <Field label="Client" value={person(job?.client)} />
             <Field label="Business owner" value={person(job?.owner)} />

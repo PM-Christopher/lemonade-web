@@ -66,6 +66,10 @@ export interface AppNotificationSettingsRequest {
   };
 }
 
+export interface AssignDisputeRequest {
+  admin_id?: string;
+}
+
 export interface AssignEventTicketsRequest {
   fullname: string;
   email: string;
@@ -82,6 +86,20 @@ export interface AssignEventTicketsRequest {
     email?: string;
   }[];
   redirect_url?: string;
+}
+
+export interface AssignSupportRequest {
+  admin_id?: string;
+}
+
+export interface AuditLogRequest {
+  admin_id?: string;
+  area?: string;
+  search?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  per_page?: number;
 }
 
 export interface BankAccountRequest {
@@ -346,8 +364,17 @@ export interface MarkJobStatusRequest {
   remark?: string;
 }
 
+export interface PaymentsToReviewRequest {
+  status?: "stuck" | "failed" | "all";
+  type?: string;
+  search?: string;
+  page?: number;
+  per_page?: number;
+}
+
 export interface ProcessWithdrawalRequestRequest {
   type: string;
+  acknowledge_risk?: boolean;
 }
 
 export interface ProfessionRequest {
@@ -469,6 +496,11 @@ export interface ReviewCompletedJobRequest {
   title: string;
   rating: number;
   description: string;
+}
+
+export interface SavedReplyRequest {
+  title: string;
+  body: string;
 }
 
 export interface ScheduleEventPromotionRequest {

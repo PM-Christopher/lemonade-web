@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { XIcon } from "lucide-react";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { errorMessage } from "@/lib/api-error";
+import { RiskFlagList } from "@/components/wallet/PayoutRisk";
 
 type Decision = "approve" | "reject";
 
@@ -44,36 +45,43 @@ const WithdrawalDecisionModal: React.FC<WithdrawalDecisionModalProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const decide = useWithdrawalRequestDecisionMutation(withdrawalId);
   const copy = COPY[decision];
+  const [reviewed, setReviewed] = useState(false);
+  const risk = withdrawal?.risk;
+  // Approving a high-risk payout needs the reviewer to say they read the flags.
+  const needsReview = decision === "approve" && risk?.level === "high";
 
   const confirm = () => {
-    decide.mutate(decision, {
-      onSuccess: (result) => {
-        // Approval moves the money first; a failed bank transfer is reported, not hidden.
-        const failed = result.payout_status === "failed";
-        const successMessage = apiMessage(
-          `Withdrawal ${decision === "approve" ? "approved" : "rejected"}`,
-        );
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: failed
-              ? `Approved, but the payout failed: ${result.failure_reason || "unknown reason"}`
-              : successMessage,
-            type: failed ? "error" : "success",
-          }),
-        );
-        toggle();
+    decide.mutate(
+      { type: decision, acknowledgeRisk: reviewed },
+      {
+        onSuccess: (result) => {
+          // Approval moves the money first; a failed bank transfer is reported, not hidden.
+          const failed = result.payout_status === "failed";
+          const successMessage = apiMessage(
+            `Withdrawal ${decision === "approve" ? "approved" : "rejected"}`,
+          );
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: failed
+                ? `Approved, but the payout failed: ${result.failure_reason || "unknown reason"}`
+                : successMessage,
+              type: failed ? "error" : "success",
+            }),
+          );
+          toggle();
+        },
+        onError: (error) => {
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: errorMessage(error, "Something went wrong"),
+              type: "error",
+            }),
+          );
+        },
       },
-      onError: (error) => {
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: errorMessage(error, "Something went wrong"),
-            type: "error",
-          }),
-        );
-      },
-    });
+    );
   };
 
   if (!isOpen) return null;
@@ -115,6 +123,18 @@ const WithdrawalDecisionModal: React.FC<WithdrawalDecisionModalProps> = ({
                 </div>
               ))}
             </div>
+            {decision === "approve" && risk && risk.level !== "low" && <RiskFlagList risk={risk} />}
+            {needsReview && (
+              <label className="flex cursor-pointer items-start gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  className="mt-1"
+                  checked={reviewed}
+                  onChange={(event) => setReviewed(event.target.checked)}
+                />
+                I have reviewed these flags and want to approve this payout.
+              </label>
+            )}
             <div className="flex justify-between gap-4">
               <button
                 type="button"
@@ -125,7 +145,7 @@ const WithdrawalDecisionModal: React.FC<WithdrawalDecisionModalProps> = ({
               </button>
               <button
                 type="button"
-                disabled={decide.isPending}
+                disabled={decide.isPending || (needsReview && !reviewed)}
                 className={`w-full rounded-xl border px-12 py-3 text-base font-medium text-white disabled:opacity-70 ${
                   decision === "approve" ? "border-step-color bg-gradient-green" : "bg-[#DB0000]"
                 }`}

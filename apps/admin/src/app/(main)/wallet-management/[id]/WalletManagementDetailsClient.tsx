@@ -4,6 +4,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import MainLayout from "@/components/layouts/MainLayout";
 import SkeletonLoader from "@/components/global/SkeletonLoader";
+import { RiskFlagList } from "@/components/wallet/PayoutRisk";
 import WithdrawalDecisionModal from "@/modals/wallet-management/WithdrawalDecisionModal";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
 import PayoutHistoryModal from "@/modals/users/PayoutHistoryModal";
@@ -109,6 +110,11 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
                   <span className="text-red-1">{info.failure_reason}</span>
                 </Field>
               ) : null}
+              {status === "pending" && info.risk && (
+                <div className="my-1">
+                  <RiskFlagList risk={info.risk} />
+                </div>
+              )}
               <Field label="Account Number">{info.account_number ?? "N/A"}</Field>
               <Field label="Account Holder">{info.account_name ?? "N/A"}</Field>
               <Field label="Bank Name">{info.bank_name ?? "N/A"}</Field>

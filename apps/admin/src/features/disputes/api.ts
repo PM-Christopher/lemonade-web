@@ -19,6 +19,12 @@ export interface AdminDispute {
   dispute: string;
   attachments: string[];
   date_raised: string;
+  // Hours since it was raised.
+  age_hours: number;
+  // Open for longer than the response time.
+  overdue: boolean;
+  assignee: { id: string; name: string } | null;
+  assigned_at: string | null;
   raised_by: DisputeParty | null;
   raised_by_role: "client" | "owner";
   job: {
@@ -37,7 +43,22 @@ export interface AdminDispute {
   } | null;
 }
 
+export interface DisputeSummary {
+  open: number;
+  overdue: number;
+  unassigned: number;
+  mine: number;
+  overdue_after_hours: number;
+}
+
+export interface DisputeFilters {
+  // `me`, `unassigned` or an admin id.
+  assignee?: string;
+  overdue?: boolean;
+}
+
 export interface DisputeListResponse {
+  summary: DisputeSummary;
   disputes: AdminDispute[];
 }
 
@@ -51,10 +72,17 @@ export interface ResolveDisputePayload {
 
 export const disputesApi = {
   // Omitting status fetches the open queue; pass "all" for every dispute.
-  getDisputes: (status?: string) =>
+  getDisputes: (status?: string, filters?: DisputeFilters) =>
     browserApi.get<DisputeListResponse>(adminBusinessesRoutes.DISPUTES_LIST, {
-      params: status ? { status } : undefined,
+      params: { status, assignee: filters?.assignee, overdue: filters?.overdue ? 1 : undefined },
     }),
+
+  // Leave `adminId` out to take it yourself; pass null to put it back in the queue.
+  assignDispute: (id: string, adminId?: string | null) =>
+    browserApi.patch<{ id: string; assigned_to: string | null }>(
+      buildPath(adminBusinessesRoutes.DISPUTES_ASSIGN, { id }),
+      adminId === undefined ? {} : { admin_id: adminId },
+    ),
 
   getDispute: (id: string) =>
     browserApi.get<DisputeDetailResponse>(buildPath(adminBusinessesRoutes.DISPUTES_SHOW, { id })),

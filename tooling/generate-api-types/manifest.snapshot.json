@@ -206,6 +206,49 @@
         }
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/audit-log",
+        "name": "v1.admin.audit-log.list",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AuditLogRequest",
+        "fields": {
+            "admin_id": [
+                "string",
+                "nullable"
+            ],
+            "area": [
+                "string",
+                "nullable",
+                "max:50"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ],
+            "from": [
+                "date",
+                "nullable"
+            ],
+            "to": [
+                "date",
+                "nullable",
+                "after_or_equal:from"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:100"
+            ]
+        }
+    },
+    {
         "method": "POST",
         "uri": "/v1/admin/auth/check-otp",
         "name": "v1.admin.auth.check-otp",
@@ -313,6 +356,19 @@
                 "string",
                 "nullable",
                 "max:1000"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/businesses/disputes/{id}/assign",
+        "name": "v1.admin.businesses.disputes.assign",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AssignDisputeRequest",
+        "fields": {
+            "admin_id": [
+                "string",
+                "nullable"
             ]
         }
     },
@@ -706,6 +762,49 @@
         "fields": null
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/payments",
+        "name": "v1.admin.payments.list",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\PaymentsToReviewRequest",
+        "fields": {
+            "status": [
+                "string",
+                "nullable",
+                "in:stuck,failed,all"
+            ],
+            "type": [
+                "string",
+                "nullable",
+                "max:50"
+            ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ],
+            "page": [
+                "integer",
+                "nullable",
+                "min:1"
+            ],
+            "per_page": [
+                "integer",
+                "nullable",
+                "min:1",
+                "max:100"
+            ]
+        }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/payments/{id}/verify",
+        "name": "v1.admin.payments.verify",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "POST",
         "uri": "/v1/admin/promotions",
         "name": "v1.admin.promotions.create",
@@ -1062,6 +1161,97 @@
                 "nullable"
             ]
         }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/support/{userId}/assign",
+        "name": "v1.admin.support.assign",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AssignSupportRequest",
+        "fields": {
+            "admin_id": [
+                "string",
+                "nullable"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/support/inbox",
+        "name": "v1.admin.support.inbox",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/support/{userId}/reopen",
+        "name": "v1.admin.support.reopen",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/support/replies",
+        "name": "v1.admin.support.replies.create",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\SavedReplyRequest",
+        "fields": {
+            "title": [
+                "string",
+                "required",
+                "max:80"
+            ],
+            "body": [
+                "string",
+                "required",
+                "max:2000"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/support/replies/{id}",
+        "name": "v1.admin.support.replies.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/support/replies",
+        "name": "v1.admin.support.replies.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PUT",
+        "uri": "/v1/admin/support/replies/{id}",
+        "name": "v1.admin.support.replies.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\SavedReplyRequest",
+        "fields": {
+            "title": [
+                "string",
+                "required",
+                "max:80"
+            ],
+            "body": [
+                "string",
+                "required",
+                "max:2000"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/support/{userId}/resolve",
+        "name": "v1.admin.support.resolve",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
     },
     {
         "method": "GET",
@@ -2096,6 +2286,10 @@
             "type": [
                 "required",
                 "string"
+            ],
+            "acknowledge_risk": [
+                "boolean",
+                "nullable"
             ]
         }
     },

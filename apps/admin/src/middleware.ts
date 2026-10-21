@@ -92,6 +92,9 @@ const GATED_PATH_PERMISSIONS: ReadonlyArray<{ prefix: string; permission: string
   { prefix: "/reporting", permission: ADMIN_SECTION_PERMISSIONS.moderation },
   { prefix: "/forum", permission: ADMIN_SECTION_PERMISSIONS.moderation },
   { prefix: "/team", permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
+  { prefix: "/audit-log", permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
+  { prefix: "/payments-review", permission: ADMIN_SECTION_PERMISSIONS.wallet },
+  { prefix: "/support", permission: ADMIN_SECTION_PERMISSIONS.users },
 ];
 
 function requiredPermissionFor(pathname: string): string | null {
