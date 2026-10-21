@@ -33,7 +33,8 @@ test("Edit withdrawal threshold opens a real Dialog on /wallet-management, Escap
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
 
-  const editButton = page.getByText("Edit", { exact: true });
+  // The page has two "Edit" cards (threshold and points rate); the first is the threshold.
+  const editButton = page.getByText("Edit", { exact: true }).first();
   await expect(editButton).toBeVisible({ timeout: 15_000 });
   await editButton.click();
 
