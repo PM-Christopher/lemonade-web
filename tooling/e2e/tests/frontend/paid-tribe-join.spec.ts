@@ -79,7 +79,8 @@ test("joining a paid tribe credits its creator once the payment is verified", as
     // The payment goes through, and Paystack sends the browser back to the tribe.
     await markPaid(page.request, reference);
     await page.goto(`/tribe/${tribe.slug}?trxref=${reference}&reference=${reference}`);
-    await expect(page.getByText("Joined tribe successfully").first()).toBeVisible({
+    // The toast shows the last server message, so accept the payment confirmation wording too.
+    await expect(page.getByText(/Joined tribe successfully|Payment verified/).first()).toBeVisible({
       timeout: 45_000,
     });
     joined = tribe;
