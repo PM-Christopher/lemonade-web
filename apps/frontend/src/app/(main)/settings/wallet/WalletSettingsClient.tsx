@@ -1,7 +1,6 @@
 "use client";
-import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
+import { BackHeader } from "@/components/global/BackHeader";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import RewardsHistorySideMenu from "@/components/settings/RewardsHistorySideMenu";
@@ -27,7 +26,6 @@ const RequestPayoutModal = dynamic(() => import("@/components/settings/Modal/Req
 });
 
 function WalletSettingsClient() {
-  const { push } = useNavigation();
   const dispatch = useAppDispatch();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
@@ -119,15 +117,7 @@ function WalletSettingsClient() {
           toggleMenu={() => setIsTribeHistoryOpen((open) => !open)}
           isOpen={isTribeHistoryOpen}
         />
-        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => push(routes.SETTINGS)}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom text-body-l font-sans font-semibold">Wallet</p>
-          </div>
-        </div>
+        <BackHeader title="Wallet" href={routes.SETTINGS} />
 
         <section className="laptop:flex-row laptop:px-0 mt-4 flex flex-col justify-center gap-5 px-2.5">
           {loading ? (

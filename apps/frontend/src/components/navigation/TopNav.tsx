@@ -1,6 +1,6 @@
 import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
-import React, { useState, type CSSProperties } from "react";
+import React, { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,6 +40,19 @@ const TopNav = () => {
   const markAllRead = useMarkAllNotificationsReadMutation();
   const unreadCount = countUnread(data?.notifications);
   const { setSelectedMenu } = usePersistentMenuState();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Publishes the nav height so sticky sub-headers can sit right under it.
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty("--top-nav-h", `${el.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const handleViewMore = (notification: AppNotification) => {
     setSelectedNotification(notification);
@@ -48,7 +61,7 @@ const TopNav = () => {
   };
 
   return (
-    <div className="sticky top-0 z-50">
+    <div ref={wrapperRef} className="sticky top-0 z-50">
       <nav className="flex flex-wrap items-center justify-between bg-white p-2 px-10">
         <div>
           {isMobile ? (

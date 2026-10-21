@@ -1,5 +1,6 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
+import { BadgeCheck, Loader2 } from "lucide-react";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import React from "react";
 import Image from "next/image";
@@ -17,9 +18,15 @@ import BellIcon from "@/images/icons/bellIcon.svg";
 import WalletIcon from "@/images/icons/walletIcon.svg";
 import ReferralIcon from "@/images/icons/referralIcon.svg";
 import PaperIcon from "@/images/icons/paperIcon.svg";
+import LogoutIcon from "@/images/icons/logoutIcon.svg";
 
 import { useSelector } from "react-redux";
 import { useSupportUnreadQuery } from "@/features/settings/queries";
+import { useSubscriptionQuery } from "@/features/authentication/queries";
+import { useLogoutMutation } from "@/features/authentication/mutations";
+import { useAppDispatch } from "@/redux/hook";
+import { updateToastifyReducer } from "@/redux/toastifySlice";
+import { apiMessage } from "@/lib/api-message";
 import { formatString, getInitials, splitLemonId } from "@/lib/helper";
 import { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
@@ -61,6 +68,10 @@ function SettingsClient() {
   const { push } = useNavigation();
   const { user, isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: supportUnread } = useSupportUnreadQuery({ enabled: isLoggedIn });
+  const { data: subscription } = useSubscriptionQuery({ enabled: isLoggedIn });
+  const isMember = subscription?.subscription.is_member === true;
+  const dispatch = useAppDispatch();
+  const logoutMutation = useLogoutMutation();
 
   const moreSettings: SettingsItem[] = [
     { title: "Support messages", icon: PaperIcon, path: routes.SETTINGS_SUPPORT },
@@ -76,10 +87,30 @@ function SettingsClient() {
     if (item.path) push(item.path);
   };
 
+  const handleLogout = () => {
+    // useLogoutMutation clears local session state even if the request fails.
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        dispatch(
+          updateToastifyReducer({ show: true, message: apiMessage(`Logged out`), type: "success" }),
+        );
+      },
+      onSettled: () => {
+        push(routes.LOGIN);
+      },
+    });
+  };
+
   return (
     <section className="mt-4 flex flex-col items-center">
       <div className="flex flex-col items-center">
-        <div className="bg-step-color laptop:w-160 flex w-full items-center justify-between rounded-xl p-4">
+        <div className="bg-step-color laptop:w-160 relative flex w-full items-center justify-between rounded-xl p-4">
+          {isMember && (
+            <span className="text-meta absolute -top-2.5 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-yellow-300 px-2 py-0.5 leading-normal font-semibold text-black">
+              <BadgeCheck className="h-3.5 w-3.5" aria-hidden="true" />
+              Membership
+            </span>
+          )}
           <div className="flex items-center gap-2">
             {user?.profile_image ? (
               <FallbackImage
@@ -194,6 +225,23 @@ function SettingsClient() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="laptop:w-160 mt-6 w-full rounded-xl bg-white p-4">
+          <button
+            type="button"
+            className="flex w-full cursor-pointer items-center justify-between disabled:cursor-wait"
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+          >
+            <span className="flex items-center gap-2">
+              <LogoutIcon />
+              <span className="text-body-l text-red-1 font-normal">Log out</span>
+            </span>
+            {logoutMutation.isPending && (
+              <Loader2 className="animate-spin text-gray-400" aria-hidden="true" />
+            )}
+          </button>
         </div>
       </div>
     </section>

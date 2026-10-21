@@ -1,7 +1,7 @@
 "use client";
 import { appUrl } from "@/lib/app-url";
 import React, { useState } from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
+import { BackHeader } from "@/components/global/BackHeader";
 import Image from "next/image";
 import CopyIcon from "@/images/icons/copyGreenIcon.svg";
 import ShareIcon from "@/images/icons/shareGreenIcon.svg";
@@ -17,11 +17,9 @@ import { useReferralSummaryQuery, useReferralActivityQuery } from "@/features/se
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
-import { useNavigation } from "@/hooks/useNavigation";
 
 // Referral link, sharing and earnings for the signed-in user.
 function ReferralClient() {
-  const { push } = useNavigation();
   const { user } = useSelector((state: RootState) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -71,15 +69,7 @@ function ReferralClient() {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => push(routes.SETTINGS)}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom text-body-l font-sans font-semibold">Referrals</p>
-          </div>
-        </div>
+        <BackHeader title="Referrals" href={routes.SETTINGS} />
 
         <section className="mt-4 flex flex-col items-center">
           <div className="laptop:gap-4 flex flex-col items-center gap-0">

@@ -1,9 +1,8 @@
 "use client";
 import { routes } from "@/lib/routes";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
-import { useNavigation } from "@/hooks/useNavigation";
+import { formatNairaWhole } from "@/lib/formatNumber";
 import React from "react";
-import ChevronLeft from "@/images/icons/chevron-left.svg";
+import { BackHeader } from "@/components/global/BackHeader";
 import { useBillingHistoryQuery } from "@/features/authentication/queries";
 import { useSelector } from "react-redux";
 
@@ -12,7 +11,6 @@ import { BillingHistorySkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
 
 const BillingHistoryClient = () => {
-  const { push } = useNavigation();
   const { subscription } = useSelector((state: RootState) => state.auth);
 
   const { data, isLoading: loading } = useBillingHistoryQuery();
@@ -20,15 +18,7 @@ const BillingHistoryClient = () => {
   return (
     <MainLayout>
       <section className="bg-light_grey pb-10">
-        <div className="laptop:px-16 flex items-center justify-between bg-white p-2 px-4">
-          <div
-            className="flex cursor-pointer items-center gap-2 rounded-xl p-1 pr-4 pl-1"
-            onClick={() => push(routes.SETTINGS)}
-          >
-            <ChevronLeft />
-            <p className="tracking-custom text-body-l font-sans font-semibold">Billing history</p>
-          </div>
-        </div>
+        <BackHeader title="Billing history" href={routes.SETTINGS} />
         <section className="mt-6 flex flex-col items-center">
           {loading ? (
             <BillingHistorySkeleton count={4} />
@@ -39,7 +29,7 @@ const BillingHistoryClient = () => {
                 <div className="flex flex-col gap-2">
                   <p className="text-mid-green text-base font-semibold">{data?.plan.title}</p>
                   <p className="text-black-light text-2xl font-bold">
-                    ₦{formatNumberWithCommas(data?.plan.plan_price)}
+                    {formatNairaWhole(data?.plan.plan_price_amount)}/{data?.plan.billing_cycle}
                   </p>
                   <div className="bg-light-green-50 rounded-lg px-3 py-2">
                     <p className="text-light-black text-sm font-medium">
@@ -93,7 +83,7 @@ const BillingHistoryClient = () => {
                           {history?.created_at}
                         </p>
                         <p className="text-light-black text-base font-semibold">
-                          ₦{formatNumberWithCommas(history?.amount)}
+                          {formatNairaWhole(history?.amount)}
                         </p>
                       </div>
                     ))}
