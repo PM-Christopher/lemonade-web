@@ -82,6 +82,9 @@ test("a payout request is approved by an admin and leaves pending", async ({ pag
     const adminPage = await adminContext.newPage();
     await adminPage.goto(`/wallet-management/${withdrawalId}`);
     await adminPage.getByRole("button", { name: "Approve Withdrawal" }).click();
+    // A high-risk payout (new account, fresh bank account) needs the flags confirmed first.
+    const reviewed = adminPage.getByRole("dialog").getByRole("checkbox");
+    if (await reviewed.isVisible()) await reviewed.check();
     await adminPage.getByRole("dialog").getByRole("button", { name: "Approve" }).click();
 
     await expect.poll(statusOf, { timeout: 60_000 }).not.toBe("pending");
