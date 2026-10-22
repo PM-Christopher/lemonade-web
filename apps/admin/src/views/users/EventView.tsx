@@ -1,6 +1,7 @@
 import React from "react";
+import { FallbackImage } from "@/components/global/FallbackImage";
+import { images } from "@/lib/images";
 import { CalendarIcon, Dot } from "lucide-react";
-import Image from "next/image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import type { AccountInfoResponse } from "@/features/user/api";
 
@@ -42,16 +43,15 @@ const EventView: React.FC<EventViewProps> = ({ userDetail, filter, onFilterChang
         <div className="flex flex-wrap gap-6">
           {events.map((item) => (
             <div key={item.id} className="relative flex w-fit flex-col gap-1 rounded-xl border p-1">
-              {item.image && (
-                <Image
-                  unoptimized
-                  src={item.image}
-                  alt=""
-                  width={155}
-                  height={155}
-                  className="h-38.75 w-38.75 rounded-lg object-cover"
-                />
-              )}
+              <FallbackImage
+                unoptimized
+                src={item.image}
+                fallbackSrc={images.DEFAULT_EVENT}
+                alt=""
+                width={155}
+                height={155}
+                className="h-38.75 w-38.75 rounded-lg object-cover"
+              />
               {item.upcoming !== undefined && (
                 <span
                   className={`absolute top-2 right-2 rounded-md px-1.5 py-0.5 text-xs font-semibold ${

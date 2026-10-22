@@ -11,7 +11,7 @@ import PaginationComp from "@/components/global/Pagination";
 import { RootState } from "@/redux/store";
 import { useTeamActivityLogsQuery, useTeamDetailQuery } from "@/features/team/queries";
 import { useChangeTeamPasswordMutation } from "@/features/team/mutations";
-import { capitalizeSpecial, capitalizeWords, GetStatusClass } from "@/utils/helper";
+import { capitalizeWords, formatRoleName, GetStatusClass } from "@/utils/helper";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 
 const UpdatePasswordModal = dynamic(() => import("@/modals/team/UpdatePasswordModal"), {
@@ -91,9 +91,7 @@ function TeamDetailsClient({ id }: { id: string }) {
               </p>
             </Field>
             <Field label="Role">
-              <p className="text-body-s font-medium">
-                {team?.role ? capitalizeSpecial(team.role) : "N/A"}
-              </p>
+              <p className="text-body-s font-medium">{formatRoleName(team?.role) || "N/A"}</p>
             </Field>
             <Field label="Email Address">
               <p className="text-body-s font-medium">{team?.email || "N/A"}</p>

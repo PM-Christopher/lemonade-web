@@ -1,5 +1,6 @@
 "use client";
 import { routes } from "@/lib/routes";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { PlusIcon, SearchIcon } from "lucide-react";
@@ -8,7 +9,7 @@ import { teamHeaders } from "@/data/tableData";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { capitalizeWords, GetStatusClass } from "@/utils/helper";
+import { capitalizeWords, formatRoleName, GetStatusClass } from "@/utils/helper";
 import { AvatarName } from "@/components/global/AvatarName";
 import { shortDate } from "@/views/transactions/transactionFormat";
 import PaginationComp from "@/components/global/Pagination";
@@ -111,7 +112,9 @@ function TeamClient() {
         <div className={"flex flex-col px-5"}>
           <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
-              <table className="min-w-full table-auto border-collapse">
+              <table
+                className={`min-w-full table-auto border-collapse ${centerNumericColumns(teamHeaders)}`}
+              >
                 <thead>
                   <tr className="bg-mid-grey">
                     {teamHeaders.map((header, idx) => (
@@ -144,7 +147,7 @@ function TeamClient() {
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          {capitalizeWords(row.role)}
+                          {formatRoleName(row.role)}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium whitespace-nowrap"}>
                           {shortDate(row.created_at)}

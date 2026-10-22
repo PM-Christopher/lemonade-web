@@ -1,4 +1,5 @@
 import { routes } from "@/lib/routes";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import dayjs from "dayjs";
@@ -43,7 +44,9 @@ function TribePaymentViews({ trx_data, page, onPageChange }: TribePaymentIF) {
         />
       </div>
       <div className="rounded-lg bg-white shadow-md">
-        <table className="min-w-full table-auto border-collapse">
+        <table
+          className={`min-w-full table-auto border-collapse ${centerNumericColumns(tribePaymentHeaders)}`}
+        >
           <thead>
             <tr className="bg-mid-grey">
               {tribePaymentHeaders.map((header) => (

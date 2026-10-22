@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { SearchIcon } from "lucide-react";
@@ -165,7 +166,9 @@ function WalletManagementClient() {
               ))}
             </div>
             <div className="rounded-lg bg-white shadow-md">
-              <table className="min-w-full table-auto border-collapse">
+              <table
+                className={`min-w-full table-auto border-collapse ${centerNumericColumns(walletManagementHeaders)}`}
+              >
                 <thead>
                   <tr className="bg-mid-grey">
                     {walletManagementHeaders.map((header) => (

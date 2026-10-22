@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import PaginationComp from "@/components/global/Pagination";
@@ -59,7 +60,7 @@ function LedgerViews() {
         />
       </div>
       <div className="rounded-lg bg-white shadow-md">
-        <table className="min-w-full table-auto border-collapse">
+        <table className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}>
           <thead>
             <tr className="bg-mid-grey">
               {HEADERS.map((header) => (

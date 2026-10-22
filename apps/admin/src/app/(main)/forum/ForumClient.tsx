@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { ActionMenu } from "@/components/global/ActionMenu";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dynamic from "next/dynamic";
 import { SearchIcon } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -139,7 +141,9 @@ function ForumClient() {
         <div className={"flex flex-col px-5"}>
           <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
-              <table className="min-w-full table-auto border-collapse">
+              <table
+                className={`min-w-full table-auto border-collapse ${centerNumericColumns(moderationContentHeaders)}`}
+              >
                 <thead>
                   <tr className="bg-mid-grey">
                     {moderationContentHeaders.map((header, idx) => (
@@ -196,35 +200,24 @@ function ForumClient() {
                             )}
                           </td>
                           <td className={"p-4 font-sans text-sm font-medium"}>
-                            <div className={"flex gap-4"}>
-                              <button
-                                className={"text-text-grey"}
-                                onClick={() => setViewId(row.id)}
-                              >
-                                View
-                              </button>
-                              {isDeleted ? (
-                                <button
-                                  className={"text-light-green-70"}
-                                  disabled={restoreMutation.isPending}
-                                  onClick={() => restoreMutation.mutate(row.id)}
-                                >
-                                  Restore
-                                </button>
-                              ) : (
-                                <button
-                                  className={"text-red-1"}
-                                  onClick={() =>
-                                    setDeleteTarget({
-                                      id: row.id,
-                                      label: row.type_label,
-                                    })
-                                  }
-                                >
-                                  Remove
-                                </button>
-                              )}
-                            </div>
+                            <ActionMenu
+                              label={`Actions for ${row.type_label}`}
+                              items={[
+                                { label: "View", onSelect: () => setViewId(row.id) },
+                                isDeleted
+                                  ? {
+                                      label: "Restore",
+                                      disabled: restoreMutation.isPending,
+                                      onSelect: () => restoreMutation.mutate(row.id),
+                                    }
+                                  : {
+                                      label: "Remove",
+                                      danger: true,
+                                      onSelect: () =>
+                                        setDeleteTarget({ id: row.id, label: row.type_label }),
+                                    },
+                              ]}
+                            />
                           </td>
                         </tr>
                       );

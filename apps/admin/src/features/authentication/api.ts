@@ -19,6 +19,7 @@ export interface CurrentAdmin {
   permissions: string[];
   // The one super admin passes every check.
   is_super_admin?: boolean;
+  image?: string | null;
   [key: string]: unknown;
 }
 

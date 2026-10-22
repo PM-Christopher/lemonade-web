@@ -1,4 +1,5 @@
 import { AvatarName } from "@/components/global/AvatarName";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import DataCard from "@/components/global/DataCard";
@@ -80,7 +81,9 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
       </div>
       <div className={"flex w-full justify-between gap-6"}>
         <div className="flex-1 bg-white">
-          <table className="min-w-full table-auto border-collapse">
+          <table
+            className={`min-w-full table-auto border-collapse ${centerNumericColumns(affiliateHeaders)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {affiliateHeaders.map((header, idx) => (

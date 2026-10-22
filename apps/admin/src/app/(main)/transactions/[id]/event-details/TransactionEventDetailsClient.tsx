@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { images } from "@/lib/images";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
@@ -24,7 +25,12 @@ function TransactionEventDetailsClient({ id }: { id: string }) {
   return (
     <TransactionDetailLayout
       rows={[
-        { label: "Event Name", value: <AvatarName name={info?.event_name} image={image} /> },
+        {
+          label: "Event Name",
+          value: (
+            <AvatarName name={info?.event_name} image={image} fallbackSrc={images.DEFAULT_EVENT} />
+          ),
+        },
         {
           label: "Event Owner",
           value: (

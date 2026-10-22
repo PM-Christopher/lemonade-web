@@ -1,5 +1,6 @@
 "use client";
 import { routes } from "@/lib/routes";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import dayjs from "dayjs";
@@ -105,7 +106,9 @@ const AnnouncementsClient = () => {
               ))}
             </div>
             <div className="rounded-lg bg-white shadow-md">
-              <table className="min-w-full table-auto border-collapse">
+              <table
+                className={`min-w-full table-auto border-collapse ${centerNumericColumns(announcementHeaders)}`}
+              >
                 <thead>
                   <tr className="bg-mid-grey">
                     {announcementHeaders.map((header, idx) => (

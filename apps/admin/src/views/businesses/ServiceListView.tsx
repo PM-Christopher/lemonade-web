@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -47,7 +48,7 @@ export function ServiceListView({ filters }: { filters: BusinessFilters }) {
         <Card label="Services in dispute" value={data?.services_in_dispute ?? 0} />
       </div>
       <div className="rounded-lg bg-white shadow-md">
-        <table className="min-w-full table-auto border-collapse">
+        <table className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}>
           <thead>
             <tr className="bg-mid-grey">
               {HEADERS.map((header) => (

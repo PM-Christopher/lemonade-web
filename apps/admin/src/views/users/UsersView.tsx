@@ -1,4 +1,5 @@
 import { AvatarName } from "@/components/global/AvatarName";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
@@ -94,7 +95,9 @@ function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: U
   return (
     <>
       <div className="rounded-lg bg-white shadow-md">
-        <table className="min-w-full table-auto border-collapse">
+        <table
+          className={`min-w-full table-auto border-collapse ${centerNumericColumns(usersHeaders)}`}
+        >
           <thead>
             <tr className="bg-mid-grey">
               {usersHeaders.map((header, idx) => (

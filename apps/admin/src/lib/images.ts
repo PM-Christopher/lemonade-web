@@ -2,6 +2,7 @@
 export const images = {
   LOGO: "/images/logo.png",
   LEMON: "/images/lemon.png",
+  DEFAULT_EVENT: "/images/placeholder.svg",
   DEFAULT_TRIBE: "/images/tribe_1.png",
   BUSINESS_BG: "/images/business-bg.png",
   BUSINESS_JOB_LOGO: "/images/business/jobLogo.png",

@@ -1,5 +1,6 @@
 "use client";
 import { routes } from "@/lib/routes";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import dayjs from "dayjs";
@@ -222,7 +223,9 @@ function DisputesClient() {
       <div className={"flex flex-col px-5"}>
         <div className={"border-grey-20 flex flex-col rounded-xl border"}>
           <div className="rounded-lg bg-white shadow-md">
-            <table className="min-w-full table-auto border-collapse">
+            <table
+              className={`min-w-full table-auto border-collapse ${centerNumericColumns(TABLE_HEADERS)}`}
+            >
               <thead>
                 <tr className="bg-mid-grey">
                   {TABLE_HEADERS.map((header) => (

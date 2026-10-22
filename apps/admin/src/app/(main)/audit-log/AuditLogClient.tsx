@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ChevronDownIcon, ChevronRightIcon, CopyIcon, SearchIcon, XIcon } from "lucide-react";
@@ -188,7 +189,9 @@ function AuditLogClient() {
       </div>
       <div className="flex flex-col px-5">
         <div className="border-grey-20 rounded-xl border bg-white">
-          <table className="min-w-full table-auto border-collapse">
+          <table
+            className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {HEADERS.map((header) => (

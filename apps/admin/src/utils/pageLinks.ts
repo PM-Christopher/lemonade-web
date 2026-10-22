@@ -28,7 +28,7 @@ export interface PageLink {
   permission?: string;
 }
 
-export const pageLinks: PageLink[] = [
+const links: PageLink[] = [
   { name: "Overview", icon: LayoutDashboard, path: routes.HOME },
   {
     name: "Wallet management",
@@ -115,4 +115,10 @@ export const pageLinks: PageLink[] = [
     path: routes.AUDIT_LOG,
     permission: ADMIN_PERMISSIONS.auditView,
   },
+];
+
+// Overview first, then the rest A to Z.
+export const pageLinks: PageLink[] = [
+  ...links.filter((link) => link.path === routes.HOME),
+  ...links.filter((link) => link.path !== routes.HOME).sort((a, b) => a.name.localeCompare(b.name)),
 ];

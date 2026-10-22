@@ -19,6 +19,11 @@ export function capitalizeSpecial(str: string): string {
     .join(" ");
 }
 
+/** An admin role shown as a name: "super-admin" becomes "Super Admin". */
+export function formatRoleName(role: string | null | undefined): string {
+  return role ? capitalizeSpecial(role) : "";
+}
+
 export const GetStatusClass = (status: string) => {
   let color;
   switch (status) {

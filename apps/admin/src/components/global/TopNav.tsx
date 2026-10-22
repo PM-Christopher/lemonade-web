@@ -2,7 +2,7 @@ import React from "react";
 import { ChevronLeft, Headset } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { capitalizeWords } from "@/utils/helper";
+import { formatRoleName } from "@/utils/helper";
 import { Avatar } from "@/components/global/Avatar";
 import { getPageHeading } from "@/utils/pageTitle";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -62,7 +62,7 @@ function TopNav({}) {
         <div className={"flex flex-col items-end"}>
           <p className={"font-semiBold text-body-l"}>{user?.name}</p>
           <p className={"text-text-grey text-meta leading-normal font-normal"}>
-            {capitalizeWords(user?.role)}
+            {formatRoleName(user?.role)}
           </p>
         </div>
         <button
@@ -71,7 +71,7 @@ function TopNav({}) {
           className="cursor-pointer rounded-full"
           onClick={() => push(routes.PROFILE)}
         >
-          <Avatar name={user?.name} image={currentAdmin?.image as string | null | undefined} />
+          <Avatar name={user?.name} image={currentAdmin?.image} />
         </button>
       </div>
     </header>

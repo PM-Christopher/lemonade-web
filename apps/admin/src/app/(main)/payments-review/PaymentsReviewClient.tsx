@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { ActionMenu } from "@/components/global/ActionMenu";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import { CopyIcon, RefreshCwIcon, SearchIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -213,7 +215,9 @@ function PaymentsReviewClient() {
               </button>
             )}
           </div>
-          <table className="mt-2 min-w-full table-auto border-collapse">
+          <table
+            className={`mt-2 min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {HEADERS.map((header) => (
@@ -265,14 +269,20 @@ function PaymentsReviewClient() {
                       </span>
                     </td>
                     <td className="p-4">
-                      <button
-                        type="button"
-                        disabled={checkingId === payment.id || bulk !== null}
-                        onClick={() => check(payment)}
-                        className="border-light-grey-50 cursor-pointer rounded-xl border px-3 py-2 text-sm font-medium whitespace-nowrap disabled:opacity-60"
-                      >
-                        {checkingId === payment.id ? "Checking…" : "Check with Paystack"}
-                      </button>
+                      <ActionMenu
+                        label={`Actions for ${payment.reference.slice(0, 14)}`}
+                        items={[
+                          {
+                            label: checkingId === payment.id ? "Checking…" : "Check with Paystack",
+                            disabled: checkingId === payment.id || bulk !== null,
+                            onSelect: () => check(payment),
+                          },
+                          {
+                            label: "Copy reference",
+                            onSelect: () => void navigator.clipboard?.writeText(payment.reference),
+                          },
+                        ]}
+                      />
                     </td>
                   </tr>
                 ))

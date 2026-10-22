@@ -1,4 +1,5 @@
 import React from "react";
+import { images } from "@/lib/images";
 import DataCard from "@/components/global/DataCard";
 import { AvatarName } from "@/components/global/AvatarName";
 import { TransactionTable, type TransactionColumn } from "@/components/global/TransactionTable";
@@ -23,7 +24,13 @@ const columns: ReadonlyArray<TransactionColumn<TransactionHistoryRow>> = [
   { header: "TXN ID", cell: (row) => row.txn_id },
   {
     header: "EVENT NAME",
-    cell: (row) => <AvatarName name={row.event?.name} image={row.event?.image} />,
+    cell: (row) => (
+      <AvatarName
+        name={row.event?.name}
+        image={row.event?.image}
+        fallbackSrc={images.DEFAULT_EVENT}
+      />
+    ),
   },
   { header: "PROMOTION NAME", cell: (row) => row.promotion_name ?? "N/A" },
   { header: "AMOUNT", cell: (row) => naira(row.amount) },

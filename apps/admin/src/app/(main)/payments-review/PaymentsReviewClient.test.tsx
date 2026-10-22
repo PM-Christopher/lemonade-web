@@ -61,7 +61,8 @@ describe("PaymentsReviewClient", () => {
   it("checks one payment with Paystack", () => {
     render(<PaymentsReviewClient />);
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Check with Paystack" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /^Actions for/ })[0]);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Check with Paystack" }));
 
     expect(mutate.mock.calls[0][0]).toBe("p1");
   });

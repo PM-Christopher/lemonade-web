@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
+import { FallbackImage } from "@/components/global/FallbackImage";
+import { images } from "@/lib/images";
 import { useEventAffiliateDetailQuery } from "@/features/events/queries";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { RootState } from "@/redux/store";
 import { CalendarIcon, CopyIcon, ExternalLinkIcon, MapPinIcon } from "lucide-react";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 import { AvatarName } from "@/components/global/AvatarName";
 import { useSelector } from "react-redux";
@@ -141,18 +142,15 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                   className={"bg-light-grey flex flex-col gap-2 rounded-xl p-2"}
                 >
                   <div className={"bg-green-tint flex items-center gap-3 p-2 px-4"}>
-                    {program.event_image ? (
-                      <Image
-                        unoptimized
-                        src={program.event_image}
-                        alt={program.event_name}
-                        width={96}
-                        height={96}
-                        className={"h-24 w-24 rounded-lg object-cover"}
-                      />
-                    ) : (
-                      <div className={"h-24 w-24 rounded-lg bg-gray-600"}></div>
-                    )}
+                    <FallbackImage
+                      unoptimized
+                      src={program.event_image}
+                      fallbackSrc={images.DEFAULT_EVENT}
+                      alt={program.event_name}
+                      width={96}
+                      height={96}
+                      className={"h-24 w-24 rounded-lg object-cover"}
+                    />
                     <div className={"flex flex-col gap-1"}>
                       <p className={"font-semiBold text-body-xl"}>{program.event_name}</p>
                       <div className={"flex items-center gap-1"}>

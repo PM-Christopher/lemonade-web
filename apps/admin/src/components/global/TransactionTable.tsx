@@ -1,4 +1,5 @@
 import React from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import PaginationComp from "@/components/global/Pagination";
 
 export interface TransactionColumn<T> {
@@ -30,7 +31,9 @@ export function TransactionTable<T>({
 }: TransactionTableProps<T>) {
   return (
     <div className="rounded-lg bg-white shadow-md">
-      <table className="min-w-full table-auto border-collapse">
+      <table
+        className={`min-w-full table-auto border-collapse ${centerNumericColumns(columns.map((column) => column.header))}`}
+      >
         <thead>
           <tr className="bg-mid-grey">
             {columns.map((column) => (

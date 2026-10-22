@@ -1,4 +1,5 @@
 import { routes } from "@/lib/routes";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import DataCard from "@/components/global/DataCard";
@@ -69,7 +70,9 @@ const AffiliateView = ({ pageData, range = null }: AffiliateViewProps) => {
           />
         </div>
         <div className="rounded-lg bg-white shadow-md">
-          <table className="min-w-full table-auto border-collapse">
+          <table
+            className={`min-w-full table-auto border-collapse ${centerNumericColumns(affiliateMainHeaders)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {affiliateMainHeaders.map((header, idx) => (

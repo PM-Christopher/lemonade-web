@@ -1,4 +1,6 @@
 import { routes } from "@/lib/routes";
+import { images } from "@/lib/images";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import DataCard from "@/components/global/DataCard";
@@ -108,7 +110,9 @@ const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
           <DataCard styles={"w-full"} title={"Total Events"} count={data_?.total_events ?? 0} />
         </div>
         <div className="rounded-lg bg-white shadow-md">
-          <table className="min-w-full table-auto border-collapse">
+          <table
+            className={`min-w-full table-auto border-collapse ${centerNumericColumns(eventMainHeaders)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {eventMainHeaders.map((header, idx) => (
@@ -131,7 +135,11 @@ const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.unique_id}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>
-                      <AvatarName name={row?.event_name} image={row?.event_image} />
+                      <AvatarName
+                        name={row?.event_name}
+                        image={row?.event_image}
+                        fallbackSrc={images.DEFAULT_EVENT}
+                      />
                     </td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.event_type}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row?.category}</td>

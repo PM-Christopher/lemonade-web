@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { images } from "@/lib/images";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import DataCard from "@/components/global/DataCard";
 import PaginationComp from "@/components/global/Pagination";
@@ -72,7 +74,9 @@ const PromotionView = ({
           />
         </div>
         <div className="rounded-lg bg-white shadow-md">
-          <table className="min-w-full table-auto border-collapse">
+          <table
+            className={`min-w-full table-auto border-collapse ${centerNumericColumns(promotionMainHeaders)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {promotionMainHeaders.map((header) => (
@@ -97,7 +101,11 @@ const PromotionView = ({
                       {row.unique_id ?? "N/A"}
                     </td>
                     <td className={"p-4 font-sans text-sm font-medium"}>
-                      <AvatarName name={row.event_name} image={row.event_image} />
+                      <AvatarName
+                        name={row.event_name}
+                        image={row.event_image}
+                        fallbackSrc={images.DEFAULT_EVENT}
+                      />
                     </td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row.promotion_name}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>

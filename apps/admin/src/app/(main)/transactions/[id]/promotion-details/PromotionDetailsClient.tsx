@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { images } from "@/lib/images";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
@@ -25,7 +26,13 @@ function PromotionDetailsClient({ id }: { id: string }) {
       rows={[
         {
           label: "Event Name",
-          value: <AvatarName name={transaction?.event.name} image={transaction?.event.image} />,
+          value: (
+            <AvatarName
+              name={transaction?.event.name}
+              image={transaction?.event.image}
+              fallbackSrc={images.DEFAULT_EVENT}
+            />
+          ),
         },
         {
           label: "Event Owner",

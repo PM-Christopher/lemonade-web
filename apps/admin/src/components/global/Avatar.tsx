@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { getSafeImageSrc } from "@/lib/image-src";
 
 type AvatarSize = "sm" | "md" | "lg";
 
@@ -17,22 +19,37 @@ export function getInitials(name: string | null | undefined): string {
   return letters.toUpperCase();
 }
 
-// A round picture, or the person's initials when there is none.
+// A round picture, or the person's initials when there is none or it fails to load.
+// `fallbackSrc` swaps the initials for a picture, e.g. an event placeholder.
 export function Avatar({
   name,
   image,
   size = "sm",
   className = "",
+  fallbackSrc,
 }: {
   name: string | null | undefined;
   image?: string | null;
   size?: AvatarSize;
   className?: string;
+  fallbackSrc?: string;
 }) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const box = `${SIZES[size]} shrink-0 rounded-full ${className}`;
-  if (image) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={image} alt="" className={`${box} object-cover`} />;
+  const src = image && failedSrc !== image ? getSafeImageSrc(image, "") : "";
+
+  const shown = src || fallbackSrc;
+
+  if (shown) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={shown}
+        alt=""
+        className={`${box} object-cover`}
+        onError={() => setFailedSrc(image ?? null)}
+      />
+    );
   }
   return (
     <div

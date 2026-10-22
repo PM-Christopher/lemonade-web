@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import { SearchIcon, XIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
@@ -86,7 +87,9 @@ function PlanSubscribersModal({ isOpen, toggle, planId, planTitle }: PlanSubscri
               </button>
             </div>
           </div>
-          <table className="min-w-full table-auto border-collapse">
+          <table
+            className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}
+          >
             <thead>
               <tr className="bg-mid-grey">
                 {HEADERS.map((header) => (

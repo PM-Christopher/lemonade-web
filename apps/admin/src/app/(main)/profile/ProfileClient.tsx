@@ -12,7 +12,7 @@ import {
   useChangeOwnPasswordMutation,
   useChangeProfileImageMutation,
 } from "@/features/profile/mutations";
-import { capitalizeSpecial, GetStatusClass } from "@/utils/helper";
+import { formatRoleName, GetStatusClass } from "@/utils/helper";
 
 const UpdatePasswordModal = dynamic(() => import("@/modals/team/UpdatePasswordModal"), {
   ssr: false,
@@ -87,9 +87,7 @@ function ProfileClient() {
               <p className={`text-body-s font-medium ${GetStatusClass(status)}`}>{status}</p>
             </Field>
             <Field label="Role">
-              <p className="text-body-s font-medium">
-                {profile?.role ? capitalizeSpecial(profile.role) : ""}
-              </p>
+              <p className="text-body-s font-medium">{formatRoleName(profile?.role)}</p>
             </Field>
             <Field label="Email Address">
               <p className="text-body-s font-medium">{profile?.email}</p>

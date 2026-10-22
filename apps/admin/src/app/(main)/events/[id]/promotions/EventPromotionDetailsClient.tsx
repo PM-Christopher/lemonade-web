@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
+import { FallbackImage } from "@/components/global/FallbackImage";
+import { images } from "@/lib/images";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import { CalendarIcon, ClockIcon, DownloadIcon, MapPinIcon } from "lucide-react";
@@ -119,16 +120,17 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
         </div>
 
         <div className={"flex h-fit w-full flex-col gap-4 rounded-xl bg-white p-6 lg:w-220"}>
-          {event?.image ? (
-            <div className={"relative w-80"}>
-              <Image
-                src={event.image}
-                alt={event.name ?? ""}
-                width={320}
-                height={343}
-                unoptimized
-                className={"h-85.75 w-80 rounded-2xl object-cover"}
-              />
+          <div className={"relative w-80"}>
+            <FallbackImage
+              src={event?.image}
+              fallbackSrc={images.DEFAULT_EVENT}
+              alt={event?.name ?? ""}
+              width={320}
+              height={343}
+              unoptimized
+              className={"h-85.75 w-80 rounded-2xl object-cover"}
+            />
+            {event?.image && (
               <a
                 href={event.image}
                 download
@@ -140,8 +142,8 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
               >
                 <DownloadIcon className={"h-3.5 w-3.5"} /> Download
               </a>
-            </div>
-          ) : null}
+            )}
+          </div>
           <p className={"font-semiBold text-title-r leading-normal"}>{event?.name}</p>
           <div className={"flex flex-col gap-2"}>
             <div className={"flex items-center gap-2"}>

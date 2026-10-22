@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { PencilIcon, PlusIcon } from "lucide-react";
+import { ActionMenu } from "@/components/global/ActionMenu";
+import { centerNumericColumns } from "@/utils/tableAlign";
+import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -106,7 +108,9 @@ function SubscriptionsClient() {
         <div className={"flex flex-col px-5"}>
           <div className={"border-grey-20 flex flex-col rounded-xl border"}>
             <div className="rounded-lg bg-white shadow-md">
-              <table className="min-w-full table-auto border-collapse">
+              <table
+                className={`min-w-full table-auto border-collapse ${centerNumericColumns(headers)}`}
+              >
                 <thead>
                   <tr className="bg-mid-grey">
                     {headers.map((header) => (
@@ -157,40 +161,30 @@ function SubscriptionsClient() {
                           </button>
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              className="text-text-grey"
-                              onClick={() => openEditModal(plan)}
-                              aria-label={`Edit ${plan.title}`}
-                            >
-                              <PencilIcon className="h-4 w-4" />
-                            </button>
-                            {plan.active ? (
-                              <button
-                                type="button"
-                                className="text-red-1 text-meta leading-normal font-medium"
-                                onClick={() => openConfirmModal(plan, "deactivate")}
-                              >
-                                Deactivate
-                              </button>
-                            ) : (
-                              <button
-                                type="button"
-                                className="text-light-green-70 text-meta leading-normal font-medium"
-                                onClick={() => openConfirmModal(plan, "activate")}
-                              >
-                                Activate
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              className="text-red-1 text-meta leading-normal font-medium"
-                              onClick={() => openConfirmModal(plan, "delete")}
-                            >
-                              Delete
-                            </button>
-                          </div>
+                          <ActionMenu
+                            label={`Actions for ${plan.title}`}
+                            items={[
+                              { label: "Edit", onSelect: () => openEditModal(plan) },
+                              plan.active
+                                ? {
+                                    label: "Deactivate",
+                                    onSelect: () => openConfirmModal(plan, "deactivate"),
+                                  }
+                                : {
+                                    label: "Activate",
+                                    onSelect: () => openConfirmModal(plan, "activate"),
+                                  },
+                              {
+                                label: "View members",
+                                onSelect: () => setSubscribersPlan(plan),
+                              },
+                              {
+                                label: "Delete",
+                                danger: true,
+                                onSelect: () => openConfirmModal(plan, "delete"),
+                              },
+                            ]}
+                          />
                         </td>
                       </tr>
                     ))

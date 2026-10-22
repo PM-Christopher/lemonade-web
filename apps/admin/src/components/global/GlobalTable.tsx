@@ -1,4 +1,5 @@
 import React from "react";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import Image from "next/image";
 import { images } from "@/lib/images";
 
@@ -48,7 +49,7 @@ const GlobalTable: React.FC<TableProps> = ({
   };
   return (
     <div className="rounded-lg bg-white shadow-md">
-      <table className="min-w-full table-auto border-collapse">
+      <table className={`min-w-full table-auto border-collapse ${centerNumericColumns(headers)}`}>
         <thead>
           <tr className="bg-mid-grey">
             {headers.map((header, idx) => (

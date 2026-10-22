@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Avatar, getInitials } from "./Avatar";
 
 describe("getInitials", () => {
@@ -23,9 +23,38 @@ describe("Avatar", () => {
   });
 
   it("shows the picture when there is one", () => {
-    const { container } = render(<Avatar name="Charles Ajimobi" image="https://x.test/a.png" />);
+    const { container } = render(
+      <Avatar name="Charles Ajimobi" image="https://res.cloudinary.com/a.png" />,
+    );
 
-    expect(container.querySelector("img")).toHaveAttribute("src", "https://x.test/a.png");
+    expect(container.querySelector("img")).toHaveAttribute(
+      "src",
+      "https://res.cloudinary.com/a.png",
+    );
     expect(screen.queryByText("CA")).not.toBeInTheDocument();
+  });
+
+  it("falls back to initials when the picture fails to load", () => {
+    const { container } = render(
+      <Avatar name="Charles Ajimobi" image="https://res.cloudinary.com/broken.png" />,
+    );
+
+    fireEvent.error(container.querySelector("img") as HTMLImageElement);
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getByText("CA")).toBeInTheDocument();
+  });
+
+  it("uses initials for a picture from an unknown host", () => {
+    const { container } = render(<Avatar name="Charles Ajimobi" image="https://evil.test/a.png" />);
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getByText("CA")).toBeInTheDocument();
+  });
+
+  it("shows a placeholder picture instead of initials when one is given", () => {
+    const { container } = render(<Avatar name="Party" fallbackSrc="/images/placeholder.svg" />);
+
+    expect(container.querySelector("img")).toHaveAttribute("src", "/images/placeholder.svg");
   });
 });

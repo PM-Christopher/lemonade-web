@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { FallbackImage } from "@/components/global/FallbackImage";
+import { images } from "@/lib/images";
 import { CalendarIcon, ChevronDown, ChevronRight, ClockIcon, MapPinIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -12,7 +14,6 @@ import { SocialLink } from "@/components/global/SocialLink";
 import { routes } from "@/lib/routes";
 import { naira } from "@/views/transactions/transactionFormat";
 import { capitalizeWords, GetStatusClass } from "@/utils/helper";
-import Image from "next/image";
 import dynamic from "next/dynamic";
 
 // Off the initial bundle — both are only needed once their triggering
@@ -356,15 +357,14 @@ const EventDetailsClient = ({ id }: { id: string }) => {
               Suspended
             </p>
           )}
-          {event?.event?.event_image && (
-            <Image
-              src={event.event.event_image}
-              alt={event.event.event_name ?? ""}
-              width={320}
-              height={343}
-              className={"h-85.75 w-80 rounded-2xl"}
-            />
-          )}
+          <FallbackImage
+            src={event?.event?.event_image}
+            fallbackSrc={images.DEFAULT_EVENT}
+            alt={event?.event?.event_name ?? ""}
+            width={320}
+            height={343}
+            className={"h-85.75 w-80 rounded-2xl object-cover"}
+          />
           <p className={"font-semiBold text-title-r leading-normal"}>{event?.event?.event_name}</p>
           <div className={"flex flex-col gap-2"}>
             <div className={"flex items-center gap-2"}>

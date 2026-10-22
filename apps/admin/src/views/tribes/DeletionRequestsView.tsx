@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { ActionMenu } from "@/components/global/ActionMenu";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
@@ -36,7 +38,7 @@ const DeletionRequestsView = () => {
 
   return (
     <div className="rounded-lg bg-white shadow-md">
-      <table className="min-w-full table-auto border-collapse">
+      <table className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}>
         <thead>
           <tr className="bg-mid-grey">
             {HEADERS.map((header) => (
@@ -76,22 +78,20 @@ const DeletionRequestsView = () => {
                 </td>
                 <td className="p-4">
                   {request.status === "pending" && (
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        className="text-red-1 cursor-pointer text-sm font-medium"
-                        onClick={() => setSelected({ request, decision: "approve" })}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        type="button"
-                        className="cursor-pointer text-sm font-medium"
-                        onClick={() => setSelected({ request, decision: "reject" })}
-                      >
-                        Reject
-                      </button>
-                    </div>
+                    <ActionMenu
+                      label={`Actions for ${request.tribe?.name ?? "request"}`}
+                      items={[
+                        {
+                          label: "Approve",
+                          onSelect: () => setSelected({ request, decision: "approve" }),
+                        },
+                        {
+                          label: "Reject",
+                          danger: true,
+                          onSelect: () => setSelected({ request, decision: "reject" }),
+                        },
+                      ]}
+                    />
                   )}
                 </td>
               </tr>

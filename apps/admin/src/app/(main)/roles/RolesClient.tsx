@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { ActionMenu } from "@/components/global/ActionMenu";
+import { centerNumericColumns } from "@/utils/tableAlign";
 import dynamic from "next/dynamic";
-import { PencilIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -60,7 +62,9 @@ function RolesClient() {
         <div className="flex flex-col px-5">
           <div className="border-grey-20 flex flex-col rounded-xl border">
             <div className="overflow-hidden rounded-lg bg-white shadow-md">
-              <table className="min-w-full table-auto border-collapse">
+              <table
+                className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}
+              >
                 <thead>
                   <tr className="bg-mid-grey">
                     {HEADERS.map((header) => (
@@ -97,27 +101,23 @@ function RolesClient() {
                               Always has every permission
                             </span>
                           ) : (
-                            <div className="flex items-center gap-3">
-                              {canUpdate && (
-                                <button
-                                  type="button"
-                                  className="text-text-grey"
-                                  aria-label={`Edit ${role.label}`}
-                                  onClick={() => openForm(role)}
-                                >
-                                  <PencilIcon className="h-4 w-4" />
-                                </button>
-                              )}
-                              {canDelete && (
-                                <button
-                                  type="button"
-                                  className="text-red-1 text-meta leading-normal font-medium"
-                                  onClick={() => setDeleting(role)}
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </div>
+                            <ActionMenu
+                              label={`Actions for ${role.label}`}
+                              items={[
+                                ...(canUpdate
+                                  ? [{ label: "Edit", onSelect: () => openForm(role) }]
+                                  : []),
+                                ...(canDelete
+                                  ? [
+                                      {
+                                        label: "Delete",
+                                        danger: true,
+                                        onSelect: () => setDeleting(role),
+                                      },
+                                    ]
+                                  : []),
+                              ]}
+                            />
                           )}
                         </td>
                       </tr>
