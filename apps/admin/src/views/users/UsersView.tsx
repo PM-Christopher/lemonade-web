@@ -1,3 +1,4 @@
+import { AvatarName } from "@/components/global/AvatarName";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
@@ -116,15 +117,17 @@ function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: U
                 >
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>
-                    {row.fullname}
-                    {row.unread_support_messages > 0 && (
-                      <span
-                        aria-label={`${row.unread_support_messages} unread messages`}
-                        className="bg-red-1 text-meta ml-2 rounded-full px-1.5 leading-normal font-medium text-white"
-                      >
-                        {row.unread_support_messages}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <AvatarName name={row.fullname} image={row.profile_image} />
+                      {row.unread_support_messages > 0 && (
+                        <span
+                          aria-label={`${row.unread_support_messages} unread messages`}
+                          className="bg-red-1 text-meta ml-2 rounded-full px-1.5 leading-normal font-medium text-white"
+                        >
+                          {row.unread_support_messages}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>

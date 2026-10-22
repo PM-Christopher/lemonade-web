@@ -1,3 +1,4 @@
+import { AvatarName } from "@/components/global/AvatarName";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import DataCard from "@/components/global/DataCard";
@@ -101,7 +102,9 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
                     onClick={() => push(routes.USER_AFFILIATE(row.id))}
                   >
                     <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row.name}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>
+                      <AvatarName name={row.name} />
+                    </td>
                     <td className={"p-4 font-sans text-sm font-medium"}>{row.total_referrals}</td>
                     <td className={"p-4 font-sans text-sm font-medium"}>
                       {row.subscribed_referrals}

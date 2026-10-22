@@ -1,4 +1,5 @@
 "use client";
+import { Avatar } from "@/components/global/Avatar";
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -85,16 +86,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
     <>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
         <div className="flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150">
-          {info?.image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={info.image}
-              alt={info.fullname ?? ""}
-              className="h-16 w-16 rounded-full object-cover"
-            />
-          ) : (
-            <div className="bg-light-black h-16 w-16 rounded-full" />
-          )}
+          <Avatar name={info?.fullname} image={info?.image} size="lg" />
           {isLoading || !info ? (
             Array.from({ length: 6 }).map((_, index) => <SkeletonLoader key={index} />)
           ) : (

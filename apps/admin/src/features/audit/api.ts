@@ -23,6 +23,7 @@ export interface AuditLogFilters {
   from?: string;
   to?: string;
   page?: number;
+  per_page?: number;
 }
 
 export interface AuditLogResponse {

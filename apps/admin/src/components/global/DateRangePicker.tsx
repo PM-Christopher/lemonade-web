@@ -100,7 +100,7 @@ function Month({
           );
           // The band runs through the range and rounds off at its ends and at week edges.
           const band = inRange
-            ? `bg-light-green/20 ${isStart || day.day() === 0 ? "rounded-l-full" : ""} ${
+            ? `bg-link-color ${isStart || day.day() === 0 ? "rounded-l-full" : ""} ${
                 isEnd || day.day() === 6 ? "rounded-r-full" : ""
               }`
             : "";
@@ -117,7 +117,7 @@ function Month({
                   onClick={() => onPick(day)}
                   className={`mx-auto h-8 w-8 cursor-pointer rounded-full text-xs ${
                     isEdge
-                      ? "bg-light-green font-semibold text-white"
+                      ? "bg-step-color font-semibold text-white"
                       : isToday
                         ? "border-grey-20 border"
                         : "hover:bg-light_grey"

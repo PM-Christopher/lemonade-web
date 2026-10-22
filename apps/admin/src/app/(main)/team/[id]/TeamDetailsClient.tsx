@@ -6,6 +6,7 @@ import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useSelector } from "react-redux";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
+import { Avatar } from "@/components/global/Avatar";
 import PaginationComp from "@/components/global/Pagination";
 import { RootState } from "@/redux/store";
 import { useTeamActivityLogsQuery, useTeamDetailQuery } from "@/features/team/queries";
@@ -75,16 +76,7 @@ function TeamDetailsClient({ id }: { id: string }) {
       <section className="flex justify-between gap-5 p-5">
         <div className="flex h-fit w-147 flex-col gap-3 rounded-xl bg-white">
           <div className="flex flex-col gap-5 p-6">
-            {team?.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={team.image}
-                alt={team.name}
-                className="h-16 w-16 rounded-full object-cover"
-              />
-            ) : (
-              <div className="bg-mid-grey h-16 w-16 rounded-full" />
-            )}
+            <Avatar name={team?.name} image={team?.image} size="lg" />
             <Field label="Full Name">
               <p className="text-body-s font-medium">{team?.name || "N/A"}</p>
             </Field>

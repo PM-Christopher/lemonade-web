@@ -18,7 +18,8 @@ describe("ScheduleModal", () => {
     open();
 
     fireEvent.click(screen.getByRole("button", { name: "25 May 2030" }));
-    fireEvent.change(screen.getByLabelText("Time"), { target: { value: "09:30" } });
+    fireEvent.change(screen.getByLabelText("Hour"), { target: { value: "09" } });
+    fireEvent.change(screen.getByLabelText("Minute"), { target: { value: "30" } });
     fireEvent.click(screen.getByRole("button", { name: "PM" }));
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -27,14 +28,11 @@ describe("ScheduleModal", () => {
     expect([when.getHours(), when.getMinutes()]).toEqual([21, 30]);
   });
 
-  it("refuses a time in the past or one that is not a time", () => {
+  it("refuses a time in the past", () => {
     open();
 
-    fireEvent.change(screen.getByLabelText("Time"), { target: { value: "25:99" } });
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(screen.getByText("Enter a time like 09:30")).toBeInTheDocument();
-
-    fireEvent.change(screen.getByLabelText("Time"), { target: { value: "07:00" } });
+    fireEvent.change(screen.getByLabelText("Hour"), { target: { value: "07" } });
+    fireEvent.change(screen.getByLabelText("Minute"), { target: { value: "00" } });
     fireEvent.click(screen.getByRole("button", { name: "AM" }));
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(screen.getByText("Pick a time in the future")).toBeInTheDocument();

@@ -1,4 +1,5 @@
 "use client";
+import { Avatar } from "@/components/global/Avatar";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
@@ -65,16 +66,7 @@ function ProfileClient() {
       <section className="flex justify-between p-5">
         <div className="flex h-fit w-147 flex-col gap-3 rounded-xl bg-white">
           <div className="flex flex-col gap-5 p-6">
-            {profile?.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={profile.image}
-                alt={profile.name}
-                className="h-16 w-16 rounded-full object-cover"
-              />
-            ) : (
-              <div className="bg-mid-grey h-16 w-16 rounded-full" />
-            )}
+            <Avatar name={profile?.name} image={profile?.image} size="lg" />
             <label className="text-light-green text-body-s w-fit cursor-pointer font-medium">
               {changeImage.isPending ? "Uploading…" : "Change photo"}
               <input

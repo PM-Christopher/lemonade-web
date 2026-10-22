@@ -1,6 +1,6 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Label,
@@ -10,6 +10,11 @@ import {
   DialogContentBare,
   DialogTitle,
   FieldError,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
@@ -18,7 +23,7 @@ import { useCreatePlanMutation, useUpdatePlanMutation } from "@/features/subscri
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { SubmitButton } from "@/components/global/SubmitButton";
-import { planSchema, type PlanInput } from "@/features/subscriptions/schema";
+import { PLAN_TYPES, planSchema, type PlanInput } from "@/features/subscriptions/schema";
 import { applyServerErrors } from "@/lib/form-errors";
 
 interface PlanFormModalProps {
@@ -30,17 +35,20 @@ interface PlanFormModalProps {
 
 const emptyValues: PlanInput = {
   title: "",
-  access_type: "",
+  access_type: "Limited",
   monthly_charge: "",
   yearly_charge: "",
   ver_badge: false,
   forum_creation: false,
   business_listing: true,
   lemon_id: false,
-  event_creation: "",
+  event_creation: "0",
+  tribe_limit: "0",
+  thread_limit: "0",
+  business_limit: "0",
   sales_commission: "",
   service_commission: "",
-  connection_range: "",
+  connection_range: "Limited",
   offline_benefits: false,
   recommended: false,
 };
@@ -57,12 +65,51 @@ function toFormValues(plan: AdminSubscriptionPlan): PlanInput {
     business_listing: plan.benefits.business_listing,
     lemon_id: plan.benefits.lemon_id,
     event_creation: String(plan.benefits.event_creation),
+    tribe_limit: String(plan.benefits.tribe_limit),
+    thread_limit: String(plan.benefits.thread_limit),
+    business_limit: String(plan.benefits.business_limit),
     sales_commission: String(plan.benefits.ticket_sales_commission),
     service_commission: String(plan.benefits.service_commission),
     connection_range: plan.benefits.connection_range,
     offline_benefits: plan.benefits.offline_benefits,
     recommended: plan.recommended,
   };
+}
+
+const limitFields: Array<{
+  name: "event_creation" | "tribe_limit" | "thread_limit" | "business_limit";
+  label: string;
+}> = [
+  { name: "event_creation", label: "Events per month" },
+  { name: "tribe_limit", label: "Tribes" },
+  { name: "thread_limit", label: "Threads per tribe" },
+  { name: "business_limit", label: "Businesses" },
+];
+
+// A fixed choice of Limited or Unlimited.
+function TypeSelect({
+  id,
+  value,
+  onChange,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger id={id} className="form-font bg-light-grey h-12 w-full rounded-xl border-0">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {PLAN_TYPES.map((type) => (
+          <SelectItem key={type} value={type}>
+            {type}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 }
 
 const checkboxFields: Array<{
@@ -101,7 +148,11 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
     mode: "onTouched",
   });
 
+  const isLimited = useWatch({ control, name: "access_type" }) === "Limited";
+
   const onSubmit = (values: PlanInput) => {
+    // An Unlimited plan sends no limits, the backend keeps them at 0.
+    const limit = (value: string) => (values.access_type === "Limited" ? Number(value) : 0);
     const payload = {
       title: values.title,
       access_type: values.access_type,
@@ -111,7 +162,10 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
       forum_creation: values.forum_creation,
       business_listing: values.business_listing,
       lemon_id: values.lemon_id,
-      event_creation: Number(values.event_creation),
+      event_creation: limit(values.event_creation),
+      tribe_limit: limit(values.tribe_limit),
+      thread_limit: limit(values.thread_limit),
+      business_limit: limit(values.business_limit),
       sales_commission: Number(values.sales_commission),
       service_commission: Number(values.service_commission),
       connection_range: values.connection_range,
@@ -191,12 +245,12 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 >
                   Access type
                 </Label>
-                <Input
-                  id="access_type"
-                  type="text"
-                  placeholder="e.g. Limited, Unlimited"
-                  className="form-font bg-light-grey h-12 rounded-xl border-0"
-                  {...register("access_type")}
+                <Controller
+                  name="access_type"
+                  control={control}
+                  render={({ field }) => (
+                    <TypeSelect id="access_type" value={field.value} onChange={field.onChange} />
+                  )}
                 />
                 <FieldError message={errors.access_type?.message} />
               </div>
@@ -250,48 +304,67 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="grid gap-2">
-                  <Label
-                    htmlFor="event_creation"
-                    className="text-text-grey text-body-s font-sans font-normal"
-                  >
-                    Event creation limit
-                  </Label>
-                  <Controller
-                    name="event_creation"
-                    control={control}
-                    render={({ field }) => (
-                      <MoneyInput
-                        id="event_creation"
-                        className="form-font bg-light-grey h-12 rounded-xl border-0"
-                        value={field.value as string}
-                        onValueChange={field.onChange}
-                        onBlur={field.onBlur}
-                        allowDecimals={false}
-                        grouping={false}
-                      />
-                    )}
-                  />
-                  <FieldError message={errors.event_creation?.message} />
-                </div>
-                <div className="grid gap-2">
-                  <Label
-                    htmlFor="connection_range"
-                    className="text-text-grey text-body-s font-sans font-normal"
-                  >
-                    Connection range
-                  </Label>
-                  <Input
-                    id="connection_range"
-                    type="text"
-                    placeholder="e.g. Limited, Global"
-                    className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    {...register("connection_range")}
-                  />
-                  <FieldError message={errors.connection_range?.message} />
-                </div>
+              <div className="grid gap-2">
+                <Label
+                  htmlFor="connection_range"
+                  className="text-text-grey text-body-s font-sans font-normal"
+                >
+                  Connection range
+                </Label>
+                <Controller
+                  name="connection_range"
+                  control={control}
+                  render={({ field }) => (
+                    <TypeSelect
+                      id="connection_range"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                <FieldError message={errors.connection_range?.message} />
               </div>
+
+              {isLimited ? (
+                <div className="bg-light-grey flex flex-col gap-3 rounded-xl p-3">
+                  <div>
+                    <p className="text-body-s font-semibold">Usage limits</p>
+                    <p className="text-text-grey text-meta">
+                      What a subscriber can create. Enter 0 for no cap.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {limitFields.map((item) => (
+                      <div className="grid gap-2" key={item.name}>
+                        <Label
+                          htmlFor={item.name}
+                          className="text-text-grey text-body-s font-sans font-normal"
+                        >
+                          {item.label}
+                        </Label>
+                        <Controller
+                          name={item.name}
+                          control={control}
+                          render={({ field }) => (
+                            <MoneyInput
+                              id={item.name}
+                              className="form-font h-12 rounded-xl border-0 bg-white"
+                              value={field.value as string}
+                              onValueChange={field.onChange}
+                              onBlur={field.onBlur}
+                              allowDecimals={false}
+                              grouping={false}
+                            />
+                          )}
+                        />
+                        <FieldError message={errors[item.name]?.message} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-text-grey text-meta">Unlimited plans have no usage limits.</p>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">

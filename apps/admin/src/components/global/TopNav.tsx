@@ -2,7 +2,8 @@ import React from "react";
 import { ChevronLeft, Headset } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { capitalizeWords, getFirstLetterCapitalized } from "@/utils/helper";
+import { capitalizeWords } from "@/utils/helper";
+import { Avatar } from "@/components/global/Avatar";
 import { getPageHeading } from "@/utils/pageTitle";
 import { useNavigation } from "@/hooks/useNavigation";
 import { UserInterface } from "@/interfaces/SystemInterface";
@@ -64,9 +65,14 @@ function TopNav({}) {
             {capitalizeWords(user?.role)}
           </p>
         </div>
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white">
-          {getFirstLetterCapitalized(user?.name)}
-        </div>
+        <button
+          type="button"
+          aria-label="Open your profile"
+          className="cursor-pointer rounded-full"
+          onClick={() => push(routes.PROFILE)}
+        >
+          <Avatar name={user?.name} image={currentAdmin?.image as string | null | undefined} />
+        </button>
       </div>
     </header>
   );

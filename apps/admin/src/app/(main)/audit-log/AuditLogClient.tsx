@@ -74,6 +74,8 @@ function DetailPanel({ entry }: { entry: AuditLogEntry }) {
 }
 
 // Every recorded admin action, with filters and a closer look at each one.
+const PER_PAGE = 10;
+
 function AuditLogClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [searchTerm, setSearchTerm] = useState("");
@@ -92,9 +94,12 @@ function AuditLogClient() {
     from: range ? dayjs(range.start).format("YYYY-MM-DD") : undefined,
     to: range ? dayjs(range.end).format("YYYY-MM-DD") : undefined,
     page,
+    per_page: PER_PAGE,
   };
   const { data, isLoading, isFetching } = useAuditLogQuery(filters, { enabled: isLoggedIn });
   const logs = data?.logs ?? [];
+  // The date picker has its own Clear, so this one is for the rest.
+  const hasOtherFilters = Boolean(search.trim()) || adminId !== ALL || area !== ALL;
   const hasFilters = Boolean(search.trim()) || adminId !== ALL || area !== ALL || range !== null;
 
   // Any filter change goes back to the first page.
@@ -170,7 +175,7 @@ function AuditLogClient() {
             </Select>
           </div>
           <DateRangePicker value={range} onChange={(value) => change(() => setRange(value))} />
-          {hasFilters && (
+          {hasOtherFilters && (
             <button
               type="button"
               className="text-text-grey flex cursor-pointer items-center gap-1 text-sm"
@@ -294,7 +299,7 @@ function AuditLogClient() {
               setPage(next);
               setOpenId(null);
             }}
-            perPage={data?.meta?.per_page ?? 25}
+            perPage={data?.meta?.per_page ?? PER_PAGE}
           />
         </div>
       </div>

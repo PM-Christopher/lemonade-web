@@ -1,11 +1,11 @@
 "use client";
+import { Avatar } from "@/components/global/Avatar";
 import { useAffiliateDetailQuery } from "@/features/user/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
 import { RootState } from "@/redux/store";
 import { ChevronRight, CopyIcon } from "lucide-react";
 import { clientEnv } from "@/lib/env.client";
-import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { naira } from "@/views/transactions/transactionFormat";
@@ -39,18 +39,7 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
               className={"w-16 h-16 bg-light-black rounded-full"}
             ></div> */}
 
-            {isData?.detail?.image ? (
-              <Image
-                src={isData?.detail?.image}
-                alt="image"
-                width={89}
-                height={83}
-                className={"bg-light-black h-16 w-16 rounded-full"}
-              />
-            ) : (
-              // null
-              <div className={"bg-light-black h-16 w-16 rounded-full"}></div>
-            )}
+            <Avatar name={isData?.detail?.name} image={isData?.detail?.image} size="lg" />
           </div>
           <div className={"items-center-center flex gap-6"}>
             <div className={"w-28.75"}>

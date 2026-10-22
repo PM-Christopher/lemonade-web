@@ -14,6 +14,9 @@ interface ScheduleModalProps {
 
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
+const HOURS = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
+const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+
 const nextHour = () => dayjs().add(1, "hour").startOf("hour");
 
 // Picks the day and time an announcement goes out.
@@ -21,7 +24,8 @@ function ScheduleModal({ isOpen, toggle, initial, onSave }: ScheduleModalProps) 
   const start = initial ? dayjs(initial) : nextHour();
   const [selected, setSelected] = useState<Dayjs>(start);
   const [month, setMonth] = useState<Dayjs>(start.startOf("month"));
-  const [time, setTime] = useState(start.format("hh:mm"));
+  const [hour, setHour] = useState(start.format("hh"));
+  const [minute, setMinute] = useState(start.format("mm"));
   const [meridiem, setMeridiem] = useState<"AM" | "PM">(start.hour() >= 12 ? "PM" : "AM");
   const [error, setError] = useState("");
 
@@ -31,15 +35,8 @@ function ScheduleModal({ isOpen, toggle, initial, onSave }: ScheduleModalProps) 
   );
 
   const save = () => {
-    const match = /^(\d{1,2}):(\d{2})$/.exec(time.trim());
-    const hour = match ? Number(match[1]) : NaN;
-    const minute = match ? Number(match[2]) : NaN;
-    if (!match || hour < 1 || hour > 12 || minute > 59) {
-      setError("Enter a time like 09:30");
-      return;
-    }
-    const hour24 = (hour % 12) + (meridiem === "PM" ? 12 : 0);
-    const when = selected.hour(hour24).minute(minute).second(0).millisecond(0);
+    const hour24 = (Number(hour) % 12) + (meridiem === "PM" ? 12 : 0);
+    const when = selected.hour(hour24).minute(Number(minute)).second(0).millisecond(0);
     if (!when.isAfter(dayjs())) {
       setError("Pick a time in the future");
       return;
@@ -65,7 +62,7 @@ function ScheduleModal({ isOpen, toggle, initial, onSave }: ScheduleModalProps) 
             </button>
           </div>
           <p className="text-body-xl mt-6 text-center font-sans font-semibold">
-            {selected.format("ddd D MMM")}, {time} {meridiem}
+            {selected.format("ddd D MMM")}, {hour}:{minute} {meridiem}
           </p>
           <div className="mt-4 flex items-center justify-between">
             <button
@@ -106,7 +103,7 @@ function ScheduleModal({ isOpen, toggle, initial, onSave }: ScheduleModalProps) 
                   onClick={() => setSelected(day)}
                   className={`mx-auto h-8 w-8 rounded-full text-sm ${
                     isSelected
-                      ? "bg-light-green font-semibold text-white"
+                      ? "bg-step-color font-semibold text-white"
                       : inMonth
                         ? "hover:bg-light_grey"
                         : "text-text-grey"
@@ -122,12 +119,31 @@ function ScheduleModal({ isOpen, toggle, initial, onSave }: ScheduleModalProps) 
             <div className="mt-1 flex items-center gap-2">
               <div className="bg-light_grey flex h-10 flex-1 items-center gap-2 rounded-xl px-3">
                 <ClockIcon className="h-4 w-4" />
-                <input
-                  aria-label="Time"
-                  value={time}
-                  onChange={(event) => setTime(event.target.value)}
+                <select
+                  aria-label="Hour"
+                  value={hour}
+                  onChange={(event) => setHour(event.target.value)}
                   className="w-full bg-transparent text-sm outline-none"
-                />
+                >
+                  {HOURS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                <span>:</span>
+                <select
+                  aria-label="Minute"
+                  value={minute}
+                  onChange={(event) => setMinute(event.target.value)}
+                  className="w-full bg-transparent text-sm outline-none"
+                >
+                  {MINUTES.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
               {(["AM", "PM"] as const).map((option) => (
                 <button
@@ -136,7 +152,7 @@ function ScheduleModal({ isOpen, toggle, initial, onSave }: ScheduleModalProps) 
                   aria-pressed={meridiem === option}
                   onClick={() => setMeridiem(option)}
                   className={`h-10 rounded-xl px-3 text-sm font-semibold ${
-                    meridiem === option ? "bg-light-green text-white" : "bg-light_grey"
+                    meridiem === option ? "bg-step-color text-white" : "bg-light_grey"
                   }`}
                 >
                   {option}

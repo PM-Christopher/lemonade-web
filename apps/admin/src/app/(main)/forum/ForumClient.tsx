@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { moderationContentHeaders } from "@/data/tableData";
 import { capitalizeWords } from "@/utils/helper";
+import DataCard from "@/components/global/DataCard";
 import PaginationComp from "@/components/global/Pagination";
 import useSearchParams from "@/hooks/useSearchParams";
 import useDebounce from "@/hooks/useDebounce";
@@ -84,28 +85,13 @@ function ForumClient() {
   return (
     <>
       <section className="mt-6 flex flex-col gap-5">
-        <div className={"flex gap-4 px-5"}>
-          <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
-            <p className={"font-semiBold text-text-grey text-meta leading-normal"}>
-              PENDING EVENTS
-            </p>
-            <p className={"font-semiBold text-title-r leading-normal"}>
-              {queue?.pending_events.count ?? 0}
-            </p>
-          </div>
-          <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
-            <p className={"font-semiBold text-text-grey text-meta leading-normal"}>
-              PENDING BUSINESSES
-            </p>
-            <p className={"font-semiBold text-title-r leading-normal"}>
-              {queue?.pending_businesses.count ?? 0}
-            </p>
-          </div>
-          <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
-            <p className={"font-semiBold text-text-grey text-meta leading-normal"}>OPEN REPORTS</p>
-            <p className={"font-semiBold text-title-r leading-normal"}>
-              {queue?.open_reports.count ?? 0}
-            </p>
+        <div className={"flex flex-col px-5"}>
+          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
+            <div className={"grid auto-cols-fr grid-flow-col gap-6 overflow-x-auto px-3 py-4"}>
+              <DataCard title={"Pending Events"} count={queue?.pending_events.count ?? 0} />
+              <DataCard title={"Pending Businesses"} count={queue?.pending_businesses.count ?? 0} />
+              <DataCard title={"Open Reports"} count={queue?.open_reports.count ?? 0} />
+            </div>
           </div>
         </div>
 

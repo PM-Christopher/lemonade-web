@@ -8,7 +8,9 @@ import { teamHeaders } from "@/data/tableData";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { capitalizeWords } from "@/utils/helper";
+import { capitalizeWords, GetStatusClass } from "@/utils/helper";
+import { AvatarName } from "@/components/global/AvatarName";
+import { shortDate } from "@/views/transactions/transactionFormat";
 import PaginationComp from "@/components/global/Pagination";
 import { useTeamQuery } from "@/features/team/queries";
 import type { TeamMember } from "@/features/team/api";
@@ -130,14 +132,26 @@ function TeamClient() {
                         className="border-grey-20 h-18 cursor-pointer border-b"
                         onClick={() => push(routes.TEAM_DETAIL(row.id))}
                       >
-                        <td className={"p-4 font-sans text-sm font-medium"}>{row.unique_id}</td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>{row.name}</td>
+                        <td
+                          className={
+                            "text-text-grey p-4 font-sans text-sm font-medium whitespace-nowrap"
+                          }
+                        >
+                          {row.unique_id || "N/A"}
+                        </td>
+                        <td className={"p-4 font-sans text-sm font-medium"}>
+                          <AvatarName name={row.name} image={row.image} />
+                        </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           {capitalizeWords(row.role)}
                         </td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>{row.created_at}</td>
-                        <td className={"p-4 font-sans text-sm font-medium"}>
+                        <td className={"p-4 font-sans text-sm font-medium whitespace-nowrap"}>
+                          {shortDate(row.created_at)}
+                        </td>
+                        <td
+                          className={`p-4 font-sans text-sm font-medium ${GetStatusClass(capitalizeWords(row.status))}`}
+                        >
                           {capitalizeWords(row.status)}
                         </td>
                       </tr>

@@ -2,22 +2,28 @@
 import { browserApi } from "@/lib/browser-api";
 import { adminSubscriptionsRoutes, buildPath } from "@lemonade/api-types/generated";
 
+// Plan type and connection range are a fixed choice (SubscriptionPlanRequest).
+export type PlanType = "Limited" | "Unlimited";
+
 export interface AdminSubscriptionPlanBenefits {
   verification_badge: boolean;
   tribe_creation: boolean;
   business_listing: boolean;
   lemon_id: boolean;
   event_creation: number;
+  tribe_limit: number;
+  thread_limit: number;
+  business_limit: number;
   ticket_sales_commission: number;
   service_commission: number;
-  connection_range: string;
+  connection_range: PlanType;
   offline_benefits: boolean;
 }
 
 export interface AdminSubscriptionPlan {
   id: string;
   title: string;
-  access_type: string;
+  access_type: PlanType;
   monthly_charge_minor: number;
   // Pre-formatted display string (AdminSubscriptionPlanResource::formatAmount)
   // — render as-is, never reformat or recompute per CLAUDE.md's money rule.
@@ -51,13 +57,9 @@ export interface DeletePlanResponse {
 // monthly_charge_minor/yearly_charge_minor, which are already-minor
 // figures — see PlanFormModal for the conversion when pre-filling an edit.
 //
-// access_type and connection_range have no backend `in:` enum — the
-// FormRequest only validates them as `string|max:60` (seeders/tests use
-// inconsistent casing, e.g. "Full"/"Limited"/"Global"/"global") — so these
-// are free-text fields here, not a fixed option set.
 export interface SubscriptionPlanPayload {
   title: string;
-  access_type: string;
+  access_type: PlanType;
   monthly_charge: number;
   yearly_charge: number;
   ver_badge: boolean;
@@ -65,9 +67,12 @@ export interface SubscriptionPlanPayload {
   business_listing: boolean;
   lemon_id: boolean;
   event_creation: number;
+  tribe_limit: number;
+  thread_limit: number;
+  business_limit: number;
   sales_commission: number;
   service_commission: number;
-  connection_range: string;
+  connection_range: PlanType;
   offline_benefits: boolean;
   recommended?: boolean;
   active?: boolean;
