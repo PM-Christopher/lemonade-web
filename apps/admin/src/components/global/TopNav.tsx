@@ -1,16 +1,26 @@
 import React from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Headset } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { capitalizeWords, getFirstLetterCapitalized } from "@/utils/helper";
 import { getPageHeading } from "@/utils/pageTitle";
 import { useNavigation } from "@/hooks/useNavigation";
 import { UserInterface } from "@/interfaces/SystemInterface";
+import { NotificationBell } from "@/components/global/NotificationBell";
+import { CountBadge } from "@/components/global/CountBadge";
+import { useAdminNotificationsQuery } from "@/features/notifications";
+import { useCurrentAdminQuery } from "@/features/authentication/queries";
+import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { routes } from "@/lib/routes";
 
 function TopNav({}) {
   const user: UserInterface | null = useSelector((state: RootState) => state.auth.user);
   const { pathname, back, push } = useNavigation();
   const { title, parent } = getPageHeading(pathname);
+  const { data: currentAdmin } = useCurrentAdminQuery();
+  const { data: notifications } = useAdminNotificationsQuery();
+  const canSeeSupport = currentAdmin?.permissions?.includes(ADMIN_SECTION_PERMISSIONS.users);
+  const supportUnread = notifications?.support_unread ?? 0;
 
   // Go back one step, or up to the list when the page was opened directly.
   const goBack = () => {
@@ -34,6 +44,20 @@ function TopNav({}) {
         <h1 className="font-semiBold text-body-l">{title}</h1>
       </div>
       <div className="flex items-center space-x-4">
+        {canSeeSupport && (
+          <button
+            type="button"
+            aria-label={
+              supportUnread > 0 ? `Support inbox, ${supportUnread} waiting` : "Support inbox"
+            }
+            className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100"
+            onClick={() => push(routes.SUPPORT_INBOX)}
+          >
+            <Headset className="h-5 w-5" aria-hidden="true" />
+            <CountBadge count={supportUnread} />
+          </button>
+        )}
+        <NotificationBell />
         <div className={"flex flex-col items-end"}>
           <p className={"font-semiBold text-body-l"}>{user?.name}</p>
           <p className={"text-text-grey text-meta leading-normal font-normal"}>

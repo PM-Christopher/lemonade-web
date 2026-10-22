@@ -746,6 +746,30 @@
         "fields": null
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/notifications",
+        "name": "v1.admin.notifications.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/notifications/{id}/read",
+        "name": "v1.admin.notifications.read",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/notifications/read-all",
+        "name": "v1.admin.notifications.read-all",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "POST",
         "uri": "/v1/admin/page-content",
         "name": "v1.admin.page-content.save",

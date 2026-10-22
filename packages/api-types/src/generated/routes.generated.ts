@@ -88,6 +88,12 @@ export const adminModerationRoutes = Object.freeze({
   QUEUE: "/admin/moderation/queue", // GET
 });
 
+export const adminNotificationsRoutes = Object.freeze({
+  LIST: "/admin/notifications", // GET
+  READ: "/admin/notifications/{id}/read", // POST
+  READ_ALL: "/admin/notifications/read-all", // POST
+});
+
 export const adminPageContentRoutes = Object.freeze({
   SAVE: "/admin/page-content", // POST
   SHOW: "/admin/page-content", // GET
