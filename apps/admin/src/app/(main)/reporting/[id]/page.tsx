@@ -3,11 +3,11 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { reportingKeys } from "@/features/reporting/queries";
 import { reportingServerApi } from "@/features/reporting/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import ReportDetailsClient from "./ReportDetailsClient";
 
 export default async function ReportDetailsPage(props: { params: Promise<{ id: string }> }) {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.moderation);
+  await requireAdminPermission(ADMIN_PERMISSIONS.reportsView);
 
   const params = await props.params;
   const id = params.id;

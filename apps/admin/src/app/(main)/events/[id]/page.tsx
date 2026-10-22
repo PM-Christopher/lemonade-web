@@ -3,11 +3,11 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { eventKeys } from "@/features/events/queries";
 import { eventsServerApi } from "@/features/events/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import EventDetailsClient from "./EventDetailsClient";
 
 export default async function EventDetailsPage(props: { params: Promise<{ id: string }> }) {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.events);
+  await requireAdminPermission(ADMIN_PERMISSIONS.eventsView);
 
   const params = await props.params;
   const id = params.id;

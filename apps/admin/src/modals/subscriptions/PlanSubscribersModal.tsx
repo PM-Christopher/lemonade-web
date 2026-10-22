@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { XIcon } from "lucide-react";
+import { SearchIcon, XIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 import PaginationComp from "@/components/global/Pagination";
 import { usePlanSubscribersQuery } from "@/features/subscriptions/queries";
 import type { SubscriptionStatus } from "@/features/subscriptions/api";
+import useDebounce from "@/hooks/useDebounce";
 import { capitalizeSpecial, GetStatusClass } from "@/utils/helper";
 
 interface PlanSubscribersModalProps {
@@ -27,8 +28,11 @@ const HEADERS = ["SUBSCRIBER", "EMAIL", "CYCLE", "AMOUNT", "STATUS", "RENEWS / E
 function PlanSubscribersModal({ isOpen, toggle, planId, planTitle }: PlanSubscribersModalProps) {
   const [status, setStatus] = useState<SubscriptionStatus | "">("");
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { debouncedValue: search } = useDebounce(searchTerm, 400);
   const { data, isLoading } = usePlanSubscribersQuery(isOpen ? planId : undefined, {
     status: status || undefined,
+    search: search.trim() || undefined,
     page,
   });
   const subscribers = data?.subscribers ?? [];
@@ -48,6 +52,20 @@ function PlanSubscribersModal({ isOpen, toggle, planId, planTitle }: PlanSubscri
               {planTitle} subscribers{data ? ` (${data.meta.total})` : ""}
             </p>
             <div className={"flex items-center gap-3"}>
+              <div className="bg-light-grey border-grey-20 flex h-10 w-64 items-center gap-2 rounded-xl border px-3">
+                <SearchIcon className="text-grey-40 h-3 w-3" aria-hidden="true" />
+                <input
+                  type="text"
+                  aria-label="Search subscribers"
+                  placeholder="Search name, email, ID..."
+                  className="text-body-s w-full bg-transparent focus:outline-none"
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </div>
               <select
                 aria-label="Filter by status"
                 className={"bg-light-grey h-10 rounded-xl px-3"}
@@ -108,7 +126,11 @@ function PlanSubscribersModal({ isOpen, toggle, planId, planTitle }: PlanSubscri
               ) : (
                 <tr>
                   <td colSpan={HEADERS.length} className="p-4 text-center text-sm text-gray-500">
-                    {isLoading ? "Loading…" : "No subscribers"}
+                    {isLoading
+                      ? "Loading…"
+                      : search.trim()
+                        ? "No subscriber matches that search"
+                        : "No subscribers"}
                   </td>
                 </tr>
               )}

@@ -11,7 +11,7 @@ import { NotificationBell } from "@/components/global/NotificationBell";
 import { CountBadge } from "@/components/global/CountBadge";
 import { useAdminNotificationsQuery } from "@/features/notifications";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import { routes } from "@/lib/routes";
 
 function TopNav({}) {
@@ -20,7 +20,7 @@ function TopNav({}) {
   const { title, parent } = getPageHeading(pathname);
   const { data: currentAdmin } = useCurrentAdminQuery();
   const { data: notifications } = useAdminNotificationsQuery();
-  const canSeeSupport = currentAdmin?.permissions?.includes(ADMIN_SECTION_PERMISSIONS.users);
+  const canSeeSupport = currentAdmin?.permissions?.includes(ADMIN_PERMISSIONS.supportView);
   const supportUnread = notifications?.support_unread ?? 0;
 
   // Go back one step, or up to the list when the page was opened directly.

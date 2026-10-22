@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
+import { useAssignableRolesQuery } from "@/features/roles";
 import { useAddTeamMemberMutation } from "@/features/team/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
@@ -19,6 +20,7 @@ interface BalanceModalProps {
 const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
   const dispatch = useDispatch<AppDispatch>();
   const addTeamMember = useAddTeamMemberMutation();
+  const { data: rolesData } = useAssignableRolesQuery({ enabled: isOpen });
 
   const {
     register,
@@ -149,12 +151,18 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
               <Label htmlFor="role" className="text-text-grey text-body-s font-sans font-normal">
                 Role
               </Label>
-              <Input
+              <select
                 id="role"
-                type="text"
-                className="form-font bg-light-grey h-12 rounded-xl border-0"
+                className="form-font bg-light-grey h-12 rounded-xl border-0 px-3"
                 {...register("role")}
-              />
+              >
+                <option value="">Choose a role</option>
+                {(rolesData?.roles ?? []).map((item) => (
+                  <option key={item.id} value={item.name}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
               <FieldError message={errors.role?.message} />
             </div>
           </div>

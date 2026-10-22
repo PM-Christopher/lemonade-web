@@ -19,6 +19,9 @@ interface ConfirmPlanActionModalProps {
   toggle: () => void;
   plan?: AdminSubscriptionPlan;
   action: PlanAction;
+  // Used by the blocked delete view, for plans that still have members.
+  onViewMembers?: (plan: AdminSubscriptionPlan) => void;
+  onDeactivate?: (plan: AdminSubscriptionPlan) => void;
 }
 
 const COPY: Record<
@@ -41,14 +44,20 @@ const COPY: Record<
   },
   delete: {
     title: "Delete plan",
-    body: (planTitle) =>
-      `Are you sure you want to delete "${planTitle}"? This can't be undone. Plans with subscribers can't be deleted — deactivate those instead.`,
+    body: (planTitle) => `Are you sure you want to delete "${planTitle}"? This can't be undone.`,
     confirmLabel: "Delete",
     danger: true,
   },
 };
 
-function ConfirmPlanActionModal({ isOpen, toggle, plan, action }: ConfirmPlanActionModalProps) {
+function ConfirmPlanActionModal({
+  isOpen,
+  toggle,
+  plan,
+  action,
+  onViewMembers,
+  onDeactivate,
+}: ConfirmPlanActionModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const activatePlanMutation = useActivatePlanMutation();
   const deactivatePlanMutation = useDeactivatePlanMutation();
@@ -61,6 +70,10 @@ function ConfirmPlanActionModal({ isOpen, toggle, plan, action }: ConfirmPlanAct
       : action === "deactivate"
         ? deactivatePlanMutation
         : deletePlanMutation;
+
+  // A plan with members can't be deleted, so explain instead of failing.
+  const members = plan?.subscriber_count ?? 0;
+  const isBlocked = action === "delete" && members > 0;
 
   const handleConfirm = () => {
     if (!plan) return;
@@ -106,30 +119,71 @@ function ConfirmPlanActionModal({ isOpen, toggle, plan, action }: ConfirmPlanAct
               </div>
             </div>
           </div>
-          <div className={"flex flex-col gap-4 px-4 py-4"}>
-            <p className={"text-light-black text-body-s font-normal"}>
-              {plan ? copy.body(plan.title) : ""}
-            </p>
-            <div className={"flex justify-between gap-2.5"}>
-              <button
-                className={"border-light-grey-50 h-12 w-39 rounded-xl border bg-white"}
-                onClick={toggle}
-              >
-                <p className={"text-body-l font-medium text-black"}>Cancel</p>
-              </button>
-              <button
-                className={
-                  copy.danger
-                    ? "border-red-2 bg-red-1 h-12 w-39 rounded-xl border text-center"
-                    : "border-step-color bg-gradient-green h-12 w-39 rounded-xl border text-center"
-                }
-                onClick={handleConfirm}
-                disabled={mutation.isPending}
-              >
-                <p className={"text-body-l font-medium text-white"}>{copy.confirmLabel}</p>
-              </button>
+          {isBlocked && plan ? (
+            <div className={"flex flex-col gap-4 px-4 py-4"}>
+              <p className={"text-light-black text-body-s font-normal"}>
+                &quot;{plan.title}&quot; has {members} {members === 1 ? "member" : "members"}, so it
+                can&apos;t be deleted. Their billing history stays with the plan.
+              </p>
+              <p className={"text-text-grey text-body-s font-normal"}>
+                {plan.active
+                  ? "Deactivate it to stop new sign-ups. Current members keep the plan until it ends."
+                  : "It is already deactivated, so no one new can join. Current members keep it until it ends."}
+              </p>
+              <div className={"flex flex-col gap-2.5"}>
+                {plan.active && onDeactivate && (
+                  <button
+                    type="button"
+                    className="border-red-2 bg-red-1 h-12 w-full rounded-xl border text-center"
+                    onClick={() => onDeactivate(plan)}
+                  >
+                    <p className={"text-body-l font-medium text-white"}>Deactivate instead</p>
+                  </button>
+                )}
+                {onViewMembers && (
+                  <button
+                    type="button"
+                    className={"border-light-grey-50 h-12 w-full rounded-xl border bg-white"}
+                    onClick={() => onViewMembers(plan)}
+                  >
+                    <p className={"text-body-l font-medium text-black"}>View members</p>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className={"border-light-grey-50 h-12 w-full rounded-xl border bg-white"}
+                  onClick={toggle}
+                >
+                  <p className={"text-body-l font-medium text-black"}>Close</p>
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className={"flex flex-col gap-4 px-4 py-4"}>
+              <p className={"text-light-black text-body-s font-normal"}>
+                {plan ? copy.body(plan.title) : ""}
+              </p>
+              <div className={"flex justify-between gap-2.5"}>
+                <button
+                  className={"border-light-grey-50 h-12 w-39 rounded-xl border bg-white"}
+                  onClick={toggle}
+                >
+                  <p className={"text-body-l font-medium text-black"}>Cancel</p>
+                </button>
+                <button
+                  className={
+                    copy.danger
+                      ? "border-red-2 bg-red-1 h-12 w-39 rounded-xl border text-center"
+                      : "border-step-color bg-gradient-green h-12 w-39 rounded-xl border text-center"
+                  }
+                  onClick={handleConfirm}
+                  disabled={mutation.isPending}
+                >
+                  <p className={"text-body-l font-medium text-white"}>{copy.confirmLabel}</p>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </DialogContentBare>
     </Dialog>

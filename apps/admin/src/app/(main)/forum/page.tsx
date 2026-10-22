@@ -3,13 +3,13 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { moderationKeys } from "@/features/moderation/queries";
 import { moderationServerApi } from "@/features/moderation/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import ForumClient from "./ForumClient";
 
 const DEFAULT_PER_PAGE = 10;
 
 export default async function ForumPage() {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.moderation);
+  await requireAdminPermission(ADMIN_PERMISSIONS.forumView);
 
   const queryClient = getQueryClient();
 

@@ -118,6 +118,7 @@ export interface PlanSubscriber {
 export interface PlanSubscribersFilters {
   status?: SubscriptionStatus;
   cycle?: SubscriptionCycle;
+  search?: string;
   page?: number;
 }
 
@@ -135,7 +136,12 @@ export const subscriptionsApi = {
     browserApi.get<PlanSubscribersResponse>(
       buildPath(adminSubscriptionsRoutes.SUBSCRIBERS, { id }),
       {
-        params: { status: filters?.status, cycle: filters?.cycle, page: filters?.page },
+        params: {
+          status: filters?.status,
+          cycle: filters?.cycle,
+          search: filters?.search,
+          page: filters?.page,
+        },
       },
     ),
 

@@ -4,13 +4,13 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { reportingKeys } from "@/features/reporting/queries";
 import { reportingServerApi } from "@/features/reporting/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import ReportingClient from "./ReportingClient";
 
 const DEFAULT_PER_PAGE = 10;
 
 export default async function ReportingPage() {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.moderation);
+  await requireAdminPermission(ADMIN_PERMISSIONS.reportsView);
 
   const queryClient = getQueryClient();
 

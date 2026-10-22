@@ -17,6 +17,8 @@ export interface CurrentAdmin {
   // see docs/ARCHITECTURE.md §22 Conflict 2. Section-level UI gating reads
   // from this list, never from a hardcoded role-name map.
   permissions: string[];
+  // The one super admin passes every check.
+  is_super_admin?: boolean;
   [key: string]: unknown;
 }
 

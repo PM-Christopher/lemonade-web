@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import { adminAccountRoutes } from "@lemonade/api-types/generated";
 
 // UX redirect only for the login gate below — Laravel Policies remain the
@@ -83,18 +83,23 @@ function isPublic(pathname: string) {
 // but nothing enforces it staying that way. Mirror any change to that file's
 // `permission` field here too.
 const GATED_PATH_PERMISSIONS: ReadonlyArray<{ prefix: string; permission: string }> = [
-  { prefix: "/wallet-management", permission: ADMIN_SECTION_PERMISSIONS.wallet },
-  { prefix: "/users", permission: ADMIN_SECTION_PERMISSIONS.users },
-  { prefix: "/businesses", permission: ADMIN_SECTION_PERMISSIONS.businesses },
-  { prefix: "/tribes", permission: ADMIN_SECTION_PERMISSIONS.tribes },
-  { prefix: "/events", permission: ADMIN_SECTION_PERMISSIONS.events },
-  { prefix: "/subscriptions", permission: ADMIN_SECTION_PERMISSIONS.subscriptions },
-  { prefix: "/reporting", permission: ADMIN_SECTION_PERMISSIONS.moderation },
-  { prefix: "/forum", permission: ADMIN_SECTION_PERMISSIONS.moderation },
-  { prefix: "/team", permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
-  { prefix: "/audit-log", permission: ADMIN_SECTION_PERMISSIONS.teamMembers },
-  { prefix: "/payments-review", permission: ADMIN_SECTION_PERMISSIONS.wallet },
-  { prefix: "/support", permission: ADMIN_SECTION_PERMISSIONS.users },
+  { prefix: "/wallet-management", permission: ADMIN_PERMISSIONS.walletView },
+  { prefix: "/transactions", permission: ADMIN_PERMISSIONS.transactionsView },
+  { prefix: "/users", permission: ADMIN_PERMISSIONS.usersView },
+  { prefix: "/businesses", permission: ADMIN_PERMISSIONS.businessesView },
+  { prefix: "/disputes", permission: ADMIN_PERMISSIONS.disputesView },
+  { prefix: "/tribes", permission: ADMIN_PERMISSIONS.tribesView },
+  { prefix: "/events/add-promotions", permission: ADMIN_PERMISSIONS.eventsPromotionsManage },
+  { prefix: "/events", permission: ADMIN_PERMISSIONS.eventsView },
+  { prefix: "/subscriptions", permission: ADMIN_PERMISSIONS.subscriptionsView },
+  { prefix: "/reporting", permission: ADMIN_PERMISSIONS.reportsView },
+  { prefix: "/forum", permission: ADMIN_PERMISSIONS.forumView },
+  { prefix: "/payments-review", permission: ADMIN_PERMISSIONS.paymentsView },
+  { prefix: "/announcements", permission: ADMIN_PERMISSIONS.announcementsView },
+  { prefix: "/team", permission: ADMIN_PERMISSIONS.teamView },
+  { prefix: "/roles", permission: ADMIN_PERMISSIONS.rolesView },
+  { prefix: "/audit-log", permission: ADMIN_PERMISSIONS.auditView },
+  { prefix: "/support", permission: ADMIN_PERMISSIONS.supportView },
 ];
 
 function requiredPermissionFor(pathname: string): string | null {

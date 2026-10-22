@@ -7,13 +7,13 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { walletKeys } from "@/features/wallet/queries";
 import { walletServerApi } from "@/features/wallet/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import WalletManagementClient from "./WalletManagementClient";
 
 const DEFAULT_PER_PAGE = 10;
 
 export default async function WalletManagementPage() {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.wallet);
+  await requireAdminPermission(ADMIN_PERMISSIONS.walletView);
 
   const queryClient = getQueryClient();
 

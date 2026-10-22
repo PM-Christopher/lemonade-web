@@ -44,6 +44,7 @@ export const routes = {
   FORUM: "/forum",
   TEAM: "/team",
   AUDIT_LOG: "/audit-log",
+  ROLES: "/roles",
   PAYMENTS_REVIEW: "/payments-review",
   SUPPORT_INBOX: "/support",
   TEAM_DETAIL: (id: string | number) => `/team/${id}` as const,

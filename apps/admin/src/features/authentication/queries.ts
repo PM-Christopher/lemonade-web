@@ -26,7 +26,7 @@ export function useCurrentAdminQuery(options?: { enabled?: boolean }) {
 
 /**
  * Whether the current admin holds a given permission (e.g. "wallet.write").
- * Reads from the same cached query MainLayout already populates, so this
+ * Reads from the cached admin profile, so this
  * never triggers an extra request. Returns false while the query is still
  * loading or on error — callers that need to distinguish "still loading"
  * from "definitely lacks it" should read useCurrentAdminQuery directly.

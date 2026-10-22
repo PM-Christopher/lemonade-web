@@ -3,13 +3,13 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { eventPromotionKeys } from "@/features/events/queries";
 import { eventPromotionsServerApi } from "@/features/events/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import EventPromotionDetailsClient from "./EventPromotionDetailsClient";
 
 export default async function EventPromotionDetailsPage(props: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.events);
+  await requireAdminPermission(ADMIN_PERMISSIONS.eventsPromotionsView);
 
   const { id } = await props.params;
   const queryClient = getQueryClient();

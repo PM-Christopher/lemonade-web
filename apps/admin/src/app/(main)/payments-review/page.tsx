@@ -1,9 +1,9 @@
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import PaymentsReviewClient from "./PaymentsReviewClient";
 
 export default async function PaymentsReviewPage() {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.wallet);
+  await requireAdminPermission(ADMIN_PERMISSIONS.paymentsView);
 
   return <PaymentsReviewClient />;
 }

@@ -224,6 +224,11 @@ function SubscriptionsClient() {
           toggle={closeConfirmModal}
           plan={confirmPlan}
           action={confirmAction}
+          onViewMembers={(plan) => {
+            closeConfirmModal();
+            setSubscribersPlan(plan);
+          }}
+          onDeactivate={(plan) => openConfirmModal(plan, "deactivate")}
         />
       )}
     </>

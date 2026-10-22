@@ -3,11 +3,11 @@ import { getQueryClient } from "@/lib/query-client.server";
 import { walletKeys } from "@/features/wallet/queries";
 import { walletServerApi } from "@/features/wallet/api.server";
 import { requireAdminPermission } from "@/features/authentication/requirePermission.server";
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import WalletManagementDetailsClient from "./WalletManagementDetailsClient";
 
 export default async function WalletDetailsPage(props: { params: Promise<{ id: string }> }) {
-  await requireAdminPermission(ADMIN_SECTION_PERMISSIONS.wallet);
+  await requireAdminPermission(ADMIN_PERMISSIONS.walletView);
 
   const params = await props.params;
   const id = params.id;

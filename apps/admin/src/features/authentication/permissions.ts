@@ -1,15 +1,26 @@
-// Permission names, one per admin route group — must match the backend's
-// `can:<name>` middleware 1:1 (lemonade-backend routes/v1/admin/*.php). See
-// docs/ARCHITECTURE.md §22 Conflict 2.
-export const ADMIN_SECTION_PERMISSIONS = {
-  wallet: "wallet.write",
-  subscriptions: "subscriptions.write",
-  moderation: "moderation.write",
-  businesses: "businesses.write",
-  tribes: "tribes.write",
-  events: "events.write",
-  users: "users.write",
-  teamMembers: "team-members.write",
+// Permission names the admin UI checks. They mirror the backend's App\Enums\Admin\AdminPermission,
+// and the Roles screen reads the full list from the API, so only the ones the UI gates on live here.
+export const ADMIN_PERMISSIONS = {
+  walletView: "wallet.view",
+  transactionsView: "transactions.view",
+  paymentsView: "payments.view",
+  usersView: "users.view",
+  supportView: "support.view",
+  businessesView: "businesses.view",
+  disputesView: "disputes.view",
+  tribesView: "tribes.view",
+  eventsView: "events.view",
+  eventsPromotionsView: "events.promotions.view",
+  eventsPromotionsManage: "events.promotions.manage",
+  subscriptionsView: "subscriptions.view",
+  reportsView: "reports.view",
+  forumView: "forum.view",
+  announcementsView: "announcements.view",
+  teamView: "team.view",
+  teamCreate: "team.create",
+  rolesView: "roles.view",
+  rolesCreate: "roles.create",
+  rolesUpdate: "roles.update",
+  rolesDelete: "roles.delete",
+  auditView: "audit.view",
 } as const;
-
-export type AdminSection = keyof typeof ADMIN_SECTION_PERMISSIONS;

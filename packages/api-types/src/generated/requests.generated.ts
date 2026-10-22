@@ -41,6 +41,11 @@ export interface AddUserWalletBalanceRequest {
   amount: number;
 }
 
+export interface AdminRoleRequest {
+  name: string;
+  permissions: {}[];
+}
+
 export interface AnnouncementRequest {
   title: string;
   content: string;
@@ -346,6 +351,7 @@ export interface ListModeratedContentRequest {
 export interface ListPlanSubscribersRequest {
   status?: string;
   cycle?: "free" | "monthly" | "yearly";
+  search?: string;
   per_page?: number;
 }
 
@@ -566,7 +572,10 @@ export interface SubscriptionPlanRequest {
   forum_creation: boolean;
   business_listing?: boolean;
   lemon_id: boolean;
-  event_creation: number;
+  event_creation?: number;
+  tribe_limit?: number;
+  thread_limit?: number;
+  business_limit?: number;
   sales_commission: number;
   service_commission: number;
   connection_range: string;

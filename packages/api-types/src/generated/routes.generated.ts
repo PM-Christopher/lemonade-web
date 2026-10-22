@@ -119,6 +119,15 @@ export const adminReportsRoutes = Object.freeze({
   SHOW: "/admin/reports/{id}", // GET
 });
 
+export const adminRolesRoutes = Object.freeze({
+  DESTROY: "/admin/roles/{id}", // DELETE
+  LIST: "/admin/roles", // GET
+  PERMISSIONS: "/admin/roles/permissions", // GET
+  SHOW: "/admin/roles/{id}", // GET
+  STORE: "/admin/roles", // POST
+  UPDATE: "/admin/roles/{id}", // PATCH
+});
+
 export const adminSubscriptionsRoutes = Object.freeze({
   ACTIVATE: "/admin/subscriptions/{id}/activate", // PATCH
   DEACTIVATE: "/admin/subscriptions/{id}/deactivate", // PATCH

@@ -1,4 +1,4 @@
-import { ADMIN_SECTION_PERMISSIONS } from "@/features/authentication/permissions";
+import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import { routes } from "@/lib/routes";
 import {
   BadgeDollarSign,
@@ -8,6 +8,7 @@ import {
   CircleAlert,
   CreditCard,
   Gavel,
+  KeyRound,
   LayoutDashboard,
   Megaphone,
   MessageSquare,
@@ -23,9 +24,7 @@ export interface PageLink {
   name: string;
   path: string;
   icon: LucideIcon;
-  // Absent for sections that aren't one of the 8 permission-gated route
-  // groups (Overview, Transactions, Announcements) — those stay visible to
-  // every admin.
+  // Absent only for Overview, which every admin sees.
   permission?: string;
 }
 
@@ -35,69 +34,85 @@ export const pageLinks: PageLink[] = [
     name: "Wallet management",
     icon: Wallet,
     path: routes.WALLET_MANAGEMENT,
-    permission: ADMIN_SECTION_PERMISSIONS.wallet,
+    permission: ADMIN_PERMISSIONS.walletView,
   },
-  { name: "Transactions", icon: BarChart3, path: routes.TRANSACTIONS },
-  { name: "Users", icon: User, path: routes.USERS, permission: ADMIN_SECTION_PERMISSIONS.users },
+  {
+    name: "Transactions",
+    icon: BarChart3,
+    path: routes.TRANSACTIONS,
+    permission: ADMIN_PERMISSIONS.transactionsView,
+  },
+  { name: "Users", icon: User, path: routes.USERS, permission: ADMIN_PERMISSIONS.usersView },
   {
     name: "Businesses",
     icon: Briefcase,
     path: routes.BUSINESSES,
-    permission: ADMIN_SECTION_PERMISSIONS.businesses,
+    permission: ADMIN_PERMISSIONS.businessesView,
   },
   {
     name: "Disputes",
     icon: Gavel,
     path: routes.DISPUTES,
-    permission: ADMIN_SECTION_PERMISSIONS.businesses,
+    permission: ADMIN_PERMISSIONS.disputesView,
   },
   {
     name: "Tribes",
     icon: MessageSquare,
     path: routes.TRIBES,
-    permission: ADMIN_SECTION_PERMISSIONS.tribes,
+    permission: ADMIN_PERMISSIONS.tribesView,
   },
   {
     name: "Events",
     icon: Calendar,
     path: routes.EVENTS,
-    permission: ADMIN_SECTION_PERMISSIONS.events,
+    permission: ADMIN_PERMISSIONS.eventsView,
   },
   {
     name: "Subscriptions",
     icon: CreditCard,
     path: routes.SUBSCRIPTIONS,
-    permission: ADMIN_SECTION_PERMISSIONS.subscriptions,
+    permission: ADMIN_PERMISSIONS.subscriptionsView,
   },
   {
     name: "Reporting",
     icon: CircleAlert,
     path: routes.REPORTING,
-    permission: ADMIN_SECTION_PERMISSIONS.moderation,
+    permission: ADMIN_PERMISSIONS.reportsView,
   },
   {
     name: "Forum moderation",
     icon: ShieldCheck,
     path: routes.FORUM,
-    permission: ADMIN_SECTION_PERMISSIONS.moderation,
+    permission: ADMIN_PERMISSIONS.forumView,
   },
   {
     name: "Payments review",
     icon: BadgeDollarSign,
     path: routes.PAYMENTS_REVIEW,
-    permission: ADMIN_SECTION_PERMISSIONS.wallet,
+    permission: ADMIN_PERMISSIONS.paymentsView,
   },
-  { name: "Announcements", icon: Megaphone, path: routes.ANNOUNCEMENTS },
+  {
+    name: "Announcements",
+    icon: Megaphone,
+    path: routes.ANNOUNCEMENTS,
+    permission: ADMIN_PERMISSIONS.announcementsView,
+  },
   {
     name: "Team members",
     icon: Users,
     path: routes.TEAM,
-    permission: ADMIN_SECTION_PERMISSIONS.teamMembers,
+    permission: ADMIN_PERMISSIONS.teamView,
+  },
+  {
+    name: "Roles & permissions",
+    icon: KeyRound,
+    path: routes.ROLES,
+    permission: ADMIN_PERMISSIONS.rolesView,
   },
   {
     name: "Audit log",
     icon: ScrollText,
     path: routes.AUDIT_LOG,
-    permission: ADMIN_SECTION_PERMISSIONS.teamMembers,
+    permission: ADMIN_PERMISSIONS.auditView,
   },
 ];

@@ -964,6 +964,88 @@
         "fields": null
     },
     {
+        "method": "DELETE",
+        "uri": "/v1/admin/roles/{id}",
+        "name": "v1.admin.roles.destroy",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/roles",
+        "name": "v1.admin.roles.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/roles/permissions",
+        "name": "v1.admin.roles.permissions",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/roles/{id}",
+        "name": "v1.admin.roles.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/admin/roles",
+        "name": "v1.admin.roles.store",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AdminRoleRequest",
+        "fields": {
+            "name": [
+                "required",
+                "string",
+                "max:60",
+                "notIn",
+                "unique"
+            ],
+            "permissions": [
+                "required",
+                "array",
+                "min:1"
+            ],
+            "permissions.*": [
+                "string",
+                "in"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/roles/{id}",
+        "name": "v1.admin.roles.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\AdminRoleRequest",
+        "fields": {
+            "name": [
+                "required",
+                "string",
+                "max:60",
+                "notIn",
+                "unique"
+            ],
+            "permissions": [
+                "required",
+                "array",
+                "min:1"
+            ],
+            "permissions.*": [
+                "string",
+                "in"
+            ]
+        }
+    },
+    {
         "method": "PATCH",
         "uri": "/v1/admin/subscriptions/{id}/activate",
         "name": "v1.admin.subscriptions.activate",
@@ -1018,7 +1100,7 @@
             "access_type": [
                 "string",
                 "required",
-                "max:60"
+                "in"
             ],
             "monthly_charge": [
                 "numeric",
@@ -1048,7 +1130,23 @@
             ],
             "event_creation": [
                 "integer",
-                "required",
+                "required_if:access_type,Limited",
+                "nullable",
+                "min:0"
+            ],
+            "tribe_limit": [
+                "integer",
+                "nullable",
+                "min:0"
+            ],
+            "thread_limit": [
+                "integer",
+                "nullable",
+                "min:0"
+            ],
+            "business_limit": [
+                "integer",
+                "nullable",
                 "min:0"
             ],
             "sales_commission": [
@@ -1066,7 +1164,7 @@
             "connection_range": [
                 "string",
                 "required",
-                "max:60"
+                "in"
             ],
             "offline_benefits": [
                 "boolean",
@@ -1099,6 +1197,11 @@
                 "nullable",
                 "in:free,monthly,yearly"
             ],
+            "search": [
+                "string",
+                "nullable",
+                "max:100"
+            ],
             "per_page": [
                 "integer",
                 "nullable",
@@ -1122,7 +1225,7 @@
             "access_type": [
                 "string",
                 "required",
-                "max:60"
+                "in"
             ],
             "monthly_charge": [
                 "numeric",
@@ -1152,7 +1255,23 @@
             ],
             "event_creation": [
                 "integer",
-                "required",
+                "required_if:access_type,Limited",
+                "nullable",
+                "min:0"
+            ],
+            "tribe_limit": [
+                "integer",
+                "nullable",
+                "min:0"
+            ],
+            "thread_limit": [
+                "integer",
+                "nullable",
+                "min:0"
+            ],
+            "business_limit": [
+                "integer",
+                "nullable",
                 "min:0"
             ],
             "sales_commission": [
@@ -1170,7 +1289,7 @@
             "connection_range": [
                 "string",
                 "required",
-                "max:60"
+                "in"
             ],
             "offline_benefits": [
                 "boolean",
