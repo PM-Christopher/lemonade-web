@@ -1,5 +1,4 @@
 "use client";
-import MainLayout from "@/components/layouts/MainLayout";
 import {
   Button,
   Select,
@@ -39,7 +38,7 @@ const TribesClient = () => {
   };
 
   return (
-    <MainLayout>
+    <>
       <section className="flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>{tribeListData?.tribes.length ?? 0} Tribes</p>
@@ -119,7 +118,7 @@ const TribesClient = () => {
         </div>
       </section>
       <CreateTribeModal isOpen={isCreateTribeModalOpen} toggle={toggleCreateTribeModal} />
-    </MainLayout>
+    </>
   );
 };
 

@@ -14,9 +14,6 @@ vi.mock("next/image", () => ({
   // eslint-disable-next-line @next/next/no-img-element
   default: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));
-vi.mock("@/components/layouts/MainLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
 vi.mock("react-redux", () => ({
   useDispatch: () => vi.fn(),
   useSelector: (select: (state: unknown) => unknown) => select({ auth: { isLoggedIn: true } }),

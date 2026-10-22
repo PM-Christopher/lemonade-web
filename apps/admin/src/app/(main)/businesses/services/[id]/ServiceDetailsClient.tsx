@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import MainLayout from "@/components/layouts/MainLayout";
 import { AvatarName } from "@/components/global/AvatarName";
 import { useServiceDetailQuery } from "@/features/businesses/queries";
 import type { ServicePerson } from "@/features/businesses/api";
@@ -52,7 +51,7 @@ function ServiceDetailsClient({ id }: { id: string }) {
   const [chatWith, setChatWith] = useState<ServicePerson | null>(null);
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full flex-col gap-4 p-4 md:p-5 lg:flex-row lg:items-start">
         <div className="flex h-fit w-full shrink-0 flex-col gap-4 rounded-xl bg-white p-5 lg:w-110">
           <Row label="Service Id">{service?.unique_id}</Row>
@@ -179,7 +178,7 @@ function ServiceDetailsClient({ id }: { id: string }) {
           userName={chatWith.name}
         />
       )}
-    </MainLayout>
+    </>
   );
 }
 

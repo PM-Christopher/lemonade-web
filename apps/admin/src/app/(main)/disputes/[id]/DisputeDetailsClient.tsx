@@ -5,7 +5,6 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import MainLayout from "@/components/layouts/MainLayout";
 import { useDisputeDetailQuery } from "@/features/disputes/queries";
 import { useAssignDisputeMutation } from "@/features/disputes/mutations";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
@@ -45,7 +44,7 @@ function DisputeDetailsClient({ id }: { id: string }) {
   const assignedToMe = Boolean(me && dispute?.assignee?.id === String(me.id));
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:p-5">
         <div className={"flex h-fit w-full max-w-180 flex-col rounded-xl bg-white"}>
           <div className={"flex flex-wrap items-center justify-between gap-3 border-b p-6"}>
@@ -189,7 +188,7 @@ function DisputeDetailsClient({ id }: { id: string }) {
         id={id}
         resolution={resolution ?? "refund"}
       />
-    </MainLayout>
+    </>
   );
 }
 

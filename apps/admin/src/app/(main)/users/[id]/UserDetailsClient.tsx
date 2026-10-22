@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { ChevronDown, MessageCircleIcon } from "lucide-react";
 import { SocialLink } from "@/components/global/SocialLink";
-import MainLayout from "@/components/layouts/MainLayout";
 import { usersDetailPageViews } from "@/utils/pageViews";
 import ActivitiesViews from "@/views/users/ActivitiesViews";
 import TribeViews from "@/views/users/TribeViews";
@@ -128,7 +127,7 @@ function UserDetailsClient({ id }: { id: string }) {
   const statusLabel = user?.status ? capitalizeWords(user.status) : "";
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
         <div className="flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150">
           <div className="flex justify-between">
@@ -332,7 +331,7 @@ function UserDetailsClient({ id }: { id: string }) {
           tribeId={openTribeId}
         />
       )}
-    </MainLayout>
+    </>
   );
 }
 

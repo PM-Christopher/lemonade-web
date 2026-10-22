@@ -1,5 +1,4 @@
 "use client";
-import MainLayout from "@/components/layouts/MainLayout";
 import { useAffiliateDetailQuery } from "@/features/user/queries";
 import { formatNumberWithCommas } from "@/lib/formatNumber";
 import ReferralHistory from "@/modals/wallet-management/ReferralHistory";
@@ -30,7 +29,7 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
       : null;
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
         <div
           className={"flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150"}
@@ -173,7 +172,7 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
         </div>
       </section>
       <ReferralHistory toggle={toggleHistoryOpen} isOpen={refHistoryOpen} affiliateId={id} />
-    </MainLayout>
+    </>
   );
 };
 

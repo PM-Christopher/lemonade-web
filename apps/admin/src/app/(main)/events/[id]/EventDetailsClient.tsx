@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { CalendarIcon, ChevronDown, ChevronRight, ClockIcon, MapPinIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -89,7 +88,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
   ).filter((link): link is { name: string; value: string } => Boolean(link.name && link.value));
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
         <div className={"flex h-fit w-full shrink-0 flex-col rounded-xl bg-white lg:w-150"}>
           <div className={"flex items-center justify-between border-b p-6"}>
@@ -418,7 +417,7 @@ const EventDetailsClient = ({ id }: { id: string }) => {
       <DeleteModal isOpen={deleteModalOpen} toggle={toggleDeleteModalOpen} id={id} />
       <UnsuspendModal isOpen={unsuspendOpen} toggle={() => setUnsuspendOpen(false)} id={id} />
       <RejectEventModal isOpen={rejectModalOpen} toggle={toggleRejectModalOpen} id={id} />
-    </MainLayout>
+    </>
   );
 };
 

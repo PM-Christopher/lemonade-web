@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { SearchIcon, UploadIcon } from "lucide-react";
 import DateRangePicker, { toApiTime, type DateRange } from "@/components/global/DateRangePicker";
 import {
@@ -124,88 +123,86 @@ function UsersClient() {
   }, [status, setSearchParams]);
 
   return (
-    <MainLayout>
-      <section className="mt-5 flex flex-col gap-5">
-        <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-body-l"}>
-            {(userData && "users" in userData ? userData.users.length : 0) || 0} users
-          </p>
-          <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
-              <div>
-                <SearchIcon className={"text-grey-40 h-3 w-3"} />
-              </div>
-              <div className="w-full">
-                <input
-                  id="search"
-                  type="text"
-                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Search user, email, ID, location..."
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-              </div>
-            </div>
-            {menuOption === "users" && (
-              <Select onValueChange={(value) => setStatus(value)}>
-                <SelectTrigger
-                  aria-label="Filter by status"
-                  className="font-semiBold text-text-grey focus:!border-light-green-50 text-meta h-10 w-48.25 rounded-xl leading-normal"
-                >
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((option) => (
-                    <SelectItem key={option} value={option.toLowerCase()}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-            <DateRangePicker value={range} onChange={setRange} />
+    <section className="mt-5 flex flex-col gap-5">
+      <div className={"flex justify-between px-5"}>
+        <p className={"font-semiBold text-body-l"}>
+          {(userData && "users" in userData ? userData.users.length : 0) || 0} users
+        </p>
+        <div className={"flex justify-between gap-3"}>
+          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
             <div>
-              <Button
-                onClick={exportUser}
-                className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
+              <SearchIcon className={"text-grey-40 h-3 w-3"} />
+            </div>
+            <div className="w-full">
+              <input
+                id="search"
+                type="text"
+                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
+                placeholder="Search user, email, ID, location..."
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+          </div>
+          {menuOption === "users" && (
+            <Select onValueChange={(value) => setStatus(value)}>
+              <SelectTrigger
+                aria-label="Filter by status"
+                className="font-semiBold text-text-grey focus:!border-light-green-50 text-meta h-10 w-48.25 rounded-xl leading-normal"
               >
-                <UploadIcon className={"h-3.75 w-3.75 text-white"} />
-                <p className={"text-body-l font-medium text-white"}>
-                  {isLoading ? "Exporting..." : "Export"}
-                </p>
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className={"flex flex-col px-5"}>
-          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
-            <div className={"w-fit px-3 pt-2"}>
-              <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
-                {usersPageViews.map((item, index) => (
-                  <div
-                    className={`cursor-pointer p-1 px-2 ${
-                      menuOption === item.key && "rounded-lg bg-white"
-                    }`}
-                    onClick={() => switchOption(item.key)}
-                    key={index}
-                  >
-                    <p
-                      className={`font-sans leading-6 ${
-                        menuOption === item.key
-                          ? "text-body-l font-semibold"
-                          : "font-semi-normal text-text-grey text-body-l"
-                      }`}
-                    >
-                      {item.title}
-                    </p>
-                  </div>
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((option) => (
+                  <SelectItem key={option} value={option.toLowerCase()}>
+                    {option}
+                  </SelectItem>
                 ))}
-              </div>
-            </div>
-            {renderViews()}
+              </SelectContent>
+            </Select>
+          )}
+          <DateRangePicker value={range} onChange={setRange} />
+          <div>
+            <Button
+              onClick={exportUser}
+              className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
+            >
+              <UploadIcon className={"h-3.75 w-3.75 text-white"} />
+              <p className={"text-body-l font-medium text-white"}>
+                {isLoading ? "Exporting..." : "Export"}
+              </p>
+            </Button>
           </div>
         </div>
-      </section>
-    </MainLayout>
+      </div>
+      <div className={"flex flex-col px-5"}>
+        <div className={"border-grey-20 flex flex-col rounded-xl border"}>
+          <div className={"w-fit px-3 pt-2"}>
+            <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
+              {usersPageViews.map((item, index) => (
+                <div
+                  className={`cursor-pointer p-1 px-2 ${
+                    menuOption === item.key && "rounded-lg bg-white"
+                  }`}
+                  onClick={() => switchOption(item.key)}
+                  key={index}
+                >
+                  <p
+                    className={`font-sans leading-6 ${
+                      menuOption === item.key
+                        ? "text-body-l font-semibold"
+                        : "font-semi-normal text-text-grey text-body-l"
+                    }`}
+                  >
+                    {item.title}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          {renderViews()}
+        </div>
+      </div>
+    </section>
   );
 }
 

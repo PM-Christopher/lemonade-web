@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { useEventAffiliateDetailQuery } from "@/features/events/queries";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { RootState } from "@/redux/store";
@@ -31,7 +30,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
   const programs = data?.programs ?? [];
 
   return (
-    <MainLayout>
+    <>
       <section className={"flex justify-between gap-0.5 p-5"}>
         <div className={"flex h-fit w-100 flex-col gap-3 rounded-xl bg-white p-6"}>
           <div className={"items-center-center flex gap-6"}>
@@ -251,7 +250,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
         toggle={() => setHistoryOpen(false)}
         userId={affiliate?.user_id}
       />
-    </MainLayout>
+    </>
   );
 };
 

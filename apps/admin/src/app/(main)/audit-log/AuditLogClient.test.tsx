@@ -8,9 +8,6 @@ const query = vi.fn();
 vi.mock("react-redux", () => ({
   useSelector: (select: (state: unknown) => unknown) => select({ auth: { isLoggedIn: true } }),
 }));
-vi.mock("@/components/layouts/MainLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => <main>{children}</main>,
-}));
 vi.mock("@/hooks/useDebounce", () => ({
   default: <T,>(value: T) => ({ debouncedValue: value }),
 }));

@@ -1,5 +1,4 @@
 "use client";
-import MainLayout from "@/components/layouts/MainLayout";
 import MainTribeCard from "@/components/tribes/MainTribeCard";
 import TribeDetails from "@/components/tribes/TribeDetails";
 import { useTribeDetailQuery } from "@/features/tribes/queries";
@@ -100,7 +99,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
   const isRestricted = tribe?.status === "RESTRICTED";
 
   return (
-    <MainLayout>
+    <>
       <section className="flex justify-between bg-white">
         <div className="flex h-195 w-2/3 shrink-0 flex-col gap-4 overflow-y-auto border-r p-6">
           {pinned.length > 0 && (
@@ -249,7 +248,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
         userId={removeMemberTarget?.userId}
         memberName={removeMemberTarget?.name}
       />
-    </MainLayout>
+    </>
   );
 };
 

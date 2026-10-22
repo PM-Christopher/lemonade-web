@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
-import MainLayout from "@/components/layouts/MainLayout";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
@@ -62,7 +61,7 @@ function ProfileClient() {
   const status = profile?.status === 1 ? "Active" : "Suspended";
 
   return (
-    <MainLayout>
+    <>
       <section className="flex justify-between p-5">
         <div className="flex h-fit w-147 flex-col gap-3 rounded-xl bg-white">
           <div className="flex flex-col gap-5 p-6">
@@ -125,7 +124,7 @@ function ProfileClient() {
         toggle={() => setPasswordOpen(false)}
         submit={(values) => changePassword.mutateAsync(values)}
       />
-    </MainLayout>
+    </>
   );
 }
 

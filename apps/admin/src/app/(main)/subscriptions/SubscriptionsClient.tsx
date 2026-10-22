@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { PencilIcon, PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { useSelector } from "react-redux";
@@ -77,7 +76,7 @@ function SubscriptionsClient() {
   const plans = planData?.plans ?? [];
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>{plans.length} Plans</p>
@@ -227,7 +226,7 @@ function SubscriptionsClient() {
           action={confirmAction}
         />
       )}
-    </MainLayout>
+    </>
   );
 }
 

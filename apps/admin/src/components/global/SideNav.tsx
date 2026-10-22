@@ -3,6 +3,7 @@ import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
 import { pageLinks } from "@/utils/pageLinks";
 import Image from "next/image";
+import Link from "next/link";
 import { LogOut, UserCircle } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { useLogoutMutation } from "@/features/authentication/mutations";
@@ -52,7 +53,7 @@ function SideNav({}) {
 
             return (
               <li key={item.path}>
-                <a
+                <Link
                   href={item.path}
                   className={`hover:bg-link-color hover:font-semiBold hover:text-black-light text-body-s flex w-full items-center gap-3 rounded-xl px-3 py-2.5 font-sans font-normal ${
                     isActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
@@ -60,14 +61,14 @@ function SideNav({}) {
                 >
                   <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                   {item.name}
-                </a>
+                </Link>
               </li>
             );
           })}
         </ul>
       </nav>
       <div className="border-t-grey-20 shrink-0 border-t pt-4 pb-4">
-        <a
+        <Link
           href={routes.PROFILE}
           className={`hover:bg-link-color hover:font-semiBold hover:text-black-light text-body-s flex w-full items-center gap-3 rounded-xl px-3 py-2.5 font-sans font-normal ${
             profileActive ? "bg-link-color font-semiBold text-black" : "text-text-grey"
@@ -75,7 +76,7 @@ function SideNav({}) {
         >
           <UserCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
           Profile
-        </a>
+        </Link>
         <div
           onClick={() => {
             handleLogout();

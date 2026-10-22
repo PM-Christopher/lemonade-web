@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { SearchIcon } from "lucide-react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { moderationContentHeaders } from "@/data/tableData";
@@ -83,7 +82,7 @@ function ForumClient() {
   const totalPages = content?.meta?.last_page ?? 1;
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex gap-4 px-5"}>
           <div className={"border-grey-20 flex flex-col gap-1 rounded-xl border p-4"}>
@@ -280,7 +279,7 @@ function ForumClient() {
         id={deleteTarget?.id}
         label={deleteTarget?.label ?? "content"}
       />
-    </MainLayout>
+    </>
   );
 }
 

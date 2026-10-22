@@ -5,7 +5,6 @@ import { SearchIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
-import MainLayout from "@/components/layouts/MainLayout";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { useBusinessListQuery, useServiceListQuery } from "@/features/businesses/queries";
@@ -76,7 +75,7 @@ function BusinessesClient() {
   };
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-6 flex flex-col gap-5">
         <div className="flex justify-between px-5">
           <p className="font-semiBold text-body-l">{count} Businesses</p>
@@ -160,7 +159,7 @@ function BusinessesClient() {
         toggle={() => setCommissionOpen(false)}
         current={commission}
       />
-    </MainLayout>
+    </>
   );
 }
 

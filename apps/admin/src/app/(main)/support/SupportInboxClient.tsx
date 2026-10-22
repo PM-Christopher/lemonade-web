@@ -8,7 +8,6 @@ import { CheckIcon, MessageSquareTextIcon, RotateCcwIcon, SearchIcon } from "luc
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import MainLayout from "@/components/layouts/MainLayout";
 import { AvatarName } from "@/components/global/AvatarName";
 import { SupportChatPanel } from "@/components/support/SupportChatPanel";
 import { useSupportInboxQuery, useSavedRepliesQuery } from "@/features/support/queries";
@@ -92,7 +91,7 @@ function SupportInboxClient() {
   };
 
   return (
-    <MainLayout>
+    <>
       <section className="flex h-[calc(100vh-9rem)] min-h-130 gap-4 p-5">
         <div className="flex w-96 shrink-0 flex-col rounded-xl bg-white">
           <div className="flex flex-col gap-3 border-b p-4">
@@ -255,7 +254,7 @@ function SupportInboxClient() {
         </div>
       </section>
       <SavedRepliesModal isOpen={repliesOpen} toggle={() => setRepliesOpen(false)} />
-    </MainLayout>
+    </>
   );
 }
 

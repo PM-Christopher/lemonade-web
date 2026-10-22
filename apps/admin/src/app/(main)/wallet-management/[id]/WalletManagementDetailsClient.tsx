@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import MainLayout from "@/components/layouts/MainLayout";
 import SkeletonLoader from "@/components/global/SkeletonLoader";
 import { RiskFlagList } from "@/components/wallet/PayoutRisk";
 import WithdrawalDecisionModal from "@/modals/wallet-management/WithdrawalDecisionModal";
@@ -83,7 +82,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
   ];
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
         <div className="flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150">
           {info?.image ? (
@@ -254,7 +253,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
         toggle={() => setHistory(null)}
         affiliateId={userId ?? ""}
       />
-    </MainLayout>
+    </>
   );
 }
 

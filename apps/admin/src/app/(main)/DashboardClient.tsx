@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
-import MainLayout from "@/components/layouts/MainLayout";
 import DataCard from "@/components/global/DataCard";
 import { useSelector } from "react-redux";
 import { useDashboardMetricsQuery } from "@/features/dashboard/queries";
@@ -131,26 +130,24 @@ function DashboardClient() {
   ];
 
   return (
-    <MainLayout>
-      <div className="mt-5 flex flex-col gap-5 px-10">
-        <div className={"w-fit"}>
-          <DateRangePicker value={range} onChange={setRange} />
-        </div>
-        <div className={"grid grid-cols-4 gap-5"}>
-          {data.map((item, index) => (
-            <DataCard
-              styles={"w-69 h-33"}
-              isPrice={item.isPrice}
-              key={index}
-              title={item.title}
-              count={item.value}
-              isLink={Boolean(item.link)}
-              pageLink={item.link}
-            />
-          ))}
-        </div>
+    <div className="mt-5 flex flex-col gap-5 px-10">
+      <div className={"w-fit"}>
+        <DateRangePicker value={range} onChange={setRange} />
       </div>
-    </MainLayout>
+      <div className={"grid grid-cols-4 gap-5"}>
+        {data.map((item, index) => (
+          <DataCard
+            styles={"w-69 h-33"}
+            isPrice={item.isPrice}
+            key={index}
+            title={item.title}
+            count={item.value}
+            isLink={Boolean(item.link)}
+            pageLink={item.link}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 

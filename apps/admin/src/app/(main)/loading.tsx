@@ -1,12 +1,7 @@
-// Shown while a Server Component page under (main) is still resolving its
-// own awaits (requireAdminPermission + prefetchQuery — see e.g.
-// wallet-management/page.tsx). Deliberately not wrapped in MainLayout: that
-// would fire its own admin-profile fetch on every navigation, on top of
-// the one the actual page already makes once it resolves — see
-// middleware.ts's comment on why extra profile fetches are worth avoiding.
+// Shown inside the console shell while a page loads, so the sidebar stays put.
 export default function MainLoading() {
   return (
-    <div className="bg-light-grey flex min-h-screen items-center justify-center">
+    <div className="flex min-h-[60vh] items-center justify-center">
       <div
         role="status"
         aria-label="Loading"

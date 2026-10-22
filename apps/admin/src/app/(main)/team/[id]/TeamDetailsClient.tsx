@@ -6,7 +6,6 @@ import { CalendarIcon, ChevronDown } from "lucide-react";
 import { useSelector } from "react-redux";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
-import MainLayout from "@/components/layouts/MainLayout";
 import PaginationComp from "@/components/global/Pagination";
 import { RootState } from "@/redux/store";
 import { useTeamActivityLogsQuery, useTeamDetailQuery } from "@/features/team/queries";
@@ -72,7 +71,7 @@ function TeamDetailsClient({ id }: { id: string }) {
   const changePassword = useChangeTeamPasswordMutation(id);
 
   return (
-    <MainLayout>
+    <>
       <section className="flex justify-between gap-5 p-5">
         <div className="flex h-fit w-147 flex-col gap-3 rounded-xl bg-white">
           <div className="flex flex-col gap-5 p-6">
@@ -200,7 +199,7 @@ function TeamDetailsClient({ id }: { id: string }) {
         id={id}
         onRemoved={() => push(routes.TEAM)}
       />
-    </MainLayout>
+    </>
   );
 }
 

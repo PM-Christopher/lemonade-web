@@ -4,7 +4,6 @@ import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
-import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { announcementHeaders } from "@/data/tableData";
@@ -61,7 +60,7 @@ const AnnouncementsClient = () => {
   const paginatedData = announcementData?.announcements?.slice(startIndex, startIndex + perPage);
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>
@@ -176,7 +175,7 @@ const AnnouncementsClient = () => {
         category={pageToEdit?.category ?? "terms_and_conditions"}
         title={pageToEdit?.title ?? ""}
       />
-    </MainLayout>
+    </>
   );
 };
 

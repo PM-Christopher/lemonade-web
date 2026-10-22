@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { SearchIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import MainLayout from "@/components/layouts/MainLayout";
 import DataCard from "@/components/global/DataCard";
 import { RiskBadge } from "@/components/wallet/PayoutRisk";
 import PaginationComp from "@/components/global/Pagination";
@@ -105,7 +104,7 @@ function WalletManagementClient() {
   };
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-5 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>{walletData?.total_wallets ?? 0} Wallets</p>
@@ -246,7 +245,7 @@ function WalletManagementClient() {
           currentRate={String(editingRate.rate_minor_per_point / 100)}
         />
       )}
-    </MainLayout>
+    </>
   );
 }
 

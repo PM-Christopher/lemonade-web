@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { UploadIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { transactionPageViews } from "@/utils/pageViews";
@@ -111,99 +110,97 @@ function TransactionsClient() {
   };
 
   return (
-    <MainLayout>
-      <section className="mt-5 flex flex-col gap-5">
-        <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-body-l"}>
-            {isStandaloneTab
-              ? "Transactions"
-              : `${(trxData?.meta?.total ?? trxData?.history?.length ?? 0).toLocaleString()} Transactions`}
-          </p>
-          <div className={"flex justify-between gap-3"}>
-            {isStandaloneTab ? null : (
-              <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
-                <SearchIcon className={"text-grey-40 h-3 w-3"} />
-                <input
-                  id="search"
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setSearchParams({ page: undefined });
-                  }}
-                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Search transaction, ID..."
-                />
-              </div>
-            )}
-            {!isStandaloneTab && (STATUS_OPTIONS[menuOption] ?? []).length > 0 && (
-              <select
-                aria-label="Filter by status"
-                className={"bg-light-grey h-10 rounded-xl px-3"}
-                value={status}
+    <section className="mt-5 flex flex-col gap-5">
+      <div className={"flex justify-between px-5"}>
+        <p className={"font-semiBold text-body-l"}>
+          {isStandaloneTab
+            ? "Transactions"
+            : `${(trxData?.meta?.total ?? trxData?.history?.length ?? 0).toLocaleString()} Transactions`}
+        </p>
+        <div className={"flex justify-between gap-3"}>
+          {isStandaloneTab ? null : (
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+              <SearchIcon className={"text-grey-40 h-3 w-3"} />
+              <input
+                id="search"
+                type="text"
+                value={searchTerm}
                 onChange={(e) => {
-                  setStatus(e.target.value);
+                  setSearchTerm(e.target.value);
                   setSearchParams({ page: undefined });
                 }}
-              >
-                <option value="">Status</option>
-                {(STATUS_OPTIONS[menuOption] ?? []).map((option) => (
-                  <option key={option} value={option}>
-                    {transactionStatus(option).label}
-                  </option>
-                ))}
-              </select>
-            )}
-            {isStandaloneTab ? null : (
-              <DateRangePicker
-                value={range}
-                onChange={(value) => {
-                  setRange(value);
-                  setSearchParams({ page: undefined });
-                }}
+                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
+                placeholder="Search transaction, ID..."
               />
-            )}
-            <div className={isStandaloneTab ? "hidden" : undefined}>
-              <Button
-                onClick={exportCSV}
-                className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
-              >
-                <UploadIcon className={"h-3.75 w-3.75 text-white"} />
-                <p className={"text-body-l font-medium text-white"}>Export</p>
-              </Button>
             </div>
+          )}
+          {!isStandaloneTab && (STATUS_OPTIONS[menuOption] ?? []).length > 0 && (
+            <select
+              aria-label="Filter by status"
+              className={"bg-light-grey h-10 rounded-xl px-3"}
+              value={status}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setSearchParams({ page: undefined });
+              }}
+            >
+              <option value="">Status</option>
+              {(STATUS_OPTIONS[menuOption] ?? []).map((option) => (
+                <option key={option} value={option}>
+                  {transactionStatus(option).label}
+                </option>
+              ))}
+            </select>
+          )}
+          {isStandaloneTab ? null : (
+            <DateRangePicker
+              value={range}
+              onChange={(value) => {
+                setRange(value);
+                setSearchParams({ page: undefined });
+              }}
+            />
+          )}
+          <div className={isStandaloneTab ? "hidden" : undefined}>
+            <Button
+              onClick={exportCSV}
+              className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
+            >
+              <UploadIcon className={"h-3.75 w-3.75 text-white"} />
+              <p className={"text-body-l font-medium text-white"}>Export</p>
+            </Button>
           </div>
         </div>
-        <div className={"flex flex-col px-5"}>
-          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
-            <div className={"w-fit px-3 pt-2"}>
-              <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
-                {transactionPageViews.map((item, index) => (
-                  <div
-                    className={`cursor-pointer p-1 px-2 ${
-                      menuOption === item.key && "rounded-lg bg-white"
+      </div>
+      <div className={"flex flex-col px-5"}>
+        <div className={"border-grey-20 flex flex-col rounded-xl border"}>
+          <div className={"w-fit px-3 pt-2"}>
+            <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
+              {transactionPageViews.map((item, index) => (
+                <div
+                  className={`cursor-pointer p-1 px-2 ${
+                    menuOption === item.key && "rounded-lg bg-white"
+                  }`}
+                  onClick={() => switchOption(item.key)}
+                  key={index}
+                >
+                  <p
+                    className={`font-sans leading-6 ${
+                      menuOption === item.key
+                        ? "text-body-l font-semibold"
+                        : "font-semi-normal text-text-grey text-body-l"
                     }`}
-                    onClick={() => switchOption(item.key)}
-                    key={index}
                   >
-                    <p
-                      className={`font-sans leading-6 ${
-                        menuOption === item.key
-                          ? "text-body-l font-semibold"
-                          : "font-semi-normal text-text-grey text-body-l"
-                      }`}
-                    >
-                      {item.title}
-                    </p>
-                  </div>
-                ))}
-              </div>
+                    {item.title}
+                  </p>
+                </div>
+              ))}
             </div>
-            {renderViews()}
           </div>
+          {renderViews()}
         </div>
-      </section>
-    </MainLayout>
+      </div>
+    </section>
   );
 }
 

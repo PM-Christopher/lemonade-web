@@ -2,7 +2,6 @@
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { teamHeaders } from "@/data/tableData";
@@ -75,7 +74,7 @@ function TeamClient() {
   const paginatedData = data?.slice(startIndex, startIndex + perPage);
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>
@@ -169,7 +168,7 @@ function TeamClient() {
       </section>
 
       <AddMember isOpen={isOpen} toggle={toggelModal} />
-    </MainLayout>
+    </>
   );
 }
 

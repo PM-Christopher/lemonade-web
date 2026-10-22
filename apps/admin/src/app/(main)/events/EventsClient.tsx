@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import AffiliateView from "@/views/events/AffiliateView";
 import { SearchIcon, UploadIcon } from "lucide-react";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
-import MainLayout from "@/components/layouts/MainLayout";
 import { eventViews } from "@/utils/pageViews";
 import EventView from "@/views/events/EventView";
 import PendingEventsView from "@/views/events/PendingEventsView";
@@ -101,91 +100,89 @@ const EventsClient = () => {
   };
 
   return (
-    <MainLayout>
-      <section className="mt-6 flex flex-col gap-5">
-        <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-body-l"}>
-            {eventData && "events" in eventData ? eventData.events.length : 0} Events
-          </p>
-          <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
-              <div>
-                <SearchIcon className={"text-grey-40 h-3 w-3"} />
-              </div>
-              <div className="w-full">
-                <input
-                  id="search"
-                  type="text"
-                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Search event, ID..."
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-              </div>
+    <section className="mt-6 flex flex-col gap-5">
+      <div className={"flex justify-between px-5"}>
+        <p className={"font-semiBold text-body-l"}>
+          {eventData && "events" in eventData ? eventData.events.length : 0} Events
+        </p>
+        <div className={"flex justify-between gap-3"}>
+          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+            <div>
+              <SearchIcon className={"text-grey-40 h-3 w-3"} />
             </div>
-            {(menuOption === "events" || menuOption === "promotions") && (
-              <select
-                aria-label="Filter by status"
-                className={"bg-light-grey h-10 rounded-xl px-3"}
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                <option value="">All statuses</option>
-                {(menuOption === "events" ? EVENT_STATUSES : PROMOTION_STATUSES).map((option) => (
-                  <option key={option} value={option}>
-                    {capitalizeWords(option)}
-                  </option>
-                ))}
-              </select>
-            )}
-            <DateRangePicker value={range} onChange={setRange} />
+            <div className="w-full">
+              <input
+                id="search"
+                type="text"
+                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
+                placeholder="Search event, ID..."
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+          </div>
+          {(menuOption === "events" || menuOption === "promotions") && (
+            <select
+              aria-label="Filter by status"
+              className={"bg-light-grey h-10 rounded-xl px-3"}
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="">All statuses</option>
+              {(menuOption === "events" ? EVENT_STATUSES : PROMOTION_STATUSES).map((option) => (
+                <option key={option} value={option}>
+                  {capitalizeWords(option)}
+                </option>
+              ))}
+            </select>
+          )}
+          <DateRangePicker value={range} onChange={setRange} />
 
-            {menuOption === "events" && (
-              <>
-                <div>
-                  <Button
-                    onClick={exportFunc}
-                    className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
-                  >
-                    <UploadIcon className={"h-3.75 w-3.75 text-white"} />
-                    <p className={"text-body-l font-medium text-white"}>
-                      {isLoading ? "Exporting..." : "Export"}
-                    </p>
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-        <div className={"flex flex-col px-5"}>
-          <div className={"border-grey-20 flex flex-col rounded-xl border"}>
-            <div className={"w-fit px-3 pt-2"}>
-              <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
-                {eventViews.map((item, index) => (
-                  <div
-                    className={`cursor-pointer p-1 px-2 ${
-                      menuOption === item.key && "rounded-lg bg-white"
-                    }`}
-                    onClick={() => switchOption(item.key)}
-                    key={index}
-                  >
-                    <p
-                      className={`font-sans leading-6 ${
-                        menuOption === item.key
-                          ? "text-body-l font-semibold"
-                          : "font-semi-normal text-text-grey text-body-l"
-                      }`}
-                    >
-                      {item.title}
-                    </p>
-                  </div>
-                ))}
+          {menuOption === "events" && (
+            <>
+              <div>
+                <Button
+                  onClick={exportFunc}
+                  className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}
+                >
+                  <UploadIcon className={"h-3.75 w-3.75 text-white"} />
+                  <p className={"text-body-l font-medium text-white"}>
+                    {isLoading ? "Exporting..." : "Export"}
+                  </p>
+                </Button>
               </div>
-            </div>
-            {renderViews()}
-          </div>
+            </>
+          )}
         </div>
-      </section>
-    </MainLayout>
+      </div>
+      <div className={"flex flex-col px-5"}>
+        <div className={"border-grey-20 flex flex-col rounded-xl border"}>
+          <div className={"w-fit px-3 pt-2"}>
+            <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
+              {eventViews.map((item, index) => (
+                <div
+                  className={`cursor-pointer p-1 px-2 ${
+                    menuOption === item.key && "rounded-lg bg-white"
+                  }`}
+                  onClick={() => switchOption(item.key)}
+                  key={index}
+                >
+                  <p
+                    className={`font-sans leading-6 ${
+                      menuOption === item.key
+                        ? "text-body-l font-semibold"
+                        : "font-semi-normal text-text-grey text-body-l"
+                    }`}
+                  >
+                    {item.title}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          {renderViews()}
+        </div>
+      </div>
+    </section>
   );
 };
 export default EventsClient;

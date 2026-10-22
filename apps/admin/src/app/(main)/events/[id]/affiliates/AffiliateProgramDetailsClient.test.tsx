@@ -3,10 +3,6 @@ import { render, screen } from "@testing-library/react";
 import AffiliateProgramDetailsClient from "./AffiliateProgramDetailsClient";
 import type { EventAffiliateDetailResponse } from "@/features/events/api";
 
-vi.mock("@/components/layouts/MainLayout", () => ({
-  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
-
 vi.mock("react-redux", () => ({
   useSelector: () => ({ isLoggedIn: true }),
 }));

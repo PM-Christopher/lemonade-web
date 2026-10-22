@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import { ChevronDown, ChevronRight, RocketIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import MainLayout from "@/components/layouts/MainLayout";
 import { AvatarName } from "@/components/global/AvatarName";
 import { useBusinessDetailQuery } from "@/features/businesses/queries";
 import type { ServiceJobRow } from "@/features/businesses/api";
@@ -94,7 +93,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
   const gradient = "border-step-color bg-gradient-green h-11 rounded-xl border px-5 text-center";
 
   return (
-    <MainLayout>
+    <>
       <section className="flex w-full max-w-full flex-col gap-4 p-4 md:p-5 lg:flex-row lg:items-start">
         <div className="flex h-fit w-full shrink-0 flex-col rounded-xl bg-white lg:w-110">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b p-5">
@@ -306,7 +305,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
         id={id}
       />
       <DeleteModal isOpen={deleteModalOpen} toggle={() => setDeleteModalOpen(false)} id={id} />
-    </MainLayout>
+    </>
   );
 }
 

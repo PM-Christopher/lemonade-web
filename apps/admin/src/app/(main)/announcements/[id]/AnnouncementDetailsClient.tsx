@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import { FormattedText } from "@lemonade/ui";
-import MainLayout from "@/components/layouts/MainLayout";
 import { RootState } from "@/redux/store";
 import { useAnnouncementDetailQuery } from "@/features/announcements/queries";
 import { GetStatusClass } from "@/utils/helper";
@@ -40,7 +39,7 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
         : "";
 
   return (
-    <MainLayout>
+    <>
       <section className="flex justify-between gap-5 p-5">
         <div className="flex h-fit w-100 shrink-0 flex-col rounded-xl bg-white">
           <div className="flex flex-col gap-5 p-6">
@@ -108,7 +107,7 @@ function AnnouncementDetailsClient({ id }: { id: string }) {
           announcement={announcement}
         />
       )}
-    </MainLayout>
+    </>
   );
 }
 

@@ -3,7 +3,6 @@ import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
 import { PrinterIcon } from "lucide-react";
-import MainLayout from "@/components/layouts/MainLayout";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -87,114 +86,108 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
     document.body.removeChild(link);
   };
   return (
-    <MainLayout>
-      <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
-        <div
-          className={"flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150"}
-        >
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Full name:</p>
-            </div>
-            <div className={"flex gap-1"}>
-              <p className={"text-body-s font-medium"}>{wallet?.info?.fullname}</p>
-              <p
-                className={"text-light-green text-body-s cursor-pointer font-medium"}
-                onClick={() => push(routes.USER_DETAIL(wallet!.history[0]!.user_id!))}
-              >
-                View profile
-              </p>
-            </div>
+    <section className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden p-4 md:gap-5 md:p-5 lg:flex-row lg:items-start">
+      <div className={"flex h-fit w-full shrink-0 flex-col gap-5 rounded-xl bg-white p-6 lg:w-150"}>
+        <div className={"items-center-center flex gap-6"}>
+          <div className={"w-28.75"}>
+            <p className={"text-text-grey text-meta leading-normal font-medium"}>Full name:</p>
           </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Transaction Id:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>{wallet?.history[0]?.wallet_id}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Date Paid:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{wallet?.info?.date_paid}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
-            </div>
-            <p className={"text-body-s font-medium"}>{naira(wallet?.info?.amount)}</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>
-                Subscription Type:
-              </p>
-            </div>
-            <p className={"text-body-s font-medium"}>Yearly</p>
-          </div>
-          <div className={"items-center-center flex gap-6"}>
-            <div className={"w-28.75"}>
-              <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
-            </div>
-            <p className={"text-light-green-70 text-body-s font-medium"}>
-              {capitalizeWords(wallet?.info?.status)}
+          <div className={"flex gap-1"}>
+            <p className={"text-body-s font-medium"}>{wallet?.info?.fullname}</p>
+            <p
+              className={"text-light-green text-body-s cursor-pointer font-medium"}
+              onClick={() => push(routes.USER_DETAIL(wallet!.history[0]!.user_id!))}
+            >
+              View profile
             </p>
           </div>
         </div>
+        <div className={"items-center-center flex gap-6"}>
+          <div className={"w-28.75"}>
+            <p className={"text-text-grey text-meta leading-normal font-medium"}>Transaction Id:</p>
+          </div>
+          <p className={"text-body-s font-medium"}>{wallet?.history[0]?.wallet_id}</p>
+        </div>
+        <div className={"items-center-center flex gap-6"}>
+          <div className={"w-28.75"}>
+            <p className={"text-text-grey text-meta leading-normal font-medium"}>Date Paid:</p>
+          </div>
+          <p className={"text-body-s font-medium"}>{wallet?.info?.date_paid}</p>
+        </div>
+        <div className={"items-center-center flex gap-6"}>
+          <div className={"w-28.75"}>
+            <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
+          </div>
+          <p className={"text-body-s font-medium"}>{naira(wallet?.info?.amount)}</p>
+        </div>
+        <div className={"items-center-center flex gap-6"}>
+          <div className={"w-28.75"}>
+            <p className={"text-text-grey text-meta leading-normal font-medium"}>
+              Subscription Type:
+            </p>
+          </div>
+          <p className={"text-body-s font-medium"}>Yearly</p>
+        </div>
+        <div className={"items-center-center flex gap-6"}>
+          <div className={"w-28.75"}>
+            <p className={"text-text-grey text-meta leading-normal font-medium"}>Status:</p>
+          </div>
+          <p className={"text-light-green-70 text-body-s font-medium"}>
+            {capitalizeWords(wallet?.info?.status)}
+          </p>
+        </div>
+      </div>
 
-        {/* payout history */}
-        <div className="flex w-full flex-col lg:min-w-0 lg:flex-1">
-          <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
-            <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
-              <p className={"font-semiBold text-body-l"}>Payout history</p>
-              <div
-                className={
-                  "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
-                }
-                onClick={printCSV}
-              >
-                <PrinterIcon className={"w-5"} />
-                <p className={"text-black-light text-body-l font-medium"}>Print</p>
-              </div>
+      {/* payout history */}
+      <div className="flex w-full flex-col lg:min-w-0 lg:flex-1">
+        <div className={"h-175 rounded-tl-xl rounded-tr-xl bg-white"}>
+          <div className={"border-b-grey-20 flex items-center justify-between border-b p-6"}>
+            <p className={"font-semiBold text-body-l"}>Payout history</p>
+            <div
+              className={
+                "border-light-grey-50 flex items-center gap-2.5 rounded-xl border px-3 py-2.5"
+              }
+              onClick={printCSV}
+            >
+              <PrinterIcon className={"w-5"} />
+              <p className={"text-black-light text-body-l font-medium"}>Print</p>
             </div>
+          </div>
 
-            <div className={"flex flex-col px-6"}>
-              {paginatedData?.map((item: WalletDetail["history"][number], index: number) => (
-                <div className="px-4 pt-4 pb-6" key={index}>
-                  <div className="flex justify-between">
-                    <div className="flex flex-col">
-                      <p className={"text-body-s font-medium"}>
-                        {item?.wallet?.wallet_id} - {naira(item?.amount)}
-                      </p>
-                      <p className={"text-text-grey text-meta leading-normal font-normal"}>
-                        23, Mar 2023. 05:00PM
-                      </p>
-                    </div>
-                    <div className={"bg-light-green-60 h-fit gap-1 rounded-lg px-2 py-1"}>
-                      <p className={"text-light-green-70 text-meta leading-normal font-medium"}>
-                        {capitalizeWords(item?.status)}
-                      </p>
-                    </div>
+          <div className={"flex flex-col px-6"}>
+            {paginatedData?.map((item: WalletDetail["history"][number], index: number) => (
+              <div className="px-4 pt-4 pb-6" key={index}>
+                <div className="flex justify-between">
+                  <div className="flex flex-col">
+                    <p className={"text-body-s font-medium"}>
+                      {item?.wallet?.wallet_id} - {naira(item?.amount)}
+                    </p>
+                    <p className={"text-text-grey text-meta leading-normal font-normal"}>
+                      23, Mar 2023. 05:00PM
+                    </p>
+                  </div>
+                  <div className={"bg-light-green-60 h-fit gap-1 rounded-lg px-2 py-1"}>
+                    <p className={"text-light-green-70 text-meta leading-normal font-medium"}>
+                      {capitalizeWords(item?.status)}
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Pagination */}
-          <div className="mt-2">
-            <PaginationComp
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              perPage={perPage}
-            />
+              </div>
+            ))}
           </div>
         </div>
-      </section>
-    </MainLayout>
+
+        {/* Pagination */}
+        <div className="mt-2">
+          <PaginationComp
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            perPage={perPage}
+          />
+        </div>
+      </div>
+    </section>
   );
 }
 

@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import { CalendarIcon, ClockIcon, DownloadIcon, MapPinIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import MainLayout from "@/components/layouts/MainLayout";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
@@ -53,7 +52,7 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
   };
 
   return (
-    <MainLayout>
+    <>
       <section className={"flex flex-col gap-4 p-4 md:p-5 lg:flex-row lg:justify-between"}>
         <div className={"flex h-fit w-full flex-col gap-3 rounded-xl bg-white lg:w-147"}>
           <div className={"flex items-center justify-between border-b p-6"}>
@@ -182,7 +181,7 @@ const EventPromotionDetailsClient = ({ id }: { id: string }) => {
           userName={summary.owner}
         />
       )}
-    </MainLayout>
+    </>
   );
 };
 

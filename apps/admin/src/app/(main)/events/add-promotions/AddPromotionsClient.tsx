@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import MainLayout from "@/components/layouts/MainLayout";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import PromotionsCard from "@/components/events/PromotionsCard";
@@ -33,7 +32,7 @@ function AddPromotionsClient() {
   };
 
   return (
-    <MainLayout>
+    <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>
@@ -67,7 +66,7 @@ function AddPromotionsClient() {
         toggle={togglePromotionModal}
         promotionId={promotionId}
       />
-    </MainLayout>
+    </>
   );
 }
 
