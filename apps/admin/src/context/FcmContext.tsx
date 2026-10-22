@@ -52,11 +52,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
   const [showToaster, setShowToaster] = useState(false);
   const { isLoggedIn, admin } = useAppSelector((state) => state.auth);
   const { mutate: registerDeviceToken } = useRegisterDeviceTokenMutation();
-  // The device-token endpoint requires a real admin session — registering
-  // before login 401s, and registering again on every render would spam
-  // the backend for no reason, so this tracks the (token, admin) pair
-  // already sent. Mirrors the frontend app's identical fix in its own
-  // FcmContext.tsx.
+  // Remember which admin + device token we already registered.
   const registeredFor = useRef<string | null>(null);
 
   useEffect(() => {
@@ -70,8 +66,7 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
       { device_token: fcmToken, device_type: "web" },
       {
         onError: () => {
-          // Allow a retry on the next render instead of permanently
-          // giving up on this token/admin pair.
+          // Clear so the next render can retry.
           registeredFor.current = null;
         },
       },
@@ -91,7 +86,8 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setFcmToken(token);
       } catch (error) {
-        console.error(error);
+        // Push is optional, so a blocked or offline FCM request is a warning, not an app error.
+        console.warn("FCM token registration failed", error);
       }
     };
 
@@ -125,14 +121,13 @@ export const FcmProvider = ({ children }: { children: React.ReactNode }) => {
           duration: 4000,
         },
       );
-      // Automatically hide toaster after 4 seconds
+      // Hide the toaster after the toast has been on screen.
       setTimeout(() => {
         setShowToaster(false);
       }, 2000);
     });
 
     register();
-    // Cleanup listener on unmount
     return () => unsubscribe();
   }, []);
 
