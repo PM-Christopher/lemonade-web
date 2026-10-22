@@ -15,8 +15,8 @@ import { useUserEarningsQuery, useWalletDetailQuery } from "@/features/wallet/qu
 import { useRetryWithdrawalMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { transactionStatus } from "@/utils/helper";
+import { naira } from "@/views/transactions/transactionFormat";
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex items-center gap-6">
@@ -211,9 +211,7 @@ function WalletManagementDetailsClient({ id }: { id: string }) {
                 >
                   <div className={"flex flex-col gap-2"}>
                     <p className={"text-text-grey text-body-s font-normal"}>{row.label}</p>
-                    <p className={"font-semiBold text-body-xl"}>
-                      ₦{formatNumberWithCommas(row.value || 0)}
-                    </p>
+                    <p className={"font-semiBold text-body-xl"}>{naira(row.value)}</p>
                   </div>
                   <ChevronRight />
                 </button>

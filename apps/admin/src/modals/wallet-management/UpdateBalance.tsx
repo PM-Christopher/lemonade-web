@@ -1,9 +1,9 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
+import { MoneyInput, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddToWalletMutation, useDeductFromWalletMutation } from "@/features/wallet/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -52,7 +52,7 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
   };
 
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     reset,
@@ -118,11 +118,20 @@ const UpdateBalance: React.FC<UpdateBalanceInterface> = ({
           <div className={"flex flex-col"} style={{ marginTop: "20px", gap: "16px" }}>
             <div className={"flex flex-col"} style={{ gap: "4px" }}>
               <p className={"text-text-grey text-body-s font-normal"}>Amount</p>
-              <Input
-                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
-                placeholder={"Amount"}
-                id="amount"
-                {...register("amount")}
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field }) => (
+                  <MoneyInput
+                    className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
+                    placeholder={"Amount"}
+                    aria-label="amount"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    onBlur={field.onBlur}
+                    padDecimals
+                  />
+                )}
               />
               <FieldError message={errors.amount?.message} />
             </div>

@@ -14,6 +14,9 @@ interface DateRangePickerProps {
   onChange: (range: DateRange | null) => void;
 }
 
+// Calendar, quick list and padding.
+const POPUP_WIDTH = 720;
+
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
 const PRESETS: { label: string; range: () => DateRange | null }[] = [
@@ -76,40 +79,56 @@ function Month({
 }) {
   const first = month.startOf("month");
   const cells = Array.from({ length: 42 }, (_, index) => first.add(index - first.day(), "day"));
+  const today = dayjs();
 
   return (
-    <div className="w-52">
+    <div className="w-56">
       <p className="text-meta text-center font-semibold">{month.format("MMMM YYYY")}</p>
-      <div className="mt-2 grid grid-cols-7 gap-y-1 text-center">
+      <div className="mt-3 grid grid-cols-7 text-center">
         {WEEKDAYS.map((day, index) => (
-          <span className="text-text-grey text-meta" key={index}>
+          <span className="text-text-grey text-meta pb-1" key={index}>
             {day}
           </span>
         ))}
         {cells.map((day) => {
           const inMonth = day.month() === month.month();
-          const isEdge = (start && day.isSame(start, "day")) || (end && day.isSame(end, "day"));
-          const inside = start && end && day.isAfter(start, "day") && day.isBefore(end, "day");
+          const isStart = Boolean(start && day.isSame(start, "day"));
+          const isEnd = Boolean(end && day.isSame(end, "day"));
+          const isEdge = isStart || isEnd;
+          const inRange = Boolean(
+            start && end && !day.isBefore(start, "day") && !day.isAfter(end, "day"),
+          );
+          // The band runs through the range and rounds off at its ends and at week edges.
+          const band = inRange
+            ? `bg-light-green/20 ${isStart || day.day() === 0 ? "rounded-l-full" : ""} ${
+                isEnd || day.day() === 6 ? "rounded-r-full" : ""
+              }`
+            : "";
+          const label = day.format("D MMMM YYYY");
+          const isToday = day.isSame(today, "day");
+
           return (
-            <button
-              key={day.format("YYYY-MM-DD")}
-              type="button"
-              disabled={!inMonth}
-              aria-label={day.format("D MMMM YYYY")}
-              aria-pressed={Boolean(isEdge)}
-              onClick={() => onPick(day)}
-              className={`mx-auto h-7 w-7 rounded-full text-xs ${
-                isEdge
-                  ? "bg-light-green font-semibold text-white"
-                  : inside
-                    ? "bg-light-green/20"
-                    : inMonth
-                      ? "hover:bg-light_grey cursor-pointer"
-                      : "invisible"
-              }`}
-            >
-              {day.date()}
-            </button>
+            <div key={day.format("YYYY-MM-DD")} className={`flex h-8 items-center ${band}`}>
+              {inMonth ? (
+                <button
+                  type="button"
+                  aria-label={label}
+                  aria-pressed={isEdge}
+                  onClick={() => onPick(day)}
+                  className={`mx-auto h-8 w-8 cursor-pointer rounded-full text-xs ${
+                    isEdge
+                      ? "bg-light-green font-semibold text-white"
+                      : isToday
+                        ? "border-grey-20 border"
+                        : "hover:bg-light_grey"
+                  }`}
+                >
+                  {day.date()}
+                </button>
+              ) : (
+                <span className="text-grey-40 mx-auto text-xs">{day.date()}</span>
+              )}
+            </div>
           );
         })}
       </div>
@@ -122,6 +141,7 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
   const [month, setMonth] = useState<Dayjs>(() => dayjs().subtract(1, "month").startOf("month"));
   const [from, setFrom] = useState<Dayjs | null>(null);
+  const [alignRight, setAlignRight] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -148,14 +168,19 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
   };
 
   return (
-    <div className="relative" ref={rootRef}>
+    <div className="relative flex items-center gap-2" ref={rootRef}>
       <button
         type="button"
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label="Filter by date"
-        onClick={() => setOpen((current) => !current)}
-        className="border-grey-20 bg-light_grey flex h-10 w-48.25 cursor-pointer items-center justify-between rounded-xl border px-4 py-2.5"
+        onClick={() => {
+          // Open towards the side that has room, so the calendar is never cut off.
+          const rect = rootRef.current?.getBoundingClientRect();
+          if (rect) setAlignRight(rect.left + POPUP_WIDTH > window.innerWidth);
+          setOpen((current) => !current);
+        }}
+        className="border-grey-20 bg-light_grey flex h-10 min-w-48.25 cursor-pointer items-center justify-between gap-3 rounded-xl border px-4 py-2.5"
       >
         <span className="text-text-grey flex items-center gap-2">
           <CalendarIcon className="h-3.75 w-3.75" />
@@ -163,11 +188,26 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
         </span>
         <ChevronDown className="text-text-grey w-5" />
       </button>
+      {value && (
+        <button
+          type="button"
+          className="text-text-grey hover:text-light-green text-meta cursor-pointer font-semibold"
+          onClick={() => {
+            setFrom(null);
+            setOpen(false);
+            onChange(null);
+          }}
+        >
+          Clear
+        </button>
+      )}
       {open && (
         <div
           role="dialog"
           aria-label="Choose dates"
-          className="absolute top-full right-0 z-50 mt-1 flex rounded-xl bg-white p-4 shadow-lg"
+          className={`absolute top-full z-50 mt-1 flex rounded-xl bg-white p-5 shadow-lg ${
+            alignRight ? "right-0" : "left-0"
+          }`}
         >
           <div className="flex items-start gap-4">
             <button
@@ -189,12 +229,12 @@ export function DateRangePicker({ value, onChange }: DateRangePickerProps) {
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
-          <ul className="border-l-grey-20 ml-4 flex w-32 flex-col gap-1 border-l pl-4">
+          <ul className="border-l-grey-20 ml-5 flex w-32 flex-col gap-2 border-l pl-5">
             {PRESETS.map((preset) => (
               <li key={preset.label}>
                 <button
                   type="button"
-                  className="hover:text-light-green w-full cursor-pointer py-1 text-left text-sm"
+                  className="hover:text-light-green text-text-grey w-full cursor-pointer py-1 text-left text-sm"
                   onClick={() => {
                     setFrom(null);
                     setOpen(false);

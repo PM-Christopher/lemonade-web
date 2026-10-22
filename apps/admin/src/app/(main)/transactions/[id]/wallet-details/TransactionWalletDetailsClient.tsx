@@ -11,7 +11,7 @@ import { useWalletDetailQuery } from "@/features/wallet/queries";
 import type { WalletDetail } from "@/features/wallet/api";
 import { capitalizeWords } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { naira } from "@/views/transactions/transactionFormat";
 
 function TransactionWalletDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -124,9 +124,7 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
             <div className={"w-28.75"}>
               <p className={"text-text-grey text-meta leading-normal font-medium"}>Amount:</p>
             </div>
-            <p className={"text-body-s font-medium"}>
-              N{formatNumberWithCommas(Number(wallet?.info?.amount) || 0)}
-            </p>
+            <p className={"text-body-s font-medium"}>{naira(wallet?.info?.amount)}</p>
           </div>
           <div className={"items-center-center flex gap-6"}>
             <div className={"w-28.75"}>
@@ -168,7 +166,7 @@ function TransactionWalletDetailsClient({ id }: { id: string }) {
                   <div className="flex justify-between">
                     <div className="flex flex-col">
                       <p className={"text-body-s font-medium"}>
-                        {item?.wallet?.wallet_id} - ₦{formatNumberWithCommas(item?.amount ?? 0)}
+                        {item?.wallet?.wallet_id} - {naira(item?.amount)}
                       </p>
                       <p className={"text-text-grey text-meta leading-normal font-normal"}>
                         23, Mar 2023. 05:00PM

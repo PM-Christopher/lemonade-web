@@ -41,10 +41,10 @@ export const AlertMessage = () => {
   }, [showToast]);
 
   return showToast.show ? (
-    <div className="fixed top-10 left-0 w-full" style={{ zIndex: 99999 }}>
-      <div className="tablet:mx-auto tablet:w-218 z-100 w-full px-5">
+    <div className="fixed top-4 right-4" style={{ zIndex: 99999 }}>
+      <div className="w-full max-w-sm">
         <Toaster
-          position="top-center"
+          position="top-right"
           reverseOrder={false}
           gutter={8}
           toastOptions={{
@@ -52,7 +52,7 @@ export const AlertMessage = () => {
             style: {
               background: "#BFDF37",
               color: "#fff",
-              width: "100%",
+              maxWidth: "24rem",
             },
             success: {
               duration: 3000,

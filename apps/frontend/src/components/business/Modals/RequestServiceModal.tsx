@@ -1,8 +1,14 @@
 "use client";
 import React from "react";
-import { MoneyInput } from "@/components/global/MoneyInput";
 import CloseIcon from "@/images/icons/close.svg";
-import { Label, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
+import {
+  Label,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+  FieldError,
+  MoneyInput,
+} from "@lemonade/ui";
 import { formatStringUCFirst } from "@/lib/helper";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

@@ -1,7 +1,7 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
-import { useForm } from "react-hook-form";
+import { MoneyInput, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
@@ -29,7 +29,7 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
   const dispatch = useDispatch<AppDispatch>();
   const updateRate = useUpdatePointsRateMutation();
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     formState: { errors },
@@ -88,17 +88,27 @@ const PointsRateModal: React.FC<PointsRateModalInterface> = ({
           </div>
           <div style={{ marginTop: "20px" }}>
             <div className={"flex flex-col gap-4"}>
-              <div style={{ maxWidth: "328px" }}>
+              <div>
                 <p className={"text-text-grey text-body-s font-normal"}>
                   How much of {currency} a user receives per point redeemed. For example, 1 means
                   100 points = {currency === "NGN" ? "₦100" : `100 ${currency}`}.
                 </p>
               </div>
               <p className={"text-text-grey text-body-s font-normal"}>Rate per point</p>
-              <Input
-                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
-                placeholder={"e.g. 1"}
-                {...register("rate")}
+              <Controller
+                name="rate"
+                control={control}
+                render={({ field }) => (
+                  <MoneyInput
+                    className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
+                    placeholder={"e.g. 1"}
+                    aria-label="rate"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    onBlur={field.onBlur}
+                    padDecimals
+                  />
+                )}
               />
               <FieldError message={errors.rate?.message} />
               <div className={"flex justify-between gap-4"}>

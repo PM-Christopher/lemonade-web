@@ -1,8 +1,16 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
+import {
+  Label,
+  Input,
+  MoneyInput,
+  Dialog,
+  DialogContentBare,
+  DialogTitle,
+  FieldError,
+} from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import type { AdminSubscriptionPlan } from "@/features/subscriptions/api";
@@ -83,6 +91,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
 
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors, isValid },
@@ -200,13 +209,19 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   >
                     Monthly charge
                   </Label>
-                  <Input
-                    id="monthly_charge"
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    {...register("monthly_charge")}
+                  <Controller
+                    name="monthly_charge"
+                    control={control}
+                    render={({ field }) => (
+                      <MoneyInput
+                        id="monthly_charge"
+                        className="form-font bg-light-grey h-12 rounded-xl border-0"
+                        value={field.value as string}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        padDecimals
+                      />
+                    )}
                   />
                   <FieldError message={errors.monthly_charge?.message} />
                 </div>
@@ -217,13 +232,19 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   >
                     Yearly charge
                   </Label>
-                  <Input
-                    id="yearly_charge"
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    {...register("yearly_charge")}
+                  <Controller
+                    name="yearly_charge"
+                    control={control}
+                    render={({ field }) => (
+                      <MoneyInput
+                        id="yearly_charge"
+                        className="form-font bg-light-grey h-12 rounded-xl border-0"
+                        value={field.value as string}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        padDecimals
+                      />
+                    )}
                   />
                   <FieldError message={errors.yearly_charge?.message} />
                 </div>
@@ -237,12 +258,20 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   >
                     Event creation limit
                   </Label>
-                  <Input
-                    id="event_creation"
-                    type="number"
-                    min={0}
-                    className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    {...register("event_creation")}
+                  <Controller
+                    name="event_creation"
+                    control={control}
+                    render={({ field }) => (
+                      <MoneyInput
+                        id="event_creation"
+                        className="form-font bg-light-grey h-12 rounded-xl border-0"
+                        value={field.value as string}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        allowDecimals={false}
+                        grouping={false}
+                      />
+                    )}
                   />
                   <FieldError message={errors.event_creation?.message} />
                 </div>
@@ -272,13 +301,20 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   >
                     Sales commission (%)
                   </Label>
-                  <Input
-                    id="sales_commission"
-                    type="number"
-                    min={0}
-                    max={100}
-                    className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    {...register("sales_commission")}
+                  <Controller
+                    name="sales_commission"
+                    control={control}
+                    render={({ field }) => (
+                      <MoneyInput
+                        id="sales_commission"
+                        className="form-font bg-light-grey h-12 rounded-xl border-0"
+                        value={field.value as string}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        allowDecimals={false}
+                        grouping={false}
+                      />
+                    )}
                   />
                   <FieldError message={errors.sales_commission?.message} />
                 </div>
@@ -289,13 +325,20 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   >
                     Service commission (%)
                   </Label>
-                  <Input
-                    id="service_commission"
-                    type="number"
-                    min={0}
-                    max={100}
-                    className="form-font bg-light-grey h-12 rounded-xl border-0"
-                    {...register("service_commission")}
+                  <Controller
+                    name="service_commission"
+                    control={control}
+                    render={({ field }) => (
+                      <MoneyInput
+                        id="service_commission"
+                        className="form-font bg-light-grey h-12 rounded-xl border-0"
+                        value={field.value as string}
+                        onValueChange={field.onChange}
+                        onBlur={field.onBlur}
+                        allowDecimals={false}
+                        grouping={false}
+                      />
+                    )}
                   />
                   <FieldError message={errors.service_commission?.message} />
                 </div>

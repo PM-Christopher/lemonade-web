@@ -114,6 +114,7 @@ function VerifyCodeClient() {
                         value={field.value}
                         onChange={field.onChange}
                         numInputs={4}
+                        inputType="tel"
                         renderSeparator={<span> </span>}
                         renderInput={(props) => <input {...props} aria-label="Verification code" />}
                         containerStyle="gap-2"

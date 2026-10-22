@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   formatMinorNaira,
-  formatMoneyInput,
   formatNaira,
   formatNairaWhole,
   formatNumberWithCommas,
   minorToNaira,
-  sanitizeMoneyInput,
 } from "./formatNumber";
 
 describe("formatNumberWithCommas", () => {
@@ -29,29 +27,6 @@ describe("formatNaira", () => {
 
   it("shows zero for a missing amount", () => {
     expect(formatNaira(null)).toBe("₦0.00");
-  });
-});
-
-describe("money input helpers", () => {
-  it.each([
-    ["1a2b3", "123"],
-    ["007", "7"],
-    ["0.5", "0.5"],
-    ["12.345", "12.34"],
-    ["1.2.3", "1.23"],
-    ["", ""],
-  ])("sanitizes %j to %j", (typed, expected) => {
-    expect(sanitizeMoneyInput(typed)).toBe(expected);
-  });
-
-  it.each([
-    ["1234567", "1,234,567"],
-    ["1234.5", "1,234.5"],
-    ["1234.", "1,234."],
-    ["999", "999"],
-    ["", ""],
-  ])("formats %j as %j", (raw, expected) => {
-    expect(formatMoneyInput(raw)).toBe(expected);
   });
 });
 

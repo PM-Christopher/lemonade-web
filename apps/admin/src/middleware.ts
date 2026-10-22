@@ -143,6 +143,19 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  if (pathname === "/login") {
+    // A signed-in admin has no use for the login page, even by direct URL.
+    const loginToken = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
+    if (loginToken && (await getAdminPermissions(loginToken)) !== null) {
+      const homeUrl = req.nextUrl.clone();
+      homeUrl.pathname = "/";
+      homeUrl.search = "";
+      const res = NextResponse.redirect(homeUrl);
+      res.headers.set("Content-Security-Policy", csp);
+      return res;
+    }
+  }
+
   if (isPublic(pathname)) return next();
 
   // Login is now cut over to the httpOnly cookie (see

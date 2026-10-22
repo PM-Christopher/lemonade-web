@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { XIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Dialog, DialogContentBare, DialogTitle, Input } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, MoneyInput } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -33,7 +33,7 @@ function CommissionModal({ isOpen, toggle, current }: CommissionModalProps) {
   const dispatch = useDispatch<AppDispatch>();
   const mutation = useUpdateCommissionMutation();
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<CommissionForm, unknown, z.output<typeof commissionSchema>>({
@@ -77,12 +77,20 @@ function CommissionModal({ isOpen, toggle, current }: CommissionModalProps) {
           <label htmlFor="commission" className="text-text-grey text-meta mt-4 block">
             Commission percentage
           </label>
-          <Input
-            id="commission"
-            type="number"
-            inputMode="numeric"
-            className="bg-light-grey mt-1 h-12 rounded-xl border-0"
-            {...register("percentage")}
+          <Controller
+            name="percentage"
+            control={control}
+            render={({ field }) => (
+              <MoneyInput
+                id="commission"
+                className="bg-light-grey mt-1 h-12 rounded-xl border-0"
+                value={String(field.value ?? "")}
+                onValueChange={field.onChange}
+                onBlur={field.onBlur}
+                allowDecimals={false}
+                grouping={false}
+              />
+            )}
           />
           {errors.percentage && (
             <p className="text-red-1 text-meta mt-1 leading-normal">{errors.percentage.message}</p>

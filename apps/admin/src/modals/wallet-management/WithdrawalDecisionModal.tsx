@@ -7,9 +7,9 @@ import { useWithdrawalRequestDecisionMutation } from "@/features/wallet/mutation
 import type { WalletDetail } from "@/features/wallet/api";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { errorMessage } from "@/lib/api-error";
 import { RiskFlagList } from "@/components/wallet/PayoutRisk";
+import { naira } from "@/views/transactions/transactionFormat";
 
 type Decision = "approve" | "reject";
 
@@ -112,9 +112,7 @@ const WithdrawalDecisionModal: React.FC<WithdrawalDecisionModalProps> = ({
             <div className="bg-mid-grey flex flex-col gap-4 rounded-xl p-4">
               <div className="border-light-green rounded-lg border border-dashed bg-[#F5FAEB] py-4 text-center">
                 <p className="text-text-grey text-xs font-medium">Amount</p>
-                <p className="font-semiBold text-2xl text-[#5B8601]">
-                  ₦{formatNumberWithCommas(Number(withdrawal?.amount) || 0)}
-                </p>
+                <p className="font-semiBold text-2xl text-[#5B8601]">{naira(withdrawal?.amount)}</p>
               </div>
               {details.map(([label, value]) => (
                 <div className="flex flex-col" key={label}>

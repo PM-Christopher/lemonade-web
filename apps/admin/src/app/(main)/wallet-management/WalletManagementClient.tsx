@@ -110,7 +110,7 @@ function WalletManagementClient() {
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>{walletData?.total_wallets ?? 0} Wallets</p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-80 items-center gap-3 rounded-xl border p-2 px-3">
               <SearchIcon className={"text-grey-40 h-3 w-3"} />
               <input
                 id="search"
@@ -118,7 +118,7 @@ function WalletManagementClient() {
                 value={searchTerm}
                 onChange={(e) => filtered(setSearchTerm)(e.target.value)}
                 className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                placeholder="Search name..."
+                placeholder="Search wallet ID, name, amount or date"
               />
             </div>
             <select
@@ -140,7 +140,7 @@ function WalletManagementClient() {
         </div>
         <div className={"flex flex-col px-5"}>
           <div className={"border-grey-20 flex flex-col rounded-xl border"}>
-            <div className={"grid grid-cols-3 gap-6 px-3 pt-2 pb-4"}>
+            <div className={"grid auto-cols-fr grid-flow-col gap-6 overflow-x-auto px-3 pt-2 pb-4"}>
               <DataCard
                 title={"Wallet Revenue"}
                 count={walletData?.wallet_revenue || 0}

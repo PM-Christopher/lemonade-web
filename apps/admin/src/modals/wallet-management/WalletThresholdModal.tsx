@@ -1,7 +1,7 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
-import { useForm } from "react-hook-form";
+import { MoneyInput, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
@@ -20,7 +20,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
   const dispatch = useDispatch<AppDispatch>();
   const updateThreshold = useUpdateWithdrawalThresholdMutation();
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     formState: { errors },
@@ -71,16 +71,26 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
           </div>
           <div style={{ marginTop: "20px" }}>
             <div className={"flex flex-col gap-4"}>
-              <div style={{ maxWidth: "328px" }}>
+              <div>
                 <p className={"text-text-grey text-body-s font-normal"}>
                   Set the minimum amount that can be withdrawn from wallet balance.
                 </p>
               </div>
               <p className={"text-text-grey text-body-s font-normal"}>Amount</p>
-              <Input
-                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
-                placeholder={"Amount"}
-                {...register("threshold")}
+              <Controller
+                name="threshold"
+                control={control}
+                render={({ field }) => (
+                  <MoneyInput
+                    className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
+                    placeholder={"Amount"}
+                    aria-label="threshold"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    onBlur={field.onBlur}
+                    padDecimals
+                  />
+                )}
               />
               <FieldError message={errors.threshold?.message} />
               <div className={"flex justify-between gap-4"}>

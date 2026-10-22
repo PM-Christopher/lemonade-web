@@ -1,6 +1,5 @@
 "use client";
 import { routes } from "@/lib/routes";
-import { MoneyInput } from "@/components/global/MoneyInput";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -16,7 +15,7 @@ import { apiMessage } from "@/lib/api-message";
 import { useAppDispatch } from "@/redux/hook";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
-import { Label, Input, FieldError, RichTextField } from "@lemonade/ui";
+import { Label, Input, FieldError, RichTextField, MoneyInput } from "@lemonade/ui";
 import { MAX_DESCRIPTION_WORDS } from "@lemonade/domain";
 import { MultiSelect } from "@/components/ui/multi-select";
 import CountryList from "country-list-with-dial-code-and-flag";

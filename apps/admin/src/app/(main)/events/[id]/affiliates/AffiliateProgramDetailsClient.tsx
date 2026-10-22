@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import MainLayout from "@/components/layouts/MainLayout";
 import { useEventAffiliateDetailQuery } from "@/features/events/queries";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
 import { formatLongDate } from "@/lib/dateTimeFormatter";
 import { RootState } from "@/redux/store";
 import { CalendarIcon, CopyIcon, ExternalLinkIcon, MapPinIcon } from "lucide-react";
@@ -10,6 +9,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { AvatarName } from "@/components/global/AvatarName";
 import { useSelector } from "react-redux";
+import { naira } from "@/views/transactions/transactionFormat";
 
 const PayoutHistoryModal = dynamic(() => import("@/modals/users/PayoutHistoryModal"), {
   ssr: false,
@@ -82,9 +82,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                 Total Revenue:
               </p>
             </div>
-            <p className={"text-body-s font-medium"}>
-              N{formatNumberWithCommas(affiliate?.total_revenue ?? 0)}
-            </p>
+            <p className={"text-body-s font-medium"}>{naira(affiliate?.total_revenue)}</p>
           </div>
           {affiliate?.account ? (
             <>
@@ -203,7 +201,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                       </p>
                     </div>
                     <p className={"text-body-s font-medium"}>
-                      N{formatNumberWithCommas(program.breakdown.total_commissions)}
+                      {naira(program.breakdown.total_commissions)}
                     </p>
                   </div>
                   <div className={"items-center-center flex gap-6"}>
@@ -237,9 +235,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                               Price:
                             </p>
                           </div>
-                          <p className={"text-body-s font-medium"}>
-                            N{formatNumberWithCommas(ticket.price)}
-                          </p>
+                          <p className={"text-body-s font-medium"}>{naira(ticket.price)}</p>
                         </div>
                       </div>
                     ))}

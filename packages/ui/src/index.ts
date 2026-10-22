@@ -21,6 +21,12 @@ export { FieldError } from "./field-error";
 export { Input, type InputProps } from "./input";
 export { Label } from "./label";
 export {
+  MoneyInput,
+  formatMoneyInput,
+  sanitizeMoneyInput,
+  type MoneyInputProps,
+} from "./money-input";
+export {
   Select,
   SelectGroup,
   SelectValue,

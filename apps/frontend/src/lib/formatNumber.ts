@@ -41,19 +41,3 @@ export const formatMinorNaira = (minor: NumberLike): string =>
 
 /** Kobo from the API as a plain naira number, for form prefill. */
 export const minorToNaira = (minor: NumberLike): number => (toNumber(minor) ?? 0) / 100;
-
-/** Keeps digits and one decimal point (max 2 decimals) from what the user typed. */
-export const sanitizeMoneyInput = (text: string): string => {
-  const cleaned = text.replace(/[^0-9.]/g, "");
-  const [whole = "", ...rest] = cleaned.split(".");
-  const trimmedWhole = whole.replace(/^0+(?=\d)/, "");
-  if (rest.length === 0) return trimmedWhole;
-  return `${trimmedWhole}.${rest.join("").slice(0, 2)}`;
-};
-
-/** Adds thousands separators to a sanitized amount: "1234.5" becomes "1,234.5". */
-export const formatMoneyInput = (raw: string): string => {
-  const [whole = "", decimals] = raw.split(".");
-  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return decimals === undefined ? grouped : `${grouped}.${decimals}`;
-};

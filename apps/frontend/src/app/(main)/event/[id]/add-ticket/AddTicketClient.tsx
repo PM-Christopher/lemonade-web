@@ -1,10 +1,9 @@
 "use client";
 import { routes } from "@/lib/routes";
-import { MoneyInput } from "@/components/global/MoneyInput";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useEffect, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
-import { Label, Input, Button, FieldError } from "@lemonade/ui";
+import { Label, Input, Button, FieldError, MoneyInput } from "@lemonade/ui";
 import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import CloseIcon from "@/images/icons/close.svg";

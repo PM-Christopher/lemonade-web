@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { USER_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
+import { userProfileRoutes } from "@lemonade/api-types/generated";
 
 // UX redirect only — Laravel Policies remain the only real authorization
 // authority. Now checks the httpOnly lemonade_user_token cookie set by
@@ -81,6 +82,22 @@ const GUEST_TRIBE_PATH = /^\/tribe\/([^/]+)\/?$/;
 
 const PROTECTED_PREFIXES = ["/event", "/tribe", "/business", "/", "/settings"];
 
+// Pages a signed-in user has no use for.
+const GUEST_ONLY_PATHS = ["/login", "/signup"];
+
+// A real check against the backend, so a stale cookie never traps someone away from login.
+async function hasValidSession(token: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${process.env.LARAVEL_API_URL}/v1${userProfileRoutes.SHOW}`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      cache: "no-store",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.includes(pathname);
 }
@@ -88,7 +105,7 @@ function isProtected(pathname: string) {
   return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -100,6 +117,18 @@ export function middleware(req: NextRequest) {
     const res = NextResponse.next({ request: { headers: requestHeaders } });
     res.headers.set("Content-Security-Policy", csp);
     return res;
+  }
+
+  if (GUEST_ONLY_PATHS.includes(pathname)) {
+    const token = req.cookies.get(USER_TOKEN_COOKIE)?.value;
+    if (token && (await hasValidSession(token))) {
+      const homeUrl = req.nextUrl.clone();
+      homeUrl.pathname = "/";
+      homeUrl.search = "";
+      const res = NextResponse.redirect(homeUrl);
+      res.headers.set("Content-Security-Policy", csp);
+      return res;
+    }
   }
 
   if (isPublic(pathname)) return next();

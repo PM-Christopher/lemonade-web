@@ -1,11 +1,10 @@
 "use client";
 import { routes } from "@/lib/routes";
-import { MoneyInput } from "@/components/global/MoneyInput";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
-import { Label, Input, FieldError, RichTextField } from "@lemonade/ui";
+import { Label, Input, FieldError, RichTextField, MoneyInput } from "@lemonade/ui";
 import { MAX_DESCRIPTION_WORDS } from "@lemonade/domain";
 import MessageIcon from "@/images/icons/messageIcon.svg";
 import PhoneIcon from "@/images/icons/phoneIcon.svg";

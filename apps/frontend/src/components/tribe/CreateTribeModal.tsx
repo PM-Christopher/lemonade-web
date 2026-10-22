@@ -1,5 +1,4 @@
 import { images } from "@/lib/images";
-import { MoneyInput } from "@/components/global/MoneyInput";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useRef, useState } from "react";
@@ -19,6 +18,7 @@ import {
   DialogContentBare,
   DialogTitle,
   FieldError,
+  MoneyInput,
 } from "@lemonade/ui";
 import DollarBillIcon from "@/images/icons/dollar-bill.svg";
 import InfoIcon from "@/images/icons/infoIcon.svg";

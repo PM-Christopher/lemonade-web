@@ -50,18 +50,18 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
   }, [isError, user, push]);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar (only visible on non-mobile) */}
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar stays put; its menu scrolls on its own. */}
       {!isMobile && <SideNav />}
 
-      {/* Main Content */}
-      <main className={`bg-light-grey min-h-screen flex-1 ${isMobile ? "flex flex-col" : ""}`}>
+      <main className="bg-light-grey flex h-full min-w-0 flex-1 flex-col">
         <TopNav />
 
-        {/* Content (ensure it takes available height) */}
-        <div className="flex-grow overflow-auto">{children}</div>
+        {/* Only the content scrolls. */}
+        <div className={`min-h-0 flex-1 overflow-y-auto ${isMobile ? "pb-16" : ""}`}>
+          {children}
+        </div>
 
-        {/* Bottom Nav (only visible on mobile and make it scrollable) */}
         {isMobile && (
           <div className="overflow-x-auto whitespace-nowrap">
             <BottomNav />
@@ -69,16 +69,6 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
         )}
       </main>
     </div>
-
-    //  <div className="bg-light_grey pb-10 min-h-screen h-full overflow-hidden w-full">
-    //             <TopNav/>
-    //             {children}
-    //             {/* {
-    //                 isMobile && (
-    //                     <BottomNav />
-    //                 )
-    //             } */}
-    //         </div>
   );
 };
 

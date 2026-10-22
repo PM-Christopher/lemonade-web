@@ -9,6 +9,7 @@ import { clientEnv } from "@/lib/env.client";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { naira } from "@/views/transactions/transactionFormat";
 
 const AffiliateUserClient = ({ id }: { id: string }) => {
   const [refHistoryOpen, setRefHistoryOpen] = useState<boolean>(false);
@@ -133,7 +134,7 @@ const AffiliateUserClient = ({ id }: { id: string }) => {
                         Total Amount Earned
                       </p>
                       <p className={"font-semiBold text-black-light text-body-xl"}>
-                        ₦ {formatNumberWithCommas(isData?.total_amount_earned || 0)}
+                        {naira(isData?.total_amount_earned)}
                       </p>
                     </div>
                   </div>

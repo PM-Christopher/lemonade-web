@@ -15,8 +15,8 @@ describe("CommissionModal", () => {
   it("starts on the current percentage and saves a new one", async () => {
     render(<CommissionModal isOpen toggle={vi.fn()} current={10} />);
 
-    const input = screen.getByRole("spinbutton");
-    expect(input).toHaveValue(10);
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveValue("10");
 
     fireEvent.change(input, { target: { value: "15" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -27,10 +27,19 @@ describe("CommissionModal", () => {
   it("rejects a value above 100 without calling the server", async () => {
     render(<CommissionModal isOpen toggle={vi.fn()} current={10} />);
 
-    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "150" } });
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "150" } });
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
     expect(await screen.findByText("Cannot be above 100")).toBeInTheDocument();
     expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("ignores letters and symbols as they are typed", () => {
+    render(<CommissionModal isOpen toggle={vi.fn()} current={10} />);
+    const input = screen.getByRole("textbox");
+
+    fireEvent.change(input, { target: { value: "1a2-%" } });
+
+    expect(input).toHaveValue("12");
   });
 });

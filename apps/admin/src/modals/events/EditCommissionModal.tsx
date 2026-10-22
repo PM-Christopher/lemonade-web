@@ -1,9 +1,9 @@
 import React from "react";
 import { XIcon } from "lucide-react";
-import { Dialog, DialogContentBare, DialogTitle, Input, FieldError } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle, MoneyInput, FieldError } from "@lemonade/ui";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
@@ -22,7 +22,7 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
   const updateCommissionChargeMutation = useUpdateCommissionChargeMutation();
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<CommissionChargeInput>({
@@ -71,11 +71,19 @@ function EditCommissionModal({ isOpen, toggle, commissionCharge }: EditCommissio
                 Set the commission to be earned on every ticket sale.
               </p>
               <p className={"text-text-grey text-body-s font-normal"}>Commission percentage (%)</p>
-              <Input
-                className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
-                placeholder={"Commission percentage"}
-                type={"number"}
-                {...register("percentage")}
+              <Controller
+                name="percentage"
+                control={control}
+                render={({ field }) => (
+                  <MoneyInput
+                    className={"bg-light-grey h-12 rounded-xl border-none px-3 py-3"}
+                    placeholder={"Commission percentage"}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    onBlur={field.onBlur}
+                    grouping={false}
+                  />
+                )}
               />
               <FieldError message={errors.percentage?.message} />
               <div className={"flex justify-between gap-2.5"}>

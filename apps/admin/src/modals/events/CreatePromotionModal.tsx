@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { PlusIcon, XIcon } from "lucide-react";
-import { Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
-import { useForm, useWatch } from "react-hook-form";
+import { Dialog, DialogContentBare, DialogTitle, FieldError, MoneyInput } from "@lemonade/ui";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -51,9 +51,9 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
-    control,
     formState: { errors, isValid, isSubmitting },
   } = useForm<PromotionInput>({
     resolver: zodResolver(promotionSchema),
@@ -160,11 +160,20 @@ const CreatePromotionModal: React.FC<CreatePromotionModalProps> = ({
               </div>
               <div className={"flex flex-col gap-0.5"}>
                 <p className={"text-text-grey text-body-s font-normal"}>Promotion Price</p>
-                <input
-                  id="price"
-                  className={"bg-light-grey text-body-s h-12 gap-3 rounded-xl p-3"}
-                  placeholder={"N0.00"}
-                  {...register("price")}
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field }) => (
+                    <MoneyInput
+                      id="price"
+                      className={"bg-light-grey text-body-s h-12 gap-3 rounded-xl border-0 p-3"}
+                      placeholder={"₦0.00"}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      onBlur={field.onBlur}
+                      padDecimals
+                    />
+                  )}
                 />
                 <FieldError message={errors.price?.message} />
               </div>
