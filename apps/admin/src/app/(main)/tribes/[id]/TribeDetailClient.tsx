@@ -100,8 +100,8 @@ const TribeDetailClient = ({ id }: { id: string }) => {
 
   return (
     <>
-      <section className="flex justify-between bg-white">
-        <div className="flex h-195 w-2/3 shrink-0 flex-col gap-4 overflow-y-auto border-r p-6">
+      <section className="flex min-h-full items-stretch bg-white">
+        <div className="flex w-2/3 shrink-0 flex-col gap-4 border-r p-6">
           {pinned.length > 0 && (
             <div className="flex gap-2 overflow-x-auto">
               {pinned.map((thread: TribeThread) => (
@@ -116,8 +116,8 @@ const TribeDetailClient = ({ id }: { id: string }) => {
             </div>
           )}
           <div className="flex gap-3">
-            <div className="bg-light-grey border-grey-20 flex h-10 flex-1 items-center gap-3 rounded-xl border px-3">
-              <SearchIcon className="text-grey-40 h-3.5 w-3.5" />
+            <div className="bg-light-grey border-grey-20 flex h-10 min-w-0 flex-1 items-center gap-3 rounded-xl border px-3">
+              <SearchIcon className="text-grey-40 h-3.5 w-3.5 shrink-0" />
               <input
                 type="text"
                 aria-label="Search tribe"
@@ -127,18 +127,23 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                 onChange={(event) => setSearch(event.target.value)}
               />
             </div>
-            <Select value={sort} onValueChange={(value) => setSort(value as "popular" | "newest")}>
-              <SelectTrigger
-                aria-label="Sort threads"
-                className="font-semiBold text-text-grey text-meta h-10 w-36 rounded-xl uppercase"
+            <div className="w-36 shrink-0">
+              <Select
+                value={sort}
+                onValueChange={(value) => setSort(value as "popular" | "newest")}
               >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="popular">Popular</SelectItem>
-              </SelectContent>
-            </Select>
+                <SelectTrigger
+                  aria-label="Sort threads"
+                  className="font-semiBold text-text-grey text-meta h-10 w-full rounded-xl uppercase"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest</SelectItem>
+                  <SelectItem value="popular">Popular</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           {threads.length > 0 ? (
             threads.map((thread) => (
@@ -155,7 +160,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
           )}
         </div>
 
-        <div className="flex h-195 min-w-0 flex-1 flex-col gap-6 overflow-y-auto p-6">
+        <div className="flex min-w-0 flex-1 flex-col gap-6 p-6">
           <div className="flex items-center justify-between">
             <p className="text-body-l font-semibold">Tribe details</p>
             {isRestricted ? (

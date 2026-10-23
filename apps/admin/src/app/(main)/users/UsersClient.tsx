@@ -123,13 +123,13 @@ function UsersClient() {
   }, [status, setSearchParams]);
 
   return (
-    <section className="mt-5 flex flex-col gap-5">
+    <section className="mt-6 flex flex-col gap-5">
       <div className={"flex justify-between px-5"}>
         <p className={"font-semiBold text-body-l"}>
           {(userData && "users" in userData ? userData.users.length : 0) || 0} users
         </p>
         <div className={"flex justify-between gap-3"}>
-          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
             <div>
               <SearchIcon className={"text-grey-40 h-3 w-3"} />
             </div>

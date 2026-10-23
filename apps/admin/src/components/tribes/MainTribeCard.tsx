@@ -2,7 +2,15 @@
 import { images } from "@/lib/images";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { DotIcon, MoreVerticalIcon, PinIcon, Trash2Icon, UserIcon } from "lucide-react";
+import {
+  DotIcon,
+  HeartIcon,
+  MessageCircleIcon,
+  MoreVerticalIcon,
+  PinIcon,
+  Trash2Icon,
+  UserIcon,
+} from "lucide-react";
 import dayjs from "dayjs";
 import { TribeThread } from "@/features/tribes/api";
 
@@ -153,6 +161,14 @@ const MainTribeCard = ({ thread, onDelete, onPin, onViewProfile }: MainTribeCard
           ))}
         </div>
       )}
+      <div className="text-text-grey text-meta flex items-center gap-4">
+        <span className="flex items-center gap-1">
+          <HeartIcon className="h-3.5 w-3.5" /> {thread.likes_count ?? 0}
+        </span>
+        <span className="flex items-center gap-1">
+          <MessageCircleIcon className="h-3.5 w-3.5" /> {thread.comments_count ?? 0}
+        </span>
+      </div>
       {(thread.tags?.length ?? 0) > 0 && (
         <div className="flex flex-wrap gap-2">
           {thread.tags?.map((tag) => (

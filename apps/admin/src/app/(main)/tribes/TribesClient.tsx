@@ -39,11 +39,11 @@ const TribesClient = () => {
 
   return (
     <>
-      <section className="flex flex-col gap-5">
-        <div className={"flex justify-between px-5"}>
+      <section className="mt-6 flex flex-col gap-5">
+        <div className={"flex items-center justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>{tribeListData?.tribes.length ?? 0} Tribes</p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
                 <SearchIcon className={"text-grey-40 h-3 w-3"} />
               </div>
@@ -59,19 +59,21 @@ const TribesClient = () => {
               </div>
             </div>
 
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger
-                aria-label="Filter by status"
-                className="font-semiBold text-text-grey text-meta h-10 w-40 rounded-xl leading-normal"
-              >
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="ACTIVE">Active</SelectItem>
-                <SelectItem value="RESTRICTED">Restricted</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="w-40 shrink-0">
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger
+                  aria-label="Filter by status"
+                  className="font-semiBold text-text-grey text-meta h-10 w-full rounded-xl leading-normal"
+                >
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="ACTIVE">Active</SelectItem>
+                  <SelectItem value="RESTRICTED">Restricted</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <DateRangePicker value={range} onChange={setRange} />
             <div>
               <Button

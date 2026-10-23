@@ -69,7 +69,7 @@ function ReportingClient() {
           {reportData?.meta?.total ?? rows.length} Reports
         </p>
         <div className="flex justify-between gap-3">
-          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 items-center gap-3 rounded-xl border p-2 px-3">
+          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
             <SearchIcon className="text-grey-40 h-3 w-3" />
             <input
               id="search"

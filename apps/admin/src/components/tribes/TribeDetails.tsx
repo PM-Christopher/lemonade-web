@@ -89,7 +89,11 @@ const TribeDetails = ({
 
       <div>
         <p className="text-body-l mb-4 font-medium">Members</p>
-        <div className={"bg-light-grey flex flex-col gap-2 rounded-xl px-6 py-4"}>
+        <div
+          className={
+            "bg-light-grey flex max-h-96 flex-col gap-2 overflow-y-auto rounded-xl px-6 py-4"
+          }
+        >
           {tribe?.creator && (
             <div className={"border-b-grey-20 flex justify-between border-b py-2.5"}>
               <div className={"flex items-center gap-2"}>
