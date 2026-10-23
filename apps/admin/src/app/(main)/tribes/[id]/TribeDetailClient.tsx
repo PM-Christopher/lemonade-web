@@ -180,10 +180,10 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                   <ChevronDown />
                 </div>
                 {dropdownOpen && (
-                  <div className="absolute top-full right-0 z-50 w-51.75 rounded-xl bg-white shadow">
+                  <div className="absolute top-full right-0 z-50 mt-2 w-51.75 rounded-xl bg-white p-3 shadow-lg">
                     <ul>
                       <li
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="cursor-pointer rounded-lg px-3 py-2.5 hover:bg-gray-100"
                         onClick={() => {
                           setDropdownOpen(false);
                           setRestrictModalOpen(true);
@@ -192,7 +192,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                         <p className="text-body-l font-normal">Restrict Tribe</p>
                       </li>
                       <li
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="cursor-pointer rounded-lg px-3 py-2.5 hover:bg-gray-100"
                         onClick={() => {
                           setDropdownOpen(false);
                           setDeleteModalOpen(true);

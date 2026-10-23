@@ -78,15 +78,15 @@ const MainTribeCard = ({ thread, onDelete, onPin, onViewProfile }: MainTribeCard
             <MoreVerticalIcon className="h-4 w-4" />
           </button>
           {menuOpen && (
-            <ul className="absolute top-full right-0 z-40 w-44 rounded-xl bg-white py-1 shadow-lg">
+            <ul className="absolute top-full right-0 z-40 mt-2 flex w-52 flex-col gap-1 rounded-xl bg-white p-3 shadow-lg">
               {thread.user && onViewProfile && (
                 <li>
                   <button
                     type="button"
-                    className="text-body-s flex w-full cursor-pointer items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                    className="text-body-l flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-gray-100"
                     onClick={() => choose(() => onViewProfile(thread))}
                   >
-                    <UserIcon className="h-4 w-4" /> View profile
+                    <UserIcon className="h-5 w-5" /> View profile
                   </button>
                 </li>
               )}
@@ -94,10 +94,10 @@ const MainTribeCard = ({ thread, onDelete, onPin, onViewProfile }: MainTribeCard
                 <li>
                   <button
                     type="button"
-                    className="text-body-s flex w-full cursor-pointer items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                    className="text-body-l flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-gray-100"
                     onClick={() => choose(() => onPin(thread.id))}
                   >
-                    <PinIcon className="h-4 w-4" /> {thread.pinned ? "Unpin thread" : "Pin thread"}
+                    <PinIcon className="h-5 w-5" /> {thread.pinned ? "Unpin thread" : "Pin thread"}
                   </button>
                 </li>
               )}
@@ -105,10 +105,10 @@ const MainTribeCard = ({ thread, onDelete, onPin, onViewProfile }: MainTribeCard
                 <li>
                   <button
                     type="button"
-                    className="text-red-1 text-body-s flex w-full cursor-pointer items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                    className="text-red-1 text-body-l flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-gray-100"
                     onClick={() => choose(() => onDelete(thread.id))}
                   >
-                    <Trash2Icon className="h-4 w-4" /> Delete thread
+                    <Trash2Icon className="h-5 w-5" /> Delete thread
                   </button>
                 </li>
               )}
