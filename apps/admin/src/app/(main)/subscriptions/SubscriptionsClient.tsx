@@ -1,4 +1,7 @@
 "use client";
+import { usePagination } from "@/hooks/usePagination";
+import PaginationComp from "@/components/global/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { ActionMenu } from "@/components/global/ActionMenu";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -77,6 +80,8 @@ function SubscriptionsClient() {
 
   const plans = planData?.plans ?? [];
 
+  const pager = usePagination(plans);
+
   return (
     <>
       <section className="mt-6 flex flex-col gap-5">
@@ -125,7 +130,7 @@ function SubscriptionsClient() {
                 </thead>
                 <tbody>
                   {plans.length > 0 ? (
-                    plans.map((plan) => (
+                    pager.pageItems.map((plan) => (
                       <tr key={plan.id} className="border-grey-20 h-18 border-b">
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           <div className="flex items-center gap-2">
@@ -200,6 +205,12 @@ function SubscriptionsClient() {
                   )}
                 </tbody>
               </table>
+              <PaginationComp
+                currentPage={pager.page}
+                totalPages={pager.totalPages}
+                onPageChange={pager.setPage}
+                perPage={DEFAULT_PAGE_SIZE}
+              />
             </div>
           </div>
         </div>

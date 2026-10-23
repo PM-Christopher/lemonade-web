@@ -1,4 +1,5 @@
 import { AvatarName } from "@/components/global/AvatarName";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -31,7 +32,7 @@ function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: U
   const status = searchParams?.get("status");
 
   const [localPage, setLocalPage] = useState(1);
-  const perPage = 10;
+  const perPage = DEFAULT_PAGE_SIZE;
 
   // UsersClient.tsx only renders this view for the "users" tab, where
   // useUserListQuery always resolves to UserListResponse — the union prop

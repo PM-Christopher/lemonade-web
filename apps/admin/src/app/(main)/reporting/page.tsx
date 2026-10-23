@@ -1,4 +1,5 @@
 // Prefetches page 1 with no filters, the client's default view.
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { reportingKeys } from "@/features/reporting/queries";
@@ -7,7 +8,7 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import ReportingClient from "./ReportingClient";
 
-const DEFAULT_PER_PAGE = 10;
+const DEFAULT_PER_PAGE = DEFAULT_PAGE_SIZE;
 
 export default async function ReportingPage() {
   await requireAdminPermission(ADMIN_PERMISSIONS.reportsView);

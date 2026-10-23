@@ -370,12 +370,23 @@ export interface MarkJobStatusRequest {
   remark?: string;
 }
 
+export interface MenuPreferencesRequest {
+  menu_order?: {}[];
+  hidden_menu?: {}[];
+}
+
 export interface PaymentsToReviewRequest {
   status?: "stuck" | "failed" | "all";
   type?: string;
   search?: string;
   page?: number;
   per_page?: number;
+}
+
+export interface PlatformSettingsRequest {
+  platform_name: string;
+  logo_url?: string;
+  inactivity_timeout_minutes: number;
 }
 
 export interface ProcessWithdrawalRequestRequest {

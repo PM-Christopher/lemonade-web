@@ -3,11 +3,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, type ResetPasswordInput } from "@lemonade/validation";
-import Image from "next/image";
+import { BrandLogo } from "@/components/global/BrandLogo";
 import { Card, CardContent, Label, Input, FieldError } from "@lemonade/ui";
 import { SubmitButton } from "@/components/global/SubmitButton";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { useResetPasswordMutation } from "@/features/authentication/mutations";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -58,7 +57,7 @@ function ResetPasswordPage({}) {
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
-            <Image src={images.LOGO} alt="logo" width={127} height={56} />
+            <BrandLogo />
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">

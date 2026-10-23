@@ -1,4 +1,5 @@
 import { routes } from "@/lib/routes";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
@@ -22,7 +23,7 @@ const AffiliateView = ({ pageData, range = null }: AffiliateViewProps) => {
   const term = searchParams?.get("search")?.toLowerCase().trim() ?? "";
   const { push } = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 10;
+  const perPage = DEFAULT_PAGE_SIZE;
 
   // EventsClient.tsx only renders this view for the "affiliates" tab, where
   // getEventData always resolves to EventAffiliatesResponse — the union

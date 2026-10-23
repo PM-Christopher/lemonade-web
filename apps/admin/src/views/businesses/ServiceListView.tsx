@@ -1,4 +1,7 @@
 "use client";
+import { usePagination } from "@/hooks/usePagination";
+import PaginationComp from "@/components/global/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React from "react";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
@@ -39,6 +42,8 @@ export function ServiceListView({ filters }: { filters: BusinessFilters }) {
   const { data, isLoading } = useServiceListQuery(filters, { enabled: isLoggedIn });
   const services = data?.services ?? [];
 
+  const pager = usePagination(services, JSON.stringify(filters));
+
   return (
     <div className="flex flex-col gap-3 p-3">
       <div className="flex flex-wrap gap-3">
@@ -63,7 +68,7 @@ export function ServiceListView({ filters }: { filters: BusinessFilters }) {
           </thead>
           <tbody>
             {services.length > 0 ? (
-              services.map((service) => (
+              pager.pageItems.map((service) => (
                 <tr
                   key={service.id}
                   className="border-grey-20 h-18 cursor-pointer border-b"
@@ -99,6 +104,12 @@ export function ServiceListView({ filters }: { filters: BusinessFilters }) {
             )}
           </tbody>
         </table>
+        <PaginationComp
+          currentPage={pager.page}
+          totalPages={pager.totalPages}
+          onPageChange={pager.setPage}
+          perPage={DEFAULT_PAGE_SIZE}
+        />
       </div>
     </div>
   );

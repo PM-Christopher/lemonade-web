@@ -1,4 +1,5 @@
 import { AvatarName } from "@/components/global/AvatarName";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -21,7 +22,7 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
   const query = searchParams?.get("q");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 10;
+  const perPage = DEFAULT_PAGE_SIZE;
 
   // UsersClient.tsx only renders this view for the "affiliates" tab, where
   // useUserListQuery always resolves to AffiliateListResponse — the union

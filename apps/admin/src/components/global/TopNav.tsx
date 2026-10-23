@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronLeft, Headset, LogOut, UserCircle } from "lucide-react";
+import { ChevronLeft, Headset, LogOut, Settings, UserCircle } from "lucide-react";
 import { ActionMenu } from "@/components/global/ActionMenu";
 import { useAdminLogout } from "@/hooks/useAdminLogout";
 import { useSelector } from "react-redux";
@@ -70,6 +70,11 @@ function TopNav({}) {
               label: "Profile",
               icon: <UserCircle className="h-4 w-4" aria-hidden="true" />,
               onSelect: () => push(routes.PROFILE),
+            },
+            {
+              label: "Settings",
+              icon: <Settings className="h-4 w-4" aria-hidden="true" />,
+              onSelect: () => push(routes.SETTINGS),
             },
             {
               label: "Logout",

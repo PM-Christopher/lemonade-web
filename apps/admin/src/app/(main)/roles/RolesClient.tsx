@@ -1,4 +1,7 @@
 "use client";
+import { usePagination } from "@/hooks/usePagination";
+import PaginationComp from "@/components/global/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { ActionMenu } from "@/components/global/ActionMenu";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -37,6 +40,8 @@ function RolesClient() {
     setFormOpen(false);
     setEditing(undefined);
   };
+
+  const pager = usePagination(roles);
 
   return (
     <>
@@ -79,7 +84,7 @@ function RolesClient() {
                 </thead>
                 <tbody>
                   {roles.length > 0 ? (
-                    roles.map((role) => (
+                    pager.pageItems.map((role) => (
                       <tr key={role.id} className="border-grey-20 h-16 border-b">
                         <td className="p-4 font-sans text-sm font-medium">
                           <div className="flex items-center gap-2">
@@ -134,6 +139,12 @@ function RolesClient() {
                   )}
                 </tbody>
               </table>
+              <PaginationComp
+                currentPage={pager.page}
+                totalPages={pager.totalPages}
+                onPageChange={pager.setPage}
+                perPage={DEFAULT_PAGE_SIZE}
+              />
             </div>
           </div>
         </div>

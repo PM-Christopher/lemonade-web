@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { Avatar } from "@/components/global/Avatar";
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
@@ -34,7 +35,7 @@ const AccountPlanModal = dynamic(() => import("@/modals/users/AccountPlanModal")
 const ChatModal = dynamic(() => import("@/modals/users/ChatModal"), { ssr: false });
 const UserTribeModal = dynamic(() => import("@/modals/users/UserTribeModal"), { ssr: false });
 
-const LOGS_PER_PAGE = 10;
+const LOGS_PER_PAGE = DEFAULT_PAGE_SIZE;
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (

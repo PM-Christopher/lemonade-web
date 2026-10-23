@@ -1,4 +1,7 @@
 "use client";
+import { usePagination } from "@/hooks/usePagination";
+import PaginationComp from "@/components/global/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -142,6 +145,8 @@ function DisputesClient() {
     );
   };
 
+  const pager = usePagination(disputes, `${status}|${quick}|${searchValue}`);
+
   return (
     <section className="mt-6 flex flex-col gap-5">
       <div className={"flex justify-between px-5"}>
@@ -240,7 +245,7 @@ function DisputesClient() {
               </thead>
               <tbody>
                 {disputes.length > 0 ? (
-                  disputes.map((dispute) => {
+                  pager.pageItems.map((dispute) => {
                     const isOpen = dispute.status === "pending";
                     const assignedToMe = myId !== null && dispute.assignee?.id === myId;
                     return (
@@ -333,6 +338,12 @@ function DisputesClient() {
                 )}
               </tbody>
             </table>
+            <PaginationComp
+              currentPage={pager.page}
+              totalPages={pager.totalPages}
+              onPageChange={pager.setPage}
+              perPage={DEFAULT_PAGE_SIZE}
+            />
           </div>
         </div>
       </div>

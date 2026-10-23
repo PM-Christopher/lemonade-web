@@ -1,5 +1,7 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { settingsKeys } from "@/features/settings/queries";
 import { useLogoutMutation } from "@/features/authentication/mutations";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useAppDispatch } from "@/redux/hook";
@@ -10,6 +12,7 @@ import { routes } from "@/lib/routes";
 export function useAdminLogout() {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
+  const queryClient = useQueryClient();
   const logoutMutation = useLogoutMutation();
 
   return () =>
@@ -20,6 +23,10 @@ export function useAdminLogout() {
         );
       },
       // The session is cleared locally even if the backend call fails.
-      onSettled: () => push(routes.LOGIN),
+      onSettled: () => {
+        // Menu preferences belong to the admin who just left.
+        queryClient.removeQueries({ queryKey: settingsKeys.detail() });
+        push(routes.LOGIN);
+      },
     });
 }

@@ -11,6 +11,7 @@ import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "../global/BottomNav";
 import { routes } from "@/lib/routes";
+import { InactivityGuard } from "@/components/global/InactivityGuard";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -61,6 +62,8 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
         <div className={`min-h-0 flex-1 overflow-y-auto ${isMobile ? "pb-16" : ""}`}>
           {children}
         </div>
+
+        {Boolean(user) && <InactivityGuard />}
 
         {isMobile && (
           <div className="overflow-x-auto whitespace-nowrap">

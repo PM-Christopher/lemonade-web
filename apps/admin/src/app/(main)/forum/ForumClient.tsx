@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useEffect, useState } from "react";
 import { ActionMenu } from "@/components/global/ActionMenu";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -28,7 +29,7 @@ const ViewContentModal = dynamic(() => import("@/modals/moderation/ViewContentMo
   ssr: false,
 });
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 const FORUM_STATUSES: ReadonlyArray<{ value: ForumStatus; label: string }> = [
   { value: "active", label: "Active" },

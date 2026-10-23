@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -18,7 +19,7 @@ import DateRangePicker, { toApiTime, type DateRange } from "@/components/global/
 import useDebounce from "@/hooks/useDebounce";
 import { images } from "@/lib/images";
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 const STATUS_OPTIONS = [
   { value: "all", label: "All" },

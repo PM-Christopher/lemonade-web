@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
@@ -21,7 +22,7 @@ const RemoveTeamMemberModal = dynamic(() => import("@/modals/team/RemoveTeamMemb
   ssr: false,
 });
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 const RANGES: { value: string; label: string; days: number | null }[] = [
   { value: "all", label: "ALL TIME", days: null },

@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
@@ -14,7 +15,7 @@ import { naira } from "@/views/transactions/transactionFormat";
 
 function TransactionWalletDetailsClient({ id }: { id: string }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10);
+  const perPage = DEFAULT_PAGE_SIZE;
   const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   // Same endpoint the already-migrated wallet domain uses — reused rather

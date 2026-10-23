@@ -1,22 +1,17 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
-import { pageLinks } from "@/utils/pageLinks";
-import Image from "next/image";
+import { useMenuLinks } from "@/hooks/useMenuLinks";
+import { BrandLogo } from "@/components/global/BrandLogo";
 import Link from "next/link";
-import { useCurrentAdminQuery } from "@/features/authentication/queries";
-import { images } from "@/lib/images";
 
 function SideNav({}) {
   const { pathname } = useNavigation();
-  const { data: currentAdmin } = useCurrentAdminQuery();
-  const visibleLinks = pageLinks.filter(
-    (item) => !item.permission || currentAdmin?.permissions?.includes(item.permission),
-  );
+  const visibleLinks = useMenuLinks();
   return (
     <aside className="border-r-grey-20 flex h-full w-64 shrink-0 flex-col gap-3 border-r bg-white p-4">
       <div className="mb-2 shrink-0 text-2xl font-bold">
-        <Image src={images.LOGO} alt="logo" width={127} height={56} />
+        <BrandLogo />
       </div>
       <nav className="min-h-0 flex-1 overflow-y-auto">
         <ul className="space-y-0.5">

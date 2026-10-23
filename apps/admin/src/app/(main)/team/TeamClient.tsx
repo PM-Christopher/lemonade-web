@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -29,7 +30,7 @@ function TeamClient() {
   const { push } = useNavigation();
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10);
+  const perPage = DEFAULT_PAGE_SIZE;
   const { searchParams } = useSearchParams();
   const query = searchParams?.get("search");
 

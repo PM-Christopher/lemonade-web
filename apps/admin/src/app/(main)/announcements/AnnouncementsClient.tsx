@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -40,7 +41,7 @@ const AnnouncementsClient = () => {
   const { push } = useNavigation();
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10);
+  const perPage = DEFAULT_PAGE_SIZE;
   const [createOpen, setCreateOpen] = useState(false);
   const [pageToEdit, setPageToEdit] = useState<(typeof PAGES)[number] | null>(null);
 

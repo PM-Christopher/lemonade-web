@@ -1046,6 +1046,74 @@
         }
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/settings/branding",
+        "name": "v1.admin.settings.branding",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/settings",
+        "name": "v1.admin.settings.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/settings/platform",
+        "name": "v1.admin.settings.update-platform",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\PlatformSettingsRequest",
+        "fields": {
+            "platform_name": [
+                "required",
+                "string",
+                "max:80"
+            ],
+            "logo_url": [
+                "nullable",
+                "url",
+                "max:500"
+            ],
+            "inactivity_timeout_minutes": [
+                "required",
+                "integer",
+                "min:1",
+                "max:120"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/settings/preferences",
+        "name": "v1.admin.settings.update-preferences",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\MenuPreferencesRequest",
+        "fields": {
+            "menu_order": [
+                "nullable",
+                "array",
+                "max:50"
+            ],
+            "menu_order.*": [
+                "string",
+                "max:100"
+            ],
+            "hidden_menu": [
+                "nullable",
+                "array",
+                "max:50"
+            ],
+            "hidden_menu.*": [
+                "string",
+                "max:100"
+            ]
+        }
+    },
+    {
         "method": "PATCH",
         "uri": "/v1/admin/subscriptions/{id}/activate",
         "name": "v1.admin.subscriptions.activate",

@@ -1,4 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { getQueryClient } from "@/lib/query-client.server";
 import { moderationKeys } from "@/features/moderation/queries";
 import { moderationServerApi } from "@/features/moderation/api.server";
@@ -6,7 +7,7 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import ForumClient from "./ForumClient";
 
-const DEFAULT_PER_PAGE = 10;
+const DEFAULT_PER_PAGE = DEFAULT_PAGE_SIZE;
 
 export default async function ForumPage() {
   await requireAdminPermission(ADMIN_PERMISSIONS.forumView);

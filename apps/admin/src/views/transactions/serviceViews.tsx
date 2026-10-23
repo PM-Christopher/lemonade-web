@@ -1,4 +1,5 @@
 import React from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import DataCard from "@/components/global/DataCard";
 import { AvatarName } from "@/components/global/AvatarName";
 import { TransactionTable, type TransactionColumn } from "@/components/global/TransactionTable";
@@ -58,7 +59,7 @@ function ServiceViews({ trx_data, page, onPageChange }: ViewProps) {
         onRowClick={(row) => push(routes.TRANSACTION_SERVICE(String(row.id)))}
         page={page}
         totalPages={trx_data?.meta?.last_page ?? 1}
-        perPage={trx_data?.meta?.per_page ?? 10}
+        perPage={trx_data?.meta?.per_page ?? DEFAULT_PAGE_SIZE}
         onPageChange={onPageChange}
       />
     </>

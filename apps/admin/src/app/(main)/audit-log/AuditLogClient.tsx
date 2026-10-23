@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
@@ -75,7 +76,7 @@ function DetailPanel({ entry }: { entry: AuditLogEntry }) {
 }
 
 // Every recorded admin action, with filters and a closer look at each one.
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 function AuditLogClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);

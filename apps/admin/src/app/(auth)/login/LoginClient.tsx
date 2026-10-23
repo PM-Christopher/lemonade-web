@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import AuthLayout from "@/components/layouts/AuthLayout";
-import Image from "next/image";
+import { BrandLogo } from "@/components/global/BrandLogo";
 import Link from "next/link";
 import { Card, CardContent, Input, Label, FieldError } from "@lemonade/ui";
 import { SubmitButton } from "@/components/global/SubmitButton";
@@ -14,7 +14,6 @@ import { useCookies } from "react-cookie";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { routes } from "@/lib/routes";
-import { images } from "@/lib/images";
 import { localLoginDefaults } from "@/lib/env.client";
 import { useNavigation } from "@/hooks/useNavigation";
 
@@ -74,7 +73,7 @@ function LoginPage({}) {
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
-            <Image src={images.LOGO} alt="logo" width={127} height={56} />
+            <BrandLogo />
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">

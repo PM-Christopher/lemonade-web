@@ -128,6 +128,13 @@ export const adminRolesRoutes = Object.freeze({
   UPDATE: "/admin/roles/{id}", // PATCH
 });
 
+export const adminSettingsRoutes = Object.freeze({
+  BRANDING: "/admin/settings/branding", // GET
+  SHOW: "/admin/settings", // GET
+  UPDATE_PLATFORM: "/admin/settings/platform", // PATCH
+  UPDATE_PREFERENCES: "/admin/settings/preferences", // PATCH
+});
+
 export const adminSubscriptionsRoutes = Object.freeze({
   ACTIVATE: "/admin/subscriptions/{id}/activate", // PATCH
   DEACTIVATE: "/admin/subscriptions/{id}/deactivate", // PATCH

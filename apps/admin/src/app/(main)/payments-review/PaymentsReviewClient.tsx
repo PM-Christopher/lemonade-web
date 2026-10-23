@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { ActionMenu } from "@/components/global/ActionMenu";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -299,7 +300,7 @@ function PaymentsReviewClient() {
             currentPage={data?.meta?.current_page ?? 1}
             totalPages={data?.meta?.last_page ?? 1}
             onPageChange={setPage}
-            perPage={data?.meta?.per_page ?? 25}
+            perPage={data?.meta?.per_page ?? DEFAULT_PAGE_SIZE}
           />
         </div>
       </div>

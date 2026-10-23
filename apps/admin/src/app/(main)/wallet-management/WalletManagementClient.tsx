@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
@@ -35,7 +36,7 @@ const PointsRateModal = dynamic(() => import("@/modals/wallet-management/PointsR
   ssr: false,
 });
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 const STATUS_OPTIONS = ["pending", "successful", "rejected"] as const;
 
 // Withdrawal requests with their wallet totals, filters and export.

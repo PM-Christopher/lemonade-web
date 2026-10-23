@@ -1,4 +1,7 @@
 import React from "react";
+import { usePagination } from "@/hooks/usePagination";
+import PaginationComp from "@/components/global/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -36,6 +39,8 @@ const PendingEventsView = ({
     return inRange && matches;
   });
 
+  const pager = usePagination(events);
+
   return (
     <div className="rounded-lg bg-white shadow-md">
       <table className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}>
@@ -53,7 +58,7 @@ const PendingEventsView = ({
         </thead>
         <tbody>
           {events.length > 0 ? (
-            events.map((event) => (
+            pager.pageItems.map((event) => (
               <tr
                 key={event.id}
                 className="border-grey-20 h-18 cursor-pointer border-b"
@@ -77,6 +82,12 @@ const PendingEventsView = ({
           )}
         </tbody>
       </table>
+      <PaginationComp
+        currentPage={pager.page}
+        totalPages={pager.totalPages}
+        onPageChange={pager.setPage}
+        perPage={DEFAULT_PAGE_SIZE}
+      />
     </div>
   );
 };

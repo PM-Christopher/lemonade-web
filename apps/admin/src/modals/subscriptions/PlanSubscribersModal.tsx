@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { SearchIcon, XIcon } from "lucide-react";
 import dayjs from "dayjs";
@@ -143,7 +144,7 @@ function PlanSubscribersModal({ isOpen, toggle, planId, planTitle }: PlanSubscri
             currentPage={page}
             totalPages={data?.meta.last_page ?? 1}
             onPageChange={setPage}
-            perPage={data?.meta.per_page ?? 25}
+            perPage={data?.meta.per_page ?? DEFAULT_PAGE_SIZE}
           />
         </div>
       </DialogContentBare>

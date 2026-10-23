@@ -1,4 +1,5 @@
 import { routes } from "@/lib/routes";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
 import React from "react";
@@ -19,7 +20,7 @@ interface TribePaymentIF {
 function TribePaymentViews({ trx_data, page, onPageChange }: TribePaymentIF) {
   const { push } = useNavigation();
   const totalPages = trx_data?.meta?.last_page ?? 1;
-  const perPage = trx_data?.meta?.per_page ?? 10;
+  const perPage = trx_data?.meta?.per_page ?? DEFAULT_PAGE_SIZE;
   const rows = trx_data?.history;
 
   return (

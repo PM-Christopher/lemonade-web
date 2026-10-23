@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useEffect, useState } from "react";
 import { SearchIcon, UploadIcon } from "lucide-react";
 import DateRangePicker, { toApiTime, type DateRange } from "@/components/global/DateRangePicker";
@@ -47,7 +48,7 @@ function UsersClient() {
   const { data: userData } = useUserListQuery(menuOption, {
     enabled: isLoggedIn,
     page,
-    perPage: 10,
+    perPage: DEFAULT_PAGE_SIZE,
     dates: range
       ? { start_date: toApiTime(range.start), end_date: toApiTime(range.end) }
       : undefined,

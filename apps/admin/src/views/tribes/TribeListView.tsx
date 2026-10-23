@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -22,7 +23,7 @@ const FILTERS: Record<TribeListFilter, (tribe: AdminTribeListItem) => boolean> =
 const BASE_HEADERS = ["TRIBE ID", "TRIBE NAME", "CREATED BY", "CATEGORY"];
 const TAIL_HEADERS = ["MEMBERS", "DATE CREATED"];
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 // One table for the Created, TLN and Paid tabs. Paid adds the access fee.
 const TribeListView = ({

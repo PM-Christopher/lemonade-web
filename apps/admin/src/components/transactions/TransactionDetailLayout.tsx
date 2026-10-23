@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { PrinterIcon } from "lucide-react";
 import PaginationComp from "@/components/global/Pagination";
@@ -23,7 +24,7 @@ interface TransactionDetailLayoutProps {
   printName: string;
 }
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 // The two-column page every transaction detail shares: the details on the left, a printable history on the right.
 export function TransactionDetailLayout({

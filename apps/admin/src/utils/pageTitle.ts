@@ -45,6 +45,7 @@ export function getPageHeading(pathname: string): PageHeading {
   }
 
   if (path === routes.PROFILE) return { title: "Profile" };
+  if (path === routes.SETTINGS) return { title: "Settings" };
   if (path === routes.SUPPORT_INBOX) return { title: "Support inbox" };
 
   const link = pageLinks.find((item) => item.path === path);

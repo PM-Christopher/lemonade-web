@@ -2,6 +2,7 @@
 // Conflict 1). WalletManagementClient's search box is local useState, not
 // URL state, and always starts empty on mount — no deep-linked filter to
 // account for here, unlike users/page.tsx.
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { walletKeys } from "@/features/wallet/queries";
@@ -10,7 +11,7 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import WalletManagementClient from "./WalletManagementClient";
 
-const DEFAULT_PER_PAGE = 10;
+const DEFAULT_PER_PAGE = DEFAULT_PAGE_SIZE;
 
 export default async function WalletManagementPage() {
   await requireAdminPermission(ADMIN_PERMISSIONS.walletView);

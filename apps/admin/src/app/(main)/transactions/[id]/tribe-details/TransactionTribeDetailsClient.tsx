@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
@@ -11,7 +12,7 @@ import { useTransactionTribeDetailQuery } from "@/features/transaction/queries";
 import type { TransactionHistoryRow } from "@/features/transaction/api";
 import { capitalizeWords, manualTransactionsExport } from "@/utils/helper";
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

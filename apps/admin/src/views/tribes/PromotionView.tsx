@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { images } from "@/lib/images";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
@@ -33,7 +34,7 @@ const PromotionView = ({
   const pageData = rawPageData as EventPromotionsQueueResponse | undefined;
   const { push } = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 10;
+  const perPage = DEFAULT_PAGE_SIZE;
   const rows = (pageData?.history ?? []).filter((row) => {
     const paid = dayjs(row.date_paid);
     const inRange =

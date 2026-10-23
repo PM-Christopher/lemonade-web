@@ -23,4 +23,5 @@ export const ADMIN_PERMISSIONS = {
   rolesUpdate: "roles.update",
   rolesDelete: "roles.delete",
   auditView: "audit.view",
+  settingsManage: "settings.manage",
 } as const;

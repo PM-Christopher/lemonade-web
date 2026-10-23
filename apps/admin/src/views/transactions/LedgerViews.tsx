@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
@@ -108,7 +109,7 @@ function LedgerViews() {
           currentPage={page}
           totalPages={data?.meta.last_page ?? 1}
           onPageChange={setPage}
-          perPage={data?.meta.per_page ?? 50}
+          perPage={data?.meta.per_page ?? DEFAULT_PAGE_SIZE}
         />
       </div>
     </>

@@ -13,6 +13,7 @@
 // the old unpaginated shape instead of page 1, so UsersClient's
 // client-side filtering has every user to search on first paint too, not
 // just page 1's ten rows — matches what it falls back to once mounted.
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/query-client.server";
 import { userKeys } from "@/features/user/queries";
@@ -21,7 +22,7 @@ import { requireAdminPermission } from "@/features/authentication/requirePermiss
 import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import UsersClient from "./UsersClient";
 
-const DEFAULT_PER_PAGE = 10;
+const DEFAULT_PER_PAGE = DEFAULT_PAGE_SIZE;
 
 export default async function UsersPage({
   searchParams,

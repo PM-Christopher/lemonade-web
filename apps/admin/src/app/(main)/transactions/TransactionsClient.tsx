@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { UploadIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
@@ -24,7 +25,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { SearchIcon } from "lucide-react";
 import { transactionStatus } from "@/utils/helper";
 
-const PER_PAGE = 10;
+const PER_PAGE = DEFAULT_PAGE_SIZE;
 
 // Status words each tab can filter by; the backend maps them to its own values.
 const STATUS_OPTIONS: Record<string, string[]> = {

@@ -1,4 +1,7 @@
 "use client";
+import { usePagination } from "@/hooks/usePagination";
+import PaginationComp from "@/components/global/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
 import { ActionMenu } from "@/components/global/ActionMenu";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -36,6 +39,8 @@ const DeletionRequestsView = () => {
   } | null>(null);
   const requests = data?.requests ?? [];
 
+  const pager = usePagination(requests);
+
   return (
     <div className="rounded-lg bg-white shadow-md">
       <table className={`min-w-full table-auto border-collapse ${centerNumericColumns(HEADERS)}`}>
@@ -53,7 +58,7 @@ const DeletionRequestsView = () => {
         </thead>
         <tbody>
           {requests.length > 0 ? (
-            requests.map((request) => (
+            pager.pageItems.map((request) => (
               <tr key={request.id} className="border-grey-20 h-18 border-b">
                 <td className="p-4 font-sans text-sm font-medium">
                   {request.tribe?.name ?? "Deleted"}
@@ -105,6 +110,12 @@ const DeletionRequestsView = () => {
           )}
         </tbody>
       </table>
+      <PaginationComp
+        currentPage={pager.page}
+        totalPages={pager.totalPages}
+        onPageChange={pager.setPage}
+        perPage={DEFAULT_PAGE_SIZE}
+      />
       <DecideDeletionModal
         key={selected?.request.id ?? "none"}
         request={selected?.request ?? null}

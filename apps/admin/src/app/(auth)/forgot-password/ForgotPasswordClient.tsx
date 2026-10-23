@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Image from "next/image";
+import { BrandLogo } from "@/components/global/BrandLogo";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,6 @@ import { useForgotPasswordMutation } from "@/features/authentication/mutations";
 import { useNavigation } from "@/hooks/useNavigation";
 import { errorMessage } from "@/lib/api-error";
 import { apiMessage } from "@/lib/api-message";
-import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 import { RESET_EMAIL_KEY } from "@/lib/reset-email";
 import { useAppDispatch } from "@/redux/hook";
@@ -67,7 +66,7 @@ function ForgotPasswordClient() {
       <section className="bg-light-grey h-full min-h-screen overflow-hidden">
         <div className="flex flex-wrap items-center justify-between p-2 px-10">
           <div>
-            <Image src={images.LOGO} alt="logo" width={127} height={56} />
+            <BrandLogo />
           </div>
         </div>
         <div className="tablet:flex-row tablet:items-start tablet:px-4 mt-24 flex flex-col items-center justify-center gap-16">

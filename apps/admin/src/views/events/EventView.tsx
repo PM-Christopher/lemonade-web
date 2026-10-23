@@ -1,4 +1,5 @@
 import { routes } from "@/lib/routes";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { images } from "@/lib/images";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -33,7 +34,7 @@ const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
   const query = searchParams?.get("search");
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const perPage = 10;
+  const perPage = DEFAULT_PAGE_SIZE;
   const [editCommissionModal, setEditCommissionModal] = useState(false);
   const toggleEditModal = () => {
     setEditCommissionModal(!editCommissionModal);
