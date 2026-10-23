@@ -122,7 +122,7 @@ function SupportInboxClient() {
                   key={item.key}
                   type="button"
                   onClick={() => setTab(item.key)}
-                  className={`text-body-s flex flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg py-1 ${tab === item.key ? "bg-white font-semibold" : "text-text-grey"}`}
+                  className={`text-body-s flex flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg py-1 whitespace-nowrap ${tab === item.key ? "bg-white font-semibold" : "text-text-grey"}`}
                 >
                   {item.label}
                   {typeof countFor[item.key] === "number" && countFor[item.key] ? (

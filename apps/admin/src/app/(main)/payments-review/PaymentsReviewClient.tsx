@@ -194,7 +194,7 @@ function PaymentsReviewClient() {
                 <button
                   key={item.key}
                   type="button"
-                  className={`text-body-s cursor-pointer rounded-lg px-3 py-1 ${tab === item.key ? "bg-white font-semibold" : "text-text-grey"}`}
+                  className={`text-body-s cursor-pointer rounded-lg px-3 py-1 whitespace-nowrap ${tab === item.key ? "bg-white font-semibold" : "text-text-grey"}`}
                   onClick={() => changeFilter(() => setTab(item.key))}
                 >
                   {item.label}

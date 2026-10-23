@@ -111,17 +111,17 @@ function BusinessesClient() {
         </div>
         <div className="flex flex-col px-5">
           <div className="border-grey-20 flex flex-col rounded-xl border">
-            <div className="w-fit px-3 pt-2">
+            <div className="w-fit max-w-full overflow-x-auto px-3 pt-2">
               <div className="bg-mid-grey flex items-center gap-6 rounded-xl p-1">
                 {TABS.map((item) => (
                   <button
                     type="button"
                     key={item.key}
-                    className={`cursor-pointer p-1 px-2 ${tab === item.key ? "rounded-lg bg-white" : ""}`}
+                    className={`shrink-0 cursor-pointer p-1 px-2 ${tab === item.key ? "rounded-lg bg-white" : ""}`}
                     onClick={() => switchTab(item.key)}
                   >
                     <span
-                      className={`font-sans leading-6 ${tab === item.key ? "text-body-l font-semibold" : "font-semi-normal text-text-grey text-body-l"}`}
+                      className={`font-sans leading-6 whitespace-nowrap ${tab === item.key ? "text-body-l font-semibold" : "font-semi-normal text-text-grey text-body-l"}`}
                     >
                       {item.title}
                     </span>

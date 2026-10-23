@@ -156,18 +156,18 @@ const EventsClient = () => {
       </div>
       <div className={"flex flex-col px-5"}>
         <div className={"border-grey-20 flex flex-col rounded-xl border"}>
-          <div className={"w-fit px-3 pt-2"}>
+          <div className={"w-fit max-w-full overflow-x-auto px-3 pt-2"}>
             <div className={"bg-mid-grey flex items-center gap-6 rounded-xl p-1"}>
               {eventViews.map((item, index) => (
                 <div
-                  className={`cursor-pointer p-1 px-2 ${
+                  className={`shrink-0 cursor-pointer p-1 px-2 ${
                     menuOption === item.key && "rounded-lg bg-white"
                   }`}
                   onClick={() => switchOption(item.key)}
                   key={index}
                 >
                   <p
-                    className={`font-sans leading-6 ${
+                    className={`font-sans leading-6 whitespace-nowrap ${
                       menuOption === item.key
                         ? "text-body-l font-semibold"
                         : "font-semi-normal text-text-grey text-body-l"
