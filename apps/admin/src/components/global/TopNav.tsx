@@ -1,5 +1,7 @@
 import React from "react";
-import { ChevronLeft, Headset } from "lucide-react";
+import { ChevronLeft, Headset, LogOut, UserCircle } from "lucide-react";
+import { ActionMenu } from "@/components/global/ActionMenu";
+import { useAdminLogout } from "@/hooks/useAdminLogout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { formatRoleName } from "@/utils/helper";
@@ -20,6 +22,7 @@ function TopNav({}) {
   const { title, parent } = getPageHeading(pathname);
   const { data: currentAdmin } = useCurrentAdminQuery();
   const { data: notifications } = useAdminNotificationsQuery();
+  const logout = useAdminLogout();
   const canSeeSupport = currentAdmin?.permissions?.includes(ADMIN_PERMISSIONS.supportView);
   const supportUnread = notifications?.support_unread ?? 0;
 
@@ -59,20 +62,34 @@ function TopNav({}) {
           </button>
         )}
         <NotificationBell />
-        <div className={"flex flex-col items-end"}>
-          <p className={"font-semiBold text-body-l"}>{user?.name}</p>
-          <p className={"text-text-grey text-meta leading-normal font-normal"}>
-            {formatRoleName(user?.role)}
-          </p>
-        </div>
-        <button
-          type="button"
-          aria-label="Open your profile"
-          className="cursor-pointer rounded-full"
-          onClick={() => push(routes.PROFILE)}
-        >
-          <Avatar name={user?.name} image={currentAdmin?.image} />
-        </button>
+        <ActionMenu
+          label="Account menu"
+          triggerClassName="flex cursor-pointer items-center gap-3 rounded-full"
+          items={[
+            {
+              label: "Profile",
+              icon: <UserCircle className="h-4 w-4" aria-hidden="true" />,
+              onSelect: () => push(routes.PROFILE),
+            },
+            {
+              label: "Logout",
+              danger: true,
+              icon: <LogOut className="h-4 w-4" aria-hidden="true" />,
+              onSelect: logout,
+            },
+          ]}
+          trigger={
+            <>
+              <span className="flex flex-col items-end">
+                <span className="font-semiBold text-body-l">{user?.name}</span>
+                <span className="text-text-grey text-meta leading-normal font-normal">
+                  {formatRoleName(user?.role)}
+                </span>
+              </span>
+              <Avatar name={user?.name} image={currentAdmin?.image} />
+            </>
+          }
+        />
       </div>
     </header>
   );

@@ -52,4 +52,18 @@ describe("ActionMenu", () => {
     fireEvent.mouseDown(document.body);
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
+
+  it("opens from a custom trigger and shows item icons", () => {
+    render(
+      <ActionMenu
+        label="Account menu"
+        trigger={<span>Demo Admin</span>}
+        items={[{ label: "Profile", onSelect: vi.fn(), icon: <svg data-testid="icon" /> }]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Account menu" }));
+    expect(screen.getByText("Demo Admin")).toBeInTheDocument();
+    expect(screen.getByTestId("icon")).toBeInTheDocument();
+  });
 });
