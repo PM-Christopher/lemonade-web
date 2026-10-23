@@ -7,7 +7,7 @@ import type { TribeThread, TribeThreadAuthor } from "@/features/tribes/api";
 import { useSelector } from "react-redux";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { RootState } from "@/redux/store";
-import { ChevronDown, PinIcon, SearchIcon } from "lucide-react";
+import { ChevronDown, Clock, Flame, History, PinIcon, SearchIcon } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -38,6 +38,14 @@ const RemoveMemberModal = dynamic(() => import("@/modals/tribes/RemoveMemberModa
   ssr: false,
 });
 
+type ThreadSort = "popular" | "newest" | "oldest";
+
+const SORT_OPTIONS: { value: ThreadSort; label: string; Icon: typeof Flame }[] = [
+  { value: "popular", label: "Popular", Icon: Flame },
+  { value: "newest", label: "Newest", Icon: Clock },
+  { value: "oldest", label: "Oldest", Icon: History },
+];
+
 // Tribe threads, details and moderation actions.
 const TribeDetailClient = ({ id }: { id: string }) => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
@@ -50,7 +58,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
   const [createThreadOpen, setCreateThreadOpen] = useState(false);
   const [profileUser, setProfileUser] = useState<TribeThreadAuthor | null>(null);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<"popular" | "newest">("newest");
+  const [sort, setSort] = useState<ThreadSort>("popular");
   const dispatch = useDispatch<AppDispatch>();
   const pinMutation = usePinTribeThreadMutation(id);
   const [deleteThreadId, setDeleteThreadId] = useState<string | undefined>(undefined);
@@ -81,7 +89,11 @@ const TribeDetailClient = ({ id }: { id: string }) => {
         thread.topic.toLowerCase().includes(term) ||
         thread.thoughts.toLowerCase().includes(term),
     )
-    .sort((a, b) => (sort === "popular" ? popularity(b) - popularity(a) : 0));
+    .sort((a, b) => {
+      if (sort === "popular") return popularity(b) - popularity(a);
+      const byDate = a.created_at.localeCompare(b.created_at);
+      return sort === "newest" ? -byDate : byDate;
+    });
   const pinned = allThreads.filter((thread) => thread.pinned);
 
   const pinThread = (threadId: string) =>
@@ -128,10 +140,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
               />
             </div>
             <div className="w-36 shrink-0">
-              <Select
-                value={sort}
-                onValueChange={(value) => setSort(value as "popular" | "newest")}
-              >
+              <Select value={sort} onValueChange={(value) => setSort(value as ThreadSort)}>
                 <SelectTrigger
                   aria-label="Sort threads"
                   className="font-semiBold text-text-grey text-meta h-10 w-full rounded-xl uppercase"
@@ -139,8 +148,14 @@ const TribeDetailClient = ({ id }: { id: string }) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="popular">Popular</SelectItem>
+                  {SORT_OPTIONS.map(({ value, label, Icon }) => (
+                    <SelectItem key={value} value={value}>
+                      <span className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                        {label}
+                      </span>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
