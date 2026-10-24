@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/global/BrandLogo";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import type { PublicTribeResponse } from "@/features/tribes/api";
 import { formatNairaWhole } from "@/lib/formatNumber";
@@ -18,7 +18,7 @@ export function GuestTribePreview({ tribe }: GuestTribePreviewProps) {
   return (
     <main className="bg-light_grey min-h-screen">
       <header className="flex items-center justify-between bg-white p-2 px-6">
-        <Image src={images.LOGO} alt="Lemonade" width={96} height={42} priority />
+        <BrandLogo width={96} height={42} className="h-10 w-auto object-contain" />
         <Link href={loginHref} className="text-body-s text-light-green font-semibold">
           Log in
         </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
+import { BrandLogo } from "@/components/global/BrandLogo";
 import Link from "next/link";
 import { useAppDispatch } from "@/redux/hook";
 import { useCookies } from "react-cookie";
@@ -9,7 +9,6 @@ import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { setIsRouting } from "@/redux/tempSlice";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { routes } from "@/lib/routes";
-import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
 
 const HEADER_ACTION: Record<string, { href: string; label: string } | null> = {
@@ -63,13 +62,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       <section className={`${surface} flex h-dvh max-h-dvh flex-col overflow-hidden`}>
         <header className="phone:px-10 static flex shrink-0 items-center justify-between px-4 py-3">
           <Link href={routes.LOGIN}>
-            <Image
-              src={images.LOGO}
-              alt="The Lemonade Network"
+            <BrandLogo
               width={127}
               height={56}
-              priority
-              className="phone:h-12 h-8 w-auto"
+              className="phone:h-12 h-8 w-auto object-contain object-left"
             />
           </Link>
           {action ? (

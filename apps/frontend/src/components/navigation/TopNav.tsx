@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/global/BrandLogo";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import { images } from "@/lib/images";
 import React, { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -75,9 +76,9 @@ const TopNav = () => {
       <nav className="flex flex-wrap items-center justify-between bg-white p-2 px-10">
         <div>
           {isMobile ? (
-            <Image src={images.LOGO} alt="logo" width={73} height={32} priority />
+            <BrandLogo width={73} height={32} className="h-8 w-auto object-contain" />
           ) : (
-            <Image src={images.LOGO} alt="logo" width={127} height={56} priority />
+            <BrandLogo width={127} height={56} className="h-14 w-auto object-contain" />
           )}
         </div>
 

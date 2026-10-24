@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("@/components/global/FallbackImage", () => ({
   FallbackImage: ({ alt }: { alt: string }) => <span>{alt}</span>,
 }));
+vi.mock("@/components/global/BrandLogo", () => ({ BrandLogo: () => <span>logo</span> }));
 vi.mock("next/image", () => ({ default: ({ alt }: { alt: string }) => <span>{alt}</span> }));
 
 const { GuestTribePreview } = await import("./GuestTribePreview");
