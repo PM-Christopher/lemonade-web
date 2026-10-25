@@ -8,7 +8,6 @@ import {
   CircleAlert,
   CreditCard,
   Gavel,
-  LifeBuoy,
   KeyRound,
   LayoutDashboard,
   Megaphone,
@@ -103,12 +102,6 @@ const links: PageLink[] = [
     icon: Users,
     path: routes.TEAM,
     permission: ADMIN_PERMISSIONS.teamView,
-  },
-  {
-    name: "Help center",
-    icon: LifeBuoy,
-    path: routes.HELP_CENTER,
-    permission: ADMIN_PERMISSIONS.faqsManage,
   },
   {
     name: "Roles & permissions",

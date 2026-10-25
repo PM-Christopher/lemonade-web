@@ -1,5 +1,6 @@
 "use client";
 import { usePagination } from "@/hooks/usePagination";
+import { naira } from "@/views/transactions/transactionFormat";
 import PaginationComp from "@/components/global/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useState } from "react";
@@ -106,7 +107,12 @@ function SubscriptionsClient() {
           <div className={"shadow-card-shadow flex w-full flex-col gap-4 rounded-xl bg-white p-4"}>
             <p className="text-text-grey text-body-s font-normal">Recurring Revenue</p>
             <p className="font-semiBold text-title-l leading-normal">
-              ₦{Number(overview?.total_recurring_revenue ?? 0).toLocaleString("en-US")}
+              {naira(overview?.total_recurring_revenue)}
+            </p>
+            <p className="text-text-grey text-meta -mt-2 font-normal">
+              What members on an active plan pay each billing cycle, added up. Monthly and yearly
+              plans are counted as charged, so this is not a monthly total. Cancelled and expired
+              plans are left out.
             </p>
           </div>
         </div>
@@ -143,13 +149,12 @@ function SubscriptionsClient() {
                           </div>
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>{plan.access_type}</td>
-                        {/* Pre-formatted display strings from the backend — never
-                            reformatted or recomputed here, per CLAUDE.md's money rule. */}
+                        {/* Server amounts, only shown with thousands separators. */}
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          {plan.monthly_charge}
+                          {naira(plan.monthly_charge)}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          {plan.yearly_charge}
+                          {naira(plan.yearly_charge)}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
                           <span className={plan.active ? "text-light-green-70" : "text-red-1"}>

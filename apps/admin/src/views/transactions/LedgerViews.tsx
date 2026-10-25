@@ -1,3 +1,4 @@
+import { currencyAmount } from "@/views/transactions/transactionFormat";
 import React, { useState } from "react";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -88,7 +89,7 @@ function LedgerViews() {
                     {row.entry_type}
                   </td>
                   <td className={"p-4 font-sans text-sm font-medium"}>
-                    {row.currency} {row.amount}
+                    {currencyAmount(row.currency, row.amount)}
                   </td>
                   <td className={"max-w-80 truncate p-4 font-sans text-sm font-medium"}>
                     {row.description ?? "—"}

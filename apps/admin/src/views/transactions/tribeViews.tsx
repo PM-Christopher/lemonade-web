@@ -1,3 +1,4 @@
+import { naira } from "@/views/transactions/transactionFormat";
 import { routes } from "@/lib/routes";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
@@ -71,9 +72,7 @@ function TribePaymentViews({ trx_data, page, onPageChange }: TribePaymentIF) {
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.reference}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.user?.name ?? "N/A"}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>{row.tribe_name ?? "N/A"}</td>
-                  <td className={"p-4 font-sans text-sm font-medium"}>
-                    ₦{Number(row.amount).toLocaleString()}
-                  </td>
+                  <td className={"p-4 font-sans text-sm font-medium"}>{naira(row.amount)}</td>
                   <td className={"p-4 font-sans text-sm font-medium"}>
                     {row.paid_at ? dayjs(row.paid_at).format("DD MMM, YYYY hh:mmA") : "—"}
                   </td>

@@ -46,7 +46,6 @@ export const routes = {
   AUDIT_LOG: "/audit-log",
   ROLES: "/roles",
   SETTINGS: "/settings",
-  HELP_CENTER: "/help-center",
   PAYMENTS_REVIEW: "/payments-review",
   SUPPORT_INBOX: "/support",
   TEAM_DETAIL: (id: string | number) => `/team/${id}` as const,

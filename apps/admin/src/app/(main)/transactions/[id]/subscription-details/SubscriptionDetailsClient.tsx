@@ -1,4 +1,5 @@
 "use client";
+import { naira } from "@/views/transactions/transactionFormat";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -171,7 +172,7 @@ function SubscriptionDetailsClient({ id }: { id: string }) {
                 {/* PREMIUM */}
                 {subscription?.info?.plan}
               </p>
-              <p className="text-xl font-bold md:text-2xl">₦{subscription?.plan?.cost}</p>
+              <p className="text-xl font-bold md:text-2xl">{naira(subscription?.plan?.cost)}</p>
               <p className="bg-light-green-50 w-fit rounded-lg p-2 text-xs md:text-sm">
                 Renews {subscription?.plan?.renews}
               </p>

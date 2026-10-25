@@ -292,7 +292,7 @@ const TribeClient = ({ id }: { id: string }) => {
               <Select value={sortBy} onValueChange={sortThreads}>
                 <SelectTrigger
                   aria-label="Sort threads"
-                  className="bg-mid-grey text-text-grey text-meta h-10 w-full rounded-xl border-0 px-4 font-sans font-semibold uppercase"
+                  className="bg-mid-grey text-text-grey text-meta h-10! w-full rounded-xl border-0 px-4 font-sans font-semibold uppercase"
                 >
                   <SelectValue />
                 </SelectTrigger>

@@ -53,12 +53,14 @@ const DAY_FIELDS = [
 
 interface PlatformSettingsFormProps {
   settings: PlatformSettings;
+  // Branding shows the logo, name, timeout and retention. Contact shows the support details.
+  section: "branding" | "contact";
   // Without the settings permission the form is read only.
   canManage: boolean;
 }
 
-// Logo, platform name, idle timeout and how long data is kept.
-export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFormProps) {
+// Platform settings. Each tab shows its own fields and saves them with the rest unchanged.
+export function PlatformSettingsForm({ settings, section, canManage }: PlatformSettingsFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const update = useUpdatePlatformSettingsMutation();
   const uploadLogo = useUploadLogoMutation();
@@ -122,134 +124,140 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3">
-        <p className="text-body-l font-semibold">Logo</p>
-        <div className="flex items-center gap-5">
-          <div className="border-grey-20 bg-light-grey flex h-20 w-48 items-center justify-center rounded-xl border p-2">
-            <FallbackImage
-              src={logoUrl}
-              fallbackSrc={images.LOGO}
-              alt="Current logo"
-              width={160}
-              height={64}
-              className="max-h-16 w-auto object-contain"
-            />
-          </div>
-          {canManage && (
-            <div className="flex flex-col items-start gap-2">
-              <label className="text-light-green text-body-s cursor-pointer font-medium">
-                {uploadLogo.isPending ? "Uploading…" : "Upload a new logo"}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={onPickLogo}
-                  disabled={uploadLogo.isPending}
+      {section === "branding" && (
+        <>
+          <div className="flex flex-col gap-3">
+            <p className="text-body-l font-semibold">Logo</p>
+            <div className="flex items-center gap-5">
+              <div className="border-grey-20 bg-light-grey flex h-20 w-48 items-center justify-center rounded-xl border p-2">
+                <FallbackImage
+                  src={logoUrl}
+                  fallbackSrc={images.LOGO}
+                  alt="Current logo"
+                  width={160}
+                  height={64}
+                  className="max-h-16 w-auto object-contain"
                 />
-              </label>
-              {logoUrl && (
-                <button
-                  type="button"
-                  className="text-text-grey text-body-s cursor-pointer font-medium"
-                  onClick={() => setLogoUrl(null)}
-                >
-                  Use the default logo
-                </button>
+              </div>
+              {canManage && (
+                <div className="flex flex-col items-start gap-2">
+                  <label className="text-light-green text-body-s cursor-pointer font-medium">
+                    {uploadLogo.isPending ? "Uploading…" : "Upload a new logo"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      onChange={onPickLogo}
+                      disabled={uploadLogo.isPending}
+                    />
+                  </label>
+                  {logoUrl && (
+                    <button
+                      type="button"
+                      className="text-text-grey text-body-s cursor-pointer font-medium"
+                      onClick={() => setLogoUrl(null)}
+                    >
+                      Use the default logo
+                    </button>
+                  )}
+                  <p className="text-text-grey text-meta">PNG, JPG or SVG, up to 2 MB.</p>
+                </div>
               )}
-              <p className="text-text-grey text-meta">PNG, JPG or SVG, up to 2 MB.</p>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      <div className="grid max-w-md gap-2">
-        <Label htmlFor="platform-name" className="text-text-grey text-body-s font-normal">
-          Platform name
-        </Label>
-        <Input
-          id="platform-name"
-          disabled={!canManage}
-          aria-invalid={errors.platform_name ? true : undefined}
-          {...register("platform_name")}
-        />
-        <FieldError message={errors.platform_name?.message} />
-      </div>
-
-      <div className="grid max-w-md gap-2">
-        <Label htmlFor="idle-timeout" className="text-text-grey text-body-s font-normal">
-          Sign out after inactivity (minutes)
-        </Label>
-        <Input
-          id="idle-timeout"
-          type="number"
-          min={1}
-          max={120}
-          disabled={!canManage}
-          aria-invalid={errors.inactivity_timeout_minutes ? true : undefined}
-          {...register("inactivity_timeout_minutes", { valueAsNumber: true })}
-        />
-        <FieldError message={errors.inactivity_timeout_minutes?.message} />
-        <p className="text-text-grey text-meta">
-          After this long without activity, admins see a prompt to stay signed in or log out. This
-          applies to everyone.
-        </p>
-      </div>
-
-      <div className="flex max-w-md flex-col gap-5">
-        <p className="text-body-l font-semibold">Support contact</p>
-        <div className="grid gap-2">
-          <Label htmlFor="support-email" className="text-text-grey text-body-s font-normal">
-            Support email
-          </Label>
-          <Input
-            id="support-email"
-            type="email"
-            disabled={!canManage}
-            aria-invalid={errors.support_email ? true : undefined}
-            {...register("support_email")}
-          />
-          <FieldError message={errors.support_email?.message} />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="support-phone" className="text-text-grey text-body-s font-normal">
-            Support phone
-          </Label>
-          <Input
-            id="support-phone"
-            type="tel"
-            disabled={!canManage}
-            aria-invalid={errors.support_phone ? true : undefined}
-            {...register("support_phone")}
-          />
-          <FieldError message={errors.support_phone?.message} />
-          <p className="text-text-grey text-meta">
-            Shown on the Help Center page and in the footer of every email. Leave both empty to hide
-            them.
-          </p>
-        </div>
-      </div>
-
-      <div className="flex max-w-md flex-col gap-5">
-        <p className="text-body-l font-semibold">Data retention</p>
-        {DAY_FIELDS.map((field) => (
-          <div className="grid gap-2" key={field.name}>
-            <Label htmlFor={field.name} className="text-text-grey text-body-s font-normal">
-              {field.label}
+          <div className="grid max-w-md gap-2">
+            <Label htmlFor="platform-name" className="text-text-grey text-body-s font-normal">
+              Platform name
             </Label>
             <Input
-              id={field.name}
-              type="number"
-              min={field.min}
+              id="platform-name"
               disabled={!canManage}
-              aria-invalid={errors[field.name] ? true : undefined}
-              {...register(field.name, { valueAsNumber: true })}
+              aria-invalid={errors.platform_name ? true : undefined}
+              {...register("platform_name")}
             />
-            <FieldError message={errors[field.name]?.message} />
-            <p className="text-text-grey text-meta">{field.hint}</p>
+            <FieldError message={errors.platform_name?.message} />
           </div>
-        ))}
-      </div>
 
+          <div className="grid max-w-md gap-2">
+            <Label htmlFor="idle-timeout" className="text-text-grey text-body-s font-normal">
+              Sign out after inactivity (minutes)
+            </Label>
+            <Input
+              id="idle-timeout"
+              type="number"
+              min={1}
+              max={120}
+              disabled={!canManage}
+              aria-invalid={errors.inactivity_timeout_minutes ? true : undefined}
+              {...register("inactivity_timeout_minutes", { valueAsNumber: true })}
+            />
+            <FieldError message={errors.inactivity_timeout_minutes?.message} />
+            <p className="text-text-grey text-meta">
+              After this long without activity, admins see a prompt to stay signed in or log out.
+              This applies to everyone.
+            </p>
+          </div>
+
+          <div className="flex max-w-md flex-col gap-5">
+            <p className="text-body-l font-semibold">Data retention</p>
+            {DAY_FIELDS.map((field) => (
+              <div className="grid gap-2" key={field.name}>
+                <Label htmlFor={field.name} className="text-text-grey text-body-s font-normal">
+                  {field.label}
+                </Label>
+                <Input
+                  id={field.name}
+                  type="number"
+                  min={field.min}
+                  disabled={!canManage}
+                  aria-invalid={errors[field.name] ? true : undefined}
+                  {...register(field.name, { valueAsNumber: true })}
+                />
+                <FieldError message={errors[field.name]?.message} />
+                <p className="text-text-grey text-meta">{field.hint}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {section === "contact" && (
+        <>
+          <div className="flex max-w-md flex-col gap-5">
+            <p className="text-body-l font-semibold">Support contact</p>
+            <div className="grid gap-2">
+              <Label htmlFor="support-email" className="text-text-grey text-body-s font-normal">
+                Support email
+              </Label>
+              <Input
+                id="support-email"
+                type="email"
+                disabled={!canManage}
+                aria-invalid={errors.support_email ? true : undefined}
+                {...register("support_email")}
+              />
+              <FieldError message={errors.support_email?.message} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="support-phone" className="text-text-grey text-body-s font-normal">
+                Support phone
+              </Label>
+              <Input
+                id="support-phone"
+                type="tel"
+                disabled={!canManage}
+                aria-invalid={errors.support_phone ? true : undefined}
+                {...register("support_phone")}
+              />
+              <FieldError message={errors.support_phone?.message} />
+              <p className="text-text-grey text-meta">
+                Shown on the Help Center page and in the footer of every email. Leave both empty to
+                hide them.
+              </p>
+            </div>
+          </div>
+        </>
+      )}
       {canManage ? (
         <SubmitButton
           title="Save changes"

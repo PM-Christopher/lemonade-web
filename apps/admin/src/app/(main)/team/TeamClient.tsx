@@ -15,6 +15,7 @@ import { AvatarName } from "@/components/global/AvatarName";
 import { shortDate } from "@/views/transactions/transactionFormat";
 import PaginationComp from "@/components/global/Pagination";
 import { useTeamQuery } from "@/features/team/queries";
+import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import type { TeamMember } from "@/features/team/api";
 import dynamic from "next/dynamic";
 import { SearchBox } from "@/components/global/SearchBox";
@@ -47,6 +48,8 @@ function TeamClient() {
   const { data: teamData } = useTeamQuery({ enabled: isLoggedIn, search: term });
 
   const data = teamData?.admins;
+  const { data: currentAdmin } = useCurrentAdminQuery();
+  const currentAdminId = currentAdmin?.id;
 
   const [seenList, setSeenList] = useState({ term, teamData });
   if (term !== seenList.term || teamData !== seenList.teamData) {
@@ -120,7 +123,14 @@ function TeamClient() {
                           {row.unique_id || "N/A"}
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>
-                          <AvatarName name={row.name} image={row.image} />
+                          <div className="flex items-center gap-2">
+                            <AvatarName name={row.name} image={row.image} />
+                            {String(row.id) === String(currentAdminId) && (
+                              <span className="bg-light-green-10 font-semiBold text-light-green text-meta rounded-full px-2 py-0.5 leading-normal">
+                                You
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className={"p-4 font-sans text-sm font-medium"}>{row.email}</td>
                         <td className={"p-4 font-sans text-sm font-medium"}>

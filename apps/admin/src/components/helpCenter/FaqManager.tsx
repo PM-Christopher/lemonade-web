@@ -15,7 +15,7 @@ import { useFaqListQuery } from "@/features/helpCenter/queries";
 import { useDeleteFaqMutation, useReorderFaqsMutation } from "@/features/helpCenter/mutations";
 
 // The articles users read on the Help Center page.
-function HelpCenterClient() {
+export function FaqManager() {
   const dispatch = useDispatch<AppDispatch>();
   const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const { data } = useFaqListQuery({ search: term });
@@ -53,7 +53,7 @@ function HelpCenterClient() {
 
   return (
     <>
-      <section className="mt-6 flex flex-col gap-5 px-5 pb-8">
+      <section className="flex flex-col gap-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semiBold text-body-l">{faqs.length} Articles</p>
@@ -168,5 +168,3 @@ function HelpCenterClient() {
     </>
   );
 }
-
-export default HelpCenterClient;

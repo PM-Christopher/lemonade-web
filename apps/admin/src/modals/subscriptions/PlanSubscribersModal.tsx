@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
+import { naira } from "@/views/transactions/transactionFormat";
 import { SearchIcon, XIcon } from "lucide-react";
 import dayjs from "dayjs";
 import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
@@ -114,7 +115,7 @@ function PlanSubscribersModal({ isOpen, toggle, planId, planTitle }: PlanSubscri
                     <td className={"p-4 font-sans text-sm font-medium capitalize"}>
                       {row.billing_cycle}
                     </td>
-                    <td className={"p-4 font-sans text-sm font-medium"}>{row.amount}</td>
+                    <td className={"p-4 font-sans text-sm font-medium"}>{naira(row.amount)}</td>
                     <td
                       className={`p-4 font-sans text-sm font-medium ${GetStatusClass(capitalizeSpecial(row.status))}`}
                     >

@@ -143,7 +143,7 @@ const TribeDetailClient = ({ id }: { id: string }) => {
               <Select value={sort} onValueChange={(value) => setSort(value as ThreadSort)}>
                 <SelectTrigger
                   aria-label="Sort threads"
-                  className="font-semiBold text-text-grey text-meta h-10 w-full rounded-xl uppercase"
+                  className="font-semiBold text-text-grey text-meta h-10! w-full rounded-xl uppercase"
                 >
                   <SelectValue />
                 </SelectTrigger>

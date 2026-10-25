@@ -25,8 +25,7 @@ export interface AdminSubscriptionPlan {
   title: string;
   access_type: PlanType;
   monthly_charge_minor: number;
-  // Pre-formatted display string (AdminSubscriptionPlanResource::formatAmount)
-  // — render as-is, never reformat or recompute per CLAUDE.md's money rule.
+  // Server amount in major units, e.g. "5000.00". Shown with thousands separators, never recomputed.
   monthly_charge: string;
   yearly_charge_minor: number;
   yearly_charge: string;
