@@ -131,6 +131,14 @@
     },
     {
         "method": "GET",
+        "uri": "/v1/admin/affiliates/{id}/sales",
+        "name": "v1.admin.affiliates.sales",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
         "uri": "/v1/admin/affiliates/{id}",
         "name": "v1.admin.affiliates.show",
         "guard": "admin",
@@ -527,6 +535,70 @@
         }
     },
     {
+        "method": "POST",
+        "uri": "/v1/admin/categories",
+        "name": "v1.admin.categories.create",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\CategoryRequest",
+        "fields": {
+            "type": [
+                "required",
+                "string",
+                "in"
+            ],
+            "name": [
+                "required",
+                "string",
+                "max:60"
+            ],
+            "description": [
+                "nullable",
+                "string",
+                "max:255"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/categories/{id}",
+        "name": "v1.admin.categories.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/categories",
+        "name": "v1.admin.categories.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/categories/{id}",
+        "name": "v1.admin.categories.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\CategoryRequest",
+        "fields": {
+            "type": [
+                "required",
+                "string",
+                "in"
+            ],
+            "name": [
+                "required",
+                "string",
+                "max:60"
+            ],
+            "description": [
+                "nullable",
+                "string",
+                "max:255"
+            ]
+        }
+    },
+    {
         "method": "PATCH",
         "uri": "/v1/admin/event-promotions/{id}/completed",
         "name": "v1.admin.event-promotions.completed",
@@ -897,7 +969,7 @@
             "status": [
                 "string",
                 "nullable",
-                "in:stuck,failed,all"
+                "in:stuck,failed,settled,all"
             ],
             "type": [
                 "string",
@@ -2778,6 +2850,14 @@
         "method": "GET",
         "uri": "/v1/shared/utilities/get-industries",
         "name": "v1.shared.utilities.industries",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/utilities/report-categories",
+        "name": "v1.shared.utilities.report-categories",
         "guard": null,
         "formRequest": null,
         "fields": null

@@ -9,6 +9,7 @@ export const tribeKeys = {
   threads: (id: string) => [...tribeKeys.all(), "threads", id] as const,
   pinnedThreads: (id: string) => [...tribeKeys.all(), "pinnedThreads", id] as const,
   categories: () => [...tribeKeys.all(), "categories"] as const,
+  reportCategories: () => [...tribeKeys.all(), "report-categories"] as const,
 };
 
 // "mine" is the user's own tribes (user-owned content, 60s); "discover"/"tln"
@@ -56,5 +57,15 @@ export function useTribeCategoriesQuery() {
     queryKey: tribeKeys.categories(),
     queryFn: tribesApi.getTribeCategories,
     staleTime: 60 * 60_000,
+  });
+}
+
+// The reasons people can pick when reporting a thread — reference data, 1h bucket.
+export function useReportCategoriesQuery(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: tribeKeys.reportCategories(),
+    queryFn: tribesApi.getReportCategories,
+    staleTime: 60 * 60_000,
+    enabled: options?.enabled,
   });
 }

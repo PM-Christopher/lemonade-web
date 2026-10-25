@@ -4,6 +4,7 @@ import { Button, Label, Dialog, DialogContentBare, DialogTitle } from "@lemonade
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAppDispatch } from "@/redux/hook";
 import { useReportThreadMutation } from "@/features/tribes/mutations";
+import { useReportCategoriesQuery } from "@/features/tribes/queries";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 
@@ -17,10 +18,14 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
   const dispatch = useAppDispatch();
   const reportThreadMutation = useReportThreadMutation();
 
-  const [selectedReport, setSelectedReport] = useState("Inappropriate content");
+  const { data: reportCategories } = useReportCategoriesQuery({ enabled: isOpen });
+  const categories = reportCategories?.categories ?? [];
+  const [pickedReport, setSelectedReport] = useState("");
+  // Until someone picks, the first reason is selected.
+  const selectedReport = pickedReport || (categories[0]?.name ?? "");
 
   const submitThread = () => {
-    if (threadId === null) return;
+    if (threadId === null || selectedReport === "") return;
     reportThreadMutation.mutate(
       { id: threadId, data: { report: selectedReport } },
       {
@@ -32,7 +37,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
               type: "success",
             }),
           );
-          setSelectedReport("Inappropriate content");
+          setSelectedReport("");
           toggle();
         },
         onError: () => {
@@ -71,6 +76,7 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
                 type="button"
                 onClick={submitThread}
                 loading={reportThreadMutation.isPending}
+                disabled={selectedReport === ""}
               >
                 <p className="font-semi-normal text-meta font-sans leading-normal">Submit</p>
               </Button>
@@ -81,101 +87,29 @@ const ReportThreadModal: React.FC<ReportThreadIF> = ({ toggle, isOpen, threadId 
               What is wrong with this thread?
             </p>
             <div className="flex flex-col">
-              <RadioGroup
-                defaultValue="Inappropriate_content"
-                onValueChange={(value) => setSelectedReport(value)}
-              >
+              <RadioGroup value={selectedReport} onValueChange={setSelectedReport}>
                 <div className="flex flex-col gap-5">
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
-                    <RadioGroupItem value="Inappropriate_content" id="option-one" />
-                    <div className="flex flex-col">
-                      <Label
-                        className="text-black-light text-body-l font-sans font-normal"
-                        htmlFor="option-one"
-                      >
-                        Inappropriate content
-                      </Label>
-                      <p className="text-text-grey text-meta leading-normal font-normal">
-                        Posts containing nudity, pornography, or other sexually suggestive content
-                      </p>
+                  {categories.map((category) => (
+                    <div
+                      key={category.id}
+                      className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4"
+                    >
+                      <RadioGroupItem value={category.name} id={`report-${category.id}`} />
+                      <div className="flex flex-col">
+                        <Label
+                          className="text-black-light text-body-l font-sans font-normal"
+                          htmlFor={`report-${category.id}`}
+                        >
+                          {category.name}
+                        </Label>
+                        {category.description && (
+                          <p className="text-text-grey text-meta leading-normal font-normal">
+                            {category.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
-                    <RadioGroupItem value="Abuse & Harassment" id="option-two" />
-                    <div className="flex flex-col">
-                      <Label
-                        className="text-black-light text-body-l font-sans font-normal"
-                        htmlFor="option-one"
-                      >
-                        Abuse & Harassment
-                      </Label>
-                      <p className="text-text-grey text-meta leading-normal font-normal">
-                        Attacks, insults, threats, or other malicious behavior directed towards
-                        another user.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
-                    <RadioGroupItem value="Hate speech" id="option-three" />
-                    <div className="flex flex-col">
-                      <Label
-                        className="text-black-light text-body-l font-sans font-normal"
-                        htmlFor="option-one"
-                      >
-                        Hate speech
-                      </Label>
-                      <p className="text-text-grey text-meta leading-normal font-normal">
-                        Content that attacks a person or group on the basis of attributes like race,
-                        religion, ethnic origin, national origin, sex, disability, sexual
-                        orientation, or gender identity.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
-                    <RadioGroupItem value="Spam or irrelevant content" id="option-four" />
-                    <div className="flex flex-col">
-                      <Label
-                        className="text-black-light text-body-l font-sans font-normal"
-                        htmlFor="option-one"
-                      >
-                        Spam or irrelevant content
-                      </Label>
-                      <p className="text-text-grey text-meta leading-normal font-normal">
-                        Posts promoting unrelated products or services, excessive self-promotion, or
-                        repetitive messages.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
-                    <RadioGroupItem value="Illegal activity" id="option-five" />
-                    <div className="flex flex-col">
-                      <Label
-                        className="text-black-light text-body-l font-sans font-normal"
-                        htmlFor="option-one"
-                      >
-                        Illegal activity
-                      </Label>
-                      <p className="text-text-grey text-meta leading-normal font-normal">
-                        Posts promoting or encouraging illegal activity. Threats of violence: Any
-                        content that threatens violence against oneself or others.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="border-grey-20 flex items-center space-x-2 rounded-xl border-2 p-3 px-4">
-                    <RadioGroupItem value="Misinformation or disinformation" id="option-six" />
-                    <div className="flex flex-col">
-                      <Label
-                        className="text-black-light text-body-l font-sans font-normal"
-                        htmlFor="option-one"
-                      >
-                        Misinformation or disinformation
-                      </Label>
-                      <p className="text-text-grey text-meta leading-normal font-normal">
-                        The sharing of false or misleading information intended to deceive or
-                        manipulate others.
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </RadioGroup>
             </div>

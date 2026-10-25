@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { SearchIcon } from "lucide-react";
+import { ManageCategoriesLink } from "@/components/categories/ManageCategoriesLink";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { reportHeaders } from "@/data/tableData";
 import { useSelector } from "react-redux";
@@ -98,6 +99,7 @@ function ReportingClient() {
             </SelectContent>
           </Select>
           <DateRangePicker value={range} onChange={setRange} />
+          <ManageCategoriesLink type="report" />
         </div>
       </div>
       <div className="flex flex-col px-5">

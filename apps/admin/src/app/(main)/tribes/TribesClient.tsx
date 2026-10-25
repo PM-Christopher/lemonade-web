@@ -9,6 +9,7 @@ import {
 } from "@lemonade/ui";
 import CreateTribeModal from "@/modals/tribes/CreateTribeModal";
 import { tribeViews } from "@/utils/pageViews";
+import { ManageCategoriesLink } from "@/components/categories/ManageCategoriesLink";
 import { SearchBox } from "@/components/global/SearchBox";
 import { useSearchTerm } from "@/hooks/useSearchTerm";
 import TribeListView, { type TribeListFilter } from "@/views/tribes/TribeListView";
@@ -68,6 +69,7 @@ const TribesClient = () => {
               </Select>
             </div>
             <DateRangePicker value={range} onChange={setRange} />
+            <ManageCategoriesLink type="tribes" />
             <div>
               <Button
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}

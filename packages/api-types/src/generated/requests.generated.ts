@@ -133,6 +133,12 @@ export interface BusinessFilterRequest {
   search?: string;
 }
 
+export interface CategoryRequest {
+  type: string;
+  name: string;
+  description?: string;
+}
+
 export interface ChangeAdminPasswordRequest {
   password: string;
   new_password: string;
@@ -388,7 +394,7 @@ export interface PageContentRequest {
 }
 
 export interface PaymentsToReviewRequest {
-  status?: "stuck" | "failed" | "all";
+  status?: "stuck" | "failed" | "settled" | "all";
   type?: string;
   search?: string;
   page?: number;

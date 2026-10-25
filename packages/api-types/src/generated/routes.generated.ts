@@ -17,6 +17,7 @@ export const adminAccountRoutes = Object.freeze({
 
 export const adminAffiliatesRoutes = Object.freeze({
   LIST: "/admin/affiliates", // GET
+  SALES: "/admin/affiliates/{id}/sales", // GET
   SHOW: "/admin/affiliates/{id}", // GET
 });
 
@@ -56,6 +57,13 @@ export const adminBusinessesRoutes = Object.freeze({
   SERVICES_SHOW: "/admin/businesses/services/{id}", // GET
   SHOW: "/admin/businesses/{id}", // GET
   SUSPEND: "/admin/businesses/{id}/suspend", // PATCH
+});
+
+export const adminCategoriesRoutes = Object.freeze({
+  CREATE: "/admin/categories", // POST
+  DELETE: "/admin/categories/{id}", // DELETE
+  LIST: "/admin/categories", // GET
+  UPDATE: "/admin/categories/{id}", // PATCH
 });
 
 export const adminEventPromotionsRoutes = Object.freeze({
@@ -275,6 +283,7 @@ export const sharedUtilitiesRoutes = Object.freeze({
   FIND_USER: "/shared/utilities/get-user", // GET
   GENERATE_QR_CODE: "/shared/utilities/generate-qr-code", // POST
   INDUSTRIES: "/shared/utilities/get-industries", // GET
+  REPORT_CATEGORIES: "/shared/utilities/report-categories", // GET
   SEND_PUSH_NOTIFICATION: "/shared/utilities/send-push-notification", // POST
   TAGS: "/shared/utilities/get-tags", // GET
   TEST_PUSH_NOTIFICATION: "/shared/utilities/test-push-notification", // POST

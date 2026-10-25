@@ -50,6 +50,7 @@ export const routes = {
   SUPPORT_INBOX: "/support",
   TEAM_DETAIL: (id: string | number) => `/team/${id}` as const,
   REPORTING: "/reporting",
+  CATEGORIES: (type: "tribes" | "business" | "report") => `/categories/${type}` as const,
   REPORTING_DETAIL: (id: string | number) => `/reporting/${id}` as const,
   ANNOUNCEMENTS: "/announcements",
   ANNOUNCEMENT_DETAIL: (id: string | number) => `/announcements/${id}` as const,

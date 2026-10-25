@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
+import { ManageCategoriesLink } from "@/components/categories/ManageCategoriesLink";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@lemonade/ui";
 import { useBusinessListQuery, useServiceListQuery } from "@/features/businesses/queries";
 import type { BusinessFilters } from "@/features/businesses/api";
@@ -107,6 +108,7 @@ function BusinessesClient() {
               </SelectContent>
             </Select>
             <DateRangePicker value={range} onChange={setRange} />
+            <ManageCategoriesLink type="business" />
           </div>
         </div>
         <div className="flex flex-col px-5">

@@ -171,6 +171,10 @@ export interface TribeCategoriesResponse {
   categories: { name: string }[];
 }
 
+export interface ReportCategoriesResponse {
+  categories: { id: string; name: string; description: string | null }[];
+}
+
 export const tribesApi = {
   getTribes: (tribeType: string) =>
     browserApi.get<TribesListResponse>(`${userTribesRoutes.LIST}?type=${tribeType}`),
@@ -274,6 +278,9 @@ export const tribesApi = {
 
   getTribeCategories: () =>
     browserApi.get<TribeCategoriesResponse>(sharedUtilitiesRoutes.TRIBES_CATEGORIES),
+
+  getReportCategories: () =>
+    browserApi.get<ReportCategoriesResponse>(sharedUtilitiesRoutes.REPORT_CATEGORIES),
 
   upload: (formData: FormData) => sharedApi.uploadFile(formData),
   uploadMultiple: (formData: FormData) => sharedApi.uploadMultipleFiles(formData),

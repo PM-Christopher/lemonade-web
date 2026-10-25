@@ -26,4 +26,5 @@ export const ADMIN_PERMISSIONS = {
   settingsManage: "settings.manage",
   pagesEdit: "pages.edit",
   faqsManage: "faqs.manage",
+  categoriesManage: "categories.manage",
 } as const;
