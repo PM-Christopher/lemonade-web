@@ -328,6 +328,13 @@ export interface EventActionReasonRequest {
   reason?: string;
 }
 
+export interface FaqRequest {
+  category: string;
+  question: string;
+  answer: string;
+  is_published?: boolean;
+}
+
 export interface FindConnectUserRequest {
   search: string;
 }
@@ -375,6 +382,11 @@ export interface MenuPreferencesRequest {
   hidden_menu?: {}[];
 }
 
+export interface PageContentRequest {
+  category: string;
+  content: string;
+}
+
 export interface PaymentsToReviewRequest {
   status?: "stuck" | "failed" | "all";
   type?: string;
@@ -387,6 +399,11 @@ export interface PlatformSettingsRequest {
   platform_name: string;
   logo_url?: string;
   inactivity_timeout_minutes: number;
+  support_email?: string;
+  support_phone?: string;
+  audit_retention_days: number;
+  user_activity_retention_days: number;
+  account_deletion_grace_days: number;
 }
 
 export interface ProcessWithdrawalRequestRequest {
@@ -457,6 +474,10 @@ export interface RemoveTribeMemberRequest {}
 
 export interface RenewSubscriptionRequest {
   redirect_url?: string;
+}
+
+export interface ReorderFaqsRequest {
+  ids: {}[];
 }
 
 export interface ReportClientErrorRequest {

@@ -672,6 +672,97 @@
         "fields": null
     },
     {
+        "method": "POST",
+        "uri": "/v1/admin/faqs",
+        "name": "v1.admin.faqs.create",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\FaqRequest",
+        "fields": {
+            "category": [
+                "required",
+                "string",
+                "in"
+            ],
+            "question": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "answer": [
+                "required",
+                "string",
+                "max:20000"
+            ],
+            "is_published": [
+                "sometimes",
+                "boolean"
+            ]
+        }
+    },
+    {
+        "method": "DELETE",
+        "uri": "/v1/admin/faqs/{id}",
+        "name": "v1.admin.faqs.delete",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/faqs",
+        "name": "v1.admin.faqs.list",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/faqs/reorder",
+        "name": "v1.admin.faqs.reorder",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\ReorderFaqsRequest",
+        "fields": {
+            "ids": [
+                "required",
+                "array",
+                "min:1",
+                "max:200"
+            ],
+            "ids.*": [
+                "uuid",
+                "exists:faqs,id"
+            ]
+        }
+    },
+    {
+        "method": "PATCH",
+        "uri": "/v1/admin/faqs/{id}",
+        "name": "v1.admin.faqs.update",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Admin\\FaqRequest",
+        "fields": {
+            "category": [
+                "required",
+                "string",
+                "in"
+            ],
+            "question": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "answer": [
+                "required",
+                "string",
+                "max:20000"
+            ],
+            "is_published": [
+                "sometimes",
+                "boolean"
+            ]
+        }
+    },
+    {
         "method": "DELETE",
         "uri": "/v1/admin/moderation/content/{type}/{id}",
         "name": "v1.admin.moderation.content.delete",
@@ -774,8 +865,19 @@
         "uri": "/v1/admin/page-content",
         "name": "v1.admin.page-content.save",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Admin\\PageContentRequest",
+        "fields": {
+            "category": [
+                "required",
+                "string",
+                "in"
+            ],
+            "content": [
+                "required",
+                "string",
+                "max:100000"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -1083,6 +1185,35 @@
                 "integer",
                 "min:1",
                 "max:120"
+            ],
+            "support_email": [
+                "nullable",
+                "email:rfc",
+                "max:120"
+            ],
+            "support_phone": [
+                "nullable",
+                "string",
+                "max:30",
+                "regex:/^\\+?[0-9][0-9 ()\\-]{5,28}$/"
+            ],
+            "audit_retention_days": [
+                "required",
+                "integer",
+                "min:0",
+                "max:3650"
+            ],
+            "user_activity_retention_days": [
+                "required",
+                "integer",
+                "min:0",
+                "max:3650"
+            ],
+            "account_deletion_grace_days": [
+                "required",
+                "integer",
+                "min:1",
+                "max:365"
             ]
         }
     },
@@ -2554,6 +2685,22 @@
                 "array"
             ]
         }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/help/faqs",
+        "name": "v1.shared.help.faqs",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/shared/help/pages/{category}",
+        "name": "v1.shared.help.pages",
+        "guard": null,
+        "formRequest": null,
+        "fields": null
     },
     {
         "method": "POST",

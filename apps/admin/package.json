@@ -16,6 +16,7 @@
     "@hookform/resolvers": "^5.9.2",
     "@lemonade/api-client": "workspace:*",
     "@lemonade/api-types": "workspace:*",
+    "@lemonade/domain": "workspace:*",
     "@lemonade/realtime": "workspace:*",
     "@lemonade/ui": "workspace:*",
     "@lemonade/validation": "workspace:*",

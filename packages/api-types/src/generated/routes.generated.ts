@@ -79,6 +79,14 @@ export const adminEventsRoutes = Object.freeze({
   UPDATE_COMMISSION_CHARGE: "/admin/events/update-commission-charge", // PATCH
 });
 
+export const adminFaqsRoutes = Object.freeze({
+  CREATE: "/admin/faqs", // POST
+  DELETE: "/admin/faqs/{id}", // DELETE
+  LIST: "/admin/faqs", // GET
+  REORDER: "/admin/faqs/reorder", // PATCH
+  UPDATE: "/admin/faqs/{id}", // PATCH
+});
+
 export const adminModerationRoutes = Object.freeze({
   CONTENT_DELETE: "/admin/moderation/content/{type}/{id}", // DELETE
   CONTENT_LIST: "/admin/moderation/content/{type}", // GET
@@ -246,6 +254,11 @@ export const adminWalletRoutes = Object.freeze({
 
 export const sharedClientErrorsRoutes = Object.freeze({
   STORE: "/shared/client-errors", // POST
+});
+
+export const sharedHelpRoutes = Object.freeze({
+  FAQS: "/shared/help/faqs", // GET
+  PAGES: "/shared/help/pages/{category}", // GET
 });
 
 export const sharedPaymentRoutes = Object.freeze({

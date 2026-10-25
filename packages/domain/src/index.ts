@@ -5,6 +5,7 @@
 // balance sufficiency), it does not belong here. See docs/ARCHITECTURE.md §7.
 
 export { formatCountry } from "./formatCountry";
+export { loginPathFor, safeRedirectPath } from "./redirect";
 export {
   applyFormat,
   countWords,
