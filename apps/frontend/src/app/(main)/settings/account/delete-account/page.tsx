@@ -12,6 +12,7 @@ import ChevronRight from "@/images/icons/chevronRight.svg";
 import { Button } from "@lemonade/ui";
 
 import MainLayout from "@/components/layouts/MainLayout";
+import { DeletionGracePeriod } from "@/components/settings/DeletionGracePeriod";
 
 export const metadata: Metadata = { title: "Delete account" };
 
@@ -22,11 +23,7 @@ const DeleteAccountPage = () => {
         <BackHeader title="Delete account" />
         <section className="mt-4 flex flex-col items-center">
           <div className="laptop:w-160 laptop:bg-white flex w-full flex-col gap-4 rounded-xl bg-none p-6">
-            <p className="text-light-black text-body-s max-w-148 font-normal">
-              Deleting your account permanently removes your data from our system. You will have a{" "}
-              <span className="font-semibold">30-day</span> grace period to change your mind. If you
-              log in to your account within 30 days of deletion, your account will be reactivated.
-            </p>
+            <DeletionGracePeriod />
             <div className="bg-light_grey mt-6 flex flex-col gap-4 p-4">
               <p className="text-body-s font-semibold">Before you go, make sure</p>
               <div className="flex items-center gap-2">

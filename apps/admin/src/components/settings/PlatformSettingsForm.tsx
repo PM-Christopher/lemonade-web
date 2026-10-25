@@ -18,7 +18,36 @@ import {
 } from "@/features/settings/mutations";
 import { platformSettingsSchema, type PlatformSettingsInput } from "@/features/settings/schema";
 
+const FORM_FIELDS = [
+  "platform_name",
+  "inactivity_timeout_minutes",
+  "audit_retention_days",
+  "user_activity_retention_days",
+  "account_deletion_grace_days",
+] as const;
+
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
+
+const DAY_FIELDS = [
+  {
+    name: "audit_retention_days",
+    label: "Keep the audit log for (days)",
+    min: 0,
+    hint: "Older admin activity is removed every night. Use 0 to keep it forever.",
+  },
+  {
+    name: "user_activity_retention_days",
+    label: "Keep user activity logs for (days)",
+    min: 0,
+    hint: "Older entries on each user's activity log are removed every night. Use 0 to keep them forever.",
+  },
+  {
+    name: "account_deletion_grace_days",
+    label: "Account deletion grace period (days)",
+    min: 1,
+    hint: "A deleted account can be restored by signing in within this time. After it, the person's details are erased.",
+  },
+] as const;
 
 interface PlatformSettingsFormProps {
   settings: PlatformSettings;
@@ -26,7 +55,7 @@ interface PlatformSettingsFormProps {
   canManage: boolean;
 }
 
-// Logo, platform name and idle timeout.
+// Logo, platform name, idle timeout and how long data is kept.
 export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFormProps) {
   const dispatch = useDispatch<AppDispatch>();
   const update = useUpdatePlatformSettingsMutation();
@@ -43,6 +72,9 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
     values: {
       platform_name: settings.platform_name,
       inactivity_timeout_minutes: settings.inactivity_timeout_minutes,
+      audit_retention_days: settings.audit_retention_days,
+      user_activity_retention_days: settings.user_activity_retention_days,
+      account_deletion_grace_days: settings.account_deletion_grace_days,
     },
     mode: "onTouched",
   });
@@ -69,8 +101,7 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
       {
         onSuccess: () => toast(apiMessage("Settings saved"), "success"),
         onError: (error) => {
-          if (applyServerErrors(error, setError, ["platform_name", "inactivity_timeout_minutes"]))
-            return;
+          if (applyServerErrors(error, setError, FORM_FIELDS)) return;
           toast(error?.message || "Something went wrong", "error");
         },
       },
@@ -152,6 +183,27 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
           After this long without activity, admins see a prompt to stay signed in or log out. This
           applies to everyone.
         </p>
+      </div>
+
+      <div className="flex max-w-md flex-col gap-5">
+        <p className="text-body-l font-semibold">Data retention</p>
+        {DAY_FIELDS.map((field) => (
+          <div className="grid gap-2" key={field.name}>
+            <Label htmlFor={field.name} className="text-text-grey text-body-s font-normal">
+              {field.label}
+            </Label>
+            <Input
+              id={field.name}
+              type="number"
+              min={field.min}
+              disabled={!canManage}
+              aria-invalid={errors[field.name] ? true : undefined}
+              {...register(field.name, { valueAsNumber: true })}
+            />
+            <FieldError message={errors[field.name]?.message} />
+            <p className="text-text-grey text-meta">{field.hint}</p>
+          </div>
+        ))}
       </div>
 
       {canManage ? (

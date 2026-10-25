@@ -5,10 +5,16 @@ import { adminSettingsRoutes, adminUtilitiesRoutes } from "@lemonade/api-types/g
 export interface Branding {
   platform_name: string;
   logo_url: string | null;
+  account_deletion_grace_days: number;
 }
 
 export interface PlatformSettings extends Branding {
   inactivity_timeout_minutes: number;
+  // Days before old logs are removed; 0 keeps them forever.
+  audit_retention_days: number;
+  user_activity_retention_days: number;
+  // Days a deleted account can still be restored by signing in.
+  account_deletion_grace_days: number;
 }
 
 // Menu paths, like "/tribes". An empty order means the default A to Z menu.
@@ -26,6 +32,9 @@ export interface PlatformSettingsPayload {
   platform_name: string;
   logo_url: string | null;
   inactivity_timeout_minutes: number;
+  audit_retention_days: number;
+  user_activity_retention_days: number;
+  account_deletion_grace_days: number;
 }
 
 export const settingsApi = {
