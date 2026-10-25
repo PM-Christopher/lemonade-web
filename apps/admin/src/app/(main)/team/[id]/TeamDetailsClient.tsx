@@ -10,6 +10,7 @@ import { useNavigation } from "@/hooks/useNavigation";
 import { Avatar } from "@/components/global/Avatar";
 import PaginationComp from "@/components/global/Pagination";
 import { RootState } from "@/redux/store";
+import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { useTeamActivityLogsQuery, useTeamDetailQuery } from "@/features/team/queries";
 import { useChangeTeamPasswordMutation } from "@/features/team/mutations";
 import { capitalizeWords, formatRoleName, GetStatusClass } from "@/utils/helper";
@@ -47,6 +48,9 @@ function TeamDetailsClient({ id }: { id: string }) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: detail } = useTeamDetailQuery(id, { enabled: isLoggedIn });
   const team = detail?.team;
+  const { data: currentAdmin } = useCurrentAdminQuery();
+  // Your own password and membership are managed elsewhere.
+  const isSelf = currentAdmin?.id !== undefined && currentAdmin.id === team?.id;
 
   const [range, setRange] = useState("all");
   const [page, setPage] = useState(1);
@@ -103,22 +107,24 @@ function TeamDetailsClient({ id }: { id: string }) {
               </p>
             </Field>
           </div>
-          <div className="border-t-grey-20 mt-5 flex items-center justify-between gap-6 border-t p-6">
-            <button
-              className="border-light-grey-50 text-body-s w-full rounded-xl border px-12 py-2.75 font-sans font-medium"
-              type="button"
-              onClick={() => setPasswordOpen(true)}
-            >
-              Update password
-            </button>
-            <button
-              className="border-light-grey-50 text-red-1 text-body-s w-full rounded-xl border px-12 py-2.75 font-sans font-medium"
-              type="button"
-              onClick={() => setRemoveOpen(true)}
-            >
-              Remove member
-            </button>
-          </div>
+          {!isSelf && (
+            <div className="border-t-grey-20 mt-5 flex items-center justify-between gap-6 border-t p-6">
+              <button
+                className="border-light-grey-50 text-body-s w-full rounded-xl border px-12 py-2.75 font-sans font-medium"
+                type="button"
+                onClick={() => setPasswordOpen(true)}
+              >
+                Update password
+              </button>
+              <button
+                className="border-light-grey-50 text-red-1 text-body-s w-full rounded-xl border px-12 py-2.75 font-sans font-medium"
+                type="button"
+                onClick={() => setRemoveOpen(true)}
+              >
+                Remove member
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">

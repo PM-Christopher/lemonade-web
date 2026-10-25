@@ -1,17 +1,9 @@
-// Endpoint layer for the content-moderation domain — see features/reporting/
-// api.ts for the pattern this follows: the BFF proxy transport (browserApi).
-//
-// The backend's moderation content actions (lemonade-backend's
-// InteractsWithModeratedContent) are generic across six content types —
-// forums, forum-comments, threads, thread-comments, tribes, tribe-comments —
-// but this feature only surfaces "forums" and "forum-comments", matching
-// the "Forum posts/comments moderation" deliverable this was built for.
-// The other four types are reachable with the same functions below by
-// widening ModerationContentType, if a future deliverable needs them.
+// Endpoint layer for content moderation. The backend lists every type the same way.
 import { browserApi } from "@/lib/browser-api";
 import { adminModerationRoutes, buildPath } from "@lemonade/api-types/generated";
 
-export type ModerationContentType = "forums" | "forum-comments";
+export type ModerationContentType =
+  "forums" | "forum-comments" | "threads" | "thread-comments" | "tribe-comments";
 
 export type ForumStatus = "active" | "inactive" | "suspended";
 

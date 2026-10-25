@@ -1,5 +1,5 @@
-import React from "react";
-import { XIcon } from "lucide-react";
+import React, { useState } from "react";
+import { CopyIcon, EyeIcon, EyeOffIcon, XIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Label, Input, Dialog, DialogContentBare, DialogTitle, FieldError } from "@lemonade/ui";
@@ -11,6 +11,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { addTeamMemberSchema, type AddTeamMemberInput } from "@/features/team/schema";
 import { applyServerErrors } from "@/lib/form-errors";
+import { generateStrongPassword } from "@/utils/generatePassword";
 
 interface BalanceModalProps {
   isOpen: boolean;
@@ -21,11 +22,15 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
   const dispatch = useDispatch<AppDispatch>();
   const addTeamMember = useAddTeamMemberMutation();
   const { data: rolesData } = useAssignableRolesQuery({ enabled: isOpen });
+  const [showPassword, setShowPassword] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const {
     register,
     handleSubmit,
     setError,
+    setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm<AddTeamMemberInput>({
@@ -33,6 +38,20 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
     defaultValues: { first_name: "", last_name: "", email: "", password: "", role: "" },
     mode: "onTouched",
   });
+
+  // Fills the field with a strong password and shows it so it can be copied and shared.
+  const fillGeneratedPassword = () => {
+    setValue("password", generateStrongPassword(), { shouldValidate: true, shouldDirty: true });
+    setShowPassword(true);
+    setCopied(false);
+  };
+
+  const copyPassword = async () => {
+    const password = getValues("password");
+    if (!password) return;
+    await navigator.clipboard?.writeText(password);
+    setCopied(true);
+  };
 
   const onSubmit = (values: AddTeamMemberInput) => {
     addTeamMember.mutate(
@@ -48,6 +67,8 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             updateToastifyReducer({ show: true, message: apiMessage("Success"), type: "success" }),
           );
           reset();
+          setShowPassword(false);
+          setCopied(false);
           toggle();
         },
         onError: (error) => {
@@ -132,18 +153,57 @@ const AddMember: React.FC<BalanceModalProps> = ({ isOpen, toggle }) => {
             </div>
 
             <div className="grid gap-2">
-              <Label
-                htmlFor="password"
-                className="text-text-grey text-body-s font-sans font-normal"
-              >
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                className="form-font bg-light-grey h-12 rounded-xl border-0"
-                {...register("password")}
-              />
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="password"
+                  className="text-text-grey text-body-s font-sans font-normal"
+                >
+                  Password
+                </Label>
+                <button
+                  type="button"
+                  className="text-light-green-70 text-meta cursor-pointer font-medium"
+                  // Keeps focus where it is, so a validation message can't shift the button mid-click.
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={fillGeneratedPassword}
+                >
+                  Generate strong password
+                </button>
+              </div>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  className="form-font bg-light-grey h-12 rounded-xl border-0 pr-20"
+                  {...register("password")}
+                />
+                <div className="absolute inset-y-0 right-3 flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label={copied ? "Password copied" : "Copy password"}
+                    className="text-grey-40 cursor-pointer"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => void copyPassword()}
+                  >
+                    <CopyIcon className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="text-grey-40 cursor-pointer"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => setShowPassword((current) => !current)}
+                  >
+                    {showPassword ? (
+                      <EyeOffIcon className="h-4 w-4" />
+                    ) : (
+                      <EyeIcon className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              {copied && <p className="text-light-green-70 text-meta">Copied to clipboard</p>}
               <FieldError message={errors.password?.message} />
             </div>
 
