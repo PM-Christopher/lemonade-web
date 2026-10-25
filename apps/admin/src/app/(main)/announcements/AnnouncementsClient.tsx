@@ -3,7 +3,8 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useState } from "react";
+import { usePagination } from "@/hooks/usePagination";
+import React, { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { PlusIcon, SearchIcon } from "lucide-react";
@@ -39,35 +40,33 @@ const when = (iso: string) => dayjs(iso).format("DD MMM, YYYY hh:mm A");
 
 const AnnouncementsClient = () => {
   const { push } = useNavigation();
-  // State for current page and items per page
-  const [currentPage, setCurrentPage] = useState(1);
-  const perPage = DEFAULT_PAGE_SIZE;
+  const [searchValue, setSearchValue] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [pageToEdit, setPageToEdit] = useState<(typeof PAGES)[number] | null>(null);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: announcementData } = useAnnouncementsQuery({
     enabled: isLoggedIn,
   });
 
-  // Calculate total pages based on the data length and perPage value
-  const totalPages = Math.ceil((announcementData?.announcements?.length ?? 0) / perPage);
-
-  // Determine the start and end indices for slicing the data array
-  const startIndex = (currentPage - 1) * perPage;
-  const paginatedData = announcementData?.announcements?.slice(startIndex, startIndex + perPage);
+  // The list comes back whole, so search runs here on title, ID, creator and status.
+  const announcements = useMemo(() => {
+    const term = searchValue.trim().toLowerCase();
+    const all = announcementData?.announcements ?? [];
+    if (!term) return all;
+    return all.filter((row) =>
+      [row.title, row.unique_id, row.created_by?.name ?? "", announcementStatus(row.status)].some(
+        (value) => value.toLowerCase().includes(term),
+      ),
+    );
+  }, [announcementData, searchValue]);
+  const pager = usePagination(announcements, searchValue);
 
   return (
     <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-body-l"}>
-            {announcementData?.announcements?.length} Announcements
-          </p>
+          <p className={"font-semiBold text-body-l"}>{announcements.length} Announcements</p>
           <div className={"flex justify-between gap-3"}>
             <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
               <div>
@@ -78,7 +77,10 @@ const AnnouncementsClient = () => {
                   id="search"
                   type="text"
                   className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
+                  aria-label="Search announcements"
                   placeholder="Search announcement, ID..."
+                  value={searchValue}
+                  onChange={(event) => setSearchValue(event.target.value)}
                 />
               </div>
             </div>
@@ -123,8 +125,8 @@ const AnnouncementsClient = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedData && paginatedData.length > 0 ? (
-                    paginatedData.map((row: AnnouncementRow, index: number) => (
+                  {pager.pageItems.length > 0 ? (
+                    pager.pageItems.map((row: AnnouncementRow, index: number) => (
                       <tr
                         key={index}
                         className="border-grey-20 h-18 cursor-pointer border-b"
@@ -163,10 +165,10 @@ const AnnouncementsClient = () => {
 
               {/* Pagination */}
               <PaginationComp
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                perPage={perPage}
+                currentPage={pager.page}
+                totalPages={pager.totalPages}
+                onPageChange={pager.setPage}
+                perPage={DEFAULT_PAGE_SIZE}
               />
             </div>
           </div>
