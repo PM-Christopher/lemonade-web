@@ -130,14 +130,14 @@ function DashboardClient() {
   ];
 
   return (
-    <div className="mt-5 flex flex-col gap-5 px-10">
+    <div className="mt-5 flex flex-col gap-5 px-10 pb-10">
       <div className={"w-fit"}>
         <DateRangePicker value={range} onChange={setRange} />
       </div>
-      <div className={"grid grid-cols-4 gap-5"}>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(14.5rem,1fr))] gap-5">
         {data.map((item, index) => (
           <DataCard
-            styles={"w-69 h-33"}
+            styles="h-33 w-full"
             isPrice={item.isPrice}
             key={index}
             title={item.title}
