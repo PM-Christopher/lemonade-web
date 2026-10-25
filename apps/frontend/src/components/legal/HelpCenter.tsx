@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { SafeHtml } from "@lemonade/ui";
+import { SafeHtml } from "@lemonade/ui/src/safe-html";
 import { SearchIcon } from "lucide-react";
 import { useFaqsQuery } from "@/features/help/queries";
 import useDebounce from "@/hooks/useDebounce";

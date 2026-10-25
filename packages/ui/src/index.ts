@@ -54,5 +54,4 @@ export {
 } from "./dialog";
 export { cn } from "./lib/utils";
 export { FormattedText } from "./formatted-text";
-export { SafeHtml, cleanHtml } from "./safe-html";
 export { RichTextField } from "./rich-text-field";

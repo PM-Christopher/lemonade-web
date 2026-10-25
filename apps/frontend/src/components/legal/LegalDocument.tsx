@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeHtml } from "@lemonade/ui";
+import { SafeHtml } from "@lemonade/ui/src/safe-html";
 import type { PublicPage } from "@/features/help/api";
 
 // A policy page: the title, the text, and when it was last changed.

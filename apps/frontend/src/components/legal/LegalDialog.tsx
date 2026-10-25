@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import CloseIcon from "@/images/icons/close.svg";
-import { Dialog, DialogContentBare, DialogTitle, SafeHtml } from "@lemonade/ui";
+import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
+import { SafeHtml } from "@lemonade/ui/src/safe-html";
 import { useLegalPageQuery } from "@/features/help/queries";
 import type { LegalCategory } from "@/features/help/api";
 

@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { ArrowDownIcon, ArrowUpIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { Button, SafeHtml } from "@lemonade/ui";
+import { Button } from "@lemonade/ui";
+import { SafeHtml } from "@lemonade/ui/src/safe-html";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";

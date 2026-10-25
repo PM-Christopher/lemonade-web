@@ -11,7 +11,7 @@ import {
   Quote,
   Underline,
 } from "lucide-react";
-import { SafeHtml } from "@lemonade/ui";
+import { SafeHtml } from "@lemonade/ui/src/safe-html";
 
 interface HtmlEditorProps {
   id: string;
