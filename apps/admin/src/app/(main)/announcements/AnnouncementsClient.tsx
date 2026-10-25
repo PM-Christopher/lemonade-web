@@ -12,27 +12,17 @@ import dynamic from "next/dynamic";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { announcementHeaders } from "@/data/tableData";
-import DataInfoCard from "@/components/global/DataInfoCard";
 
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { GetStatusClass } from "@/utils/helper";
 import PaginationComp from "@/components/global/Pagination";
 import { useAnnouncementsQuery } from "@/features/announcements/queries";
-import type { AnnouncementRow, PageContentCategory } from "@/features/announcements/api";
+import type { AnnouncementRow } from "@/features/announcements/api";
 
 const AnnouncementModal = dynamic(() => import("@/modals/announcements/AnnouncementModal"), {
   ssr: false,
 });
-const PageContentModal = dynamic(() => import("@/modals/announcements/PageContentModal"), {
-  ssr: false,
-});
-
-const PAGES: { category: PageContentCategory; title: string }[] = [
-  { category: "terms_and_conditions", title: "Terms & Conditions" },
-  { category: "privacy_policy", title: "Privacy policy" },
-  { category: "community_guidelines", title: "Community guidelines" },
-];
 
 // A pending announcement is waiting for its date, so it reads as scheduled.
 export const announcementStatus = (status: string) =>
@@ -44,7 +34,6 @@ const AnnouncementsClient = () => {
   const { push } = useNavigation();
   const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const [createOpen, setCreateOpen] = useState(false);
-  const [pageToEdit, setPageToEdit] = useState<(typeof PAGES)[number] | null>(null);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: announcementData } = useAnnouncementsQuery({
@@ -80,17 +69,6 @@ const AnnouncementsClient = () => {
         </div>
         <div className={"flex flex-col px-5"}>
           <div className={"border-grey-20 flex flex-col rounded-xl border"}>
-            <div className={"flex justify-between gap-6 px-3 pt-2 pb-4"}>
-              {PAGES.map((page) => (
-                <DataInfoCard
-                  key={page.category}
-                  styles={"w-full"}
-                  title={page.title}
-                  isEditable={true}
-                  handleChange={() => setPageToEdit(page)}
-                />
-              ))}
-            </div>
             <div className="rounded-lg bg-white shadow-md">
               <table
                 className={`min-w-full table-auto border-collapse ${centerNumericColumns(announcementHeaders)}`}
@@ -158,12 +136,6 @@ const AnnouncementsClient = () => {
         </div>
       </section>
       <AnnouncementModal isOpen={createOpen} toggle={() => setCreateOpen(false)} />
-      <PageContentModal
-        isOpen={pageToEdit !== null}
-        toggle={() => setPageToEdit(null)}
-        category={pageToEdit?.category ?? "terms_and_conditions"}
-        title={pageToEdit?.title ?? ""}
-      />
     </>
   );
 };

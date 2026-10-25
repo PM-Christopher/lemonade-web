@@ -21,6 +21,8 @@ import { platformSettingsSchema, type PlatformSettingsInput } from "@/features/s
 const FORM_FIELDS = [
   "platform_name",
   "inactivity_timeout_minutes",
+  "support_email",
+  "support_phone",
   "audit_retention_days",
   "user_activity_retention_days",
   "account_deletion_grace_days",
@@ -72,6 +74,8 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
     values: {
       platform_name: settings.platform_name,
       inactivity_timeout_minutes: settings.inactivity_timeout_minutes,
+      support_email: settings.support_email ?? "",
+      support_phone: settings.support_phone ?? "",
       audit_retention_days: settings.audit_retention_days,
       user_activity_retention_days: settings.user_activity_retention_days,
       account_deletion_grace_days: settings.account_deletion_grace_days,
@@ -97,7 +101,13 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
 
   const onSubmit = (values: PlatformSettingsInput) => {
     update.mutate(
-      { ...values, logo_url: logoUrl },
+      {
+        ...values,
+        logo_url: logoUrl,
+        // An empty box means "none".
+        support_email: values.support_email || null,
+        support_phone: values.support_phone || null,
+      },
       {
         onSuccess: () => toast(apiMessage("Settings saved"), "success"),
         onError: (error) => {
@@ -183,6 +193,40 @@ export function PlatformSettingsForm({ settings, canManage }: PlatformSettingsFo
           After this long without activity, admins see a prompt to stay signed in or log out. This
           applies to everyone.
         </p>
+      </div>
+
+      <div className="flex max-w-md flex-col gap-5">
+        <p className="text-body-l font-semibold">Support contact</p>
+        <div className="grid gap-2">
+          <Label htmlFor="support-email" className="text-text-grey text-body-s font-normal">
+            Support email
+          </Label>
+          <Input
+            id="support-email"
+            type="email"
+            disabled={!canManage}
+            aria-invalid={errors.support_email ? true : undefined}
+            {...register("support_email")}
+          />
+          <FieldError message={errors.support_email?.message} />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="support-phone" className="text-text-grey text-body-s font-normal">
+            Support phone
+          </Label>
+          <Input
+            id="support-phone"
+            type="tel"
+            disabled={!canManage}
+            aria-invalid={errors.support_phone ? true : undefined}
+            {...register("support_phone")}
+          />
+          <FieldError message={errors.support_phone?.message} />
+          <p className="text-text-grey text-meta">
+            Shown on the Help Center page and in the footer of every email. Leave both empty to hide
+            them.
+          </p>
+        </div>
       </div>
 
       <div className="flex max-w-md flex-col gap-5">

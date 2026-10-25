@@ -5,6 +5,8 @@ import { adminSettingsRoutes, adminUtilitiesRoutes } from "@lemonade/api-types/g
 export interface Branding {
   platform_name: string;
   logo_url: string | null;
+  support_email: string | null;
+  support_phone: string | null;
   account_deletion_grace_days: number;
 }
 
@@ -32,6 +34,8 @@ export interface PlatformSettingsPayload {
   platform_name: string;
   logo_url: string | null;
   inactivity_timeout_minutes: number;
+  support_email: string | null;
+  support_phone: string | null;
   audit_retention_days: number;
   user_activity_retention_days: number;
   account_deletion_grace_days: number;

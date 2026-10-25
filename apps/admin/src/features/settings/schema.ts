@@ -20,6 +20,18 @@ export const platformSettingsSchema = z.object({
     .int("Use whole minutes")
     .min(1, "At least 1 minute")
     .max(120, "At most 120 minutes"),
+  support_email: z
+    .string()
+    .trim()
+    .max(120, "Keep it under 120 characters")
+    .refine((value) => value === "" || z.email().safeParse(value).success, "Enter a valid email"),
+  support_phone: z
+    .string()
+    .trim()
+    .refine(
+      (value) => value === "" || /^\+?[0-9][0-9 ()-]{5,28}$/.test(value),
+      "Enter a valid phone number",
+    ),
   audit_retention_days: retentionDays("Enter a number of days"),
   user_activity_retention_days: retentionDays("Enter a number of days"),
   account_deletion_grace_days: z

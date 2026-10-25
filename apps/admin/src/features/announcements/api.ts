@@ -2,7 +2,6 @@
 import { browserApi } from "@/lib/browser-api";
 import {
   adminAnnouncementRoutes,
-  adminPageContentRoutes,
   adminUtilitiesRoutes,
   buildPath,
 } from "@lemonade/api-types/generated";
@@ -40,13 +39,6 @@ export interface AnnouncementPayload {
   date_scheduled?: string;
 }
 
-export type PageContentCategory =
-  "terms_and_conditions" | "privacy_policy" | "community_guidelines";
-
-export interface PageContentResponse {
-  page_content: Partial<Record<PageContentCategory, string | null>> | null;
-}
-
 export const announcementsApi = {
   getAnnouncements: (search?: string) =>
     browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.LIST, {
@@ -61,11 +53,6 @@ export const announcementsApi = {
       buildPath(adminAnnouncementRoutes.UPDATE, { id }),
       payload,
     ),
-
-  getPageContent: () => browserApi.get<PageContentResponse>(adminPageContentRoutes.SHOW),
-
-  savePageContent: (category: PageContentCategory, content: string) =>
-    browserApi.post<PageContentResponse>(adminPageContentRoutes.SAVE, { category, content }),
 
   // Images and short videos for announcement and policy bodies. Returns the file's address.
   uploadMedia: async (file: File) => {
