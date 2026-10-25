@@ -10,7 +10,7 @@ import { authSuccess } from "@/features/authentication/authSlice";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "../global/BottomNav";
-import { routes } from "@/lib/routes";
+import { loginPathWithNext } from "@/lib/post-auth-redirect";
 import { InactivityGuard } from "@/components/global/InactivityGuard";
 
 interface DashboardLayoutProps {
@@ -46,7 +46,7 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
 
   useEffect(() => {
     if (isError && !user) {
-      push(routes.LOGIN);
+      push(loginPathWithNext(`${window.location.pathname}${window.location.search}`));
     }
   }, [isError, user, push]);
 

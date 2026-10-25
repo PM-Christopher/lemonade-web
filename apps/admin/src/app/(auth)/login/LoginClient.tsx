@@ -16,9 +16,10 @@ import { apiMessage } from "@/lib/api-message";
 import { routes } from "@/lib/routes";
 import { localLoginDefaults } from "@/lib/env.client";
 import { useNavigation } from "@/hooks/useNavigation";
+import { readNext } from "@/lib/post-auth-redirect";
 
 function LoginPage({}) {
-  const { push } = useNavigation();
+  const { push, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
   const [, setCookie] = useCookies(["newToken"]);
   const loginMutation = useLoginMutation();
@@ -55,7 +56,7 @@ function LoginPage({}) {
           type: "success",
         }),
       );
-      push(routes.HOME);
+      push(readNext(getQueryParam("next")));
     } catch (error) {
       dispatch(
         updateToastifyReducer({

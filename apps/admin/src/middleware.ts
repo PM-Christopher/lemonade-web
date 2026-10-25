@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
+import { loginPathWithNext, readNext } from "@/lib/post-auth-redirect";
 import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import { adminAccountRoutes } from "@lemonade/api-types/generated";
 
@@ -158,10 +159,10 @@ export async function middleware(req: NextRequest) {
     // A signed-in admin has no use for the login page, even by direct URL.
     const loginToken = req.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
     if (loginToken && (await getAdminPermissions(loginToken)) !== null) {
-      const homeUrl = req.nextUrl.clone();
-      homeUrl.pathname = "/";
-      homeUrl.search = "";
-      const res = NextResponse.redirect(homeUrl);
+      // Already signed in: go where the admin was headed, or home.
+      const res = NextResponse.redirect(
+        new URL(readNext(req.nextUrl.searchParams.get("next")), req.url),
+      );
       res.headers.set("Content-Security-Policy", csp);
       return res;
     }
@@ -179,9 +180,7 @@ export async function middleware(req: NextRequest) {
   // needs the real `token` value specifically, not this boolean.
   const signedIn = Boolean(token) || Boolean(req.cookies.get(SIGNED_IN_COOKIE)?.value);
   if (!signedIn) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    loginUrl.searchParams.set("next", `${pathname}${search || ""}`);
+    const loginUrl = new URL(loginPathWithNext(`${pathname}${search || ""}`), req.url);
 
     const res = NextResponse.redirect(loginUrl);
     res.headers.set("Content-Security-Policy", csp);
