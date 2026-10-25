@@ -51,7 +51,10 @@ export interface ChangePasswordPayload {
 }
 
 export const teamApi = {
-  getTeamData: () => browserApi.get<TeamListResponse>(adminTeamMembersRoutes.LIST),
+  getTeamData: (search?: string) =>
+    browserApi.get<TeamListResponse>(adminTeamMembersRoutes.LIST, {
+      params: search ? { search } : undefined,
+    }),
 
   getTeamDetail: (id: string | number) =>
     browserApi.get<TeamDetailResponse>(buildPath(adminTeamMembersRoutes.SHOW, { id })),

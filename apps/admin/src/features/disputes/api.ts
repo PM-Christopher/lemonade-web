@@ -59,6 +59,7 @@ export interface DisputeFilters {
   // `me`, `unassigned` or an admin id.
   assignee?: string;
   overdue?: boolean;
+  search?: string;
 }
 
 export interface DisputeListResponse {
@@ -78,7 +79,12 @@ export const disputesApi = {
   // Omitting status fetches the open queue; pass "all" for every dispute.
   getDisputes: (status?: string, filters?: DisputeFilters) =>
     browserApi.get<DisputeListResponse>(adminBusinessesRoutes.DISPUTES_LIST, {
-      params: { status, assignee: filters?.assignee, overdue: filters?.overdue ? 1 : undefined },
+      params: {
+        status,
+        assignee: filters?.assignee,
+        overdue: filters?.overdue ? 1 : undefined,
+        search: filters?.search || undefined,
+      },
     }),
 
   // Leave `adminId` out to take it yourself; pass null to put it back in the queue.

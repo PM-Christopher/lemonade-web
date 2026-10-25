@@ -28,7 +28,6 @@ interface UsersViewsProps {
 function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: UsersViewsProps) {
   const { push } = useNavigation();
   const { searchParams } = useSearchParams();
-  const query = searchParams?.get("q");
   const status = searchParams?.get("status");
 
   const [localPage, setLocalPage] = useState(1);
@@ -47,29 +46,14 @@ function UsersViews({ userData: rawUserData, menuOption, page, onPageChange }: U
     const users = userData.users;
     if (menuOption !== "users" || isServerPaginated) return users;
 
-    if ((!query && !status) || query?.trim() === "") return users;
-
-    const q = query?.toLowerCase()?.trim();
     const s = status?.toLowerCase()?.trim();
+    if (!s) return users;
 
-    return users.filter((user) => {
-      const matchesQuery =
-        !q ||
-        user?.unique_id?.toLowerCase().includes(q) ||
-        user?.location?.toLowerCase().includes(q) ||
-        user?.fullname?.toLowerCase().includes(q) ||
-        user?.email?.toLowerCase().includes(q);
-
-      const matchesStatus = !s || user?.status?.toLowerCase() === s;
-
-      return matchesQuery && matchesStatus;
-    });
-  }, [userData, menuOption, isServerPaginated, query, status]);
+    return users.filter((user) => user?.status?.toLowerCase() === s);
+  }, [userData, menuOption, isServerPaginated, status]);
 
   const resetPage =
-    menuOption === "users" && userData && !isServerPaginated
-      ? `${query ?? ""}|${status ?? ""}`
-      : null;
+    menuOption === "users" && userData && !isServerPaginated ? `${status ?? ""}` : null;
   const [seenPage, setSeenPage] = useState({ resetPage, userData });
   if (resetPage !== null && (seenPage.resetPage !== resetPage || seenPage.userData !== userData)) {
     setSeenPage({ resetPage, userData });

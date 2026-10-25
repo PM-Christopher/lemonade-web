@@ -13,7 +13,6 @@ import dayjs from "dayjs";
 import type { DateRange } from "@/components/global/DateRangePicker";
 
 import dynamic from "next/dynamic";
-import useSearchParams from "@/hooks/useSearchParams";
 import type { EventTabData, EventListResponse } from "@/features/events/api";
 
 // Off the initial bundle — only needed once "Edit commission" is clicked
@@ -30,8 +29,6 @@ interface EventViewProps {
 
 const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
   const { push } = useNavigation();
-  const { searchParams } = useSearchParams();
-  const query = searchParams?.get("search");
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = DEFAULT_PAGE_SIZE;
@@ -51,8 +48,7 @@ const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
   const data_ = pageData as EventListResponse | undefined;
   const events = data_?.events;
   const data = useMemo(() => {
-    const q = query?.toLowerCase()?.trim();
-    const byFilters = events?.filter((event) => {
+    return events?.filter((event) => {
       const created = dayjs(event.date_created_at);
       const inRange =
         range === null ||
@@ -61,25 +57,11 @@ const EventView = ({ pageData, status = "", range = null }: EventViewProps) => {
           !created.isAfter(dayjs(range.end).endOf("day")));
       return inRange && (status === "" || event.status?.toLowerCase() === status);
     });
-    if (!q) return byFilters;
-    return byFilters?.filter((event) => {
-      return (
-        event?.event_name?.toLowerCase().includes(q) ||
-        event?.category?.toLowerCase().includes(q) ||
-        event?.unique_id?.toLowerCase().includes(q) ||
-        event?.event_type?.toLowerCase().includes(q)
-      );
-    });
-  }, [query, events, status, range]);
+  }, [events, status, range]);
 
-  const [seenList, setSeenList] = useState({ query, events, status, range });
-  if (
-    query !== seenList.query ||
-    events !== seenList.events ||
-    status !== seenList.status ||
-    range !== seenList.range
-  ) {
-    setSeenList({ query, events, status, range });
+  const [seenList, setSeenList] = useState({ events, status, range });
+  if (events !== seenList.events || status !== seenList.status || range !== seenList.range) {
+    setSeenList({ events, status, range });
     setCurrentPage(1);
   }
 

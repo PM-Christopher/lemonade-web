@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { userApi, type AccountInfoParams } from "./api";
 
 export const userKeys = {
@@ -23,15 +23,22 @@ export function useUserListQuery(
     page?: number;
     perPage?: number;
     dates?: { start_date?: string; end_date?: string };
+    search?: string;
   },
 ) {
   return useQuery({
-    queryKey: [...userKeys.list(trxType, options?.page), options?.dates ?? {}],
+    queryKey: [
+      ...userKeys.list(trxType, options?.page),
+      options?.dates ?? {},
+      options?.search ?? "",
+    ],
+    placeholderData: keepPreviousData,
     queryFn: () =>
       userApi.getUserData(
         trxType,
         { page: options?.page, perPage: options?.perPage },
         options?.dates,
+        options?.search,
       ),
     staleTime: 60_000,
     enabled: options?.enabled,

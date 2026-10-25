@@ -1,17 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { announcementsApi } from "./api";
 
 export const announcementKeys = {
   all: () => ["announcements"] as const,
-  list: () => [...announcementKeys.all(), "list"] as const,
+  list: (search = "") => [...announcementKeys.all(), "list", search] as const,
   detail: (id: string | number) => [...announcementKeys.all(), "detail", id] as const,
   pageContent: () => [...announcementKeys.all(), "page-content"] as const,
 };
 
-export function useAnnouncementsQuery(options?: { enabled?: boolean }) {
+export function useAnnouncementsQuery(options?: { enabled?: boolean; search?: string }) {
   return useQuery({
-    queryKey: announcementKeys.list(),
-    queryFn: announcementsApi.getAnnouncements,
+    queryKey: announcementKeys.list(options?.search),
+    queryFn: () => announcementsApi.getAnnouncements(options?.search),
+    placeholderData: keepPreviousData,
     staleTime: 60_000,
     enabled: options?.enabled,
   });

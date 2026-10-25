@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AffiliateView from "@/views/events/AffiliateView";
-import { SearchIcon, UploadIcon } from "lucide-react";
+import { UploadIcon } from "lucide-react";
 import DateRangePicker, { type DateRange } from "@/components/global/DateRangePicker";
 import { eventViews } from "@/utils/pageViews";
 import EventView from "@/views/events/EventView";
@@ -14,8 +14,9 @@ import { useExportCsvMutation } from "@/features/exports/mutations";
 import { capitalizeWords, downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { Button } from "@lemonade/ui";
-import useDebounce from "@/hooks/useDebounce";
+import { SearchBox } from "@/components/global/SearchBox";
 import useSearchParams from "@/hooks/useSearchParams";
+import { useSearchTerm } from "@/hooks/useSearchTerm";
 
 const EVENT_STATUSES = [
   "active",
@@ -36,13 +37,14 @@ const EventsClient = () => {
     searchParams?.get("tab") === "pending" ? "pending" : "events",
   );
   const dispatch = useDispatch<AppDispatch>();
-  const [searchValue, setSearchValue] = useState("");
+  const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const [status, setStatus] = useState("");
   const [range, setRange] = useState<DateRange | null>(null);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: eventData } = useEventListQuery(menuOption, {
     enabled: isLoggedIn,
+    search: term,
   });
   const [isLoading, setLoading] = useState(false);
   const exportCsv = useExportCsvMutation();
@@ -54,23 +56,17 @@ const EventsClient = () => {
   const renderViews = () => {
     switch (menuOption) {
       case "events":
-        return <EventView pageData={eventData} status={status} range={range} />;
+        return <EventView key={term} pageData={eventData} status={status} range={range} />;
       case "pending":
-        return <PendingEventsView pageData={eventData} range={range} />;
+        return <PendingEventsView key={term} pageData={eventData} range={range} />;
       case "affiliates":
-        return <AffiliateView pageData={eventData} range={range} />;
+        return <AffiliateView key={term} pageData={eventData} range={range} />;
       case "promotions":
-        return <PromotionView pageData={eventData} status={status} range={range} />;
+        return <PromotionView key={term} pageData={eventData} status={status} range={range} />;
       default:
         return <></>;
     }
   };
-
-  const { debouncedValue } = useDebounce(searchValue, 500);
-  const { setSearchParams } = useSearchParams();
-  useEffect(() => {
-    setSearchParams({ search: debouncedValue });
-  }, [debouncedValue, setSearchParams]);
 
   const exportFunc = () => {
     setLoading(true);
@@ -106,20 +102,12 @@ const EventsClient = () => {
           {eventData && "events" in eventData ? eventData.events.length : 0} Events
         </p>
         <div className={"flex justify-between gap-3"}>
-          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
-            <div>
-              <SearchIcon className={"text-grey-40 h-3 w-3"} />
-            </div>
-            <div className="w-full">
-              <input
-                id="search"
-                type="text"
-                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                placeholder="Search event, ID..."
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBox
+            value={searchValue}
+            onChange={setSearchValue}
+            label="Search events"
+            placeholder="Search event, ID..."
+          />
           {(menuOption === "events" || menuOption === "promotions") && (
             <select
               aria-label="Filter by status"

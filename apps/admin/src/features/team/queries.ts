@@ -1,17 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { teamApi } from "./api";
 
 export const teamKeys = {
   all: () => ["team"] as const,
-  list: () => [...teamKeys.all(), "list"] as const,
+  list: (search = "") => [...teamKeys.all(), "list", search] as const,
   detail: (id: string | number) => [...teamKeys.all(), "detail", id] as const,
   logs: (id: string | number, filters: object) => [...teamKeys.all(), "logs", id, filters] as const,
 };
 
-export function useTeamQuery(options?: { enabled?: boolean }) {
+export function useTeamQuery(options?: { enabled?: boolean; search?: string }) {
   return useQuery({
-    queryKey: teamKeys.list(),
-    queryFn: teamApi.getTeamData,
+    queryKey: teamKeys.list(options?.search),
+    queryFn: () => teamApi.getTeamData(options?.search),
+    placeholderData: keepPreviousData,
     staleTime: 60_000,
     enabled: options?.enabled,
   });

@@ -214,22 +214,26 @@ export interface EventDetailResponse {
 export const eventsApi = {
   getEventData: (
     trxType: string,
+    search?: string,
   ): Promise<
     | EventListResponse
     | EventAffiliatesResponse
     | EventPromotionsQueueResponse
     | EventPendingResponse
   > => {
+    const params = search ? { search } : undefined;
     switch (trxType) {
       case "pending":
-        return browserApi.get<EventPendingResponse>(adminEventsRoutes.PENDING);
+        return browserApi.get<EventPendingResponse>(adminEventsRoutes.PENDING, { params });
       case "affiliates":
-        return browserApi.get<EventAffiliatesResponse>(adminAffiliatesRoutes.LIST);
+        return browserApi.get<EventAffiliatesResponse>(adminAffiliatesRoutes.LIST, { params });
       case "promotions":
-        return browserApi.get<EventPromotionsQueueResponse>(adminEventPromotionsRoutes.LIST);
+        return browserApi.get<EventPromotionsQueueResponse>(adminEventPromotionsRoutes.LIST, {
+          params,
+        });
       case "events":
       default:
-        return browserApi.get<EventListResponse>(adminEventsRoutes.LIST);
+        return browserApi.get<EventListResponse>(adminEventsRoutes.LIST, { params });
     }
   },
 

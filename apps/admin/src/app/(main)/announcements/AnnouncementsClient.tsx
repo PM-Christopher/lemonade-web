@@ -3,11 +3,13 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
+import { SearchBox } from "@/components/global/SearchBox";
+import { useSearchTerm } from "@/hooks/useSearchTerm";
 import { usePagination } from "@/hooks/usePagination";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { announcementHeaders } from "@/data/tableData";
 import DataInfoCard from "@/components/global/DataInfoCard";
@@ -40,27 +42,18 @@ const when = (iso: string) => dayjs(iso).format("DD MMM, YYYY hh:mm A");
 
 const AnnouncementsClient = () => {
   const { push } = useNavigation();
-  const [searchValue, setSearchValue] = useState("");
+  const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const [createOpen, setCreateOpen] = useState(false);
   const [pageToEdit, setPageToEdit] = useState<(typeof PAGES)[number] | null>(null);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data: announcementData } = useAnnouncementsQuery({
     enabled: isLoggedIn,
+    search: term,
   });
 
-  // The list comes back whole, so search runs here on title, ID, creator and status.
-  const announcements = useMemo(() => {
-    const term = searchValue.trim().toLowerCase();
-    const all = announcementData?.announcements ?? [];
-    if (!term) return all;
-    return all.filter((row) =>
-      [row.title, row.unique_id, row.created_by?.name ?? "", announcementStatus(row.status)].some(
-        (value) => value.toLowerCase().includes(term),
-      ),
-    );
-  }, [announcementData, searchValue]);
-  const pager = usePagination(announcements, searchValue);
+  const announcements = announcementData?.announcements ?? [];
+  const pager = usePagination(announcements, term);
 
   return (
     <>
@@ -68,22 +61,12 @@ const AnnouncementsClient = () => {
         <div className={"flex justify-between px-5"}>
           <p className={"font-semiBold text-body-l"}>{announcements.length} Announcements</p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
-              <div>
-                <SearchIcon className={"text-grey-40 h-3 w-3"} />
-              </div>
-              <div className="w-full">
-                <input
-                  id="search"
-                  type="text"
-                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                  aria-label="Search announcements"
-                  placeholder="Search announcement, ID..."
-                  value={searchValue}
-                  onChange={(event) => setSearchValue(event.target.value)}
-                />
-              </div>
-            </div>
+            <SearchBox
+              value={searchValue}
+              onChange={setSearchValue}
+              label="Search announcements"
+              placeholder="Search announcement, ID..."
+            />
             <div>
               <Button
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}

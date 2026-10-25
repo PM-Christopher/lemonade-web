@@ -48,7 +48,10 @@ export interface PageContentResponse {
 }
 
 export const announcementsApi = {
-  getAnnouncements: () => browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.LIST),
+  getAnnouncements: (search?: string) =>
+    browserApi.get<AnnouncementListResponse>(adminAnnouncementRoutes.LIST, {
+      params: search ? { search } : undefined,
+    }),
 
   createAnnouncement: (payload: AnnouncementPayload) =>
     browserApi.post<AnnouncementDetailResponse>(adminAnnouncementRoutes.CREATE, payload),

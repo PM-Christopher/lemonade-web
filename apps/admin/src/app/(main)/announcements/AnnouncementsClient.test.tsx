@@ -1,8 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import AnnouncementsClient from "./AnnouncementsClient";
 
-const row = (id: number, title: string, status = "sent") => ({
+const list = vi.fn();
+
+const row = (id: number, title: string) => ({
   id,
   unique_id: `AN00${id}`,
   title,
@@ -12,7 +14,7 @@ const row = (id: number, title: string, status = "sent") => ({
   scheduled_date: "",
   created_at_iso: "2026-10-22T20:51:00Z",
   scheduled_at: "2026-10-22T21:00:00Z",
-  status,
+  status: "sent",
 });
 
 vi.mock("react-redux", () => ({
@@ -20,36 +22,45 @@ vi.mock("react-redux", () => ({
 }));
 vi.mock("@/hooks/useNavigation", () => ({ useNavigation: () => ({ push: vi.fn() }) }));
 vi.mock("@/features/announcements/queries", () => ({
-  useAnnouncementsQuery: () => ({
-    data: {
-      announcements: [
-        row(1, "Maintenance window"),
-        row(2, "New wallet feature", "pending"),
-        row(3, "Holiday notice"),
-      ],
-    },
-  }),
+  useAnnouncementsQuery: (options: { search?: string }) => list(options),
 }));
 
+beforeEach(() => {
+  vi.useFakeTimers();
+  list.mockImplementation(({ search }: { search?: string }) => ({
+    data: {
+      announcements: search
+        ? [row(1, "Maintenance window")]
+        : [row(1, "Maintenance window"), row(2, "Holiday")],
+    },
+  }));
+});
+afterEach(() => vi.useRealTimers());
+
 describe("AnnouncementsClient search", () => {
-  it("filters by title, ID, creator and status", () => {
+  it("asks the server for matches once typing pauses", () => {
     render(<AnnouncementsClient />);
-    const box = screen.getByLabelText("Search announcements");
+    expect(screen.getByText("2 Announcements")).toBeInTheDocument();
 
-    expect(screen.getByText("3 Announcements")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Search announcements"), {
+      target: { value: "  maintenance " },
+    });
+    expect(list).not.toHaveBeenLastCalledWith(expect.objectContaining({ search: "maintenance" }));
 
-    fireEvent.change(box, { target: { value: "wallet" } });
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
+
+    expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ search: "maintenance" }));
     expect(screen.getByText("1 Announcements")).toBeInTheDocument();
-    expect(screen.getByText("New wallet feature")).toBeInTheDocument();
+  });
 
-    fireEvent.change(box, { target: { value: "AN003" } });
-    expect(screen.getByText("Holiday notice")).toBeInTheDocument();
+  it("clears the search with the clear button", () => {
+    render(<AnnouncementsClient />);
+    fireEvent.change(screen.getByLabelText("Search announcements"), { target: { value: "x" } });
 
-    fireEvent.change(box, { target: { value: "scheduled" } });
-    expect(screen.getByText("New wallet feature")).toBeInTheDocument();
-    expect(screen.queryByText("Holiday notice")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Clear search" }));
 
-    fireEvent.change(box, { target: { value: "zzz" } });
-    expect(screen.getByText("No data available")).toBeInTheDocument();
+    expect(screen.getByLabelText("Search announcements")).toHaveValue("");
   });
 });

@@ -11,7 +11,6 @@ import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 import { promotionMainHeaders } from "@/data/tableData";
 import { AvatarName } from "@/components/global/AvatarName";
 import type { DateRange } from "@/components/global/DateRangePicker";
-import useSearchParams from "@/hooks/useSearchParams";
 import type { EventTabData, EventPromotionsQueueResponse } from "@/features/events/api";
 
 interface PromotionViewProps {
@@ -25,8 +24,6 @@ const PromotionView = ({
   status = "",
   range = null,
 }: PromotionViewProps) => {
-  const { searchParams } = useSearchParams();
-  const term = searchParams?.get("search")?.toLowerCase().trim() ?? "";
   // EventsClient.tsx only renders this view for the "promotions" tab, where
   // getEventData always resolves to EventPromotionsQueueResponse — the
   // union prop type comes from eventData being shared across three sibling
@@ -42,12 +39,7 @@ const PromotionView = ({
       !paid.isValid() ||
       (!paid.isBefore(dayjs(range.start).startOf("day")) &&
         !paid.isAfter(dayjs(range.end).endOf("day")));
-    const matches =
-      term === "" ||
-      [row.event_name, row.promotion_name, row.unique_id].some((value) =>
-        value?.toLowerCase().includes(term),
-      );
-    return inRange && matches && (status === "" || row.status?.toLowerCase() === status);
+    return inRange && (status === "" || row.status?.toLowerCase() === status);
   });
   const totalPages = Math.max(1, Math.ceil(rows.length / perPage));
   const pageRows = rows.slice((currentPage - 1) * perPage, currentPage * perPage);

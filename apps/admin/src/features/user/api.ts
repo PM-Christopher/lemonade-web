@@ -298,16 +298,20 @@ export const userApi = {
     trxType: string,
     pagination?: { page?: number; perPage?: number },
     dates?: { start_date?: string; end_date?: string },
+    search?: string,
   ): Promise<UserListResponse | AffiliateListResponse> => {
     switch (trxType) {
       case "affiliates":
-        return browserApi.get<AffiliateListResponse>(adminUsersRoutes.AFFILIATES_LOG);
+        return browserApi.get<AffiliateListResponse>(adminUsersRoutes.AFFILIATES_LOG, {
+          params: search ? { search } : undefined,
+        });
       case "users":
       default:
         return browserApi.get<UserListResponse>(adminUsersRoutes.LIST, {
           params: {
             ...(pagination?.page ? { page: pagination.page, per_page: pagination.perPage } : {}),
             ...dates,
+            ...(search ? { search } : {}),
           },
         });
     }

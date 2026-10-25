@@ -1,13 +1,14 @@
 "use client";
+import { SearchBox } from "@/components/global/SearchBox";
+import { useSearchTerm } from "@/hooks/useSearchTerm";
 import { usePagination } from "@/hooks/usePagination";
 import PaginationComp from "@/components/global/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
-import { SearchIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -43,16 +44,6 @@ type Quick = "all" | "overdue" | "unassigned" | "mine";
 // "2d 4h" instead of 52.
 export const waitingLabel = (hours: number) =>
   hours < 1 ? "Just now" : hours < 24 ? `${hours}h` : `${Math.floor(hours / 24)}d ${hours % 24}h`;
-
-function searchableFields(dispute: AdminDispute): string[] {
-  return [
-    dispute.job?.business?.name,
-    dispute.job?.client?.name,
-    dispute.job?.owner?.name,
-    dispute.raised_by?.name,
-    dispute.assignee?.name,
-  ].filter((value): value is string => Boolean(value));
-}
 
 function StatCard({
   label,
@@ -92,12 +83,13 @@ function DisputesClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [status, setStatus] = useState("pending");
   const [quick, setQuick] = useState<Quick>("all");
-  const [searchValue, setSearchValue] = useState("");
+  const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const filters: DisputeFilters = {
     assignee: quick === "mine" ? "me" : quick === "unassigned" ? "unassigned" : undefined,
     overdue: quick === "overdue",
+    search: term,
   };
   const { data, isLoading } = useDisputeListQuery(status, { enabled: isLoggedIn, filters });
   const assignMutation = useAssignDisputeMutation();
@@ -105,14 +97,7 @@ function DisputesClient() {
   const myId = me ? String(me.id) : null;
   const summary = data?.summary;
 
-  const disputes = useMemo(() => {
-    const all = data?.disputes ?? [];
-    const q = searchValue.trim().toLowerCase();
-    if (!q) return all;
-    return all.filter((dispute) =>
-      searchableFields(dispute).some((value) => value.toLowerCase().includes(q)),
-    );
-  }, [data, searchValue]);
+  const disputes = data?.disputes ?? [];
 
   const pickQuick = (next: Quick) => {
     // The cards only apply to the open queue.
@@ -146,7 +131,7 @@ function DisputesClient() {
     );
   };
 
-  const pager = usePagination(disputes, `${status}|${quick}|${searchValue}`);
+  const pager = usePagination(disputes, `${status}|${quick}|${term}`);
 
   return (
     <section className="mt-6 flex flex-col gap-5">
@@ -158,17 +143,12 @@ function DisputesClient() {
           </p>
         </div>
         <div className={"flex justify-between gap-3"}>
-          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
-            <SearchIcon className={"text-grey-40 h-3 w-3"} />
-            <input
-              id="search"
-              type="text"
-              aria-label="Search disputes"
-              className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-              placeholder="Search business, client, owner..."
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-          </div>
+          <SearchBox
+            value={searchValue}
+            onChange={setSearchValue}
+            label="Search disputes"
+            placeholder="Search business, client, owner..."
+          />
           <Select
             value={status}
             onValueChange={(value) => {

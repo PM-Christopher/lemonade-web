@@ -1,7 +1,7 @@
 "use client";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import React, { useEffect, useState } from "react";
-import { SearchIcon, UploadIcon } from "lucide-react";
+import { UploadIcon } from "lucide-react";
 import DateRangePicker, { toApiTime, type DateRange } from "@/components/global/DateRangePicker";
 import {
   Button,
@@ -20,13 +20,14 @@ import { useUserListQuery } from "@/features/user/queries";
 import { useExportCsvMutation } from "@/features/exports/mutations";
 import { downloadCSV } from "@/utils/helper";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
-import useDebounce from "@/hooks/useDebounce";
+import { SearchBox } from "@/components/global/SearchBox";
+import { useSearchTerm } from "@/hooks/useSearchTerm";
 import useSearchParams from "@/hooks/useSearchParams";
 
 function UsersClient() {
   const statusOptions = ["Clear selection", "Active", "Suspended", "Deactivated"];
   const [menuOption, setMenuOption] = useState("users");
-  const [searchValue, setSearchValue] = useState("");
+  const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const [status, setStatus] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
 
@@ -35,13 +36,12 @@ function UsersClient() {
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { searchParams, setSearchParams } = useSearchParams();
-  const query = searchParams?.get("q");
   const statusParam = searchParams?.get("status");
   // Search/status filter active -> fetch the old unpaginated shape so
   // client-side filtering (in UsersViews) still sees every user, not just
   // the current page. See docs/ARCHITECTURE.md §22 Conflict 1.
   const [range, setRange] = useState<DateRange | null>(null);
-  const isFiltering = Boolean(query?.trim()) || Boolean(statusParam?.trim()) || range !== null;
+  const isFiltering = Boolean(statusParam?.trim());
   const page =
     menuOption === "users" && !isFiltering ? Number(searchParams?.get("page") ?? 1) : undefined;
 
@@ -49,6 +49,7 @@ function UsersClient() {
     enabled: isLoggedIn,
     page,
     perPage: DEFAULT_PAGE_SIZE,
+    search: term,
     dates: range
       ? { start_date: toApiTime(range.start), end_date: toApiTime(range.end) }
       : undefined,
@@ -106,12 +107,10 @@ function UsersClient() {
     });
   };
 
-  const { debouncedValue } = useDebounce(searchValue, 500);
+  // A new search starts again from page 1.
   useEffect(() => {
-    // Reset to page 1 on a new search — same "reset pagination on search"
-    // behavior this used to do with local currentPage state.
-    setSearchParams({ q: debouncedValue, page: undefined });
-  }, [debouncedValue, setSearchParams]);
+    setSearchParams({ page: undefined });
+  }, [term, setSearchParams]);
 
   useEffect(() => {
     if (!["", "status"].includes(status)) {
@@ -130,20 +129,12 @@ function UsersClient() {
           {(userData && "users" in userData ? userData.users.length : 0) || 0} users
         </p>
         <div className={"flex justify-between gap-3"}>
-          <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
-            <div>
-              <SearchIcon className={"text-grey-40 h-3 w-3"} />
-            </div>
-            <div className="w-full">
-              <input
-                id="search"
-                type="text"
-                className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                placeholder="Search user, email, ID, location..."
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBox
+            value={searchValue}
+            onChange={setSearchValue}
+            label="Search users"
+            placeholder="Search user, email, ID, location..."
+          />
           {menuOption === "users" && (
             <Select onValueChange={(value) => setStatus(value)}>
               <SelectTrigger

@@ -150,7 +150,10 @@ export const tribesApi = {
       { reason },
     ),
 
-  getTribeList: () => browserApi.get<TribeListResponse>(adminTribesRoutes.LIST),
+  getTribeList: (search?: string) =>
+    browserApi.get<TribeListResponse>(adminTribesRoutes.LIST, {
+      params: search ? { search } : undefined,
+    }),
 
   getTribeDetail: (id: string) =>
     browserApi.get<TribeDetailResponse>(buildPath(adminTribesRoutes.SHOW, { id })),

@@ -39,7 +39,7 @@ const TribeListView = ({
 }) => {
   const { push } = useNavigation();
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data } = useTribeListQuery({ enabled: isLoggedIn });
+  const { data } = useTribeListQuery({ enabled: isLoggedIn, search });
   const [currentPage, setCurrentPage] = useState(1);
   const [seenFilters, setSeenFilters] = useState({ search, status, range });
   if (
@@ -56,13 +56,7 @@ const TribeListView = ({
     ? [...BASE_HEADERS, "ACCESS FEE", ...TAIL_HEADERS]
     : [...BASE_HEADERS, ...TAIL_HEADERS];
 
-  const term = search.trim().toLowerCase();
   const tribes = (data?.tribes ?? []).filter(FILTERS[filter]).filter((tribe) => {
-    const matchesSearch =
-      term === "" ||
-      [tribe.name, tribe.display_id, tribe.uuid, tribe.created_by, tribe.category].some((value) =>
-        value?.toLowerCase().includes(term),
-      );
     const created = dayjs(tribe.date_created);
     const inRange =
       range === null ||
@@ -70,7 +64,7 @@ const TribeListView = ({
       (!created.isBefore(dayjs(range.start).startOf("day")) &&
         !created.isAfter(dayjs(range.end).endOf("day")));
     const matchesStatus = status === "all" || tribe.status === status;
-    return matchesSearch && inRange && matchesStatus;
+    return inRange && matchesStatus;
   });
   const totalPages = Math.ceil(tribes.length / PER_PAGE) || 1;
   const startIndex = (currentPage - 1) * PER_PAGE;

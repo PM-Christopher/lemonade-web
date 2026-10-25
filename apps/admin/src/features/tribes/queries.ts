@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { tribesApi } from "./api";
 
 export const tribeKeys = {
@@ -12,10 +12,11 @@ export const tribeKeys = {
 
 // Moderation/oversight data — the "operational queues" bucket from
 // CLAUDE.md's staleness table, matching events/reporting.
-export function useTribeListQuery(options?: { enabled?: boolean }) {
+export function useTribeListQuery(options?: { enabled?: boolean; search?: string }) {
   return useQuery({
-    queryKey: tribeKeys.lists(),
-    queryFn: tribesApi.getTribeList,
+    queryKey: [...tribeKeys.lists(), options?.search ?? ""],
+    queryFn: () => tribesApi.getTribeList(options?.search),
+    placeholderData: keepPreviousData,
     staleTime: 30_000,
     enabled: options?.enabled,
   });

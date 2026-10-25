@@ -3,8 +3,8 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useEffect, useMemo, useState } from "react";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import React, { useState } from "react";
+import { PlusIcon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { teamHeaders } from "@/data/tableData";
 
@@ -17,8 +17,8 @@ import PaginationComp from "@/components/global/Pagination";
 import { useTeamQuery } from "@/features/team/queries";
 import type { TeamMember } from "@/features/team/api";
 import dynamic from "next/dynamic";
-import useDebounce from "@/hooks/useDebounce";
-import useSearchParams from "@/hooks/useSearchParams";
+import { SearchBox } from "@/components/global/SearchBox";
+import { useSearchTerm } from "@/hooks/useSearchTerm";
 
 // Off the initial bundle — only needed once "Add member" is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -31,10 +31,7 @@ function TeamClient() {
   // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = DEFAULT_PAGE_SIZE;
-  const { searchParams } = useSearchParams();
-  const query = searchParams?.get("search");
-
-  const [searchValue, setSearchValue] = useState("");
+  const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
 
   const [isOpen, setOpen] = useState(false);
 
@@ -47,28 +44,15 @@ function TeamClient() {
   };
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: teamData } = useTeamQuery({ enabled: isLoggedIn });
+  const { data: teamData } = useTeamQuery({ enabled: isLoggedIn, search: term });
 
-  const data = useMemo(() => {
-    const admins = teamData?.admins;
-    const q = query?.toLowerCase()?.trim();
-    if (!q) return admins;
-    return admins?.filter((user: TeamMember) => {
-      return user?.name?.toLowerCase().includes(q) || user?.email?.toLowerCase().includes(q);
-    });
-  }, [query, teamData]);
+  const data = teamData?.admins;
 
-  const [seenList, setSeenList] = useState({ query, teamData });
-  if (query !== seenList.query || teamData !== seenList.teamData) {
-    setSeenList({ query, teamData });
+  const [seenList, setSeenList] = useState({ term, teamData });
+  if (term !== seenList.term || teamData !== seenList.teamData) {
+    setSeenList({ term, teamData });
     setCurrentPage(1);
   }
-
-  const { debouncedValue } = useDebounce(searchValue, 500);
-  const { setSearchParams } = useSearchParams();
-  useEffect(() => {
-    setSearchParams({ search: debouncedValue });
-  }, [debouncedValue, setSearchParams]);
 
   // Calculate total pages based on the data length and perPage value
   const totalPages = Math.ceil((data?.length ?? 0) / perPage);
@@ -85,20 +69,12 @@ function TeamClient() {
             {teamData?.admins?.length || 0} Team Members
           </p>
           <div className={"flex justify-between gap-3"}>
-            <div className="bg-light_grey border-grey-20 flex h-10 w-71.25 shrink-0 items-center gap-3 rounded-xl border p-2 px-3">
-              <div>
-                <SearchIcon className={"text-grey-40 h-3 w-3"} />
-              </div>
-              <div className="w-full">
-                <input
-                  id="search"
-                  type="text"
-                  className="bg-light-grey text-body-s w-full rounded-xl py-4 focus:border-transparent focus:ring-0 focus:outline-none"
-                  placeholder="Search member, ID..."
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-              </div>
-            </div>
+            <SearchBox
+              value={searchValue}
+              onChange={setSearchValue}
+              label="Search team members"
+              placeholder="Search member, role..."
+            />
             <div>
               <Button
                 className={"border-step-color bg-gradient-green flex h-10 rounded-xl"}

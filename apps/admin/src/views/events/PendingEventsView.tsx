@@ -5,7 +5,6 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import { useNavigation } from "@/hooks/useNavigation";
-import useSearchParams from "@/hooks/useSearchParams";
 import type { DateRange } from "@/components/global/DateRangePicker";
 import { routes } from "@/lib/routes";
 import type { EventPendingResponse, EventTabData } from "@/features/events/api";
@@ -21,8 +20,6 @@ const PendingEventsView = ({
   range?: DateRange | null;
 }) => {
   const { push } = useNavigation();
-  const { searchParams } = useSearchParams();
-  const term = searchParams?.get("search")?.toLowerCase().trim() ?? "";
   // EventsClient only renders this view for the "pending" tab.
   const events = ((pageData as EventPendingResponse | undefined)?.events ?? []).filter((event) => {
     const submitted = dayjs(event.date_created_at);
@@ -31,12 +28,7 @@ const PendingEventsView = ({
       !submitted.isValid() ||
       (!submitted.isBefore(dayjs(range.start).startOf("day")) &&
         !submitted.isAfter(dayjs(range.end).endOf("day")));
-    const matches =
-      term === "" ||
-      [event.event_name, event.unique_id, event.category, event.event_type].some((value) =>
-        value?.toLowerCase().includes(term),
-      );
-    return inRange && matches;
+    return inRange;
   });
 
   const pager = usePagination(events);

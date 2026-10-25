@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { eventPromotionsApi, eventsApi, promotionsApi } from "./api";
 
 export const eventKeys = {
   all: () => ["event"] as const,
   lists: () => [...eventKeys.all(), "list"] as const,
-  list: (trxType: string) => [...eventKeys.lists(), trxType] as const,
+  list: (trxType: string, search = "") => [...eventKeys.lists(), trxType, search] as const,
   details: () => [...eventKeys.all(), "detail"] as const,
   detail: (id: string | number) => [...eventKeys.details(), id] as const,
   affiliateDetail: (id: string | number) => [...eventKeys.all(), "affiliate-detail", id] as const,
@@ -24,10 +24,14 @@ export const promotionKeys = {
 
 // Events list/detail/affiliates/promotions-queue are moderation/oversight
 // data — the "operational queues" bucket from CLAUDE.md's staleness table.
-export function useEventListQuery(trxType: string, options?: { enabled?: boolean }) {
+export function useEventListQuery(
+  trxType: string,
+  options?: { enabled?: boolean; search?: string },
+) {
   return useQuery({
-    queryKey: eventKeys.list(trxType),
-    queryFn: () => eventsApi.getEventData(trxType),
+    queryKey: eventKeys.list(trxType, options?.search),
+    queryFn: () => eventsApi.getEventData(trxType, options?.search),
+    placeholderData: keepPreviousData,
     staleTime: 30_000,
     enabled: options?.enabled,
   });

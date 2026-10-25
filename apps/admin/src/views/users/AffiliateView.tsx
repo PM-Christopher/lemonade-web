@@ -6,9 +6,8 @@ import { useNavigation } from "@/hooks/useNavigation";
 import DataCard from "@/components/global/DataCard";
 import PaginationComp from "@/components/global/Pagination";
 import { affiliateHeaders } from "@/data/tableData";
-import useSearchParams from "@/hooks/useSearchParams";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import type { AffiliateListResponse, UserListResponse } from "@/features/user/api";
 
 interface AffiliateViewProps {
@@ -18,9 +17,6 @@ interface AffiliateViewProps {
 
 const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps) => {
   const { push } = useNavigation();
-  const { searchParams } = useSearchParams();
-  const query = searchParams?.get("q");
-
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = DEFAULT_PAGE_SIZE;
 
@@ -30,20 +26,9 @@ const AffiliateView = ({ userData: rawUserData, menuOption }: AffiliateViewProps
   // tab's sibling component.
   const userData = rawUserData as AffiliateListResponse | undefined;
 
-  const data = useMemo(() => {
-    if (!userData) return [];
-    if (!query || query.trim() === "") return userData.affiliates;
+  const data = userData?.affiliates ?? [];
 
-    const q = query.toLowerCase().trim();
-    return userData.affiliates.filter((affiliate) => {
-      return (
-        affiliate?.unique_id?.toLowerCase().includes(q) ||
-        affiliate?.name?.toLowerCase().includes(q)
-      );
-    });
-  }, [userData, query]);
-
-  const resetPage = menuOption === "affiliates" && userData ? `${query ?? ""}` : null;
+  const resetPage = menuOption === "affiliates" && userData ? "list" : null;
   const [seenPage, setSeenPage] = useState({ resetPage, userData });
   if (resetPage !== null && (seenPage.resetPage !== resetPage || seenPage.userData !== userData)) {
     setSeenPage({ resetPage, userData });

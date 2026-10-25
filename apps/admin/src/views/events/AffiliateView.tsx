@@ -10,7 +10,6 @@ import PaginationComp from "@/components/global/Pagination";
 import dayjs from "dayjs";
 import { AvatarName } from "@/components/global/AvatarName";
 import type { DateRange } from "@/components/global/DateRangePicker";
-import useSearchParams from "@/hooks/useSearchParams";
 import type { EventAffiliatesResponse, EventTabData } from "@/features/events/api";
 
 interface AffiliateViewProps {
@@ -19,8 +18,6 @@ interface AffiliateViewProps {
 }
 
 const AffiliateView = ({ pageData, range = null }: AffiliateViewProps) => {
-  const { searchParams } = useSearchParams();
-  const term = searchParams?.get("search")?.toLowerCase().trim() ?? "";
   const { push } = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = DEFAULT_PAGE_SIZE;
@@ -43,11 +40,7 @@ const AffiliateView = ({ pageData, range = null }: AffiliateViewProps) => {
       !joined.isValid() ||
       (!joined.isBefore(dayjs(range.start).startOf("day")) &&
         !joined.isAfter(dayjs(range.end).endOf("day")));
-    const matches =
-      term === "" ||
-      row.name?.toLowerCase().includes(term) ||
-      row.unique_id?.toLowerCase().includes(term);
-    return inRange && matches;
+    return inRange;
   });
   const totalPages = Math.max(1, Math.ceil(affiliates.length / perPage));
 
