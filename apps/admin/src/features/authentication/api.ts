@@ -6,6 +6,8 @@
 // browserApi (the BFF proxy), same as every other authenticated read.
 import { browserApi } from "@/lib/browser-api";
 import { rememberApiMessage } from "@/lib/api-message";
+import { ApiError, type ApiErrorKind } from "@lemonade/api-client";
+import { DEFAULT_ERROR_CODE } from "@lemonade/api-types";
 import { adminAccountRoutes } from "@lemonade/api-types/generated";
 
 export interface CurrentAdmin {
@@ -43,6 +45,17 @@ export interface RegisterDeviceTokenPayload {
   platform?: string | null;
 }
 
+// Same status-to-kind rules as the shared client.
+function kindFor(status: number): ApiErrorKind {
+  if (status === 401) return "auth";
+  if (status === 403) return "permission";
+  if (status === 404) return "notFound";
+  if (status === 409) return "conflict";
+  if (status === 422) return "validation";
+  if (status === 429) return "rateLimit";
+  return "server";
+}
+
 async function postJson<T>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(path, {
     method: "POST",
@@ -53,9 +66,11 @@ async function postJson<T>(path: string, body?: unknown): Promise<T> {
   const envelope = await response.json();
 
   if (!response.ok) {
-    throw Object.assign(new Error(envelope?.message ?? "Request failed"), {
+    throw new ApiError({
       status: response.status,
-      errorCode: envelope?.error_code,
+      errorCode: envelope?.error_code ?? DEFAULT_ERROR_CODE,
+      message: envelope?.message ?? "Request failed",
+      kind: kindFor(response.status),
       fieldErrors: envelope?.errors,
     });
   }
