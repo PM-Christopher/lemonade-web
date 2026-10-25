@@ -73,6 +73,18 @@ function DisputeDetailsClient({ id }: { id: string }) {
               label="Status"
               value={dispute ? (isOpen ? "Open" : capitalizeWords(dispute.status)) : undefined}
             />
+            {!isOpen && dispute && (
+              <>
+                <Field label="Assigned to" value={dispute.assignee?.name ?? "Nobody"} />
+                <Field label="Settled by" value={dispute.resolved_by?.name ?? "N/A"} />
+                {dispute.resolved_at && (
+                  <Field
+                    label="Settled on"
+                    value={dayjs(dispute.resolved_at).format("DD MMM, YYYY hh:mm A")}
+                  />
+                )}
+              </>
+            )}
             {isOpen && dispute && (
               <div className={"flex items-center gap-6"}>
                 <div className={"w-35 shrink-0"}>

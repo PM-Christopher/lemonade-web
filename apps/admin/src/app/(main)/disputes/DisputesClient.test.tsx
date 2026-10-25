@@ -32,6 +32,8 @@ const dispute = (id: string, overdue: boolean, assignee: { id: string; name: str
   overdue,
   assignee,
   assigned_at: null,
+  resolved_by: null,
+  resolved_at: null,
   raised_by: null,
   raised_by_role: "client" as const,
   job: {
@@ -50,7 +52,7 @@ const dispute = (id: string, overdue: boolean, assignee: { id: string; name: str
 });
 
 const data: DisputeListResponse = {
-  summary: { open: 2, overdue: 1, unassigned: 1, mine: 1, overdue_after_hours: 48 },
+  summary: { open: 2, overdue: 1, settled: 0, unassigned: 1, mine: 1, overdue_after_hours: 48 },
   disputes: [dispute("d1", true, null), dispute("d2", false, { id: "a1", name: "Charles" })],
 };
 

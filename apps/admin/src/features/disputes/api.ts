@@ -25,6 +25,9 @@ export interface AdminDispute {
   overdue: boolean;
   assignee: { id: string; name: string } | null;
   assigned_at: string | null;
+  // Who settled it and when, once it is no longer open.
+  resolved_by: { id: string; name: string } | null;
+  resolved_at: string | null;
   raised_by: DisputeParty | null;
   raised_by_role: "client" | "owner";
   job: {
@@ -46,6 +49,7 @@ export interface AdminDispute {
 export interface DisputeSummary {
   open: number;
   overdue: number;
+  settled: number;
   unassigned: number;
   mine: number;
   overdue_after_hours: number;

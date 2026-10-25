@@ -21,6 +21,7 @@ import { capitalizeWords, GetStatusClass } from "@/utils/helper";
 
 const STATUS_OPTIONS = [
   { value: "pending", label: "Open" },
+  { value: "settled", label: "Settled" },
   { value: "refunded", label: "Refunded" },
   { value: "released", label: "Released" },
   { value: "all", label: "All" },
@@ -211,6 +212,16 @@ function DisputesClient() {
           onClick={() => pickQuick("overdue")}
         />
         <StatCard
+          label="Settled"
+          value={summary?.settled ?? 0}
+          hint="Refunded or released"
+          active={status === "settled"}
+          onClick={() => {
+            setStatus("settled");
+            setQuick("all");
+          }}
+        />
+        <StatCard
           label="Unassigned"
           value={summary?.unassigned ?? 0}
           hint="Nobody has taken it yet"
@@ -281,7 +292,18 @@ function DisputesClient() {
                               {dispute.overdue ? " · overdue" : ""}
                             </span>
                           ) : (
-                            <span className="text-text-grey">Closed</span>
+                            <span
+                              className="text-text-grey"
+                              title={
+                                dispute.resolved_by
+                                  ? `Settled by ${dispute.resolved_by.name}`
+                                  : undefined
+                              }
+                            >
+                              {dispute.resolved_at
+                                ? `Settled ${dayjs(dispute.resolved_at).format("DD MMM, YYYY")}`
+                                : "Closed"}
+                            </span>
                           )}
                         </td>
                         <td className="p-4 font-sans text-sm font-medium">
