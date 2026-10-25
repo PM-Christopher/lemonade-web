@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { ChevronDownIcon, ChevronRightIcon, CopyIcon, SearchIcon, XIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, SearchIcon, XIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import PaginationComp from "@/components/global/Pagination";
@@ -55,10 +55,10 @@ function DetailPanel({ entry }: { entry: AuditLogEntry }) {
           {entry.method ?? "N/A"} request{entry.ip ? ` · IP ${entry.ip}` : ""}
         </p>
       </div>
-      {entry.subject_id && (
+      {entry.subject_label && (
         <div className="md:col-span-2">
-          <p className="text-text-grey text-meta">Record id</p>
-          <p className="text-body-s font-mono break-all">{entry.subject_id}</p>
+          <p className="text-text-grey text-meta">Target</p>
+          <p className="text-body-s font-medium">{entry.subject_label}</p>
         </div>
       )}
       {details.length > 0 ? (
@@ -86,7 +86,6 @@ function AuditLogClient() {
   const [range, setRange] = useState<DateRange | null>(null);
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<string | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
   const { debouncedValue: search } = useDebounce(searchTerm, 400);
 
   const filters: AuditLogFilters = {
@@ -118,12 +117,6 @@ function AuditLogClient() {
       setArea(ALL);
       setRange(null);
     });
-
-  const copy = (id: string) => {
-    void navigator.clipboard?.writeText(id);
-    setCopied(id);
-    setTimeout(() => setCopied((current) => (current === id ? null : current)), 1500);
-  };
 
   return (
     <section className="mt-6 flex flex-col gap-5">
@@ -242,28 +235,8 @@ function AuditLogClient() {
                             </span>
                           )}
                         </td>
-                        <td className="p-4 font-mono text-xs">
-                          {entry.subject_id ? (
-                            <span className="flex items-center gap-1">
-                              {entry.subject_id.slice(0, 8)}…
-                              <button
-                                type="button"
-                                aria-label="Copy record id"
-                                className="text-grey-40 cursor-pointer"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  copy(entry.subject_id as string);
-                                }}
-                              >
-                                <CopyIcon className="h-3.5 w-3.5" />
-                              </button>
-                              {copied === entry.subject_id && (
-                                <span className="text-light-green-70">Copied</span>
-                              )}
-                            </span>
-                          ) : (
-                            <span className="text-text-grey">N/A</span>
-                          )}
+                        <td className="p-4 font-sans text-sm font-medium">
+                          {entry.subject_label ?? <span className="text-text-grey">N/A</span>}
                         </td>
                         <td className="p-4">
                           {isOpen ? (

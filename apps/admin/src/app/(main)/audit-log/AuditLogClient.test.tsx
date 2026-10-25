@@ -21,7 +21,7 @@ const data: AuditLogResponse = {
       id: "l1",
       message: "Suspended an event",
       area: "events",
-      subject_id: "01a159e3-5f52-7051-aaf4-284700809d14",
+      subject_label: "Lagos Founders Night",
       method: "PATCH",
       ip: "10.0.0.2",
       details: { reason: "Fraud" },
@@ -48,14 +48,15 @@ describe("AuditLogClient", () => {
     expect(screen.getByText("“Fraud”")).toBeInTheDocument();
   });
 
-  it("opens a row to show the details, the record id and where it came from", () => {
+  it("shows the event name as the target and never a raw id", () => {
     render(<AuditLogClient />);
 
     fireEvent.click(screen.getByText("Suspended an event"));
 
     expect(screen.getByText("Reason")).toBeInTheDocument();
     expect(screen.getByText(/10\.0\.0\.2/)).toBeInTheDocument();
-    expect(screen.getByText("01a159e3-5f52-7051-aaf4-284700809d14")).toBeInTheDocument();
+    expect(screen.getAllByText("Lagos Founders Night").length).toBeGreaterThan(0);
+    expect(screen.queryByText(/01a159e3/)).not.toBeInTheDocument();
   });
 
   it("searches, and clears the filters with one click", () => {

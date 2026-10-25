@@ -9,7 +9,7 @@ export default async function TermsPage() {
   const page = await helpServerApi.getPage("terms_and_conditions");
 
   return (
-    <PublicShell>
+    <PublicShell title="Terms and conditions">
       <LegalDocument page={page} />
     </PublicShell>
   );

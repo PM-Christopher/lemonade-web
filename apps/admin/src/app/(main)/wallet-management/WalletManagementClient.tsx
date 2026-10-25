@@ -144,6 +144,7 @@ function WalletManagementClient() {
             <div className={"grid auto-cols-fr grid-flow-col gap-6 overflow-x-auto px-3 pt-2 pb-4"}>
               <DataCard
                 title={"Wallet Revenue"}
+                hint={"Fees and commissions the platform kept, after affiliate rewards"}
                 count={walletData?.wallet_revenue || 0}
                 isPrice={true}
               />
@@ -240,7 +241,11 @@ function WalletManagementClient() {
           </div>
         </div>
       </section>
-      <WalletThresholdModal isOpen={editThreshold} toggle={() => setEditThreshold(false)} />
+      <WalletThresholdModal
+        isOpen={editThreshold}
+        toggle={() => setEditThreshold(false)}
+        current={walletData?.withdrawal_threshold}
+      />
       {editingRate && (
         <PointsRateModal
           isOpen={Boolean(editingRateCurrency)}

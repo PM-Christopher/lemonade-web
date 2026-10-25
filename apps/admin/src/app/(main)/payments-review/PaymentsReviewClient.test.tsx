@@ -28,6 +28,7 @@ const payment = (id: string, state: "stuck" | "failed") => ({
   amount: "5000.00",
   status: state === "stuck" ? "pending" : "failed",
   state,
+  reason: null,
   settled_at: null,
   settled_by: null,
   provider: "paystack",

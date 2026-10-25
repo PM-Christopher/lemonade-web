@@ -11,6 +11,8 @@ export interface PaymentToReview {
   status: string;
   // "stuck" is pending too long, "failed" was declined, "settled" was completed from this page.
   state: "stuck" | "failed" | "settled";
+  // What Paystack said about it, when it said anything.
+  reason: string | null;
   settled_at: string | null;
   settled_by: { id: string; name: string } | null;
   provider: string;

@@ -3,7 +3,8 @@ import { announcementsApi } from "./api";
 
 export const announcementKeys = {
   all: () => ["announcements"] as const,
-  list: (search = "") => [...announcementKeys.all(), "list", search] as const,
+  lists: () => [...announcementKeys.all(), "list"] as const,
+  list: (search = "") => [...announcementKeys.lists(), search] as const,
   detail: (id: string | number) => [...announcementKeys.all(), "detail", id] as const,
 };
 

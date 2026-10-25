@@ -3,7 +3,8 @@ import { teamApi } from "./api";
 
 export const teamKeys = {
   all: () => ["team"] as const,
-  list: (search = "") => [...teamKeys.all(), "list", search] as const,
+  lists: () => [...teamKeys.all(), "list"] as const,
+  list: (search = "") => [...teamKeys.lists(), search] as const,
   detail: (id: string | number) => [...teamKeys.all(), "detail", id] as const,
   logs: (id: string | number, filters: object) => [...teamKeys.all(), "logs", id, filters] as const,
 };

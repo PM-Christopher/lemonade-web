@@ -13,7 +13,7 @@ export default async function HelpPage() {
   await queryClient.prefetchQuery({ queryKey: helpKeys.faqs(), queryFn: helpServerApi.getFaqs });
 
   return (
-    <PublicShell>
+    <PublicShell title="Help center">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <HelpCenter />
       </HydrationBoundary>

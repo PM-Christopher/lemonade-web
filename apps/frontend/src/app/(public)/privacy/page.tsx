@@ -9,7 +9,7 @@ export default async function PrivacyPage() {
   const page = await helpServerApi.getPage("privacy_policy");
 
   return (
-    <PublicShell>
+    <PublicShell title="Privacy policy">
       <LegalDocument page={page} />
     </PublicShell>
   );

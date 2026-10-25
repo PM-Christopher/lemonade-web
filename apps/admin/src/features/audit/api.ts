@@ -6,8 +6,8 @@ export interface AuditLogEntry {
   id: string;
   message: string;
   area: string | null;
-  // The id of the record the action was about.
-  subject_id: string | null;
+  // A readable name for what the action was about, such as a user or event name.
+  subject_label: string | null;
   method: string | null;
   ip: string | null;
   // The reason, amount or other detail the admin sent.

@@ -36,7 +36,12 @@ const AnnouncementsClient = () => {
   const [createOpen, setCreateOpen] = useState(false);
 
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-  const { data: announcementData } = useAnnouncementsQuery({
+  const {
+    data: announcementData,
+    isError,
+    isFetching,
+    refetch,
+  } = useAnnouncementsQuery({
     enabled: isLoggedIn,
     search: term,
   });
@@ -48,7 +53,9 @@ const AnnouncementsClient = () => {
     <>
       <section className="mt-6 flex flex-col gap-5">
         <div className={"flex justify-between px-5"}>
-          <p className={"font-semiBold text-body-l"}>{announcements.length} Announcements</p>
+          <p className={"font-semiBold text-body-l"}>
+            {announcementData ? announcements.length : "–"} Announcements
+          </p>
           <div className={"flex justify-between gap-3"}>
             <SearchBox
               value={searchValue}
@@ -117,7 +124,22 @@ const AnnouncementsClient = () => {
                         colSpan={announcementHeaders.length}
                         className="p-4 text-center text-sm text-gray-500"
                       >
-                        No data available
+                        {announcementData ? (
+                          "No data available"
+                        ) : isError ? (
+                          <>
+                            Couldn&apos;t load the announcements.{" "}
+                            <button
+                              type="button"
+                              className="text-light-green-70 cursor-pointer font-medium"
+                              onClick={() => void refetch()}
+                            >
+                              Try again
+                            </button>
+                          </>
+                        ) : (
+                          isFetching && "Loading..."
+                        )}
                       </td>
                     </tr>
                   )}

@@ -11,7 +11,7 @@ export function useAddTeamMemberMutation() {
       // The old thunk-based modal never refreshed the list after adding —
       // a new member wouldn't show up without a manual reload. Fixed here
       // as a side effect of mutations owning their own invalidation.
-      queryClient.invalidateQueries({ queryKey: teamKeys.list() });
+      queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
     },
   });
 }
@@ -28,7 +28,7 @@ export function useRemoveTeamMemberMutation(id: string | number) {
   return useMutation({
     mutationFn: () => teamApi.removeMember(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: teamKeys.list() });
+      queryClient.invalidateQueries({ queryKey: teamKeys.lists() });
     },
   });
 }

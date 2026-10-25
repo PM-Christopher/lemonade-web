@@ -12,6 +12,7 @@ function DataCard({
   isLink = false,
   pageLink = "",
   handleChange,
+  hint,
 }: {
   styles?: string;
   title: string;
@@ -22,6 +23,8 @@ function DataCard({
   isLink?: boolean;
   pageLink?: string;
   handleChange?: () => void;
+  // A short line under the number that says what it counts.
+  hint?: string;
 }) {
   const { push } = useNavigation();
   return (
@@ -36,6 +39,7 @@ function DataCard({
           })}
           {isPercentage && "%"}
         </p>
+        {hint && <p className="text-text-grey text-meta -mt-2 font-normal">{hint}</p>}
       </div>
       {isEditable && (
         <p

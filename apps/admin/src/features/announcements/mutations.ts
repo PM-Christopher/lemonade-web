@@ -12,7 +12,7 @@ export function useSaveAnnouncementMutation(id?: string | number) {
         ? announcementsApi.createAnnouncement(payload)
         : announcementsApi.updateAnnouncement(id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: announcementKeys.list() });
+      queryClient.invalidateQueries({ queryKey: announcementKeys.lists() });
       if (id !== undefined) {
         queryClient.invalidateQueries({ queryKey: announcementKeys.detail(id) });
       }

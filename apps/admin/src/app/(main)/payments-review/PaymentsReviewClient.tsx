@@ -269,6 +269,11 @@ function PaymentsReviewClient() {
                       >
                         {STATE_STYLE[payment.state].label}
                       </span>
+                      {payment.state === "failed" && payment.reason && (
+                        <p className="text-text-grey text-meta mt-1 font-normal">
+                          {payment.reason}
+                        </p>
+                      )}
                       {payment.state === "settled" && (
                         <p className="text-text-grey text-meta mt-1 font-normal">
                           {payment.settled_by ? `by ${payment.settled_by.name}` : "by an admin"}

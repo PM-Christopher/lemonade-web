@@ -9,7 +9,7 @@ export default async function CookiesPage() {
   const page = await helpServerApi.getPage("cookie_policy");
 
   return (
-    <PublicShell>
+    <PublicShell title="Cookie policy">
       <LegalDocument page={page} />
     </PublicShell>
   );

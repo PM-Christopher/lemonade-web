@@ -14,9 +14,11 @@ import { applyServerErrors } from "@/lib/form-errors";
 type WalletMgtInterface = {
   isOpen: boolean;
   toggle: () => void;
+  // The threshold in force now, in naira, so the field starts filled.
+  current?: string | number;
 };
 
-const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) => {
+const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle, current }) => {
   const dispatch = useDispatch<AppDispatch>();
   const updateThreshold = useUpdateWithdrawalThresholdMutation();
   const {
@@ -26,7 +28,7 @@ const WalletThresholdModal: React.FC<WalletMgtInterface> = ({ isOpen, toggle }) 
     formState: { errors },
   } = useForm<WithdrawalThresholdInput>({
     resolver: zodResolver(withdrawalThresholdSchema),
-    defaultValues: { threshold: "" },
+    values: { threshold: current === undefined ? "" : String(current) },
     mode: "onTouched",
   });
 
