@@ -22,7 +22,14 @@ const TABS = [
   { key: "all", label: "All" },
   { key: "stuck", label: "Stuck" },
   { key: "failed", label: "Failed" },
+  { key: "settled", label: "Settled" },
 ] as const;
+
+const STATE_STYLE: Record<PaymentToReview["state"], { label: string; className: string }> = {
+  stuck: { label: "Stuck", className: "text-warning-bold bg-orange-50" },
+  failed: { label: "Failed", className: "text-red-1 bg-red-50" },
+  settled: { label: "Settled", className: "text-light-green-70 bg-green-tint" },
+};
 
 const HEADERS = ["USER", "TYPE", "AMOUNT", "STARTED", "STATE", "REFERENCE", ""];
 
@@ -134,7 +141,7 @@ function PaymentsReviewClient() {
           <p className="font-semiBold text-body-l">Payments review</p>
           <p className="text-text-grey text-body-s">
             Payments that never finished. Check one with Paystack to complete it if the money
-            arrived.
+            arrived. Settled shows the ones completed from here.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -180,6 +187,13 @@ function PaymentsReviewClient() {
           hint="Declined in the last 30 days"
           active={tab === "failed"}
           onClick={() => changeFilter(() => setTab(tab === "failed" ? "all" : "failed"))}
+        />
+        <StatCard
+          label="Settled payments"
+          value={data?.settled_count ?? 0}
+          hint="Completed from this page"
+          active={tab === "settled"}
+          onClick={() => changeFilter(() => setTab(tab === "settled" ? "all" : "settled"))}
         />
         <StatCard
           label="Amount at risk"
@@ -251,10 +265,17 @@ function PaymentsReviewClient() {
                     </td>
                     <td className="p-4 font-sans text-sm font-medium">
                       <span
-                        className={`rounded-full px-2 py-0.5 text-xs ${payment.state === "stuck" ? "text-warning-bold bg-orange-50" : "text-red-1 bg-red-50"}`}
+                        className={`rounded-full px-2 py-0.5 text-xs ${STATE_STYLE[payment.state].className}`}
                       >
-                        {payment.state === "stuck" ? "Stuck" : "Failed"}
+                        {STATE_STYLE[payment.state].label}
                       </span>
+                      {payment.state === "settled" && (
+                        <p className="text-text-grey text-meta mt-1 font-normal">
+                          {payment.settled_by ? `by ${payment.settled_by.name}` : "by an admin"}
+                          {payment.settled_at &&
+                            `, ${dayjs(payment.settled_at).format("DD MMM, hh:mm A")}`}
+                        </p>
+                      )}
                     </td>
                     <td className="p-4 font-mono text-xs">
                       <span className="flex items-center gap-1">
@@ -290,7 +311,11 @@ function PaymentsReviewClient() {
               ) : (
                 <tr>
                   <td colSpan={HEADERS.length} className="p-10 text-center text-sm text-gray-500">
-                    {isLoading ? "Loading..." : "Nothing to review. Every payment has finished."}
+                    {isLoading
+                      ? "Loading..."
+                      : tab === "settled"
+                        ? "No payments have been settled from here yet."
+                        : "Nothing to review. Every payment has finished."}
                   </td>
                 </tr>
               )}

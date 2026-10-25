@@ -28,6 +28,8 @@ const payment = (id: string, state: "stuck" | "failed") => ({
   amount: "5000.00",
   status: state === "stuck" ? "pending" : "failed",
   state,
+  settled_at: null,
+  settled_by: null,
   provider: "paystack",
   created_at: "2026-10-20T10:00:00Z",
   age_minutes: 130,
@@ -37,6 +39,7 @@ const payment = (id: string, state: "stuck" | "failed") => ({
 const data: PaymentsToReviewResponse = {
   stuck_count: 2,
   failed_count: 1,
+  settled_count: 3,
   amount_at_risk: "10000.00",
   types: ["tribe"],
   payments: [payment("p1", "stuck"), payment("p2", "failed")],
@@ -65,6 +68,39 @@ describe("PaymentsReviewClient", () => {
     fireEvent.click(screen.getByRole("menuitem", { name: "Check with Paystack" }));
 
     expect(mutate.mock.calls[0][0]).toBe("p1");
+  });
+
+  it("has a Settled tab that asks for settled payments and shows who settled them", () => {
+    render(<PaymentsReviewClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settled" }));
+
+    expect(query).toHaveBeenLastCalledWith(
+      expect.objectContaining({ status: "settled", page: 1 }),
+      expect.anything(),
+    );
+  });
+
+  it("names the admin who settled a payment", () => {
+    query.mockReturnValue({
+      data: {
+        ...data,
+        payments: [
+          {
+            ...payment("p3", "stuck"),
+            state: "settled",
+            status: "success",
+            settled_at: "2026-10-21T09:00:00Z",
+            settled_by: { id: "a1", name: "Rita Reviewer" },
+          },
+        ],
+      },
+      isLoading: false,
+      isFetching: false,
+    });
+    render(<PaymentsReviewClient />);
+
+    expect(screen.getByText(/by Rita Reviewer/)).toBeInTheDocument();
   });
 
   it("filters to stuck payments from the card", () => {

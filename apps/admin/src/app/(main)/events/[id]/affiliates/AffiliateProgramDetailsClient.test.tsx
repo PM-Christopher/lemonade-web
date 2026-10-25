@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import AffiliateProgramDetailsClient from "./AffiliateProgramDetailsClient";
 import type { EventAffiliateDetailResponse } from "@/features/events/api";
 
@@ -11,6 +11,7 @@ const queryMock = vi.fn();
 
 vi.mock("@/features/events/queries", () => ({
   useEventAffiliateDetailQuery: (...args: unknown[]) => queryMock(...args),
+  useEventAffiliateSalesQuery: () => ({ data: { sales: [] }, isLoading: false }),
 }));
 
 function mockDetail(
@@ -40,6 +41,7 @@ function mockDetail(
         start_date: "2026-03-23T16:00:00Z",
         location: "Lekki phase 1",
         affiliate_link: "event/abc?referral=xyz",
+        affiliate_url: "http://localhost:3000/event/abc?referral=xyz",
         isAffiliate: true,
         commissions: [],
         ticket_sold: [
@@ -75,6 +77,21 @@ describe("AffiliateProgramDetailsClient", () => {
     // with a fixed "30 sold" regardless of real data — guard against that.
     expect(screen.queryByText("Free Tickets")).not.toBeInTheDocument();
     expect(screen.queryByText("30")).not.toBeInTheDocument();
+  });
+
+  it("shows the full affiliate link and copies it", () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    queryMock.mockReturnValue({ data: mockDetail() });
+
+    render(<AffiliateProgramDetailsClient id="affiliate-1" />);
+
+    expect(screen.getByText("http://localhost:3000/event/abc?referral=xyz")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /copy affiliate link/i }));
+    expect(writeText).toHaveBeenCalledWith("http://localhost:3000/event/abc?referral=xyz");
+    expect(screen.getByRole("button", { name: /copy affiliate link/i })).toHaveTextContent(
+      "Copied",
+    );
   });
 
   it("shows a real empty state instead of inventing program data when there are none", () => {

@@ -11,7 +11,7 @@ import { AvatarName } from "@/components/global/AvatarName";
 import { useSelector } from "react-redux";
 import { naira } from "@/views/transactions/transactionFormat";
 
-const PayoutHistoryModal = dynamic(() => import("@/modals/users/PayoutHistoryModal"), {
+const AffiliateSalesModal = dynamic(() => import("@/modals/events/AffiliateSalesModal"), {
   ssr: false,
 });
 
@@ -22,7 +22,7 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
   const [historyOpen, setHistoryOpen] = useState(false);
 
   const handleCopyLink = (link: string) => {
-    navigator.clipboard.writeText(link);
+    void navigator.clipboard?.writeText(link);
     setCopiedLink(link);
     setTimeout(() => setCopiedLink((current) => (current === link ? null : current)), 1500);
   };
@@ -114,17 +114,15 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
           ) : (
             <p className={"text-text-grey text-body-s font-normal"}>No bank account on file</p>
           )}
-          {affiliate?.user_id && (
-            <button
-              type="button"
-              className={
-                "text-light-green-70 text-body-s flex w-fit cursor-pointer items-center gap-1 font-medium"
-              }
-              onClick={() => setHistoryOpen(true)}
-            >
-              View transaction history <ExternalLinkIcon className={"h-3.5 w-3.5"} />
-            </button>
-          )}
+          <button
+            type="button"
+            className={
+              "text-light-green-70 text-body-s flex w-fit cursor-pointer items-center gap-1 font-medium"
+            }
+            onClick={() => setHistoryOpen(true)}
+          >
+            View transaction history <ExternalLinkIcon className={"h-3.5 w-3.5"} />
+          </button>
         </div>
         <div className={"flex h-fit w-195 flex-col gap-4 rounded-xl bg-white"}>
           <div className={"border-b p-6"}>
@@ -170,26 +168,29 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
                     </div>
                   </div>
                   <div
-                    className={"bg-grey-20 flex items-center justify-between gap-2 rounded-xl p-2"}
+                    className={"bg-grey-20 flex items-center justify-between gap-3 rounded-xl p-2"}
                   >
-                    <p className={"text-text-grey text-meta leading-normal font-medium"}>
+                    <p
+                      className={
+                        "text-text-grey text-meta min-w-0 leading-normal font-medium break-all"
+                      }
+                    >
                       Affiliate link:{" "}
                       <span className={"text-light-black font-medium"}>
-                        {program.affiliate_link}
+                        {program.affiliate_url}
                       </span>
                     </p>
-                    <div className={"flex items-center gap-1"}>
-                      <p className={"text-grey-30"}>|</p>
-                      <CopyIcon
-                        className={"text-grey-40 w-3.5 cursor-pointer"}
-                        onClick={() => handleCopyLink(program.affiliate_link)}
-                      />
-                      {copiedLink === program.affiliate_link ? (
-                        <span className={"text-light-green-70 text-meta leading-normal"}>
-                          Copied
-                        </span>
-                      ) : null}
-                    </div>
+                    <button
+                      type={"button"}
+                      aria-label={"Copy affiliate link"}
+                      className={
+                        "border-light-grey-50 text-body-s flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border bg-white px-3 py-1 font-medium"
+                      }
+                      onClick={() => handleCopyLink(program.affiliate_url)}
+                    >
+                      <CopyIcon className={"h-3.5 w-3.5"} />
+                      {copiedLink === program.affiliate_url ? "Copied" : "Copy"}
+                    </button>
                   </div>
                   <div className={"items-center-center flex gap-6"}>
                     <div className={"w-28.75"}>
@@ -243,10 +244,10 @@ const AffiliateProgramDetailsClient = ({ id }: { id: string }) => {
           </div>
         </div>
       </section>
-      <PayoutHistoryModal
+      <AffiliateSalesModal
         isOpen={historyOpen}
         toggle={() => setHistoryOpen(false)}
-        userId={affiliate?.user_id}
+        affiliateId={id}
       />
     </>
   );

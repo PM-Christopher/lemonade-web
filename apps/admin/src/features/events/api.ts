@@ -74,6 +74,8 @@ export interface EventAffiliateProgram {
   start_date: string;
   location: string | null;
   affiliate_link: string;
+  // The full address, ready to copy and share.
+  affiliate_url: string;
   isAffiliate: boolean;
   commissions: EventAffiliateTicketBreakdown[];
   ticket_sold: EventAffiliateTicketSoldBreakdown[];
@@ -98,6 +100,15 @@ export interface EventAffiliateDetail {
     bank_name: string;
     account_number: string;
   } | null;
+}
+
+export interface EventAffiliateSale {
+  id: string;
+  event_name: string | null;
+  ticket_name: string | null;
+  buyer_name: string | null;
+  price: number | null;
+  sold_at: string;
 }
 
 export interface EventAffiliateDetailResponse {
@@ -239,6 +250,9 @@ export const eventsApi = {
 
   getEventDetail: (id: string | number) =>
     browserApi.get<EventDetailResponse>(buildPath(adminEventsRoutes.SHOW, { id })),
+
+  getEventAffiliateSales: (id: string | number) =>
+    browserApi.get<{ sales: EventAffiliateSale[] }>(buildPath(adminAffiliatesRoutes.SALES, { id })),
 
   getEventAffiliateDetail: (id: string | number) =>
     browserApi.get<EventAffiliateDetailResponse>(buildPath(adminAffiliatesRoutes.SHOW, { id })),

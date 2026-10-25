@@ -8,6 +8,7 @@ export const eventKeys = {
   details: () => [...eventKeys.all(), "detail"] as const,
   detail: (id: string | number) => [...eventKeys.details(), id] as const,
   affiliateDetail: (id: string | number) => [...eventKeys.all(), "affiliate-detail", id] as const,
+  affiliateSales: (id: string | number) => [...eventKeys.all(), "affiliate-sales", id] as const,
 };
 
 export const eventPromotionKeys = {
@@ -66,6 +67,19 @@ export function useEventAffiliateDetailQuery(
     queryKey: eventKeys.affiliateDetail(id ?? 0),
     queryFn: () => eventsApi.getEventAffiliateDetail(id as string | number),
     staleTime: 30_000,
+    enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+// Tickets sold through one affiliate's links; money data, so always fresh.
+export function useEventAffiliateSalesQuery(
+  id: string | number | undefined,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({
+    queryKey: eventKeys.affiliateSales(id ?? 0),
+    queryFn: () => eventsApi.getEventAffiliateSales(id as string | number),
+    staleTime: 0,
     enabled: Boolean(id) && options?.enabled !== false,
   });
 }

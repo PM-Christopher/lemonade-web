@@ -9,8 +9,10 @@ export interface PaymentToReview {
   // Naira, formatted by the backend.
   amount: string;
   status: string;
-  // "stuck" is pending too long; "failed" was declined.
-  state: "stuck" | "failed";
+  // "stuck" is pending too long, "failed" was declined, "settled" was completed from this page.
+  state: "stuck" | "failed" | "settled";
+  settled_at: string | null;
+  settled_by: { id: string; name: string } | null;
   provider: string;
   created_at: string;
   age_minutes: number;
@@ -27,6 +29,7 @@ export interface PaymentsToReviewFilters {
 export interface PaymentsToReviewResponse {
   stuck_count: number;
   failed_count: number;
+  settled_count: number;
   amount_at_risk: string;
   types: string[];
   payments: PaymentToReview[];
