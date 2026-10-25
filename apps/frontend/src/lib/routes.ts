@@ -51,4 +51,11 @@ export const routes = {
   SETTINGS_SUPPORT: "/settings/support",
   SETTINGS_PRIVACY: "/settings/privacy",
   SETTINGS_TERMS: "/settings/terms-and-conditions",
+  SETTINGS_COOKIES: "/settings/cookies",
+
+  // Public pages anyone can open, also linked from emails.
+  TERMS: "/terms-and-conditions",
+  PRIVACY: "/privacy",
+  COOKIES: "/cookies",
+  HELP: "/help",
 } as const;

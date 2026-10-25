@@ -1,8 +1,8 @@
 "use client";
 
 // Browser transport to this app's same-origin BFF (`/api/v1`), not Laravel directly.
-import { routes } from "@/lib/routes";
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
+import { loginPathWithNext } from "@/lib/post-auth-redirect";
 import { AUTH_PATHS } from "@/lib/auth-paths";
 import { rememberCorrelationId } from "@/lib/correlation";
 import { rememberApiMessage } from "@/lib/api-message";
@@ -16,6 +16,8 @@ export const browserApi: ApiClient = createApiClient({
     // Stay put on auth pages so a 401 there cannot reload /login forever.
     if (AUTH_PATHS.has(window.location.pathname)) return;
     // Hard reload clears in-memory session state after a failed refresh.
-    window.location.href = routes.LOGIN;
+    window.location.href = loginPathWithNext(
+      `${window.location.pathname}${window.location.search}`,
+    );
   },
 });

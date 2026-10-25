@@ -17,8 +17,7 @@ vi.mock("@/components/layouts/AuthLayout", () => ({
 }));
 
 // Avoid next/dynamic LoadableComponent resolving outside act() after mount.
-vi.mock("@/components/TermsOfUseModal", () => ({ default: () => null }));
-vi.mock("@/components/PrivacyPolicyModal", () => ({ default: () => null }));
+vi.mock("@/components/legal/LegalDialog", () => ({ LegalDialog: () => null }));
 
 vi.mock("@/redux/hook", () => ({
   useAppDispatch: () => vi.fn(),

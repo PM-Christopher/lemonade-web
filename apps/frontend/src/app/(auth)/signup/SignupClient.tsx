@@ -22,10 +22,11 @@ import type { LoginResult } from "@/features/authentication/api";
 import { useGoogleAuthMutation } from "@/features/authentication/mutations";
 import { ONBOARDING_TOKEN_COOKIE } from "@/lib/cookie-names";
 import { errorMessage } from "@/lib/api-error";
-import dynamic from "next/dynamic";
 import { routes } from "@/lib/routes";
 import { images } from "@/lib/images";
 import { useNavigation } from "@/hooks/useNavigation";
+import { LegalDialog } from "@/components/legal/LegalDialog";
+import { readNext, rememberNext } from "@/lib/post-auth-redirect";
 
 // Placeholder mark when Google is not configured, or for unused Apple/Facebook UI.
 function SocialMark({ src, label }: { src: string; label: string }) {
@@ -41,12 +42,6 @@ function SocialMark({ src, label }: { src: string; label: string }) {
 
 // Off the initial bundle — only needed once a legal-document link is
 // clicked (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
-const TermsOfUseModal = dynamic(() => import("@/components/TermsOfUseModal"), {
-  ssr: false,
-});
-const PrivacyPolicyModal = dynamic(() => import("@/components/PrivacyPolicyModal"), {
-  ssr: false,
-});
 
 export default function SignupPage() {
   const { push, getQueryParam } = useNavigation();
@@ -84,6 +79,7 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (values: SignupInput) => {
+    rememberNext(getQueryParam("next"));
     await signup({ ...values }, dispatch, { push }, setCookie, (error) =>
       applyServerErrors(error, setError, ["fullname", "email", "password", "referral_code"]),
     );
@@ -103,14 +99,16 @@ export default function SignupPage() {
         sameSite: "lax",
       });
       dispatch(authUser({ user: result.user }));
+      rememberNext(getQueryParam("next"));
       window.location.assign(
         result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL,
       );
       return;
     }
 
+    const destination = readNext(getQueryParam("next"));
     setTimeout(() => {
-      push(routes.HOME);
+      push(destination);
     }, 500);
   };
 
@@ -284,8 +282,18 @@ export default function SignupPage() {
           </form>
         </div>
       </div>
-      <TermsOfUseModal toggle={toggleTermOpen} option={termOpen} />
-      <PrivacyPolicyModal toggle={togglePrivacy} option={privacyOpen} />
+      <LegalDialog
+        category="terms_and_conditions"
+        title="Terms of Use"
+        open={termOpen}
+        onClose={toggleTermOpen}
+      />
+      <LegalDialog
+        category="privacy_policy"
+        title="Privacy Policy"
+        open={privacyOpen}
+        onClose={togglePrivacy}
+      />
       <GoogleLinkDialog
         open={pendingGoogleToken !== null}
         onSubmit={linkGoogle}

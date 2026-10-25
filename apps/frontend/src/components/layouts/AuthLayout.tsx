@@ -10,6 +10,7 @@ import { setIsRouting } from "@/redux/tempSlice";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
+import { withNext } from "@/lib/post-auth-redirect";
 
 const HEADER_ACTION: Record<string, { href: string; label: string } | null> = {
   [routes.LOGIN]: { href: routes.SIGNUP, label: "Sign up" },
@@ -22,7 +23,7 @@ const HEADER_ACTION: Record<string, { href: string; label: string } | null> = {
 };
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  const { pathname, replace } = useNavigation();
+  const { pathname, replace, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
   const [cookies] = useCookies([ONBOARDING_TOKEN_COOKIE]);
   const newToken = cookies[ONBOARDING_TOKEN_COOKIE];
@@ -69,7 +70,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             />
           </Link>
           {action ? (
-            <Link href={action.href} className="btn-quiet text-primary-black text-body-s font-sans">
+            <Link
+              href={withNext(action.href, getQueryParam("next"))}
+              className="btn-quiet text-primary-black text-body-s font-sans"
+            >
               {action.label}
             </Link>
           ) : null}

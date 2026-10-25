@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { readNext, rememberNext } from "@/lib/post-auth-redirect";
 import React, { useMemo, useState } from "react";
 import { Card, CardContent, Input, Label, FieldError } from "@lemonade/ui";
 import Image from "next/image";
@@ -39,14 +40,6 @@ function SocialMark({ src, label }: { src: string; label: string }) {
   );
 }
 
-function safeNext(raw: string | null) {
-  // Only allow same-site relative paths.
-  if (!raw) return "/";
-  if (!raw.startsWith("/")) return "/";
-  if (raw.startsWith("//")) return "/";
-  return raw;
-}
-
 export default function LoginPage() {
   const { push, getQueryParam } = useNavigation();
   const dispatch = useAppDispatch();
@@ -55,7 +48,7 @@ export default function LoginPage() {
   const googleAuthMutation = useGoogleAuthMutation();
   // Google token held while the user confirms their password to link accounts.
   const [pendingGoogleToken, setPendingGoogleToken] = useState<string | null>(null);
-  const next = useMemo(() => safeNext(getQueryParam("next")), [getQueryParam]);
+  const next = useMemo(() => readNext(getQueryParam("next")), [getQueryParam]);
 
   // Shared by password and Google sign-in: resume onboarding, or go to the original page.
   const handleAuthResult = (result: LoginResult) => {
@@ -69,6 +62,7 @@ export default function LoginPage() {
         sameSite: false,
       });
       dispatch(authUser({ user: result.user }));
+      rememberNext(next);
       push(result.user.email_verified ? routes.PROFILE_SETUP : routes.VERIFY_EMAIL);
       return;
     }
@@ -76,7 +70,7 @@ export default function LoginPage() {
     dispatch(
       updateToastifyReducer({ show: true, message: apiMessage("successful"), type: "success" }),
     );
-    push(next || routes.HOME);
+    push(next);
   };
 
   const showLoginError = (error: unknown) => {

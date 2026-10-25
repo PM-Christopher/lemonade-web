@@ -81,6 +81,8 @@ function SettingsClient() {
       path: routes.SETTINGS_TERMS,
     },
     { title: "Privacy policy", icon: PaperIcon, path: routes.SETTINGS_PRIVACY },
+    { title: "Cookie policy", icon: PaperIcon, path: routes.SETTINGS_COOKIES },
+    { title: "Help center", icon: PaperIcon, path: routes.HELP },
   ];
 
   const openItem = (item: SettingsItem) => {

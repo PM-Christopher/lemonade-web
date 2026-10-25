@@ -5,6 +5,7 @@ import ProfileStep from "@/components/form-steps/profile-step";
 import AddressStep from "@/components/form-steps/address-step";
 import SkillStep from "@/components/form-steps/skills-step";
 import SocialStep from "@/components/form-steps/social-step";
+import { takeRememberedNext } from "@/lib/post-auth-redirect";
 import AuthLayout from "@/components/layouts/AuthLayout";
 import { ColorRing } from "react-loader-spinner";
 import { ApiError } from "@lemonade/api-client";
@@ -47,7 +48,7 @@ export default function ProfileStepsPage() {
   const prevStep = () => setStep(step - 1);
 
   const onComplete: () => Promise<void> = async () => {
-    push(routes.HOME);
+    push(takeRememberedNext());
   };
 
   if (isLoading) {

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { USER_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 import { userProfileRoutes } from "@lemonade/api-types/generated";
+import { loginPathWithNext, readNext } from "@/lib/post-auth-redirect";
 
 // UX redirect only — Laravel Policies remain the only real authorization
 // authority. Now checks the httpOnly lemonade_user_token cookie set by
@@ -122,10 +123,10 @@ export async function middleware(req: NextRequest) {
   if (GUEST_ONLY_PATHS.includes(pathname)) {
     const token = req.cookies.get(USER_TOKEN_COOKIE)?.value;
     if (token && (await hasValidSession(token))) {
-      const homeUrl = req.nextUrl.clone();
-      homeUrl.pathname = "/";
-      homeUrl.search = "";
-      const res = NextResponse.redirect(homeUrl);
+      // Already signed in: go where the visitor was headed, or home.
+      const res = NextResponse.redirect(
+        new URL(readNext(req.nextUrl.searchParams.get("next")), req.url),
+      );
       res.headers.set("Content-Security-Policy", csp);
       return res;
     }
@@ -154,15 +155,8 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  const loginUrl = req.nextUrl.clone();
-  loginUrl.pathname = "/login";
-  loginUrl.search = "";
-  // Login already sends a successful sign-in to "/". A return path of
-  // exactly home just leaves `?next=%2F` in the address bar.
-  const returnTo = `${pathname}${search || ""}`;
-  if (returnTo !== "/") {
-    loginUrl.searchParams.set("next", returnTo);
-  }
+  // Login sends a successful sign-in back to the page they asked for. Home needs no `next`.
+  const loginUrl = new URL(loginPathWithNext(`${pathname}${search || ""}`), req.url);
 
   const res = NextResponse.redirect(loginUrl);
   res.headers.set("Content-Security-Policy", csp);
