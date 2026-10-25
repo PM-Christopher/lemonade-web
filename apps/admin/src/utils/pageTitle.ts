@@ -11,6 +11,9 @@ export interface PageHeading {
 const innerPages: Array<[RegExp, string, string]> = [
   [/^\/users\/affiliate\/[^/]+$/, "Affiliate details", routes.USERS],
   [/^\/users\/[^/]+$/, "User details", routes.USERS],
+  [/^\/tribes\/categories$/, "Tribe categories", routes.TRIBES],
+  [/^\/businesses\/categories$/, "Business categories", routes.BUSINESSES],
+  [/^\/reporting\/categories$/, "Reporting categories", routes.REPORTING],
   [/^\/tribes\/[^/]+$/, "Tribe details", routes.TRIBES],
   [/^\/events\/add-promotions$/, "Add promotion", routes.EVENTS],
   [/^\/events\/[^/]+\/promotions$/, "Event promotions", routes.EVENTS],

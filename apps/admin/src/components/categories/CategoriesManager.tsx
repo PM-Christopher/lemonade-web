@@ -1,14 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { ChevronLeftIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@lemonade/ui";
 import { AppDispatch } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { apiMessage } from "@/lib/api-message";
 import { errorMessage } from "@/lib/api-error";
-import { routes } from "@/lib/routes";
 import { SearchBox } from "@/components/global/SearchBox";
 import { CategoryDialog } from "@/components/categories/CategoryDialog";
 import { useSearchTerm } from "@/hooks/useSearchTerm";
@@ -17,22 +15,10 @@ import { useCategoryListQuery } from "@/features/categories/queries";
 import { useDeleteCategoryMutation } from "@/features/categories/mutations";
 
 // Where each list is used, so the page can lead back to it.
-const SOURCE: Record<CategoryType, { label: string; href: string; hint: string }> = {
-  tribes: {
-    label: "Tribes",
-    href: routes.TRIBES,
-    hint: "People pick one of these when they create a tribe.",
-  },
-  business: {
-    label: "Businesses",
-    href: routes.BUSINESSES,
-    hint: "Business owners pick from these when they list a business.",
-  },
-  report: {
-    label: "Reporting",
-    href: routes.REPORTING,
-    hint: "People pick one of these as the reason when they report a thread.",
-  },
+const HINTS: Record<CategoryType, string> = {
+  tribes: "People pick one of these when they create a tribe.",
+  business: "Business owners pick from these when they list a business.",
+  report: "People pick one of these as the reason when they report a thread.",
 };
 
 // Add, rename and remove the options in one category list.
@@ -44,7 +30,6 @@ export function CategoriesManager({ type }: { type: CategoryType }) {
   // `null` is a new category; `undefined` means the dialog is closed.
   const [editing, setEditing] = useState<Category | null | undefined>(undefined);
 
-  const source = SOURCE[type];
   const categories = data?.categories ?? [];
 
   const toast = (message: string, kind: "success" | "error") =>
@@ -62,19 +47,12 @@ export function CategoriesManager({ type }: { type: CategoryType }) {
   return (
     <>
       <section className="mt-6 flex flex-col gap-5 px-5">
-        <Link
-          href={source.href}
-          className="text-body-s text-text-grey flex w-fit items-center gap-1 font-medium"
-        >
-          <ChevronLeftIcon className="h-4 w-4" />
-          Back to {source.label}
-        </Link>
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semiBold text-body-l">
               {data?.label ?? "Categories"} ({categories.length})
             </p>
-            <p className="text-text-grey text-body-s">{source.hint}</p>
+            <p className="text-text-grey text-body-s">{HINTS[type]}</p>
           </div>
           <div className="flex gap-3">
             <SearchBox

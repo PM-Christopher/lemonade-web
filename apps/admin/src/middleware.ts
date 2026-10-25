@@ -107,7 +107,6 @@ const GATED_PATH_PERMISSIONS: ReadonlyArray<{ prefix: string; permission: string
   { prefix: "/roles", permission: ADMIN_PERMISSIONS.rolesView },
   { prefix: "/audit-log", permission: ADMIN_PERMISSIONS.auditView },
   { prefix: "/support", permission: ADMIN_PERMISSIONS.supportView },
-  { prefix: "/categories", permission: ADMIN_PERMISSIONS.categoriesManage },
 ];
 
 function requiredPermissionFor(pathname: string): string | null {
