@@ -36,7 +36,10 @@ export interface AppNotification {
   body?: string;
   type?: string;
   meta?: NotificationMeta;
+  // ISO 8601 date and time.
   created_at?: string;
+  // Short label such as "3h".
+  time_ago?: string;
   read_at?: string | null;
 }
 

@@ -15,6 +15,7 @@ import {
   useNotificationsQuery,
   useMarkNotificationReadMutation,
   useMarkAllNotificationsReadMutation,
+  formatNotificationTime,
   countUnread,
   formatBadgeCount,
   type AppNotification,
@@ -42,15 +43,6 @@ const TopNav = () => {
   const unreadCount = countUnread(data?.notifications);
   const { setSelectedMenu } = usePersistentMenuState();
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  // Closing two stacked dialogs can leave the page unclickable; clear it once both are shut.
-  useEffect(() => {
-    if (openNotifications || openDetailModal) return;
-    const timer = setTimeout(() => {
-      if (document.body.style.pointerEvents === "none") document.body.style.pointerEvents = "";
-    }, 350);
-    return () => clearTimeout(timer);
-  }, [openNotifications, openDetailModal]);
 
   // Publishes the nav height so sticky sub-headers can sit right under it.
   useEffect(() => {
@@ -209,9 +201,7 @@ const TopNav = () => {
                             {notification.title ?? ""}
                           </span>
                           <span className="text-meta shrink-0 leading-normal text-gray-400">
-                            {dayjs(notification.meta?.created_at || notification.created_at).format(
-                              "DD MMM",
-                            )}
+                            {formatNotificationTime(notification.created_at)}
                           </span>
                         </span>
                         <span
@@ -255,6 +245,9 @@ const TopNav = () => {
           {selectedNotification ? (
             <div className="space-y-4">
               <p className="text-gray-700">{selectedNotification?.body}</p>
+              <p className="text-meta text-gray-400">
+                {formatNotificationTime(selectedNotification.created_at)}
+              </p>
 
               {selectedNotification?.type === "tribe" && (
                 <div className="space-y-2 rounded-md border p-3">
@@ -305,7 +298,9 @@ const TopNav = () => {
                   </p>
                   <p>
                     <span className="font-medium">Requested At:</span>{" "}
-                    {dayjs(selectedNotification.meta?.created_at).format("DD MMM YYYY, hh:mm A")}
+                    {formatNotificationTime(
+                      selectedNotification.meta?.created_at ?? selectedNotification.created_at,
+                    )}
                   </p>
                   <Button asChild className="bg-gradient-green mt-2 w-full">
                     <Link
@@ -334,7 +329,9 @@ const TopNav = () => {
                   </p>
                   <p>
                     <span className="font-medium">Responded At:</span>{" "}
-                    {dayjs(selectedNotification.meta?.created_at).format("DD MMM YYYY, hh:mm A")}
+                    {formatNotificationTime(
+                      selectedNotification.meta?.created_at ?? selectedNotification.created_at,
+                    )}
                   </p>
                   {selectedNotification.meta?.status === "accepted" && (
                     <Button asChild className="bg-gradient-green mt-2 w-full">
