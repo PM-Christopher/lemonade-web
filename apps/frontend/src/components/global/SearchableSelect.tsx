@@ -100,7 +100,7 @@ export function SearchableSelect({
             ) : (
               visible.map((item) => (
                 <li
-                  key={item.value}
+                  key={`${item.value}-${item.label}`}
                   role="option"
                   aria-selected={item.value === value}
                   onClick={() => pick(item.value)}

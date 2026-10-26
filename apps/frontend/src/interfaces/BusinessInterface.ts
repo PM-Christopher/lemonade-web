@@ -18,6 +18,9 @@ export interface BusinessInterface {
   hasBoost: boolean;
   owner: boolean;
   hasActiveServiceRequest: boolean;
+  // PENDING, REJECTED, SUSPENDED, INACTIVE or ACTIVE.
+  status?: string;
+  rejection_reason?: string | null;
   // Confirmed live against BusinessResource — was missing entirely (every
   // consumer read it off an `any`-typed object before this migration).
   boost?: {

@@ -57,6 +57,14 @@ const RequestServiceModal = dynamic(
 
 const HOW_IT_WORKS_KEY = "lemonade:business-quote-how-it-works";
 
+// What the owner is told while their business is not live.
+const STATUS_NOTICE: Record<string, string> = {
+  PENDING: "Your business is waiting for approval. It will show in listings once approved.",
+  REJECTED: "Your business wasn't approved.",
+  SUSPENDED: "Your business is suspended and hidden from listings.",
+  INACTIVE: "Your business is inactive and hidden from listings.",
+};
+
 const BusinessDetailsClient = ({ id }: { id: number }) => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -278,6 +286,18 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                 )}
               </div>
 
+              {business?.owner && business.status && STATUS_NOTICE[business.status] && (
+                <div
+                  role="status"
+                  className="laptop:w-160 bg-purple-tint-1 text-body-s w-full rounded-xl p-4"
+                >
+                  <p className="font-semibold">{STATUS_NOTICE[business.status]}</p>
+                  {business.status === "REJECTED" && business.rejection_reason && (
+                    <p className="text-text-grey mt-1">Reason: {business.rejection_reason}</p>
+                  )}
+                </div>
+              )}
+
               {business?.owner ? (
                 <div className="mt-6 flex items-center justify-center gap-8">
                   <Link href={routes.BUSINESS_JOBS(id)}>
@@ -288,7 +308,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                       <p className="font-semi-normal text-text-grey text-meta font-sans">Jobs</p>
                     </div>
                   </Link>
-                  {business.hasBoost ? (
+                  {business.status && business.status !== "ACTIVE" ? null : business.hasBoost ? (
                     <div
                       className="flex cursor-pointer flex-col items-center gap-2"
                       onClick={toggleBoostDetails}
