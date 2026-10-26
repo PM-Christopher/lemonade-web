@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { PaperclipIcon } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { settingsKeys } from "@/features/settings/queries";
 import dayjs from "dayjs";
@@ -12,7 +13,13 @@ import { useAppDispatch } from "@/redux/hook";
 import type { RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useSupportMessagesQuery } from "@/features/settings/queries";
-import { useSendSupportMessageMutation } from "@/features/settings/mutations";
+import type { SupportMessage } from "@/features/settings/api";
+import {
+  useSendSupportMessageMutation,
+  useUploadSupportMediaMutation,
+} from "@/features/settings/mutations";
+import { AttachmentTray } from "@/components/support/AttachmentTray";
+import { ACCEPTED_TYPES, MAX_ATTACHMENTS, addAttachments } from "@/components/support/attachments";
 
 // The conversation between the user and the Lemonade support team.
 const SupportClient = () => {
@@ -20,7 +27,10 @@ const SupportClient = () => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data } = useSupportMessagesQuery({ enabled: isLoggedIn });
   const sendMutation = useSendSupportMessageMutation();
+  const uploadMutation = useUploadSupportMediaMutation();
   const [text, setText] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInput = useRef<HTMLInputElement | null>(null);
   const messages = data?.messages ?? [];
   const queryClient = useQueryClient();
 
@@ -29,20 +39,42 @@ const SupportClient = () => {
     if (data) queryClient.invalidateQueries({ queryKey: settingsKeys.supportUnread() });
   }, [data, queryClient]);
 
+  const busy = uploadMutation.isPending || sendMutation.isPending;
+  const canSend = (text.trim() !== "" || files.length > 0) && !busy;
+
+  const showError = (message: string) =>
+    dispatch(updateToastifyReducer({ show: true, message, type: "error" }));
+
+  const fail = (error: unknown) => showError(errorMessage(error, "Couldn't send your message."));
+
+  const sent = () => {
+    setText("");
+    setFiles([]);
+  };
+
+  // Uploads the picked files first, then sends them with the text in one message.
   const send = () => {
     const message = text.trim();
-    if (!message || sendMutation.isPending) return;
-    sendMutation.mutate(message, {
-      onSuccess: () => setText(""),
-      onError: (error) =>
-        dispatch(
-          updateToastifyReducer({
-            show: true,
-            message: errorMessage(error, "Couldn't send your message."),
-            type: "error",
-          }),
-        ),
+    if (!canSend) return;
+    const payload = (media?: SupportMessage["media"]) => ({
+      ...(message ? { message } : {}),
+      ...(media?.length ? { media } : {}),
     });
+
+    if (files.length === 0) {
+      sendMutation.mutate(payload(), { onSuccess: sent, onError: fail });
+      return;
+    }
+    uploadMutation.mutate(files, {
+      onSuccess: (media) => sendMutation.mutate(payload(media), { onSuccess: sent, onError: fail }),
+      onError: fail,
+    });
+  };
+
+  const pick = (picked: File[]) => {
+    const { files: next, error } = addAttachments(files, picked);
+    setFiles(next);
+    if (error) showError(error);
   };
 
   return (
@@ -61,23 +93,27 @@ const SupportClient = () => {
                   item.sender === "user" ? "bg-light-tint self-end" : "bg-mid-grey self-start"
                 }`}
               >
-                {item.media.map((media) =>
-                  media.type === "video" ? (
-                    <video
-                      key={media.url}
-                      src={media.url}
-                      controls
-                      className="max-h-60 rounded-lg"
-                    />
-                  ) : (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={media.url}
-                      src={media.url}
-                      alt="Attachment"
-                      className="max-h-60 rounded-lg"
-                    />
-                  ),
+                {item.media.length > 0 && (
+                  <div className={`grid gap-2 ${item.media.length > 1 ? "grid-cols-2" : ""}`}>
+                    {item.media.map((media) =>
+                      media.type === "video" ? (
+                        <video
+                          key={media.url}
+                          src={media.url}
+                          controls
+                          className="max-h-60 rounded-lg"
+                        />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={media.url}
+                          src={media.url}
+                          alt="Attachment"
+                          className="max-h-60 rounded-lg"
+                        />
+                      ),
+                    )}
+                  </div>
                 )}
                 {item.message && (
                   <p className="text-body-s break-words whitespace-pre-wrap">{item.message}</p>
@@ -88,29 +124,57 @@ const SupportClient = () => {
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-3 rounded-xl bg-white p-3">
-            <input
-              aria-label="Message"
-              className="bg-light-grey text-body-s h-11 flex-1 rounded-xl px-3"
-              placeholder="Write a message"
-              value={text}
-              maxLength={2000}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  send();
-                }
-              }}
+          <div className="rounded-xl bg-white">
+            <AttachmentTray
+              files={files}
+              disabled={busy}
+              onRemove={(index) => setFiles((current) => current.filter((_, i) => i !== index))}
             />
-            <button
-              type="button"
-              className="bg-gradient-green h-11 rounded-xl px-5 font-medium text-white disabled:opacity-50"
-              disabled={!text.trim() || sendMutation.isPending}
-              onClick={send}
-            >
-              Send
-            </button>
+            <div className="flex items-center gap-3 p-3">
+              <button
+                type="button"
+                aria-label="Attach pictures or videos"
+                className="text-text-grey cursor-pointer disabled:opacity-50"
+                disabled={busy || files.length >= MAX_ATTACHMENTS}
+                onClick={() => fileInput.current?.click()}
+              >
+                <PaperclipIcon />
+              </button>
+              <input
+                ref={fileInput}
+                type="file"
+                multiple
+                accept={ACCEPTED_TYPES}
+                className="hidden"
+                aria-label="Attachment files"
+                onChange={(e) => {
+                  pick(Array.from(e.target.files ?? []));
+                  e.target.value = "";
+                }}
+              />
+              <input
+                aria-label="Message"
+                className="bg-light-grey text-body-s h-11 flex-1 rounded-xl px-3"
+                placeholder="Write a message"
+                value={text}
+                maxLength={2000}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    send();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="bg-gradient-green h-11 rounded-xl px-5 font-medium text-white disabled:opacity-50"
+                disabled={!canSend}
+                onClick={send}
+              >
+                Send
+              </button>
+            </div>
           </div>
         </div>
       </section>

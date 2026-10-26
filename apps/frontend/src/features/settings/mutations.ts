@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   settingsApi,
   type CreateBankAccountPayload,
+  type SupportMessagePayload,
   type RequestPayoutPayload,
   type RedeemPointsPayload,
 } from "./api";
@@ -49,9 +50,17 @@ export function useSendSupportMessageMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (message: string) => settingsApi.sendSupportMessage(message),
+    mutationFn: (payload: SupportMessagePayload) => settingsApi.sendSupportMessage(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: settingsKeys.support() });
     },
+  });
+}
+
+// Uploads every picked file at once and returns their addresses in the same order.
+export function useUploadSupportMediaMutation() {
+  return useMutation({
+    mutationFn: (files: File[]) =>
+      Promise.all(files.map((file) => settingsApi.uploadSupportMedia(file))),
   });
 }

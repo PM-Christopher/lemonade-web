@@ -75,6 +75,9 @@ export function useSendSupportMessageMutation(id: string | number | undefined) {
   });
 }
 
+// Uploads every picked file at once and returns their addresses in the same order.
 export function useUploadChatMediaMutation() {
-  return useMutation({ mutationFn: (file: File) => userApi.uploadChatMedia(file) });
+  return useMutation({
+    mutationFn: (files: File[]) => Promise.all(files.map((file) => userApi.uploadChatMedia(file))),
+  });
 }

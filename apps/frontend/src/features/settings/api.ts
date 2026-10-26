@@ -2,6 +2,7 @@
 import { browserApi } from "@/lib/browser-api";
 import {
   userProfileRoutes,
+  sharedUtilitiesRoutes,
   userSupportRoutes,
   userWalletRoutes,
 } from "@lemonade/api-types/generated";
@@ -168,6 +169,11 @@ export interface SupportMessage {
   created_at: string;
 }
 
+export interface SupportMessagePayload {
+  message?: string;
+  media?: SupportMessage["media"];
+}
+
 export interface SupportMessagesResponse {
   messages: SupportMessage[];
 }
@@ -177,8 +183,20 @@ export const settingsApi = {
 
   getUnreadSupportCount: () => browserApi.get<{ unread: number }>(userSupportRoutes.UNREAD),
 
-  sendSupportMessage: (message: string) =>
-    browserApi.post<{ new_message: SupportMessage }>(userSupportRoutes.SEND, { message }),
+  sendSupportMessage: (payload: SupportMessagePayload) =>
+    browserApi.post<{ new_message: SupportMessage }>(userSupportRoutes.SEND, payload),
+
+  // Uploads a picture or short video for the chat and returns its address.
+  uploadSupportMedia: async (file: File): Promise<SupportMessage["media"][number]> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const uploaded = await browserApi.post<{ image: string }>(
+      sharedUtilitiesRoutes.UPLOAD,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" }, timeout: 60_000 },
+    );
+    return { type: file.type.startsWith("video/") ? "video" : "image", url: uploaded.image };
+  },
 
   getUserProfile: () => browserApi.get<UserProfile>(userProfileRoutes.SHOW),
 

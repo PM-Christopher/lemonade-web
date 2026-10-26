@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
-import { ImageIcon, MessageSquareTextIcon, SendIcon } from "lucide-react";
+import { MessageSquareTextIcon, PaperclipIcon, SendIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -11,6 +11,8 @@ import {
   useUploadChatMediaMutation,
 } from "@/features/user/mutations";
 import { errorMessage } from "@/lib/api-error";
+import { AttachmentTray } from "./AttachmentTray";
+import { ACCEPTED_TYPES, MAX_ATTACHMENTS, addAttachments } from "./attachments";
 
 interface SavedReply {
   id: string;
@@ -42,6 +44,7 @@ export function SupportChatPanel({
   const sendMutation = useSendSupportMessageMutation(userId);
   const uploadMutation = useUploadChatMediaMutation();
   const [text, setText] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
   const [repliesOpen, setRepliesOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement | null>(null);
   const bottom = useRef<HTMLDivElement | null>(null);
@@ -52,27 +55,42 @@ export function SupportChatPanel({
     bottom.current?.scrollIntoView?.({ block: "end" });
   }, [messages.length, userId]);
 
-  const fail = (error: unknown) =>
-    dispatch(
-      updateToastifyReducer({
-        show: true,
-        message: errorMessage(error, "Couldn't send that message."),
-        type: "error",
-      }),
-    );
+  const showError = (message: string) =>
+    dispatch(updateToastifyReducer({ show: true, message, type: "error" }));
 
-  const send = () => {
-    const message = text.trim();
-    if (!message || sendMutation.isPending) return;
-    sendMutation.mutate({ message }, { onSuccess: () => setText(""), onError: fail });
+  const fail = (error: unknown) => showError(errorMessage(error, "Couldn't send that message."));
+
+  const busy = uploadMutation.isPending || sendMutation.isPending;
+  const canSend = (text.trim() !== "" || files.length > 0) && !busy;
+
+  const sent = () => {
+    setText("");
+    setFiles([]);
   };
 
-  const sendFile = (file: File | undefined) => {
-    if (!file) return;
-    uploadMutation.mutate(file, {
-      onSuccess: (media) => sendMutation.mutate({ media: [media] }, { onError: fail }),
+  // Uploads the picked files first, then sends them with the text in one message.
+  const send = () => {
+    const message = text.trim();
+    if (!canSend) return;
+    const payload = (media?: Array<{ type: "image" | "video"; url: string }>) => ({
+      ...(message ? { message } : {}),
+      ...(media?.length ? { media } : {}),
+    });
+
+    if (files.length === 0) {
+      sendMutation.mutate(payload(), { onSuccess: sent, onError: fail });
+      return;
+    }
+    uploadMutation.mutate(files, {
+      onSuccess: (media) => sendMutation.mutate(payload(media), { onSuccess: sent, onError: fail }),
       onError: fail,
     });
+  };
+
+  const pick = (picked: File[]) => {
+    const { files: next, error } = addAttachments(files, picked);
+    setFiles(next);
+    if (error) showError(error);
   };
 
   return (
@@ -90,18 +108,27 @@ export function SupportChatPanel({
                 mine ? "bg-light-tint self-end" : "bg-mid-grey self-start"
               }`}
             >
-              {item.media.map((media) =>
-                media.type === "video" ? (
-                  <video key={media.url} src={media.url} controls className="max-h-60 rounded-lg" />
-                ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={media.url}
-                    src={media.url}
-                    alt="Attachment"
-                    className="max-h-60 rounded-lg"
-                  />
-                ),
+              {item.media.length > 0 && (
+                <div className={`grid gap-2 ${item.media.length > 1 ? "grid-cols-2" : ""}`}>
+                  {item.media.map((media) =>
+                    media.type === "video" ? (
+                      <video
+                        key={media.url}
+                        src={media.url}
+                        controls
+                        className="max-h-60 rounded-lg"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={media.url}
+                        src={media.url}
+                        alt="Attachment"
+                        className="max-h-60 rounded-lg"
+                      />
+                    ),
+                  )}
+                </div>
               )}
               {item.message && (
                 <p className="text-body-s break-words whitespace-pre-wrap">{item.message}</p>
@@ -132,6 +159,11 @@ export function SupportChatPanel({
           ))}
         </div>
       )}
+      <AttachmentTray
+        files={files}
+        disabled={busy}
+        onRemove={(index) => setFiles((current) => current.filter((_, i) => i !== index))}
+      />
       <div className="flex items-center gap-3 border-t p-4">
         {savedReplies.length > 0 && (
           <button
@@ -162,28 +194,29 @@ export function SupportChatPanel({
           type="button"
           aria-label="Send message"
           className="text-light-green cursor-pointer disabled:opacity-50"
-          disabled={!text.trim() || sendMutation.isPending}
+          disabled={!canSend}
           onClick={send}
         >
           <SendIcon />
         </button>
         <button
           type="button"
-          aria-label="Attach image or video"
+          aria-label="Attach pictures or videos"
           className="text-text-grey cursor-pointer disabled:opacity-50"
-          disabled={uploadMutation.isPending || sendMutation.isPending}
+          disabled={busy || files.length >= MAX_ATTACHMENTS}
           onClick={() => fileInput.current?.click()}
         >
-          <ImageIcon />
+          <PaperclipIcon />
         </button>
         <input
           ref={fileInput}
           type="file"
-          accept="image/png,image/jpeg,video/mp4,video/quicktime,video/webm"
+          multiple
+          accept={ACCEPTED_TYPES}
           className="hidden"
-          aria-label="Attachment file"
+          aria-label="Attachment files"
           onChange={(e) => {
-            sendFile(e.target.files?.[0]);
+            pick(Array.from(e.target.files ?? []));
             e.target.value = "";
           }}
         />
