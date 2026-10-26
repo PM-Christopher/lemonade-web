@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
 import {
@@ -109,5 +109,33 @@ describe("Dialog", () => {
 
     expect(screen.getByRole("dialog", { name: "Legacy panel" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+  });
+});
+
+describe("Dialog stuck page guard", () => {
+  it("clears pointer-events on the page once the last dialog has closed", () => {
+    vi.useFakeTimers();
+    const { rerender } = render(
+      <Dialog open>
+        <DialogContent>
+          <DialogTitle>One</DialogTitle>
+          <DialogDescription>Body</DialogDescription>
+        </DialogContent>
+      </Dialog>,
+    );
+    document.body.style.pointerEvents = "none";
+
+    rerender(
+      <Dialog open={false}>
+        <DialogContent>
+          <DialogTitle>One</DialogTitle>
+          <DialogDescription>Body</DialogDescription>
+        </DialogContent>
+      </Dialog>,
+    );
+    vi.advanceTimersByTime(400);
+
+    expect(document.body.style.pointerEvents).toBe("");
+    vi.useRealTimers();
   });
 });

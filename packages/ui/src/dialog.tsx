@@ -6,7 +6,46 @@ import { X } from "lucide-react";
 
 import { cn } from "./lib/utils";
 
-const Dialog = DialogPrimitive.Root;
+// Radix can leave pointer-events: none on <body> when one dialog closes or unmounts as another opens,
+// which makes the whole page, navbar included, unclickable until a refresh. Once nothing is open, clear it.
+function releaseStuckPointerEvents() {
+  setTimeout(() => {
+    const stillOpen = document.querySelector(
+      '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]',
+    );
+    if (!stillOpen && document.body.style.pointerEvents === "none") {
+      document.body.style.pointerEvents = "";
+    }
+  }, 350);
+}
+
+const Dialog = ({ open, onOpenChange, ...props }: DialogPrimitive.DialogProps) => {
+  const wasOpen = React.useRef(false);
+
+  React.useEffect(() => {
+    if (wasOpen.current && open === false) releaseStuckPointerEvents();
+    wasOpen.current = open === true;
+  }, [open]);
+
+  // Unmounting while open (for example on a page change) skips Radix's own cleanup.
+  React.useEffect(
+    () => () => {
+      if (wasOpen.current) releaseStuckPointerEvents();
+    },
+    [],
+  );
+
+  return (
+    <DialogPrimitive.Root
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) releaseStuckPointerEvents();
+        onOpenChange?.(next);
+      }}
+      {...props}
+    />
+  );
+};
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
