@@ -42,7 +42,6 @@ const CONTENT_TABS: ReadonlyArray<{ type: ModerationContentType; label: string }
   { type: "forum-comments", label: "Forum comments" },
   { type: "threads", label: "Threads" },
   { type: "thread-comments", label: "Thread comments" },
-  { type: "tribe-comments", label: "Tribe comments" },
 ];
 
 function ForumClient() {

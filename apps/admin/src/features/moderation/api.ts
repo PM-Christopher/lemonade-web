@@ -2,8 +2,7 @@
 import { browserApi } from "@/lib/browser-api";
 import { adminModerationRoutes, buildPath } from "@lemonade/api-types/generated";
 
-export type ModerationContentType =
-  "forums" | "forum-comments" | "threads" | "thread-comments" | "tribe-comments";
+export type ModerationContentType = "forums" | "forum-comments" | "threads" | "thread-comments";
 
 export type ForumStatus = "active" | "inactive" | "suspended";
 
