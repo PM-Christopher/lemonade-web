@@ -7,6 +7,7 @@ import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import { formatCountry } from "@lemonade/domain";
 import { formatMinorNaira } from "@/lib/formatNumber";
+import { formatDecimal } from "@/lib/helper";
 
 type BusinessCardIF = {
   business: BusinessInterface;
@@ -41,64 +42,40 @@ const AllBusinessCard: React.FC<BusinessCardIF> = ({ business }) => {
               </div>
               <div>
                 <p className="font-semi-normal text-primary-black text-body-s font-sans">
-                  {business.rating}
+                  {formatDecimal(business.rating ?? 0, 1)}
                 </p>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Section - Services and Price */}
-        {/*<div className="bg-mid-grey p-3 px-4 rounded-bl-xl rounded-br-xl mt-auto">*/}
-        {/*    <div className="flex justify-between items-center gap-2">*/}
-        {/*        <div className="flex gap-2 flex-wrap items-center min-w-0 flex-1">*/}
-        {/*            <div className="py-0.5 px-2 bg-grey-20 rounded-xl flex-shrink-0">*/}
-        {/*                <p className="font-semi-normal text-sm text-text-grey truncate">*/}
-        {/*                    {business.services[0]}*/}
-        {/*                </p>*/}
-        {/*            </div>*/}
-        {/*            {business.services.length > 1 && (*/}
-        {/*                <div className="py-0.5 px-2 bg-grey-20 rounded-xl flex-shrink-0">*/}
-        {/*                    <p className="font-semi-normal text-sm text-text-grey">*/}
-        {/*                        +{business.services.length - 1}*/}
-        {/*                    </p>*/}
-        {/*                </div>*/}
-        {/*            )}*/}
-        {/*        </div>*/}
-        {/*        {business.service_rate && (*/}
-        {/*            <p className="font-semibold text-sm whitespace-nowrap flex-shrink-0">*/}
-        {/*                N {formatNumberWithCommas(business.service_rate)}/hr*/}
-        {/*            </p>*/}
-        {/*        )}*/}
-        {/*    </div>*/}
-        {/*</div>*/}
-
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+      {/* Bottom section: services and hourly rate; left out when the business has neither. */}
+      {(business.services?.length > 0 || business.service_rate > 0) && (
+        <div className="bg-mid-grey mt-auto flex items-center justify-between gap-2 rounded-b-xl p-3 px-4">
           {business.services?.length > 0 && (
-            <>
-              <div className="bg-grey-20 flex-shrink-0 rounded-xl px-2 py-0.5">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              <div className="bg-grey-20 max-w-full rounded-xl px-2 py-0.5">
                 <p className="font-semi-normal text-text-grey truncate text-sm">
                   {business.services[0]}
                 </p>
               </div>
               {business.services.length > 1 && (
-                <div className="bg-grey-20 flex-shrink-0 rounded-xl px-2 py-0.5">
+                <div className="bg-grey-20 shrink-0 rounded-xl px-2 py-0.5">
                   <p className="font-semi-normal text-text-grey text-sm">
-                    {"+" + (business.services.length - 1)}
+                    +{business.services.length - 1}
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
-
-          {/* ...existing service_rate code... */}
-          {business.service_rate && (
-            <p className="flex-shrink-0 text-sm font-semibold whitespace-nowrap">
-              {formatMinorNaira(business.service_rate) + "/hr"}
+          {business.service_rate > 0 && (
+            <p className="ml-auto shrink-0 text-sm font-semibold whitespace-nowrap">
+              {formatMinorNaira(business.service_rate)}/hr
             </p>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

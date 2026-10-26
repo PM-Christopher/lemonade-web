@@ -33,7 +33,8 @@ const DeleteBusinessModal: React.FC<DeleteBusinessInterface> = ({
           </button>
         </div>
         <p className="text-body-s mt-4 font-normal">
-          Are you sure you want to delete your business?
+          Are you sure you want to delete your business? It will no longer show in listings. Jobs in
+          progress must be finished first.
         </p>
         <div className="mt-6 flex gap-2">
           <Button

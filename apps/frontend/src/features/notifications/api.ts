@@ -18,6 +18,8 @@ export interface NotificationMeta {
   user_id?: string;
   business_id?: string;
   service_request_id?: string;
+  job_id?: string;
+  role?: "owner" | "client";
   from_username?: string;
   created_at?: string;
   event_image?: string;

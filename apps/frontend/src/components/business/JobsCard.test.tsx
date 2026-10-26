@@ -7,6 +7,7 @@ const getJob = vi.fn();
 vi.mock("@/features/business/mutations", () => ({
   useGetJobMutation: () => ({ mutate: getJob, isPending: false }),
 }));
+vi.mock("@/features/business/useOpenJobFromLink", () => ({ useOpenJobFromLink: vi.fn() }));
 vi.mock("@/redux/hook", () => ({ useAppDispatch: () => vi.fn() }));
 vi.mock("react-redux", () => ({ useSelector: () => ({ selectedJob: null }) }));
 vi.mock("next/dynamic", () => ({ default: () => () => null }));
@@ -56,5 +57,16 @@ describe("JobsCard", () => {
     fireEvent.click(screen.getByText("Sparkle Cleaners"));
 
     expect(getJob).toHaveBeenCalledWith({ id: "job-uuid-1", type }, expect.any(Object));
+  });
+
+  it("tells the client an accepted job is waiting for their payment, and the owner it awaits payment", () => {
+    const accepted = (is_owner: boolean) => ({ ...job(is_owner), status: "ACCEPTED" });
+
+    const { unmount } = render(<JobsCard type="business" jobs={[accepted(false)]} />);
+    expect(screen.getByText("Pay to start")).toBeTruthy();
+    unmount();
+
+    render(<JobsCard type="listing" jobs={[accepted(true)]} />);
+    expect(screen.getByText("Awaiting payment")).toBeTruthy();
   });
 });

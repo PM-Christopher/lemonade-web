@@ -367,6 +367,31 @@ const TopNav = () => {
                   </Button>
                 )}
 
+              {selectedNotification?.type === "job" && selectedNotification.meta?.job_id && (
+                <Button asChild className="bg-gradient-green w-full">
+                  <Link
+                    href={
+                      selectedNotification.meta.role === "owner" &&
+                      selectedNotification.meta.business_id
+                        ? routes.BUSINESS_OWNER_JOB(
+                            selectedNotification.meta.business_id,
+                            selectedNotification.meta.job_id,
+                          )
+                        : routes.BUSINESS_JOB(selectedNotification.meta.job_id)
+                    }
+                    onClick={() => {
+                      setOpenDetailModal(false);
+                      setOpenNotifications(false);
+                    }}
+                  >
+                    {selectedNotification.meta.role === "client" &&
+                    selectedNotification.meta.status === "ACCEPTED"
+                      ? "Make payment"
+                      : "View job"}
+                  </Link>
+                </Button>
+              )}
+
               {selectedNotification?.type === "business" &&
                 selectedNotification.meta?.business_id && (
                   <Button asChild className="bg-gradient-green w-full">

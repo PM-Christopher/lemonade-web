@@ -33,6 +33,9 @@ export const routes = {
   BUSINESS_EDIT: (id: string | number) => `/business/${id}/edit-business` as const,
   BUSINESS_BOOST: (id: string | number) => `/business/${id}/boost-business` as const,
   BUSINESS_JOBS: (id: string | number) => `/business/${id}/jobs` as const,
+  BUSINESS_JOB: (jobId: string | number) => `/business?job=${jobId}` as const,
+  BUSINESS_OWNER_JOB: (businessId: string | number, jobId: string | number) =>
+    `/business/${businessId}/jobs?job=${jobId}` as const,
   BUSINESS_SENT_OFFERS: (id: string | number) => `/business/${id}/jobs?tab=sent-offers` as const,
 
   CONNECT: "/connect",

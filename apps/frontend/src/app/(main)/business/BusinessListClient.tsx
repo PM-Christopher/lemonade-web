@@ -18,6 +18,7 @@ import useDebounce from "@/hooks/useDebounce";
 import type { BusinessFilterInput } from "@/features/business/schema";
 import { usePersistentMenuState } from "@/context/MenuStateProvider";
 import dynamic from "next/dynamic";
+import { useOpenJobFromLink } from "@/features/business/useOpenJobFromLink";
 
 // Off the initial bundle — only needed once a service card is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -98,6 +99,9 @@ const BusinessListClient = () => {
     setItServiceOpen(!isServiceOpen);
   };
 
+  // A notification link such as /business?job=... opens that job.
+  useOpenJobFromLink("business", () => setItServiceOpen(true));
+
   const renderView = () => {
     switch (menuOption) {
       case "business":
@@ -167,7 +171,7 @@ const BusinessListClient = () => {
           isOpen={isOpen}
           detailsToggle={toggleServiceDetailsMenu}
         />
-        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between gap-2 border-t border-b bg-white p-5 px-10">
+        <div className="laptop:flex-row laptop:items-center flex flex-col justify-between gap-2 bg-white p-5 px-10">
           <div className="bg-mid-grey relative inline-flex rounded-xl p-[0.35em] text-sm sm:text-base">
             {/* Sliding pill */}
             <span

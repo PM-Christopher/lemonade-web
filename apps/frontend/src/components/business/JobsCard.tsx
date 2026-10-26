@@ -14,6 +14,7 @@ import { setSelectedJob } from "@/redux/tempSlice";
 import { RootState } from "@/redux/store";
 import dynamic from "next/dynamic";
 import type { ServiceRequestJob } from "@/features/business/api";
+import { useOpenJobFromLink } from "@/features/business/useOpenJobFromLink";
 
 // Off the initial bundle — only needed once a job row is clicked
 // (docs/ARCHITECTURE.md Phase 6, "lazy-load heavy leaf UI").
@@ -21,6 +22,14 @@ const ServiceDetailsModal = dynamic(
   () => import("@/components/business/Modals/ServiceDetailsModal"),
   { ssr: false },
 );
+
+// A short hint on the row so the next step is clear without opening the job.
+const rowHint = (job: ServiceRequestJob): string | null => {
+  if (job.status === "ACCEPTED") return job.is_owner ? "Awaiting payment" : "Pay to start";
+  if (job.status === "IN_DISPUTE") return "In dispute";
+  if (job.status === "COMPLETED" && !job.is_owner) return "Rate business";
+  return null;
+};
 
 type JobCardInterface = {
   jobs: ServiceRequestJob[];
@@ -38,6 +47,9 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
   const detailsToggle = () => {
     setIsOpen(!isOpen);
   };
+
+  // A notification link such as .../jobs?job=... opens that job for the owner.
+  useOpenJobFromLink("listing", () => setIsOpen(true), type === "listing");
 
   const fetchJob = (job: ServiceRequestJob) => {
     const businessType = job.is_owner ? "listing" : "business";
@@ -87,7 +99,14 @@ const JobsCard: React.FC<JobCardInterface> = ({ jobs, type, toggleMenu }) => {
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="text-text-grey" />
+                  <div className="flex items-center gap-2">
+                    {rowHint(job) && (
+                      <span className="bg-warning text-warning-bold text-meta rounded-full px-2 py-0.5 leading-normal font-medium">
+                        {rowHint(job)}
+                      </span>
+                    )}
+                    <ChevronRight className="text-text-grey" />
+                  </div>
                 </div>
 
                 {/* Bottom Row: Services + Amount */}

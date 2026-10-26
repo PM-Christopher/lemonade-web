@@ -449,7 +449,22 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                           </p>
                           <p className="flex items-center gap-2">
                             <WebIcon className="h-4 w-4 shrink-0" />
-                            {business.website_url}
+                            {business.website_url ? (
+                              <a
+                                href={
+                                  business.website_url.startsWith("http")
+                                    ? business.website_url
+                                    : `https://${business.website_url}`
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-light-green break-all underline"
+                              >
+                                {business.website_url}
+                              </a>
+                            ) : (
+                              "N/A"
+                            )}
                           </p>
                         </div>
                       </>
