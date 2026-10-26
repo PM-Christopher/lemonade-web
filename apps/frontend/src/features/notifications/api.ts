@@ -16,6 +16,8 @@ export interface NotificationMeta {
   message?: string;
   invite_message?: string;
   user_id?: string;
+  business_id?: string;
+  service_request_id?: string;
   from_username?: string;
   created_at?: string;
   event_image?: string;

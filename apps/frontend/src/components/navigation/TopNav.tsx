@@ -352,6 +352,36 @@ const TopNav = () => {
                 </div>
               )}
 
+              {selectedNotification?.type === "service" &&
+                selectedNotification.meta?.business_id && (
+                  <Button asChild className="bg-gradient-green w-full">
+                    <Link
+                      href={routes.BUSINESS_SENT_OFFERS(selectedNotification.meta.business_id)}
+                      onClick={() => {
+                        setOpenDetailModal(false);
+                        setOpenNotifications(false);
+                      }}
+                    >
+                      View sent offers
+                    </Link>
+                  </Button>
+                )}
+
+              {selectedNotification?.type === "business" &&
+                selectedNotification.meta?.business_id && (
+                  <Button asChild className="bg-gradient-green w-full">
+                    <Link
+                      href={routes.BUSINESS_DETAIL(selectedNotification.meta.business_id)}
+                      onClick={() => {
+                        setOpenDetailModal(false);
+                        setOpenNotifications(false);
+                      }}
+                    >
+                      View business
+                    </Link>
+                  </Button>
+                )}
+
               {selectedNotification?.type === "event" && (
                 <div className="space-y-2 rounded-md border p-3">
                   <p className="font-semibold">Event Details</p>

@@ -7,6 +7,7 @@ import { ChevronDown, ChevronRight, RocketIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { AvatarName } from "@/components/global/AvatarName";
+import { ImageLightbox } from "@/components/global/ImageLightbox";
 import { useBusinessDetailQuery } from "@/features/businesses/queries";
 import type { ServiceJobRow } from "@/features/businesses/api";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -67,6 +68,7 @@ function BusinessDetailsClient({ id }: { id: string }) {
   const summary = data?.summary;
 
   const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
   const [reactivateModalOpen, setReactivateModalOpen] = useState(false);
@@ -217,14 +219,21 @@ function BusinessDetailsClient({ id }: { id: string }) {
               </span>
             )}
             {business?.image && (
-              <Image
-                unoptimized
-                src={business.image}
-                alt={business.name}
-                width={56}
-                height={56}
-                className="h-14 w-14 rounded-xl object-cover"
-              />
+              <button
+                type="button"
+                aria-label="View logo larger"
+                className="cursor-zoom-in"
+                onClick={() => setPreviewImage(business.image ?? null)}
+              >
+                <Image
+                  unoptimized
+                  src={business.image}
+                  alt={business.name}
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 rounded-xl object-cover"
+                />
+              </button>
             )}
             <p className="text-body-l font-semibold">{business?.name}</p>
             <p className="text-text-grey text-body-s">
@@ -279,16 +288,23 @@ function BusinessDetailsClient({ id }: { id: string }) {
               <div className="border-t pt-5">
                 <p className="text-body-l font-semibold">Portfolio Gallery</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {business.gallery.map((src) => (
-                    <Image
+                  {business.gallery.map((src, index) => (
+                    <button
                       key={src}
-                      unoptimized
-                      src={src}
-                      alt={business.name}
-                      width={160}
-                      height={160}
-                      className="h-40 w-40 rounded-lg object-cover"
-                    />
+                      type="button"
+                      aria-label={`View gallery image ${index + 1} larger`}
+                      className="cursor-zoom-in"
+                      onClick={() => setPreviewImage(src)}
+                    >
+                      <Image
+                        unoptimized
+                        src={src}
+                        alt={business.name}
+                        width={160}
+                        height={160}
+                        className="h-40 w-40 rounded-lg object-cover"
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -296,6 +312,11 @@ function BusinessDetailsClient({ id }: { id: string }) {
           </div>
         </div>
       </section>
+      <ImageLightbox
+        src={previewImage}
+        alt={business?.name ?? "Business image"}
+        onClose={() => setPreviewImage(null)}
+      />
       <ApproveModal isOpen={approveModalOpen} toggle={() => setApproveModalOpen(false)} id={id} />
       <RejectModal isOpen={rejectModalOpen} toggle={() => setRejectModalOpen(false)} id={id} />
       <SuspendModal isOpen={suspendModalOpen} toggle={() => setSuspendModalOpen(false)} id={id} />

@@ -1,6 +1,7 @@
 "use client";
 import { useNavigation } from "@/hooks/useNavigation";
 import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import ChevronRight from "@/images/icons/chevronRight.svg";
 import JobsCard from "@/components/business/JobsCard";
@@ -12,9 +13,15 @@ import MainLayout from "@/components/layouts/MainLayout";
 import HowItWorksModal from "@/components/business/Modals/HowItWorksModal";
 import InfoIcon from "@/images/icons/infoIcon.svg";
 
+const JOB_TABS = ["in-progress", "completed", "sent-offers"];
+
 const JobsClient = ({ id }: { id: number }) => {
   const { back } = useNavigation();
-  const [jobType, setJobType] = useState("in-progress");
+  // A link such as ?tab=sent-offers opens that tab first.
+  const requestedTab = useSearchParams().get("tab") ?? "";
+  const [jobType, setJobType] = useState(
+    JOB_TABS.includes(requestedTab) ? requestedTab : "in-progress",
+  );
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
 
   const renderCards = () => {

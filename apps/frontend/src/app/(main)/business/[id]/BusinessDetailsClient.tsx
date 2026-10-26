@@ -29,6 +29,7 @@ import { useSearchParams } from "next/navigation";
 import VerifyBoost from "@/components/business/Modals/VerifyBoost";
 import BoostDetailsModal, { type Boost } from "@/components/business/Modals/BoostDetailsModal";
 import MainLayout from "@/components/layouts/MainLayout";
+import { ImageLightbox } from "@/components/connect/ImageLightbox";
 
 import { businessButtons } from "@/lib/constant";
 import { useQueryClient } from "@tanstack/react-query";
@@ -81,6 +82,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
   const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const deleteMutation = useDeleteListingMutation(id);
   const writeReviewMutation = useWriteBusinessReviewMutation(id);
 
@@ -225,14 +227,22 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
               >
                 <div className="flex flex-col">
                   <div className="flex justify-center">
-                    <FallbackImage
-                      src={business?.image}
-                      fallbackSrc={images.BUSINESS_JOB_LOGO}
-                      alt="logo"
-                      className="border-step-color h-16 w-16 rounded-2xl border object-cover"
-                      width={64}
-                      height={64}
-                    />
+                    <button
+                      type="button"
+                      aria-label="View logo larger"
+                      disabled={!business?.image}
+                      className="cursor-zoom-in disabled:cursor-default"
+                      onClick={() => business?.image && setPreviewImage(business.image)}
+                    >
+                      <FallbackImage
+                        src={business?.image}
+                        fallbackSrc={images.BUSINESS_JOB_LOGO}
+                        alt="logo"
+                        className="border-step-color h-16 w-16 rounded-2xl border object-cover"
+                        width={64}
+                        height={64}
+                      />
+                    </button>
                   </div>
                   <div className="mt-2 flex flex-col justify-center">
                     <p className="text-body-l text-center font-semibold">{business?.name}</p>
@@ -458,9 +468,12 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                     <p className="text-body-l font-semibold">Portfolio Gallery</p>
                     <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                       {business?.gallery?.map((item: string, index: number) => (
-                        <div
+                        <button
+                          type="button"
                           key={index}
-                          className="group relative overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-all duration-300 hover:shadow-md"
+                          aria-label={`View gallery image ${index + 1} larger`}
+                          onClick={() => setPreviewImage(item)}
+                          className="group relative cursor-zoom-in overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-all duration-300 hover:shadow-md"
                         >
                           <Image
                             src={item}
@@ -471,7 +484,7 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                           />
                           {/* Optional hover overlay */}
                           <div className="absolute inset-0 rounded-xl bg-black/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                        </div>
+                        </button>
                       ))}
                     </div>
 
@@ -542,6 +555,11 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
             </>
           )}
         </section>
+        <ImageLightbox
+          src={previewImage}
+          alt={business?.name ?? "Business image"}
+          onClose={() => setPreviewImage(null)}
+        />
         <VerifyBoost boost={boost} isOpen={isVerifyBoost} toggleMenu={toggleVerifyBoost} />
         <ReviewModal
           isOpen={isOpen}

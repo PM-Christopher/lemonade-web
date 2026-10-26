@@ -5,7 +5,7 @@ import Image from "next/image";
 import DotIcon from "@/images/icons/dot.svg";
 import medal from "@/images/icons/medal.png";
 import { BusinessInterface } from "@/interfaces/BusinessInterface";
-import { formatNumber, formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatMinorNaira, formatNumber } from "@/lib/formatNumber";
 import { formatCountry } from "@lemonade/domain";
 
 type BusinessIF = {
@@ -57,23 +57,25 @@ const BusinessCard: React.FC<BusinessIF> = ({ business }) => {
         </div>
 
         <div className="mt-2 flex items-center justify-between gap-2">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <div className="bg-grey-20 max-w-full rounded-full p-2 px-3">
-              <p className="font-semi-normal text-text-grey text-label truncate font-sans">
-                {business.services[0]}
-              </p>
-            </div>
-            {business.services.length > 1 && (
-              <div className="bg-grey-20 shrink-0 rounded-full p-2 px-3">
-                <p className="font-semi-normal text-text-grey text-label font-sans">
-                  +{business.services.length}
+          {business.services?.length > 0 && (
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              <div className="bg-grey-20 max-w-full rounded-full p-2 px-3">
+                <p className="font-semi-normal text-text-grey text-label truncate font-sans">
+                  {business.services[0]}
                 </p>
               </div>
-            )}
-          </div>
+              {business.services.length > 1 && (
+                <div className="bg-grey-20 shrink-0 rounded-full p-2 px-3">
+                  <p className="font-semi-normal text-text-grey text-label font-sans">
+                    +{business.services.length - 1}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
-          <p className="text-body-l shrink-0 font-sans font-semibold whitespace-nowrap">
-            ₦{formatNumberWithCommas(business.service_rate)}/hr
+          <p className="text-body-l ml-auto shrink-0 font-sans font-semibold whitespace-nowrap">
+            {formatMinorNaira(business.service_rate)}/hr
           </p>
         </div>
       </div>

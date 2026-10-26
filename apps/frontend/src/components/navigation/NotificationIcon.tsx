@@ -9,6 +9,7 @@ const KINDS: Record<string, NotificationIconKind> = {
   tribe: "chat",
   event: "calendar",
   business: "briefcase",
+  service: "briefcase",
   job: "briefcase",
   report: "flag",
 };

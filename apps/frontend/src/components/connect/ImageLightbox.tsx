@@ -6,10 +6,11 @@ import { Dialog, DialogContentBare, DialogTitle } from "@lemonade/ui";
 interface ImageLightboxProps {
   src: string | null;
   onClose: () => void;
+  alt?: string;
 }
 
-// Full-size view of a chat image.
-export const ImageLightbox = ({ src, onClose }: ImageLightboxProps) => (
+// Full-size view of a picture.
+export const ImageLightbox = ({ src, onClose, alt = "Chat image" }: ImageLightboxProps) => (
   <Dialog open={Boolean(src)} onOpenChange={(open) => !open && onClose()}>
     <DialogContentBare className="w-fit max-w-[95vw] gap-0 border-0 bg-transparent p-0 shadow-none">
       <DialogTitle className="sr-only">Image preview</DialogTitle>
@@ -24,7 +25,7 @@ export const ImageLightbox = ({ src, onClose }: ImageLightboxProps) => (
       {src && (
         <Image
           src={src}
-          alt="Chat image"
+          alt={alt}
           width={1200}
           height={1200}
           className="h-auto max-h-[85vh] w-auto max-w-[95vw] rounded-lg object-contain"
