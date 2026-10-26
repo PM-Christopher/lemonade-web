@@ -90,7 +90,7 @@ const CancelSection = ({}) => {
           )}
         </div>
         <div className="flex items-center justify-between">
-          <p className="font-semi-normal text-black-light text-body-s">Ticket sales commission</p>
+          <p className="font-semi-normal text-black-light text-body-s">Ticket commission</p>
           {subscription?.benefits?.sales_commission === 0 ? (
             <p className="font-semi-normal text-text-grey text-body-s">None</p>
           ) : (

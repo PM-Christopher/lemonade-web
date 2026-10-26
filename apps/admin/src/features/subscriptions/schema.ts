@@ -40,7 +40,7 @@ export const planSchema = z
     tribe_limit: z.string().trim(),
     thread_limit: z.string().trim(),
     business_limit: z.string().trim(),
-    sales_commission: wholeNumber("Sales commission", 100),
+    sales_commission: wholeNumber("Ticket commission", 100),
     service_commission: wholeNumber("Service commission", 100),
     connection_range: planType("connection range"),
     offline_benefits: z.boolean(),

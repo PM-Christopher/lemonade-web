@@ -61,7 +61,7 @@ const VerifiedSubscriptionModal: React.FC<VerifiedSuccessProps> = ({ isOpen, tog
     },
     {
       icon: TicketIcon,
-      label: "Ticket sales commission",
+      label: "Ticket commission",
       value:
         subscription?.sales_commission === 0 ? "None" : `${subscription?.sales_commission ?? 0}%`,
     },

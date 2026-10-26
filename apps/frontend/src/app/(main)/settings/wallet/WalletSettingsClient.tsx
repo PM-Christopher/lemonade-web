@@ -177,7 +177,8 @@ function WalletSettingsClient() {
               {data?.payout_request && (
                 <div className="bg-light-tint mt-6 flex flex-col rounded-xl p-4">
                   <p className="text-light-black text-body-l font-normal">
-                    Commission payouts are available when you&apos;ve earned over ₦100,000
+                    Commission payouts are available when you&apos;ve earned over ₦
+                    {formatNumberWithCommas(Number(data?.withdrawal_threshold) || 0)}
                   </p>
                   <Button
                     className={`bg-gradient-green mt-4 h-12 w-fit rounded-xl p-3.5 px-12 ${

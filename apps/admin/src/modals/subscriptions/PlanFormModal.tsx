@@ -372,7 +372,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                     htmlFor="sales_commission"
                     className="text-text-grey text-body-s font-sans font-normal"
                   >
-                    Sales commission (%)
+                    Ticket commission (%)
                   </Label>
                   <Controller
                     name="sales_commission"

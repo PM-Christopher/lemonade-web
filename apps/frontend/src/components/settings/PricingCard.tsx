@@ -135,7 +135,7 @@ const PricingCard: React.FC<PricingInterface> = ({
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <TicketIcon />
-              <p className="font-semi-normal text-body-s">Ticket sales commission</p>
+              <p className="font-semi-normal text-body-s">Ticket commission</p>
             </div>
             {Number(subscription?.sales_commission) === 0 ? (
               <p className="font-semi-normal text-text-grey text-body-s">None</p>
