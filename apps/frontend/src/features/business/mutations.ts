@@ -6,6 +6,7 @@ import {
   type ReviewPayload,
 } from "./api";
 import { businessKeys } from "./queries";
+import type { RequestServiceInput } from "./schema";
 
 export function useCreateListingMutation() {
   const queryClient = useQueryClient();
@@ -39,7 +40,9 @@ export function useBoostListingMutation(id: number | string | undefined) {
 
 export function useRequestServiceMutation(id: number | string) {
   return useMutation({
-    mutationFn: (data: unknown) => businessApi.requestService(id, data),
+    // The form keeps the amount as text; the API takes a number.
+    mutationFn: (data: RequestServiceInput) =>
+      businessApi.requestService(id, { ...data, amount: Number(data.amount.replace(/,/g, "")) }),
   });
 }
 
