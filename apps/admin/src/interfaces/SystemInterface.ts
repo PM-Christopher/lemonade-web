@@ -33,4 +33,6 @@ export interface PlatformStatistics {
   pending_events: number;
   pending_businesses: number;
   open_reports: number;
+  pending_withdrawals: number;
+  open_disputes: number;
 }

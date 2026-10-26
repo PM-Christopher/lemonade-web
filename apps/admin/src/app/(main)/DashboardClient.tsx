@@ -123,6 +123,18 @@ function DashboardClient() {
       link: routes.REPORTING,
     },
     {
+      title: "Pending Withdrawals",
+      value: metrics?.pending_withdrawals || 0,
+      isPrice: false,
+      link: routes.WALLET_MANAGEMENT,
+    },
+    {
+      title: "Open Disputes",
+      value: metrics?.open_disputes || 0,
+      isPrice: false,
+      link: routes.DISPUTES,
+    },
+    {
       title: "Total Promoted Events",
       value: metrics?.total_promoted_events || 0,
       isPrice: false,
