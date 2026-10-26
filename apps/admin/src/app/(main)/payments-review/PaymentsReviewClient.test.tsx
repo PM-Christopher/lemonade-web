@@ -40,7 +40,6 @@ const payment = (id: string, state: "stuck" | "failed") => ({
 const data: PaymentsToReviewResponse = {
   stuck_count: 2,
   failed_count: 1,
-  settled_count: 3,
   successful_count: 7,
   amount_at_risk: "10000.00",
   types: ["tribe"],
@@ -72,17 +71,6 @@ describe("PaymentsReviewClient", () => {
     expect(mutate.mock.calls[0][0]).toBe("p1");
   });
 
-  it("has a Settled tab that asks for settled payments and shows who settled them", () => {
-    render(<PaymentsReviewClient />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Settled" }));
-
-    expect(query).toHaveBeenLastCalledWith(
-      expect.objectContaining({ status: "settled", page: 1 }),
-      expect.anything(),
-    );
-  });
-
   it("has a Successful tab that asks for successful payments and offers no Paystack check on them", () => {
     query.mockReturnValue({
       data: {
@@ -105,14 +93,14 @@ describe("PaymentsReviewClient", () => {
     expect(screen.getByText("7")).toBeInTheDocument();
   });
 
-  it("names the admin who settled a payment", () => {
+  it("names the admin who completed a successful payment", () => {
     query.mockReturnValue({
       data: {
         ...data,
         payments: [
           {
             ...payment("p3", "stuck"),
-            state: "settled",
+            state: "successful",
             status: "success",
             settled_at: "2026-10-21T09:00:00Z",
             settled_by: { id: "a1", name: "Rita Reviewer" },
@@ -124,7 +112,7 @@ describe("PaymentsReviewClient", () => {
     });
     render(<PaymentsReviewClient />);
 
-    expect(screen.getByText(/by Rita Reviewer/)).toBeInTheDocument();
+    expect(screen.getByText(/Completed by Rita Reviewer/)).toBeInTheDocument();
   });
 
   it("filters to stuck payments from the card", () => {

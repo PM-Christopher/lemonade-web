@@ -23,14 +23,12 @@ const TABS = [
   { key: "all", label: "All" },
   { key: "stuck", label: "Stuck" },
   { key: "failed", label: "Failed" },
-  { key: "settled", label: "Settled" },
   { key: "successful", label: "Successful" },
 ] as const;
 
 const STATE_STYLE: Record<PaymentToReview["state"], { label: string; className: string }> = {
   stuck: { label: "Stuck", className: "text-warning-bold bg-orange-50" },
   failed: { label: "Failed", className: "text-red-1 bg-red-50" },
-  settled: { label: "Settled", className: "text-light-green-70 bg-green-tint" },
   successful: { label: "Successful", className: "text-light-green-70 bg-green-tint" },
 };
 
@@ -193,13 +191,6 @@ function PaymentsReviewClient() {
           onClick={() => changeFilter(() => setTab(tab === "failed" ? "all" : "failed"))}
         />
         <StatCard
-          label="Settled payments"
-          value={data?.settled_count ?? 0}
-          hint="Completed from this page"
-          active={tab === "settled"}
-          onClick={() => changeFilter(() => setTab(tab === "settled" ? "all" : "settled"))}
-        />
-        <StatCard
           label="Successful payments"
           value={data?.successful_count ?? 0}
           hint="Every payment that went through"
@@ -285,9 +276,11 @@ function PaymentsReviewClient() {
                           {payment.reason}
                         </p>
                       )}
-                      {payment.state === "settled" && (
+                      {payment.settled_at && (
                         <p className="text-text-grey text-meta mt-1 font-normal">
-                          {payment.settled_by ? `by ${payment.settled_by.name}` : "by an admin"}
+                          {payment.settled_by
+                            ? `Completed by ${payment.settled_by.name}`
+                            : "Completed by an admin"}
                           {payment.settled_at &&
                             `, ${dayjs(payment.settled_at).format("DD MMM, hh:mm A")}`}
                         </p>
@@ -334,11 +327,9 @@ function PaymentsReviewClient() {
                   <td colSpan={HEADERS.length} className="p-10 text-center text-sm text-gray-500">
                     {isLoading
                       ? "Loading..."
-                      : tab === "settled"
-                        ? "No payments have been settled from here yet."
-                        : tab === "successful"
-                          ? "No successful payments yet."
-                          : "Nothing to review. Every payment has finished."}
+                      : tab === "successful"
+                        ? "No successful payments yet."
+                        : "Nothing to review. Every payment has finished."}
                   </td>
                 </tr>
               )}
