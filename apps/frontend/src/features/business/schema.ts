@@ -36,13 +36,20 @@ export const createBusinessSchema = z.object({
   services: z.array(z.string()).min(1, { error: "At least one service is required" }),
   service_rate: optionalServiceRateField,
   gallery: z.array(z.string()),
-  email: emailField,
-  phone_number: z.string().trim().min(1, { error: "Phone number is required" }),
+  // Contact details are all optional; an empty box is sent as nothing.
+  email: z
+    .string()
+    .trim()
+    .refine((value) => value === "" || emailField.safeParse(value).success, {
+      error: "Enter a valid email address",
+    }),
+  phone_number: z.string().trim(),
   website_url: z
     .string()
     .trim()
-    .min(1, { error: "Website url is required" })
-    .url({ error: "Website must be a valid URL" }),
+    .refine((value) => value === "" || z.url().safeParse(value).success, {
+      error: "Website must be a valid URL",
+    }),
 });
 
 export type CreateBusinessInput = z.infer<typeof createBusinessSchema>;

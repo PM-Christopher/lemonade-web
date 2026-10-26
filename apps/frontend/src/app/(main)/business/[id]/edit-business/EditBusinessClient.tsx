@@ -358,7 +358,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                 title="Upload multiple images"
               />
               <p className="text-light-black text-meta mt-12 font-sans font-bold">
-                CONTACT DETAILS
+                CONTACT DETAILS (OPTIONAL)
               </p>
               <div className="grid grid-cols-1">
                 <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
@@ -370,7 +370,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                       id="email"
                       type="text"
                       className="bg-light_grey text-body-s w-full rounded-xl border-0 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
-                      placeholder="Email address"
+                      placeholder="Email address (optional)"
                       {...register("email")}
                     />
                   </div>
@@ -387,7 +387,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                       id="phone_number"
                       type="text"
                       className="bg-light_grey text-body-s w-full rounded-xl border-0 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
-                      placeholder="Phone number"
+                      placeholder="Phone number (optional)"
                       {...register("phone_number")}
                     />
                   </div>
@@ -404,7 +404,7 @@ const EditBusinessClient = ({ id }: { id: number }) => {
                       id="website_url"
                       type="text"
                       className="bg-light_grey text-body-s w-full rounded-xl border-0 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
-                      placeholder="Website URL"
+                      placeholder="Website URL (optional)"
                       {...register("website_url")}
                     />
                   </div>

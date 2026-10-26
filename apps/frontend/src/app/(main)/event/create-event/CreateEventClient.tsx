@@ -29,6 +29,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { getTimeZones } from "@/lib/helper";
 import { routes } from "@/lib/routes";
 import { errorMessage } from "@/lib/api-error";
+import BusinessBankModal from "@/components/business/Modals/BusinessBankModal";
+import { useBankAccountQuery } from "@/features/settings/queries";
 
 interface SocialMediaHandles {
   instagram: string;
@@ -43,6 +45,8 @@ const CreateEventClient = () => {
   const dispatch = useAppDispatch();
   const { push } = useNavigation();
   const [eventType, setEventType] = useState("physical");
+  const { data: bankData } = useBankAccountQuery();
+  const [pendingValues, setPendingValues] = useState<CreateEventDetailsInput | null>(null);
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
     setChecked(!checked);
@@ -99,7 +103,22 @@ const CreateEventClient = () => {
       setValue(field as keyof CreateEventDetailsInput, value as never, { shouldValidate: true }),
   };
 
+  // Ticket money is paid out to a bank account, so ask for one before the first event.
   const onSubmit = (formValues: CreateEventDetailsInput) => {
+    if (bankData && bankData.bank_account === null) {
+      setPendingValues(formValues);
+      return;
+    }
+    continueToTickets(formValues);
+  };
+
+  const onBankSaved = () => {
+    const formValues = pendingValues;
+    setPendingValues(null);
+    if (formValues) continueToTickets(formValues);
+  };
+
+  const continueToTickets = (formValues: CreateEventDetailsInput) => {
     try {
       const filteredSocials = (Object.keys(socials) as Array<keyof SocialMediaHandles>)
         .filter((key) => socials[key])
@@ -159,6 +178,11 @@ const CreateEventClient = () => {
 
   return (
     <MainLayout>
+      <BusinessBankModal
+        isOpen={pendingValues !== null}
+        toggle={() => setPendingValues(null)}
+        onSaved={onBankSaved}
+      />
       <section className="laptop:bg-light_grey bg-white pb-10">
         <div className="flex items-center justify-between bg-white p-3 px-10">
           <div

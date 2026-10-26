@@ -1,7 +1,7 @@
 "use client";
 import { routes } from "@/lib/routes";
 import { useNavigation } from "@/hooks/useNavigation";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
 import { SingleFileUploader } from "@/components/global/FileUploader";
 import { Label, Input, FieldError, RichTextField, MoneyInput } from "@lemonade/ui";
@@ -30,6 +30,7 @@ import BusinessBankModal from "@/components/business/Modals/BusinessBankModal";
 import UpgradePlanCard from "@/components/business/UpgradePlanCard";
 import { useCanListBusiness } from "@/hooks/useCanListBusiness";
 import { useBankAccountQuery } from "@/features/settings/queries";
+import { detectCountryName } from "@/lib/detectCountry";
 
 interface businessCategories {
   value: string;
@@ -50,6 +51,7 @@ const AddBusinessClient = () => {
     handleSubmit,
     control,
     setValue,
+    getValues,
     setError,
     formState: { errors, isValid, isSubmitting },
   } = useForm<CreateBusinessInput>({
@@ -70,6 +72,12 @@ const AddBusinessClient = () => {
     },
     mode: "onTouched",
   });
+
+  // Start with the user's own country; they can still change it.
+  useEffect(() => {
+    const country = detectCountryName();
+    if (country && !getValues("country")) setValue("country", country, { shouldValidate: true });
+  }, [getValues, setValue]);
 
   const services = useWatch({ control, name: "services" });
   const fieldAdapter = {
@@ -372,7 +380,7 @@ const AddBusinessClient = () => {
                 title="Upload multiple images"
               />
               <p className="text-light-black text-meta mt-12 font-sans font-bold">
-                CONTACT DETAILS
+                CONTACT DETAILS (OPTIONAL)
               </p>
               <div className="grid grid-cols-1">
                 <div className="bg-light_grey mt-4 flex items-center gap-3 rounded-xl p-2 px-3">
@@ -384,7 +392,7 @@ const AddBusinessClient = () => {
                       id="email"
                       type="text"
                       className="bg-light_grey text-body-s w-full border-0 pl-1.25 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
-                      placeholder="Email address"
+                      placeholder="Email address (optional)"
                       {...register("email")}
                     />
                   </div>
@@ -401,7 +409,7 @@ const AddBusinessClient = () => {
                       id="phone_number"
                       type="text"
                       className="bg-light_grey text-body-s w-full border-0 pl-1.25 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
-                      placeholder="Phone number"
+                      placeholder="Phone number (optional)"
                       {...register("phone_number")}
                     />
                   </div>
@@ -418,7 +426,7 @@ const AddBusinessClient = () => {
                       id="website_url"
                       type="text"
                       className="bg-light_grey text-body-s w-full border-0 pl-1.25 font-sans focus:border-transparent focus:ring-0 focus:outline-none"
-                      placeholder="Website URL"
+                      placeholder="Website URL (optional)"
                       {...register("website_url")}
                     />
                   </div>

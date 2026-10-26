@@ -362,43 +362,51 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                 </div>
               ) : (
                 <div className="mt-6 flex items-center justify-center gap-8">
-                  <div
-                    className="flex cursor-pointer flex-col items-center gap-2"
-                    onClick={() =>
-                      handleButtonsClick(businessButtons.call, business?.phone_number ?? "")
-                    }
-                  >
-                    <div className="border-grey-20 rounded-2xl border bg-white p-4">
-                      <PhoneIcon />
+                  {business?.phone_number && (
+                    <div
+                      className="flex cursor-pointer flex-col items-center gap-2"
+                      onClick={() =>
+                        handleButtonsClick(businessButtons.call, business?.phone_number ?? "")
+                      }
+                    >
+                      <div className="border-grey-20 rounded-2xl border bg-white p-4">
+                        <PhoneIcon />
+                      </div>
+                      <p className="font-semi-normal text-text-grey text-meta font-sans">Call</p>
                     </div>
-                    <p className="font-semi-normal text-text-grey text-meta font-sans">Call</p>
-                  </div>
-                  <div
-                    className="flex cursor-pointer flex-col items-center gap-2"
-                    onClick={() => handleButtonsClick(businessButtons.email, business?.email ?? "")}
-                  >
-                    <div className="border-grey-20 rounded-2xl border bg-white p-4">
-                      <MessageIcon />
-                    </div>
-                    <p className="font-semi-normal text-text-grey text-meta font-sans">
-                      Send email
-                    </p>
-                  </div>
-                  <div
-                    className="flex cursor-pointer flex-col items-center gap-2"
-                    onClick={() =>
-                      handleButtonsClick(businessButtons.web, business?.website_url ?? "")
-                    }
-                  >
-                    <div className="border-grey-20 rounded-2xl border bg-white p-4">
-                      <WebIcon />
-                    </div>
-                    <div>
+                  )}
+                  {business?.email && (
+                    <div
+                      className="flex cursor-pointer flex-col items-center gap-2"
+                      onClick={() =>
+                        handleButtonsClick(businessButtons.email, business?.email ?? "")
+                      }
+                    >
+                      <div className="border-grey-20 rounded-2xl border bg-white p-4">
+                        <MessageIcon />
+                      </div>
                       <p className="font-semi-normal text-text-grey text-meta font-sans">
-                        Visit Website
+                        Send email
                       </p>
                     </div>
-                  </div>
+                  )}
+                  {business?.website_url && (
+                    <div
+                      className="flex cursor-pointer flex-col items-center gap-2"
+                      onClick={() =>
+                        handleButtonsClick(businessButtons.web, business?.website_url ?? "")
+                      }
+                    >
+                      <div className="border-grey-20 rounded-2xl border bg-white p-4">
+                        <WebIcon />
+                      </div>
+                      <div>
+                        <p className="font-semi-normal text-text-grey text-meta font-sans">
+                          Visit Website
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -434,41 +442,44 @@ const BusinessDetailsClient = ({ id }: { id: number }) => {
                         </span>
                       ))}
                     </p>
-                    {business?.owner && (
-                      <>
-                        <div className="border-t-mid-grey my-6 border-t"></div>
-                        <p className="text-body-l font-semibold">Contact details</p>
-                        <div className="text-body-s mt-3 flex flex-col gap-3">
-                          <p className="flex items-center gap-2">
-                            <MessageIcon className="h-4 w-4 shrink-0" />
-                            {business.email}
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <PhoneIcon className="h-4 w-4 shrink-0" />
-                            {business.phone_number}
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <WebIcon className="h-4 w-4 shrink-0" />
-                            {business.website_url ? (
-                              <a
-                                href={
-                                  business.website_url.startsWith("http")
-                                    ? business.website_url
-                                    : `https://${business.website_url}`
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-light-green break-all underline"
-                              >
-                                {business.website_url}
-                              </a>
-                            ) : (
-                              "N/A"
+                    {business?.owner &&
+                      (business.email || business.phone_number || business.website_url) && (
+                        <>
+                          <div className="border-t-mid-grey my-6 border-t"></div>
+                          <p className="text-body-l font-semibold">Contact details</p>
+                          <div className="text-body-s mt-3 flex flex-col gap-3">
+                            {business.email && (
+                              <p className="flex items-center gap-2">
+                                <MessageIcon className="h-4 w-4 shrink-0" />
+                                {business.email}
+                              </p>
                             )}
-                          </p>
-                        </div>
-                      </>
-                    )}
+                            {business.phone_number && (
+                              <p className="flex items-center gap-2">
+                                <PhoneIcon className="h-4 w-4 shrink-0" />
+                                {business.phone_number}
+                              </p>
+                            )}
+                            {business.website_url && (
+                              <p className="flex items-center gap-2">
+                                <WebIcon className="h-4 w-4 shrink-0" />
+                                <a
+                                  href={
+                                    business.website_url.startsWith("http")
+                                      ? business.website_url
+                                      : `https://${business.website_url}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-light-green break-all underline"
+                                >
+                                  {business.website_url}
+                                </a>
+                              </p>
+                            )}
+                          </div>
+                        </>
+                      )}
                     <div className="border-t-mid-grey my-6 border-t"></div>
                     <p className="text-body-l font-semibold">Services</p>
                     <p className="text-light-black text-body-s mt-3 font-normal">
