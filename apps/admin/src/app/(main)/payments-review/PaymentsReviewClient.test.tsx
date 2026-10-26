@@ -41,6 +41,7 @@ const data: PaymentsToReviewResponse = {
   stuck_count: 2,
   failed_count: 1,
   settled_count: 3,
+  successful_count: 7,
   amount_at_risk: "10000.00",
   types: ["tribe"],
   payments: [payment("p1", "stuck"), payment("p2", "failed")],
@@ -80,6 +81,28 @@ describe("PaymentsReviewClient", () => {
       expect.objectContaining({ status: "settled", page: 1 }),
       expect.anything(),
     );
+  });
+
+  it("has a Successful tab that asks for successful payments and offers no Paystack check on them", () => {
+    query.mockReturnValue({
+      data: {
+        ...data,
+        payments: [{ ...payment("p3", "failed"), status: "success", state: "successful" }],
+      },
+      isLoading: false,
+      isFetching: false,
+    });
+    render(<PaymentsReviewClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Successful" }));
+    expect(query).toHaveBeenLastCalledWith(
+      expect.objectContaining({ status: "successful", page: 1 }),
+      expect.anything(),
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: /^Actions for/ })[0]);
+    expect(screen.queryByRole("menuitem", { name: "Check with Paystack" })).toBeNull();
+    expect(screen.getByText("7")).toBeInTheDocument();
   });
 
   it("names the admin who settled a payment", () => {

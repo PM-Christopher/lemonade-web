@@ -23,12 +23,14 @@ const TABS = [
   { key: "stuck", label: "Stuck" },
   { key: "failed", label: "Failed" },
   { key: "settled", label: "Settled" },
+  { key: "successful", label: "Successful" },
 ] as const;
 
 const STATE_STYLE: Record<PaymentToReview["state"], { label: string; className: string }> = {
   stuck: { label: "Stuck", className: "text-warning-bold bg-orange-50" },
   failed: { label: "Failed", className: "text-red-1 bg-red-50" },
   settled: { label: "Settled", className: "text-light-green-70 bg-green-tint" },
+  successful: { label: "Successful", className: "text-light-green-70 bg-green-tint" },
 };
 
 const HEADERS = ["USER", "TYPE", "AMOUNT", "STARTED", "STATE", "REFERENCE", ""];
@@ -141,7 +143,8 @@ function PaymentsReviewClient() {
           <p className="font-semiBold text-body-l">Payments review</p>
           <p className="text-text-grey text-body-s">
             Payments that never finished. Check one with Paystack to complete it if the money
-            arrived. Settled shows the ones completed from here.
+            arrived. Settled shows the ones completed from here, Successful every payment that went
+            through.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -194,6 +197,13 @@ function PaymentsReviewClient() {
           hint="Completed from this page"
           active={tab === "settled"}
           onClick={() => changeFilter(() => setTab(tab === "settled" ? "all" : "settled"))}
+        />
+        <StatCard
+          label="Successful payments"
+          value={data?.successful_count ?? 0}
+          hint="Every payment that went through"
+          active={tab === "successful"}
+          onClick={() => changeFilter(() => setTab(tab === "successful" ? "all" : "successful"))}
         />
         <StatCard
           label="Amount at risk"
@@ -299,11 +309,16 @@ function PaymentsReviewClient() {
                       <ActionMenu
                         label={`Actions for ${payment.reference.slice(0, 14)}`}
                         items={[
-                          {
-                            label: checkingId === payment.id ? "Checking…" : "Check with Paystack",
-                            disabled: checkingId === payment.id || bulk !== null,
-                            onSelect: () => check(payment),
-                          },
+                          ...(payment.state === "stuck" || payment.state === "failed"
+                            ? [
+                                {
+                                  label:
+                                    checkingId === payment.id ? "Checking…" : "Check with Paystack",
+                                  disabled: checkingId === payment.id || bulk !== null,
+                                  onSelect: () => check(payment),
+                                },
+                              ]
+                            : []),
                           {
                             label: "Copy reference",
                             onSelect: () => void navigator.clipboard?.writeText(payment.reference),
@@ -320,7 +335,9 @@ function PaymentsReviewClient() {
                       ? "Loading..."
                       : tab === "settled"
                         ? "No payments have been settled from here yet."
-                        : "Nothing to review. Every payment has finished."}
+                        : tab === "successful"
+                          ? "No successful payments yet."
+                          : "Nothing to review. Every payment has finished."}
                   </td>
                 </tr>
               )}

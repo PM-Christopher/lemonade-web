@@ -9,8 +9,9 @@ export interface PaymentToReview {
   // Naira, formatted by the backend.
   amount: string;
   status: string;
-  // "stuck" is pending too long, "failed" was declined, "settled" was completed from this page.
-  state: "stuck" | "failed" | "settled";
+  // "stuck" is pending too long, "failed" was declined, "settled" was completed from this page,
+  // "successful" went through on its own.
+  state: "stuck" | "failed" | "settled" | "successful";
   // What Paystack said about it, when it said anything.
   reason: string | null;
   settled_at: string | null;
@@ -32,6 +33,7 @@ export interface PaymentsToReviewResponse {
   stuck_count: number;
   failed_count: number;
   settled_count: number;
+  successful_count: number;
   amount_at_risk: string;
   types: string[];
   payments: PaymentToReview[];
