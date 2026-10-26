@@ -15,6 +15,7 @@ import { useVerifyPaymentMutation } from "@/features/payments/mutations";
 import type { PaymentToReview } from "@/features/payments/api";
 import useDebounce from "@/hooks/useDebounce";
 import { errorMessage } from "@/lib/api-error";
+import { formatCount } from "@/lib/formatNumber";
 import { capitalizeWords } from "@/utils/helper";
 import { naira } from "@/views/transactions/transactionFormat";
 
@@ -58,7 +59,9 @@ function StatCard({
   const body = (
     <>
       <p className="text-text-grey text-body-s font-normal">{label}</p>
-      <p className="text-body-xl mt-2 font-semibold">{value}</p>
+      <p className="text-body-xl mt-2 font-semibold">
+        {typeof value === "number" ? formatCount(value) : value}
+      </p>
       {hint && <p className="text-text-grey text-meta mt-1">{hint}</p>}
     </>
   );
@@ -142,9 +145,7 @@ function PaymentsReviewClient() {
         <div>
           <p className="font-semiBold text-body-l">Payments review</p>
           <p className="text-text-grey text-body-s">
-            Payments that never finished. Check one with Paystack to complete it if the money
-            arrived. Settled shows the ones completed from here, Successful every payment that went
-            through.
+            Review payment statuses and resolve incomplete transactions.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

@@ -7,6 +7,7 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import { centerNumericColumns } from "@/utils/tableAlign";
 import { useNavigation } from "@/hooks/useNavigation";
+import { formatCount } from "@/lib/formatNumber";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,7 +70,7 @@ function StatCard({
     >
       <p className="text-text-grey text-body-s font-normal">{label}</p>
       <p className={`text-body-xl mt-2 font-semibold ${danger && value > 0 ? "text-red-1" : ""}`}>
-        {value}
+        {formatCount(value)}
       </p>
       <p className="text-text-grey text-meta mt-1">{hint}</p>
     </button>

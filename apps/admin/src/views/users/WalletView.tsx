@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { formatNumberWithCommas } from "@/lib/formatNumber";
+import { formatCount } from "@/lib/formatNumber";
+import { naira } from "@/views/transactions/transactionFormat";
 import UpdateBalance from "@/modals/wallet-management/UpdateBalance";
 import TribeHistoryModal from "@/modals/users/TribeHistoryModal";
 import PayoutHistoryModal from "@/modals/users/PayoutHistoryModal";
@@ -106,7 +107,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Total Amount Earned</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
-                ₦{formatNumberWithCommas(userDetail?.total_amount || 0)}
+                {naira(userDetail?.total_amount)}
               </p>
             </div>
             <ChevronRight className={"text-text-grey"} />
@@ -122,7 +123,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Referral Earning</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
-                ₦{formatNumberWithCommas(userDetail?.referral_earning || 0)}
+                {naira(userDetail?.referral_earning)}
               </p>
             </div>
             <ChevronRight className={"text-text-grey"} />
@@ -138,7 +139,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Affiliate Earning</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
-                ₦{formatNumberWithCommas(userDetail?.affiliate_earning || 0)}
+                {naira(userDetail?.affiliate_earning)}
               </p>
             </div>
             <ChevronRight className={"text-text-grey"} />
@@ -152,7 +153,7 @@ const WalletView = ({ userDetail }: { userDetail: AccountInfoResponse | undefine
             <div className={"flex flex-col gap-2"}>
               <p className={"text-text-grey text-body-s font-normal"}>Monetized Tribes</p>
               <p className={"font-semiBold text-black-light text-body-xl"}>
-                ₦{formatNumberWithCommas(userDetail?.monetized_tribes || 0)}
+                {formatCount(userDetail?.monetized_tribes)}
               </p>
             </div>
             <ChevronRight className={"text-text-grey"} />

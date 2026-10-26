@@ -1,4 +1,5 @@
 "use client";
+import { formatCount } from "@/lib/formatNumber";
 import { usePagination } from "@/hooks/usePagination";
 import PaginationComp from "@/components/global/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
@@ -30,7 +31,9 @@ function Card({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex-1 rounded-xl bg-white p-5">
       <p className="text-text-grey text-body-s font-normal">{label}</p>
-      <p className="text-body-xl mt-2 font-semibold">{value}</p>
+      <p className="text-body-xl mt-2 font-semibold">
+        {typeof value === "number" ? formatCount(value) : value}
+      </p>
     </div>
   );
 }
