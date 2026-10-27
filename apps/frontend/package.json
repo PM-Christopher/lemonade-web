@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@bprogress/next": "^3.2.12",
-    "@hookform/resolvers": "^5.9.2",
+    "@hookform/resolvers": "^6.0.0",
     "@lemonade/api-client": "workspace:*",
     "@lemonade/api-types": "workspace:*",
     "@lemonade/domain": "workspace:*",
