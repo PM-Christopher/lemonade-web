@@ -18,6 +18,7 @@ import { errorMessage } from "@/lib/api-error";
 import { formatCount } from "@/lib/formatNumber";
 import { capitalizeWords } from "@/utils/helper";
 import { naira } from "@/views/transactions/transactionFormat";
+import PaymentDetailsModal from "@/modals/payments/PaymentDetailsModal";
 
 const TABS = [
   { key: "all", label: "All" },
@@ -86,6 +87,7 @@ function PaymentsReviewClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [checkingId, setCheckingId] = useState<string | null>(null);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
   const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null);
   const { debouncedValue: search } = useDebounce(searchTerm, 400);
 
@@ -313,6 +315,7 @@ function PaymentsReviewClient() {
                                 },
                               ]
                             : []),
+                          { label: "View details", onSelect: () => setDetailsId(payment.id) },
                           {
                             label: "Copy reference",
                             onSelect: () => void navigator.clipboard?.writeText(payment.reference),
@@ -343,6 +346,7 @@ function PaymentsReviewClient() {
           />
         </div>
       </div>
+      <PaymentDetailsModal id={detailsId} onClose={() => setDetailsId(null)} />
     </section>
   );
 }

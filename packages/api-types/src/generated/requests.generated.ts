@@ -195,9 +195,9 @@ export interface CreateBusinessRequest {
   services: unknown[];
   service_rate?: number;
   gallery?: unknown[];
-  email: string;
-  phone_number: string;
-  website_url: string;
+  email?: string;
+  phone_number?: string;
+  website_url?: string;
   account_number?: string;
   account_name?: string;
   bank_name?: string;
@@ -394,7 +394,7 @@ export interface PageContentRequest {
 }
 
 export interface PaymentsToReviewRequest {
-  status?: "stuck" | "failed" | "settled" | "all";
+  status?: "stuck" | "failed" | "successful" | "all";
   type?: string;
   search?: string;
   page?: number;
@@ -614,8 +614,8 @@ export interface SubscriptionPlanRequest {
   tribe_limit?: number;
   thread_limit?: number;
   business_limit?: number;
-  sales_commission: number;
-  service_commission: number;
+  sales_commission?: number;
+  service_commission?: number;
   connection_range: string;
   offline_benefits: boolean;
   recommended?: boolean;
@@ -632,9 +632,9 @@ export interface UpdateBusinessRequest {
   services: unknown[];
   service_rate?: number;
   gallery: unknown[];
-  email: string;
-  phone_number: string;
-  website_url: string;
+  email?: string;
+  phone_number?: string;
+  website_url?: string;
 }
 
 export interface UpdateConnectVisibilityRequest {

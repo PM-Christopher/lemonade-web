@@ -12,6 +12,18 @@ const links = [
 ];
 const names = (items: PageLink[]) => items.map((item) => item.name);
 
+describe("applyMenuPreferences names", () => {
+  it("uses the admin's own names and keeps the default for the rest", () => {
+    const renamed = applyMenuPreferences(links, {
+      menu_order: [],
+      hidden_menu: [],
+      menu_labels: { "/tribes": " Communities ", "/users": "  " },
+    });
+
+    expect(names(renamed)).toEqual(["Overview", "Communities", "Users", "Events"]);
+  });
+});
+
 describe("applyMenuPreferences", () => {
   it("keeps the default order when nothing is saved", () => {
     expect(names(applyMenuPreferences(links, undefined))).toEqual([

@@ -57,6 +57,7 @@ function PlansViews({ trx_data, page, onPageChange }: ViewProps) {
           title={"Churn Rate"}
           count={trx_data?.churn_rate ?? 0}
           isPercentage={true}
+          hint="Paid plans cancelled or expired, out of all paid plans"
         />
       </div>
       <TransactionTable

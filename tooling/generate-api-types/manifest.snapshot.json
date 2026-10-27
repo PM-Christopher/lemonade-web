@@ -969,7 +969,7 @@
             "status": [
                 "string",
                 "nullable",
-                "in:stuck,failed,settled,all"
+                "in:stuck,failed,successful,all"
             ],
             "type": [
                 "string",
@@ -993,6 +993,14 @@
                 "max:100"
             ]
         }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/payments/{id}",
+        "name": "v1.admin.payments.show",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
     },
     {
         "method": "POST",
@@ -1422,13 +1430,13 @@
             ],
             "sales_commission": [
                 "integer",
-                "required",
+                "nullable",
                 "min:0",
                 "max:100"
             ],
             "service_commission": [
                 "integer",
-                "required",
+                "nullable",
                 "min:0",
                 "max:100"
             ],
@@ -1547,13 +1555,13 @@
             ],
             "sales_commission": [
                 "integer",
-                "required",
+                "nullable",
                 "min:0",
                 "max:100"
             ],
             "service_commission": [
                 "integer",
-                "required",
+                "nullable",
                 "min:0",
                 "max:100"
             ],
@@ -4145,18 +4153,18 @@
                 "nullable"
             ],
             "email": [
+                "nullable",
                 "string",
-                "email",
-                "required"
+                "email"
             ],
             "phone_number": [
-                "string",
-                "required"
+                "nullable",
+                "string"
             ],
             "website_url": [
+                "nullable",
                 "string",
-                "url",
-                "required"
+                "url"
             ],
             "account_number": [
                 "string",
@@ -4299,18 +4307,18 @@
                 "required"
             ],
             "email": [
+                "nullable",
                 "string",
-                "email",
-                "required"
+                "email"
             ],
             "phone_number": [
-                "string",
-                "required"
+                "nullable",
+                "string"
             ],
             "website_url": [
+                "nullable",
                 "string",
-                "url",
-                "required"
+                "url"
             ]
         }
     },

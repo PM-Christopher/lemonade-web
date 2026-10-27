@@ -37,12 +37,21 @@ export function MenuEditor({ allowed, saved }: MenuEditorProps) {
   }).map((link) => link.path);
   const [order, setOrder] = useState<string[]>(initialOrder);
   const [hidden, setHidden] = useState<string[]>(saved.hidden_menu);
+  const [labels, setLabels] = useState<Record<string, string>>(saved.menu_labels ?? {});
   const [dragFrom, setDragFrom] = useState<number | null>(null);
 
   const byPath = new Map(allowed.map((link) => [link.path, link]));
+  // Only names that are filled in and differ from the default are kept.
+  const cleanLabels = Object.fromEntries(
+    Object.entries(labels)
+      .map(([path, label]) => [path, label.trim()] as const)
+      .filter(([path, label]) => label !== "" && label !== byPath.get(path)?.name),
+  );
   const hasChanges =
     JSON.stringify(order) !== JSON.stringify(initialOrder) ||
-    JSON.stringify([...hidden].sort()) !== JSON.stringify([...saved.hidden_menu].sort());
+    JSON.stringify([...hidden].sort()) !== JSON.stringify([...saved.hidden_menu].sort()) ||
+    JSON.stringify(Object.entries(cleanLabels).sort()) !==
+      JSON.stringify(Object.entries(saved.menu_labels ?? {}).sort());
 
   const toast = (message: string, type: "success" | "error") =>
     dispatch(updateToastifyReducer({ show: true, message, type }));
@@ -57,6 +66,7 @@ export function MenuEditor({ allowed, saved }: MenuEditorProps) {
   const reset = () => {
     setOrder(defaultOrder);
     setHidden([]);
+    setLabels({});
   };
 
   const onSave = () =>
@@ -65,6 +75,7 @@ export function MenuEditor({ allowed, saved }: MenuEditorProps) {
       {
         menu_order: JSON.stringify(order) === JSON.stringify(defaultOrder) ? [] : order,
         hidden_menu: hidden,
+        menu_labels: cleanLabels,
       },
       {
         onSuccess: () => toast(apiMessage("Menu saved"), "success"),
@@ -75,8 +86,8 @@ export function MenuEditor({ allowed, saved }: MenuEditorProps) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-text-grey text-body-s">
-        Drag a page to move it, or use the arrows. Hidden pages leave the menu but can still be
-        opened by link.
+        Drag a page to move it, or use the arrows. Type in a name to rename a page, and leave it
+        empty to keep the default. Hidden pages leave the menu but can still be opened by link.
       </p>
       <ul className="flex max-w-xl flex-col gap-2">
         {order.map((path, index) => {
@@ -108,9 +119,17 @@ export function MenuEditor({ allowed, saved }: MenuEditorProps) {
                 className={`h-4 w-4 shrink-0 ${isHidden ? "text-grey-40" : "text-text-grey"}`}
                 aria-hidden="true"
               />
-              <span className={`text-body-s flex-1 ${isHidden ? "text-grey-40 line-through" : ""}`}>
-                {link.name}
-              </span>
+              <input
+                type="text"
+                aria-label={`Name for ${link.name}`}
+                maxLength={40}
+                placeholder={link.name}
+                value={labels[path] ?? ""}
+                onChange={(event) =>
+                  setLabels((current) => ({ ...current, [path]: event.target.value }))
+                }
+                className={`text-body-s focus:bg-light_grey min-w-0 flex-1 rounded-lg bg-transparent px-2 py-1 focus:outline-none ${isHidden ? "text-grey-40 line-through" : ""}`}
+              />
               <button
                 type="button"
                 aria-label={`Move ${link.name} up`}

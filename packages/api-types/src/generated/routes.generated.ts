@@ -117,6 +117,7 @@ export const adminPageContentRoutes = Object.freeze({
 
 export const adminPaymentsRoutes = Object.freeze({
   LIST: "/admin/payments", // GET
+  SHOW: "/admin/payments/{id}", // GET
   VERIFY: "/admin/payments/{id}/verify", // POST
 });
 

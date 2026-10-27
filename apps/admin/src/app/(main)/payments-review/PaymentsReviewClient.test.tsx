@@ -14,8 +14,10 @@ vi.mock("react-redux", () => ({
 vi.mock("@/hooks/useDebounce", () => ({
   default: <T,>(value: T) => ({ debouncedValue: value }),
 }));
+const details = vi.fn();
 vi.mock("@/features/payments/queries", () => ({
   usePaymentsToReviewQuery: (...args: unknown[]) => query(...args),
+  usePaymentDetailsQuery: (...args: unknown[]) => details(...args),
 }));
 vi.mock("@/features/payments/mutations", () => ({
   useVerifyPaymentMutation: () => ({ mutate, mutateAsync: vi.fn(), isPending: false }),
@@ -52,6 +54,8 @@ describe("PaymentsReviewClient", () => {
     query.mockReset();
     mutate.mockReset();
     query.mockReturnValue({ data, isLoading: false, isFetching: false });
+    details.mockReset();
+    details.mockReturnValue({ data: undefined, isLoading: false, isError: false });
   });
 
   it("shows the totals and how long each payment has been waiting", () => {
@@ -135,5 +139,56 @@ describe("PaymentsReviewClient", () => {
     render(<PaymentsReviewClient />);
 
     expect(screen.getByText(/Nothing to review/)).toBeInTheDocument();
+  });
+
+  it("opens a details view with what the payment was for, the gateway reply and the ledger", () => {
+    details.mockReturnValue({
+      data: {
+        payment: {
+          id: "p1",
+          reference: "LMN_REF_p1_ABCDEFGH",
+          status: "success",
+          type: "subscription",
+          provider: "paystack",
+          channel: "card",
+          currency: "NGN",
+          amount: "5000.00",
+          created_at: "2026-10-20T10:00:00Z",
+          paid_at: "2026-10-20T10:01:00Z",
+          refunded_at: null,
+          refund_reference: null,
+          settled_at: null,
+          settled_by: null,
+          user: { id: "u1", name: "Ada Okafor", email: "ada@example.com" },
+          for: "Membership plan (monthly)",
+          gateway: {
+            status: "success",
+            message: "Successful",
+            transaction_id: 123,
+            ip_address: "1.2.3.4",
+          },
+          ledger: [
+            {
+              account: "platform",
+              direction: "credit",
+              amount: "5000.00",
+              description: "Subscription payment",
+              at: "2026-10-20T10:01:00Z",
+            },
+          ],
+        },
+      },
+      isLoading: false,
+      isError: false,
+    });
+    render(<PaymentsReviewClient />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: /^Actions for/ })[0]);
+    fireEvent.click(screen.getByRole("menuitem", { name: "View details" }));
+
+    expect(screen.getByText("Membership plan (monthly)")).toBeInTheDocument();
+    expect(screen.getByText("Transaction id")).toBeInTheDocument();
+    expect(screen.getByText("1.2.3.4")).toBeInTheDocument();
+    expect(screen.getByText("Subscription payment")).toBeInTheDocument();
   });
 });

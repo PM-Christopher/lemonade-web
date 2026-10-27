@@ -1,17 +1,6 @@
 import { z } from "zod";
 import { amountField } from "@lemonade/validation";
 
-// A typed-in whole number, kept as the string the input holds.
-const wholeNumber = (label: string, max?: number) =>
-  z
-    .string()
-    .trim()
-    .min(1, { error: `${label} is required` })
-    .regex(/^\d+$/, { error: `${label} must be a whole number` })
-    .refine((value) => max === undefined || Number(value) <= max, {
-      error: `${label} can't be more than ${max}`,
-    });
-
 // A whole percent, or empty to use the admin's standard rate.
 const optionalPercent = (label: string) =>
   z

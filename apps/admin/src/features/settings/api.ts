@@ -23,6 +23,8 @@ export interface PlatformSettings extends Branding {
 export interface MenuPreferences {
   menu_order: string[];
   hidden_menu: string[];
+  // Own names for menu pages, by path. A page without one keeps its default name.
+  menu_labels: Record<string, string>;
 }
 
 export interface AdminSettings {

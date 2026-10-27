@@ -20,4 +20,11 @@ describe("getPageHeading", () => {
   it("still treats other tribe paths as tribe details", () => {
     expect(getPageHeading("/tribes/abc")).toEqual({ title: "Tribe details", parent: "/tribes" });
   });
+
+  it("uses the admin's own name for a menu page, and the default without one", () => {
+    expect(getPageHeading("/forum", { "/forum": "Forum Management" }).title).toBe(
+      "Forum Management",
+    );
+    expect(getPageHeading("/forum", {}).title).toBe("Forum moderation");
+  });
 });

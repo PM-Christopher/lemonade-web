@@ -40,7 +40,7 @@ const innerPages: Array<[RegExp, string, string]> = [
 ];
 
 /** The title for the top bar, plus a back target when the page is not a menu page. */
-export function getPageHeading(pathname: string): PageHeading {
+export function getPageHeading(pathname: string, labels: Record<string, string> = {}): PageHeading {
   const path = pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname;
 
   for (const [pattern, title, parent] of innerPages) {
@@ -52,5 +52,5 @@ export function getPageHeading(pathname: string): PageHeading {
   if (path === routes.SUPPORT_INBOX) return { title: "Support inbox" };
 
   const link = pageLinks.find((item) => item.path === path);
-  return { title: link?.name ?? "Overview" };
+  return { title: (link && labels[link.path]?.trim()) || link?.name || "Overview" };
 }

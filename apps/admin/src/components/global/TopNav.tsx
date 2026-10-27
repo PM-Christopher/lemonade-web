@@ -7,6 +7,7 @@ import { RootState } from "@/redux/store";
 import { formatRoleName } from "@/utils/helper";
 import { Avatar } from "@/components/global/Avatar";
 import { getPageHeading } from "@/utils/pageTitle";
+import { useAdminSettingsQuery } from "@/features/settings/queries";
 import { useNavigation } from "@/hooks/useNavigation";
 import { UserInterface } from "@/interfaces/SystemInterface";
 import { NotificationBell } from "@/components/global/NotificationBell";
@@ -19,7 +20,8 @@ import { routes } from "@/lib/routes";
 function TopNav({}) {
   const user: UserInterface | null = useSelector((state: RootState) => state.auth.user);
   const { pathname, back, push } = useNavigation();
-  const { title, parent } = getPageHeading(pathname);
+  const { data: settings } = useAdminSettingsQuery();
+  const { title, parent } = getPageHeading(pathname, settings?.preferences.menu_labels);
   const { data: currentAdmin } = useCurrentAdminQuery();
   const { data: notifications } = useAdminNotificationsQuery();
   const logout = useAdminLogout();
