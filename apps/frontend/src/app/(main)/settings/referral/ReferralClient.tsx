@@ -32,7 +32,8 @@ function ReferralClient() {
   };
 
   const referralLink = referralSummary ? appUrl(referralSummary.referral_path) : "";
-  const commissionPercent = referralSummary?.commission_percent ?? 0;
+  const subscribePercent = referralSummary?.subscription_commission_percent ?? 0;
+  const renewalPercent = referralSummary?.renewal_commission_percent ?? 0;
 
   const handleCopy = () => {
     if (!referralLink) return;
@@ -171,7 +172,7 @@ function ReferralClient() {
                   </div>
                   <div className="flex flex-col">
                     <p className="text-body-l font-semibold">
-                      {commissionPercent}% of the subscription fee
+                      {subscribePercent}% of the subscription fee
                     </p>
                     <p className="text-text-grey text-body-s font-normal">
                       When they subscribe to Membership
@@ -189,7 +190,7 @@ function ReferralClient() {
                   </div>
                   <div className="flex flex-col">
                     <p className="text-body-l font-semibold">
-                      {commissionPercent}% of the renewal fee
+                      {renewalPercent}% of the renewal fee
                     </p>
                     <p className="text-text-grey text-body-s font-normal">
                       When they renew their Subscription

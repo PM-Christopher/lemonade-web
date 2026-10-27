@@ -151,6 +151,9 @@ export interface ReferralSummary {
   // Relative path, e.g. "signup?referral=CODE". Build the full link with appUrl().
   referral_path: string;
   commission_percent: number;
+  // What a referrer earns from the subscription fee: first time, and on each renewal.
+  subscription_commission_percent: number;
+  renewal_commission_percent: number;
 }
 
 export interface ReferralActivity {

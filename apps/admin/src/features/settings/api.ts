@@ -17,6 +17,9 @@ export interface PlatformSettings extends Branding {
   user_activity_retention_days: number;
   // Days a deleted account can still be restored by signing in.
   account_deletion_grace_days: number;
+  // Percent of the subscription fee a referrer earns: first time, and on each renewal.
+  referral_subscribe_percent: number;
+  referral_renewal_percent: number;
 }
 
 // Menu paths, like "/tribes". An empty order means the default A to Z menu.
@@ -41,6 +44,8 @@ export interface PlatformSettingsPayload {
   audit_retention_days: number;
   user_activity_retention_days: number;
   account_deletion_grace_days: number;
+  referral_subscribe_percent: number;
+  referral_renewal_percent: number;
 }
 
 export const settingsApi = {

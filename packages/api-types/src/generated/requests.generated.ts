@@ -386,6 +386,7 @@ export interface MarkJobStatusRequest {
 export interface MenuPreferencesRequest {
   menu_order?: {}[];
   hidden_menu?: {}[];
+  menu_labels?: {}[];
 }
 
 export interface PageContentRequest {
@@ -410,6 +411,8 @@ export interface PlatformSettingsRequest {
   audit_retention_days: number;
   user_activity_retention_days: number;
   account_deletion_grace_days: number;
+  referral_subscribe_percent?: number;
+  referral_renewal_percent?: number;
 }
 
 export interface ProcessWithdrawalRequestRequest {

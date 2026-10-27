@@ -1294,6 +1294,20 @@
                 "integer",
                 "min:1",
                 "max:365"
+            ],
+            "referral_subscribe_percent": [
+                "sometimes",
+                "numeric",
+                "min:0",
+                "max:100",
+                "decimal:0,2"
+            ],
+            "referral_renewal_percent": [
+                "sometimes",
+                "numeric",
+                "min:0",
+                "max:100",
+                "decimal:0,2"
             ]
         }
     },
@@ -1321,6 +1335,16 @@
             "hidden_menu.*": [
                 "string",
                 "max:100"
+            ],
+            "menu_labels": [
+                "nullable",
+                "array",
+                "max:50"
+            ],
+            "menu_labels.*": [
+                "nullable",
+                "string",
+                "max:40"
             ]
         }
     },

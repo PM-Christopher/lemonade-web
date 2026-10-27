@@ -9,6 +9,17 @@ const retentionDays = (message: string) =>
     .max(3650, "At most 3650 days");
 
 // Mirrors App\Http\Requests\Admin\PlatformSettingsRequest.
+// A percent of the subscription fee, up to two decimals.
+const percent = (message: string) =>
+  z
+    .number({ message })
+    .min(0, "Use 0 for no reward")
+    .max(100, "At most 100%")
+    .refine(
+      (value) => Math.abs(value * 100 - Math.round(value * 100)) < 1e-6,
+      "At most two decimals",
+    );
+
 export const platformSettingsSchema = z.object({
   platform_name: z
     .string()
@@ -39,6 +50,8 @@ export const platformSettingsSchema = z.object({
     .int("Use whole days")
     .min(1, "At least 1 day")
     .max(365, "At most 365 days"),
+  referral_subscribe_percent: percent("Enter a percent"),
+  referral_renewal_percent: percent("Enter a percent"),
 });
 
 export type PlatformSettingsInput = z.infer<typeof platformSettingsSchema>;

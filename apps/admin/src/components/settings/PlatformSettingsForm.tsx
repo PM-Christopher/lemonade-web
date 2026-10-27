@@ -26,6 +26,21 @@ const FORM_FIELDS = [
   "audit_retention_days",
   "user_activity_retention_days",
   "account_deletion_grace_days",
+  "referral_subscribe_percent",
+  "referral_renewal_percent",
+] as const;
+
+const REFERRAL_FIELDS = [
+  {
+    name: "referral_subscribe_percent",
+    label: "When a referred person subscribes (% of the fee)",
+    hint: "The referrer earns this share of the first subscription fee, and of a plan change.",
+  },
+  {
+    name: "referral_renewal_percent",
+    label: "When a referred person renews (% of the fee)",
+    hint: "The referrer earns this share each time the subscription renews. Use 0 for no reward.",
+  },
 ] as const;
 
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
@@ -81,6 +96,8 @@ export function PlatformSettingsForm({ settings, section, canManage }: PlatformS
       audit_retention_days: settings.audit_retention_days,
       user_activity_retention_days: settings.user_activity_retention_days,
       account_deletion_grace_days: settings.account_deletion_grace_days,
+      referral_subscribe_percent: settings.referral_subscribe_percent,
+      referral_renewal_percent: settings.referral_renewal_percent,
     },
     mode: "onTouched",
   });
@@ -210,6 +227,29 @@ export function PlatformSettingsForm({ settings, section, canManage }: PlatformS
                   id={field.name}
                   type="number"
                   min={field.min}
+                  disabled={!canManage}
+                  aria-invalid={errors[field.name] ? true : undefined}
+                  {...register(field.name, { valueAsNumber: true })}
+                />
+                <FieldError message={errors[field.name]?.message} />
+                <p className="text-text-grey text-meta">{field.hint}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex max-w-md flex-col gap-5">
+            <p className="text-body-l font-semibold">Referral rewards</p>
+            {REFERRAL_FIELDS.map((field) => (
+              <div className="grid gap-2" key={field.name}>
+                <Label htmlFor={field.name} className="text-text-grey text-body-s font-normal">
+                  {field.label}
+                </Label>
+                <Input
+                  id={field.name}
+                  type="number"
+                  min={0}
+                  max={100}
+                  step="0.01"
                   disabled={!canManage}
                   aria-invalid={errors[field.name] ? true : undefined}
                   {...register(field.name, { valueAsNumber: true })}
