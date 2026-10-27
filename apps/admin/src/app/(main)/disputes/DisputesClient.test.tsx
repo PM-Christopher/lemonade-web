@@ -104,4 +104,15 @@ describe("DisputesClient", () => {
       expect.objectContaining({ filters: expect.objectContaining({ overdue: true }) }),
     );
   });
+
+  it("filters to everything assigned to you, open or settled, from the Mine card", () => {
+    render(<DisputesClient />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Mine/ }));
+
+    expect(list).toHaveBeenLastCalledWith(
+      "all",
+      expect.objectContaining({ filters: expect.objectContaining({ assignee: "me", page: 1 }) }),
+    );
+  });
 });

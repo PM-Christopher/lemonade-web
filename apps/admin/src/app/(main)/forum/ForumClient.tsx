@@ -166,9 +166,11 @@ function ForumClient() {
 
                       return (
                         <tr key={row.id} className="border-grey-20 h-18 border-b">
-                          <td className={"p-4 font-sans text-sm font-medium"}>{row.id}</td>
                           <td className={"max-w-80 truncate p-4 font-sans text-sm font-medium"}>
                             {row.title ?? row.body ?? "—"}
+                          </td>
+                          <td className={"max-w-56 truncate p-4 font-sans text-sm font-medium"}>
+                            {row.context ?? "—"}
                           </td>
                           <td className={"p-4 font-sans text-sm font-medium"}>
                             {row.author?.name ?? "—"}

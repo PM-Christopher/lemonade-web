@@ -1,7 +1,6 @@
 "use client";
 import { SearchBox } from "@/components/global/SearchBox";
 import { useSearchTerm } from "@/hooks/useSearchTerm";
-import { usePagination } from "@/hooks/usePagination";
 import PaginationComp from "@/components/global/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
@@ -84,6 +83,7 @@ function DisputesClient() {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const [status, setStatus] = useState("pending");
   const [quick, setQuick] = useState<Quick>("all");
+  const [page, setPage] = useState(1);
   const { value: searchValue, setValue: setSearchValue, term } = useSearchTerm();
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -91,6 +91,7 @@ function DisputesClient() {
     assignee: quick === "mine" ? "me" : quick === "unassigned" ? "unassigned" : undefined,
     overdue: quick === "overdue",
     search: term,
+    page,
   };
   const { data, isLoading } = useDisputeListQuery(status, { enabled: isLoggedIn, filters });
   const assignMutation = useAssignDisputeMutation();
@@ -101,9 +102,10 @@ function DisputesClient() {
   const disputes = data?.disputes ?? [];
 
   const pickQuick = (next: Quick) => {
-    // The cards only apply to the open queue.
-    setStatus("pending");
+    // Mine covers everything assigned to you, open or settled; the other cards look at the open queue.
+    setStatus(next === "mine" ? "all" : "pending");
     setQuick(quick === next ? "all" : next);
+    setPage(1);
   };
 
   const assign = (dispute: AdminDispute, adminId?: string | null) => {
@@ -132,13 +134,13 @@ function DisputesClient() {
     );
   };
 
-  const pager = usePagination(disputes, `${status}|${quick}|${term}`);
-
   return (
     <section className="mt-6 flex flex-col gap-5">
       <div className={"flex justify-between px-5"}>
         <div>
-          <p className={"font-semiBold text-body-l"}>{disputes.length} Disputes</p>
+          <p className={"font-semiBold text-body-l"}>
+            {data?.meta?.total ?? disputes.length} Disputes
+          </p>
           <p className="text-text-grey text-body-s">
             Oldest first. A dispute is overdue after {summary?.overdue_after_hours ?? 48} hours.
           </p>
@@ -146,7 +148,10 @@ function DisputesClient() {
         <div className={"flex justify-between gap-3"}>
           <SearchBox
             value={searchValue}
-            onChange={setSearchValue}
+            onChange={(value) => {
+              setSearchValue(value);
+              setPage(1);
+            }}
             label="Search disputes"
             placeholder="Search business, client, owner..."
           />
@@ -155,6 +160,7 @@ function DisputesClient() {
             onValueChange={(value) => {
               setStatus(value);
               setQuick("all");
+              setPage(1);
             }}
           >
             <SelectTrigger
@@ -182,6 +188,7 @@ function DisputesClient() {
           onClick={() => {
             setStatus("pending");
             setQuick("all");
+            setPage(1);
           }}
         />
         <StatCard
@@ -200,6 +207,7 @@ function DisputesClient() {
           onClick={() => {
             setStatus("settled");
             setQuick("all");
+            setPage(1);
           }}
         />
         <StatCard
@@ -212,7 +220,7 @@ function DisputesClient() {
         <StatCard
           label="Mine"
           value={summary?.mine ?? 0}
-          hint="Assigned to you"
+          hint="Assigned to you, open or settled"
           active={quick === "mine"}
           onClick={() => pickQuick("mine")}
         />
@@ -237,7 +245,7 @@ function DisputesClient() {
               </thead>
               <tbody>
                 {disputes.length > 0 ? (
-                  pager.pageItems.map((dispute) => {
+                  disputes.map((dispute) => {
                     const isOpen = dispute.status === "pending";
                     const assignedToMe = myId !== null && dispute.assignee?.id === myId;
                     return (
@@ -342,9 +350,9 @@ function DisputesClient() {
               </tbody>
             </table>
             <PaginationComp
-              currentPage={pager.page}
-              totalPages={pager.totalPages}
-              onPageChange={pager.setPage}
+              currentPage={data?.meta?.current_page ?? page}
+              totalPages={data?.meta?.last_page ?? 1}
+              onPageChange={setPage}
               perPage={DEFAULT_PAGE_SIZE}
             />
           </div>

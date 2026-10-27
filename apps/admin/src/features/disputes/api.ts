@@ -1,5 +1,6 @@
 // Endpoints for the job disputes domain over the BFF transport (browserApi).
 import { browserApi } from "@/lib/browser-api";
+import { DEFAULT_PAGE_SIZE } from "@/lib/pagination";
 import { adminBusinessesRoutes, buildPath } from "@lemonade/api-types/generated";
 
 export interface DisputeParty {
@@ -60,11 +61,13 @@ export interface DisputeFilters {
   assignee?: string;
   overdue?: boolean;
   search?: string;
+  page?: number;
 }
 
 export interface DisputeListResponse {
   summary: DisputeSummary;
   disputes: AdminDispute[];
+  meta?: { current_page: number; last_page: number; per_page: number; total: number };
 }
 
 export interface DisputeDetailResponse {
@@ -84,6 +87,8 @@ export const disputesApi = {
         assignee: filters?.assignee,
         overdue: filters?.overdue ? 1 : undefined,
         search: filters?.search || undefined,
+        page: filters?.page,
+        per_page: filters?.page ? DEFAULT_PAGE_SIZE : undefined,
       },
     }),
 

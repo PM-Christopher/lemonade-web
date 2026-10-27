@@ -14,8 +14,9 @@ export interface AdminSubscriptionPlanBenefits {
   tribe_limit: number;
   thread_limit: number;
   business_limit: number;
-  ticket_sales_commission: number;
-  service_commission: number;
+  // Null when the plan leaves it blank and the standard rate applies.
+  ticket_sales_commission: number | null;
+  service_commission: number | null;
   connection_range: PlanType;
   offline_benefits: boolean;
 }
@@ -69,8 +70,9 @@ export interface SubscriptionPlanPayload {
   tribe_limit: number;
   thread_limit: number;
   business_limit: number;
-  sales_commission: number;
-  service_commission: number;
+  // Null leaves it blank so the standard rate applies.
+  sales_commission: number | null;
+  service_commission: number | null;
   connection_range: PlanType;
   offline_benefits: boolean;
   recommended?: boolean;

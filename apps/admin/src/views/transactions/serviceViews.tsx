@@ -55,7 +55,8 @@ function ServiceViews({ trx_data, page, onPageChange }: ViewProps) {
       <TransactionTable
         columns={columns}
         rows={trx_data?.history}
-        getKey={(row, index) => String(row.id ?? index)}
+        // A payment shows once per money movement, so the type keeps each row's key unique.
+        getKey={(row, index) => `${row.id ?? index}-${row.transaction_type}`}
         onRowClick={(row) => push(routes.TRANSACTION_SERVICE(String(row.id)))}
         page={page}
         totalPages={trx_data?.meta?.last_page ?? 1}

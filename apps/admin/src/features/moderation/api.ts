@@ -19,6 +19,8 @@ export interface ModerationContentItem {
   type_label: string;
   title: string | null;
   body: string | null;
+  // Where it was posted, such as the tribe a thread is in.
+  context: string | null;
   status: string | null;
   author: ModerationContentAuthor | null;
   created_at: string;

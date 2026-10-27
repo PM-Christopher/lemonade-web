@@ -12,6 +12,18 @@ const wholeNumber = (label: string, max?: number) =>
       error: `${label} can't be more than ${max}`,
     });
 
+// A whole percent, or empty to use the admin's standard rate.
+const optionalPercent = (label: string) =>
+  z
+    .string()
+    .trim()
+    .refine((value) => value === "" || /^\d+$/.test(value), {
+      error: `${label} must be a whole number`,
+    })
+    .refine((value) => value === "" || Number(value) <= 100, {
+      error: `${label} can't be more than 100`,
+    });
+
 export const PLAN_TYPES = ["Limited", "Unlimited"] as const;
 
 const planType = (label: string) => z.enum(PLAN_TYPES, { error: `Choose a ${label}` });
@@ -40,8 +52,8 @@ export const planSchema = z
     tribe_limit: z.string().trim(),
     thread_limit: z.string().trim(),
     business_limit: z.string().trim(),
-    sales_commission: wholeNumber("Ticket commission", 100),
-    service_commission: wholeNumber("Service commission", 100),
+    sales_commission: optionalPercent("Ticket commission"),
+    service_commission: optionalPercent("Service commission"),
     connection_range: planType("connection range"),
     offline_benefits: z.boolean(),
     recommended: z.boolean(),

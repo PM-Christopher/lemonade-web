@@ -68,8 +68,12 @@ function toFormValues(plan: AdminSubscriptionPlan): PlanInput {
     tribe_limit: String(plan.benefits.tribe_limit),
     thread_limit: String(plan.benefits.thread_limit),
     business_limit: String(plan.benefits.business_limit),
-    sales_commission: String(plan.benefits.ticket_sales_commission),
-    service_commission: String(plan.benefits.service_commission),
+    sales_commission:
+      plan.benefits.ticket_sales_commission === null
+        ? ""
+        : String(plan.benefits.ticket_sales_commission),
+    service_commission:
+      plan.benefits.service_commission === null ? "" : String(plan.benefits.service_commission),
     connection_range: plan.benefits.connection_range,
     offline_benefits: plan.benefits.offline_benefits,
     recommended: plan.recommended,
@@ -166,8 +170,10 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
       tribe_limit: limit(values.tribe_limit),
       thread_limit: limit(values.thread_limit),
       business_limit: limit(values.business_limit),
-      sales_commission: Number(values.sales_commission),
-      service_commission: Number(values.service_commission),
+      // Blank keeps the standard rate; 0 is a real rate.
+      sales_commission: values.sales_commission === "" ? null : Number(values.sales_commission),
+      service_commission:
+        values.service_commission === "" ? null : Number(values.service_commission),
       connection_range: values.connection_range,
       offline_benefits: values.offline_benefits,
       recommended: values.recommended,
@@ -415,6 +421,9 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ isOpen, toggle, plan }) =
                   />
                   <FieldError message={errors.service_commission?.message} />
                 </div>
+                <p className="text-text-grey text-meta col-span-2">
+                  Leave a commission blank to use the standard rate. 0 means no commission.
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
