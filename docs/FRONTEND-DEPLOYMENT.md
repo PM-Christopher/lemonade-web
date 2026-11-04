@@ -150,7 +150,8 @@ git push heroku-app main
 Heroku installs everything, builds the app (this takes about five minutes), and starts it. Watch it in the
 terminal. When it ends with `Verifying deploy... done`, it is live.
 
-If your Git branch is not called `main`, use `git push heroku-app YOUR-BRANCH:main`.
+If your Git branch is not called `main`, use `git push heroku-app YOUR-BRANCH:main`. Heroku only builds
+what lands on its own `main`. `git push` has no `-a` option, the remote name picks the app.
 
 ## Step 6. Set the values for the admin app and send it up
 
@@ -163,6 +164,19 @@ heroku config:set -a acme-lemonade-admin \
 
 git push heroku-admin main
 ```
+
+Set `APP_NAME` **before** the first push. The build reads it to decide which app to build. If you set it
+after a push, Heroku restarts the app but does not rebuild it, and the app crashes with
+`Could not find a production build in the '.next' directory` (and `H10 App crashed` in the router log).
+The same is true for every `NEXT_PUBLIC_` value. If that happens, build again:
+
+```bash
+git commit --allow-empty -m "chore(deploy): rebuild the admin app"
+git push heroku-admin main
+```
+
+Watch the build for `turbo run build --filter=lemonade-admin`. Pushing the same commit again does nothing,
+which is why the empty commit is needed.
 
 ## Step 7. Check that they work
 
@@ -399,6 +413,7 @@ values.
 | Heroku says the compiled slug size is too large (max is 500M) | Use Option 2 or Option 3 for the websites. |
 | Chat does not connect, and the browser shows a CORS message | Add the user app's address to `allowed_origins` in the backend's `config/cors.php`, then deploy the backend. |
 | Heroku says `No web processes running` | The `APP_NAME` value is missing. Set it to `lemonade-app` or `lemonade-admin` and restart. |
+| `Could not find a production build in the '.next' directory`, or `H10 App crashed` | The app was built before `APP_NAME` was set, so a different app was built. Set `APP_NAME`, then push an empty commit to rebuild (see step 6). |
 | The wrong website appears at an address | You pushed to the wrong app. Use `git push heroku-app main` for the user app and `git push heroku-admin main` for the admin app. |
 
 When you are stuck, the fastest help is the exact message from `heroku logs --tail -a YOUR-APP` (or the

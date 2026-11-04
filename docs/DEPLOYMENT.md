@@ -138,6 +138,11 @@ because Heroku erases files it stores itself.
    The two app addresses are the ones you read in step 2. The apps do not have to be live yet. If you
    change an address later, run `heroku config:set` again and the backend restarts by itself.
 
+   Set `BROADCAST_DRIVER=log` until the realtime app exists (see
+   [The background programs the backend needs](#the-background-programs-the-backend-needs)). Setting it to
+   `reverb` too early, or on code that is too old to know about Reverb, stops every command with
+   `Broadcast connection [reverb] is not defined`.
+
    Add the rest (Cloudinary, Paystack, Resend, the first admin) the same way.
 
 5. Send the code up. The `Procfile` already tells Heroku to create the database tables on every deploy.
@@ -145,6 +150,14 @@ because Heroku erases files it stores itself.
    ```bash
    git push heroku main
    ```
+
+   Heroku only builds what lands on its own `main`. If the code you want to deploy is on another branch,
+   name it, for example `git push heroku my-branch:main`. A plain `git push heroku main` sends your local
+   `main`, which may be older. Check what Heroku really has with `git ls-remote heroku`, and compare the
+   hash next to `refs/heads/main` with `git rev-parse YOUR-BRANCH`.
+
+   `git push` has no `-a` option. The remote name (`heroku`) decides which app receives the code. See
+   which app it points at with `git remote -v`.
 
 6. Add the starting data (see [First-time setup](#first-time-setup-after-any-deploy)):
 
@@ -162,8 +175,11 @@ because Heroku erases files it stores itself.
    [The background programs the backend needs](#the-background-programs-the-backend-needs).
 
    ```bash
-   heroku ps:scale worker=1 scheduler=1
+   heroku ps:scale worker=1 scheduler=1 -a acme-lemonade-api
    ```
+
+   Run this after the first push. Before that Heroku does not know the `worker` and `scheduler`
+   processes exist and refuses. Run it against the API app only. The realtime app has just `web`.
 
 8. Open your backend address followed by `/up`, for example `https://acme-lemonade-api-1a2b3c4d5e6f.herokuapp.com/up`.
    A green page means it works.
@@ -371,7 +387,7 @@ The backend's `Procfile` already lists the first two as extra processes next to 
 you turn them on:
 
 ```bash
-heroku ps:scale worker=1 scheduler=1
+heroku ps:scale worker=1 scheduler=1 -a acme-lemonade-api
 ```
 
 `worker` runs `queue:work` and `scheduler` runs `schedule:work`. Heroku restarts them on its own.
@@ -379,14 +395,22 @@ heroku ps:scale worker=1 scheduler=1
 Reverb needs its own web address, and Heroku only sends web traffic to the `web` process. So run Reverb as
 a **second Heroku app** from the same backend code, using the `Procfile.reverb` file in the repository:
 
+Run these in the `lemonade-backend` folder. The realtime app is deployed from the backend repository, not
+from `lemonade-web`:
+
 ```bash
-heroku create lemonade-realtime
-heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-multi-procfile
-heroku buildpacks:add heroku/php
-heroku config:set PROCFILE=Procfile.reverb
+heroku create acme-lemonade-realtime --remote heroku-realtime --buildpack heroku/php
+heroku buildpacks:add --index 1 heroku-community/multi-procfile -a acme-lemonade-realtime
+heroku config:set PROCFILE=Procfile.reverb -a acme-lemonade-realtime
 # copy the same values as the main backend app, plus the REVERB_ ones
-git push heroku main
+git push heroku-realtime main
+heroku ps:scale web=1 -a acme-lemonade-realtime
 ```
+
+The multi-procfile buildpack is what reads `PROCFILE`. Without it Heroku ignores the variable and looks
+for a plain `Procfile`. Push the same branch you pushed to the API app. Once the realtime app is up, switch
+the API over with `heroku config:set BROADCAST_DRIVER=reverb -a acme-lemonade-api`.
+`REVERB_APP_ID`, `REVERB_APP_KEY` and `REVERB_APP_SECRET` must be identical on both apps.
 
 Set `REVERB_HOST` to the new app's address (for example `lemonade-realtime.herokuapp.com`),
 `REVERB_PORT=443` and `REVERB_SCHEME=https` on **both** backend apps, and use the same values in the user
@@ -651,6 +675,10 @@ Do these once, in this order.
 | Payments stay "pending" | The Paystack webhook address is missing or wrong (setup step 5). |
 | Seeding says to set a password | Set `SEED_ADMIN_PASSWORD` to something other than the sample, then run it again. |
 | A new `NEXT_PUBLIC_` value has no effect | Those are fixed at build time. Build the app again. |
+| `Broadcast connection [reverb] is not defined` | Either the deployed code is older than the Reverb setup (check the branch you pushed, see step 5), or `BROADCAST_DRIVER=reverb` is set before the realtime app exists. Deploy the right branch, and use `log` until Reverb is running. |
+| `platform:seed` is not a known command | Heroku has an older branch. Push the branch that has it, for example `git push heroku my-branch:main`. |
+| `error: unknown switch 'a'` on `git push` | `-a` belongs to the `heroku` command, not `git`. Use the remote name instead, for example `git push heroku-realtime main`. |
+| `heroku ps:scale worker=1` says the process type does not exist | The first push has not finished yet, or you ran it against the wrong app. Scale `worker` and `scheduler` on the API app after it is deployed. |
 | Login works, but you are logged out on refresh | The three apps must use `https`, and the backend's `FRONTEND_URL` and `ADMIN_URL` must match the real addresses. |
 
 When you are stuck, the quickest help is the exact error text from the log, and which step you were on.
