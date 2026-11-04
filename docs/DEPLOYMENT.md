@@ -14,7 +14,13 @@ Lemonade is three small programs that talk to each other.
 | **User app** | The website people use. | `lemonade-web`, `apps/frontend` (name `lemonade-app`) | Node 22 |
 | **Admin app** | The console for your team. | `lemonade-web`, `apps/admin` (name `lemonade-admin`) | Node 22 |
 
-Deploy the backend first. The two apps need its address.
+Each part needs the address of the others: the backend needs the two app addresses (`FRONTEND_URL` and
+`ADMIN_URL`), and the two apps need the backend address. This is not a trap. An address exists as soon as
+you create an app (on Heroku) or choose a name (on your own domain), long before anything is deployed. So:
+**decide or create all three addresses first, set the values everywhere, then deploy** the backend, then
+the user app, then the admin app.
+
+The step-by-step guide for the two apps is in [`FRONTEND-DEPLOYMENT.md`](./FRONTEND-DEPLOYMENT.md).
 
 You will end up with three web addresses, for example:
 
@@ -92,12 +98,21 @@ Heroku is the quickest start. It has no built-in MySQL, so you add one. Pictures
 because Heroku erases files it stores itself.
 
 1. Install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and run `heroku login`.
-2. In the `lemonade-backend` folder, make the app:
+2. In the `lemonade-backend` folder, make the app. Heroku app names are shared by everyone, so add
+   something of your own, for example `acme-`:
 
    ```bash
-   heroku create lemonade-api
-   heroku buildpacks:set heroku/php
+   heroku create acme-lemonade-api --buildpack heroku/php
+   heroku apps:info -a acme-lemonade-api
    ```
+
+   Copy the `Web URL` it shows. It looks like `https://acme-lemonade-api-1a2b3c4d5e6f.herokuapp.com`,
+   and Heroku adds the letters and numbers, so use the real one wherever this guide says `APP_URL`.
+   Do the same for the two apps now, before you deploy anything:
+   `heroku create acme-lemonade-app --remote heroku-app` and
+   `heroku create acme-lemonade-admin --remote heroku-admin`, run in the `lemonade-web` folder. Then
+   `heroku apps:info -a` each one to read its address. You need all three addresses for the next step. See
+   [`FRONTEND-DEPLOYMENT.md`](./FRONTEND-DEPLOYMENT.md) for the apps.
 
 3. Add a MySQL database. JawsDB is the common choice:
 
@@ -112,11 +127,14 @@ because Heroku erases files it stores itself.
 4. Set the backend values from the table above:
 
    ```bash
-   heroku config:set APP_ENV=production APP_DEBUG=false APP_URL=https://lemonade-api.herokuapp.com
+   heroku config:set APP_ENV=production APP_DEBUG=false APP_URL=YOUR-BACKEND-ADDRESS
    heroku config:set APP_KEY=$(php artisan key:generate --show)
    heroku config:set DB_HOST=... DB_PORT=3306 DB_DATABASE=... DB_USERNAME=... DB_PASSWORD=...
-   heroku config:set FRONTEND_URL=https://app.example.com ADMIN_URL=https://admin.example.com
+   heroku config:set FRONTEND_URL=YOUR-USER-APP-ADDRESS ADMIN_URL=YOUR-ADMIN-APP-ADDRESS
    ```
+
+   The two app addresses are the ones you read in step 2. The apps do not have to be live yet. If you
+   change an address later, run `heroku config:set` again and the backend restarts by itself.
 
    Add the rest (Cloudinary, Paystack, Resend, the first admin) the same way.
 
@@ -140,7 +158,8 @@ because Heroku erases files it stores itself.
    heroku ps:scale worker=1 scheduler=1
    ```
 
-8. Open `https://lemonade-api.herokuapp.com/up`. A green page means it works.
+8. Open your backend address followed by `/up`, for example `https://acme-lemonade-api-1a2b3c4d5e6f.herokuapp.com/up`.
+   A green page means it works.
 
 To use your own domain, run `heroku domains:add api.example.com` and add the DNS record Heroku shows you.
 
@@ -476,37 +495,35 @@ Both need **Node 22 or newer**. The apps listen on the port the host gives them 
 
 ## 2A. Heroku
 
-Make one Heroku app per frontend. The repository already has a `Procfile` that starts whichever app you
-name.
+Heroku does run Next.js. Make one Heroku app per website, from the same code. The repository already has a
+`Procfile` and build scripts, and a value called `APP_NAME` tells Heroku which website the app is.
+
+The short version, run in the `lemonade-web` folder (the full steps are in
+[`FRONTEND-DEPLOYMENT.md`](./FRONTEND-DEPLOYMENT.md)):
 
 ```bash
-# in the lemonade-web folder
-heroku create lemonade-app
-heroku buildpacks:set heroku/nodejs
-heroku config:set APP_NAME=lemonade-app \
-  LARAVEL_API_URL=https://api.example.com \
-  NEXT_PUBLIC_BASE_URL=https://api.example.com \
-  NEXT_PUBLIC_APP_URL=https://app.example.com
-git push heroku main
+heroku create acme-lemonade-app --remote heroku-app --buildpack heroku/nodejs
+heroku config:set -a acme-lemonade-app APP_NAME=lemonade-app \
+  LARAVEL_API_URL=YOUR-BACKEND-ADDRESS NEXT_PUBLIC_BASE_URL=YOUR-BACKEND-ADDRESS \
+  NEXT_PUBLIC_APP_URL=YOUR-USER-APP-ADDRESS
+git push heroku-app main
 
-heroku create lemonade-admin
-heroku buildpacks:set heroku/nodejs
-heroku config:set APP_NAME=lemonade-admin \
-  LARAVEL_API_URL=https://api.example.com \
-  NEXT_PUBLIC_BASE_URL=https://api.example.com \
-  NEXT_PUBLIC_USER_APP_URL=https://app.example.com
-git push heroku main
+heroku create acme-lemonade-admin --remote heroku-admin --buildpack heroku/nodejs
+heroku config:set -a acme-lemonade-admin APP_NAME=lemonade-admin \
+  LARAVEL_API_URL=YOUR-BACKEND-ADDRESS NEXT_PUBLIC_BASE_URL=YOUR-BACKEND-ADDRESS \
+  NEXT_PUBLIC_USER_APP_URL=YOUR-USER-APP-ADDRESS
+git push heroku-admin main
 ```
 
-Run the first block's `git push` with the first app selected, and the second with the other. Use
-`heroku git:remote -a lemonade-app` or `-a lemonade-admin` to switch. `APP_NAME` tells the build and the
-start command which app this is. Add the optional `NEXT_PUBLIC_` values the same way, before the push.
+The `--remote` names keep the two apps apart in Git. Set every value before the first push, because the
+`NEXT_PUBLIC_` ones are fixed at build time.
 
 ## 2B. DigitalOcean App Platform
 
 1. In DigitalOcean choose **Create, App Platform** and connect your `lemonade-web` repository.
-2. Make **two components**, both of type **Web Service**, from the same repository.
-3. For each one set:
+2. Make **two separate apps**, one for each website, from the same repository. Do not put both in one
+   app, because an app has only one address.
+3. For each app set:
 
    | Setting | User app | Admin app |
    | ------- | -------- | --------- |
@@ -618,6 +635,7 @@ Do these once, in this order.
 | What you see | What to check |
 | ------------ | ------------- |
 | A white page or "500" on the backend | Set `APP_DEBUG=true` for a minute to see the error, then set it back to `false`. Check `storage/logs/laravel.log`. Make sure `storage` and `bootstrap/cache` can be written to. |
+| You cannot set `FRONTEND_URL` and `ADMIN_URL` because the apps are not deployed | You can. Create the two apps (or choose their domain names) first and read their addresses. Nothing has to be live to set a value. See the start of this guide. |
 | The apps say they cannot reach the server | `LARAVEL_API_URL` is wrong, or has a trailing slash or `http` instead of `https`. Fix it and restart the app. |
 | Pictures do not show in the apps | Uploads must go to Cloudinary. Check the three `CLOUDINARY_` values. |
 | Emails and notifications never arrive | The queue worker is not running. See [The background programs the backend needs](#the-background-programs-the-backend-needs). |
