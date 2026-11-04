@@ -673,6 +673,7 @@ Do these once, in this order.
 | Pictures do not show in the apps | Uploads must go to Cloudinary. Check the three `CLOUDINARY_` values. |
 | Emails and notifications never arrive | The queue worker is not running. See [The background programs the backend needs](#the-background-programs-the-backend-needs). |
 | Payments stay "pending" | The Paystack webhook address is missing or wrong (setup step 5). |
+| Seeding the `demo` or `stress` profile stops with `Call to undefined function ... fake()` | The sample-data library (Faker) was missing from the production build. It is now a normal dependency, so deploy the latest backend code and run the seed again. |
 | Seeding says to set a password | Set `SEED_ADMIN_PASSWORD` to something other than the sample, then run it again. |
 | A new `NEXT_PUBLIC_` value has no effect | Those are fixed at build time. Build the app again. |
 | `Broadcast connection [reverb] is not defined` | Either the deployed code is older than the Reverb setup (check the branch you pushed, see step 5), or `BROADCAST_DRIVER=reverb` is set before the realtime app exists. Deploy the right branch, and use `log` until Reverb is running. |
