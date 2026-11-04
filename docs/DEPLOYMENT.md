@@ -66,7 +66,9 @@ below has a place to paste them.
 | `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | The first admin. Pick a strong password of your own. |
 | `SUPER_ADMIN_EMAIL` | Usually the same as `SEED_ADMIN_EMAIL`. |
 | `FIREBASE_CREDENTIALS` | Optional. Path of the Firebase key file under `storage/`. |
-| `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET`, `REVERB_HOST`, `REVERB_PORT`, `REVERB_SCHEME` | Optional. Live chat. Skip them if you do not run the realtime server. |
+| `BROADCAST_DRIVER` | `log` if you do not run the realtime server (the default in `.env.example`). `reverb` if you do. |
+| `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET` | Optional. Live chat. Any long random text you choose, kept secret. |
+| `REVERB_HOST`, `REVERB_PORT`, `REVERB_SCHEME` | Optional. The public address people reach the realtime server at, such as your API domain, `443` and `https`. **Never `localhost` on a real server.** `localhost` only works on your own computer. |
 
 ### User app and admin app
 
@@ -454,8 +456,10 @@ location /apps {
 }
 ```
 
-Then set `REVERB_HOST` to your API domain, `REVERB_PORT=443` and `REVERB_SCHEME=https`, and use the same
-values in the two apps (`NEXT_PUBLIC_REVERB_*`).
+Then set `BROADCAST_DRIVER=reverb`, `REVERB_HOST` to your API domain (not `localhost`), `REVERB_PORT=443` and
+`REVERB_SCHEME=https`, and use the same values in the two apps (`NEXT_PUBLIC_REVERB_*`). The port the
+realtime program listens on (8080 above) stays private behind Nginx. If you skip live chat, leave
+`BROADCAST_DRIVER=log` and the `REVERB_*` values empty.
 
 After you change the backend code, restart them so they pick up the new code:
 
