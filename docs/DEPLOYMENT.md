@@ -149,8 +149,13 @@ because Heroku erases files it stores itself.
 6. Add the starting data (see [First-time setup](#first-time-setup-after-any-deploy)):
 
    ```bash
-   heroku run php artisan platform:seed essential --force
+   heroku run "php artisan platform:seed essential --force" -a acme-lemonade-api
    ```
+
+   Keep the quotes. Without them the Heroku command thinks `--force` is meant for itself and stops with
+   `Nonexistent flag: --force`. The same goes for any `heroku run` command that has a flag in it, such as
+   `heroku run "php artisan migrate --force" -a acme-lemonade-api`. You rarely need that one, because the
+   `Procfile` already runs the migration on every deploy.
 
 7. Turn on the background workers. They send emails and notifications and run the timed jobs. They cost
    extra dynos. Live chat needs one more app, explained in
