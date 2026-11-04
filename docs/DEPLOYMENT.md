@@ -123,6 +123,9 @@ because Heroku erases files it stores itself.
    heroku config:get JAWSDB_URL
    ```
 
+   The smallest plan (`kitefin`) limits how many queries you can send per hour, so it is fine for a test
+   site but too small for real traffic. Pick a bigger plan before you go live.
+
    The address it prints looks like `mysql://user:password@host:3306/name`. Copy the four parts into
    `DB_USERNAME`, `DB_PASSWORD`, `DB_HOST` and `DB_DATABASE` in the next step. Set `DB_PORT=3306`.
 
@@ -674,6 +677,7 @@ Do these once, in this order.
 | Emails and notifications never arrive | The queue worker is not running. See [The background programs the backend needs](#the-background-programs-the-backend-needs). |
 | Payments stay "pending" | The Paystack webhook address is missing or wrong (setup step 5). |
 | Seeding the `demo` or `stress` profile stops with `Call to undefined function ... fake()` | The sample-data library (Faker) was missing from the production build. It is now a normal dependency, so deploy the latest backend code and run the seed again. |
+| Seeding stops with `exceeded the 'max_questions' resource` | The database plan caps how many queries you can send per hour (the small JawsDB plan allows 3600). The `stress` profile sends far more. Wait an hour for the count to reset, use a smaller `--scale`, or move to a bigger database plan. Do not run `stress` on the plan you use for a live site. |
 | Seeding says to set a password | Set `SEED_ADMIN_PASSWORD` to something other than the sample, then run it again. |
 | A new `NEXT_PUBLIC_` value has no effect | Those are fixed at build time. Build the app again. |
 | `Broadcast connection [reverb] is not defined` | Either the deployed code is older than the Reverb setup (check the branch you pushed, see step 5), or `BROADCAST_DRIVER=reverb` is set before the realtime app exists. Deploy the right branch, and use `log` until Reverb is running. |
