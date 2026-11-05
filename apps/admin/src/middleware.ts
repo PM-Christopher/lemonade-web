@@ -150,6 +150,8 @@ export async function middleware(req: NextRequest) {
   const csp = withCsp(requestHeaders, nonce);
 
   function next() {
+    // Lets the console layout send an expired session to login with a return address.
+    requestHeaders.set("x-next-path", `${pathname}${search}`);
     const res = NextResponse.next({ request: { headers: requestHeaders } });
     res.headers.set("Content-Security-Policy", csp);
     return res;
