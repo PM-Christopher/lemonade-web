@@ -678,6 +678,7 @@ Do these once, in this order.
 | A white page or "500" on the backend | Set `APP_DEBUG=true` for a minute to see the error, then set it back to `false`. Check `storage/logs/laravel.log`. Make sure `storage` and `bootstrap/cache` can be written to. |
 | You cannot set `FRONTEND_URL` and `ADMIN_URL` because the apps are not deployed | You can. Create the two apps (or choose their domain names) first and read their addresses. Nothing has to be live to set a value. See the start of this guide. |
 | The apps say they cannot reach the server | `LARAVEL_API_URL` is wrong, or has a trailing slash or `http` instead of `https`. Fix it and restart the app. |
+| Uploading a picture says `URI must include a scheme and host` | `CLOUDINARY_UPLOAD_PREFIX` is set on the backend. It is not a folder name, it is only for test stand-ins. Remove it with `heroku config:unset CLOUDINARY_UPLOAD_PREFIX -a YOUR-API-APP`. |
 | Pictures do not show in the apps | Uploads must go to Cloudinary. Check the three `CLOUDINARY_` values. |
 | Emails and notifications never arrive | The queue worker is not running. See [The background programs the backend needs](#the-background-programs-the-backend-needs). |
 | Payments stay "pending" | The Paystack webhook address is missing or wrong (setup step 5). |
