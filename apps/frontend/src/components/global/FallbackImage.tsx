@@ -9,7 +9,14 @@ type FallbackImageProps = Omit<ImageProps, "src"> & {
 };
 
 // Shows fallbackSrc when src is missing, from an unknown host, or fails to load.
-export function FallbackImage({ src, fallbackSrc, onError, alt, ...props }: FallbackImageProps) {
+export function FallbackImage({
+  src,
+  fallbackSrc,
+  onError,
+  alt,
+  className,
+  ...props
+}: FallbackImageProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   // App paths are always safe; remote URLs must come from an allowed image host.
   const safeSrc = src?.startsWith("/") ? src : getSafeImageSrc(src, fallbackSrc);
@@ -18,6 +25,10 @@ export function FallbackImage({ src, fallbackSrc, onError, alt, ...props }: Fall
   return (
     <Image
       {...props}
+      // Fills its box without stretching, unless the caller picks another fit.
+      className={
+        /(^|\s)object-/.test(className ?? "") ? className : `object-cover ${className ?? ""}`.trim()
+      }
       alt={alt}
       src={showFallback ? fallbackSrc : safeSrc}
       onError={(event) => {

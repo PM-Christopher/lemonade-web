@@ -20,7 +20,7 @@ export function BrandLogo({ width, height, className }: BrandLogoProps) {
       alt={data?.platform_name ?? "The Lemonade Network"}
       width={width}
       height={height}
-      className={className}
+      className={`object-contain ${className ?? ""}`.trim()}
       priority
     />
   );
