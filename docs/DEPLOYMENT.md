@@ -403,19 +403,24 @@ from `lemonade-web`:
 
 ```bash
 heroku create acme-lemonade-realtime --remote heroku-realtime --buildpack heroku/php
-heroku buildpacks:add --index 1 heroku-community/multi-procfile -a acme-lemonade-realtime
+heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-multi-procfile -a acme-lemonade-realtime
 heroku config:set PROCFILE=Procfile.reverb -a acme-lemonade-realtime
 # copy the same values as the main backend app, plus the REVERB_ ones
 git push heroku-realtime main
 heroku ps:scale web=1 -a acme-lemonade-realtime
 ```
 
+Always put `-a acme-lemonade-realtime` on these commands. Inside the backend folder a command without `-a`
+goes to the API app. Setting `PROCFILE=Procfile.reverb` on the API app makes its web process run the
+realtime server instead, and the whole API answers `H10 App crashed`. If that happens, run
+`heroku config:unset PROCFILE -a acme-lemonade-api`.
+
 The multi-procfile buildpack is what reads `PROCFILE`. Without it Heroku ignores the variable and looks
 for a plain `Procfile`. Push the same branch you pushed to the API app. Once the realtime app is up, switch
 the API over with `heroku config:set BROADCAST_DRIVER=reverb -a acme-lemonade-api`.
 `REVERB_APP_ID`, `REVERB_APP_KEY` and `REVERB_APP_SECRET` must be identical on both apps.
 
-Set `REVERB_HOST` to the new app's address (for example `lemonade-realtime.herokuapp.com`),
+Set `REVERB_HOST` to the new app's host name only, with no `https://` (for example `lemonade-realtime-1a2b3c.herokuapp.com`),
 `REVERB_PORT=443` and `REVERB_SCHEME=https` on **both** backend apps, and use the same values in the user
 app and admin app as `NEXT_PUBLIC_REVERB_HOST`, `NEXT_PUBLIC_REVERB_PORT`, `NEXT_PUBLIC_REVERB_SCHEME`
 and `NEXT_PUBLIC_REVERB_KEY` (the same as `REVERB_APP_KEY`). If this feels like too much for now, skip it.
@@ -676,6 +681,8 @@ Do these once, in this order.
 | Pictures do not show in the apps | Uploads must go to Cloudinary. Check the three `CLOUDINARY_` values. |
 | Emails and notifications never arrive | The queue worker is not running. See [The background programs the backend needs](#the-background-programs-the-backend-needs). |
 | Payments stay "pending" | The Paystack webhook address is missing or wrong (setup step 5). |
+| Every API request answers `H10 App crashed`, and the log shows `reverb:start` | `PROCFILE=Procfile.reverb` was set on the API app. Run `heroku config:unset PROCFILE -a YOUR-API-APP`. |
+| `Undefined constant ...SIGINT` when Reverb starts | The PHP `pcntl` extension is not loaded. The backend's `composer.json` must require `ext-pcntl`. Deploy the latest backend code. |
 | Seeding the `demo` or `stress` profile stops with `Call to undefined function ... fake()` | The sample-data library (Faker) was missing from the production build. It is now a normal dependency, so deploy the latest backend code and run the seed again. |
 | Seeding stops with `exceeded the 'max_questions' resource` | The database plan caps how many queries you can send per hour (the small JawsDB plan allows 3600). The `stress` profile sends far more. Wait an hour for the count to reset, use a smaller `--scale`, or move to a bigger database plan. Do not run `stress` on the plan you use for a live site. |
 | Seeding says to set a password | Set `SEED_ADMIN_PASSWORD` to something other than the sample, then run it again. |
