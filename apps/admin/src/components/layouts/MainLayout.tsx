@@ -10,6 +10,7 @@ import { authSuccess } from "@/features/authentication/authSlice";
 import { useCurrentAdminQuery } from "@/features/authentication/queries";
 import { useMediaQuery } from "react-responsive";
 import BottomNav from "../global/BottomNav";
+import { isSigningOut } from "@/lib/signing-out";
 import { loginPathWithNext } from "@/lib/post-auth-redirect";
 import { InactivityGuard } from "@/components/global/InactivityGuard";
 
@@ -45,7 +46,7 @@ const MainLayout = ({ children }: DashboardLayoutProps) => {
   }, [isSuccess, currentAdmin, dispatch]);
 
   useEffect(() => {
-    if (isError && !user) {
+    if (isError && !user && !isSigningOut()) {
       push(loginPathWithNext(`${window.location.pathname}${window.location.search}`));
     }
   }, [isError, user, push]);

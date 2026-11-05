@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { markSigningOut } from "@/lib/signing-out";
 import {
   authApi,
   type ForgotPasswordPayload,
@@ -41,6 +42,7 @@ export function useLogoutMutation() {
 
   return useMutation({
     mutationFn: () => authApi.logout(),
+    onMutate: markSigningOut,
     onSettled: () => {
       dispatch(resetAuth());
       queryClient.removeQueries({ queryKey: authKeys.all() });

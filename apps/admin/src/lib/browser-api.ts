@@ -4,6 +4,7 @@
 import { AUTH_PAGES, loginPathWithNext } from "@/lib/post-auth-redirect";
 import { createApiClient, type ApiClient } from "@lemonade/api-client";
 import { rememberCorrelationId } from "@/lib/correlation";
+import { isSigningOut } from "@/lib/signing-out";
 import { rememberApiMessage } from "@/lib/api-message";
 
 export const browserApi: ApiClient = createApiClient({
@@ -12,7 +13,7 @@ export const browserApi: ApiClient = createApiClient({
   onSuccessMessage: rememberApiMessage,
   onUnauthorized: () => {
     // Hard reload clears in-memory session state after a failed refresh.
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || isSigningOut()) return;
     // Stay put on the login pages so a 401 there cannot reload them forever.
     if (AUTH_PAGES.some((page) => window.location.pathname === page)) return;
     window.location.href = loginPathWithNext(

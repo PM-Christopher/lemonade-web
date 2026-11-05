@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { markSigningOut } from "@/lib/signing-out";
 import {
   authApi,
   type ChangePasswordPayload,
@@ -73,6 +74,7 @@ export function useLogoutMutation() {
 
   return useMutation({
     mutationFn: () => authApi.logout(),
+    onMutate: markSigningOut,
     onSettled: () => {
       // Clear client state even if the backend call failed (already
       // logged out, network blip) — see app/api/auth/logout/route.ts,
