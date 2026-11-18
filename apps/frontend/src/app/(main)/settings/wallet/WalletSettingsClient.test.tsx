@@ -237,6 +237,26 @@ describe("WalletSettingsClient — payout eligibility", () => {
     expect(screen.queryByRole("button", { name: /request pay ?out/i })).not.toBeInTheDocument();
   });
 
+  it("keeps the payout button disabled while earnings are below the withdrawal threshold", () => {
+    walletQueryMock.mockReturnValue({
+      data: { ...walletData, total_amount_earned: "4999.00", withdrawal_threshold: "5000.00" },
+      isLoading: false,
+    });
+    render(<WalletSettingsClient />);
+
+    expect(screen.getByRole("button", { name: /request pay ?out/i })).toBeDisabled();
+  });
+
+  it("enables the payout button once earnings reach the withdrawal threshold", () => {
+    walletQueryMock.mockReturnValue({
+      data: { ...walletData, total_amount_earned: "5000.00", withdrawal_threshold: "5000.00" },
+      isLoading: false,
+    });
+    render(<WalletSettingsClient />);
+
+    expect(screen.getByRole("button", { name: /request pay ?out/i })).toBeEnabled();
+  });
+
   it("keeps the payout button disabled until the bank account has loaded", () => {
     bankQueryResult = { isSuccess: false };
     walletQueryMock.mockReturnValue({ data: walletData, isLoading: false });

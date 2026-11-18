@@ -37,6 +37,9 @@ function WalletSettingsClient() {
   const requestPayoutMutation = useRequestPayoutMutation();
   const redeemPointsMutation = useRedeemPointsMutation();
   const profileLoading = requestPayoutMutation.isPending;
+  // Payouts open once earnings reach the minimum the admin set.
+  const reachedThreshold =
+    (Number(data?.total_amount_earned) || 0) >= (Number(data?.withdrawal_threshold) || 0);
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
   const [isTribeHistoryOpen, setIsTribeHistoryOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -182,12 +185,12 @@ function WalletSettingsClient() {
                   </p>
                   <Button
                     className={`bg-gradient-green mt-4 h-12 w-fit rounded-xl p-3.5 px-12 ${
-                      !profileLoading
+                      !profileLoading && reachedThreshold
                         ? "border-step-color bg-gradient-green border"
                         : "bg-mid-green cursor-not-allowed opacity-70"
                     } `}
                     onClick={handlePayoutRequest}
-                    disabled={profileLoading || !bankAccountQuery.isSuccess}
+                    disabled={profileLoading || !bankAccountQuery.isSuccess || !reachedThreshold}
                   >
                     {profileLoading ? (
                       <>
