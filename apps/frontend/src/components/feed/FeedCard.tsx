@@ -16,7 +16,7 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
 
-const PREVIEW_CHARS = 280;
+const PREVIEW_CHARS = 140;
 
 /** One thread in the feed, with the tribe it came from and a way into that tribe. */
 export function FeedCard({ thread }: { thread: FeedThread }) {

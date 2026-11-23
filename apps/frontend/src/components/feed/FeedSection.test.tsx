@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { FeedSection } from "./FeedSection";
 
 vi.mock("next/image", () => ({
@@ -59,12 +59,24 @@ describe("FeedSection", () => {
     expect(screen.queryByRole("link", { name: "Find tribes" })).not.toBeInTheDocument();
   });
 
-  it("loads the next page only when asked", () => {
+  it("asks for the next page when the end of the row comes into view", () => {
+    let onIntersect: (entries: { isIntersecting: boolean }[]) => void = () => {};
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        constructor(callback: typeof onIntersect) {
+          onIntersect = callback;
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
     feed.hasNextPage = true;
     render(<FeedSection />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Load more posts" }));
+    onIntersect([{ isIntersecting: true }]);
 
     expect(fetchNextPage).toHaveBeenCalledTimes(1);
+    vi.unstubAllGlobals();
   });
 });

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { FeedCard } from "@/components/feed/FeedCard";
@@ -16,6 +16,18 @@ export function FeedSection() {
 
   const threads = data?.pages.flatMap((page) => page.threads) ?? [];
   const joinedTribes = data?.pages[0]?.joined_tribes ?? [];
+
+  // The next page loads when the end of the row scrolls into view.
+  const end = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const node = end.current;
+    if (!node || !hasNextPage) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting && !isFetchingNextPage) void fetchNextPage();
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="w-full">
@@ -35,45 +47,43 @@ export function FeedSection() {
         )
       )}
 
-      <div className="mt-4 flex flex-col gap-3">
-        {isLoading && (
-          <p className="text-body-s text-text-grey py-10 text-center">Loading your feed...</p>
-        )}
+      {isLoading && (
+        <p className="text-body-s text-text-grey py-10 text-center">Loading your feed...</p>
+      )}
 
-        {isError && (
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
-            <p className="text-body-s text-text-grey">We could not load the feed.</p>
-            <button
-              type="button"
-              className="text-light-green text-body-s mt-2 font-semibold"
-              onClick={() => refetch()}
-            >
-              Try again
-            </button>
-          </div>
-        )}
-
-        {!isLoading && !isError && threads.length === 0 && (
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
-            <p className="text-body-s text-text-grey">No posts yet. Check back soon.</p>
-          </div>
-        )}
-
-        {threads.map((thread) => (
-          <FeedCard key={thread.id} thread={thread} />
-        ))}
-
-        {hasNextPage && (
+      {isError && (
+        <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
+          <p className="text-body-s text-text-grey">We could not load the feed.</p>
           <button
             type="button"
-            className="text-light-green text-body-s mt-2 rounded-lg bg-gray-100 p-3 font-semibold"
-            onClick={() => void fetchNextPage()}
-            disabled={isFetchingNextPage}
+            className="text-light-green text-body-s mt-2 font-semibold"
+            onClick={() => refetch()}
           >
-            {isFetchingNextPage ? "Loading..." : "Load more posts"}
+            Try again
           </button>
-        )}
-      </div>
+        </div>
+      )}
+
+      {!isLoading && !isError && threads.length === 0 && (
+        <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
+          <p className="text-body-s text-text-grey">No posts yet. Check back soon.</p>
+        </div>
+      )}
+
+      {threads.length > 0 && (
+        <div className="scrollbar-hide mt-3 flex items-start gap-3 overflow-x-auto py-4 shadow-none">
+          {threads.map((thread) => (
+            <div key={thread.id} className="phone:w-105.5 w-[80vw] max-w-105.5 shrink-0">
+              <FeedCard thread={thread} />
+            </div>
+          ))}
+          {hasNextPage && (
+            <div ref={end} className="text-meta text-text-grey flex w-24 shrink-0 self-center">
+              {isFetchingNextPage ? "Loading..." : ""}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
