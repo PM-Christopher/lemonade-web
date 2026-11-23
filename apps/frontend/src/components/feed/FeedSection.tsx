@@ -71,7 +71,7 @@ export function FeedSection() {
       )}
 
       {threads.length > 0 && (
-        <div className="scrollbar-hide mt-3 flex items-start gap-3 overflow-x-auto py-4 shadow-none">
+        <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto py-4 shadow-none">
           {threads.map((thread) => (
             <div key={thread.id} className="phone:w-105.5 w-[80vw] max-w-105.5 shrink-0">
               <FeedCard thread={thread} />

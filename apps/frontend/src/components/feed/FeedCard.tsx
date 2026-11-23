@@ -8,7 +8,6 @@ import {
   Share2 as ShareIcon,
 } from "lucide-react";
 import { FallbackImage } from "@/components/global/FallbackImage";
-import ImageCarousel from "@/components/global/ImageCarousel";
 import { useLikeThreadMutation, usePostCommentMutation } from "@/features/tribes/mutations";
 import type { FeedThread } from "@/features/tribes/api";
 import { useAppDispatch } from "@/redux/hook";
@@ -93,7 +92,7 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
   };
 
   return (
-    <article className="flex w-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-none">
+    <article className="flex h-full w-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-none">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           {author?.avatar ? (
@@ -146,7 +145,26 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
         )}
       </div>
 
-      {thread.media?.length > 0 && <ImageCarousel images={thread.media} />}
+      {thread.media?.length > 0 && (
+        <Link
+          href={tribeHref}
+          className="relative mt-3 block h-44 w-full shrink-0 overflow-hidden rounded-xl bg-gray-100"
+        >
+          <FallbackImage
+            src={thread.media[0]}
+            fallbackSrc={images.PLACEHOLDER}
+            alt=""
+            fill
+            sizes="(min-width: 640px) 422px, 80vw"
+            className="object-cover"
+          />
+          {thread.media.length > 1 && (
+            <span className="text-meta absolute right-2 bottom-2 rounded-full bg-black/60 px-2 py-0.5 font-semibold text-white">
+              +{thread.media.length - 1}
+            </span>
+          )}
+        </Link>
+      )}
 
       {thread.polls && (
         <Link
@@ -157,7 +175,7 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
         </Link>
       )}
 
-      <div className="mt-3 flex items-center justify-between">
+      <div className="mt-auto flex items-center justify-between pt-3">
         <div className="flex items-center gap-3">
           <button
             type="button"
