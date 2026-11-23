@@ -19,11 +19,14 @@ export function FeedSection() {
 
   return (
     <div className="w-full">
+      <p className="text-title-r font-sans font-semibold">Tribe feed</p>
       {joinedTribes.length > 0 ? (
-        <FeedTribeStrip tribes={joinedTribes} />
+        <div className="mt-3">
+          <FeedTribeStrip tribes={joinedTribes} />
+        </div>
       ) : (
         !isLoading && (
-          <p className="text-body-s text-text-grey">
+          <p className="text-body-s text-text-grey mt-1">
             Join a tribe to see its posts first.{" "}
             <Link href={routes.TRIBE} className="text-light-green font-semibold">
               Find tribes
@@ -32,13 +35,13 @@ export function FeedSection() {
         )
       )}
 
-      <div className="mt-4 flex flex-col gap-4">
+      <div className="mt-4 flex flex-col gap-3">
         {isLoading && (
           <p className="text-body-s text-text-grey py-10 text-center">Loading your feed...</p>
         )}
 
         {isError && (
-          <div className="rounded-lg bg-white p-6 text-center">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
             <p className="text-body-s text-text-grey">We could not load the feed.</p>
             <button
               type="button"
@@ -51,7 +54,7 @@ export function FeedSection() {
         )}
 
         {!isLoading && !isError && threads.length === 0 && (
-          <div className="rounded-lg bg-white p-6 text-center">
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center">
             <p className="text-body-s text-text-grey">No posts yet. Check back soon.</p>
           </div>
         )}
@@ -63,7 +66,7 @@ export function FeedSection() {
         {hasNextPage && (
           <button
             type="button"
-            className="text-light-green text-body-s rounded-lg bg-white p-3 font-semibold"
+            className="text-light-green text-body-s mt-2 rounded-lg bg-gray-100 p-3 font-semibold"
             onClick={() => void fetchNextPage()}
             disabled={isFetchingNextPage}
           >

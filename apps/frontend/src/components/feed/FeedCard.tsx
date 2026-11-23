@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Heart as HeartIcon,
@@ -14,7 +15,6 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
-import { getInitials } from "@/lib/helper";
 
 const PREVIEW_CHARS = 280;
 
@@ -92,38 +92,30 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
   };
 
   return (
-    <article className="rounded-lg bg-white p-4">
-      <header className="flex items-center gap-3">
-        {author?.avatar ? (
+    <article className="bg-light-yellow flex w-full flex-col rounded-2xl p-4 shadow-none">
+      <div className="flex items-center gap-3">
+        <Link href={tribeHref} className="flex min-w-0 items-center gap-3">
           <FallbackImage
-            src={author.avatar}
-            fallbackSrc={images.AVATAR_4}
+            src={thread.tribe.image}
+            fallbackSrc={images.DEFAULT_TRIBE}
             alt=""
-            width={40}
-            height={40}
-            className="h-10 w-10 shrink-0 rounded-full border border-gray-200 object-cover"
+            width={48}
+            height={48}
+            className="h-12 w-12 shrink-0 rounded-lg object-cover"
           />
-        ) : (
-          <div className="bg-gradient-green flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium text-white">
-            {getInitials(author?.fullname)}
-          </div>
-        )}
-        <div className="min-w-0 flex-1">
-          <p className="text-body-s truncate font-semibold">
-            {author?.username ?? author?.fullname}
+          <p className="text-text-grey text-meta truncate font-sans font-semibold">
+            {thread.tribe.name}
           </p>
-          <p className="text-meta text-text-grey">{thread.created_at}</p>
-        </div>
-        <Link
-          href={tribeHref}
-          className="bg-light-tint text-light-green text-meta max-w-[40%] truncate rounded-full px-3 py-1 font-semibold"
-        >
-          {thread.tribe.name}
         </Link>
-      </header>
+      </div>
+      <p className="text-meta mt-2 flex items-center gap-1 text-gray-500">
+        <span className="truncate">{author?.username ?? author?.fullname}</span>
+        {author?.verified && <Image src={images.VERIFIED} alt="verified" width={12} height={12} />}
+        <span>· {thread.created_at}</span>
+      </p>
 
-      <div className="mt-3">
-        {thread.topic && <p className="text-body-l font-semibold">{thread.topic}</p>}
+      <div className="mt-2">
+        {thread.topic && <p className="text-body-s font-sans font-semibold">{thread.topic}</p>}
         {text && (
           <p className="text-body-s text-black-light mt-1 whitespace-pre-line">
             {expanded || !isLong ? text : `${text.slice(0, PREVIEW_CHARS)}...`}
@@ -135,7 +127,7 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
             className="text-light-green text-body-s mt-1 font-semibold"
             onClick={() => setExpanded((open) => !open)}
           >
-            {expanded ? "Show less" : "See more"}
+            {expanded ? "See less" : "See more"}
           </button>
         )}
       </div>
@@ -145,76 +137,90 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
       {thread.polls && (
         <Link
           href={tribeHref}
-          className="bg-light_grey text-body-s mt-3 block rounded-xl p-3 font-semibold"
+          className="text-body-s mt-3 block rounded-xl bg-white p-3 font-semibold"
         >
           Poll: {thread.thread_polls?.title}. Open the tribe to vote.
         </Link>
       )}
 
-      <footer className="text-text-grey mt-4 flex items-center gap-6">
-        <button
-          type="button"
-          onClick={toggleLike}
-          aria-pressed={hasLiked}
-          aria-label="Like"
-          className="text-body-s flex items-center gap-1.5"
-        >
-          <HeartIcon className={`h-5 w-5 ${hasLiked ? "fill-red-500 text-red-500" : ""}`} />
-          {likes}
-        </button>
-        {thread.from_joined_tribe ? (
+      <div className="mt-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => setCommentOpen((open) => !open)}
-            aria-expanded={commentOpen}
-            aria-label="Comment"
-            className="text-body-s flex items-center gap-1.5"
+            onClick={toggleLike}
+            aria-pressed={hasLiked}
+            aria-label="Like"
+            className="text-light-black text-body-s flex items-center gap-1 font-sans"
           >
-            <CommentIcon className="h-5 w-5" />
-            {comments}
+            <HeartIcon className={`h-4 w-4 ${hasLiked ? "fill-green-400 text-green-400" : ""}`} />
+            {likes}
           </button>
-        ) : (
-          <Link
-            href={tribeHref}
-            className="text-body-s flex items-center gap-1.5"
-            aria-label="Comments"
+          {thread.from_joined_tribe ? (
+            <button
+              type="button"
+              onClick={() => setCommentOpen((open) => !open)}
+              aria-expanded={commentOpen}
+              aria-label="Comment"
+              className="text-light-black text-body-s flex items-center gap-1 font-sans"
+            >
+              <CommentIcon className="h-4 w-4" />
+              {comments}
+            </button>
+          ) : (
+            <Link
+              href={tribeHref}
+              aria-label="Comments"
+              className="text-light-black text-body-s flex items-center gap-1 font-sans"
+            >
+              <CommentIcon className="h-4 w-4" />
+              {comments}
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={share}
+            aria-label="Share"
+            className="text-light-black flex items-center"
           >
-            <CommentIcon className="h-5 w-5" />
-            {comments}
-          </Link>
-        )}
-        <button
-          type="button"
-          onClick={share}
-          aria-label="Share"
-          className="text-body-s flex items-center"
+            <ShareIcon className="h-4 w-4" />
+          </button>
+        </div>
+
+        <Link
+          href={tribeHref}
+          className="text-light-green text-body-s flex items-center gap-1 font-sans font-semibold transition-opacity hover:opacity-80"
         >
-          <ShareIcon className="h-5 w-5" />
-        </button>
-        {!thread.from_joined_tribe && (
-          <Link href={tribeHref} className="text-light-green text-body-s ml-auto font-semibold">
-            Join tribe
-          </Link>
-        )}
-      </footer>
+          {thread.from_joined_tribe ? "View" : "Join tribe"}
+          <Image src={images.ARROW_LEFT} alt="" width={12.5} height={12.5} className="h-3 w-3" />
+        </Link>
+      </div>
 
       {commentOpen && (
-        <form onSubmit={submitComment} className="mt-3 flex gap-2">
-          <input
+        <form onSubmit={submitComment} className="mt-3 flex flex-col gap-2">
+          <textarea
             value={comment}
             onChange={(event) => setComment(event.target.value)}
-            placeholder="Write a comment"
+            placeholder="Write a comment..."
             aria-label="Write a comment"
             maxLength={1000}
-            className="form-font bg-light_grey text-body-s h-10 min-w-0 flex-1 rounded-xl px-3"
+            className="focus:ring-light-green h-20 w-full resize-none rounded-md border border-gray-300 bg-white p-2 focus:ring-1"
           />
-          <button
-            type="submit"
-            disabled={commentMutation.isPending || !comment.trim()}
-            className="bg-gradient-green text-body-s h-10 rounded-xl px-4 font-semibold text-white disabled:opacity-50"
-          >
-            Post
-          </button>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setCommentOpen(false)}
+              className="rounded-md border border-gray-300 px-3 py-1 text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={commentMutation.isPending || !comment.trim()}
+              className="bg-light-green rounded-md px-4 py-1.5 text-sm text-white disabled:opacity-60"
+            >
+              {commentMutation.isPending ? "Posting..." : "Post"}
+            </button>
+          </div>
         </form>
       )}
     </article>

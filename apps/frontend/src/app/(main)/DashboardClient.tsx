@@ -52,7 +52,7 @@ const DashboardClient = () => {
     <MainLayout>
       {/*<NotificationToast payload={{title: "This is a test", body: "This is the body of the test"}} />*/}
       <div className="w-full">
-        <section id="feed" className="phone:mx-10 laptop:max-w-184 laptop:mx-auto mx-4 mt-4">
+        <section id="feed" className="phone:mx-10 m-4 mx-4 rounded-lg bg-white p-4">
           <FeedSection />
         </section>
         <section id="forums" className="phone:mx-10 mx-4 my-4 rounded-lg bg-white p-4">

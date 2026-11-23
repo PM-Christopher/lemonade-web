@@ -74,7 +74,7 @@ describe("FeedCard", () => {
 
     expect(screen.getByText(/\.\.\.$/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "See more" }));
-    expect(screen.getByRole("button", { name: "Show less" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "See less" })).toBeInTheDocument();
   });
 
   it("lets a member comment on the post without leaving the feed", () => {
