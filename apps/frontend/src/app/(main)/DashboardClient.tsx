@@ -18,6 +18,7 @@ import { BusinessInterface } from "@/interfaces/BusinessInterface";
 import BusinessCard from "@/components/dashboard/BusinessCard";
 import { BusinessesSkeleton, EventsSkeleton, TribesSkeleton } from "@/components/Skeletons";
 import Link from "next/link";
+import { FeedSection } from "@/components/feed/FeedSection";
 
 import ChevronRight from "@/images/icons/chevronRight.svg";
 
@@ -51,16 +52,8 @@ const DashboardClient = () => {
     <MainLayout>
       {/*<NotificationToast payload={{title: "This is a test", body: "This is the body of the test"}} />*/}
       <div className="w-full">
-        <section id="feed" className="phone:mx-10 m-4 mx-4 rounded-lg bg-white p-4">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-title-r font-sans font-semibold">Your tribe feed</p>
-              <p className="text-body-s text-text-grey mt-1">
-                New posts from every tribe you joined, in one place.
-              </p>
-            </div>
-            <SeeMore href={routes.FEED} />
-          </div>
+        <section id="feed" className="phone:mx-10 laptop:max-w-184 laptop:mx-auto mx-4 mt-4">
+          <FeedSection />
         </section>
         <section id="forums" className="phone:mx-10 mx-4 my-4 rounded-lg bg-white p-4">
           <div className="flex items-center justify-between gap-4">

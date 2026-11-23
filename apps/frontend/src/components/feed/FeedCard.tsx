@@ -1,10 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Heart as HeartIcon, MessageCircle as CommentIcon } from "lucide-react";
+import {
+  Heart as HeartIcon,
+  MessageCircle as CommentIcon,
+  Share2 as ShareIcon,
+} from "lucide-react";
 import { FallbackImage } from "@/components/global/FallbackImage";
 import ImageCarousel from "@/components/global/ImageCarousel";
-import { useLikeThreadMutation } from "@/features/tribes/mutations";
+import { useLikeThreadMutation, usePostCommentMutation } from "@/features/tribes/mutations";
 import type { FeedThread } from "@/features/tribes/api";
 import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -18,9 +22,13 @@ const PREVIEW_CHARS = 280;
 export function FeedCard({ thread }: { thread: FeedThread }) {
   const dispatch = useAppDispatch();
   const likeMutation = useLikeThreadMutation();
+  const commentMutation = usePostCommentMutation(thread.tribe.slug);
   const [hasLiked, setHasLiked] = useState(thread.hasLiked);
   const [likes, setLikes] = useState(thread.likes);
   const [expanded, setExpanded] = useState(false);
+  const [commentOpen, setCommentOpen] = useState(false);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState(thread.comments);
 
   const author = thread.created_by?.user;
   const tribeHref = routes.TRIBE_DETAIL(thread.tribe.slug);
@@ -37,10 +45,50 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
         onError: () => {
           setHasLiked(wasLiked);
           setLikes((count) => count + (wasLiked ? 1 : -1));
-          dispatch(updateToastifyReducer({ show: true, message: "Failed to like post", type: "error" }));
+          dispatch(
+            updateToastifyReducer({ show: true, message: "Failed to like post", type: "error" }),
+          );
         },
       },
     );
+  };
+
+  const submitComment = (event: React.FormEvent) => {
+    event.preventDefault();
+    const body = comment.trim();
+    if (!body) return;
+    commentMutation.mutate(
+      { tribeId: thread.tribe.id, threadId: thread.id, data: { body } },
+      {
+        onSuccess: () => {
+          setComment("");
+          setCommentOpen(false);
+          setComments((count) => count + 1);
+          dispatch(
+            updateToastifyReducer({ show: true, message: "Comment posted", type: "success" }),
+          );
+        },
+        onError: () =>
+          dispatch(
+            updateToastifyReducer({ show: true, message: "Failed to post comment", type: "error" }),
+          ),
+      },
+    );
+  };
+
+  // Shares the tribe's public page, since a post itself has no public link.
+  const share = async () => {
+    const url = `${window.location.origin}/share/tribe/${thread.tribe.slug}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: thread.topic || thread.tribe.name, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        dispatch(updateToastifyReducer({ show: true, message: "Link copied", type: "success" }));
+      }
+    } catch {
+      // The reader closed the share sheet, so there is nothing to report.
+    }
   };
 
   return (
@@ -61,7 +109,9 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-body-s truncate font-semibold">{author?.username ?? author?.fullname}</p>
+          <p className="text-body-s truncate font-semibold">
+            {author?.username ?? author?.fullname}
+          </p>
           <p className="text-meta text-text-grey">{thread.created_at}</p>
         </div>
         <Link
@@ -112,16 +162,61 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
           <HeartIcon className={`h-5 w-5 ${hasLiked ? "fill-red-500 text-red-500" : ""}`} />
           {likes}
         </button>
-        <Link href={tribeHref} className="text-body-s flex items-center gap-1.5" aria-label="Comments">
-          <CommentIcon className="h-5 w-5" />
-          {thread.comments}
-        </Link>
+        {thread.from_joined_tribe ? (
+          <button
+            type="button"
+            onClick={() => setCommentOpen((open) => !open)}
+            aria-expanded={commentOpen}
+            aria-label="Comment"
+            className="text-body-s flex items-center gap-1.5"
+          >
+            <CommentIcon className="h-5 w-5" />
+            {comments}
+          </button>
+        ) : (
+          <Link
+            href={tribeHref}
+            className="text-body-s flex items-center gap-1.5"
+            aria-label="Comments"
+          >
+            <CommentIcon className="h-5 w-5" />
+            {comments}
+          </Link>
+        )}
+        <button
+          type="button"
+          onClick={share}
+          aria-label="Share"
+          className="text-body-s flex items-center"
+        >
+          <ShareIcon className="h-5 w-5" />
+        </button>
         {!thread.from_joined_tribe && (
           <Link href={tribeHref} className="text-light-green text-body-s ml-auto font-semibold">
             Join tribe
           </Link>
         )}
       </footer>
+
+      {commentOpen && (
+        <form onSubmit={submitComment} className="mt-3 flex gap-2">
+          <input
+            value={comment}
+            onChange={(event) => setComment(event.target.value)}
+            placeholder="Write a comment"
+            aria-label="Write a comment"
+            maxLength={1000}
+            className="form-font bg-light_grey text-body-s h-10 min-w-0 flex-1 rounded-xl px-3"
+          />
+          <button
+            type="submit"
+            disabled={commentMutation.isPending || !comment.trim()}
+            className="bg-gradient-green text-body-s h-10 rounded-xl px-4 font-semibold text-white disabled:opacity-50"
+          >
+            Post
+          </button>
+        </form>
+      )}
     </article>
   );
 }
