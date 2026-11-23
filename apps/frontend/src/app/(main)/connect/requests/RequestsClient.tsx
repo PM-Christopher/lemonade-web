@@ -59,8 +59,8 @@ const RequestsClient = () => {
             <UserSearch onSelect={setConnectTarget} placeholder="Search username..." />
           </div>
         </div>
-        <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:w-200 laptop:border laptop:border-grey-20 max-h-164.75 w-screen rounded-xl border-none bg-white p-6">
+        <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
+          <div className="laptop:w-200 laptop:border laptop:border-grey-20 max-h-164.75 w-full rounded-xl border-none bg-white p-6">
             <div className="hide-scrollbar max-h-screen overflow-y-auto">
               {loading ? (
                 <InviteSkeleton count={4} />

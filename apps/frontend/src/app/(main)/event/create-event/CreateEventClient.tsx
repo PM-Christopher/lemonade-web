@@ -193,7 +193,7 @@ const CreateEventClient = () => {
             <p className="tracking-custom text-body-l font-sans font-semibold">Add event</p>
           </div>
         </div>
-        <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
+        <section className="laptop:mt-4 laptop:items-center laptop:px-0 mt-0 flex flex-col px-4">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="laptop:mt-10 laptop:w-160 laptop:p-12 flex w-full flex-col rounded-xl bg-white p-4">

@@ -62,8 +62,8 @@ const ConfirmDeleteClient = () => {
   };
 
   return (
-    <section className="mt-4 flex flex-col items-center">
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="laptop:w-auto w-full">
         <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl bg-white p-6">
           <p className="font-semi-normal text-black-light text-body-l">
             Enter your password to delete your account

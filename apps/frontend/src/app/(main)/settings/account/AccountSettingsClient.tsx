@@ -45,7 +45,7 @@ const AccountSettingsClient = () => {
 
   return (
     <>
-      <section className="mt-4 flex flex-col items-center px-5">
+      <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
         <div className="laptop:w-160 flex w-full flex-col gap-4 rounded-xl bg-white p-4">
           {settingsItems.map((item) => (
             <div

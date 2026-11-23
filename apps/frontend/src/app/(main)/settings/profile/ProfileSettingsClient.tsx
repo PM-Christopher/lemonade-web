@@ -117,8 +117,8 @@ const ProfileSettingsClient = () => {
 
   return (
     <>
-      <section className="mt-15.5 flex flex-col items-center">
-        <div className="flex flex-col items-center">
+      <section className="laptop:px-0 mt-15.5 flex flex-col items-center px-4">
+        <div className="flex w-full flex-col items-center">
           <div className="relative">
             <FallbackImage
               src={user?.profile_image}

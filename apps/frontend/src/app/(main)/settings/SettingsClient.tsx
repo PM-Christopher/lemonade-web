@@ -104,8 +104,8 @@ function SettingsClient() {
   };
 
   return (
-    <section className="mt-4 flex flex-col items-center">
-      <div className="flex flex-col items-center">
+    <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
+      <div className="flex w-full flex-col items-center">
         <div className="bg-step-color laptop:w-160 relative flex w-full items-center justify-between rounded-xl p-4">
           {isMember && (
             <span className="text-meta absolute -top-2.5 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-full bg-yellow-300 px-2 py-0.5 leading-normal font-semibold text-black">

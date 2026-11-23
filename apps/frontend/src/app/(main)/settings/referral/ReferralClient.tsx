@@ -72,9 +72,9 @@ function ReferralClient() {
       <section className="bg-light_grey pb-10">
         <BackHeader title="Referrals" href={routes.SETTINGS} />
 
-        <section className="mt-4 flex flex-col items-center">
-          <div className="laptop:gap-4 flex flex-col items-center gap-0">
-            <div className="bg-light-green-10 rounded-xl">
+        <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
+          <div className="laptop:gap-4 flex w-full flex-col items-center gap-0">
+            <div className="bg-light-green-10 laptop:w-auto w-full rounded-xl">
               <div className="laptop:w-140 flex w-full items-center justify-center p-6">
                 <Image src={images.GIFT} alt="gift_image" width={160} height={171} />
               </div>
@@ -137,7 +137,7 @@ function ReferralClient() {
             </div>
 
             {/* Reward Breakdown */}
-            <div className="laptop:mt-6 laptop:w-140 mt-0 flex w-screen flex-col gap-2 rounded-xl bg-white p-6">
+            <div className="laptop:mt-6 laptop:w-140 mt-0 flex w-full flex-col gap-2 rounded-xl bg-white p-6">
               <p className="text-body-l font-semibold">Refer friends and earn</p>
 
               {referralActivity && (

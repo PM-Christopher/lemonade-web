@@ -199,9 +199,9 @@ const AddBusinessClient = () => {
             <p className="tracking-custom text-body-l font-sans font-semibold">Add business</p>
           </div>
         </div>
-        <section className="laptop:mt-4 mt-0 flex flex-col items-center">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="laptop:mt-10 laptop:w-160 mt-0 flex w-full flex-col rounded-xl bg-white p-12">
+        <section className="laptop:mt-4 laptop:px-0 mt-0 flex flex-col items-center px-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="laptop:w-auto w-full">
+            <div className="laptop:mt-10 laptop:w-160 laptop:p-12 mt-0 flex w-full flex-col rounded-xl bg-white p-4">
               <p className="text-light-black text-meta font-sans font-bold">BUSINESS DETAILS</p>
               <SingleFileUploader
                 length="single"

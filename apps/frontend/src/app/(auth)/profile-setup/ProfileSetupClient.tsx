@@ -85,7 +85,7 @@ export default function ProfileStepsPage() {
 
   return (
     <AuthLayout>
-      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+      <div className="mx-auto flex w-full items-start justify-center gap-10">
         <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="text-title-l font-sans font-semibold">Welcome,</p>
           <p className="font-ruso text-mid-green text-display-xs font-bold">{data?.fullname}</p>

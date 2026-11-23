@@ -304,7 +304,7 @@ const EditEventClient = ({ id }: { id: string }) => {
           </button>
         </div>
 
-        <section className="laptop:mt-4 laptop:items-center mt-0 flex flex-col">
+        <section className="laptop:mt-4 laptop:items-center laptop:px-0 mt-0 flex flex-col px-4">
           {!ready ? (
             <EventFormSkeleton />
           ) : (

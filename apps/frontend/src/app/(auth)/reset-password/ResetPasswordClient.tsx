@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
     <AuthLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mx-auto flex w-fit max-w-full items-start justify-center gap-10"
+        className="mx-auto flex w-full items-start justify-center gap-10"
       >
         <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Reset password</p>

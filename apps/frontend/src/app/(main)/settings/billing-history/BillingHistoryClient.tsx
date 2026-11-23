@@ -19,7 +19,7 @@ const BillingHistoryClient = () => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <BackHeader title="Billing history" href={routes.SETTINGS} />
-        <section className="mt-6 flex flex-col items-center">
+        <section className="laptop:px-0 mt-6 flex flex-col items-center px-4">
           {loading ? (
             <BillingHistorySkeleton count={4} />
           ) : (

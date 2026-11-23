@@ -186,7 +186,7 @@ export default function VerifyPage() {
 
   return (
     <AuthLayout>
-      <div className="mx-auto flex w-fit max-w-full items-start justify-center gap-10">
+      <div className="mx-auto flex w-full items-start justify-center gap-10">
         <div className="tablet:flex hidden w-100 shrink-0 flex-col">
           <p className="font-ruso text-display-s font-bold">Verify email address</p>
           <p className="text-body-xl text-text-grey mt-2 max-w-[26rem] font-sans font-normal">

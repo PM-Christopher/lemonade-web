@@ -122,7 +122,7 @@ const NotificationSettingsClient = () => {
     <MainLayout>
       <section className="bg-light_grey pb-10">
         <BackHeader title="Notification settings" href={routes.SETTINGS} />
-        <section className="mt-4 flex flex-col items-center px-2.5">
+        <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
           <div className="laptop:w-160 flex w-full flex-col gap-6 rounded-xl">
             {sections.map((section) => (
               <div key={section.label} className="flex flex-col gap-4">

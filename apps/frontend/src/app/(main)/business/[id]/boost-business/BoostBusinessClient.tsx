@@ -175,8 +175,8 @@ const BoostBusinessClient = ({ id }: { id: number }) => {
             <p className="tracking-custom text-body-l font-sans font-semibold">Boost business</p>
           </div>
         </div>
-        <section className="mt-4 flex flex-col items-center">
-          <form id="boost-form" onSubmit={handleSubmit(onSubmit)}>
+        <section className="laptop:px-0 mt-4 flex flex-col items-center px-4">
+          <form id="boost-form" onSubmit={handleSubmit(onSubmit)} className="laptop:w-auto w-full">
             <div className="laptop:flex-row laptop:justify-between flex flex-col gap-10 gap-y-38.5">
               <div className="flex flex-col">
                 <div className="laptop:w-160 laptop:bg-white w-screen rounded-xl bg-none p-6 px-12">

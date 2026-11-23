@@ -105,7 +105,7 @@ const PlanClient = () => {
       <section className="bg-light_grey pb-10">
         <BackHeader title="Pricing" />
 
-        <section className="mt-12 flex flex-col items-center">
+        <section className="laptop:px-0 mt-12 flex flex-col items-center px-4">
           <div className="laptop:flex-row flex flex-col gap-12">
             {loading ? (
               <SubscriptionsSkeleton count={2} dataList={7} />

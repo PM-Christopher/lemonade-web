@@ -122,7 +122,7 @@ function WalletSettingsClient() {
         />
         <BackHeader title="Wallet" href={routes.SETTINGS} />
 
-        <section className="laptop:flex-row laptop:px-0 mt-4 flex flex-col justify-center gap-5 px-2.5">
+        <section className="laptop:flex-row laptop:px-0 mt-4 flex flex-col justify-center gap-5 px-4">
           {loading ? (
             <WalletDetailSkeleton />
           ) : (
