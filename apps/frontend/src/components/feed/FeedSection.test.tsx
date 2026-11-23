@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { FeedSection } from "./FeedSection";
 
 vi.mock("next/image", () => ({
@@ -78,5 +78,15 @@ describe("FeedSection", () => {
 
     expect(fetchNextPage).toHaveBeenCalledTimes(1);
     vi.unstubAllGlobals();
+  });
+
+  it("stacks posts in list layout and loads more only when asked", () => {
+    feed.hasNextPage = true;
+    render(<FeedSection layout="list" showHeading={false} />);
+
+    expect(screen.queryByText("Tribe feed")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Load more posts" }));
+
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
   });
 });

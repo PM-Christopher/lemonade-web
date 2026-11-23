@@ -9,7 +9,13 @@ import type { RootState } from "@/redux/store";
 import { routes } from "@/lib/routes";
 
 /** The tribe strip and the timeline under it. Shows posts even when the user has joined no tribe. */
-export function FeedSection() {
+interface FeedSectionProps {
+  /** "row" scrolls sideways and loads more at the end, "list" stacks posts and waits for a tap. */
+  layout?: "row" | "list";
+  showHeading?: boolean;
+}
+
+export function FeedSection({ layout = "row", showHeading = true }: FeedSectionProps) {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } =
     useFeedQuery(undefined, { enabled: isLoggedIn });
@@ -21,17 +27,17 @@ export function FeedSection() {
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const node = end.current;
-    if (!node || !hasNextPage) return;
+    if (layout !== "row" || !node || !hasNextPage) return;
     const observer = new IntersectionObserver((entries) => {
       if (entries[0]?.isIntersecting && !isFetchingNextPage) void fetchNextPage();
     });
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [layout, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="w-full">
-      <p className="text-title-r font-sans font-semibold">Tribe feed</p>
+      {showHeading && <p className="text-title-r font-sans font-semibold">Tribe feed</p>}
       {joinedTribes.length > 0 ? (
         <div className="mt-3">
           <FeedTribeStrip tribes={joinedTribes} />
@@ -70,7 +76,7 @@ export function FeedSection() {
         </div>
       )}
 
-      {threads.length > 0 && (
+      {threads.length > 0 && layout === "row" && (
         <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto py-4 shadow-none">
           {threads.map((thread) => (
             <div key={thread.id} className="phone:w-105.5 w-[80vw] max-w-105.5 shrink-0">
@@ -81,6 +87,24 @@ export function FeedSection() {
             <div ref={end} className="text-meta text-text-grey flex w-24 shrink-0 self-center">
               {isFetchingNextPage ? "Loading..." : ""}
             </div>
+          )}
+        </div>
+      )}
+
+      {threads.length > 0 && layout === "list" && (
+        <div className="mt-4 flex flex-col gap-4">
+          {threads.map((thread) => (
+            <FeedCard key={thread.id} thread={thread} />
+          ))}
+          {hasNextPage && (
+            <button
+              type="button"
+              className="text-light-green text-body-s rounded-full bg-white py-3 font-semibold shadow-sm ring-1 ring-black/5"
+              onClick={() => void fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? "Loading..." : "Load more posts"}
+            </button>
           )}
         </div>
       )}

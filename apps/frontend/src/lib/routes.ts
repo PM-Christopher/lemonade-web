@@ -1,6 +1,7 @@
 /** In-app routes for the public frontend — use instead of path string literals. */
 export const routes = {
   HOME: "/",
+  DASHBOARD_NEW: "/dashboard/new",
   LOGIN: "/login",
   SIGNUP: "/signup",
   VERIFY_EMAIL: "/verify-email",
