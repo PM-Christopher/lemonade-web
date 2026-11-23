@@ -2457,8 +2457,17 @@
         "uri": "/v1/admin/users/{id}/change-plan",
         "name": "v1.admin.users.change-plan",
         "guard": "admin",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Subscription\\AdminChangeUserPlanRequest",
+        "fields": {
+            "subscription_id": [
+                "required",
+                "uuid"
+            ],
+            "type": [
+                "sometimes",
+                "in:monthly,yearly"
+            ]
+        }
     },
     {
         "method": "PATCH",
@@ -2997,8 +3006,17 @@
         "uri": "/v1/user/auth/google",
         "name": "v1.user.auth.google",
         "guard": null,
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Identity\\SignInWithGoogleRequest",
+        "fields": {
+            "token": [
+                "required",
+                "string"
+            ],
+            "password": [
+                "nullable",
+                "string"
+            ]
+        }
     },
     {
         "method": "POST",
@@ -3342,16 +3360,30 @@
         "uri": "/v1/user/connect/invite-response/{id}",
         "name": "v1.user.connect.invites.respond",
         "guard": "user",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Connect\\RespondToChatInviteRequest",
+        "fields": {
+            "option": [
+                "required",
+                "string"
+            ]
+        }
     },
     {
         "method": "POST",
         "uri": "/v1/user/connect/send-invite",
         "name": "v1.user.connect.invites.send",
         "guard": "user",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Connect\\SendChatRequestRequest",
+        "fields": {
+            "invitee_id": [
+                "required",
+                "uuid"
+            ],
+            "message": [
+                "nullable",
+                "string"
+            ]
+        }
     },
     {
         "method": "GET",
@@ -3645,8 +3677,8 @@
                 "required"
             ],
             "tickets.*.ticket_type": [
-                "string",
-                "required"
+                "required",
+                "enum"
             ],
             "tickets.*.name": [
                 "string",
@@ -3662,8 +3694,8 @@
                 "required"
             ],
             "tickets.*.stock_type": [
-                "string",
-                "required"
+                "required",
+                "enum"
             ],
             "tickets.*.ticket_stock": [
                 "numeric",
@@ -3704,8 +3736,8 @@
                 "nullable"
             ],
             "tickets.*.ticket_type": [
-                "string",
-                "required"
+                "required",
+                "enum"
             ],
             "tickets.*.name": [
                 "string",
@@ -3721,8 +3753,8 @@
                 "required"
             ],
             "tickets.*.stock_type": [
-                "string",
-                "required"
+                "required",
+                "enum"
             ],
             "tickets.*.ticket_stock": [
                 "numeric",
@@ -4365,8 +4397,13 @@
         "uri": "/v1/user/messages/chat",
         "name": "v1.user.messages.chat",
         "guard": "user",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Connect\\GetSingleChatRequest",
+        "fields": {
+            "receiver_id": [
+                "required",
+                "uuid"
+            ]
+        }
     },
     {
         "method": "POST",
@@ -5264,8 +5301,13 @@
         "uri": "/v1/user/transaction/verify-transaction",
         "name": "v1.user.transaction.verify",
         "guard": "user",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Payment\\VerifyTransactionRequest",
+        "fields": {
+            "trx_ref": [
+                "required",
+                "string"
+            ]
+        }
     },
     {
         "method": "POST",
@@ -5317,6 +5359,31 @@
         "guard": "user",
         "formRequest": null,
         "fields": null
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/user/tribes/feed",
+        "name": "v1.user.tribes.feed",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Tribe\\TribeFeedRequest",
+        "fields": {
+            "tribe": [
+                "nullable",
+                "string",
+                "max:255"
+            ],
+            "page": [
+                "nullable",
+                "integer",
+                "min:1"
+            ],
+            "per_page": [
+                "nullable",
+                "integer",
+                "min:1",
+                "max:30"
+            ]
+        }
     },
     {
         "method": "POST",
