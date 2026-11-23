@@ -41,6 +41,11 @@ export interface AddUserWalletBalanceRequest {
   amount: number;
 }
 
+export interface AdminChangeUserPlanRequest {
+  subscription_id: string;
+  type?: "monthly" | "yearly";
+}
+
 export interface AdminRoleRequest {
   name: string;
   permissions: {}[];
@@ -223,11 +228,11 @@ export interface CreateEventRequest {
     status?: "draft";
   };
   tickets: {
-    ticket_type: string;
+    ticket_type: unknown;
     name: string;
     price: number;
     transfer_commission: boolean;
-    stock_type: string;
+    stock_type: unknown;
     ticket_stock: number;
     purchase_limit: number;
     description: string;
@@ -315,11 +320,11 @@ export interface DisputeJobRequest {
 export interface EditEventTicketsRequest {
   tickets: {
     ticket_id?: string;
-    ticket_type: string;
+    ticket_type: unknown;
     name: string;
     price: number;
     transfer_commission: boolean;
-    stock_type: string;
+    stock_type: unknown;
     ticket_stock: number;
     purchase_limit: number;
     description: string;
@@ -343,6 +348,10 @@ export interface FaqRequest {
 
 export interface FindConnectUserRequest {
   search: string;
+}
+
+export interface GetSingleChatRequest {
+  receiver_id: string;
 }
 
 export interface ListLedgerEntriesRequest {
@@ -539,6 +548,10 @@ export interface ResolveDisputeRequest {
   resolution: "refund" | "release";
 }
 
+export interface RespondToChatInviteRequest {
+  option: string;
+}
+
 export interface ReviewCompletedJobRequest {
   title: string;
   rating: number;
@@ -558,6 +571,11 @@ export interface SendChatMessageRequest {
   receiver_id: string;
   message?: string;
   media?: unknown[];
+}
+
+export interface SendChatRequestRequest {
+  invitee_id: string;
+  message?: string;
 }
 
 export interface SendSupportMessageRequest {
@@ -580,6 +598,11 @@ export interface SignInAdminRequest {
 export interface SignInRequest {
   email: string;
   password: string;
+}
+
+export interface SignInWithGoogleRequest {
+  token: string;
+  password?: string;
 }
 
 export interface SignUpRequest {
@@ -623,6 +646,12 @@ export interface SubscriptionPlanRequest {
   offline_benefits: boolean;
   recommended?: boolean;
   active?: boolean;
+}
+
+export interface TribeFeedRequest {
+  tribe?: string;
+  page?: number;
+  per_page?: number;
 }
 
 export interface UpdateBusinessRequest {
@@ -739,6 +768,10 @@ export interface VerifyPasswordResetOtpRequest {
 
 export interface VerifyPaymentReferenceRequest {
   reference: string;
+}
+
+export interface VerifyTransactionRequest {
+  trx_ref: string;
 }
 
 export interface VoteOnTribePollRequest {

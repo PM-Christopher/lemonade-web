@@ -9,6 +9,7 @@ export const routes = {
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
 
+  FEED: "/feed",
   TRIBE: "/tribe",
   TRIBE_DETAIL: (id: string | number) => `/tribe/${id}` as const,
 

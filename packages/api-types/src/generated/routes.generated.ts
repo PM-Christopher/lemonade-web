@@ -503,6 +503,7 @@ export const userTribesRoutes = Object.freeze({
   CREATE: "/user/tribes/create-tribe", // POST
   DELETE: "/user/tribes/{id}", // DELETE
   EXIT: "/user/tribes/exit-tribe/{id}", // DELETE
+  FEED: "/user/tribes/feed", // GET
   JOIN: "/user/tribes/join-tribe/{id}", // POST
   LIST: "/user/tribes", // GET
   MEMBERS: "/user/tribes/{id}/members", // GET

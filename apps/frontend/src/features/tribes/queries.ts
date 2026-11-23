@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { tribesApi } from "./api";
 
 export const tribeKeys = {
@@ -6,6 +6,7 @@ export const tribeKeys = {
   lists: () => [...tribeKeys.all(), "list"] as const,
   list: (tribeType: string) => [...tribeKeys.lists(), tribeType] as const,
   detail: (id: string) => [...tribeKeys.all(), "detail", id] as const,
+  feed: (tribe?: string) => [...tribeKeys.all(), "feed", tribe ?? "all"] as const,
   threads: (id: string) => [...tribeKeys.all(), "threads", id] as const,
   pinnedThreads: (id: string) => [...tribeKeys.all(), "pinnedThreads", id] as const,
   categories: () => [...tribeKeys.all(), "categories"] as const,
@@ -30,6 +31,18 @@ export function useTribeQuery(id: string | undefined, options?: { enabled?: bool
     queryFn: () => tribesApi.getTribe(id as string),
     staleTime: 60_000,
     enabled: Boolean(id) && options?.enabled !== false,
+  });
+}
+
+// The feed is user-owned content (60s). Pages load as the reader scrolls.
+export function useFeedQuery(tribe: string | undefined, options?: { enabled?: boolean }) {
+  return useInfiniteQuery({
+    queryKey: tribeKeys.feed(tribe),
+    queryFn: ({ pageParam }) => tribesApi.getFeed({ tribe, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) => (last.has_more ? last.page + 1 : undefined),
+    staleTime: 60_000,
+    enabled: options?.enabled,
   });
 }
 

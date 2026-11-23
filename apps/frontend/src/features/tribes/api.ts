@@ -77,6 +77,28 @@ export interface SubmitVoteResponse {
   thread: Thread;
 }
 
+/** A thread in the feed, with the tribe it came from. */
+export interface FeedThread extends Thread {
+  from_joined_tribe: boolean;
+  tribe: { id: string; slug: string; name: string; image: string | null };
+}
+
+export interface FeedTribe {
+  id: string;
+  slug: string;
+  name: string;
+  image: string | null;
+}
+
+export interface FeedResponse {
+  threads: FeedThread[];
+  joined_tribes: FeedTribe[];
+  page: number;
+  per_page: number;
+  total: number;
+  has_more: boolean;
+}
+
 export interface ThreadsResponse {
   threads: Thread[];
 }
@@ -217,6 +239,9 @@ export const tribesApi = {
       }),
       data,
     ),
+
+  getFeed: (params: { tribe?: string; page: number }) =>
+    browserApi.get<FeedResponse>(userTribesRoutes.FEED, { params }),
 
   getThreads: (id: string) =>
     browserApi.get<ThreadsResponse>(buildPath(userTribesRoutes.THREADS_LIST, { forum: id })),
