@@ -14,18 +14,23 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
+import { useNavigation } from "@/hooks/useNavigation";
 import { getInitials } from "@/lib/helper";
 
-const PREVIEW_CHARS = 140;
+const TITLE_CHARS = 60;
+const PREVIEW_CHARS = 100;
+
+const cut = (value: string, limit: number) =>
+  value.length > limit ? `${value.slice(0, limit).trimEnd()}...` : value;
 
 /** One thread in the feed, with the tribe it came from and a way into that tribe. */
 export function FeedCard({ thread }: { thread: FeedThread }) {
   const dispatch = useAppDispatch();
+  const { push } = useNavigation();
   const likeMutation = useLikeThreadMutation();
   const commentMutation = usePostCommentMutation(thread.tribe.slug);
   const [hasLiked, setHasLiked] = useState(thread.hasLiked);
   const [likes, setLikes] = useState(thread.likes);
-  const [expanded, setExpanded] = useState(false);
   const [commentOpen, setCommentOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState(thread.comments);
@@ -51,6 +56,12 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
         },
       },
     );
+  };
+
+  // The whole card opens the tribe, except where the reader tapped a control inside it.
+  const openTribe = (event: React.MouseEvent<HTMLElement>) => {
+    if ((event.target as HTMLElement).closest("a, button, form")) return;
+    push(tribeHref);
   };
 
   const submitComment = (event: React.FormEvent) => {
@@ -92,7 +103,10 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
   };
 
   return (
-    <article className="flex h-full w-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-none">
+    <article
+      onClick={openTribe}
+      className="flex h-full w-full cursor-pointer flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-none transition-shadow hover:shadow-md"
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           {author?.avatar ? (
@@ -127,21 +141,19 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
         </Link>
       </div>
 
-      <div className="mt-2">
-        {thread.topic && <p className="text-body-s font-sans font-semibold">{thread.topic}</p>}
+      <div className="mt-3">
+        {thread.topic && (
+          <p className="text-body-s font-sans font-semibold">{cut(thread.topic, TITLE_CHARS)}</p>
+        )}
         {text && (
           <p className="text-body-s text-black-light mt-1 whitespace-pre-line">
-            {expanded || !isLong ? text : `${text.slice(0, PREVIEW_CHARS)}...`}
+            {cut(text, PREVIEW_CHARS)}
           </p>
         )}
         {isLong && (
-          <button
-            type="button"
-            className="text-light-green text-body-s mt-1 font-semibold"
-            onClick={() => setExpanded((open) => !open)}
-          >
-            {expanded ? "See less" : "See more"}
-          </button>
+          <Link href={tribeHref} className="text-light-green text-body-s mt-1 inline-block">
+            Read more
+          </Link>
         )}
       </div>
 

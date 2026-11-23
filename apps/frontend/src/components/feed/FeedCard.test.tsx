@@ -7,6 +7,8 @@ vi.mock("next/image", () => ({
   // eslint-disable-next-line @next/next/no-img-element
   default: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));
+const push = vi.fn();
+vi.mock("@/hooks/useNavigation", () => ({ useNavigation: () => ({ push }) }));
 vi.mock("@/redux/hook", () => ({ useAppDispatch: () => vi.fn() }));
 
 const mutate = vi.fn();
@@ -37,6 +39,7 @@ describe("FeedCard", () => {
   beforeEach(() => {
     mutate.mockReset();
     postComment.mockReset();
+    push.mockReset();
   });
 
   it("shows the post and links its tribe chip to the tribe", () => {
@@ -69,12 +72,22 @@ describe("FeedCard", () => {
     expect(screen.queryByRole("link", { name: "Join tribe" })).not.toBeInTheDocument();
   });
 
-  it("cuts a long post and expands it on request", () => {
-    render(<FeedCard thread={thread({ thoughts: "x".repeat(400) })} />);
+  it("cuts a long post and title and links to the tribe to read the rest", () => {
+    render(<FeedCard thread={thread({ topic: "T".repeat(90), thoughts: "x".repeat(400) })} />);
 
-    expect(screen.getByText(/\.\.\.$/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "See more" }));
-    expect(screen.getByRole("button", { name: "See less" })).toBeInTheDocument();
+    expect(screen.getByText(`${"T".repeat(60)}...`)).toBeInTheDocument();
+    expect(screen.getByText(`${"x".repeat(100)}...`)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Read more" })).toHaveAttribute(
+      "href",
+      "/tribe/founders-ab12",
+    );
+  });
+
+  it("shows a short post whole, with no Read more link", () => {
+    render(<FeedCard thread={thread()} />);
+
+    expect(screen.getByText("We open the doors on Friday.")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Read more" })).not.toBeInTheDocument();
   });
 
   it("lets a member comment on the post without leaving the feed", () => {
@@ -112,5 +125,16 @@ describe("FeedCard", () => {
     await vi.waitFor(() =>
       expect(writeText).toHaveBeenCalledWith(expect.stringContaining("/share/tribe/founders-ab12")),
     );
+  });
+
+  it("opens the tribe when the card is tapped, but not when a control inside it is", () => {
+    render(<FeedCard thread={thread()} />);
+
+    fireEvent.click(screen.getByText("Launch day"));
+    expect(push).toHaveBeenCalledWith("/tribe/founders-ab12");
+
+    push.mockReset();
+    fireEvent.click(screen.getByRole("button", { name: "Like" }));
+    expect(push).not.toHaveBeenCalled();
   });
 });
