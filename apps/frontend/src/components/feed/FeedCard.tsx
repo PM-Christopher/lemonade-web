@@ -15,6 +15,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { images } from "@/lib/images";
 import { routes } from "@/lib/routes";
+import { getInitials } from "@/lib/helper";
 
 const PREVIEW_CHARS = 140;
 
@@ -92,27 +93,40 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
   };
 
   return (
-    <article className="bg-light-yellow flex w-full flex-col rounded-2xl p-4 shadow-none">
-      <div className="flex items-center gap-3">
-        <Link href={tribeHref} className="flex min-w-0 items-center gap-3">
-          <FallbackImage
-            src={thread.tribe.image}
-            fallbackSrc={images.DEFAULT_TRIBE}
-            alt=""
-            width={48}
-            height={48}
-            className="h-12 w-12 shrink-0 rounded-lg object-cover"
-          />
-          <p className="text-text-grey text-meta truncate font-sans font-semibold">
-            {thread.tribe.name}
-          </p>
+    <article className="flex w-full flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-none">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2">
+          {author?.avatar ? (
+            <FallbackImage
+              src={author.avatar}
+              fallbackSrc={images.AVATAR_4}
+              alt="avatar"
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0 rounded-full border border-gray-200 object-cover"
+            />
+          ) : (
+            <div className="bg-gradient-green flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium text-white">
+              {getInitials(author?.fullname)}
+            </div>
+          )}
+          <div className="min-w-0">
+            <p className="flex items-center gap-1 text-sm font-semibold">
+              <span className="truncate">{author?.username ?? author?.fullname}</span>
+              {author?.verified && (
+                <Image src={images.VERIFIED} alt="verified" width={13} height={13} />
+              )}
+            </p>
+            <p className="text-meta text-gray-500">{thread.created_at}</p>
+          </div>
+        </div>
+        <Link
+          href={tribeHref}
+          className="bg-light-tint text-light-green text-meta max-w-[45%] shrink-0 truncate rounded-full px-2.5 py-1 font-semibold"
+        >
+          {thread.tribe.name}
         </Link>
       </div>
-      <p className="text-meta mt-2 flex items-center gap-1 text-gray-500">
-        <span className="truncate">{author?.username ?? author?.fullname}</span>
-        {author?.verified && <Image src={images.VERIFIED} alt="verified" width={12} height={12} />}
-        <span>· {thread.created_at}</span>
-      </p>
 
       <div className="mt-2">
         {thread.topic && <p className="text-body-s font-sans font-semibold">{thread.topic}</p>}
@@ -186,13 +200,14 @@ export function FeedCard({ thread }: { thread: FeedThread }) {
           </button>
         </div>
 
-        <Link
-          href={tribeHref}
-          className="text-light-green text-body-s flex items-center gap-1 font-sans font-semibold transition-opacity hover:opacity-80"
-        >
-          {thread.from_joined_tribe ? "View" : "Join tribe"}
-          <Image src={images.ARROW_LEFT} alt="" width={12.5} height={12.5} className="h-3 w-3" />
-        </Link>
+        {!thread.from_joined_tribe && (
+          <Link
+            href={tribeHref}
+            className="text-light-green text-body-s font-sans font-semibold transition-opacity hover:opacity-80"
+          >
+            Join tribe
+          </Link>
+        )}
       </div>
 
       {commentOpen && (

@@ -57,7 +57,7 @@ const DashboardClient = () => {
         </section>
         <section id="forums" className="phone:mx-10 mx-4 my-4 rounded-lg bg-white p-4">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-title-r font-sans font-semibold">Tribe activities</p>
+            <p className="text-title-r font-sans font-semibold">Discover tribes</p>
             <SeeMore href={routes.TRIBE} />
           </div>
           <div className="scrollbar-hide mt-3 flex gap-3 overflow-x-auto py-4 shadow-none">
@@ -72,7 +72,7 @@ const DashboardClient = () => {
             ) : (
               <div className="flex w-full flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 py-10">
                 <p className="text-body-s font-sans font-medium text-gray-600">
-                  No featured tribes available right now.
+                  No tribes to discover right now.
                 </p>
                 <p className="text-meta mt-1 text-gray-400">Check back later for updates.</p>
               </div>
