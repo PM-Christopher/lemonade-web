@@ -75,6 +75,18 @@ export function useSendSupportMessageMutation(id: string | number | undefined) {
   });
 }
 
+export function useEditSupportMessageMutation(id: string | number | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ messageId, message }: { messageId: string; message: string }) =>
+      userApi.editSupportMessage(id as string | number, messageId, message),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...userKeys.all(), "support-chat", id] });
+    },
+  });
+}
+
 // Uploads every picked file at once and returns their addresses in the same order.
 export function useUploadChatMediaMutation() {
   return useMutation({

@@ -108,8 +108,28 @@ export function appendIncomingChatMessage(
           receiver: raw.receiver === currentUserId,
           media: raw.media,
           created_at: raw.created_at,
+          edited_at: raw.edited_at ?? null,
         },
       ],
     };
   });
+}
+
+/** Puts new text and the "edited" time on one message in an open chat. */
+export function patchChatMessage(
+  queryClient: QueryClient,
+  otherPartyId: string,
+  messageId: string,
+  patch: { message: string; edited_at: string | null },
+): void {
+  queryClient.setQueryData<ChatDetailResponse>(connectKeys.chat(otherPartyId), (old) =>
+    old
+      ? {
+          ...old,
+          messages: old.messages.map((item) =>
+            item.id === messageId ? { ...item, ...patch } : item,
+          ),
+        }
+      : old,
+  );
 }

@@ -214,3 +214,16 @@ export function useSupportMessagesQuery(
     refetchInterval: 10_000,
   });
 }
+
+/** Every version of one support message, loaded when an admin opens its history. */
+export function useSupportMessageEditsQuery(
+  id: string | number | undefined,
+  messageId: string | null,
+) {
+  return useQuery({
+    queryKey: [...userKeys.all(), "support-chat", id, "edits", messageId],
+    queryFn: () => userApi.getSupportMessageEdits(id as string | number, messageId as string),
+    enabled: Boolean(id) && Boolean(messageId),
+    staleTime: 0,
+  });
+}

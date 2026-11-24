@@ -10,6 +10,7 @@ vi.mock("react-redux", () => ({
   useSelector: (select: (state: unknown) => unknown) => select({ auth: { isLoggedIn: true } }),
 }));
 vi.mock("@/features/user/queries", () => ({
+  useSupportMessageEditsQuery: () => ({ data: undefined, isLoading: false, isError: false }),
   useSupportMessagesQuery: () => ({
     data: {
       messages: [
@@ -36,6 +37,7 @@ vi.mock("@/features/user/queries", () => ({
 vi.mock("@/features/user/mutations", () => ({
   useSendSupportMessageMutation: () => ({ mutate: send, isPending: false }),
   useUploadChatMediaMutation: () => ({ mutate: upload, isPending: false }),
+  useEditSupportMessageMutation: () => ({ mutate: vi.fn(), isPending: false }),
 }));
 
 describe("ChatModal", () => {

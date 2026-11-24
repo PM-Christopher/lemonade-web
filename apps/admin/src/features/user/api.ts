@@ -263,6 +263,32 @@ export interface SupportMessage {
   media: SupportMedia[];
   read_at: string | null;
   created_at: string;
+  // The admin who wrote it, or null when the user did.
+  admin_id: string | null;
+  // Set once the sender has changed the text.
+  edited_at: string | null;
+}
+
+// One part of a version's changes: kept, added or removed words.
+export interface MessageChange {
+  type: "equal" | "added" | "removed";
+  text: string;
+}
+
+export interface MessageVersion {
+  version: number;
+  message: string;
+  at: string;
+  edited_by: { type: "user" | "admin"; id: string } | null;
+  // Changes from the version before. Null for the original.
+  changes: MessageChange[] | null;
+}
+
+export interface MessageEditHistory {
+  message_id: string;
+  edit_count: number;
+  current: string | null;
+  versions: MessageVersion[];
 }
 
 export interface SupportMessagesResponse {
@@ -382,6 +408,17 @@ export const userApi = {
     browserApi.post<{ new_message: SupportMessage }>(
       buildPath(adminUsersRoutes.SUPPORT_CHAT_SEND, { id }),
       payload,
+    ),
+
+  editSupportMessage: (id: string | number, messageId: string, message: string) =>
+    browserApi.patch<{ edited_message: SupportMessage }>(
+      buildPath(adminUsersRoutes.SUPPORT_CHAT_EDIT, { id, messageId }),
+      { message },
+    ),
+
+  getSupportMessageEdits: (id: string | number, messageId: string) =>
+    browserApi.get<MessageEditHistory>(
+      buildPath(adminUsersRoutes.SUPPORT_CHAT_EDITS, { id, messageId }),
     ),
 
   // Uploads a picture or short video for the chat and returns its address.

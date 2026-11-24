@@ -15,10 +15,12 @@ import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useSupportMessagesQuery } from "@/features/settings/queries";
 import type { SupportMessage } from "@/features/settings/api";
 import {
+  useEditSupportMessageMutation,
   useSendSupportMessageMutation,
   useUploadSupportMediaMutation,
 } from "@/features/settings/mutations";
 import { AttachmentTray } from "@/components/support/AttachmentTray";
+import { MessageEditor } from "@/components/messages/MessageEditor";
 import { ACCEPTED_TYPES, MAX_ATTACHMENTS, addAttachments } from "@/components/support/attachments";
 
 // The conversation between the user and the Lemonade support team.
@@ -27,6 +29,8 @@ const SupportClient = () => {
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { data } = useSupportMessagesQuery({ enabled: isLoggedIn });
   const sendMutation = useSendSupportMessageMutation();
+  const editMutation = useEditSupportMessageMutation();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const uploadMutation = useUploadSupportMediaMutation();
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -115,11 +119,43 @@ const SupportClient = () => {
                     )}
                   </div>
                 )}
-                {item.message && (
-                  <p className="text-body-s break-words whitespace-pre-wrap">{item.message}</p>
+                {item.message && editingId === item.id ? (
+                  <MessageEditor
+                    initial={item.message}
+                    maxLength={2000}
+                    saving={editMutation.isPending}
+                    onCancel={() => setEditingId(null)}
+                    onSave={(next) =>
+                      editMutation.mutate(
+                        { id: item.id, message: next },
+                        {
+                          onSuccess: () => setEditingId(null),
+                          onError: (error) =>
+                            showError(errorMessage(error, "Couldn't edit your message.")),
+                        },
+                      )
+                    }
+                  />
+                ) : (
+                  item.message && (
+                    <p className="text-body-s break-words whitespace-pre-wrap">{item.message}</p>
+                  )
                 )}
                 <p className="text-text-grey text-meta self-end leading-normal">
+                  {item.edited_at && <span>edited · </span>}
                   {dayjs(item.created_at).format("D MMM, hh:mmA")}
+                  {item.sender === "user" && item.message && editingId !== item.id && (
+                    <>
+                      {" · "}
+                      <button
+                        type="button"
+                        className="underline"
+                        onClick={() => setEditingId(item.id)}
+                      >
+                        Edit
+                      </button>
+                    </>
+                  )}
                 </p>
               </div>
             ))}

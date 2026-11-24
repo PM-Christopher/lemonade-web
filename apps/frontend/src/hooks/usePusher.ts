@@ -3,7 +3,11 @@ import { disconnectAuthenticatedPusher, pusherCon, pusherConfig } from "@/config
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { appendIncomingChatMessage, connectKeys } from "@/features/connect/queries";
+import {
+  appendIncomingChatMessage,
+  connectKeys,
+  patchChatMessage,
+} from "@/features/connect/queries";
 import { notificationKeys } from "@/features/notifications";
 import { showPushToast } from "@/lib/pushToast";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
@@ -67,10 +71,23 @@ export const usePusher = (channelName: string | null, eventName: string) => {
       }
     };
 
+    // The other person changed a message in an open chat.
+    const editedHandler = (received: { message?: OutgoingChatMessage }) => {
+      const edited = received.message;
+      if (!edited || !user?.id) return;
+      patchChatMessage(queryClient, edited.sender, edited.id, {
+        message: edited.message,
+        edited_at: edited.edited_at ?? null,
+      });
+      queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
+    };
+
     channel.bind(eventName, eventHandler);
+    if (channelName === `chat.${user?.id}`) channel.bind("message.edited", editedHandler);
 
     return () => {
       channel.unbind(eventName, eventHandler);
+      channel.unbind("message.edited", editedHandler);
       pusher.unsubscribe(subscribeName);
     };
   }, [channelName, eventName, dispatch, queryClient, user?.id]);

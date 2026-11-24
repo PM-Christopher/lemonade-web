@@ -7,11 +7,14 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import { useSupportMessagesQuery } from "@/features/user/queries";
 import {
+  useEditSupportMessageMutation,
   useSendSupportMessageMutation,
   useUploadChatMediaMutation,
 } from "@/features/user/mutations";
 import { errorMessage } from "@/lib/api-error";
 import { AttachmentTray } from "./AttachmentTray";
+import { MessageEditor } from "./MessageEditor";
+import { MessageHistoryDialog } from "./MessageHistoryDialog";
 import { ACCEPTED_TYPES, MAX_ATTACHMENTS, addAttachments } from "./attachments";
 
 interface SavedReply {
@@ -39,9 +42,12 @@ export function SupportChatPanel({
   className = "",
 }: SupportChatPanelProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn, admin } = useSelector((state: RootState) => state.auth);
   const { data } = useSupportMessagesQuery(userId, { enabled: isLoggedIn && enabled });
   const sendMutation = useSendSupportMessageMutation(userId);
+  const editMutation = useEditSupportMessageMutation(userId);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [historyId, setHistoryId] = useState<string | null>(null);
   const uploadMutation = useUploadChatMediaMutation();
   const [text, setText] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -130,17 +136,68 @@ export function SupportChatPanel({
                   )}
                 </div>
               )}
-              {item.message && (
-                <p className="text-body-s break-words whitespace-pre-wrap">{item.message}</p>
+              {item.message && editingId === item.id ? (
+                <MessageEditor
+                  initial={item.message}
+                  maxLength={MAX_LENGTH}
+                  saving={editMutation.isPending}
+                  onCancel={() => setEditingId(null)}
+                  onSave={(next) =>
+                    editMutation.mutate(
+                      { messageId: item.id, message: next },
+                      {
+                        onSuccess: () => setEditingId(null),
+                        onError: (error) =>
+                          showError(errorMessage(error, "Couldn't edit the message.")),
+                      },
+                    )
+                  }
+                />
+              ) : (
+                item.message && (
+                  <p className="text-body-s break-words whitespace-pre-wrap">{item.message}</p>
+                )
               )}
               <p className="text-text-grey text-meta self-end leading-normal">
+                {item.edited_at && (
+                  <>
+                    <button
+                      type="button"
+                      className="underline"
+                      onClick={() => setHistoryId(item.id)}
+                    >
+                      edited
+                    </button>
+                    {" · "}
+                  </>
+                )}
                 {dayjs(item.created_at).format("D MMM, hh:mmA")}
+                {mine &&
+                  item.message &&
+                  String(item.admin_id) === String(admin?.id) &&
+                  editingId !== item.id && (
+                    <>
+                      {" · "}
+                      <button
+                        type="button"
+                        className="underline"
+                        onClick={() => setEditingId(item.id)}
+                      >
+                        Edit
+                      </button>
+                    </>
+                  )}
               </p>
             </div>
           );
         })}
         <div ref={bottom} />
       </div>
+      <MessageHistoryDialog
+        userId={userId}
+        messageId={historyId}
+        onClose={() => setHistoryId(null)}
+      />
       {repliesOpen && savedReplies.length > 0 && (
         <div className="bg-light-grey flex max-h-40 flex-col gap-1 overflow-y-auto border-t p-2">
           {savedReplies.map((reply) => (

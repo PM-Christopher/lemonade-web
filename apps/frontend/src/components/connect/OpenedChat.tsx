@@ -9,7 +9,7 @@ import { ChatInterface, MessageInterface } from "@/interfaces/ChatInterface";
 import SendIcon from "@/images/icons/sendIcon.svg";
 import { useAppDispatch } from "@/redux/hook";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSendChatMutation } from "@/features/connect/mutations";
+import { useEditChatMessageMutation, useSendChatMutation } from "@/features/connect/mutations";
 import { appendIncomingChatMessage } from "@/features/connect/queries";
 import { useSelector } from "react-redux";
 import ChevronLeft from "@/images/icons/chevron-left.svg";
@@ -22,6 +22,7 @@ import type { RootState } from "@/redux/store";
 import { ChatOptionsMenu } from "@/components/connect/ChatOptionsMenu";
 import { ImageLightbox } from "@/components/connect/ImageLightbox";
 import { errorMessage } from "@/lib/api-error";
+import { MessageEditor } from "@/components/messages/MessageEditor";
 
 // Tallest the message box grows before it scrolls.
 const MAX_INPUT_HEIGHT = 160;
@@ -46,6 +47,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const sendChatMutation = useSendChatMutation();
+  const editChatMutation = useEditChatMessageMutation();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [text, setText] = useState<string>("");
   const [mediaFiles, setMediaFiles] = useState<string[]>([]);
   const { user: authUser } = useSelector((state: RootState) => state.auth);
@@ -93,6 +96,24 @@ const OpenedChat: React.FC<OpenChatProps> = ({
           // logic rather than duplicating the viewer-relative mapping.
           if (authUser) appendIncomingChatMessage(queryClient, authUser.id, res.new_message);
         },
+      },
+    );
+  };
+
+  const saveEdit = (message: MessageInterface, next: string) => {
+    if (!userType?.id) return;
+    editChatMutation.mutate(
+      { id: message.id, message: next, otherPartyId: userType.id },
+      {
+        onSuccess: () => setEditingId(null),
+        onError: (error) =>
+          dispatch(
+            updateToastifyReducer({
+              show: true,
+              message: errorMessage(error, "Couldn't edit your message."),
+              type: "error",
+            }),
+          ),
       },
     );
   };
@@ -214,7 +235,17 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               }`}
               key={index}
             >
-              <p className="text-body-s font-normal whitespace-pre-wrap">{message?.message}</p>
+              {editingId === message.id ? (
+                <MessageEditor
+                  initial={message.message}
+                  maxLength={5000}
+                  saving={editChatMutation.isPending}
+                  onSave={(next) => saveEdit(message, next)}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <p className="text-body-s font-normal whitespace-pre-wrap">{message?.message}</p>
+              )}
               {message?.media && message?.media.length > 0 && (
                 <div className="mt-1 flex flex-wrap justify-end gap-1">
                   {message.media.map((mediaUrl) => (
@@ -237,7 +268,20 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                 </div>
               )}
               <p className="text-text-grey text-meta leading-normal">
+                {message?.edited_at && <span>edited · </span>}
                 {formatSingleTime(message?.created_at)}
+                {message?.sender && message?.message && !isBlocked && editingId !== message.id && (
+                  <>
+                    {" · "}
+                    <button
+                      type="button"
+                      className="underline"
+                      onClick={() => setEditingId(message.id)}
+                    >
+                      Edit
+                    </button>
+                  </>
+                )}
               </p>
             </div>
           ))}

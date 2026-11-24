@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { connectApi, type SendInvitePayload } from "./api";
-import { connectKeys } from "./queries";
+import { connectKeys, patchChatMessage } from "./queries";
 
 export function useSendChatMutation() {
   const queryClient = useQueryClient();
@@ -77,3 +77,20 @@ export const useBlockUserMutation = () => useChatContactMutation(connectApi.bloc
 export const useUnblockUserMutation = () => useChatContactMutation(connectApi.unblockUser);
 export const useEndChatMutation = () => useChatContactMutation(connectApi.endChat);
 export const useClearChatMutation = () => useChatContactMutation(connectApi.clearChat);
+
+export function useEditChatMessageMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, message }: { id: string; message: string; otherPartyId: string }) =>
+      connectApi.editChat(id, message),
+    onSuccess: ({ edited_message }, { otherPartyId }) => {
+      patchChatMessage(queryClient, otherPartyId, edited_message.id, {
+        message: edited_message.message,
+        edited_at: edited_message.edited_at,
+      });
+      // The sidebar preview may show this message.
+      queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
+    },
+  });
+}

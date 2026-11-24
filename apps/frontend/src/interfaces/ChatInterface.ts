@@ -30,4 +30,6 @@ export interface MessageInterface {
   receiver: boolean;
   media: string[] | null;
   created_at: string;
+  // Set once the sender has changed the text.
+  edited_at?: string | null;
 }

@@ -57,6 +57,18 @@ export function useSendSupportMessageMutation() {
   });
 }
 
+export function useEditSupportMessageMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, message }: { id: string; message: string }) =>
+      settingsApi.editSupportMessage(id, message),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: settingsKeys.support() });
+    },
+  });
+}
+
 // Uploads every picked file at once and returns their addresses in the same order.
 export function useUploadSupportMediaMutation() {
   return useMutation({

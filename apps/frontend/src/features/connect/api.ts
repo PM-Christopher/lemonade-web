@@ -25,6 +25,11 @@ export interface OutgoingChatMessage {
   receiver: string;
   media: string[] | null;
   created_at: string;
+  edited_at?: string | null;
+}
+
+export interface EditChatResponse {
+  edited_message: { id: string; message: string; edited_at: string | null };
 }
 
 export interface SendChatResponse {
@@ -116,6 +121,9 @@ export const connectApi = {
       { message, media },
       { params: { receiver_id: receiverId } },
     ),
+
+  editChat: (id: string, message: string) =>
+    browserApi.patch<EditChatResponse>(buildPath(userMessagesRoutes.EDIT, { id }), { message }),
 
   blockUser: (receiverId: string) =>
     browserApi.post<{ message: string }>(userMessagesRoutes.BLOCK, { receiver_id: receiverId }),

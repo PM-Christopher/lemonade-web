@@ -5,6 +5,7 @@ import {
   sharedUtilitiesRoutes,
   userSupportRoutes,
   userWalletRoutes,
+  buildPath,
 } from "@lemonade/api-types/generated";
 
 export interface UserProfile {
@@ -170,6 +171,7 @@ export interface SupportMessage {
   media: Array<{ type: "image" | "video"; url: string }>;
   read_at: string | null;
   created_at: string;
+  edited_at: string | null;
 }
 
 export interface SupportMessagePayload {
@@ -185,6 +187,12 @@ export const settingsApi = {
   getSupportMessages: () => browserApi.get<SupportMessagesResponse>(userSupportRoutes.MESSAGES),
 
   getUnreadSupportCount: () => browserApi.get<{ unread: number }>(userSupportRoutes.UNREAD),
+
+  editSupportMessage: (id: string, message: string) =>
+    browserApi.patch<{ edited_message: SupportMessage }>(
+      buildPath(userSupportRoutes.EDIT, { id }),
+      { message },
+    ),
 
   sendSupportMessage: (payload: SupportMessagePayload) =>
     browserApi.post<{ new_message: SupportMessage }>(userSupportRoutes.SEND, payload),
