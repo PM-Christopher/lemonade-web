@@ -257,6 +257,14 @@
         }
     },
     {
+        "method": "GET",
+        "uri": "/v1/admin/audit-log/messages/{id}/edits",
+        "name": "v1.admin.audit-log.message-edits",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "POST",
         "uri": "/v1/admin/auth/check-otp",
         "name": "v1.admin.auth.check-otp",
@@ -2540,6 +2548,28 @@
         "fields": null
     },
     {
+        "method": "PATCH",
+        "uri": "/v1/admin/users/{id}/support-chat/{messageId}",
+        "name": "v1.admin.users.support-chat.edit",
+        "guard": "admin",
+        "formRequest": "App\\Http\\Requests\\Support\\EditSupportMessageRequest",
+        "fields": {
+            "message": [
+                "required",
+                "string",
+                "max:2000"
+            ]
+        }
+    },
+    {
+        "method": "GET",
+        "uri": "/v1/admin/users/{id}/support-chat/{messageId}/edits",
+        "name": "v1.admin.users.support-chat.edits",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "POST",
         "uri": "/v1/admin/users/{id}/support-chat",
         "name": "v1.admin.users.support-chat.send",
@@ -4420,6 +4450,20 @@
         }
     },
     {
+        "method": "PATCH",
+        "uri": "/v1/user/messages/{id}",
+        "name": "v1.user.messages.edit",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Connect\\EditChatMessageRequest",
+        "fields": {
+            "message": [
+                "required",
+                "string",
+                "max:5000"
+            ]
+        }
+    },
+    {
         "method": "POST",
         "uri": "/v1/user/messages/end",
         "name": "v1.user.messages.end",
@@ -5111,6 +5155,20 @@
         "fields": null
     },
     {
+        "method": "PATCH",
+        "uri": "/v1/user/support/{id}",
+        "name": "v1.user.support.edit",
+        "guard": "user",
+        "formRequest": "App\\Http\\Requests\\Support\\EditSupportMessageRequest",
+        "fields": {
+            "message": [
+                "required",
+                "string",
+                "max:2000"
+            ]
+        }
+    },
+    {
         "method": "GET",
         "uri": "/v1/user/support",
         "name": "v1.user.support.messages",
@@ -5335,8 +5393,48 @@
         "uri": "/v1/user/tribes/create-tribe",
         "name": "v1.user.tribes.create",
         "guard": "user",
-        "formRequest": null,
-        "fields": null
+        "formRequest": "App\\Http\\Requests\\Tribe\\CreateTribeRequest",
+        "fields": {
+            "tribe_name": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "category": [
+                "required",
+                "string",
+                "max:255"
+            ],
+            "description": [
+                "required",
+                "string"
+            ],
+            "image": [
+                "required",
+                "string"
+            ],
+            "private": [
+                "required",
+                "boolean"
+            ],
+            "monetized": [
+                "required",
+                "boolean"
+            ],
+            "membership_fee": [
+                "required_if:monetized,true",
+                "nullable",
+                "numeric",
+                "min:0"
+            ],
+            "members": [
+                "nullable",
+                "array"
+            ],
+            "members.*": [
+                "string"
+            ]
+        }
     },
     {
         "method": "DELETE",

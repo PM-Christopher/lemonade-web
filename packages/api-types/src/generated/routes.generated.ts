@@ -30,6 +30,7 @@ export const adminAnnouncementRoutes = Object.freeze({
 
 export const adminAuditLogRoutes = Object.freeze({
   LIST: "/admin/audit-log", // GET
+  MESSAGE_EDITS: "/admin/audit-log/messages/{id}/edits", // GET
 });
 
 export const adminAuthRoutes = Object.freeze({
@@ -236,6 +237,8 @@ export const adminUsersRoutes = Object.freeze({
   REACTIVATE: "/admin/users/{id}/reactivate-user", // PATCH
   SHOW: "/admin/users/{id}", // GET
   SUPPORT_CHAT: "/admin/users/{id}/support-chat", // GET
+  SUPPORT_CHAT_EDIT: "/admin/users/{id}/support-chat/{messageId}", // PATCH
+  SUPPORT_CHAT_EDITS: "/admin/users/{id}/support-chat/{messageId}/edits", // GET
   SUPPORT_CHAT_SEND: "/admin/users/{id}/support-chat", // POST
   SUSPEND: "/admin/users/{id}/suspend-user", // PATCH
   TRIBE: "/admin/users/{id}/user-tribe/{tribe_id}", // GET
@@ -408,6 +411,7 @@ export const userMessagesRoutes = Object.freeze({
   BLOCK: "/user/messages/block", // POST
   CHAT: "/user/messages/chat", // GET
   CLEAR: "/user/messages/clear", // POST
+  EDIT: "/user/messages/{id}", // PATCH
   END: "/user/messages/end", // POST
   HISTORY: "/user/messages", // GET
   SEND: "/user/messages", // POST
@@ -472,6 +476,7 @@ export const userSubscriptionRoutes = Object.freeze({
 });
 
 export const userSupportRoutes = Object.freeze({
+  EDIT: "/user/support/{id}", // PATCH
   MESSAGES: "/user/support", // GET
   SEND: "/user/support", // POST
   UNREAD: "/user/support/unread", // GET

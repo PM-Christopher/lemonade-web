@@ -263,6 +263,17 @@ export interface CreatePromotionRequest {
   breakdown: {}[];
 }
 
+export interface CreateTribeRequest {
+  tribe_name: string;
+  category: string;
+  description: string;
+  image: string;
+  private: boolean;
+  monetized: boolean;
+  membership_fee?: number;
+  members?: {}[];
+}
+
 export interface CreateTribeThreadRequest {
   topic: string;
   thoughts: string;
@@ -317,6 +328,10 @@ export interface DisputeJobRequest {
   attachments: unknown[];
 }
 
+export interface EditChatMessageRequest {
+  message: string;
+}
+
 export interface EditEventTicketsRequest {
   tickets: {
     ticket_id?: string;
@@ -329,6 +344,10 @@ export interface EditEventTicketsRequest {
     purchase_limit: number;
     description: string;
   }[];
+}
+
+export interface EditSupportMessageRequest {
+  message: string;
 }
 
 export interface EditThreadCommentRequest {
