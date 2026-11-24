@@ -90,7 +90,8 @@ export function useSupportMessagesQuery(options?: { enabled?: boolean }) {
     queryKey: settingsKeys.support(),
     queryFn: settingsApi.getSupportMessages,
     staleTime: 0,
-    refetchInterval: 10_000,
+    // Live updates arrive over realtime. This is only a fallback.
+    refetchInterval: 30_000,
     enabled: options?.enabled,
   });
 }

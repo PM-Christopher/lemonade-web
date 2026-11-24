@@ -1,5 +1,4 @@
 import { useCallback, useRef, useSyncExternalStore } from "react";
-import { connectApi } from "./api";
 
 // How long "is typing" stays after the last signal.
 const TYPING_MS = 3500;
@@ -48,16 +47,19 @@ export function useIsTyping(userId: string | undefined): boolean {
   );
 }
 
-/** Tells the other person you are typing, without flooding the server. */
-export function useTypingSignal(receiverId: string | undefined): () => void {
+/** Tells the other side you are typing, without flooding the server. `send` makes the call. */
+export function useTypingSignal(
+  target: string | undefined,
+  send: (target: string) => Promise<unknown>,
+): () => void {
   const lastSent = useRef(0);
 
   return useCallback(() => {
-    if (!receiverId) return;
+    if (!target) return;
     const now = Date.now();
     if (now - lastSent.current < SEND_EVERY_MS) return;
     lastSent.current = now;
     // A missed typing signal is harmless.
-    connectApi.sendTyping(receiverId).catch(() => undefined);
-  }, [receiverId]);
+    send(target).catch(() => undefined);
+  }, [target, send]);
 }

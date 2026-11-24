@@ -3,8 +3,8 @@ import { renderHook } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { usePusher } from "./usePusher";
-import { clearTyping } from "@/features/connect/typing";
-import * as typing from "@/features/connect/typing";
+import { clearTyping } from "@/lib/typing";
+import * as typing from "@/lib/typing";
 
 // Handlers the hook binds, by event name.
 const handlers = vi.hoisted(() => ({ byEvent: {} as Record<string, (data?: unknown) => void> }));

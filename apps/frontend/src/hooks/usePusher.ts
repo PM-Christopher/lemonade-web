@@ -10,7 +10,7 @@ import {
 } from "@/features/connect/queries";
 import { notificationKeys } from "@/features/notifications";
 import { showPushToast } from "@/lib/pushToast";
-import { clearTyping, markTyping } from "@/features/connect/typing";
+import { clearTyping, markTyping } from "@/lib/typing";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { RootState } from "@/redux/store";
 import type { ChatHistoryResponse, OutgoingChatMessage } from "@/features/connect/api";

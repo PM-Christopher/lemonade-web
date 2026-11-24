@@ -3,7 +3,6 @@ import { act, renderHook } from "@testing-library/react";
 import { clearTyping, markTyping, useIsTyping, useTypingSignal } from "./typing";
 
 const sendTyping = vi.hoisted(() => vi.fn());
-vi.mock("./api", () => ({ connectApi: { sendTyping } }));
 
 describe("typing", () => {
   beforeEach(() => {
@@ -56,7 +55,7 @@ describe("typing", () => {
   });
 
   it("sends the typing signal at most once every few seconds", () => {
-    const { result } = renderHook(() => useTypingSignal("ada"));
+    const { result } = renderHook(() => useTypingSignal("ada", sendTyping));
 
     result.current();
     result.current();
@@ -69,7 +68,7 @@ describe("typing", () => {
   });
 
   it("sends nothing when there is no one to send it to", () => {
-    const { result } = renderHook(() => useTypingSignal(undefined));
+    const { result } = renderHook(() => useTypingSignal(undefined, sendTyping));
 
     result.current();
 

@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { clearTyping, markTyping } from "@/lib/typing";
 import SupportClient from "./SupportClient";
 
 const send = vi.fn();
 const upload = vi.fn();
 const edit = vi.fn();
+const sendTyping = vi.hoisted(() => vi.fn());
 
 vi.mock("@tanstack/react-query", () => ({
   useQueryClient: () => ({ invalidateQueries: vi.fn() }),
@@ -47,6 +49,11 @@ vi.mock("@/features/settings/queries", () => ({
     },
   }),
 }));
+vi.mock("@/features/settings/useSupportRealtime", () => ({
+  SUPPORT_TYPING_KEY: "support",
+  useSupportRealtime: vi.fn(),
+}));
+vi.mock("@/features/settings/api", () => ({ settingsApi: { sendSupportTyping: sendTyping } }));
 vi.mock("@/features/settings/mutations", () => ({
   useSendSupportMessageMutation: () => ({ mutate: send, isPending: false }),
   useUploadSupportMediaMutation: () => ({ mutate: upload, isPending: false }),
@@ -58,6 +65,9 @@ describe("SupportClient", () => {
     send.mockReset();
     upload.mockReset();
     edit.mockReset();
+    sendTyping.mockReset();
+    sendTyping.mockResolvedValue({});
+    clearTyping("support");
   });
 
   it("shows every attachment on a message", () => {
@@ -115,5 +125,22 @@ describe("SupportClient", () => {
       { id: "m2", message: "My order 123 is late" },
       expect.any(Object),
     );
+  });
+
+  it("shows when support is typing", () => {
+    render(<SupportClient />);
+    expect(screen.queryByText("Support is typing...")).not.toBeInTheDocument();
+
+    act(() => markTyping("support"));
+
+    expect(screen.getByText("Support is typing...")).toBeInTheDocument();
+  });
+
+  it("tells support when the user types", () => {
+    render(<SupportClient />);
+
+    fireEvent.change(screen.getByLabelText("Message"), { target: { value: "Hel" } });
+
+    expect(sendTyping).toHaveBeenCalledTimes(1);
   });
 });

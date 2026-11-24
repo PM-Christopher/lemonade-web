@@ -410,6 +410,12 @@ export const userApi = {
       payload,
     ),
 
+  sendSupportTyping: (id: string | number) =>
+    browserApi.post<{ message: string }>(
+      buildPath(adminUsersRoutes.SUPPORT_CHAT_TYPING, { id }),
+      {},
+    ),
+
   editSupportMessage: (id: string | number, messageId: string, message: string) =>
     browserApi.patch<{ edited_message: SupportMessage }>(
       buildPath(adminUsersRoutes.SUPPORT_CHAT_EDIT, { id, messageId }),

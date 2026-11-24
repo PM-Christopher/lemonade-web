@@ -188,6 +188,8 @@ export const settingsApi = {
 
   getUnreadSupportCount: () => browserApi.get<{ unread: number }>(userSupportRoutes.UNREAD),
 
+  sendSupportTyping: () => browserApi.post<{ message: string }>(userSupportRoutes.TYPING, {}),
+
   editSupportMessage: (id: string, message: string) =>
     browserApi.patch<{ edited_message: SupportMessage }>(
       buildPath(userSupportRoutes.EDIT, { id }),

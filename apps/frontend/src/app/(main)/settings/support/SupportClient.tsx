@@ -20,13 +20,19 @@ import {
   useUploadSupportMediaMutation,
 } from "@/features/settings/mutations";
 import { AttachmentTray } from "@/components/support/AttachmentTray";
+import { SUPPORT_TYPING_KEY, useSupportRealtime } from "@/features/settings/useSupportRealtime";
+import { settingsApi } from "@/features/settings/api";
+import { useIsTyping, useTypingSignal } from "@/lib/typing";
 import { MessageEditor } from "@/components/messages/MessageEditor";
 import { ACCEPTED_TYPES, MAX_ATTACHMENTS, addAttachments } from "@/components/support/attachments";
 
 // The conversation between the user and the Lemonade support team.
 const SupportClient = () => {
   const dispatch = useAppDispatch();
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn, user } = useSelector((state: RootState) => state.auth);
+  useSupportRealtime(isLoggedIn ? user?.id : undefined);
+  const supportIsTyping = useIsTyping(SUPPORT_TYPING_KEY);
+  const notifyTyping = useTypingSignal(SUPPORT_TYPING_KEY, () => settingsApi.sendSupportTyping());
   const { data } = useSupportMessagesQuery({ enabled: isLoggedIn });
   const sendMutation = useSendSupportMessageMutation();
   const editMutation = useEditSupportMessageMutation();
@@ -159,6 +165,11 @@ const SupportClient = () => {
                 </p>
               </div>
             ))}
+            {supportIsTyping && (
+              <p className="text-text-grey text-meta italic" role="status">
+                Support is typing...
+              </p>
+            )}
           </div>
           <div className="rounded-xl bg-white">
             <AttachmentTray
@@ -194,7 +205,10 @@ const SupportClient = () => {
                 placeholder="Write a message"
                 value={text}
                 maxLength={2000}
-                onChange={(e) => setText(e.target.value)}
+                onChange={(e) => {
+                  setText(e.target.value);
+                  if (e.target.value.trim()) notifyTyping();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();

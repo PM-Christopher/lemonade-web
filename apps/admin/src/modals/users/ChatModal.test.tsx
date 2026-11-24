@@ -4,6 +4,7 @@ import ChatModal from "./ChatModal";
 
 const send = vi.fn();
 const upload = vi.fn();
+const sendTyping = vi.hoisted(() => vi.fn());
 
 vi.mock("react-redux", () => ({
   useDispatch: () => vi.fn(),
@@ -34,6 +35,11 @@ vi.mock("@/features/user/queries", () => ({
     },
   }),
 }));
+vi.mock("@/features/user/useSupportRealtime", () => ({
+  SUPPORT_TYPING_KEY: "support",
+  useSupportRealtime: vi.fn(),
+}));
+vi.mock("@/features/user/api", () => ({ userApi: { sendSupportTyping: sendTyping } }));
 vi.mock("@/features/user/mutations", () => ({
   useSendSupportMessageMutation: () => ({ mutate: send, isPending: false }),
   useUploadChatMediaMutation: () => ({ mutate: upload, isPending: false }),
@@ -42,6 +48,7 @@ vi.mock("@/features/user/mutations", () => ({
 
 describe("ChatModal", () => {
   beforeEach(() => {
+    sendTyping.mockResolvedValue({});
     send.mockReset();
     upload.mockReset();
   });

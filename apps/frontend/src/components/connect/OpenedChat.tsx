@@ -23,7 +23,7 @@ import { ChatOptionsMenu } from "@/components/connect/ChatOptionsMenu";
 import { ImageLightbox } from "@/components/connect/ImageLightbox";
 import { errorMessage } from "@/lib/api-error";
 import { MessageEditor } from "@/components/messages/MessageEditor";
-import { useIsTyping, useTypingSignal } from "@/features/connect/typing";
+import { useIsTyping, useTypingSignal } from "@/lib/typing";
 
 // Tallest the message box grows before it scrolls.
 const MAX_INPUT_HEIGHT = 160;
@@ -56,7 +56,7 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver;
   const isTyping = useIsTyping(userType?.id);
-  const notifyTyping = useTypingSignal(userType?.id);
+  const notifyTyping = useTypingSignal(userType?.id, connectApi.sendTyping);
   const isBlocked = Boolean(blocked?.by_me || blocked?.by_them);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);

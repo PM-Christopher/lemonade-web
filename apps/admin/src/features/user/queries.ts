@@ -198,7 +198,7 @@ export function useAffiliateHistoryQuery(
   );
 }
 
-/** The support thread is polled while the chat is open, so new replies show up. */
+/** The support thread; live updates come over realtime, polling is a fallback. */
 export function useSupportMessagesQuery(
   id: string | number | undefined,
   options?: { enabled?: boolean },
@@ -211,7 +211,8 @@ export function useSupportMessagesQuery(
       options,
       0,
     ),
-    refetchInterval: 10_000,
+    // Live updates arrive over realtime. This is only a fallback.
+    refetchInterval: 30_000,
   });
 }
 

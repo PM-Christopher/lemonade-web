@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { clearTyping, markTyping } from "@/lib/typing";
 import { SupportChatPanel } from "./SupportChatPanel";
 
 const edit = vi.fn();
+const sendTyping = vi.hoisted(() => vi.fn());
 
 vi.mock("react-redux", () => ({
   useDispatch: () => vi.fn(),
@@ -71,6 +73,11 @@ vi.mock("@/features/user/queries", () => ({
     isError: false,
   }),
 }));
+vi.mock("@/features/user/useSupportRealtime", () => ({
+  SUPPORT_TYPING_KEY: "support",
+  useSupportRealtime: vi.fn(),
+}));
+vi.mock("@/features/user/api", () => ({ userApi: { sendSupportTyping: sendTyping } }));
 vi.mock("@/features/user/mutations", () => ({
   useSendSupportMessageMutation: () => ({ mutate: vi.fn(), isPending: false }),
   useUploadChatMediaMutation: () => ({ mutate: vi.fn(), isPending: false }),
@@ -78,7 +85,12 @@ vi.mock("@/features/user/mutations", () => ({
 }));
 
 describe("SupportChatPanel editing", () => {
-  beforeEach(() => edit.mockReset());
+  beforeEach(() => {
+    edit.mockReset();
+    sendTyping.mockReset();
+    sendTyping.mockResolvedValue({});
+    clearTyping("support");
+  });
 
   it("offers Edit only on the signed-in admin's own messages", () => {
     render(<SupportChatPanel userId="user-1" />);
@@ -110,5 +122,22 @@ describe("SupportChatPanel editing", () => {
     expect(
       screen.getByText("Please send the order number", { selector: "ins" }),
     ).toBeInTheDocument();
+  });
+
+  it("shows when the user is typing", () => {
+    render(<SupportChatPanel userId="user-1" />);
+    expect(screen.queryByText("User is typing...")).not.toBeInTheDocument();
+
+    act(() => markTyping("support"));
+
+    expect(screen.getByText("User is typing...")).toBeInTheDocument();
+  });
+
+  it("tells the user when the admin types", () => {
+    render(<SupportChatPanel userId="user-1" />);
+
+    fireEvent.change(screen.getByLabelText("Message"), { target: { value: "Hel" } });
+
+    expect(sendTyping).toHaveBeenCalledWith("user-1");
   });
 });

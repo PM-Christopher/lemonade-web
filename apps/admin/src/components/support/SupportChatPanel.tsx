@@ -12,6 +12,9 @@ import {
   useUploadChatMediaMutation,
 } from "@/features/user/mutations";
 import { errorMessage } from "@/lib/api-error";
+import { SUPPORT_TYPING_KEY, useSupportRealtime } from "@/features/user/useSupportRealtime";
+import { userApi } from "@/features/user/api";
+import { useIsTyping, useTypingSignal } from "@/lib/typing";
 import { AttachmentTray } from "./AttachmentTray";
 import { MessageEditor } from "./MessageEditor";
 import { MessageHistoryDialog } from "./MessageHistoryDialog";
@@ -44,6 +47,9 @@ export function SupportChatPanel({
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn, admin } = useSelector((state: RootState) => state.auth);
   const { data } = useSupportMessagesQuery(userId, { enabled: isLoggedIn && enabled });
+  useSupportRealtime(isLoggedIn && enabled ? userId : undefined);
+  const userIsTyping = useIsTyping(SUPPORT_TYPING_KEY);
+  const notifyTyping = useTypingSignal(userId, (id) => userApi.sendSupportTyping(id));
   const sendMutation = useSendSupportMessageMutation(userId);
   const editMutation = useEditSupportMessageMutation(userId);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -191,6 +197,11 @@ export function SupportChatPanel({
             </div>
           );
         })}
+        {userIsTyping && (
+          <p className="text-text-grey text-meta italic" role="status">
+            User is typing...
+          </p>
+        )}
         <div ref={bottom} />
       </div>
       <MessageHistoryDialog
@@ -239,7 +250,10 @@ export function SupportChatPanel({
           placeholder="Write a message"
           value={text}
           maxLength={MAX_LENGTH}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            if (e.target.value.trim()) notifyTyping();
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
