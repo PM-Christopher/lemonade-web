@@ -26,7 +26,7 @@ describe("buildReverbConnectionOptions", () => {
     expect(options.wsHost).toBe("reverb.example.com");
     expect(options.wsPort).toBe(443);
     expect(options.wssPort).toBe(443);
-    expect(options.enabledTransports).toEqual(["wss"]);
+    expect(options.enabledTransports).toEqual(["ws"]);
   });
 
   it("always sends an empty cluster, never Pusher Cloud's", () => {
@@ -55,5 +55,17 @@ describe("normalizeReverbHost", () => {
     });
 
     expect(options.wsHost).toBe("reverb.example.com");
+  });
+
+  it("never lists wss, which matches no transport and stops the client from connecting", () => {
+    for (const scheme of ["http", "https"] as const) {
+      const { enabledTransports } = buildReverbConnectionOptions({
+        host: "reverb.example.com",
+        port: 443,
+        scheme,
+      });
+
+      expect(enabledTransports).toEqual(["ws"]);
+    }
   });
 });

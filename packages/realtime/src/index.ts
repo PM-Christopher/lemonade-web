@@ -25,7 +25,7 @@ export interface ReverbConnectionOptions {
   wsPort: number;
   wssPort: number;
   forceTLS: boolean;
-  enabledTransports: ("ws" | "wss")[];
+  enabledTransports: "ws"[];
 }
 
 /** Host name only: drops a pasted "https://", any path, and a trailing slash. */
@@ -45,9 +45,8 @@ export function buildReverbConnectionOptions(
     wsPort: config.port,
     wssPort: config.port,
     forceTLS: config.scheme === "https",
-    // One transport. Offering both makes pusher-js open two sockets and
-    // close the loser while it is still connecting, which the browser logs
-    // as "WebSocket is closed before the connection is established."
-    enabledTransports: config.scheme === "https" ? ["wss"] : ["ws"],
+    // One transport. It is always "ws": TLS comes from forceTLS. A "wss" entry matches no transport,
+    // so the client fails at once and never opens a socket.
+    enabledTransports: ["ws"],
   };
 }
