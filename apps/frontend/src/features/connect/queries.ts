@@ -10,6 +10,8 @@ import {
 export const connectKeys = {
   all: () => ["connect"] as const,
   chats: () => [...connectKeys.all(), "chats"] as const,
+  // Every open chat, for a refresh when a notification arrives.
+  allChat: () => [...connectKeys.all(), "chat"] as const,
   chat: (receiverId: string) => [...connectKeys.all(), "chat", receiverId] as const,
   invites: () => [...connectKeys.all(), "invites"] as const,
   connection: () => [...connectKeys.all(), "connection"] as const,

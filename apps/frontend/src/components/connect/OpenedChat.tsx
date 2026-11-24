@@ -23,6 +23,7 @@ import { ChatOptionsMenu } from "@/components/connect/ChatOptionsMenu";
 import { ImageLightbox } from "@/components/connect/ImageLightbox";
 import { errorMessage } from "@/lib/api-error";
 import { MessageEditor } from "@/components/messages/MessageEditor";
+import { useIsTyping, useTypingSignal } from "@/features/connect/typing";
 
 // Tallest the message box grows before it scrolls.
 const MAX_INPUT_HEIGHT = 160;
@@ -54,6 +55,8 @@ const OpenedChat: React.FC<OpenChatProps> = ({
   const { user: authUser } = useSelector((state: RootState) => state.auth);
   const isMobile = useMediaQuery({ query: "(max-width: 1023px)" });
   const userType = chat?.sender?.id !== user_id ? chat?.sender : chat?.receiver;
+  const isTyping = useIsTyping(userType?.id);
+  const notifyTyping = useTypingSignal(userType?.id);
   const isBlocked = Boolean(blocked?.by_me || blocked?.by_them);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
@@ -285,6 +288,11 @@ const OpenedChat: React.FC<OpenChatProps> = ({
               </p>
             </div>
           ))}
+          {isTyping && (
+            <p className="text-text-grey text-meta italic" role="status">
+              {userType?.username} is typing...
+            </p>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -300,7 +308,10 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                     ref={mobileTextareaRef}
                     className="bg-light_grey text-black-light text-body-s mt-1 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Reply..."
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => {
+                      setText(e.target.value);
+                      if (e.target.value.trim()) notifyTyping();
+                    }}
                     onKeyDown={handleKeyDown}
                     value={text}
                     rows={1}
@@ -383,7 +394,10 @@ const OpenedChat: React.FC<OpenChatProps> = ({
                     ref={desktopTextareaRef}
                     className="bg-light_grey text-black-light text-body-s mt-1 min-h-5 w-full resize-none overflow-hidden rounded-xl border-0 px-2.5 focus:border-transparent focus:ring-0 focus:outline-none"
                     placeholder="Reply..."
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => {
+                      setText(e.target.value);
+                      if (e.target.value.trim()) notifyTyping();
+                    }}
                     onKeyDown={handleKeyDown}
                     value={text}
                     rows={1}

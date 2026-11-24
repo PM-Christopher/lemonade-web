@@ -10,6 +10,7 @@ import {
 } from "@/features/connect/queries";
 import { notificationKeys } from "@/features/notifications";
 import { showPushToast } from "@/lib/pushToast";
+import { clearTyping, markTyping } from "@/features/connect/typing";
 import { updateToastifyReducer } from "@/redux/toastifySlice";
 import type { RootState } from "@/redux/store";
 import type { ChatHistoryResponse, OutgoingChatMessage } from "@/features/connect/api";
@@ -39,6 +40,7 @@ export const usePusher = (channelName: string | null, eventName: string) => {
 
       if (channelName === `chat.${user?.id}` && user?.id && receivedData.message) {
         appendIncomingChatMessage(queryClient, user.id, receivedData.message);
+        clearTyping(receivedData.message.sender);
         // Alert only for messages from the other person.
         if (receivedData.message.sender !== user.id) {
           const senderId = receivedData.message.sender;
@@ -60,6 +62,8 @@ export const usePusher = (channelName: string | null, eventName: string) => {
         // Keeps the requests count and chat list on the Connect page current.
         queryClient.invalidateQueries({ queryKey: connectKeys.invites() });
         queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
+        // A missed chat event must never leave an open chat stale.
+        queryClient.invalidateQueries({ queryKey: connectKeys.allChat() });
       } else if (channelName === `request.${user?.id}` && eventName === "request.service") {
         dispatch(
           updateToastifyReducer({
@@ -82,12 +86,21 @@ export const usePusher = (channelName: string | null, eventName: string) => {
       queryClient.invalidateQueries({ queryKey: connectKeys.chats() });
     };
 
+    // The other person is typing in this chat.
+    const typingHandler = (received: { from?: string }) => {
+      if (received.from) markTyping(received.from);
+    };
+
     channel.bind(eventName, eventHandler);
-    if (channelName === `chat.${user?.id}`) channel.bind("message.edited", editedHandler);
+    if (channelName === `chat.${user?.id}`) {
+      channel.bind("message.edited", editedHandler);
+      channel.bind("typing", typingHandler);
+    }
 
     return () => {
       channel.unbind(eventName, eventHandler);
       channel.unbind("message.edited", editedHandler);
+      channel.unbind("typing", typingHandler);
       pusher.unsubscribe(subscribeName);
     };
   }, [channelName, eventName, dispatch, queryClient, user?.id]);

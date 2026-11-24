@@ -122,6 +122,9 @@ export const connectApi = {
       { params: { receiver_id: receiverId } },
     ),
 
+  sendTyping: (receiverId: string) =>
+    browserApi.post<{ message: string }>(userMessagesRoutes.TYPING, { receiver_id: receiverId }),
+
   editChat: (id: string, message: string) =>
     browserApi.patch<EditChatResponse>(buildPath(userMessagesRoutes.EDIT, { id }), { message }),
 
