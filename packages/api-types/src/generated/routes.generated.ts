@@ -240,6 +240,7 @@ export const adminUsersRoutes = Object.freeze({
   SUPPORT_CHAT_EDIT: "/admin/users/{id}/support-chat/{messageId}", // PATCH
   SUPPORT_CHAT_EDITS: "/admin/users/{id}/support-chat/{messageId}/edits", // GET
   SUPPORT_CHAT_SEND: "/admin/users/{id}/support-chat", // POST
+  SUPPORT_CHAT_TYPING: "/admin/users/{id}/support-chat/typing", // POST
   SUSPEND: "/admin/users/{id}/suspend-user", // PATCH
   TRIBE: "/admin/users/{id}/user-tribe/{tribe_id}", // GET
   TRIBE_HISTORY: "/admin/users/{id}/user-tribe-history", // GET
@@ -479,6 +480,7 @@ export const userSupportRoutes = Object.freeze({
   EDIT: "/user/support/{id}", // PATCH
   MESSAGES: "/user/support", // GET
   SEND: "/user/support", // POST
+  TYPING: "/user/support/typing", // POST
   UNREAD: "/user/support/unread", // GET
 });
 

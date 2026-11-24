@@ -2602,6 +2602,14 @@
         }
     },
     {
+        "method": "POST",
+        "uri": "/v1/admin/users/{id}/support-chat/typing",
+        "name": "v1.admin.users.support-chat.typing",
+        "guard": "admin",
+        "formRequest": null,
+        "fields": null
+    },
+    {
         "method": "PATCH",
         "uri": "/v1/admin/users/{id}/suspend-user",
         "name": "v1.admin.users.suspend",
@@ -5207,6 +5215,14 @@
                 "max:2048"
             ]
         }
+    },
+    {
+        "method": "POST",
+        "uri": "/v1/user/support/typing",
+        "name": "v1.user.support.typing",
+        "guard": "user",
+        "formRequest": null,
+        "fields": null
     },
     {
         "method": "GET",
