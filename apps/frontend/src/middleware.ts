@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import { USER_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 import { userProfileRoutes } from "@lemonade/api-types/generated";
 import { loginPathWithNext, readNext } from "@/lib/post-auth-redirect";
+import { normalizeReverbHost } from "@lemonade/realtime";
 
 // UX redirect only — Laravel Policies remain the only real authorization
 // authority. Now checks the httpOnly lemonade_user_token cookie set by
@@ -23,7 +24,7 @@ import { loginPathWithNext, readNext } from "@/lib/post-auth-redirect";
 // app's origin), so 'self' doesn't cover it; the ws(s) target is built from
 // the same NEXT_PUBLIC_REVERB_* vars src/config/pusherConfig.ts uses.
 function buildCsp(nonce: string) {
-  const reverbHost = process.env.NEXT_PUBLIC_REVERB_HOST || "localhost";
+  const reverbHost = normalizeReverbHost(process.env.NEXT_PUBLIC_REVERB_HOST || "localhost");
   const reverbPort = process.env.NEXT_PUBLIC_REVERB_PORT || "8080";
   const reverbWsScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "wss" : "ws";
 

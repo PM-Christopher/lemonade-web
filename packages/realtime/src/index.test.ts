@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildReverbConnectionOptions } from "./index";
+import { buildReverbConnectionOptions, normalizeReverbHost } from "./index";
 
 describe("buildReverbConnectionOptions", () => {
   it("builds plain-ws options for the http scheme", () => {
@@ -33,5 +33,27 @@ describe("buildReverbConnectionOptions", () => {
     expect(
       buildReverbConnectionOptions({ host: "localhost", port: 8080, scheme: "http" }).cluster,
     ).toBe("");
+  });
+});
+
+describe("normalizeReverbHost", () => {
+  it.each([
+    ["reverb.example.com", "reverb.example.com"],
+    ["https://reverb.example.com", "reverb.example.com"],
+    ["wss://reverb.example.com/", "reverb.example.com"],
+    ["  https://reverb.example.com/app?x=1  ", "reverb.example.com"],
+    ["localhost", "localhost"],
+  ])("turns %j into %j", (input, expected) => {
+    expect(normalizeReverbHost(input)).toBe(expected);
+  });
+
+  it("is applied to the websocket host the browser connects to", () => {
+    const options = buildReverbConnectionOptions({
+      host: "https://reverb.example.com",
+      port: 443,
+      scheme: "https",
+    });
+
+    expect(options.wsHost).toBe("reverb.example.com");
   });
 });

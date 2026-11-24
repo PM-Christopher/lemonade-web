@@ -28,12 +28,20 @@ export interface ReverbConnectionOptions {
   enabledTransports: ("ws" | "wss")[];
 }
 
+/** Host name only: drops a pasted "https://", any path, and a trailing slash. */
+export function normalizeReverbHost(host: string): string {
+  return host
+    .trim()
+    .replace(/^[a-z][a-z0-9+.-]*:\/\//i, "")
+    .replace(/[/?#].*$/, "");
+}
+
 export function buildReverbConnectionOptions(
   config: ReverbConnectionConfig,
 ): ReverbConnectionOptions {
   return {
     cluster: "",
-    wsHost: config.host,
+    wsHost: normalizeReverbHost(config.host),
     wsPort: config.port,
     wssPort: config.port,
     forceTLS: config.scheme === "https",

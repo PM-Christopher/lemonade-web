@@ -4,6 +4,7 @@ import { ADMIN_TOKEN_COOKIE, SIGNED_IN_COOKIE } from "@/lib/cookie-names";
 import { loginPathWithNext, readNext } from "@/lib/post-auth-redirect";
 import { ADMIN_PERMISSIONS } from "@/features/authentication/permissions";
 import { adminAccountRoutes } from "@lemonade/api-types/generated";
+import { normalizeReverbHost } from "@lemonade/realtime";
 
 // UX redirect only for the login gate below — Laravel Policies remain the
 // only real authorization authority (see docs/ARCHITECTURE.md,
@@ -39,7 +40,7 @@ import { adminAccountRoutes } from "@lemonade/api-types/generated";
 // app's origin), so 'self' doesn't cover it; the ws(s) target is built from
 // the same NEXT_PUBLIC_REVERB_* vars src/config/pusherConfig.ts uses.
 function buildCsp(nonce: string) {
-  const reverbHost = process.env.NEXT_PUBLIC_REVERB_HOST || "localhost";
+  const reverbHost = normalizeReverbHost(process.env.NEXT_PUBLIC_REVERB_HOST || "localhost");
   const reverbPort = process.env.NEXT_PUBLIC_REVERB_PORT || "8080";
   const reverbWsScheme = process.env.NEXT_PUBLIC_REVERB_SCHEME === "https" ? "wss" : "ws";
 
