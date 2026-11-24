@@ -15,7 +15,12 @@ import ConnectClient from "./ConnectClient";
 
 export const metadata: Metadata = { title: "Connect" };
 
-export default async function ConnectPage() {
+export default async function ConnectPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ chat?: string }>;
+}) {
+  const { chat } = await searchParams;
   const queryClient = getQueryClient();
 
   await Promise.all([
@@ -31,7 +36,7 @@ export default async function ConnectPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ConnectClient />
+      <ConnectClient initialChatUserId={chat} />
     </HydrationBoundary>
   );
 }

@@ -40,6 +40,7 @@ export const routes = {
   BUSINESS_SENT_OFFERS: (id: string | number) => `/business/${id}/jobs?tab=sent-offers` as const,
 
   CONNECT: "/connect",
+  CONNECT_CHAT: (userId: string) => `/connect?chat=${encodeURIComponent(userId)}` as const,
   CONNECT_REQUESTS: "/connect/requests",
 
   SETTINGS: "/settings",

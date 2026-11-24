@@ -16,6 +16,7 @@ export interface NotificationMeta {
   message?: string;
   invite_message?: string;
   user_id?: string;
+  sender_id?: string;
   business_id?: string;
   service_request_id?: string;
   job_id?: string;

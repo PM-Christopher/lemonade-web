@@ -10,6 +10,7 @@ import { isActiveLink } from "@/lib/activeLink";
 import { useSelector } from "react-redux";
 import { formatName, getInitials } from "@/lib/helper";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useNavigation } from "@/hooks/useNavigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, Button } from "@lemonade/ui";
 import {
   useNotificationsQuery,
@@ -28,6 +29,7 @@ import { routes } from "@/lib/routes";
 
 const TopNav = () => {
   const pathname = usePathname();
+  const { push } = useNavigation();
   const { user } = useSelector((state: RootState) => state.auth);
   const isMobile = useIsMobile(641);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
@@ -57,10 +59,17 @@ const TopNav = () => {
   }, []);
 
   const handleViewMore = (notification: AppNotification) => {
-    setSelectedNotification(notification);
     setOpenNotifications(false);
-    setOpenDetailModal(true);
     if (!notification.read_at) markRead.mutate(notification.id);
+
+    // A new-message notification opens the chat with its sender.
+    if (notification.type === "message" && notification.meta?.sender_id) {
+      push(routes.CONNECT_CHAT(notification.meta.sender_id));
+      return;
+    }
+
+    setSelectedNotification(notification);
+    setOpenDetailModal(true);
   };
 
   return (

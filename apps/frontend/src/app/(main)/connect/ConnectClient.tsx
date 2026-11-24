@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RequestIcon from "@/images/icons/requestIcon.svg";
 import SettingsIcon from "@/images/icons/gear.svg";
 import ChatListCard from "@/components/Jobs/ChatListCard";
@@ -22,6 +22,7 @@ import EmptyChat from "@/components/connect/EmptyChat";
 import { usePusher } from "@/hooks/usePusher";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useNavigation } from "@/hooks/useNavigation";
 import MainLayout from "@/components/layouts/MainLayout";
 import { ChatListCardSkeleton } from "@/components/Skeletons";
 import type { RootState } from "@/redux/store";
@@ -32,7 +33,8 @@ const ConnectModal = dynamic(() => import("@/components/connect/Modal/ConnectMod
   ssr: false,
 });
 
-const ConnectClient = () => {
+// `initialChatUserId` comes from ?chat=, e.g. a message notification opening that sender's chat.
+const ConnectClient = ({ initialChatUserId }: { initialChatUserId?: string }) => {
   const [connectTarget, setConnectTarget] = useState<FoundUser | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -41,6 +43,7 @@ const ConnectClient = () => {
   const isMobile = useIsMobile(1024);
   const [chatOpened, setChatOpened] = useState(false);
   const authReady = useAuthReady();
+  const { replace } = useNavigation();
   const { user } = useSelector((state: RootState) => state.auth);
   usePusher(authReady && user?.id ? `chat.${user.id}` : null, "message.sent");
 
@@ -65,6 +68,22 @@ const ConnectClient = () => {
       ? chatData.receiver
       : chatData.sender
     : null;
+
+  // Opens the requested chat whatever chat is open now.
+  const [openedFromLink, setOpenedFromLink] = useState<string | undefined>(undefined);
+  if (initialChatUserId !== openedFromLink) {
+    setOpenedFromLink(initialChatUserId);
+    if (initialChatUserId) {
+      setSelectedReceiverId(initialChatUserId);
+      setSelectedChatId(null);
+      setChatOpened(true);
+    }
+  }
+
+  // Clears ?chat= so the same link works again later.
+  useEffect(() => {
+    if (initialChatUserId) replace(routes.CONNECT);
+  }, [initialChatUserId, replace]);
 
   const openConnectModal = (user: FoundUser) => setConnectTarget(user);
 
